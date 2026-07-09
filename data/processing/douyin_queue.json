@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:38:26.791206+00:00",
+  "updated_at": "2026-07-09T23:41:33.336835+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 241,
-    "extraction_failed": 29,
-    "pending": 135
+    "transcribed": 243,
+    "extraction_failed": 32,
+    "pending": 130
   },
   "items": [
     {
@@ -3193,10 +3193,10 @@
       "title": "被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3205,10 +3205,10 @@
       "title": "安排，正反手一起#羽毛球教学 #羽毛球训练 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3229,10 +3229,10 @@
       "title": "跳出束缚，灵活握拍#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3241,11 +3241,11 @@
       "title": "大家找找有没有违例#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-029/7149363344649047311.mp4",
+      "duration_seconds": 41.215,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7148990784363138344",
@@ -3256,8 +3256,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7148267452877638944",
@@ -3268,8 +3268,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7146762792438074665",
@@ -3277,10 +3277,10 @@
       "title": "握拍从准备握拍，向右旋转直至虎口对着正拍面，或接近正拍面#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-029/7146762792438074665.mp4",
+      "duration_seconds": 33.251,
+      "attempts": 1,
       "error": null
     },
     {

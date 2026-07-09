@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:38:27.391116+00:00",
+  "updated_at": "2026-07-09T23:41:34.048574+00:00",
   "queue_counts": {
-    "transcribed": 241,
-    "extraction_failed": 29,
-    "pending": 135
+    "transcribed": 243,
+    "extraction_failed": 32,
+    "pending": 130
   },
   "knowledge_counts": {
-    "videos": 241,
-    "ready": 202,
-    "needs_visual_review": 39,
+    "videos": 243,
+    "ready": 203,
+    "needs_visual_review": 40,
     "curated": 3
   },
   "videos": [
@@ -11613,6 +11613,69 @@
           {
             "timestamp": "00:17-00:28",
             "text": "我们现在看到的是正反手 假挑真放由于时间有限 大家可以先告诉我你们想学哪套 随后教学奉上"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7149363344649047311",
+      "title": "大家找找有没有违例",
+      "url": "https://www.douyin.com/video/7149363344649047311",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 41.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-029/7149363344649047311.json",
+      "teaching_note": {
+        "topic": "大家找找有没有违例",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7146762792438074665",
+      "title": "握拍从准备握拍，向右旋转直至虎口对着正拍面，或接近正拍面",
+      "url": "https://www.douyin.com/video/7146762792438074665",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 33.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-029/7146762792438074665.json",
+      "teaching_note": {
+        "topic": "握拍从准备握拍",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:19",
+            "text": "这样可以不捐手腕的情况下还能打出发力及包切效果还是找个有代表性的通过慢动作移定格"
+          },
+          {
+            "timestamp": "00:16-00:25",
+            "text": "还是找个有代表性的通过慢动作移定格我们看到运动员的虎口已经对准了拍面方向我们再通过激完球之后"
+          },
+          {
+            "timestamp": "00:27-00:30",
+            "text": "虎口这次看得更清楚是对准的拍面方向"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:16",
+            "text": "正确的做法是变好球拍去活手腕的角度这样可以不捐手腕的情况下还能打出发力及包切效果"
+          },
+          {
+            "timestamp": "00:19-00:27",
+            "text": "我们看到运动员的虎口已经对准了拍面方向我们再通过激完球之后定格来看一下"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
