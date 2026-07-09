@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T20:49:41.041093+00:00",
+  "updated_at": "2026-07-09T21:00:47.013290+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 155,
+    "transcribed": 162,
     "extraction_failed": 12,
-    "pending": 238
+    "pending": 231
   },
   "items": [
     {
@@ -1897,10 +1897,10 @@
       "title": "听说很多人喜欢这招，别说华而不实，有没有用，我只想让对手心里难受，他难受我心里就美滋滋的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7348271667711380770.mp4",
+      "duration_seconds": 37.966,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1909,10 +1909,10 @@
       "title": "腰腹发力，和我们生活一样，要张弛有度才合适#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7346781656461724963.mp4",
+      "duration_seconds": 98.895,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1921,10 +1921,10 @@
       "title": "这个是一个思路，帮助没有过渡基础的朋友找到感觉，不能说两个技术感觉一模一样，但是手感非常的接近#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7344186576013905187.mp4",
+      "duration_seconds": 25.567,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1933,10 +1933,10 @@
       "title": "里面干货很多，不是针对一点#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7343069490126540084.mp4",
+      "duration_seconds": 180.537,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1945,10 +1945,10 @@
       "title": "滞空，和滞空感是两个东西，一个是事实，一个是感觉，但是羽毛球的进攻需要一个好的框架，可以让发力更集中#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7341595770195430690.mp4",
+      "duration_seconds": 49.019,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1957,10 +1957,10 @@
       "title": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7340472371322686755.mp4",
+      "duration_seconds": 29.375,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1969,10 +1969,10 @@
       "title": "吹笛子的手势是描述大概，大家容易握的太松，注意松是要的缝隙，紧是要的稳定#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-010/7335277415456836898.mp4",
+      "duration_seconds": 144.313,
+      "attempts": 1,
       "error": null
     },
     {
