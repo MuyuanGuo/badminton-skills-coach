@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T18:33:14.402353+00:00",
+  "updated_at": "2026-07-09T19:52:55.562809+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 127,
+    "transcribed": 134,
     "extraction_failed": 12,
-    "pending": 266
+    "pending": 259
   },
   "items": [
     {
@@ -1525,10 +1525,10 @@
       "title": "1.1万 被人教学鞭打发力 受益匪浅#羽毛球 #羽毛球教学 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7418417650264558848.mp4",
+      "duration_seconds": 50.505,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1537,10 +1537,10 @@
       "title": "走火入魔 最近看啥都像羽毛球#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7415820467606473999.mp4",
+      "duration_seconds": 28.539,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1549,10 +1549,10 @@
       "title": "双打防守进阶 外旋是大臂带动小臂的必然动作，用手指发力也可以，但是非常考验力量#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7414339897990843663.mp4",
+      "duration_seconds": 121.79,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1561,10 +1561,10 @@
       "title": "节奏变化及目的性 虽然最后还是被干了，但是如果没有内容肯定是被吊起来打#羽毛球 #羽毛球教学 #羽毛球训练 #羽毛球单打 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7413335844594994447.mp4",
+      "duration_seconds": 191.775,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1573,10 +1573,10 @@
       "title": "平搓远网 平搓可以根据情况加力减力，手臂也可以适当的介入辅助#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7411850466457292084.mp4",
+      "duration_seconds": 90.675,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1585,10 +1585,10 @@
       "title": "外籍单打2.0 @旺托 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24#羽毛球 #羽毛球单打 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7409137525006060840.mp4",
+      "duration_seconds": 315.305,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1597,10 +1597,10 @@
       "title": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球单打",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-006/7408162190647217460.mp4",
+      "duration_seconds": 139.159,
+      "attempts": 1,
       "error": null
     },
     {

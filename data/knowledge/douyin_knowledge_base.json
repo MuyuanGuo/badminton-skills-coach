@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T18:33:22.166864+00:00",
+  "updated_at": "2026-07-09T19:53:04.208614+00:00",
   "queue_counts": {
-    "transcribed": 127,
+    "transcribed": 134,
     "extraction_failed": 12,
-    "pending": 266
+    "pending": 259
   },
   "knowledge_counts": {
-    "videos": 127,
-    "ready": 113,
-    "needs_visual_review": 14,
+    "videos": 134,
+    "ready": 117,
+    "needs_visual_review": 17,
     "curated": 3
   },
   "videos": [
@@ -5988,6 +5988,287 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7418417650264558848",
+      "title": "被人教学鞭打发力 受益匪浅",
+      "url": "https://www.douyin.com/video/7418417650264558848",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 50.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-006/7418417650264558848.json",
+      "teaching_note": {
+        "topic": "被人教学鞭打发力 受益匪浅",
+        "key_evidence": [
+          {
+            "timestamp": "00:18-00:22",
+            "text": "其实非常简单 总共三步架拍架的高 动作小法力制动"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7415820467606473999",
+      "title": "走火入魔 最近看啥都像羽毛球",
+      "url": "https://www.douyin.com/video/7415820467606473999",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 28.5,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-006/7415820467606473999.json",
+      "teaching_note": {
+        "topic": "走火入魔 最近看啥都像羽毛球",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7414339897990843663",
+      "title": "双打防守进阶 外旋是大臂带动小臂的必然动作，用手指发力也可以，但是非常考验力量",
+      "url": "https://www.douyin.com/video/7414339897990843663",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 121.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-006/7414339897990843663.json",
+      "teaching_note": {
+        "topic": "双打防守进阶 外旋是大臂带动小臂的必然动作",
+        "key_evidence": [
+          {
+            "timestamp": "00:08-00:13",
+            "text": "然后提走 外旋然后做了一个大发力但是为什么动作队却接不到别人的杀球呢"
+          },
+          {
+            "timestamp": "00:09-00:18",
+            "text": "然后做了一个大发力但是为什么动作队却接不到别人的杀球呢因为你的这个动作和他的球速得在一个结拍里"
+          },
+          {
+            "timestamp": "00:25-00:37",
+            "text": "如果你想顶后程但是如果现在他杀球的速度非常快你这个灰泡是不是就显得动作打太慢了"
+          },
+          {
+            "timestamp": "00:34-00:42",
+            "text": "你这个灰泡是不是就显得动作打太慢了好像跟他这个杀球就没有在一个频道说他杀那么快 你这个动作做完这么慢"
+          },
+          {
+            "timestamp": "00:44-00:49",
+            "text": "那我就得想办法怎么能把这个外旋的大发力做在一个非常小的区间里"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:40-00:45",
+            "text": "说他杀那么快 你这个动作做完这么慢所以就这个 不是对错的问题那我就得想办法"
+          },
+          {
+            "timestamp": "00:49-00:54",
+            "text": "因为小才那么快就是他说这么大来不及做那我要这么小呢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:09",
+            "text": "首先就是你这个动作肯定是对的诶 甚至还可以用点宽和腰的力然后提走 外旋"
+          },
+          {
+            "timestamp": "00:54-01:00",
+            "text": "是不是这个也是打出来一个完整的外旋我们可以在机球的时候把这个提走这么多做小"
+          },
+          {
+            "timestamp": "00:58-01:04",
+            "text": "把这个提走这么多做小然后呢 我们准备外旋的时候呢我们把这个肘呢"
+          },
+          {
+            "timestamp": "01:31-01:36",
+            "text": "那我现在这样打反而可以把力量集中在一个点因为他很集中"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7413335844594994447",
+      "title": "节奏变化及目的性 虽然最后还是被干了，但是如果没有内容肯定是被吊起来打",
+      "url": "https://www.douyin.com/video/7413335844594994447",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 191.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-006/7413335844594994447.json",
+      "teaching_note": {
+        "topic": "节奏变化及目的性 虽然最后还是被干了",
+        "key_evidence": [
+          {
+            "timestamp": "00:14-00:19",
+            "text": "那我们先做一种假设这个球的落点已经过了发球线并且是一个低守位"
+          },
+          {
+            "timestamp": "00:30-00:37",
+            "text": "是非常适合后场突击的那么目前我们没有办法抵挡对方的进攻那这样的原网球就不能直接放吗"
+          },
+          {
+            "timestamp": "01:25-01:29",
+            "text": "看我去人部卖的位置就可以判判出球的落点大概又是在罚球线的附近"
+          },
+          {
+            "timestamp": "02:48-02:52",
+            "text": "那对手想要破局打出自己进攻的打法那么他只能抢完网之后"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:32-00:40",
+            "text": "那么目前我们没有办法抵挡对方的进攻那这样的原网球就不能直接放吗来我们观察对手"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:27",
+            "text": "那么我回放和回勾的风险和难度都太大了那么我们还可以选择什么呢对我们还可以直接挑给它"
+          },
+          {
+            "timestamp": "00:25-00:32",
+            "text": "对我们还可以直接挑给它我们可以观察对手打完原网之后的站位是非常适合后场突击的"
+          },
+          {
+            "timestamp": "00:51-00:56",
+            "text": "那有这样的停顿动作它就可以利用做动作的这个时间把人停住并且向后"
+          },
+          {
+            "timestamp": "01:10-01:17",
+            "text": "而来到了一个非常好的位置也就是说我可以通过这样的方式让现在本来是它原网抓推我"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7411850466457292084",
+      "title": "平搓远网 平搓可以根据情况加力减力，手臂也可以适当的介入辅助",
+      "url": "https://www.douyin.com/video/7411850466457292084",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 90.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-006/7411850466457292084.json",
+      "teaching_note": {
+        "topic": "平搓远网 平搓可以根据情况加力减力",
+        "key_evidence": [
+          {
+            "timestamp": "00:32-00:39",
+            "text": "我们现在要想象一下我们怎么让一个拍面向鞋上放通过手腕让挥趴路径向鞋下放这个并用"
+          },
+          {
+            "timestamp": "00:39-00:45",
+            "text": "把这个球踏出一个平平的效果那么这个拍面和向下的力度我们可以自己去找"
+          },
+          {
+            "timestamp": "00:43-00:49",
+            "text": "我们可以自己去找这是拍面的朝向这是挥趴的轨迹"
+          },
+          {
+            "timestamp": "01:14-01:19",
+            "text": "我们摆起球拍之后也是拍面向鞋上放挥趴路径向鞋下放"
+          },
+          {
+            "timestamp": "01:24-01:30",
+            "text": "那么手指这时候会跟随着手腕有一个发力的介入人在家中堂球技心中长"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:07-00:13",
+            "text": "当我们遇到来球很平不能压也不能搓的时候就可以使用平搓圆网的技术"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:21",
+            "text": "不能压也不能搓的时候就可以使用平搓圆网的技术首先是我们正手这一边"
+          },
+          {
+            "timestamp": "00:11-00:23",
+            "text": "就可以使用平搓圆网的技术首先是我们正手这一边就我们尽可能地把球拍在手里"
+          },
+          {
+            "timestamp": "00:55-01:03",
+            "text": "我们在比赛中打完这样的平搓圆网一定要举趴去抓对手的回挡和回推可以稍稍地使一些力"
+          },
+          {
+            "timestamp": "01:10-01:16",
+            "text": "尽量把掌心流空然后把球拍卡在我们指根的地方我们摆起球拍之后"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7409137525006060840",
+      "title": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24",
+      "url": "https://www.douyin.com/video/7409137525006060840",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 315.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-006/7409137525006060840.json",
+      "teaching_note": {
+        "topic": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7408162190647217460",
+      "title": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了",
+      "url": "https://www.douyin.com/video/7408162190647217460",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 139.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-006/7408162190647217460.json",
+      "teaching_note": {
+        "topic": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {
