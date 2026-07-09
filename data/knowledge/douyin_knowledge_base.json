@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:25:06.847224+00:00",
+  "updated_at": "2026-07-09T23:31:27.608496+00:00",
   "queue_counts": {
-    "transcribed": 233,
+    "transcribed": 237,
     "extraction_failed": 25,
-    "pending": 147
+    "pending": 143
   },
   "knowledge_counts": {
-    "videos": 233,
-    "ready": 196,
-    "needs_visual_review": 37,
+    "videos": 237,
+    "ready": 199,
+    "needs_visual_review": 38,
     "curated": 3
   },
   "videos": [
@@ -11245,6 +11245,205 @@
           {
             "timestamp": "02:08-02:13",
             "text": "试试试教练再见叫什么脸,都说了小卫生,小卫生"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7161980324409363712",
+      "title": "兄弟们，学不会起跳的，咱们先来个引导版吧，自己打个几次就会正式的了",
+      "url": "https://www.douyin.com/video/7161980324409363712",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 156.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-026/7161980324409363712.json",
+      "teaching_note": {
+        "topic": "兄弟们",
+        "key_evidence": [
+          {
+            "timestamp": "00:19-00:26",
+            "text": "是挥拍速度你可以把挥拍的动作就能给你调小调快一点"
+          },
+          {
+            "timestamp": "00:53-00:59",
+            "text": "要在机球的时候那一瞬间你看人也已经是半测身的状态挥拍了所以说你就半测身起跳"
+          },
+          {
+            "timestamp": "01:10-01:14",
+            "text": "赶在你落地之前把这个挥拍挥完就可以所以你挥拍得快"
+          },
+          {
+            "timestamp": "01:11-01:15",
+            "text": "把这个挥拍挥完就可以所以你挥拍得快所以为什么得半测身"
+          },
+          {
+            "timestamp": "01:36-01:40",
+            "text": "现在是最高点机球我要的是最高点架拍往下落的时候机球"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:13-00:20",
+            "text": "理论上就具备了跳杀的可能所以决定你能不能跳杀的最关键一点是什么是挥拍速度"
+          },
+          {
+            "timestamp": "02:12-02:15",
+            "text": "腿跳起来的时候不要一直蹦着现在"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:29-00:34",
+            "text": "这样的话你也可以跳杀就是先学一个简配版的跳杀等你杀得多了"
+          },
+          {
+            "timestamp": "01:10-01:14",
+            "text": "赶在你落地之前把这个挥拍挥完就可以所以你挥拍得快"
+          },
+          {
+            "timestamp": "01:51-01:55",
+            "text": "好然后你可以先这样练来半测身起跳"
+          },
+          {
+            "timestamp": "02:05-02:10",
+            "text": "来现在你可以再尝试尝试去腿想象一下"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7159382785092783375",
+      "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
+      "url": "https://www.douyin.com/video/7159382785092783375",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 95.1,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-026/7159382785092783375.json",
+      "teaching_note": {
+        "topic": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7158640349798255907",
+      "title": "其实接慢节奏，是很难找到启动点的",
+      "url": "https://www.douyin.com/video/7158640349798255907",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 82.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-026/7158640349798255907.json",
+      "teaching_note": {
+        "topic": "其实接慢节奏",
+        "key_evidence": [
+          {
+            "timestamp": "00:32-00:39",
+            "text": "大我们的腰要支撑住重心向后坐来抵消从后向前的惯性"
+          },
+          {
+            "timestamp": "00:37-00:43",
+            "text": "来抵消从后向前的惯性增快回动的速度大"
+          },
+          {
+            "timestamp": "00:43-00:48",
+            "text": "不要在机球之后做过多的停留这样你的回动会变慢听懂没"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:04-00:10",
+            "text": "这种球的时候你不能说激完了之后人还在这站着半天还回不去"
+          },
+          {
+            "timestamp": "00:41-00:47",
+            "text": "大不要在机球之后做过多的停留这样你的回动会变慢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:13-00:22",
+            "text": "你最快速的回味 保住自己的节奏是最重要的那么我们应该做到一个什么呢记住 球拍和球要有一种一拍两散的感觉"
+          },
+          {
+            "timestamp": "00:16-00:23",
+            "text": "那么我们应该做到一个什么呢记住 球拍和球要有一种一拍两散的感觉什么意思"
+          },
+          {
+            "timestamp": "00:48-00:54",
+            "text": "也就是说我在机球的时候我可以等一下都没关系但是我一定要等我人稳住了"
+          },
+          {
+            "timestamp": "00:50-00:55",
+            "text": "我可以等一下都没关系但是我一定要等我人稳住了再起"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7157156135538134307",
+      "title": "没有孩子一教就会，都剪辑掉了，费老劲了",
+      "url": "https://www.douyin.com/video/7157156135538134307",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 93.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-026/7157156135538134307.json",
+      "teaching_note": {
+        "topic": "没有孩子一教就会",
+        "key_evidence": [
+          {
+            "timestamp": "01:14-01:21",
+            "text": "那么明天这事没完不要往后做重心 重心向前走照一些 重心向前走"
+          },
+          {
+            "timestamp": "01:16-01:27",
+            "text": "不要往后做重心 重心向前走照一些 重心向前走好的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:01-00:08",
+            "text": "听声音 全是自拉的声音 那就说明不对是打到的声音 销是一个什么"
+          },
+          {
+            "timestamp": "00:08-00:23",
+            "text": "销是辅助 是把球往下带的感觉更多你不能完全靠销 你完全靠销没有球速你这是往下砍 那这个是包切不过去的"
+          },
+          {
+            "timestamp": "01:07-01:14",
+            "text": "二来可以回来总结问题用不同的角度来看孩子们的问题而且还发现了后面有一个正在摸鱼的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:02-01:09",
+            "text": "我喜欢在孩子训练的时候进行这样的录像一来可以用于分享二来可以回来总结问题"
+          },
+          {
+            "timestamp": "01:05-01:11",
+            "text": "一来可以用于分享二来可以回来总结问题用不同的角度来看孩子们的问题"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

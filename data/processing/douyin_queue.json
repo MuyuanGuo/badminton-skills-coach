@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:25:06.308562+00:00",
+  "updated_at": "2026-07-09T23:31:26.908691+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 233,
+    "transcribed": 237,
     "extraction_failed": 25,
-    "pending": 147
+    "pending": 143
   },
   "items": [
     {
@@ -3064,8 +3064,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7163836275487804676",
@@ -3076,8 +3076,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7161980324409363712",
@@ -3085,10 +3085,10 @@
       "title": "兄弟们，学不会起跳的，咱们先来个引导版吧，自己打个几次就会正式的了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-026/7161980324409363712.mp4",
+      "duration_seconds": 156.41,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3100,8 +3100,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7159382785092783375",
@@ -3109,10 +3109,10 @@
       "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍#羽毛球 #战戟8000 #羽毛球教学 #刘辉羽毛球 @李宁羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-026/7159382785092783375.mp4",
+      "duration_seconds": 95.086,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3121,10 +3121,10 @@
       "title": "其实接慢节奏，是很难找到启动点的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-026/7158640349798255907.mp4",
+      "duration_seconds": 82.64,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3133,10 +3133,10 @@
       "title": "没有孩子一教就会，都剪辑掉了，费老劲了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-026/7157156135538134307.mp4",
+      "duration_seconds": 93.507,
+      "attempts": 1,
       "error": null
     },
     {
