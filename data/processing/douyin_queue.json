@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:32:30.204964+00:00",
+  "updated_at": "2026-07-09T21:47:30.809555+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 190,
+    "transcribed": 197,
     "extraction_failed": 12,
-    "pending": 203
+    "pending": 196
   },
   "items": [
     {
@@ -2341,10 +2341,10 @@
       "title": "大家练习的时候注意安全，一定多看两遍，发球机是艾迪宝@艾迪宝羽毛球发球机 #羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7275536378321014051.mp4",
+      "duration_seconds": 150.908,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2353,10 +2353,10 @@
       "title": "大家不要断章取义，手的大小，手胶的粗细，协调性，爆发力人人都不一样，没有谁和谁的动作是完全一样的，抓住核心点，这个都一样#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7272944156618542336.mp4",
+      "duration_seconds": 180.026,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2365,10 +2365,10 @@
       "title": "课堂随录的，比平时唠叨些，需要的朋友自取#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7271452082337598760.mp4",
+      "duration_seconds": 168.462,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2377,10 +2377,10 @@
       "title": "不是说所有的球都回中间，是在不被抢的情况下，中路有这样的效果，一定不要夸张，故意每一个都打中间，就摆脱，或者做球的时候来一个#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7267754640270216483.mp4",
+      "duration_seconds": 104.793,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2389,10 +2389,10 @@
       "title": "攻防转换的机会其实随时都有，就看我们能不能发现，总能发现的就可以称之为高手啦#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7265142606580026658.mp4",
+      "duration_seconds": 225.351,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2413,10 +2413,10 @@
       "title": "中路远网的博弈从民间一直到职业赛场，不要担心小孩听不懂，越不说越不懂#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7262546080133401890.mp4",
+      "duration_seconds": 198.369,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2425,10 +2425,10 @@
       "title": "如果还在苍蝇拍打球的人，闪动回弹就像天书，所以不同阶段有不同的教学，先别急着否定，有没有可能是自己没理解到#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-015/7259946986114190626.mp4",
+      "duration_seconds": 121.837,
+      "attempts": 1,
       "error": null
     },
     {
