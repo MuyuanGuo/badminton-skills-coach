@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T15:47:53.961920+00:00",
+  "updated_at": "2026-07-09T16:45:49.208491+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 65,
-    "extraction_failed": 10,
-    "pending": 330
+    "transcribed": 88,
+    "extraction_failed": 12,
+    "pending": 305
   },
   "items": [
     {
@@ -673,10 +673,10 @@
       "title": "抽球细节 面对快球，假设球一共飞行0.8秒到你的击球点，如果你光伸拍做框架就用了0.5秒，那就没法打了，但是如果0.3秒就能做好框架，你就有0.5秒可以挥拍#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7560064232592493882.m4a",
+      "duration_seconds": 123.694,
+      "attempts": 2,
       "error": null
     },
     {
@@ -697,11 +697,11 @@
       "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 #羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after extended wait"
     },
     {
       "video_id": "7551459420703837498",
@@ -709,10 +709,10 @@
       "title": "快速架拍和力量架拍 在两者中间的架拍就是标准的普通架拍，既不会太慢，也不会没力，但是又都做不到极致的快和重，大家结合使用哦#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7551459420703837498.m4a",
+      "duration_seconds": 146.264,
+      "attempts": 2,
       "error": null
     },
     {
@@ -721,11 +721,11 @@
       "title": "3.3万 反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果#羽毛球#刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after extended wait"
     },
     {
       "video_id": "7548394643144068411",
@@ -733,10 +733,10 @@
       "title": "挡斜线 在身前，点位比较高的时候可以用，球速很快，还不容易出界#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7548394643144068411.m4a",
+      "duration_seconds": 133.029,
+      "attempts": 2,
       "error": null
     },
     {
@@ -757,10 +757,10 @@
       "title": "反手高远球 提供一个训练方法，方法不唯一#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7541623926234811705.m4a",
+      "duration_seconds": 136.512,
+      "attempts": 2,
       "error": null
     },
     {
@@ -769,10 +769,10 @@
       "title": "日常纠错 快让有这个问题的朋友们看看吧#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7540508309087358266.m4a",
+      "duration_seconds": 68.523,
+      "attempts": 1,
       "error": null
     },
     {
@@ -781,10 +781,10 @@
       "title": "这种位置握拍是大拇指顶住正宽面#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7539394762560113978.mp4",
+      "duration_seconds": 109.391,
+      "attempts": 1,
       "error": null
     },
     {
@@ -793,10 +793,10 @@
       "title": "日常纠错 简单点，纠错的方式简单点#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7538639302243323195.mp4",
+      "duration_seconds": 38.152,
+      "attempts": 2,
       "error": null
     },
     {
@@ -805,10 +805,10 @@
       "title": "后场发力 给大家解释一下，这些部位发力分别如何表现，帮助大家学习#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7536519262631611707.m4a",
+      "duration_seconds": 100.985,
+      "attempts": 2,
       "error": null
     },
     {
@@ -817,10 +817,10 @@
       "title": "反手高远 这个大臂啊，用的越精炼越好，越多越完蛋#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7535400692573211962.mp4",
+      "duration_seconds": 86.589,
+      "attempts": 1,
       "error": null
     },
     {
@@ -841,10 +841,10 @@
       "title": "步法弹性 方法也很重要#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7531326870298873147.mp4",
+      "duration_seconds": 229.391,
+      "attempts": 1,
       "error": null
     },
     {
@@ -853,10 +853,10 @@
       "title": "挥拍方向 一定要让身边有这个问题的朋友看，根据长期线下培训的数据看，超过60%的球友有这样的问题#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7530102529830800699.mp4",
+      "duration_seconds": 137.347,
+      "attempts": 1,
       "error": null
     },
     {
@@ -865,10 +865,10 @@
       "title": "展搓 嗓子一直说不出话，如有吐字不清请配合字幕看，感谢谅解#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7526124617461173562.mp4",
+      "duration_seconds": 153.416,
+      "attempts": 1,
       "error": null
     },
     {
@@ -877,10 +877,10 @@
       "title": "搓球 技术技巧是一方面，目的性是决定能不能把技术贯彻到战术里的重要环节#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7525379384673733945.mp4",
+      "duration_seconds": 198.369,
+      "attempts": 2,
       "error": null
     },
     {
@@ -889,10 +889,10 @@
       "title": "挡网 我最近发的东西都是大家认为简单，但是一点不简单的东西#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7524557392328461627.mp4",
+      "duration_seconds": 208.633,
+      "attempts": 1,
       "error": null
     },
     {
@@ -901,10 +901,10 @@
       "title": "反手挑球 嗓子哑了，轻声细语发不出声，只能使点劲儿说话#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7523163965838003514.mp4",
+      "duration_seconds": 131.496,
+      "attempts": 2,
       "error": null
     },
     {
@@ -913,10 +913,10 @@
       "title": "反手发球 种类非常多，我就讲的一种比较好上手的，比较稳定的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7522041413614816570.m4a",
+      "duration_seconds": 116.031,
+      "attempts": 1,
       "error": null
     },
     {
@@ -925,10 +925,10 @@
       "title": "吊球 最普通的东西都是最需要基本功的，大家以为会了的，其实可能只是能打而已#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7520190707093654844.mp4",
+      "duration_seconds": 179.376,
+      "attempts": 2,
       "error": null
     },
     {
@@ -937,10 +937,10 @@
       "title": "正手挑球 他的变化在于手的放松，和整个人的状态，包括击球的声音，挑球想进步也是很难的，都是黄金技术#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7518239001813339449.mp4",
+      "duration_seconds": 101.403,
+      "attempts": 1,
       "error": null
     },
     {
@@ -949,10 +949,10 @@
       "title": "正手发高远 很多人后台说还是发不好，发不出冲天炮，这期盘点一下所有问题#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7517867684509420857.mp4",
+      "duration_seconds": 164.19,
+      "attempts": 1,
       "error": null
     },
     {
@@ -961,10 +961,10 @@
       "title": "4.3万 与高政泽单打 南村群童欺我老无力，忍能对面为盗贼#刘辉羽毛球 #羽毛球",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7516012808523222329.mp4",
+      "duration_seconds": 270.212,
+      "attempts": 2,
       "error": null
     },
     {
@@ -973,10 +973,10 @@
       "title": "正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7515625891511995706.m4a",
+      "duration_seconds": 95.737,
+      "attempts": 1,
       "error": null
     },
     {
@@ -985,10 +985,10 @@
       "title": "反手基础速成版 一定注意看肘的动作和架拍位置，不要因为怕撅腕就不用手腕，那是两个意思#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7511934047901846841.mp4",
+      "duration_seconds": 118.539,
+      "attempts": 2,
       "error": null
     },
     {
@@ -997,10 +997,10 @@
       "title": "正手基础速成版 其他部位当然也要配合，但是最主要的部位就是手臂手腕，手指属于末端，顺着力传导用就可以，不要太刻意#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-003/7511074095086243131.mp4",
+      "duration_seconds": 91.279,
+      "attempts": 1,
       "error": null
     },
     {
