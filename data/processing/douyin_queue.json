@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T17:29:29.771698+00:00",
+  "updated_at": "2026-07-09T18:23:27.661314+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 113,
+    "transcribed": 120,
     "extraction_failed": 12,
-    "pending": 280
+    "pending": 273
   },
   "items": [
     {
@@ -1345,10 +1345,10 @@
       "title": "2.9万 与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废#羽毛球 #羽毛球单打 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7476768272864644409.mp4",
+      "duration_seconds": 212.58,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1369,10 +1369,10 @@
       "title": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意#羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7471361140719652154.mp4",
+      "duration_seconds": 113.57,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1381,10 +1381,10 @@
       "title": "接下手球 小细节决定成败#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7459867608460840252.mp4",
+      "duration_seconds": 105.304,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1393,10 +1393,10 @@
       "title": "发力的关键 架拍肘的摆动越小，出拍越快门槛也就越高，代价是力量会被削弱，肘的空间越充分，力量会更大，代价是出拍会相对慢，但是门槛低，业余的球友们肯定要从基础的低门槛开始#羽毛球 #羽毛球教学 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7458505857844776250.mp4",
+      "duration_seconds": 99.36,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1405,10 +1405,10 @@
       "title": "基础挥拍 可以当网课看了，@ 你不会挥拍的小伙伴来看吧#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7453420876076240188.mp4",
+      "duration_seconds": 1226.921,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1417,10 +1417,10 @@
       "title": "防守斜线 直线接去挡，斜线接去削一点#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7449702119076072764.mp4",
+      "duration_seconds": 134.422,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1429,10 +1429,10 @@
       "title": "握拍微调 抽挡反手为主，尽量不做正反手转换#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7447084061371272507.mp4",
+      "duration_seconds": 34.529,
+      "attempts": 1,
       "error": null
     },
     {

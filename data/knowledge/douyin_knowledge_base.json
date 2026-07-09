@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T17:29:38.273332+00:00",
+  "updated_at": "2026-07-09T18:23:40.911765+00:00",
   "queue_counts": {
-    "transcribed": 113,
+    "transcribed": 120,
     "extraction_failed": 12,
-    "pending": 280
+    "pending": 273
   },
   "knowledge_counts": {
-    "videos": 113,
-    "ready": 103,
-    "needs_visual_review": 10,
+    "videos": 120,
+    "ready": 107,
+    "needs_visual_review": 13,
     "curated": 3
   },
   "videos": [
@@ -5347,6 +5347,26 @@
       }
     },
     {
+      "video_id": "7476768272864644409",
+      "title": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废",
+      "url": "https://www.douyin.com/video/7476768272864644409",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 212.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-005/7476768272864644409.json",
+      "teaching_note": {
+        "topic": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7475440958130097466",
       "title": "教学联动 我和彭教练用这样演绎的方式来讲发球的抓球思路，但是我本人叛逆者的形象是想告诉大家战术是固定的，人是活的，当对手变化我们如何应对",
       "url": "https://www.douyin.com/video/7475440958130097466",
@@ -5408,6 +5428,239 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7471361140719652154",
+      "title": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意",
+      "url": "https://www.douyin.com/video/7471361140719652154",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 113.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-005/7471361140719652154.json",
+      "teaching_note": {
+        "topic": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7459867608460840252",
+      "title": "接下手球 小细节决定成败",
+      "url": "https://www.douyin.com/video/7459867608460840252",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 105.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7459867608460840252.json",
+      "teaching_note": {
+        "topic": "接下手球 小细节决定成败",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:16",
+            "text": "人家掉球杀球这边"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:30-00:34",
+            "text": "为什么右腿前面因为左边首先是不需要伸拍子"
+          },
+          {
+            "timestamp": "00:31-00:36",
+            "text": "因为左边首先是不需要伸拍子因为你人会转"
+          },
+          {
+            "timestamp": "00:42-00:45",
+            "text": "他见没有好了就放在这就可以了这power放的地可以了"
+          },
+          {
+            "timestamp": "00:42-00:50",
+            "text": "好了就放在这就可以了这power放的地可以了你看咱俩有什么区别"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7458505857844776250",
+      "title": "发力的关键 架拍肘的摆动越小，出拍越快门槛也就越高，代价是力量会被削弱，肘的空间越充分，力量会更大，代价是出拍会相对慢，但是门槛低，业余的球友们肯定要从基础的低门槛开始",
+      "url": "https://www.douyin.com/video/7458505857844776250",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 99.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7458505857844776250.json",
+      "teaching_note": {
+        "topic": "发力的关键 架拍肘的摆动越小",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:06",
+            "text": "一个小的细节 改善你的发力要在原有的架盘的基础上"
+          },
+          {
+            "timestamp": "00:36-00:50",
+            "text": "打不上力 没办法做大臂带动小臂的顶肘抬肘那我们把肘从这样的架拍 变到肘朝下增加了我的摆动"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:10-00:20",
+            "text": "也就是说这个肘是要往你的后面 上面抬起来那么这样呢 我们就可以获得更大的顶肘空间也就是大臂带动小臂 将会更充分"
+          },
+          {
+            "timestamp": "01:23-01:30",
+            "text": "也就是说我所有的动作都可以在顶肘不充分的情况下把肘向反方向拉动"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7453420876076240188",
+      "title": "基础挥拍 可以当网课看了，@ 你不会挥拍的小伙伴来看吧",
+      "url": "https://www.douyin.com/video/7453420876076240188",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 1226.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7453420876076240188.json",
+      "teaching_note": {
+        "topic": "基础挥拍 可以当网课看了",
+        "key_evidence": [
+          {
+            "timestamp": "02:06-02:12",
+            "text": "你有很大概率挥拍的时候会有一个深胳膊的感觉你胳膊是绷直的"
+          },
+          {
+            "timestamp": "02:23-02:29",
+            "text": "你看不见我的球拍那也就是说你在转体挥拍的时候你会发现这个肘很难打到前面"
+          },
+          {
+            "timestamp": "10:01-10:05",
+            "text": "好了当这个挥拍可以做出来的时候你会发现"
+          },
+          {
+            "timestamp": "11:24-11:31",
+            "text": "去找我的左腿左宽一定要清楚这个腰幅的发力方向它不是转的"
+          },
+          {
+            "timestamp": "16:44-16:51",
+            "text": "这能打到腿这离腿这么远的发力就结束了离腿怎么打到腿的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:22-01:27",
+            "text": "他不能当做他不能当做大发力的时候使用因为如果"
+          },
+          {
+            "timestamp": "15:57-16:06",
+            "text": "我的肘就开始疼了挥下来这里是不能打腕的你的肘看到没有"
+          },
+          {
+            "timestamp": "17:02-17:08",
+            "text": "什么叫发力不集中你顶肘顶到这大臂就不能再动了接下来是内拳小臂的阶段了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "02:51-02:56",
+            "text": "看然后再把肩往后打那也就是说你们是能看到"
+          },
+          {
+            "timestamp": "03:00-03:07",
+            "text": "我左手带转然后球拍可以你看由后向前的挥出来"
+          },
+          {
+            "timestamp": "12:45-12:53",
+            "text": "拿你的右肩去往左腿的方向找然后我们倒拍再做刚才的动作我们就把身体给带进去了"
+          },
+          {
+            "timestamp": "14:49-15:00",
+            "text": "我慢慢的然后我们再把腰斧的力给加上刚才我说的那个"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7449702119076072764",
+      "title": "防守斜线 直线接去挡，斜线接去削一点",
+      "url": "https://www.douyin.com/video/7449702119076072764",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 134.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7449702119076072764.json",
+      "teaching_note": {
+        "topic": "防守斜线 直线接去挡",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:28-00:32",
+            "text": "很难那可以怎么样可以消一点"
+          },
+          {
+            "timestamp": "00:46-00:50",
+            "text": "接斜线的时候手腕一定要锁住因为你越有这种手腕的东西"
+          },
+          {
+            "timestamp": "01:32-01:40",
+            "text": "这球就平来 先来个低的来个高的"
+          },
+          {
+            "timestamp": "01:53-01:58",
+            "text": "你这不就把手腕给打回来了吗你打完应该还是这样的才对"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7447084061371272507",
+      "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+      "url": "https://www.douyin.com/video/7447084061371272507",
+      "category": "中前场与抽挡",
+      "tags": [
+        "中前场与抽挡",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 34.5,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-005/7447084061371272507.json",
+      "teaching_note": {
+        "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {
