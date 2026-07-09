@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:41:33.336835+00:00",
+  "updated_at": "2026-07-09T23:43:44.838Z",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
     "transcribed": 243,
-    "extraction_failed": 32,
-    "pending": 130
+    "extraction_failed": 34,
+    "pending": 128
   },
   "items": [
     {
@@ -3253,10 +3253,10 @@
       "title": "身体是歪的作用，1腰腹纵向发力成功介入，2肩膀和肘顶起来拿到了高点，3手臂和脸有了自然距离#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3265,10 +3265,10 @@
       "title": "这种球对方太主动，等球不转了在打也不行，点就太低了#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3292,8 +3292,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7145708380047297833",
@@ -3304,8 +3304,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7144168689510649128",
@@ -3316,8 +3316,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7143811094698528040",
@@ -3328,8 +3328,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7142313105324870950",
@@ -3340,8 +3340,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7141570854437063977",
