@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T21:09:08.231241+00:00",
+  "updated_at": "2026-07-09T21:13:46.481080+00:00",
   "queue_counts": {
-    "transcribed": 169,
+    "transcribed": 176,
     "extraction_failed": 12,
-    "pending": 224
+    "pending": 217
   },
   "knowledge_counts": {
-    "videos": 169,
-    "ready": 141,
+    "videos": 176,
+    "ready": 148,
     "needs_visual_review": 28,
     "curated": 3
   },
@@ -7797,6 +7797,333 @@
           {
             "timestamp": "01:15-01:21",
             "text": "完成一个发力小一点也可以那么我们在实战中无论是在揭发5号位"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7315610620424883496",
+      "title": "从上到下，由后向前的带动，才能让发力更顺畅，所有羽毛球运动员后场发力时身体都是歪的",
+      "url": "https://www.douyin.com/video/7315610620424883496",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 77.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7315610620424883496.json",
+      "teaching_note": {
+        "topic": "从上到下",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:09",
+            "text": "为什么有些人看着很轻松就可以打出来一台发力呢首先就是我们要闹清楚我们的腰幅究竟怎么发力"
+          },
+          {
+            "timestamp": "00:51-00:57",
+            "text": "已经是一个直的了也就是我这个发力是一个纯纯的由上到下的发力"
+          },
+          {
+            "timestamp": "00:53-00:59",
+            "text": "也就是我这个发力是一个纯纯的由上到下的发力那连接点是我的右臂"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:26-00:33",
+            "text": "往往伴随着这个球拍从右上往左下回这种错误动作那正确的应该是什么呢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:09",
+            "text": "为什么有些人看着很轻松就可以打出来一台发力呢首先就是我们要闹清楚我们的腰幅究竟怎么发力"
+          },
+          {
+            "timestamp": "00:31-00:35",
+            "text": "这种错误动作那正确的应该是什么呢我们从测身灯转开始"
+          },
+          {
+            "timestamp": "00:33-00:41",
+            "text": "我们从测身灯转开始脚登地出现自然后攻这个时候我的框架"
+          },
+          {
+            "timestamp": "01:04-01:07",
+            "text": "如果在这样的动作基础上我再加一个甩动进去呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7313012058021186866",
+      "title": "这个视角表现不出球速，实际上大臂动作小了之后发力集中，球速明显快了",
+      "url": "https://www.douyin.com/video/7313012058021186866",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 53.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7313012058021186866.json",
+      "teaching_note": {
+        "topic": "这个视角表现不出球速",
+        "key_evidence": [
+          {
+            "timestamp": "00:13-00:53",
+            "text": "为的是更小更快的动作更集中的发力和更小的重心摇摆人在家中堂求祭心中长"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:09-00:15",
+            "text": "在这样的抽球动作里大臂向前的幅度一定不能太多为的是更小更快的动作"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:15",
+            "text": "在这样的抽球动作里大臂向前的幅度一定不能太多为的是更小更快的动作"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7311907273461320975",
+      "title": "握拍大拇指顶着正面，最舒服的位置在侧身前的位置",
+      "url": "https://www.douyin.com/video/7311907273461320975",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 115.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7311907273461320975.json",
+      "teaching_note": {
+        "topic": "握拍大拇指顶着正面",
+        "key_evidence": [
+          {
+            "timestamp": "01:13-01:17",
+            "text": "准备打完之后把拍面朝向于下面"
+          },
+          {
+            "timestamp": "01:37-01:44",
+            "text": "你如果是这样的不抬框架你整个就没有爆发力了因为你没有一个框架静止你哪儿的爆发力"
+          },
+          {
+            "timestamp": "01:40-01:47",
+            "text": "你整个就没有爆发力了因为你没有一个框架静止你哪儿的爆发力哎"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:26-00:35",
+            "text": "哎如果你把手臂悬过来呢这放松点不要伸直是不是拍头就出去了大臂还在原地没有动"
+          },
+          {
+            "timestamp": "00:35-00:43",
+            "text": "那这不就是大臂带动小臂大臂带动小臂的意思就是大臂不能出去你的这个动作如果是这样的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:55-01:00",
+            "text": "走尽量朝下准备大拇指顶着正面走一秒朝下"
+          },
+          {
+            "timestamp": "01:22-01:27",
+            "text": "哎好一点先要有一个框架你先要把这框架给起来看教练"
+          },
+          {
+            "timestamp": "01:23-01:30",
+            "text": "先要有一个框架你先要把这框架给起来看教练哈"
+          },
+          {
+            "timestamp": "01:29-01:36",
+            "text": "哈框架先起来你那这感觉吗"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7309303794733485327",
+      "title": "被动也可以用这样的启动方式连接后交叉步",
+      "url": "https://www.douyin.com/video/7309303794733485327",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 43.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7309303794733485327.json",
+      "teaching_note": {
+        "topic": "被动也可以用这样的启动方式连接后交叉步",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "今天我来继续教大家实用的高速步法今天是正手后场篇"
+          },
+          {
+            "timestamp": "00:16-00:27",
+            "text": "那这样就可以以最快的速度完成一个转宽随着重心的向后我的左脚先向后踩一点然后是一个后跳加转跳的感觉完成一个正手马来步"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:13-00:23",
+            "text": "右脚向后的同时我的左脚也在向前那这样就可以以最快的速度完成一个转宽随着重心的向后我的左脚先向后踩一点"
+          },
+          {
+            "timestamp": "00:20-00:30",
+            "text": "随着重心的向后我的左脚先向后踩一点然后是一个后跳加转跳的感觉完成一个正手马来步直接衔接一个中国跳不转身的动作就可以了"
+          },
+          {
+            "timestamp": "00:23-00:34",
+            "text": "然后是一个后跳加转跳的感觉完成一个正手马来步直接衔接一个中国跳不转身的动作就可以了一般需要衔接加速球的时候都不会做转跳回拍"
+          },
+          {
+            "timestamp": "00:27-00:38",
+            "text": "直接衔接一个中国跳不转身的动作就可以了一般需要衔接加速球的时候都不会做转跳回拍因为转跳回拍会把我回位的左腿换到后面而牺牲了位置"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7307817481257766178",
+      "title": "下一个想学哪里？",
+      "url": "https://www.douyin.com/video/7307817481257766178",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 64.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7307817481257766178.json",
+      "teaching_note": {
+        "topic": "下一个想学哪里？",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:04",
+            "text": "我来教大家实用的高速实战步法我们先从头顶开始"
+          },
+          {
+            "timestamp": "00:11-00:19",
+            "text": "随后我们的右手也要向后摆动来带动身体当我们的重心出现在左脚的左后方时那我的左脚也可以发生一次登地"
+          },
+          {
+            "timestamp": "00:31-00:37",
+            "text": "因为连做开合的时间都没有了当重心出现在我右脚的左后方时直接用右脚登地"
+          },
+          {
+            "timestamp": "00:37-00:46",
+            "text": "右手还是带动身体完成登转当我的重心出现在我左脚的左后方时左脚再次向后登地右脚直接完成跳挥"
+          },
+          {
+            "timestamp": "00:53-00:58",
+            "text": "因为后撤的速度太快如果我们不做出这样的一个回动姿态我们就会摘过去"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:09",
+            "text": "我们先从头顶开始首先我们脚下要做一个开合把右脚踩在我们重心的右前方"
+          },
+          {
+            "timestamp": "00:14-00:20",
+            "text": "当我们的重心出现在左脚的左后方时那我的左脚也可以发生一次登地完成这个马来步"
+          },
+          {
+            "timestamp": "00:40-00:48",
+            "text": "当我的重心出现在我左脚的左后方时左脚再次向后登地右脚直接完成跳挥从而打出拦截效果"
+          },
+          {
+            "timestamp": "00:47-00:52",
+            "text": "从而打出拦截效果我们的左腿一定要尽量的向后伸右腿往上抬"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7306709804234444072",
+      "title": "这样削球是最稳定的劈吊",
+      "url": "https://www.douyin.com/video/7306709804234444072",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 72.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7306709804234444072.json",
+      "teaching_note": {
+        "topic": "这样削球是最稳定的劈吊",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:53-01:05",
+            "text": "對了很好啊點再高壹點啊這個對了啊"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7305218669343264034",
+      "title": "勾球可以说动作小，但是拍子一定是要过球的",
+      "url": "https://www.douyin.com/video/7305218669343264034",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 49.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-012/7305218669343264034.json",
+      "teaching_note": {
+        "topic": "勾球可以说动作小",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:11",
+            "text": "这能够约化这边的勾贴网记住啊 用这个动作的后半段的击球用一下"
+          },
+          {
+            "timestamp": "00:39-00:49",
+            "text": "总结的愉快是什么用动作的后半部分击球人在家中堂 球技心中长"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:11",
+            "text": "这能够约化这边的勾贴网记住啊 用这个动作的后半段的击球用一下"
+          },
+          {
+            "timestamp": "00:12-00:18",
+            "text": "你看这个动作啊 球来了先超过球 球排然后这是开始阶段"
+          },
+          {
+            "timestamp": "00:14-00:19",
+            "text": "先超过球 球排然后这是开始阶段这是过程阶段"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

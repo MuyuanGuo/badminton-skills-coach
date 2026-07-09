@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:09:07.792747+00:00",
+  "updated_at": "2026-07-09T21:13:46.026860+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 169,
+    "transcribed": 176,
     "extraction_failed": 12,
-    "pending": 224
+    "pending": 217
   },
   "items": [
     {
@@ -2065,10 +2065,10 @@
       "title": "从上到下，由后向前的带动，才能让发力更顺畅，所有羽毛球运动员后场发力时身体都是歪的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7315610620424883496.mp4",
+      "duration_seconds": 77.208,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2077,10 +2077,10 @@
       "title": "这个视角表现不出球速，实际上大臂动作小了之后发力集中，球速明显快了#羽毛球教学 #羽毛球训练 #羽毛球 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7313012058021186866.mp4",
+      "duration_seconds": 53.849,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2089,10 +2089,10 @@
       "title": "握拍大拇指顶着正面，最舒服的位置在侧身前的位置#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7311907273461320975.mp4",
+      "duration_seconds": 115.103,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2101,10 +2101,10 @@
       "title": "被动也可以用这样的启动方式连接后交叉步#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7309303794733485327.mp4",
+      "duration_seconds": 43.121,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2113,10 +2113,10 @@
       "title": "下一个想学哪里？#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7307817481257766178.mp4",
+      "duration_seconds": 64.53,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2125,10 +2125,10 @@
       "title": "这样削球是最稳定的劈吊#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7306709804234444072.mp4",
+      "duration_seconds": 72.099,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2137,10 +2137,10 @@
       "title": "勾球可以说动作小，但是拍子一定是要过球的#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-012/7305218669343264034.mp4",
+      "duration_seconds": 49.808,
+      "attempts": 1,
       "error": null
     },
     {
