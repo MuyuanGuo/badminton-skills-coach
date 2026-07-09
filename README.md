@@ -1,5 +1,7 @@
 # Badminton Skills Coach
 
+[![Validate knowledge pipeline](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
+
 Build an evidence-backed badminton coaching knowledge base from authorized
 teaching videos, then expose it through a reusable Codex Skill.
 

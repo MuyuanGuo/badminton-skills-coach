@@ -1,0 +1,34 @@
+name: Validate knowledge pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile Python sources
+        run: |
+          python -m py_compile \
+            scripts/evaluate_liuhui_skill.py \
+            scripts/generate_pilot_drawio.py \
+            scripts/select_pilot_videos.py \
+            skills/liuhui-badminton-coach/scripts/search_knowledge.py
+
+      - name: Validate repository artifacts
+        run: python scripts/validate_project.py
+
+      - name: Run retrieval evaluation
+        run: python scripts/evaluate_liuhui_skill.py
+
