@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:05:26.187878+00:00",
+  "updated_at": "2026-07-09T23:08:25.318187+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 224,
-    "extraction_failed": 17,
-    "pending": 164
+    "transcribed": 225,
+    "extraction_failed": 19,
+    "pending": 161
   },
   "items": [
     {
@@ -2845,10 +2845,10 @@
       "title": "今天恢复直播。就算压不住，也有效果，遇到平高有条件直接反加速#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2857,11 +2857,11 @@
       "title": "指似铁，腕如棉，拍臂为鞭#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-022/7189812762409782539.mp4",
+      "duration_seconds": 96.827,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7185744630439333153",
@@ -2869,10 +2869,10 @@
       "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的#羽毛球 #单打 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2884,8 +2884,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7184618028619910433",
@@ -2896,8 +2896,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7183132124801682726",
@@ -2908,8 +2908,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7182762294294744332",
@@ -2920,8 +2920,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7182019728024538380",

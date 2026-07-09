@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:05:26.690462+00:00",
+  "updated_at": "2026-07-09T23:08:25.881433+00:00",
   "queue_counts": {
-    "transcribed": 224,
-    "extraction_failed": 17,
-    "pending": 164
+    "transcribed": 225,
+    "extraction_failed": 19,
+    "pending": 161
   },
   "knowledge_counts": {
-    "videos": 224,
-    "ready": 189,
+    "videos": 225,
+    "ready": 190,
     "needs_visual_review": 35,
     "curated": 3
   },
@@ -10792,6 +10792,44 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7189812762409782539",
+      "title": "指似铁，腕如棉，拍臂为鞭",
+      "url": "https://www.douyin.com/video/7189812762409782539",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 96.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-022/7189812762409782539.json",
+      "teaching_note": {
+        "topic": "指似铁",
+        "key_evidence": [
+          {
+            "timestamp": "00:22-00:30",
+            "text": "而且用最小的动作其实与毛球的挥拍啊有两个瞬间是可以打出中感的形变的"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:06-00:18",
+            "text": "你自己练点啊你需要这么多你知道你抽球为什么没有力量吗"
+          },
+          {
+            "timestamp": "00:24-00:32",
+            "text": "其实与毛球的挥拍啊有两个瞬间是可以打出中感的形变的第一个瞬间"
+          },
+          {
+            "timestamp": "00:39-00:47",
+            "text": "它会发生一次形变然后比如说它在高速中突然一下子停下了又会发生一次形变"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {
