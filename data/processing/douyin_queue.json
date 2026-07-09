@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:00:47.013290+00:00",
+  "updated_at": "2026-07-09T21:09:07.792747+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 162,
+    "transcribed": 169,
     "extraction_failed": 12,
-    "pending": 231
+    "pending": 224
   },
   "items": [
     {
@@ -1981,10 +1981,10 @@
       "title": "我手下的教练改一个学员轮大臂遇到的问题，素材来自学员录制#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7331201469292596520.mp4",
+      "duration_seconds": 149.422,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1993,10 +1993,10 @@
       "title": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7330090280055491874.mp4",
+      "duration_seconds": 55.335,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2005,10 +2005,10 @@
       "title": "1月23，晴，9岁男童，天赋异禀，顽劣成性，打之。他会，说明他有过人的球感，但是一定没好好训练，我们到底应该用什么样的态度对待假动作，这个还得评论区讨论#羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7327483273536474408.mp4",
+      "duration_seconds": 129.546,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2017,10 +2017,10 @@
       "title": "羽毛球发力入门级测试 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7324887936980274432.mp4",
+      "duration_seconds": 6.062,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2029,10 +2029,10 @@
       "title": "不用管身高，网带能卡住大臂就行在哪卡都可以，用网带辅助不依赖大臂挥下去#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7322291358931127592.mp4",
+      "duration_seconds": 162.286,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2041,10 +2041,10 @@
       "title": "任何情况，无论单双打，都要考虑自己的位置与速度，和球的速度的搭配是否合理#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7319695192297180431.mp4",
+      "duration_seconds": 113.245,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2053,10 +2053,10 @@
       "title": "学会了用视频开始的训练练习手感就行，你早晚得掌握的技术，特定情况下使用，大家不要上纲上线哦#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-011/7318207777246072098.mp4",
+      "duration_seconds": 88.539,
+      "attempts": 1,
       "error": null
     },
     {

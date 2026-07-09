@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T21:00:47.964994+00:00",
+  "updated_at": "2026-07-09T21:09:08.231241+00:00",
   "queue_counts": {
-    "transcribed": 162,
+    "transcribed": 169,
     "extraction_failed": 12,
-    "pending": 231
+    "pending": 224
   },
   "knowledge_counts": {
-    "videos": 162,
-    "ready": 136,
-    "needs_visual_review": 26,
+    "videos": 169,
+    "ready": 141,
+    "needs_visual_review": 28,
     "curated": 3
   },
   "videos": [
@@ -7525,6 +7525,278 @@
           {
             "timestamp": "02:11-02:20",
             "text": "五个指头都具备缅动效果保证掌心空可以给后三指发力留有空间就是一个好的准备缅动发力的握拍了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7331201469292596520",
+      "title": "我手下的教练改一个学员轮大臂遇到的问题，素材来自学员录制",
+      "url": "https://www.douyin.com/video/7331201469292596520",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 149.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-011/7331201469292596520.json",
+      "teaching_note": {
+        "topic": "我手下的教练改一个学员轮大臂遇到的问题",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "01:58-02:02",
+            "text": "他轮大臂的可能性是不要降低底底基本动不了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:10-01:13",
+            "text": "那你就得价好啊我当然可以我这么价也可以"
+          },
+          {
+            "timestamp": "01:12-01:14",
+            "text": "我当然可以我这么价也可以你看"
+          },
+          {
+            "timestamp": "01:26-01:30",
+            "text": "我也求有先学好的一个什么架牌"
+          },
+          {
+            "timestamp": "01:53-01:58",
+            "text": "如果他大臂就停在这个位置了他只需要往下倒水就能夹出球的话"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7330090280055491874",
+      "title": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦",
+      "url": "https://www.douyin.com/video/7330090280055491874",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-011/7330090280055491874.json",
+      "teaching_note": {
+        "topic": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7327483273536474408",
+      "title": "1月23，晴，9岁男童，天赋异禀，顽劣成性，打之。他会，说明他有过人的球感，但是一定没好好训练，我们到底应该用什么样的态度对待假动作，这个还得评论区讨论",
+      "url": "https://www.douyin.com/video/7327483273536474408",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 129.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-011/7327483273536474408.json",
+      "teaching_note": {
+        "topic": "1月23",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7324887936980274432",
+      "title": "羽毛球发力入门级测试",
+      "url": "https://www.douyin.com/video/7324887936980274432",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 6.1,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-011/7324887936980274432.json",
+      "teaching_note": {
+        "topic": "羽毛球发力入门级测试",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7322291358931127592",
+      "title": "不用管身高，网带能卡住大臂就行在哪卡都可以，用网带辅助不依赖大臂挥下去",
+      "url": "https://www.douyin.com/video/7322291358931127592",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 162.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-011/7322291358931127592.json",
+      "teaching_note": {
+        "topic": "不用管身高",
+        "key_evidence": [
+          {
+            "timestamp": "00:46-00:54",
+            "text": "才能够称之为带动所以职业运动员杀球都会出现这种"
+          },
+          {
+            "timestamp": "00:52-01:02",
+            "text": "都会出现这种走朝上拍头朝下拍面朝外的瞬间我们想要大臂带动小臂"
+          },
+          {
+            "timestamp": "01:04-01:10",
+            "text": "他们不能在一条线上也就是说当我拍面朝前的时候我这里是不能打弯的"
+          },
+          {
+            "timestamp": "02:09-02:15",
+            "text": "走朝上拍头朝下拍面朝外如果现在我们可以做到了"
+          },
+          {
+            "timestamp": "02:19-02:25",
+            "text": "走朝上拍头朝下拍面朝外不要发力"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:02-01:08",
+            "text": "也就是说我要用大臂把小臂给甩出去他们不能在一条线上也就是说当我拍面朝前的时候"
+          },
+          {
+            "timestamp": "01:06-01:12",
+            "text": "也就是说当我拍面朝前的时候我这里是不能打弯的看 这里是硬的"
+          },
+          {
+            "timestamp": "02:16-02:21",
+            "text": "空挥看看能不能挥出这个瞬间走朝上"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:19-01:27",
+            "text": "朝向前方的时候现在就可以出来这样的一个状态这是我肘是朝上的"
+          },
+          {
+            "timestamp": "01:43-01:48",
+            "text": "什么样的辅助训练可以让我们大臂带动小臂比如说我站在网"
+          },
+          {
+            "timestamp": "01:53-01:57",
+            "text": "小臂和球拍选出来先看看有没有这样的动作不需要发力"
+          },
+          {
+            "timestamp": "02:11-02:16",
+            "text": "拍头朝下拍面朝外如果现在我们可以做到了我们离开网"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7319695192297180431",
+      "title": "任何情况，无论单双打，都要考虑自己的位置与速度，和球的速度的搭配是否合理",
+      "url": "https://www.douyin.com/video/7319695192297180431",
+      "category": "双打战术",
+      "tags": [
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 113.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-011/7319695192297180431.json",
+      "teaching_note": {
+        "topic": "任何情况",
+        "key_evidence": [
+          {
+            "timestamp": "00:57-01:10",
+            "text": "你对你的人迅速的收紧有一个加速的回动对一定不是提前偷跑防止他打重复球我要的是什么快回一步"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:45-00:51",
+            "text": "下一段再加速对手以为你被动了实际上呢你的球是慢的你回位是快的"
+          },
+          {
+            "timestamp": "00:48-00:53",
+            "text": "实际上呢你的球是慢的你回位是快的你等于你被动了吗没有你没有对到位置"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:06-00:13",
+            "text": "就这个过渡完之后啊咱们的过渡的这个球一定要和自己的脚下有一个配速知道什么叫配速吗"
+          },
+          {
+            "timestamp": "00:41-00:46",
+            "text": "回的慢一点啊你人就可以慢慢回下一段再加速"
+          },
+          {
+            "timestamp": "01:00-01:14",
+            "text": "迅速的收紧有一个加速的回动对一定不是提前偷跑防止他打重复球我要的是什么快回一步你只要快回那一步"
+          },
+          {
+            "timestamp": "01:14-01:28",
+            "text": "ok你只要快回了这一步剩下的都好看注意要赶在我机球的时候你也能回到你想回的位置这就是配速走"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7318207777246072098",
+      "title": "学会了用视频开始的训练练习手感就行，你早晚得掌握的技术，特定情况下使用，大家不要上纲上线哦",
+      "url": "https://www.douyin.com/video/7318207777246072098",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 88.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-011/7318207777246072098.json",
+      "teaching_note": {
+        "topic": "学会了用视频开始的训练练习手感就行",
+        "key_evidence": [
+          {
+            "timestamp": "01:04-01:15",
+            "text": "当我们能出来一个这样的姿态的时候他也就具备了发力的条件剩下的靠我们小臂带动手指后三指楼大目之地"
+          },
+          {
+            "timestamp": "01:09-01:18",
+            "text": "剩下的靠我们小臂带动手指后三指楼大目之地完成一个发力小一点也可以"
+          },
+          {
+            "timestamp": "01:18-01:25",
+            "text": "那么我们在实战中无论是在揭发5号位还是在防守变线或者防守揭杀中他的运用是非常广泛的"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:36-00:45",
+            "text": "今天我来告诉大家那么首先反拍正打我们要讲究的是要学会第一个动作就是把球拍做一个向右倒的动作"
+          },
+          {
+            "timestamp": "00:41-00:49",
+            "text": "就是把球拍做一个向右倒的动作注意不是向右摆我的大臂不动"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "完成一个发力小一点也可以那么我们在实战中无论是在揭发5号位"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
