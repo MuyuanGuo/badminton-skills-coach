@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:02:45.079669+00:00",
+  "updated_at": "2026-07-09T23:05:26.690462+00:00",
   "queue_counts": {
-    "transcribed": 222,
-    "extraction_failed": 15,
-    "pending": 168
+    "transcribed": 224,
+    "extraction_failed": 17,
+    "pending": 164
   },
   "knowledge_counts": {
-    "videos": 222,
+    "videos": 224,
     "ready": 189,
-    "needs_visual_review": 33,
+    "needs_visual_review": 35,
     "curated": 3
   },
   "videos": [
@@ -10612,6 +10612,27 @@
       }
     },
     {
+      "video_id": "7205399670959459623",
+      "title": "压抽才是双打的主旋律，没人一上来就挑给你",
+      "url": "https://www.douyin.com/video/7205399670959459623",
+      "category": "双打战术",
+      "tags": [
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 120.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-021/7205399670959459623.json",
+      "teaching_note": {
+        "topic": "压抽才是双打的主旋律，没人一上来就挑给你",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7203541969530883361",
       "title": "针对会快出手的朋友们，不会的得先学出手技术",
       "url": "https://www.douyin.com/video/7203541969530883361",
@@ -10746,6 +10767,27 @@
       "transcript_file": "data/transcripts/douyin/batch-020/7200204622852623628.json",
       "teaching_note": {
         "topic": "这次确实是恢复局了，晚上直播",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7197605327993310467",
+      "title": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率",
+      "url": "https://www.douyin.com/video/7197605327993310467",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 218.0,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-021/7197605327993310467.json",
+      "teaching_note": {
+        "topic": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],

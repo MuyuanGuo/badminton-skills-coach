@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:02:44.541417+00:00",
+  "updated_at": "2026-07-09T23:05:26.187878+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 222,
-    "extraction_failed": 15,
-    "pending": 168
+    "transcribed": 224,
+    "extraction_failed": 17,
+    "pending": 164
   },
   "items": [
     {
@@ -2761,11 +2761,11 @@
       "title": "压抽才是双打的主旋律，没人一上来就挑给你#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-021/7205399670959459623.mp4",
+      "duration_seconds": 120.604,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7203541969530883361",
@@ -2797,10 +2797,10 @@
       "title": "这种天然教研有人看嘛？对方直线可以回，就是威胁会很小#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2821,11 +2821,11 @@
       "title": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-021/7197605327993310467.mp4",
+      "duration_seconds": 217.966,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7195014413932367116",
@@ -2833,10 +2833,10 @@
       "title": "解题思路，遇到高质量防守且自己冲劲儿过猛，可以使用停顿技术重新回到拉吊节奏#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2848,8 +2848,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7189812762409782539",
@@ -2860,8 +2860,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7185744630439333153",
@@ -2872,8 +2872,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7185360811248864544",
