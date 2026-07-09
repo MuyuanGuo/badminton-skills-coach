@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T20:18:12.637715+00:00",
+  "updated_at": "2026-07-09T20:38:10.637867+00:00",
   "queue_counts": {
-    "transcribed": 141,
+    "transcribed": 148,
     "extraction_failed": 12,
-    "pending": 252
+    "pending": 245
   },
   "knowledge_counts": {
-    "videos": 141,
-    "ready": 122,
-    "needs_visual_review": 19,
+    "videos": 148,
+    "ready": 126,
+    "needs_visual_review": 22,
     "curated": 3
   },
   "videos": [
@@ -6623,6 +6623,227 @@
       }
     },
     {
+      "video_id": "7384641787647872308",
+      "title": "组织框架 还有很多没补充上，时间有限，简单介绍下，放松展开的架拍是只有要击球了我们展开，快速架拍是启动就展开了",
+      "url": "https://www.douyin.com/video/7384641787647872308",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "步法与移动",
+        "发力与身体运用",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 74.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-008/7384641787647872308.json",
+      "teaching_note": {
+        "topic": "组织框架 还有很多没补充上",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:16",
+            "text": "首先放松展开的假拍需要搭配的是全侧身适用于弧度比较高"
+          },
+          {
+            "timestamp": "00:18-00:23",
+            "text": "站在球下面进行激打发力的类型基本都不全发力适用于小朋友 初学者"
+          },
+          {
+            "timestamp": "00:34-00:39",
+            "text": "不太适合做短快出手做步法比较牺牲位置新手学习完之后"
+          },
+          {
+            "timestamp": "00:43-00:48",
+            "text": "越来越被更多的人做起岸它可以搭配全侧身和半侧身有防加速的效果"
+          },
+          {
+            "timestamp": "00:46-00:51",
+            "text": "有防加速的效果搭配步法比较容易上手难度比较高"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:23-00:29",
+            "text": "以及身体力量比较柔弱的女性球友它的优点是可以驱动比较沉的球拍可以适当的节身体力"
+          },
+          {
+            "timestamp": "00:43-00:48",
+            "text": "越来越被更多的人做起岸它可以搭配全侧身和半侧身有防加速的效果"
+          },
+          {
+            "timestamp": "01:00-01:03",
+            "text": "在正常情况下我们可以使用高速假拍在节奏比较慢"
+          },
+          {
+            "timestamp": "01:04-01:08",
+            "text": "进行体力拉鞠站的时候我们可以结合使用放松展开的假拍"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7383154379915906319",
+      "title": "基础挥拍重快 由于要控制时长我剪辑的很精简，基础挥拍如何打的重，如何打的快，建议多看两边，详细的我们直播间来说",
+      "url": "https://www.douyin.com/video/7383154379915906319",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 200.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-008/7383154379915906319.json",
+      "teaching_note": {
+        "topic": "基础挥拍重快 由于要控制时长我剪辑的很精简",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:09",
+            "text": "只要两种正确的基础挥拍怎么样能把一个基础的随摆挥拍给挥好首先先看一下什么叫轮大臂"
+          },
+          {
+            "timestamp": "00:17-00:25",
+            "text": "那么就说明我大臂脱离身体使用过多那么真正的全发力随摆挥拍就是我的大臂要和身体紧紧相连"
+          },
+          {
+            "timestamp": "01:00-01:07",
+            "text": "大臂使用过多那么我们来看一下重杀王宝哥的杀球那么宝哥在杀球的时候"
+          },
+          {
+            "timestamp": "01:56-02:03",
+            "text": "自己向前挥动太多所以我们就会在一个比较小的发力区间内完成充分的内拳"
+          },
+          {
+            "timestamp": "02:22-02:27",
+            "text": "我为什么经常能看到很多人好像打球根本就没有发力但是他们的球非常快呢"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:11",
+            "text": "怎么样能把一个基础的随摆挥拍给挥好首先先看一下什么叫轮大臂身体不动"
+          },
+          {
+            "timestamp": "00:29-00:36",
+            "text": "那我现在这一瞬间机球那么这时候我再加上卷斧我就能够把球拍给随摆下来"
+          },
+          {
+            "timestamp": "00:49-00:53",
+            "text": "大家可以看到没有我现在马上可以放松随摆了在此时此刻这个状态呢"
+          },
+          {
+            "timestamp": "01:37-01:43",
+            "text": "哪里是放松我的腰斧驱动可以不用那么大了以爆发力为主"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7382052454063492392",
+      "title": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。",
+      "url": "https://www.douyin.com/video/7382052454063492392",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.8,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-008/7382052454063492392.json",
+      "teaching_note": {
+        "topic": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7381785580268473635",
+      "title": "高端局 腿伤都快给我跑复发了 16比21 21比17",
+      "url": "https://www.douyin.com/video/7381785580268473635",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 348.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-008/7381785580268473635.json",
+      "teaching_note": {
+        "topic": "高端局 腿伤都快给我跑复发了 16比21 21比17",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7380562375188974888",
+      "title": "闪动发力剧场版 两位美女都是全国大学生冠军",
+      "url": "https://www.douyin.com/video/7380562375188974888",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 159.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-008/7380562375188974888.json",
+      "teaching_note": {
+        "topic": "闪动发力剧场版 两位美女都是全国大学生冠军",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "反动法力听过没哥这俩全国冠军杀球这么猛咱走吧"
+          },
+          {
+            "timestamp": "00:39-00:45",
+            "text": "从而提高爆发力一个正常的挥拍能停住的挥拍"
+          },
+          {
+            "timestamp": "00:44-00:50",
+            "text": "能停住的挥拍能弹起来的挥拍能回拉的挥拍"
+          },
+          {
+            "timestamp": "01:10-01:16",
+            "text": "是李子佳他们那种那如果我们朝前挥拍但是通过把拍这么弹起来的方式"
+          },
+          {
+            "timestamp": "02:17-02:23",
+            "text": "但是这个腰腹屈中的大小又会决定你这个挥拍在哪里体现这个挥拉"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:27-00:32",
+            "text": "刚才我看你在打重杀我觉得还可以现在我教你们打快"
+          },
+          {
+            "timestamp": "00:30-00:33",
+            "text": "现在我教你们打快首先啊大家都知道"
+          },
+          {
+            "timestamp": "01:49-01:52",
+            "text": "肘向后拉给球拍一个惯性再一个力也就是说"
+          },
+          {
+            "timestamp": "02:26-02:30",
+            "text": "后面的加上腰腹怎么做你们先练练吧哎等我等我等我等我"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7376838935164505384",
       "title": "单打技术 借用一下三位健将和我昔日对抗的素材，感谢",
       "url": "https://www.douyin.com/video/7376838935164505384",
@@ -6643,6 +6864,85 @@
           {
             "timestamp": "00:00-00:08",
             "text": "盤点与毛球单打 冷门好用的技术首先排除这两个抓过度快切对角线"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7370160247467494691",
+      "title": "最近恢复了一些，大家帮我看看球速恢复到300了吗？",
+      "url": "https://www.douyin.com/video/7370160247467494691",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 14.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-008/7370160247467494691.json",
+      "teaching_note": {
+        "topic": "最近恢复了一些，大家帮我看看球速恢复到300了吗？",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7369052560818195752",
+      "title": "集中发力 开始输出，兄弟们抓紧上车啦",
+      "url": "https://www.douyin.com/video/7369052560818195752",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 160.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-008/7369052560818195752.json",
+      "teaching_note": {
+        "topic": "集中发力 开始输出",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:03",
+            "text": "总有人说自己的发力不集中总有人告诉我"
+          },
+          {
+            "timestamp": "01:05-01:11",
+            "text": "我没有办法把力集中在一个机球点咱们就说到发力集中想要发力集中"
+          },
+          {
+            "timestamp": "01:29-01:36",
+            "text": "你看我的大臂应该还是在这个空间上没有动这个就是咱们所说的发力集中但是如果我大臂引动完小臂了"
+          },
+          {
+            "timestamp": "01:45-01:51",
+            "text": "那就不急所以我们要想让发力打集中我们要尝试能否让大臂带动完小臂"
+          },
+          {
+            "timestamp": "01:52-01:58",
+            "text": "然后只让小臂和拍头出去我们就能做到发力集中了比如说我们一个抽球动作"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:15-00:22",
+            "text": "究竟在哪里可以给球抖到力量首先我们先看一个动作如果我的挥盘动作是这样的"
+          },
+          {
+            "timestamp": "01:20-01:27",
+            "text": "我们可以看出大臂就没有用力它先就应该处于一个等待放松的状态那么现在这个球拍"
+          },
+          {
+            "timestamp": "02:10-02:16",
+            "text": "那就集中再小点都可以但是一定要注意拍头和小臂要出去"
+          },
+          {
+            "timestamp": "02:11-02:17",
+            "text": "再小点都可以但是一定要注意拍头和小臂要出去那后场球也是"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
