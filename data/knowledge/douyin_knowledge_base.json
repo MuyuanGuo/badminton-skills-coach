@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T22:17:56.275301+00:00",
+  "updated_at": "2026-07-09T22:27:27.054110+00:00",
   "queue_counts": {
-    "transcribed": 211,
+    "transcribed": 218,
     "extraction_failed": 12,
-    "pending": 182
+    "pending": 175
   },
   "knowledge_counts": {
-    "videos": 211,
-    "ready": 180,
-    "needs_visual_review": 31,
+    "videos": 218,
+    "ready": 186,
+    "needs_visual_review": 32,
     "curated": 3
   },
   "videos": [
@@ -10217,6 +10217,260 @@
       }
     },
     {
+      "video_id": "7226178331408928038",
+      "title": "对面挡网直接挑球就行了，对面如果站直线可以直接变线",
+      "url": "https://www.douyin.com/video/7226178331408928038",
+      "category": "中前场与抽挡",
+      "tags": [
+        "中前场与抽挡",
+        "训练与纠错"
+      ],
+      "duration_seconds": 46.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7226178331408928038.json",
+      "teaching_note": {
+        "topic": "对面挡网直接挑球就行了",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:02-00:09",
+            "text": "这个不要变这时候肯定不能变"
+          },
+          {
+            "timestamp": "00:02-00:10",
+            "text": "这个不要变这时候肯定不能变现在中间往前有人"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:12-00:16",
+            "text": "这个鞋线它肯定能拦住你你可以先它杀你之前"
+          },
+          {
+            "timestamp": "00:15-00:18",
+            "text": "它杀你之前可以先抽出去直线"
+          },
+          {
+            "timestamp": "00:19-00:24",
+            "text": "必须得打的话你就先打个直线把那个往前的人先引过来"
+          },
+          {
+            "timestamp": "00:20-00:25",
+            "text": "你就先打个直线把那个往前的人先引过来你再变回去"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7223584265072692518",
+      "title": "晚上直播带雷霆100测评",
+      "url": "https://www.douyin.com/video/7223584265072692518",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 128.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-018/7223584265072692518.json",
+      "teaching_note": {
+        "topic": "晚上直播带雷霆100测评",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7220984919747497255",
+      "title": "正确的站位和框架摆放可以降低动作的难度",
+      "url": "https://www.douyin.com/video/7220984919747497255",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 131.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7220984919747497255.json",
+      "teaching_note": {
+        "topic": "正确的站位和框架摆放可以降低动作的难度",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:13",
+            "text": "好 你看首先你变线啊 你防守姿态特别重要那个位置左脚在前右脚在后 防止你这个位置打着腿"
+          },
+          {
+            "timestamp": "00:37-00:46",
+            "text": "如果这个球啊 杀到我右边 那我球拍刚好就在右边我只要一踢走 就有一个自然的拍面对向斜线我直接往那边顺势一挡就可以"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:29-00:36",
+            "text": "而且杀到你特别夜下的位置的球呢你也不至于说啊 我这一踢走 因为来不及而导致人打不中 打不着"
+          },
+          {
+            "timestamp": "01:27-01:33",
+            "text": "正好是这个球往里飞 往里飞我一抽左脚好啦 就是这种来不及的感觉很容易就把他变到斜线去了"
+          },
+          {
+            "timestamp": "01:34-01:42",
+            "text": "很多人 很多球友他明明是来不及接这个位置的球结果仓促之间随便这么一打"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:13",
+            "text": "好 你看首先你变线啊 你防守姿态特别重要那个位置左脚在前右脚在后 防止你这个位置打着腿"
+          },
+          {
+            "timestamp": "00:09-00:19",
+            "text": "那个位置左脚在前右脚在后 防止你这个位置打着腿然后把球拍不管是不是变线放在你身体的偏右一点的位置"
+          },
+          {
+            "timestamp": "00:24-00:32",
+            "text": "我非常容易看 走一带就可以把它往左边去分而且杀到你特别夜下的位置的球呢"
+          },
+          {
+            "timestamp": "00:41-00:53",
+            "text": "我只要一踢走 就有一个自然的拍面对向斜线我直接往那边顺势一挡就可以如果这个球杀到我的追身 我的球拍就在这里"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7220630996293635385",
+      "title": "三个品牌代表搓球大比拼，看看谁能笑到最后？",
+      "url": "https://www.douyin.com/video/7220630996293635385",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "装备与参数"
+      ],
+      "duration_seconds": 120.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7220630996293635385.json",
+      "teaching_note": {
+        "topic": "三个品牌代表搓球大比拼",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:40-00:44",
+            "text": "你说你考虑的话我们可以给你算便宜点就一个呀"
+          },
+          {
+            "timestamp": "01:34-01:38",
+            "text": "一千万我先拍个四一啊好了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7218386274690796832",
+      "title": "4u小破拍，测试完毕，无脑入就行了，第二批很快就位，先上5u的，我到时候再试试",
+      "url": "https://www.douyin.com/video/7218386274690796832",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 212.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7218386274690796832.json",
+      "teaching_note": {
+        "topic": "4u小破拍",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:22",
+            "text": "哦 我也可以看哇 烫"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7215787369381858599",
+      "title": "训练都是实录，按理说时间得控制在两分钟之内，不然就没人看了",
+      "url": "https://www.douyin.com/video/7215787369381858599",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 197.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7215787369381858599.json",
+      "teaching_note": {
+        "topic": "训练都是实录",
+        "key_evidence": [
+          {
+            "timestamp": "00:18-00:27",
+            "text": "大拇指顶在这个球拍的 看到没有这个鞋面上 顶住这个位置 能接侧身内的这个接杀就可以了"
+          },
+          {
+            "timestamp": "00:43-00:51",
+            "text": "我们可以不用小臂去做多大的旋转我们就用手腕 手臂带动手腕来发力对吧 我就可以让这个动作很短处很快"
+          },
+          {
+            "timestamp": "00:55-01:04",
+            "text": "我既可以绑绑 我又可以发力发力 这不都是反手握拍吗那我就没有在球拍转换的问题了"
+          },
+          {
+            "timestamp": "02:04-02:16",
+            "text": "听到没有 那样动作更慢而且这杀球怎么可能会倒不了你那个位置对 是教练给你打的慢而已"
+          },
+          {
+            "timestamp": "02:20-02:27",
+            "text": "对 手挂直接往前 直接往前你现在是接杀球是借力发力的球你不用去做隐拍动作"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:02-00:10",
+            "text": "不要做球拍转换不要做球拍转换 你来不及你看到接这种接杀训练的时候"
+          },
+          {
+            "timestamp": "00:07-00:15",
+            "text": "你看到接这种接杀训练的时候你不要光这边用反手接 这边又换成正手接来不及 太快了"
+          },
+          {
+            "timestamp": "01:38-01:48",
+            "text": "我先杀你 反手怎么办你不能换拍的动作 接正手 动吧对 就这个动作"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:25-00:31",
+            "text": "这个接杀就可以了然后追身呢 我也可以用反手来接对不对 反手是最活跃的"
+          },
+          {
+            "timestamp": "00:41-00:48",
+            "text": "像做拧瓶盖一样的动作我们可以不用小臂去做多大的旋转我们就用手腕 手臂带动手腕来发力"
+          },
+          {
+            "timestamp": "00:46-00:53",
+            "text": "我们就用手腕 手臂带动手腕来发力对吧 我就可以让这个动作很短处很快而且不用做球拍转换了"
+          },
+          {
+            "timestamp": "00:53-01:01",
+            "text": "你看 我这个球在这个位置我既可以绑绑 我又可以发力发力 这不都是反手握拍吗"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7214304020775652620",
       "title": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
       "url": "https://www.douyin.com/video/7214304020775652620",
@@ -10236,6 +10490,78 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7213191190382972172",
+      "title": "正常击球位置的握拍，没有商量的，特殊位置有可能会握拍微调",
+      "url": "https://www.douyin.com/video/7213191190382972172",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 153.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-018/7213191190382972172.json",
+      "teaching_note": {
+        "topic": "正常击球位置的握拍",
+        "key_evidence": [
+          {
+            "timestamp": "00:17-00:22",
+            "text": "但是它不对它不是通用的位置的发力性卧拍那正常的呢"
+          },
+          {
+            "timestamp": "00:52-00:59",
+            "text": "因为一内旋就消了那所以说呢我会有很多拍打式的发力在里面那由于没有大臂带动小臂的"
+          },
+          {
+            "timestamp": "01:06-01:28",
+            "text": "虎口来到对准拍框内侧的位置那现在我就可以充分的利用大臂带动小臂来击球了而且在被动球处理上也完全不一样"
+          },
+          {
+            "timestamp": "02:07-02:13",
+            "text": "那如果我现在用一个标准的发力动作却用这种错误的虎口对准拍框的握拍"
+          },
+          {
+            "timestamp": "02:08-02:18",
+            "text": "我现在用一个标准的发力动作却用这种错误的虎口对准拍框的握拍我只要以内拳小臂"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:28-01:36",
+            "text": "比如说我用刚才的这种虎口对准拍框的错误过分在一个被动的位置我只能通过什么压手挖"
+          },
+          {
+            "timestamp": "01:29-01:37",
+            "text": "我用刚才的这种虎口对准拍框的错误过分在一个被动的位置我只能通过什么压手挖才能把这个球给打过去"
+          },
+          {
+            "timestamp": "02:08-02:18",
+            "text": "我现在用一个标准的发力动作却用这种错误的虎口对准拍框的握拍我只要以内拳小臂"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:31-00:38",
+            "text": "我们来看一看这两者之间到底有什么区别首先我现在用很多求有朋友喜欢的虎口对准拍框的我拍"
+          },
+          {
+            "timestamp": "00:35-00:49",
+            "text": "我现在用很多求有朋友喜欢的虎口对准拍框的我拍首先我的直观感受就是我的肘很疼因为我拍的原因"
+          },
+          {
+            "timestamp": "01:06-01:28",
+            "text": "虎口来到对准拍框内侧的位置那现在我就可以充分的利用大臂带动小臂来击球了而且在被动球处理上也完全不一样"
+          },
+          {
+            "timestamp": "01:51-01:58",
+            "text": "那如果我莫怕的角度正确我就可以利用大臂带动小臂的时机让大臂早早的去甩中小臂"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {

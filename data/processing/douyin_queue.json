@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T22:17:55.666818+00:00",
+  "updated_at": "2026-07-09T22:27:26.491466+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 211,
+    "transcribed": 218,
     "extraction_failed": 12,
-    "pending": 182
+    "pending": 175
   },
   "items": [
     {
@@ -2617,10 +2617,10 @@
       "title": "对面挡网直接挑球就行了，对面如果站直线可以直接变线#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7226178331408928038.mp4",
+      "duration_seconds": 46.79,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2629,10 +2629,10 @@
       "title": "晚上直播带雷霆100测评#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7223584265072692518.mp4",
+      "duration_seconds": 128.199,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2641,10 +2641,10 @@
       "title": "正确的站位和框架摆放可以降低动作的难度#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7220984919747497255.mp4",
+      "duration_seconds": 131.357,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2653,10 +2653,10 @@
       "title": "2.5万 #羽毛球 三个品牌代表搓球大比拼，看看谁能笑到最后？#运动装备 #好物推荐 #PK",
       "category": "网前技术",
       "tags": "网前技术；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7220630996293635385.mp4",
+      "duration_seconds": 120.443,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2665,10 +2665,10 @@
       "title": "4u小破拍，测试完毕，无脑入就行了，第二批很快就位，先上5u的，我到时候再试试#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7218386274690796832.mp4",
+      "duration_seconds": 211.976,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2677,10 +2677,10 @@
       "title": "训练都是实录，按理说时间得控制在两分钟之内，不然就没人看了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7215787369381858599.mp4",
+      "duration_seconds": 197.301,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2701,10 +2701,10 @@
       "title": "正常击球位置的握拍，没有商量的，特殊位置有可能会握拍微调#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-018/7213191190382972172.mp4",
+      "duration_seconds": 153.137,
+      "attempts": 1,
       "error": null
     },
     {
