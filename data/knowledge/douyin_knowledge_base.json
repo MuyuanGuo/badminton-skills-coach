@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T21:13:46.481080+00:00",
+  "updated_at": "2026-07-09T21:21:26.029983+00:00",
   "queue_counts": {
-    "transcribed": 176,
+    "transcribed": 183,
     "extraction_failed": 12,
-    "pending": 217
+    "pending": 210
   },
   "knowledge_counts": {
-    "videos": 176,
-    "ready": 148,
-    "needs_visual_review": 28,
+    "videos": 183,
+    "ready": 154,
+    "needs_visual_review": 29,
     "curated": 3
   },
   "videos": [
@@ -8130,6 +8130,301 @@
       }
     },
     {
+      "video_id": "7304104136306412835",
+      "title": "保护身位，信息不明朗少打斜线，无视错别字，视频拿到的时候就是这样的",
+      "url": "https://www.douyin.com/video/7304104136306412835",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 151.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7304104136306412835.json",
+      "teaching_note": {
+        "topic": "保护身位",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:10",
+            "text": "你得保護自己的身內那首先我會選擇優先的攻擊以下幾個點第一個"
+          },
+          {
+            "timestamp": "00:53-00:58",
+            "text": "首先你要了解這個女的你剛開始可以做一些什麼樣的選擇比如說剛才那樣的配合"
+          },
+          {
+            "timestamp": "02:01-02:10",
+            "text": "當他有這樣的感覺出現了之後你就可以用相同的動作反著騙他好了"
+          },
+          {
+            "timestamp": "02:15-02:20",
+            "text": "他會開始瘋狂的起球發安球之後再往前色色發抖不敢亂動"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7302621786980486440",
+      "title": "这样的方式是辅助，大概可以找到一个方向，熟练之后就可以自由控制啦",
+      "url": "https://www.douyin.com/video/7302621786980486440",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 130.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7302621786980486440.json",
+      "teaching_note": {
+        "topic": "这样的方式是辅助",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:19",
+            "text": "要出兵却装作不出兵进攻的时间或距离近的要表现出远反之易然这什么意思吗"
+          },
+          {
+            "timestamp": "01:39-01:46",
+            "text": "那就我现在朝着斜线来好像打一个斜线高远头他不就是华直线了吗"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:30-00:47",
+            "text": "好就勉勉强强算是吧其实批华意思什么的都是有一个消除的感受对不对那你刚才华斜线是不是向前回趴人向的钱然后球去的斜线了"
+          },
+          {
+            "timestamp": "01:03-01:12",
+            "text": "如果这个甲角不变我们往这边移也就是说现在你朝前回这个球肯定是界外的对不对那你本来就要让别人看出来你不是打直线是不是"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:22-00:30",
+            "text": "上场地你挖斜线会吗会我先发辆你先划辆拿错了"
+          },
+          {
+            "timestamp": "00:39-00:53",
+            "text": "其实批华意思什么的都是有一个消除的感受对不对那你刚才华斜线是不是向前回趴人向的钱然后球去的斜线了那咱们就把这个感觉啊人的朝向和回趴大致的朝向比多这只球趴的方向"
+          },
+          {
+            "timestamp": "01:45-01:53",
+            "text": "他不就是华直线了吗刚开始我们用这样的方式可以先去学一下等熟练了之后那我现在想怎么样都可以不转身也可以"
+          },
+          {
+            "timestamp": "01:47-01:55",
+            "text": "刚开始我们用这样的方式可以先去学一下等熟练了之后那我现在想怎么样都可以不转身也可以对吧我接个中国跳比如说"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7301508881325296931",
+      "title": "病毒感冒了，暂停直播，高烧不退",
+      "url": "https://www.douyin.com/video/7301508881325296931",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 149.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7301508881325296931.json",
+      "teaching_note": {
+        "topic": "病毒感冒了",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "那我们做启动部阶杀 你首先要明白咱们在准备的时候 两脚肯定偏向于平衡站位"
+          },
+          {
+            "timestamp": "00:05-00:13",
+            "text": "为什么 你这时候还前后站位也就是说你向左 右 启动的难度就变大了那现在既然我背顿 我首先要干的是承认背顿"
+          },
+          {
+            "timestamp": "00:18-00:24",
+            "text": "对方杀成 你要知道的我现在是向左启动 向右启动我都要有脚登地"
+          },
+          {
+            "timestamp": "00:49-01:00",
+            "text": "它现在就具备登地的常见了前脚掌 那也就是小跳启动是这样的但是它不够快 那应该怎么样呢"
+          },
+          {
+            "timestamp": "01:22-01:33",
+            "text": "那我们应该怎么做你得想办法让腿出现在重心的右腿比如 因为我既有这个小套踩的力"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "那我们做启动部阶杀 你首先要明白咱们在准备的时候 两脚肯定偏向于平衡站位"
+          },
+          {
+            "timestamp": "00:07-00:14",
+            "text": "也就是说你向左 右 启动的难度就变大了那现在既然我背顿 我首先要干的是承认背顿我两脚要偏向于平衡"
+          },
+          {
+            "timestamp": "00:40-00:49",
+            "text": "你这一踩 你是重心先动然后右腿 这个心现在先动现在你右腿用达成这样的姿态"
+          },
+          {
+            "timestamp": "00:51-01:02",
+            "text": "前脚掌 那也就是小跳启动是这样的但是它不够快 那应该怎么样呢我既要踩 我又要想办法"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7300032085358660904",
+      "title": "打球要有目的性，更要清楚对手的目的性",
+      "url": "https://www.douyin.com/video/7300032085358660904",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 184.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7300032085358660904.json",
+      "teaching_note": {
+        "topic": "打球要有目的性",
+        "key_evidence": [
+          {
+            "timestamp": "00:23-00:33",
+            "text": "你就是那个死拼蛮干的敌将 知道吗上场地 这对手知道你爱进攻他所打出来的球接杀 挡出来的都是原网"
+          },
+          {
+            "timestamp": "01:40-01:44",
+            "text": "第一个办法既然对手打防守反 打得远往你人又回不去"
+          },
+          {
+            "timestamp": "01:53-01:57",
+            "text": "但通过一个停顿你重心是不是就稳住了而且现在是不是进了"
+          },
+          {
+            "timestamp": "02:25-02:31",
+            "text": "你得知道对方是怎么赢你的防守反你是怎么组成的你上去之后有多危险"
+          },
+          {
+            "timestamp": "02:29-02:35",
+            "text": "你上去之后有多危险如果你的杀球创造出来的效果对方是这么回来的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:44-00:51",
+            "text": "你的人是回不去的面对这种原网球你又不能抽球你很容易就把它推后的抽出去了"
+          },
+          {
+            "timestamp": "01:03-01:10",
+            "text": "你杀完之后是一个这样的感觉 对不对那好 你想想这样的身类之后"
+          },
+          {
+            "timestamp": "01:17-01:24",
+            "text": "你会怎么打要抽斜线或追身 对不对那你的对手干的就是这件事"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:13-01:17",
+            "text": "就这么高没有再高了 就这么低大概在这个位置"
+          },
+          {
+            "timestamp": "01:46-01:53",
+            "text": "选择一你可以去停顿放那这样你人虽然回不去"
+          },
+          {
+            "timestamp": "01:56-02:01",
+            "text": "而且现在是不是进了你不用回去了 你可以守了方法二"
+          },
+          {
+            "timestamp": "02:02-02:07",
+            "text": "反抽你斜线当右耳球你现在真的可以加点滑拍进去打一个什么"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7298921585358933283",
+      "title": "大家千万不要歪的过度，把重心都歪没了，是发力方式",
+      "url": "https://www.douyin.com/video/7298921585358933283",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 79.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7298921585358933283.json",
+      "teaching_note": {
+        "topic": "大家千万不要歪的过度",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7296314453379910947",
+      "title": "因为击球点不同我们人的姿态不一样，所以动作和大臂的幅度必然不一样",
+      "url": "https://www.douyin.com/video/7296314453379910947",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 64.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-013/7296314453379910947.json",
+      "teaching_note": {
+        "topic": "因为击球点不同我们人的姿态不一样",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:13",
+            "text": "反手伸前点的高远球要利用小臂带动手腕手指发力因为手指要做到一个支撑"
+          },
+          {
+            "timestamp": "00:16-00:26",
+            "text": "侧顺位的反手高远球我们可以使用大发力大臂带动小臂大拇指顶在斜冷"
+          },
+          {
+            "timestamp": "00:31-00:36",
+            "text": "后顺位的反手高远球一样是大发力大臂带动小臂由于位置的原因"
+          },
+          {
+            "timestamp": "00:38-00:47",
+            "text": "我们才能把球给打正背动状态下的反手高远球除了十指拇指要捏在两个窄边"
+          },
+          {
+            "timestamp": "00:54-00:59",
+            "text": "根据不同的计修点使用不同的动作和握拍才是真正的选择之下技术"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:16-00:26",
+            "text": "侧顺位的反手高远球我们可以使用大发力大臂带动小臂大拇指顶在斜冷"
+          },
+          {
+            "timestamp": "00:25-00:33",
+            "text": "大拇指顶在斜冷这样可以更好的打正后顺位的反手高远球"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7293716793221205283",
       "title": "挥拍动作的大小和腰腹动作的大小有关，因为大臂要和身体相连，如果用主动前点的动作打被动高点的球，那就成高射炮了，球友通病",
       "url": "https://www.douyin.com/video/7293716793221205283",
@@ -8166,6 +8461,26 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7292235083715448104",
+      "title": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教",
+      "url": "https://www.douyin.com/video/7292235083715448104",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 49.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-013/7292235083715448104.json",
+      "teaching_note": {
+        "topic": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {

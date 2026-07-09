@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:13:46.026860+00:00",
+  "updated_at": "2026-07-09T21:21:25.544670+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 176,
+    "transcribed": 183,
     "extraction_failed": 12,
-    "pending": 217
+    "pending": 210
   },
   "items": [
     {
@@ -2149,10 +2149,10 @@
       "title": "保护身位，信息不明朗少打斜线，无视错别字，视频拿到的时候就是这样的#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7304104136306412835.mp4",
+      "duration_seconds": 151.744,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2161,10 +2161,10 @@
       "title": "这样的方式是辅助，大概可以找到一个方向，熟练之后就可以自由控制啦#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7302621786980486440.mp4",
+      "duration_seconds": 130.614,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2173,10 +2173,10 @@
       "title": "病毒感冒了，暂停直播，高烧不退#羽毛球教学 #羽毛球训练 #羽毛球 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7301508881325296931.mp4",
+      "duration_seconds": 149.282,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2185,10 +2185,10 @@
       "title": "打球要有目的性，更要清楚对手的目的性#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7300032085358660904.mp4",
+      "duration_seconds": 184.391,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2197,10 +2197,10 @@
       "title": "大家千万不要歪的过度，把重心都歪没了，是发力方式#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "步法与移动",
       "tags": "步法与移动；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7298921585358933283.mp4",
+      "duration_seconds": 79.158,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2209,10 +2209,10 @@
       "title": "因为击球点不同我们人的姿态不一样，所以动作和大臂的幅度必然不一样#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7296314453379910947.mp4",
+      "duration_seconds": 64.483,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2233,10 +2233,10 @@
       "title": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教#羽毛球 #快乐羽毛球 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-013/7292235083715448104.mp4",
+      "duration_seconds": 49.622,
+      "attempts": 1,
       "error": null
     },
     {
