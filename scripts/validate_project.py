@@ -12,7 +12,9 @@ json_paths = [
     "data/douyin_video_index.json",
     "data/knowledge/pilot_knowledge_base.json",
     "data/knowledge/pilot_teaching_notes.json",
+    "data/knowledge/douyin_knowledge_base.json",
     "data/pilot_25_videos.json",
+    "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
 ]
@@ -38,6 +40,20 @@ knowledge = json.loads(
 )
 if len(knowledge["videos"]) != 25:
     raise SystemExit(f"Expected 25 pilot videos, found {len(knowledge['videos'])}")
+
+queue = json.loads(
+    (ROOT / "data" / "processing" / "douyin_queue.json").read_text(encoding="utf-8")
+)
+if len(queue["items"]) != 405:
+    raise SystemExit(f"Expected 405 teaching videos in queue, found {len(queue['items'])}")
+if sum(queue["counts"].values()) != 405:
+    raise SystemExit("Douyin queue counts do not sum to 405")
+
+douyin_knowledge = json.loads(
+    (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
+)
+if len(douyin_knowledge["videos"]) < 25:
+    raise SystemExit("Full Douyin knowledge base regressed below pilot size")
 
 skill_knowledge = json.loads(
     (
