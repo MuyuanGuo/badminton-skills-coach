@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:31:26.908691+00:00",
+  "updated_at": "2026-07-09T23:35:18.231284+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 237,
-    "extraction_failed": 25,
-    "pending": 143
+    "transcribed": 240,
+    "extraction_failed": 27,
+    "pending": 138
   },
   "items": [
     {
@@ -3061,10 +3061,10 @@
       "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3073,10 +3073,10 @@
       "title": "最容易忽略的发力小细节，还有好为人师，有人喜欢有人讨厌，所以平时打球更多的时候大家选择的大多都是沉默#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3097,11 +3097,11 @@
       "title": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！#羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-027/7159754364297448715.mp4",
+      "duration_seconds": 30.906,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7159382785092783375",
@@ -3145,10 +3145,10 @@
       "title": "左脚在前的缺点是没办法做蹬转类的头顶步法，但是这种情况利大于弊#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-027/7156785188884778275.mp4",
+      "duration_seconds": 125.202,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3160,8 +3160,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7154558892742151464",
@@ -3172,8 +3172,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7154187492487335203",
@@ -3181,10 +3181,10 @@
       "title": "在快节奏中不能浪费一点时间#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-027/7154187492487335203.mp4",
+      "duration_seconds": 77.926,
+      "attempts": 1,
       "error": null
     },
     {

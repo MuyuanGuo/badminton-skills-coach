@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:31:27.608496+00:00",
+  "updated_at": "2026-07-09T23:35:18.857249+00:00",
   "queue_counts": {
-    "transcribed": 237,
-    "extraction_failed": 25,
-    "pending": 143
+    "transcribed": 240,
+    "extraction_failed": 27,
+    "pending": 138
   },
   "knowledge_counts": {
-    "videos": 237,
-    "ready": 199,
-    "needs_visual_review": 38,
+    "videos": 240,
+    "ready": 201,
+    "needs_visual_review": 39,
     "curated": 3
   },
   "videos": [
@@ -11318,6 +11318,26 @@
       }
     },
     {
+      "video_id": "7159754364297448715",
+      "title": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！",
+      "url": "https://www.douyin.com/video/7159754364297448715",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 30.9,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-027/7159754364297448715.json",
+      "teaching_note": {
+        "topic": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7159382785092783375",
       "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
       "url": "https://www.douyin.com/video/7159382785092783375",
@@ -11444,6 +11464,130 @@
           {
             "timestamp": "01:05-01:11",
             "text": "一来可以用于分享二来可以回来总结问题用不同的角度来看孩子们的问题"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7156785188884778275",
+      "title": "左脚在前的缺点是没办法做蹬转类的头顶步法，但是这种情况利大于弊",
+      "url": "https://www.douyin.com/video/7156785188884778275",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 125.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-027/7156785188884778275.json",
+      "teaching_note": {
+        "topic": "左脚在前的缺点是没办法做蹬转类的头顶步法",
+        "key_evidence": [
+          {
+            "timestamp": "00:14-00:27",
+            "text": "为什么 因为右脚一旦换上来之后 来收两个地方第一个地方 右脚站起来没办法向勾球起来没办法 你看我后面没有脚蹬地 我还得换着 炒着"
+          },
+          {
+            "timestamp": "00:58-01:06",
+            "text": "然后左脚在前 就上来了那如果这时候对手勾球的对手这时候勾球 就是右脚直接分队"
+          },
+          {
+            "timestamp": "01:01-01:10",
+            "text": "那如果这时候对手勾球的对手这时候勾球 就是右脚直接分队那对手如果推斜线的"
+          },
+          {
+            "timestamp": "01:17-01:27",
+            "text": "如果特别高的球呢 我可以用倒退补重心向后 带动身体 抬趴但是我让你重心先弄 不是让你直接摘过去"
+          },
+          {
+            "timestamp": "01:21-01:31",
+            "text": "重心向后 带动身体 抬趴但是我让你重心先弄 不是让你直接摘过去我是重心带动身体 带"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:05-00:19",
+            "text": "来 打完这边远往球 右脚不要换着 站这边为什么 因为右脚一旦换上来之后 来收两个地方"
+          },
+          {
+            "timestamp": "00:27-00:39",
+            "text": "第二个 如果对方推我重复点 或者推我直线我会有一个转穿动作 那这是来不及了所以说 我们在打完这边远往球的时候"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:39-00:52",
+            "text": "我要保证的是一个人 朝向球 左脚在前 右脚在后的站内那这个时候他如果推出来 我直接可以侧跳就算是过度 我人也不用转宽 宽是跟度的"
+          },
+          {
+            "timestamp": "00:52-01:01",
+            "text": "那这个时候如果打几个往前呢我就可以右脚和左脚依次法 右脚向前等然后左脚在前 就上来了"
+          },
+          {
+            "timestamp": "01:13-01:24",
+            "text": "特别平的球 你可以拦住如果特别高的球呢 我可以用倒退补重心向后 带动身体 抬趴"
+          },
+          {
+            "timestamp": "01:21-01:31",
+            "text": "重心向后 带动身体 抬趴但是我让你重心先弄 不是让你直接摘过去我是重心带动身体 带"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7154187492487335203",
+      "title": "在快节奏中不能浪费一点时间",
+      "url": "https://www.douyin.com/video/7154187492487335203",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-027/7154187492487335203.json",
+      "teaching_note": {
+        "topic": "在快节奏中不能浪费一点时间",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:08",
+            "text": "重心直接拽的人出来一段距离走"
+          },
+          {
+            "timestamp": "00:09-00:13",
+            "text": "明白吗直接重心拽就走机倒球就动"
+          },
+          {
+            "timestamp": "00:54-00:58",
+            "text": "转重心拽着上"
+          },
+          {
+            "timestamp": "00:59-01:06",
+            "text": "来重心拽着走拉过点"
+          },
+          {
+            "timestamp": "01:08-01:10",
+            "text": "回来重心抱歉"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:24",
+            "text": "扳手注意一下这边啊"
+          },
+          {
+            "timestamp": "00:29-00:32",
+            "text": "你干什么应该一个转跳这种东西"
+          },
+          {
+            "timestamp": "00:46-00:49",
+            "text": "正常节奏你可以转过来现在特别快"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
