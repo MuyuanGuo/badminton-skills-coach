@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T20:38:10.637867+00:00",
+  "updated_at": "2026-07-09T20:49:42.146316+00:00",
   "queue_counts": {
-    "transcribed": 148,
+    "transcribed": 155,
     "extraction_failed": 12,
-    "pending": 245
+    "pending": 238
   },
   "knowledge_counts": {
-    "videos": 148,
-    "ready": 126,
-    "needs_visual_review": 22,
+    "videos": 155,
+    "ready": 130,
+    "needs_visual_review": 25,
     "curated": 3
   },
   "videos": [
@@ -6943,6 +6943,259 @@
           {
             "timestamp": "02:11-02:17",
             "text": "再小点都可以但是一定要注意拍头和小臂要出去那后场球也是"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7367561803234069800",
+      "title": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦",
+      "url": "https://www.douyin.com/video/7367561803234069800",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 68.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-009/7367561803234069800.json",
+      "teaching_note": {
+        "topic": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7358661350945525007",
+      "title": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿",
+      "url": "https://www.douyin.com/video/7358661350945525007",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 72.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-009/7358661350945525007.json",
+      "teaching_note": {
+        "topic": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7357171384377740544",
+      "title": "如何喂球 我每次都愿意扮演平凡的人，是因为我们每个人都了不起，都可以让自己变得更优秀，不要放弃学习",
+      "url": "https://www.douyin.com/video/7357171384377740544",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 95.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-009/7357171384377740544.json",
+      "teaching_note": {
+        "topic": "如何喂球 我每次都愿意扮演平凡的人",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:22",
+            "text": "你看你拿着球是球毛朝上然后你往上扔他一定会转"
+          },
+          {
+            "timestamp": "00:20-00:23",
+            "text": "然后你往上扔他一定会转那他扔球是什么"
+          },
+          {
+            "timestamp": "00:41-00:48",
+            "text": "你看你这个食指和中指都能把球毛往外扔你看我可以这样直接松手发一个松手发一个"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7356057989767269684",
+      "title": "虽然看似练功走火入魔，其实真的差不多，我很有收获",
+      "url": "https://www.douyin.com/video/7356057989767269684",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 52.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-009/7356057989767269684.json",
+      "teaching_note": {
+        "topic": "虽然看似练功走火入魔",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:07",
+            "text": "也不知道这谁研究的呢就这种发力方式就是你看着"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7354580584229866787",
+      "title": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对",
+      "url": "https://www.douyin.com/video/7354580584229866787",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 38.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-009/7354580584229866787.json",
+      "teaching_note": {
+        "topic": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7353467942706695458",
+      "title": "终于有时间再更新步法了",
+      "url": "https://www.douyin.com/video/7353467942706695458",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 84.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-009/7353467942706695458.json",
+      "teaching_note": {
+        "topic": "终于有时间再更新步法了",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:10",
+            "text": "今天我来教大家正手往前的高速实战步法好 首先并步是我们所有的步行当中频率最快的步法但是它的缺点就是位移距离短"
+          },
+          {
+            "timestamp": "00:34-00:43",
+            "text": "也就是说我们的正手往前无论是主动还是被动的步法就能变快好了 我们合理地利用并步和垫步以及登跨步"
+          },
+          {
+            "timestamp": "00:43-00:50",
+            "text": "组成一个距离非常远速度很快的正手往前步法首先我们先做启动 开合"
+          },
+          {
+            "timestamp": "00:45-00:53",
+            "text": "速度很快的正手往前步法首先我们先做启动 开合现在后脚脚后跟v台前脚掌撑地"
+          },
+          {
+            "timestamp": "01:16-01:22",
+            "text": "最后一步要落稳重心不要超过前脚的膝盖前脚的膝盖和脚尖都要外摆"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:34-00:43",
+            "text": "也就是说我们的正手往前无论是主动还是被动的步法就能变快好了 我们合理地利用并步和垫步以及登跨步"
+          },
+          {
+            "timestamp": "00:55-01:02",
+            "text": "做出一个并步但是右脚不要落地这个时候左脚就想象成一个垫步"
+          },
+          {
+            "timestamp": "01:16-01:22",
+            "text": "最后一步要落稳重心不要超过前脚的膝盖前脚的膝盖和脚尖都要外摆"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:10",
+            "text": "今天我来教大家正手往前的高速实战步法好 首先并步是我们所有的步行当中频率最快的步法但是它的缺点就是位移距离短"
+          },
+          {
+            "timestamp": "00:10-00:17",
+            "text": "也就是说当我离往前并不太远的时候我可以使用一个快速的并步来进行上网"
+          },
+          {
+            "timestamp": "00:45-00:53",
+            "text": "速度很快的正手往前步法首先我们先做启动 开合现在后脚脚后跟v台前脚掌撑地"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7351983713426705699",
+      "title": "总结，下身转上身卷。",
+      "url": "https://www.douyin.com/video/7351983713426705699",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 138.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-009/7351983713426705699.json",
+      "teaching_note": {
+        "topic": "总结",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:06",
+            "text": "今天我来教大家如何用身体发力来打后场球好 我们先从脚下看"
+          },
+          {
+            "timestamp": "00:37-00:42",
+            "text": "我的重心会从后脚来到前脚也就是一个发力的过程是这样的好了"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "一边向前我们腰斧的发力就应该是向左前方也就是说我的人一定是会向左边去歪"
+          },
+          {
+            "timestamp": "01:14-01:19",
+            "text": "能让我的腰斧有一个能跟我挥拍方向一致的带动呢可以的"
+          },
+          {
+            "timestamp": "01:54-02:02",
+            "text": "我用我的手摸着我的肚子明显能感觉到我在用腰斧发力接下来我加上挥拍"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:49-00:54",
+            "text": "就很关键了千万不要做转着打一定是又有转"
+          },
+          {
+            "timestamp": "01:08-01:15",
+            "text": "是很难带动球拍从上往下挥的我们能不能像这种抽球一样能让我的腰斧有一个"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:12-00:17",
+            "text": "是前脚掌撑地的状态大家脚蹬地的时候一定要注意不是往上蹬"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "一边向前我们腰斧的发力就应该是向左前方也就是说我的人一定是会向左边去歪"
+          },
+          {
+            "timestamp": "00:58-01:05",
+            "text": "我们腰斧的发力就应该是向左前方也就是说我的人一定是会向左边去歪因为我是右手指牌"
+          },
+          {
+            "timestamp": "01:42-01:48",
+            "text": "那就会出现卷斧的效果所以说我们可以先原地的这么直战把人歪下来"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
