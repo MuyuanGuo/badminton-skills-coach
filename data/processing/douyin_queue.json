@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:21:25.544670+00:00",
+  "updated_at": "2026-07-09T21:32:30.204964+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 183,
+    "transcribed": 190,
     "extraction_failed": 12,
-    "pending": 210
+    "pending": 203
   },
   "items": [
     {
@@ -2245,10 +2245,10 @@
       "title": "一定要学会完整的力传导，发高远球如果发的好也是很有优势的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7291120515530493184.mp4",
+      "duration_seconds": 90.304,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2257,10 +2257,10 @@
       "title": "算是和上一个作品做呼应，巧妙的用肘带动手腕，是成为高手的必经之路#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7289635377009151247.mp4",
+      "duration_seconds": 63.88,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2269,10 +2269,10 @@
       "title": "2.1万 本视频适合进阶球友，可以收藏留着，师妹是我启蒙教练家的千金，全国大学生冠军@羽球小甜甜🦄 #羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7288529711267859747.mp4",
+      "duration_seconds": 202.642,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2281,10 +2281,10 @@
       "title": "大拇指顶正面，第二个教练示范的使用率更高，两种都可以，第二种更高级#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7284439456776506658.mp4",
+      "duration_seconds": 148.865,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2305,10 +2305,10 @@
       "title": "反手的位置不同，握拍也不同哦#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7279243688423853347.mp4",
+      "duration_seconds": 125.505,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2317,10 +2317,10 @@
       "title": "一个小小的方向改变就可以让进攻衔接的更加流畅#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7278130800220998946.mp4",
+      "duration_seconds": 89.421,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2329,10 +2329,10 @@
       "title": "大家不要误解了意思，是为了应急而已，展示是为了告诉大家原理，发球机是艾迪宝#羽毛球 #羽毛球教学 #羽毛球训练 #艾迪宝a260 #羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-014/7276646497377176872.mp4",
+      "duration_seconds": 120.258,
+      "attempts": 1,
       "error": null
     },
     {
