@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T19:52:55.562809+00:00",
+  "updated_at": "2026-07-09T20:18:03.650619+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 134,
+    "transcribed": 141,
     "extraction_failed": 12,
-    "pending": 259
+    "pending": 252
   },
   "items": [
     {
@@ -1633,10 +1633,10 @@
       "title": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向#羽毛球 #羽毛球训练 #羽毛球单打 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7404091511773613347.mp4",
+      "duration_seconds": 27.285,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1645,10 +1645,10 @@
       "title": "外籍对抗 新成员都很给力#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7400221745208167695.mp4",
+      "duration_seconds": 279.036,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1657,10 +1657,10 @@
       "title": "1.2万 日常纠错抡大臂 没有演，一箱球都打完了，问题还有但是时间有限，不过t老师已经得救了算是#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7397746202562956559.mp4",
+      "duration_seconds": 260.553,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1669,10 +1669,10 @@
       "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7393550140465777960.mp4",
+      "duration_seconds": 125.691,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1681,10 +1681,10 @@
       "title": "1.8万 你们觉得谁的杀球更重呢@脏教练羽毛球（球场秀操作版） @刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7387250672263040267.mp4",
+      "duration_seconds": 29.142,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1693,10 +1693,10 @@
       "title": "1.7万 联动防守变线 兄弟们来找我我很开心，视频娱乐，为逗大家一笑#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7387233755057949987.mp4",
+      "duration_seconds": 55.938,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1705,10 +1705,10 @@
       "title": "架拍挥拍底层逻辑 我所有的问题是真想讲清楚，讲清楚需要时间，各位的时间宝贵，视频时间一长就没人看了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-007/7385749108843089187.mp4",
+      "duration_seconds": 375.213,
+      "attempts": 1,
       "error": null
     },
     {

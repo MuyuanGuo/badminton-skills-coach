@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T19:53:04.208614+00:00",
+  "updated_at": "2026-07-09T20:18:12.637715+00:00",
   "queue_counts": {
-    "transcribed": 134,
+    "transcribed": 141,
     "extraction_failed": 12,
-    "pending": 259
+    "pending": 252
   },
   "knowledge_counts": {
-    "videos": 134,
-    "ready": 117,
-    "needs_visual_review": 17,
+    "videos": 141,
+    "ready": 122,
+    "needs_visual_review": 19,
     "curated": 3
   },
   "videos": [
@@ -6343,6 +6343,283 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7404091511773613347",
+      "title": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向",
+      "url": "https://www.douyin.com/video/7404091511773613347",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-007/7404091511773613347.json",
+      "teaching_note": {
+        "topic": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7400221745208167695",
+      "title": "外籍对抗 新成员都很给力",
+      "url": "https://www.douyin.com/video/7400221745208167695",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 279.0,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-007/7400221745208167695.json",
+      "teaching_note": {
+        "topic": "外籍对抗 新成员都很给力",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7397746202562956559",
+      "title": "日常纠错抡大臂 没有演，一箱球都打完了，问题还有但是时间有限，不过t老师已经得救了算是",
+      "url": "https://www.douyin.com/video/7397746202562956559",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 260.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-007/7397746202562956559.json",
+      "teaching_note": {
+        "topic": "日常纠错抡大臂 没有演",
+        "key_evidence": [
+          {
+            "timestamp": "00:36-00:42",
+            "text": "然后腰腹带动的没有效率重心没有转换 轮大臂而且握帕"
+          },
+          {
+            "timestamp": "01:39-01:48",
+            "text": "你在咱们只在这个倒拍到机球这个过程中是发力的然后呢充分的内拳这个过程呢"
+          },
+          {
+            "timestamp": "01:57-02:05",
+            "text": "我也可以当然了去做这个随摆动作那这个挥拍动作就完整了那咱们怎么能做到呢"
+          },
+          {
+            "timestamp": "02:50-02:56",
+            "text": "就会体现到这个大臂从头到尾都在贯穿在这个发力里这就是苏说的轮大臂了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:44-00:51",
+            "text": "握帕是个还有点糟糕的帕我先给你解决一个最重要的一个问题最重要的问题就是你轮大臂"
+          },
+          {
+            "timestamp": "00:47-00:53",
+            "text": "我先给你解决一个最重要的一个问题最重要的问题就是你轮大臂这个是核心动作"
+          },
+          {
+            "timestamp": "02:11-02:15",
+            "text": "我可能到这就结束了但是线下你的问题我想要办"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:44-00:51",
+            "text": "握帕是个还有点糟糕的帕我先给你解决一个最重要的一个问题最重要的问题就是你轮大臂"
+          },
+          {
+            "timestamp": "01:53-02:03",
+            "text": "下面我可以直接拿起来去銜接我也可以当然了去做这个随摆动作那这个挥拍动作就完整了"
+          },
+          {
+            "timestamp": "03:13-03:24",
+            "text": "我得让你有一种把大臂留在上面的感觉通过内拳的方式把小臂和球拍挥下来再随摆有用这样的感觉"
+          },
+          {
+            "timestamp": "03:51-03:57",
+            "text": "大臂往上抬机球的时候然后再随摆哎放松一点再来一个"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7393550140465777960",
+      "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
+      "url": "https://www.douyin.com/video/7393550140465777960",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 125.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-007/7393550140465777960.json",
+      "teaching_note": {
+        "topic": "日常纠错反手过渡 总结",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:52-01:01",
+            "text": "大臂在机球的过程中不要掉下来否则就会像正手轮大臂一样"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:22-00:27",
+            "text": "你要把它抬到多高我们抬手抬平就可以了你过度嘛"
+          },
+          {
+            "timestamp": "01:07-01:11",
+            "text": "对吧你高点是不是就不需要用反手了我是不是可以用头顶打了"
+          },
+          {
+            "timestamp": "01:08-01:12",
+            "text": "你高点是不是就不需要用反手了我是不是可以用头顶打了就算是高点"
+          },
+          {
+            "timestamp": "01:41-01:54",
+            "text": "这个肘大臂就在这个框架里再去做手臂外拳的动作往上够了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7387250672263040267",
+      "title": "你们觉得谁的杀球更重呢",
+      "url": "https://www.douyin.com/video/7387250672263040267",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 29.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-007/7387250672263040267.json",
+      "teaching_note": {
+        "topic": "你们觉得谁的杀球更重呢",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:04",
+            "text": "张教练 张教练大家觉得我们杀球台过得去那我们今天三比试一下"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7387233755057949987",
+      "title": "联动防守变线 兄弟们来找我我很开心，视频娱乐，为逗大家一笑",
+      "url": "https://www.douyin.com/video/7387233755057949987",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-007/7387233755057949987.json",
+      "teaching_note": {
+        "topic": "联动防守变线 兄弟们来找我我很开心",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:03",
+            "text": "你看咱们都说咱们杀球挺厉害谁也不服谁"
+          },
+          {
+            "timestamp": "00:04-00:08",
+            "text": "咱们就互相杀比就是一盘重杀防守变线对吧"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7385749108843089187",
+      "title": "架拍挥拍底层逻辑 我所有的问题是真想讲清楚，讲清楚需要时间，各位的时间宝贵，视频时间一长就没人看了",
+      "url": "https://www.douyin.com/video/7385749108843089187",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 375.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-007/7385749108843089187.json",
+      "teaching_note": {
+        "topic": "架拍挥拍底层逻辑 我所有的问题是真想讲清楚",
+        "key_evidence": [
+          {
+            "timestamp": "03:14-03:18",
+            "text": "我都会有这样的状态那我侧身幅度没有这么多我大臂向前带动小臂"
+          },
+          {
+            "timestamp": "03:22-03:26",
+            "text": "我准备下一拍的銜接了我的重心摇摆也会很小因为我腰腑区动性"
+          },
+          {
+            "timestamp": "05:17-05:23",
+            "text": "我还可以再学成别的呢我全特身加上这样架拍我是不是又成了另一种动作了"
+          },
+          {
+            "timestamp": "05:23-05:27",
+            "text": "对不对所以说学挥拍学架拍一定要明白它其中的原理"
+          },
+          {
+            "timestamp": "05:31-05:35",
+            "text": "慧哥我还是想学丹哥的架拍那个真的不用学"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "02:06-02:11",
+            "text": "就是我既要保证有一定的引动然后又要保证他不要像这样这么太慢"
+          },
+          {
+            "timestamp": "05:20-05:25",
+            "text": "我是不是又成了另一种动作了对不对所以说学挥拍学架拍"
+          },
+          {
+            "timestamp": "05:48-05:52",
+            "text": "打五分钟高远一下都不要停正好试试他耐不耐打"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "02:05-02:10",
+            "text": "为什么要微微向前倾呢就是我既要保证有一定的引动然后又要保证他不要像这样"
+          },
+          {
+            "timestamp": "03:50-03:55",
+            "text": "他很自然就到这里然后再放揍在一个合理的高度内"
+          },
+          {
+            "timestamp": "04:19-04:24",
+            "text": "那这一拍我们先看大臂和小臂的假角比较小隐拍会比较充分"
+          },
+          {
+            "timestamp": "05:15-05:20",
+            "text": "完全都是一样的动作我还可以再学成别的呢我全特身加上这样架拍"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {
