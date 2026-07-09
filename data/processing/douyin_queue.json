@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:12:53.476737+00:00",
+  "updated_at": "2026-07-09T23:15:04.677Z",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
     "transcribed": 227,
-    "extraction_failed": 22,
-    "pending": 156
+    "extraction_failed": 24,
+    "pending": 154
   },
   "items": [
     {
@@ -2941,10 +2941,10 @@
       "title": "现场嘈杂，说话声音大了点，各位见谅#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2953,10 +2953,10 @@
       "title": "承认被动，是一件很难的事#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -2968,8 +2968,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7172742523096517927",
@@ -2980,8 +2980,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7170144521781562662",
@@ -2992,8 +2992,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7169772952039345411",
@@ -3004,8 +3004,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7169038502280154380",
@@ -3016,8 +3016,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7167546787073477900",
