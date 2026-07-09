@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T22:07:07.059616+00:00",
+  "updated_at": "2026-07-09T22:17:55.666818+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 204,
+    "transcribed": 211,
     "extraction_failed": 12,
-    "pending": 189
+    "pending": 182
   },
   "items": [
     {
@@ -2533,10 +2533,10 @@
       "title": "5138 #羽毛球 #技术分享 说好的技术假动作比赛@脏教练羽毛球（专教双打） 你搁这玩假摔是吧？#体育精神 #运动 #打球的男孩 @刘辉羽毛球",
       "category": "双打战术",
       "tags": "双打战术；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7241053732916596026.mp4",
+      "duration_seconds": 83.245,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2545,10 +2545,10 @@
       "title": "1.5万 训练方法由我的师弟@Y 提供，亲测真实有效#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7236568825607621922.mp4",
+      "duration_seconds": 98.524,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2557,10 +2557,10 @@
       "title": "小细节，可以增加滑拍的挥速#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7235084849025912096.mp4",
+      "duration_seconds": 84.685,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2569,10 +2569,10 @@
       "title": "3080 #羽毛球 知道什么叫做专业级的教学水平吗#的幸 #黄厂 #运动",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7231384286954409271.mp4",
+      "duration_seconds": 128.199,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2581,10 +2581,10 @@
       "title": "不是说勾球不能带过去，是不能大臂和球拍一起过去，如果学不会，就先练简单的勾球，这属于进阶#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；网前技术；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7231373527314631947.mp4",
+      "duration_seconds": 123.415,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2593,10 +2593,10 @@
       "title": "这属于为了下一拍更好衔接的步法，也是使用率最高的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @艾迪宝羽毛球发球机",
       "category": "发球与接发",
       "tags": "发球与接发；步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7229889111706848544.mp4",
+      "duration_seconds": 137.115,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2605,10 +2605,10 @@
       "title": "8615 #羽毛球 大家觉得这杀球教的怎么样？ #是时候展现真正的技术了 @杨晨大神全能管家 @杨晨大神直播号",
       "category": "后场技术",
       "tags": "后场技术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-017/7229506261136526647.mp4",
+      "duration_seconds": 67.13,
+      "attempts": 1,
       "error": null
     },
     {

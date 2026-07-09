@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T22:07:07.586262+00:00",
+  "updated_at": "2026-07-09T22:17:56.275301+00:00",
   "queue_counts": {
-    "transcribed": 204,
+    "transcribed": 211,
     "extraction_failed": 12,
-    "pending": 189
+    "pending": 182
   },
   "knowledge_counts": {
-    "videos": 204,
-    "ready": 173,
+    "videos": 211,
+    "ready": 180,
     "needs_visual_review": 31,
     "curated": 3
   },
@@ -9846,6 +9846,371 @@
           {
             "timestamp": "01:59-02:06",
             "text": "证明一下那么再反转一次如果我们把十指拇指的夹缝"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7241053732916596026",
+      "title": "5138 说好的技术假动作比赛 你搁这玩假摔是吧？",
+      "url": "https://www.douyin.com/video/7241053732916596026",
+      "category": "双打战术",
+      "tags": [
+        "双打战术",
+        "比赛分析"
+      ],
+      "duration_seconds": 83.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7241053732916596026.json",
+      "teaching_note": {
+        "topic": "5138 说好的技术假动作比赛 你搁这玩假摔是吧？",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:22-00:33",
+            "text": "可以好 來 再一個假不假"
+          },
+          {
+            "timestamp": "00:36-00:49",
+            "text": "現在有掛了再一個二號的可以 還要再來一個"
+          },
+          {
+            "timestamp": "00:38-01:05",
+            "text": "再一個二號的可以 還要再來一個Nice"
+          },
+          {
+            "timestamp": "01:05-01:10",
+            "text": "交花可以這真是很假"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7236568825607621922",
+      "title": "训练方法由我的师弟 提供，亲测真实有效",
+      "url": "https://www.douyin.com/video/7236568825607621922",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "训练与纠错"
+      ],
+      "duration_seconds": 98.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7236568825607621922.json",
+      "teaching_note": {
+        "topic": "训练方法由我的师弟 提供",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:20-00:28",
+            "text": "你先降下去啊你先降下去 你不要掉你先降下去啊"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:26",
+            "text": "来来来 快点快点你先降下去啊你先降下去 你不要掉"
+          },
+          {
+            "timestamp": "00:20-00:28",
+            "text": "你先降下去啊你先降下去 你不要掉你先降下去啊"
+          },
+          {
+            "timestamp": "00:24-00:31",
+            "text": "你先降下去 你不要掉你先降下去啊你先降下去啊"
+          },
+          {
+            "timestamp": "00:26-00:32",
+            "text": "你先降下去啊你先降下去啊我这还没降啊 教练"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7235084849025912096",
+      "title": "小细节，可以增加滑拍的挥速",
+      "url": "https://www.douyin.com/video/7235084849025912096",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "训练与纠错"
+      ],
+      "duration_seconds": 84.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7235084849025912096.json",
+      "teaching_note": {
+        "topic": "小细节",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:21-00:26",
+            "text": "快速的超过于小臂这条线它不能让这个球拍和小臂一直在一条线上要么拍速就上不去"
+          },
+          {
+            "timestamp": "00:32-00:35",
+            "text": "你看现在小臂这条现在这里对不对球拍已经成"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:10-00:16",
+            "text": "一起下来的感觉你首先这样就缺乏甩动感也就是你打的时候是加不上拍速的"
+          },
+          {
+            "timestamp": "00:28-00:32",
+            "text": "这是你滑拍的感觉应该是什么应该是让球拍超过小臂"
+          },
+          {
+            "timestamp": "00:29-00:33",
+            "text": "应该是什么应该是让球拍超过小臂你看"
+          },
+          {
+            "timestamp": "00:59-01:05",
+            "text": "甩动的特别好来你再试一试漂亮"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7231384286954409271",
+      "title": "3080 知道什么叫做专业级的教学水平吗",
+      "url": "https://www.douyin.com/video/7231384286954409271",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 128.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7231384286954409271.json",
+      "teaching_note": {
+        "topic": "3080 知道什么叫做专业级的教学水平吗",
+        "key_evidence": [
+          {
+            "timestamp": "01:20-01:23",
+            "text": "那你这样的话发球啊看到没有"
+          },
+          {
+            "timestamp": "01:24-01:28",
+            "text": "无论往上抬 往下降你只拿拍面对准网站的位置"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:42-00:44",
+            "text": "你知道干嘛刚才是我的问题是吧我刚碰了一下"
+          },
+          {
+            "timestamp": "01:52-01:55",
+            "text": "来 走没问题走吧 绝对过"
+          },
+          {
+            "timestamp": "01:55-01:59",
+            "text": "自信没问题兄弟你绝对太好了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:02",
+            "text": "我刚才教你的细节都记住了吧记住了"
+          },
+          {
+            "timestamp": "01:00-01:06",
+            "text": "来 来 快来 你先把这个动作摆好首先动作的框架特别重要"
+          },
+          {
+            "timestamp": "01:02-01:07",
+            "text": "来 你先把这个动作摆好首先动作的框架特别重要没错 没错"
+          },
+          {
+            "timestamp": "01:07-01:11",
+            "text": "没错 没错先试一下再说好不好好的 大拇指顶住这个宽面"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7231373527314631947",
+      "title": "不是说勾球不能带过去，是不能大臂和球拍一起过去，如果学不会，就先练简单的勾球，这属于进阶",
+      "url": "https://www.douyin.com/video/7231373527314631947",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "网前技术",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 123.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7231373527314631947.json",
+      "teaching_note": {
+        "topic": "不是说勾球不能带过去",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:20",
+            "text": "停 你看着啊 就是你这个反手这个位置啊 你这个勾球 你要知道你在哪里勾球它会贴这是准备动作对不对 要平排面 看着要像放要像推 反正不能看着就这样看着就像勾肯定不行"
+          },
+          {
+            "timestamp": "00:31-00:45",
+            "text": "你觉得是在这里击招球还是这里击招球还是这里击招球 它会贴网嗯 后面 好 你说得对 记住 勾球是在动作的末端机道球的时候它才会贴 那好 看大臂了吗"
+          },
+          {
+            "timestamp": "01:17-01:30",
+            "text": "你肘往反方向一摆 这个拍头也会往那边走 正好这大臂就不动了所以这个勾球的动作就应该是什么样的来 咱们先从一个点练 站在这里来看"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:04-00:26",
+            "text": "停 你看着啊 就是你这个反手这个位置啊 你这个勾球 你要知道你在哪里勾球它会贴这是准备动作对不对 要平排面 看着要像放要像推 反正不能看着就这样看着就像勾肯定不行好 平排面开始 我们动作开始阶段 过程阶段 结束阶段"
+          },
+          {
+            "timestamp": "00:43-00:54",
+            "text": "它才会贴 那好 看大臂了吗不要动 大臂不要跟着一起走 不要往那边去摆 看到没 你这一摆它就不会贴网了 而且拍速也不会快"
+          },
+          {
+            "timestamp": "01:34-02:03",
+            "text": "看好 伸出拍子 先不要动当 看 一触球 看着练得走 看着练得走 好 大臂不要过去啊 对人在家中堂 球技心中长"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:31-00:45",
+            "text": "你觉得是在这里击招球还是这里击招球还是这里击招球 它会贴网嗯 后面 好 你说得对 记住 勾球是在动作的末端机道球的时候它才会贴 那好 看大臂了吗"
+          },
+          {
+            "timestamp": "00:51-01:05",
+            "text": "它就不会贴网了 而且拍速也不会快首先 我想问一下你 你除了把你的手腕往后来这么翻一下 小臂稍微弦一点 还有没有别的方法能让球拍向这个 向这边走呢"
+          },
+          {
+            "timestamp": "01:17-01:30",
+            "text": "你肘往反方向一摆 这个拍头也会往那边走 正好这大臂就不动了所以这个勾球的动作就应该是什么样的来 咱们先从一个点练 站在这里来看"
+          },
+          {
+            "timestamp": "01:22-01:36",
+            "text": "所以这个勾球的动作就应该是什么样的来 咱们先从一个点练 站在这里来看看好 伸出拍子 先不要动"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7229889111706848544",
+      "title": "这属于为了下一拍更好衔接的步法，也是使用率最高的",
+      "url": "https://www.douyin.com/video/7229889111706848544",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 137.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7229889111706848544.json",
+      "teaching_note": {
+        "topic": "这属于为了下一拍更好衔接的步法",
+        "key_evidence": [
+          {
+            "timestamp": "01:03-01:08",
+            "text": "突击也很好打因为爆发力进得多你转体小 用的卷斧多"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:13-00:18",
+            "text": "尤其是还很靠后的时候你不要再想着换脚了因为 你首先这一换脚"
+          },
+          {
+            "timestamp": "01:20-01:24",
+            "text": "懂吗那边不要去换脚废位置是关键"
+          },
+          {
+            "timestamp": "02:01-02:14",
+            "text": "离中线更近的位置不要跟着右脚一起过去这样做可以让我们用最少的步子回位"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:15-00:20",
+            "text": "你不要再想着换脚了因为 你首先这一换脚你要知道 你本来不换脚"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "一个不转身那首先你是一个半测身的状态你打斜线是非常容易的"
+          },
+          {
+            "timestamp": "01:05-01:12",
+            "text": "你转体小 用的卷斧多然后你位置还特别好所以说一般职业选手在正手位"
+          },
+          {
+            "timestamp": "02:03-02:16",
+            "text": "不要跟着右脚一起过去这样做可以让我们用最少的步子回位人在家中堂求祭心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7229506261136526647",
+      "title": "8615 大家觉得这杀球教的怎么样？",
+      "url": "https://www.douyin.com/video/7229506261136526647",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 67.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-017/7229506261136526647.json",
+      "teaching_note": {
+        "topic": "8615 大家觉得这杀球教的怎么样？",
+        "key_evidence": [
+          {
+            "timestamp": "00:34-00:37",
+            "text": "框架出发力对了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:27-00:30",
+            "text": "你记着你不能是挥攀的时候把大臂整个挥出去"
+          },
+          {
+            "timestamp": "00:44-00:50",
+            "text": "就是你这里不要去主动抬它是跟随着你的身体"
+          },
+          {
+            "timestamp": "01:00-01:02",
+            "text": "我表达的这是一点问题都没有没有问题"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:02",
+            "text": "大连刚才说了记住了没对 带给我搞两招"
+          },
+          {
+            "timestamp": "00:01-00:04",
+            "text": "对 带给我搞两招你再看我表现我表现"
+          },
+          {
+            "timestamp": "00:32-00:35",
+            "text": "脚蹬起来之后你框架起来再去打框架"
+          },
+          {
+            "timestamp": "01:01-01:04",
+            "text": "没有问题我可以就练了十几年的谢谢"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
