@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T22:27:26.491466+00:00",
+  "updated_at": "2026-07-09T22:58:55.317676+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 218,
-    "extraction_failed": 12,
-    "pending": 175
+    "transcribed": 219,
+    "extraction_failed": 15,
+    "pending": 171
   },
   "items": [
     {
@@ -2713,10 +2713,10 @@
       "title": "别在说我不发初级教学啦，方法简单高效，刚好虎口对的拍框内侧，快发给你的伙伴们看吧#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-019/7211705676840602918.mp4",
+      "duration_seconds": 78.09,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2725,11 +2725,11 @@
       "title": "1.4万 一个好搭档真是省劲儿#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7209108124924464387",
@@ -2737,11 +2737,11 @@
       "title": "1.5万 我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7206510177317702924",
@@ -2749,11 +2749,11 @@
       "title": "打出一个能高兴一天的学，备战世界公开赛的不要学哦#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7205399670959459623",
