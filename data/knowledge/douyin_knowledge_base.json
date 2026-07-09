@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T18:23:40.911765+00:00",
+  "updated_at": "2026-07-09T18:33:22.166864+00:00",
   "queue_counts": {
-    "transcribed": 120,
+    "transcribed": 127,
     "extraction_failed": 12,
-    "pending": 273
+    "pending": 266
   },
   "knowledge_counts": {
-    "videos": 120,
-    "ready": 107,
-    "needs_visual_review": 13,
+    "videos": 127,
+    "ready": 113,
+    "needs_visual_review": 14,
     "curated": 3
   },
   "videos": [
@@ -5661,6 +5661,333 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7445495930280856892",
+      "title": "遁地炮 14岁女孩，手无缚鸡之力的强力进攻，比较适合女生和业余球友，一定要确定手上动作正确的情况下增加这种跳法，不然容易大臂使用过多",
+      "url": "https://www.douyin.com/video/7445495930280856892",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 165.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7445495930280856892.json",
+      "teaching_note": {
+        "topic": "遁地炮 14岁女孩",
+        "key_evidence": [
+          {
+            "timestamp": "00:24-00:31",
+            "text": "你虽然有这种抬腿的动作但是你重心并没有往前压然后你的这个就完全没有抬腿"
+          },
+          {
+            "timestamp": "00:45-00:51",
+            "text": "可能也好看一点但是一定要把重心有一种往前压的感觉"
+          },
+          {
+            "timestamp": "00:56-01:11",
+            "text": "知道没有整个把人的重心给我压到你的左前方左前方"
+          },
+          {
+            "timestamp": "01:24-01:35",
+            "text": "然后再夹进来和这个发力一起上来好"
+          },
+          {
+            "timestamp": "01:57-02:00",
+            "text": "对了重心也压出来了左"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:09-00:14",
+            "text": "首先重杀现在你俩都有一个共同的问题就你俩左手都没用上"
+          },
+          {
+            "timestamp": "02:13-02:16",
+            "text": "我又不让你做杀上网又不要干什么咱就双打重杀"
+          },
+          {
+            "timestamp": "02:26-02:30",
+            "text": "夺不找球可不能站死了看"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:26-00:32",
+            "text": "但是你重心并没有往前压然后你的这个就完全没有抬腿重杀我们怎么做"
+          },
+          {
+            "timestamp": "00:43-00:47",
+            "text": "那女生的话你可以把脚这样勾起来一点可能也好看一点"
+          },
+          {
+            "timestamp": "00:45-00:51",
+            "text": "可能也好看一点但是一定要把重心有一种往前压的感觉"
+          },
+          {
+            "timestamp": "01:22-01:31",
+            "text": "你把这个给我弄进来然后再夹进来和这个发力一起上来"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7441796812475747641",
+      "title": "手与球拍 只是说合适，没有对错，有的人手腕用的多，或者击球点靠外，愿意低点打，那就也能用",
+      "url": "https://www.douyin.com/video/7441796812475747641",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "握拍与基本动作",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 33.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7441796812475747641.json",
+      "teaching_note": {
+        "topic": "手与球拍 只是说合适",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:06-00:15",
+            "text": "不管是正手還是反手我們都可以把小臂和球拍握得更直一些這樣的話握攀軌跡更容易正"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7440406891664133428",
+      "title": "压球新讲 就算追求贴球发力，也得是建立在能把动作做完的基础上贴，怕打不到球也会本能的把球拍接近球而失去发力空间，这都是不对的",
+      "url": "https://www.douyin.com/video/7440406891664133428",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 72.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7440406891664133428.json",
+      "teaching_note": {
+        "topic": "压球新讲 就算追求贴球发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:22-00:29",
+            "text": "用动作的这个后半段打着球所以你的架拍要离球远就可以压下去"
+          },
+          {
+            "timestamp": "00:28-00:32",
+            "text": "就可以压下去就像杀球你的球拍离球要远"
+          },
+          {
+            "timestamp": "00:35-00:38",
+            "text": "你来发个球就跟杀球一样你怕打不着"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:25-00:30",
+            "text": "所以你的架拍要离球远就可以压下去就像杀球"
+          },
+          {
+            "timestamp": "00:30-00:36",
+            "text": "你的球拍离球要远你才可以把它做到后半段你来发个球"
+          },
+          {
+            "timestamp": "00:50-00:54",
+            "text": "你压不下去了所以我们应该怎么样把拍架的离球远一点"
+          },
+          {
+            "timestamp": "00:55-01:11",
+            "text": "架远一点那自然而然就可以下去了人在家中堂球技新中掌"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7432633273060314408",
+      "title": "如何快速恢复对抗能力 觉得训练的时候实在不行了，就可以直接最后一个项目了",
+      "url": "https://www.douyin.com/video/7432633273060314408",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 184.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7432633273060314408.json",
+      "teaching_note": {
+        "topic": "如何快速恢复对抗能力 觉得训练的时候实在不行了",
+        "key_evidence": [
+          {
+            "timestamp": "00:34-00:40",
+            "text": "就是我不可以打高远球但是我可以杀球和调球那么这段训练主要是恢复进攻能力"
+          },
+          {
+            "timestamp": "00:36-00:54",
+            "text": "但是我可以杀球和调球那么这段训练主要是恢复进攻能力和进攻的稳定性还有连贯的稳定性"
+          },
+          {
+            "timestamp": "00:38-00:55",
+            "text": "那么这段训练主要是恢复进攻能力和进攻的稳定性还有连贯的稳定性因为我的体力有限"
+          },
+          {
+            "timestamp": "01:00-01:06",
+            "text": "对方不可以打高远球但是可以任意的杀球和调球我尽量把球给它挑起来"
+          },
+          {
+            "timestamp": "01:06-01:31",
+            "text": "让它去组织进攻我来练习低重心 防守和接掉如果想要速成恢复"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:16-00:28",
+            "text": "这样主要是练习我的稳定性被动摆脱能力和挣扎能力时间可以根据自己的实际情况来决定"
+          },
+          {
+            "timestamp": "01:45-02:45",
+            "text": "会把刚才的高质量训练的感觉给破坏掉对抗中再次精疲力尽就不能再打了再打的话有可能会受伤"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:08",
+            "text": "如果很久没有对抗了通过哪些训练可以快速的恢复对抗能力呢第一段训练两点空四点"
+          },
+          {
+            "timestamp": "00:18-00:30",
+            "text": "被动摆脱能力和挣扎能力时间可以根据自己的实际情况来决定感觉已经跑不动了"
+          },
+          {
+            "timestamp": "01:31-01:37",
+            "text": "那么训练必须要有密度那么这段训练必须要练到精疲力尽感觉确实打不动了"
+          },
+          {
+            "timestamp": "01:45-02:45",
+            "text": "会把刚才的高质量训练的感觉给破坏掉对抗中再次精疲力尽就不能再打了再打的话有可能会受伤"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7427416335900020008",
+      "title": "华云纵 入门是实用假动作，熟练后可以发展成花活，去参加职业比赛的朋友不用看后面的",
+      "url": "https://www.douyin.com/video/7427416335900020008",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 87.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7427416335900020008.json",
+      "teaching_note": {
+        "topic": "华云纵 入门是实用假动作",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:30-00:34",
+            "text": "一 二接下来再记住一个口诀叫一短一长"
+          },
+          {
+            "timestamp": "00:38-00:53",
+            "text": "短长学会了就可以找一个小伙伴来给自己扔球熟练掌握之后还可以衔接各种变化"
+          },
+          {
+            "timestamp": "00:40-01:04",
+            "text": "学会了就可以找一个小伙伴来给自己扔球熟练掌握之后还可以衔接各种变化正手同理"
+          },
+          {
+            "timestamp": "01:16-01:23",
+            "text": "既然是一套假动作那么我们再给它起一个朗朗上口的名字华云宗"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7423714121620737315",
+      "title": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？",
+      "url": "https://www.douyin.com/video/7423714121620737315",
+      "category": "双打战术",
+      "tags": [
+        "双打战术"
+      ],
+      "duration_seconds": 46.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-005/7423714121620737315.json",
+      "teaching_note": {
+        "topic": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7422121561559272739",
+      "title": "低姿准备 有低姿态准备，也有高姿态的准备，可以不用，不能不会，因为除了累其他的都是优点",
+      "url": "https://www.douyin.com/video/7422121561559272739",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 125.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-005/7422121561559272739.json",
+      "teaching_note": {
+        "topic": "低姿准备 有低姿态准备",
+        "key_evidence": [
+          {
+            "timestamp": "00:07-00:12",
+            "text": "来做一个 看看压低重心的拖这个背"
+          },
+          {
+            "timestamp": "00:15-00:21",
+            "text": "看好重心是要压低的但是你看教练这个从侧面看教练"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:32-01:37",
+            "text": "好 来不要让我给到你人有这种拱 拱上下上下"
+          },
+          {
+            "timestamp": "01:35-01:40",
+            "text": "拱 拱上下上下不要让我有这种感觉始终感觉你一个人脑袋看"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:35-00:40",
+            "text": "这样准备就能保证我你看往前傾可以保证我接这种前场啊接杀"
+          },
+          {
+            "timestamp": "00:40-00:47",
+            "text": "接杀你看我是不需要再往前探的了如果你站这么高"
+          },
+          {
+            "timestamp": "01:44-01:50",
+            "text": "好 好对 注意好"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {

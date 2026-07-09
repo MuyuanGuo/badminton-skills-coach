@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T18:23:27.661314+00:00",
+  "updated_at": "2026-07-09T18:33:14.402353+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 120,
+    "transcribed": 127,
     "extraction_failed": 12,
-    "pending": 273
+    "pending": 266
   },
   "items": [
     {
@@ -1441,10 +1441,10 @@
       "title": "遁地炮 14岁女孩，手无缚鸡之力的强力进攻，比较适合女生和业余球友，一定要确定手上动作正确的情况下增加这种跳法，不然容易大臂使用过多#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7445495930280856892.mp4",
+      "duration_seconds": 165.072,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1453,10 +1453,10 @@
       "title": "手与球拍 只是说合适，没有对错，有的人手腕用的多，或者击球点靠外，愿意低点打，那就也能用#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7441796812475747641.mp4",
+      "duration_seconds": 33.415,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1465,10 +1465,10 @@
       "title": "压球新讲 就算追求贴球发力，也得是建立在能把动作做完的基础上贴，怕打不到球也会本能的把球拍接近球而失去发力空间，这都是不对的#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7440406891664133428.mp4",
+      "duration_seconds": 72.517,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1477,10 +1477,10 @@
       "title": "如何快速恢复对抗能力 觉得训练的时候实在不行了，就可以直接最后一个项目了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7432633273060314408.mp4",
+      "duration_seconds": 184.02,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1489,10 +1489,10 @@
       "title": "华云纵 入门是实用假动作，熟练后可以发展成花活，去参加职业比赛的朋友不用看后面的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7427416335900020008.mp4",
+      "duration_seconds": 87.378,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1501,10 +1501,10 @@
       "title": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？#羽毛球 #刘辉羽毛球",
       "category": "双打战术",
       "tags": "双打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7423714121620737315.mp4",
+      "duration_seconds": 46.372,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1513,10 +1513,10 @@
       "title": "低姿准备 有低姿态准备，也有高姿态的准备，可以不用，不能不会，因为除了累其他的都是优点#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-005/7422121561559272739.m4a",
+      "duration_seconds": 124.994,
+      "attempts": 1,
       "error": null
     },
     {
