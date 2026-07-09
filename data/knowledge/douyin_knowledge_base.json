@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T22:58:56.010660+00:00",
+  "updated_at": "2026-07-09T23:02:45.079669+00:00",
   "queue_counts": {
-    "transcribed": 219,
+    "transcribed": 222,
     "extraction_failed": 15,
-    "pending": 171
+    "pending": 168
   },
   "knowledge_counts": {
-    "videos": 219,
-    "ready": 187,
-    "needs_visual_review": 32,
+    "videos": 222,
+    "ready": 189,
+    "needs_visual_review": 33,
     "curated": 3
   },
   "videos": [
@@ -10609,6 +10609,147 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7203541969530883361",
+      "title": "针对会快出手的朋友们，不会的得先学出手技术",
+      "url": "https://www.douyin.com/video/7203541969530883361",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-020/7203541969530883361.json",
+      "teaching_note": {
+        "topic": "针对会快出手的朋友们",
+        "key_evidence": [
+          {
+            "timestamp": "00:14-00:19",
+            "text": "我要的给你一个什么感觉爆发力出假牌看 准备"
+          },
+          {
+            "timestamp": "00:18-00:22",
+            "text": "看 准备什么爆发力出假牌不要慢慢伸出去"
+          },
+          {
+            "timestamp": "00:35-00:41",
+            "text": "出 发 出 腿 假发力懂不懂这感觉"
+          },
+          {
+            "timestamp": "00:43-00:50",
+            "text": "我的要求是先让动作出静止爆发力出框架出牌"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:19-00:23",
+            "text": "什么爆发力出假牌不要慢慢伸出去快点伸出去"
+          },
+          {
+            "timestamp": "00:55-01:00",
+            "text": "携带 日后球拍不要晃好 出"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:22-00:27",
+            "text": "快点伸出去然后让球拍先有一个静止然后再出手"
+          },
+          {
+            "timestamp": "00:23-00:28",
+            "text": "然后让球拍先有一个静止然后再出手后场也是"
+          },
+          {
+            "timestamp": "00:27-00:32",
+            "text": "后场也是还先别动 先静止然后再出 你千万别"
+          },
+          {
+            "timestamp": "00:28-00:35",
+            "text": "还先别动 先静止然后再出 你千万别懂不懂"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7202800263588105510",
+      "title": "还有胳膊千万不能绷直，自然伸直就好",
+      "url": "https://www.douyin.com/video/7202800263588105510",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 123.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-020/7202800263588105510.json",
+      "teaching_note": {
+        "topic": "还有胳膊千万不能绷直",
+        "key_evidence": [
+          {
+            "timestamp": "00:19-00:24",
+            "text": "第二个那么我们这个时候的握拍如果想要压住球的话"
+          },
+          {
+            "timestamp": "00:59-01:08",
+            "text": "球拍难以较正那这个都是会影响我们发力的因素关于反手转着圈杀球呢"
+          },
+          {
+            "timestamp": "01:01-01:09",
+            "text": "那这个都是会影响我们发力的因素关于反手转着圈杀球呢大家不知道的几个点"
+          },
+          {
+            "timestamp": "01:18-01:24",
+            "text": "那我是不可能再从这边转也就是说它是回动需要它顺着这个转圈的惯性"
+          },
+          {
+            "timestamp": "01:46-01:52",
+            "text": "这个挥挂会更短促击招球的这下爆发力会更大球拍的形变也会更大"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:36-00:41",
+            "text": "那这个球就不好压了我们需要的是顶到偏右边的这个小栏或者是十指拇指"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "那我人是一个非常快的这样的一个姿势那我是不可能再从这边转也就是说它是回动需要"
+          },
+          {
+            "timestamp": "01:18-01:24",
+            "text": "那我是不可能再从这边转也就是说它是回动需要它顺着这个转圈的惯性"
+          },
+          {
+            "timestamp": "01:25-01:31",
+            "text": "直接转了一圈那这是捷击反手捷击需要那还有一种情况呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7200204622852623628",
+      "title": "这次确实是恢复局了，晚上直播",
+      "url": "https://www.douyin.com/video/7200204622852623628",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 187.7,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-020/7200204622852623628.json",
+      "teaching_note": {
+        "topic": "这次确实是恢复局了，晚上直播",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {

@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T22:58:55.317676+00:00",
+  "updated_at": "2026-07-09T23:02:44.541417+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 219,
+    "transcribed": 222,
     "extraction_failed": 15,
-    "pending": 171
+    "pending": 168
   },
   "items": [
     {
@@ -2764,8 +2764,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7203541969530883361",
@@ -2773,10 +2773,10 @@
       "title": "针对会快出手的朋友们，不会的得先学出手技术#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-020/7203541969530883361.mp4",
+      "duration_seconds": 76.997,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2785,10 +2785,10 @@
       "title": "还有胳膊千万不能绷直，自然伸直就好#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-020/7202800263588105510.mp4",
+      "duration_seconds": 123.437,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2800,8 +2800,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7200204622852623628",
@@ -2809,10 +2809,10 @@
       "title": "这次确实是恢复局了，晚上直播#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-020/7200204622852623628.mp4",
+      "duration_seconds": 187.687,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2824,8 +2824,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7195014413932367116",
@@ -2836,8 +2836,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7193151905139395872",
