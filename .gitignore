@@ -1,0 +1,36 @@
+# Local runtimes and caches
+.venv/
+.runtime/
+node_modules
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Git/iCloud recovery artifacts
+.git-offline-backup/
+*.offline-backup
+
+# Copyright-sensitive and temporary media
+data/raw_videos/
+data/transcripts/
+data/tmp/
+
+# Generated heavyweight or temporary artifacts
+output/*.xlsx
+output/*.inspect.ndjson
+output/*-preview.png
+
+# Unavailable legacy iCloud placeholders superseded by current artifacts
+data/video_sources.csv
+data/notes/note_template.md
+data/knowledge/liuhui_badminton_map.json
+scripts/generate_drawio.py
+output/.gitkeep
+output/liuhui-badminton-map.drawio
+
+# Local secrets and environment configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
