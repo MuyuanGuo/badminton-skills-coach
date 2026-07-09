@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T21:47:30.809555+00:00",
+  "updated_at": "2026-07-09T22:07:07.059616+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 197,
+    "transcribed": 204,
     "extraction_failed": 12,
-    "pending": 196
+    "pending": 189
   },
   "items": [
     {
@@ -2437,10 +2437,10 @@
       "title": "这种情况下是对方防守的好，过来的平，防远网转推的方法，如果有机会，还是越快抢点越高更好#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7258462271670586658.mp4",
+      "duration_seconds": 105.025,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2449,10 +2449,10 @@
       "title": "正手发小球的教学，以前的作品里有，没有好的发球，只有合适的发球#羽毛球 #刘辉羽毛球 #羽毛球教学 #迈倍力 @抖音小助手",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7254755365995285812.mp4",
+      "duration_seconds": 114.824,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2461,10 +2461,10 @@
       "title": "第一局双方都在摸索，失误都比较多，因为在引领节奏，所以我消耗更大，第二局都是多拍了，黄教练也在一直拆解我的球路，我14比12的多拍关键分没咬下来，导致被逆转，虽然没打决胜局，但是这场比赛基本已经在这一分输掉了，非常开心的一场切磋，视频制作5个小时，如果大家都能看懂，我在做第二局的技战术，不然太耗费精力，因为已经不是简单的技战术了，非常复杂#羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7252154554828033295.mp4",
+      "duration_seconds": 603.511,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2473,10 +2473,10 @@
       "title": "这次别再说对手弱了，很年轻的健将@源式羽球 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负#羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7249558167288335656.mp4",
+      "duration_seconds": 405.817,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2485,10 +2485,10 @@
       "title": "4.2万 三个教练各教一个地方，齐心协力做教学，欢迎黄教练来津#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7248074193118547240.mp4",
+      "duration_seconds": 202.781,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2509,10 +2509,10 @@
       "title": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅#羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7245471347210554639.mp4",
+      "duration_seconds": 200.041,
+      "attempts": 1,
       "error": null
     },
     {
@@ -2521,10 +2521,10 @@
       "title": "1.0万 我知道很多人学不会握拍，是不知道虎口具体是哪里，这次你们会了吗？#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-016/7242877295336164642.mp4",
+      "duration_seconds": 163.725,
+      "attempts": 1,
       "error": null
     },
     {
