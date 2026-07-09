@@ -198,8 +198,9 @@ def append_to_teaching_and_queue(classified):
         if item["video_id"] not in queue_existing
     ]
 
-    if teaching_inserts:
-        teaching["videos"] = teaching_inserts + teaching["videos"]
+    if classified:
+        if teaching_inserts:
+            teaching["videos"] = teaching_inserts + teaching["videos"]
         teaching["generated_at"] = now_iso()
         teaching["counts"]["total"] = teaching["counts"].get("total", 0) + len(classified)
         teaching["counts"]["kept_teaching"] = len(teaching["videos"])

@@ -19,6 +19,8 @@ data/tmp/
 output/*.xlsx
 output/*.inspect.ndjson
 output/*-preview.png
+output/douyin-update-report.json
+output/douyin-monitor-state.json
 
 # Unavailable legacy iCloud placeholders superseded by current artifacts
 data/video_sources.csv

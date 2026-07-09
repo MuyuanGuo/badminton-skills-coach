@@ -122,7 +122,9 @@ data/
 scripts/
   classify_douyin_catalog.mjs      Topic classification helper
   check_douyin_updates.py          Detect newly observed homepage videos
+  douyin_profile_snapshot_dom.js   Browser-page snapshot collector
   init_douyin_queue.py             Queue initialization
+  monitor_douyin_updates.py        Update-monitor orchestration
   process_douyin_ready_batch.py    Automated batch processor
   batch_transcribe_directory.py    Directory transcription runner
   build_douyin_knowledge.py        Knowledge-base builder
@@ -206,6 +208,25 @@ monitoring. It compares a newly observed Douyin profile snapshot with the local
 index, classifies any new videos, and writes a report. By default it does not
 modify the repository.
 
+The browser-side snapshot collector is:
+
+```text
+scripts/douyin_profile_snapshot_dom.js
+```
+
+Run it inside an authenticated browser page that is already open on the
+`刘辉羽毛球` Douyin profile. It defines:
+
+```javascript
+await window.__collectDouyinProfileSnapshot({ scrollRounds: 8 })
+```
+
+Save the returned JSON to:
+
+```text
+data/tmp/douyin_profile_latest.json
+```
+
 The input should be a JSON file with either a top-level `videos` list, `items`
 list, or a raw list. Each item should include at least a video ID or URL, plus
 title text when available:
@@ -256,6 +277,51 @@ It does not download, transcribe, or update the skill by itself. That separation
 keeps monitoring safe: finding new videos and processing media remain two
 auditable steps.
 
+### Run The Monitor
+
+`scripts/monitor_douyin_updates.py` wraps the update check and optional
+repository actions:
+
+```bash
+python3 scripts/monitor_douyin_updates.py \
+  --snapshot data/tmp/douyin_profile_latest.json \
+  --validate
+```
+
+To apply new teaching candidates, validate, commit, and push:
+
+```bash
+python3 scripts/monitor_douyin_updates.py \
+  --snapshot data/tmp/douyin_profile_latest.json \
+  --apply \
+  --validate \
+  --commit \
+  --push
+```
+
+The monitor writes ignored runtime files:
+
+```text
+output/douyin-update-report.json
+output/douyin-monitor-state.json
+```
+
+If you have a separate command that refreshes the snapshot, pass it with
+`--snapshot-command`:
+
+```bash
+python3 scripts/monitor_douyin_updates.py \
+  --snapshot data/tmp/douyin_profile_latest.json \
+  --snapshot-command ./your_snapshot_exporter.sh \
+  --apply \
+  --validate
+```
+
+This makes the monitoring layer independent from the browser mechanism. The
+current Codex workflow can provide the snapshot from an already-authenticated
+in-app browser; a future local setup can replace it with Playwright, Chrome
+remote debugging, or another authenticated exporter.
+
 ### Process Queued Videos
 
 The queue file is:
@@ -297,10 +363,10 @@ The runner deliberately does not store raw media or transcripts in Git.
 For a semi-automatic monitor, run these steps on a schedule:
 
 1. Export the latest visible `刘辉羽毛球` homepage items to
-   `data/tmp/douyin_profile_latest.json`.
-2. Run `scripts/check_douyin_updates.py` without `--apply`.
+   `data/tmp/douyin_profile_latest.json` using the browser snapshot collector.
+2. Run `scripts/monitor_douyin_updates.py` without `--apply`.
 3. Review `output/douyin-update-report.json`.
-4. Rerun with `--apply` if the new teaching candidates look correct.
+4. Rerun the monitor with `--apply` if the new teaching candidates look correct.
 5. Use the existing batch media extraction and
    `scripts/process_douyin_ready_batch.py` pipeline to process the new queue
    items.
