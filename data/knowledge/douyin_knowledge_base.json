@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:35:18.857249+00:00",
+  "updated_at": "2026-07-09T23:38:27.391116+00:00",
   "queue_counts": {
-    "transcribed": 240,
-    "extraction_failed": 27,
-    "pending": 138
+    "transcribed": 241,
+    "extraction_failed": 29,
+    "pending": 135
   },
   "knowledge_counts": {
-    "videos": 240,
-    "ready": 201,
+    "videos": 241,
+    "ready": 202,
     "needs_visual_review": 39,
     "curated": 3
   },
@@ -11588,6 +11588,31 @@
           {
             "timestamp": "00:46-00:49",
             "text": "正常节奏你可以转过来现在特别快"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7151589626031901992",
+      "title": "兄弟们好久没安排假动作了，安排一波",
+      "url": "https://www.douyin.com/video/7151589626031901992",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 50.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-028/7151589626031901992.json",
+      "teaching_note": {
+        "topic": "兄弟们好久没安排假动作了",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:17-00:28",
+            "text": "我们现在看到的是正反手 假挑真放由于时间有限 大家可以先告诉我你们想学哪套 随后教学奉上"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

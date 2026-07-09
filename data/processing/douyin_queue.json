@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:35:18.231284+00:00",
+  "updated_at": "2026-07-09T23:38:26.791206+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 240,
-    "extraction_failed": 27,
-    "pending": 138
+    "transcribed": 241,
+    "extraction_failed": 29,
+    "pending": 135
   },
   "items": [
     {
@@ -3157,10 +3157,10 @@
       "title": "本视频适合已经掌握一定程度，就差临门一脚的球友朋友们#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3169,10 +3169,10 @@
       "title": "一句话，挡的近，人往前走。挡的远，不要动#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 1,
+      "attempts": 2,
       "error": "media URL not observed after bounded wait"
     },
     {
@@ -3196,8 +3196,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7151961376448138531",
@@ -3208,8 +3208,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7151589626031901992",
@@ -3217,10 +3217,10 @@
       "title": "兄弟们好久没安排假动作了，安排一波#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-028/7151589626031901992.mp4",
+      "duration_seconds": 50.573,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3232,8 +3232,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7149363344649047311",
@@ -3244,8 +3244,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7148990784363138344",
