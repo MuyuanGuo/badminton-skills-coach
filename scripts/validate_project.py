@@ -44,10 +44,10 @@ if len(knowledge["videos"]) != 25:
 queue = json.loads(
     (ROOT / "data" / "processing" / "douyin_queue.json").read_text(encoding="utf-8")
 )
-if len(queue["items"]) != 405:
-    raise SystemExit(f"Expected 405 teaching videos in queue, found {len(queue['items'])}")
-if sum(queue["counts"].values()) != 405:
-    raise SystemExit("Douyin queue counts do not sum to 405")
+if len(queue["items"]) < 405:
+    raise SystemExit(f"Expected at least 405 teaching videos in queue, found {len(queue['items'])}")
+if sum(queue["counts"].values()) != len(queue["items"]):
+    raise SystemExit("Douyin queue counts do not sum to the queue length")
 
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")

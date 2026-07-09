@@ -121,6 +121,7 @@ data/
 
 scripts/
   classify_douyin_catalog.mjs      Topic classification helper
+  check_douyin_updates.py          Detect newly observed homepage videos
   init_douyin_queue.py             Queue initialization
   process_douyin_ready_batch.py    Automated batch processor
   batch_transcribe_directory.py    Directory transcription runner
@@ -198,6 +199,65 @@ The skill reads its bundled pilot knowledge base and uses
 
 ## Continue Processing More Douyin Videos
 
+### Detect New Homepage Videos
+
+Use `scripts/check_douyin_updates.py` as the safe entrypoint for update
+monitoring. It compares a newly observed Douyin profile snapshot with the local
+index, classifies any new videos, and writes a report. By default it does not
+modify the repository.
+
+The input should be a JSON file with either a top-level `videos` list, `items`
+list, or a raw list. Each item should include at least a video ID or URL, plus
+title text when available:
+
+```json
+{
+  "videos": [
+    {
+      "video_id": "1234567890",
+      "url": "https://www.douyin.com/video/1234567890",
+      "title": "后场被动架拍调整 #羽毛球教学 #刘辉羽毛球",
+      "raw_text": "后场被动架拍调整 #羽毛球教学 #刘辉羽毛球"
+    }
+  ]
+}
+```
+
+Run a dry check:
+
+```bash
+python3 scripts/check_douyin_updates.py \
+  --input data/tmp/douyin_profile_latest.json
+```
+
+The script writes `output/douyin-update-report.json` with counts and classified
+new candidates:
+
+- `teaching`: new videos that look like teaching content
+- `review`: new videos that mix teaching signals with promotion signals
+- `excluded`: new videos that look like ads, equipment-only posts, or non-teaching content
+
+After reviewing the report, apply safe teaching additions to the local index and
+processing queue:
+
+```bash
+python3 scripts/check_douyin_updates.py \
+  --input data/tmp/douyin_profile_latest.json \
+  --apply
+```
+
+This updates:
+
+- `data/douyin_video_index.json`
+- `data/douyin_teaching_filtered.json`
+- `data/processing/douyin_queue.json`
+
+It does not download, transcribe, or update the skill by itself. That separation
+keeps monitoring safe: finding new videos and processing media remain two
+auditable steps.
+
+### Process Queued Videos
+
 The queue file is:
 
 ```text
@@ -231,6 +291,23 @@ The batch runner will:
 8. Commit and push the changed structured artifacts.
 
 The runner deliberately does not store raw media or transcripts in Git.
+
+### Suggested Monitoring Loop
+
+For a semi-automatic monitor, run these steps on a schedule:
+
+1. Export the latest visible `刘辉羽毛球` homepage items to
+   `data/tmp/douyin_profile_latest.json`.
+2. Run `scripts/check_douyin_updates.py` without `--apply`.
+3. Review `output/douyin-update-report.json`.
+4. Rerun with `--apply` if the new teaching candidates look correct.
+5. Use the existing batch media extraction and
+   `scripts/process_douyin_ready_batch.py` pipeline to process the new queue
+   items.
+
+The update check is intentionally outside the skill runtime. The skill stays
+fast and deterministic, while Douyin monitoring can handle browser login,
+platform changes, and occasional manual review.
 
 ## Promote The Full Knowledge Base Into The Skill
 
