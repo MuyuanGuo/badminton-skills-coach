@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T16:45:49.208491+00:00",
+  "updated_at": "2026-07-09T17:29:29.771698+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 88,
+    "transcribed": 113,
     "extraction_failed": 12,
-    "pending": 305
+    "pending": 280
   },
   "items": [
     {
@@ -1009,10 +1009,10 @@
       "title": "滚网搓球 双打网前有人看守时有奇效#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7509355373729762619.mp4",
+      "duration_seconds": 77.254,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1021,10 +1021,10 @@
       "title": "反手发后场 现在的规则是不超过1.15高度就可以，其实不用太在乎球拍在哪结束#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7508222669708463420.m4a",
+      "duration_seconds": 86.589,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1045,10 +1045,10 @@
       "title": "4.1万 重杀，遁地炮，跳杀连贯 很多年不见了，很怀念带她们训练的日子#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7506362888166083897.mp4",
+      "duration_seconds": 226.512,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1069,10 +1069,10 @@
       "title": "双打网前意识 双打只要能让球往下飞，对面回球就是往上飞的，不一定要打硬，打软点对面更难借力#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7504391919716273468.mp4",
+      "duration_seconds": 188.617,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1081,10 +1081,10 @@
       "title": "后场发力精简版 不发力确实不会受伤，可关键那样也不厉害啊！！！#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7502895214820085049.mp4",
+      "duration_seconds": 95.459,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1093,10 +1093,10 @@
       "title": "2.4万 双打发接发 永远考虑对手出球最快的位置，慢的位置球真来了再说#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发球与接发",
       "tags": "发球与接发；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7501542236061420859.mp4",
+      "duration_seconds": 86.542,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1105,10 +1105,10 @@
       "title": "7.8万 高政泽vs张旌懿 第一局开局试探第二局越打越快 精彩对抗，相比教学，我其实更喜欢解说#羽毛球 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7500519808157371711.mp4",
+      "duration_seconds": 591.716,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1117,10 +1117,10 @@
       "title": "4.1万 反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7499776424493075772.mp4",
+      "duration_seconds": 49.622,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1141,10 +1141,10 @@
       "title": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7498295344284093755.mp4",
+      "duration_seconds": 36.201,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1153,10 +1153,10 @@
       "title": "正手挑，弹挑 正手挑最难的就是肘，大家分享给不会的伙伴吧#羽毛球 #刘辉羽毛球 #羽毛球教学",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7497098752897879355.m4a",
+      "duration_seconds": 69.87,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1165,10 +1165,10 @@
       "title": "1.3万 双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气#刘辉羽毛球 #羽毛球",
       "category": "双打战术",
       "tags": "双打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7496715538836704571.mp4",
+      "duration_seconds": 168.276,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1177,10 +1177,10 @@
       "title": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7496238975796333881.mp4",
+      "duration_seconds": 23.663,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1189,10 +1189,10 @@
       "title": "腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7494729488699559225.mp4",
+      "duration_seconds": 35.969,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1201,10 +1201,10 @@
       "title": "爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调#羽毛球 #羽毛球教学 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7492357671853526329.mp4",
+      "duration_seconds": 273.277,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1213,10 +1213,10 @@
       "title": "被动位变线 这个位置是比较被动的，主动的在身前的，直接用小臂手腕就可以挡过去#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7491780200468843833.mp4",
+      "duration_seconds": 52.688,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1225,10 +1225,10 @@
       "title": "虎落平阳 找一些视角给大家看看，为什么打起比赛来平时练的步法用不到，因为出手一致，加上球速远快于步法速度，就没法打了解决方法1，继续提升步法 2更加完美的取位 3给对手制造麻烦#羽毛球 #刘辉羽毛球",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7491244893893938492.mp4",
+      "duration_seconds": 66.062,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1237,10 +1237,10 @@
       "title": "单打发球 人最舒服的状态就是顺着球头发力#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发球与接发",
       "tags": "发球与接发；发力与身体运用；单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7489412105641168187.mp4",
+      "duration_seconds": 91.233,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1249,10 +1249,10 @@
       "title": "2.7万 与高政泽二战 早知道不用他的球拍了，不过这次给他造成了不小的麻烦，并且最后逼出了他的教学视频#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7488538000524119356.mp4",
+      "duration_seconds": 265.243,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1261,10 +1261,10 @@
       "title": "羽球科普 近网球的出现意味着四方球的出现，双方的跑动都会加大，球的弧度会变高，适合自己体力或者技术及稳定性比对面有优势时使用#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7488280037955816762.mp4",
+      "duration_seconds": 111.573,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1273,10 +1273,10 @@
       "title": "网前撤后场手部细节 场景是网前撤后场，不是中场撤后场，只要把肘先抬起来到合适的位置怎么抬怎么摆都可以#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；网前技术；中前场与抽挡；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7486788550298471739.mp4",
+      "duration_seconds": 144.128,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1285,10 +1285,10 @@
       "title": "动作比较 大家需要根据能力选择球拍，而不同的重量的球拍，从动作的体现上会有区别，但是动作的本质都是一样的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7486058135547891004.mp4",
+      "duration_seconds": 217.271,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1297,10 +1297,10 @@
       "title": "发力第二集 大家不要错误的去伸胳膊，要学会利用身体去拿高点#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7485692231404342586.mp4",
+      "duration_seconds": 104.422,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1309,10 +1309,10 @@
       "title": "发力第一集 大家没看懂就在看一遍，做辅助训练的时候小臂一定要特别放松#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7484563688096091449.mp4",
+      "duration_seconds": 159.081,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1321,10 +1321,10 @@
       "title": "发球变化 发球隐蔽是非常重要的#羽毛球 #羽毛球教学 #刘辉羽毛球",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7483346020332522812.mp4",
+      "duration_seconds": 27.703,
+      "attempts": 1,
       "error": null
     },
     {
@@ -1333,10 +1333,10 @@
       "title": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在挑战#羽毛球 ##羽毛球单打 #刘辉羽毛球",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-004/7480852601798511929.mp4",
+      "duration_seconds": 140.877,
+      "attempts": 1,
       "error": null
     },
     {

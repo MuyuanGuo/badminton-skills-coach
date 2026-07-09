@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T16:45:57.248104+00:00",
+  "updated_at": "2026-07-09T17:29:38.273332+00:00",
   "queue_counts": {
-    "transcribed": 88,
+    "transcribed": 113,
     "extraction_failed": 12,
-    "pending": 305
+    "pending": 280
   },
   "knowledge_counts": {
-    "videos": 88,
-    "ready": 82,
-    "needs_visual_review": 6,
+    "videos": 113,
+    "ready": 103,
+    "needs_visual_review": 10,
     "curated": 3
   },
   "videos": [
@@ -4008,6 +4008,110 @@
       }
     },
     {
+      "video_id": "7509355373729762619",
+      "title": "滚网搓球 双打网前有人看守时有奇效",
+      "url": "https://www.douyin.com/video/7509355373729762619",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7509355373729762619.json",
+      "teaching_note": {
+        "topic": "滚网搓球 双打网前有人看守时有奇效",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:10",
+            "text": "我们喜欢把拍面向鞋上方然后把整个挥拍向下来搓球这样能够控制球的高度"
+          },
+          {
+            "timestamp": "00:17-00:25",
+            "text": "仅仅有一个能够撞到或者弹到往来的瞬间但是如果我把整个搓球的轨迹把这个球拍"
+          },
+          {
+            "timestamp": "00:25-00:32",
+            "text": "这样鞋着翻过来我向我的左前方开始搓球那么这个球就会向我的左前方携着翻"
+          },
+          {
+            "timestamp": "00:38-00:43",
+            "text": "现在我们把拍的力起来向右摊开拍面向了鞋上方我只需要再有一个向前的力"
+          },
+          {
+            "timestamp": "00:58-01:05",
+            "text": "那么我们把球拍力起向左边摊开拍面向着右鞋上方我现在只需要有一个向前的力"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:04-00:10",
+            "text": "我们喜欢把拍面向鞋上方然后把整个挥拍向下来搓球这样能够控制球的高度"
+          },
+          {
+            "timestamp": "00:39-00:49",
+            "text": "向右摊开拍面向了鞋上方我只需要再有一个向前的力我们就可以开始滚了"
+          },
+          {
+            "timestamp": "00:41-00:51",
+            "text": "我只需要再有一个向前的力我们就可以开始滚了两个"
+          },
+          {
+            "timestamp": "00:59-01:07",
+            "text": "向左边摊开拍面向着右鞋上方我现在只需要有一个向前的力就可以开始滚了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7508222669708463420",
+      "title": "反手发后场 现在的规则是不超过1.15高度就可以，其实不用太在乎球拍在哪结束",
+      "url": "https://www.douyin.com/video/7508222669708463420",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 86.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7508222669708463420.json",
+      "teaching_note": {
+        "topic": "反手发后场 现在的规则是不超过1.15高度就可以",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:21",
+            "text": "那这样呢 我们没有办法再继续抬肘和顶肘了也就是说你发球的时候只会有一个这样躯身胳膊的发力那肯定捅上劲了呀"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:20",
+            "text": "是你准备动作的时候手太高了那这样呢 我们没有办法再继续抬肘和顶肘了也就是说你发球的时候只会有一个这样躯身胳膊的发力"
+          },
+          {
+            "timestamp": "00:27-00:34",
+            "text": "说明我们大臂就能参与了接下来呢 我们把顶肘动作再加上一个手腕领平带的感觉"
+          },
+          {
+            "timestamp": "00:32-00:39",
+            "text": "手腕领平带的感觉或者外拳手臂这两种方法都是可以的顶肘加手腕领平带"
+          },
+          {
+            "timestamp": "00:55-01:01",
+            "text": "我们就要明白顶完肘之后我们再去做动作这个动作空间是非常大的这个做法"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7506736569824726332",
       "title": "抽挡连贯 我知道有些兄弟很要强，受不了这种屈辱，就是不能承认被动，没关系，打羽毛球吧，它一定会教会你",
       "url": "https://www.douyin.com/video/7506736569824726332",
@@ -4060,6 +4164,78 @@
       }
     },
     {
+      "video_id": "7506362888166083897",
+      "title": "重杀，遁地炮，跳杀连贯 很多年不见了，很怀念带她们训练的日子",
+      "url": "https://www.douyin.com/video/7506362888166083897",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 226.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7506362888166083897.json",
+      "teaching_note": {
+        "topic": "重杀",
+        "key_evidence": [
+          {
+            "timestamp": "00:16-00:23",
+            "text": "你怎么说吧 怎么搞的别人都说我这个双打的杀球太轻了然后我看你发那个蹲地炮我特想去"
+          },
+          {
+            "timestamp": "00:25-00:31",
+            "text": "好不是 健将杀球 我就这么轻吗哇 认真杀了"
+          },
+          {
+            "timestamp": "00:45-00:52",
+            "text": "你要把整个的力给打透的话你不能从这么开始的地方就开始发力你要感觉这里都是很放松的"
+          },
+          {
+            "timestamp": "00:55-01:00",
+            "text": "你再把力给打出去大家可能会觉得贴球发力很难是因为大家放松贴进球之后"
+          },
+          {
+            "timestamp": "02:09-02:15",
+            "text": "因为你从这个角度看如果你人是这样杀球的说白了你人这个卷幅是很难做的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:45-00:52",
+            "text": "你要把整个的力给打透的话你不能从这么开始的地方就开始发力你要感觉这里都是很放松的"
+          },
+          {
+            "timestamp": "01:04-01:09",
+            "text": "BOOM那这样的话是不对的我们应该是放松 贴进球"
+          },
+          {
+            "timestamp": "03:34-03:39",
+            "text": "去找这个感觉不要每一下都全发力感觉能一趴置敌的时候再打"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:24",
+            "text": "别人都说我这个双打的杀球太轻了然后我看你发那个蹲地炮我特想去行"
+          },
+          {
+            "timestamp": "02:04-02:09",
+            "text": "更多的卷幅那这个卷幅一定是向左前方走的为什么向左前方走"
+          },
+          {
+            "timestamp": "03:08-03:13",
+            "text": "你先别低一下就全力你先可以少测一点神咱们主要打点灵观"
+          },
+          {
+            "timestamp": "03:18-03:26",
+            "text": "随着感觉对面越来越支撑不住的时候你感觉你有机会可以一趴置敌的时候你再来全力的重刹"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7505345719160933692",
       "title": "网前摸摸术 双打最厉害的就是让球向下飞，并且对面还借不到力，不要觉得压不下去的发力厉害，对面都能反抽",
       "url": "https://www.douyin.com/video/7505345719160933692",
@@ -4103,6 +4279,250 @@
           {
             "timestamp": "01:09-01:17",
             "text": "稍微摊开一点这时候呢我们只需要向前发力就可以控制好力度就足够了因为现在我的拍面是向鞋上方的"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7504391919716273468",
+      "title": "双打网前意识 双打只要能让球往下飞，对面回球就是往上飞的，不一定要打硬，打软点对面更难借力",
+      "url": "https://www.douyin.com/video/7504391919716273468",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 188.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7504391919716273468.json",
+      "teaching_note": {
+        "topic": "双打网前意识 双打只要能让球往下飞",
+        "key_evidence": [
+          {
+            "timestamp": "01:18-01:23",
+            "text": "这拍子是利益的一旦你出现拍面的横子你这个球就往上飞了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:01-00:08",
+            "text": "哎呦 没了好了 这就是业余球有常见的问题来 扔一个球"
+          },
+          {
+            "timestamp": "00:31-00:35",
+            "text": "刚才你们什么球一个远往你挡到中路 对不对挡到中路很聪明"
+          },
+          {
+            "timestamp": "01:34-01:38",
+            "text": "来不及 随便了你看 这就是什么问题你现在挡了一个中路"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:07-00:12",
+            "text": "来 扔一个球想有个这么高就必须得打到后面去但是这个球你打到后面去"
+          },
+          {
+            "timestamp": "00:45-00:50",
+            "text": "我人就要往上踢再球过往的一瞬间让这个球向下飞就行了"
+          },
+          {
+            "timestamp": "02:09-02:12",
+            "text": "你现在只能挑我绝对不可能让你再回方对不对"
+          },
+          {
+            "timestamp": "02:56-03:02",
+            "text": "反手一抹再把磅给我抬到他的对角线来抓他个回头"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7502895214820085049",
+      "title": "后场发力精简版 不发力确实不会受伤，可关键那样也不厉害啊！！！",
+      "url": "https://www.douyin.com/video/7502895214820085049",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 95.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7502895214820085049.json",
+      "teaching_note": {
+        "topic": "后场发力精简版 不发力确实不会受伤",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:03",
+            "text": "其实后场发力啊真的很简单"
+          },
+          {
+            "timestamp": "00:36-00:43",
+            "text": "当我们的内旋能够让肘朝上拍头朝下拍面朝外的时候也就是我们这个力就卸完了"
+          },
+          {
+            "timestamp": "00:52-00:56",
+            "text": "我会告诉大家这个时候重心应该随右脚来到左脚你的人是歪的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:16-00:21",
+            "text": "我们正确的顶肘是大臂向前小臂不要向前也就是说会体现手腕"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:10",
+            "text": "但是我感觉大家一直在和我而捉迷藏首先我说很多朋友做的都是无效顶肘也就是大臂向前的时候"
+          },
+          {
+            "timestamp": "00:52-00:56",
+            "text": "我会告诉大家这个时候重心应该随右脚来到左脚你的人是歪的"
+          },
+          {
+            "timestamp": "01:12-01:19",
+            "text": "我们可以想象一下我们先把手心转到前面然后我们手腕去向前做一点压腕的动作"
+          },
+          {
+            "timestamp": "01:13-01:22",
+            "text": "我们先把手心转到前面然后我们手腕去向前做一点压腕的动作去引导我挥胖的轨迹是正的"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7501542236061420859",
+      "title": "双打发接发 永远考虑对手出球最快的位置，慢的位置球真来了再说",
+      "url": "https://www.douyin.com/video/7501542236061420859",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 86.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7501542236061420859.json",
+      "teaching_note": {
+        "topic": "双打发接发 永远考虑对手出球最快的位置",
+        "key_evidence": [
+          {
+            "timestamp": "00:07-00:10",
+            "text": "特别简单一会你给我发球你就去跟我对抢"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:00-00:04",
+            "text": "慧哥能不能教教我双打发射发射平时单打打多了双打倒抢不过鞭"
+          },
+          {
+            "timestamp": "00:55-01:05",
+            "text": "它是有一个明显的感觉的对不对好用"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:50-00:55",
+            "text": "你就往反方向我注意了你看吧"
+          },
+          {
+            "timestamp": "01:04-01:10",
+            "text": "好用你可以试试这边你的中间和左边"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7500519808157371711",
+      "title": "高政泽vs张旌懿 第一局开局试探第二局越打越快 精彩对抗，相比教学，我其实更喜欢解说",
+      "url": "https://www.douyin.com/video/7500519808157371711",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 591.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7500519808157371711.json",
+      "teaching_note": {
+        "topic": "高政泽vs张旌懿 第一局开局试探第二局越打越快 精彩对抗",
+        "key_evidence": [
+          {
+            "timestamp": "01:38-02:00",
+            "text": "张经毅这个是左手进行了一个抽杀边线球的质量非常高 是右脚登地发力远网球 突然加力打成抽档"
+          },
+          {
+            "timestamp": "04:49-05:08",
+            "text": "18比17 高正泽反超了比分高正泽在头顶抓到了球之后 并没有急于进攻而是用之前所埋下突击的信息 打出了一个滑拍钓球"
+          },
+          {
+            "timestamp": "05:52-06:09",
+            "text": "球落在了界外钓于中路 拉高远抹扑被反"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:55-02:30",
+            "text": "远网球 突然加力打成抽档在一个非常被动的位置 揭杀挡了一个斜线球高正泽使用了一个正手区域的杀善网"
+          }
+        ],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7499776424493075772",
+      "title": "反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏",
+      "url": "https://www.douyin.com/video/7499776424493075772",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 49.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7499776424493075772.json",
+      "teaching_note": {
+        "topic": "反手跳sha 这是给已经会反手发力的朋友学习的",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:19-00:24",
+            "text": "在最高点的时候击到球千万不要幻想的就是这样转着圈去打"
+          },
+          {
+            "timestamp": "00:29-00:35",
+            "text": "然后挥帕打完了之后从这边落下来不对不对你这个就是转着打了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:13",
+            "text": "正手跳杀咱们是跳起来然后在空中开始挥帕这个是什么呀"
+          },
+          {
+            "timestamp": "00:13-00:18",
+            "text": "看着你球来了你先转过来一边用左脚向上登地"
+          },
+          {
+            "timestamp": "00:27-00:34",
+            "text": "就这样不带旋断的向上几条然后挥帕打完了之后从这边落下来不对不对"
+          },
+          {
+            "timestamp": "00:34-00:38",
+            "text": "你这个就是转着打了一定是在向上的过程中就开始挥帕OK"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
@@ -4170,6 +4590,760 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7498295344284093755",
+      "title": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量",
+      "url": "https://www.douyin.com/video/7498295344284093755",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 36.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-004/7498295344284093755.json",
+      "teaching_note": {
+        "topic": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7497098752897879355",
+      "title": "正手挑，弹挑 正手挑最难的就是肘，大家分享给不会的伙伴吧",
+      "url": "https://www.douyin.com/video/7497098752897879355",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 69.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7497098752897879355.json",
+      "teaching_note": {
+        "topic": "正手挑",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:10",
+            "text": "顶肘就是大臂带动小臂也就是说我做不出顶肘我就没有办法发力因为我们正手的这个动作呢"
+          },
+          {
+            "timestamp": "00:08-00:15",
+            "text": "因为我们正手的这个动作呢我们把拍面伸向于前方这时候我的肘是向着正后方"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:37-00:45",
+            "text": "让我们的肘离开我们的身体它就有了一个可以往前先摆动的空间"
+          },
+          {
+            "timestamp": "00:40-00:46",
+            "text": "它就有了一个可以往前先摆动的空间我们看一下"
+          },
+          {
+            "timestamp": "00:56-00:59",
+            "text": "肯定是没有力但如果我先诶"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7496715538836704571",
+      "title": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
+      "url": "https://www.douyin.com/video/7496715538836704571",
+      "category": "双打战术",
+      "tags": [
+        "双打战术"
+      ],
+      "duration_seconds": 168.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-004/7496715538836704571.json",
+      "teaching_note": {
+        "topic": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7496238975796333881",
+      "title": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看",
+      "url": "https://www.douyin.com/video/7496238975796333881",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 23.7,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-004/7496238975796333881.json",
+      "teaching_note": {
+        "topic": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7494729488699559225",
+      "title": "腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果",
+      "url": "https://www.douyin.com/video/7494729488699559225",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 36.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7494729488699559225.json",
+      "teaching_note": {
+        "topic": "腰腹发力 手放好位置",
+        "key_evidence": [
+          {
+            "timestamp": "00:05-00:18",
+            "text": "加上挥拍动作你就学会了腰腹带动杀球重心放左脚 把我们的手放在左宽上"
+          },
+          {
+            "timestamp": "00:07-00:22",
+            "text": "你就学会了腰腹带动杀球重心放左脚 把我们的手放在左宽上然后举起 记住腰腹发力的方向"
+          },
+          {
+            "timestamp": "00:15-00:25",
+            "text": "重心放左脚 把我们的手放在左宽上然后举起 记住腰腹发力的方向再加上一个反手的挥拍动作"
+          },
+          {
+            "timestamp": "00:18-00:33",
+            "text": "然后举起 记住腰腹发力的方向再加上一个反手的挥拍动作那我就学会反手腰腹发力了"
+          },
+          {
+            "timestamp": "00:22-00:33",
+            "text": "再加上一个反手的挥拍动作那我就学会反手腰腹发力了"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "举起右手 去摸左大腿的拜测记住腰腹发力的方向加上挥拍动作"
+          },
+          {
+            "timestamp": "00:15-00:25",
+            "text": "重心放左脚 把我们的手放在左宽上然后举起 记住腰腹发力的方向再加上一个反手的挥拍动作"
+          },
+          {
+            "timestamp": "00:18-00:33",
+            "text": "然后举起 记住腰腹发力的方向再加上一个反手的挥拍动作那我就学会反手腰腹发力了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7492357671853526329",
+      "title": "爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调",
+      "url": "https://www.douyin.com/video/7492357671853526329",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 273.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7492357671853526329.json",
+      "teaching_note": {
+        "topic": "爆改球友 转髋还有问题",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:08",
+            "text": "想改正一下他后场发力的问题我们看看 让他的后场发力发生变化我们需要多少时间"
+          },
+          {
+            "timestamp": "01:21-01:25",
+            "text": "对不对为什么你会有这种现在没发力的感觉呢这是我说的"
+          },
+          {
+            "timestamp": "02:03-02:08",
+            "text": "太棒了你比如说现在你要用你这个动作杀球你想象一下"
+          },
+          {
+            "timestamp": "02:15-02:24",
+            "text": "大臂没动是用灰牌的后半段几道球出现杀球对不起"
+          },
+          {
+            "timestamp": "04:26-04:29",
+            "text": "20分钟之内肯定高远杀球OK"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:01-00:07",
+            "text": "我也准备好一个技师器想改正一下他后场发力的问题我们看看 让他的后场发力发生变化"
+          },
+          {
+            "timestamp": "01:05-01:08",
+            "text": "对那挺难受的 对不对对"
+          },
+          {
+            "timestamp": "01:25-01:31",
+            "text": "咱先不用腰幅为什么你手上的动作还有问题吗这是我让您加上转体"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:34-00:43",
+            "text": "对 没有旋转到位我现在需要你一口气贯穿还记得吗非常好"
+          },
+          {
+            "timestamp": "00:43-00:50",
+            "text": "当你能做出这个动作的时候你就不需要再发力了因为你现在能够把大臂停住"
+          },
+          {
+            "timestamp": "03:01-03:10",
+            "text": "不好意思 录错了羽毛球从来都不是使劲就可以搞定扭"
+          },
+          {
+            "timestamp": "03:29-03:35",
+            "text": "你先不要做其实我可以也许用一个小能力改好但是"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7491780200468843833",
+      "title": "被动位变线 这个位置是比较被动的，主动的在身前的，直接用小臂手腕就可以挡过去",
+      "url": "https://www.douyin.com/video/7491780200468843833",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 52.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7491780200468843833.json",
+      "teaching_note": {
+        "topic": "被动位变线 这个位置是比较被动的",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:26-00:32",
+            "text": "也就是这个动作实际上伸出来之后不但不能往前回 还得把手向后抽就过去了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:11-00:17",
+            "text": "不行了 这个点被压住了我先就算击到球 是不是只能是直线告不了斜线"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7491244893893938492",
+      "title": "虎落平阳 找一些视角给大家看看，为什么打起比赛来平时练的步法用不到，因为出手一致，加上球速远快于步法速度，就没法打了解决方法1，继续提升步法 2更加完美的取位 3给对手制造麻烦",
+      "url": "https://www.douyin.com/video/7491244893893938492",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 66.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7491244893893938492.json",
+      "teaching_note": {
+        "topic": "虎落平阳 找一些视角给大家看看",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:11",
+            "text": "肯定打不过我了吧我打你 你的这个步法用不上你接不到"
+          },
+          {
+            "timestamp": "00:13-00:16",
+            "text": "来这样吧 你给我发球我打你任意两个点"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:18-00:21",
+            "text": "行第一不能枪往第二不能假动作"
+          },
+          {
+            "timestamp": "00:19-00:25",
+            "text": "第一不能枪往第二不能假动作OK"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:15-00:18",
+            "text": "我打你任意两个点你自己选可以这个 这个"
+          },
+          {
+            "timestamp": "00:29-00:32",
+            "text": "我不服 我要换反手这边可以来 两个点"
+          },
+          {
+            "timestamp": "00:43-00:56",
+            "text": "你只要别在底下等着就行再来一个其实有的时候你在视频上看"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7489412105641168187",
+      "title": "单打发球 人最舒服的状态就是顺着球头发力",
+      "url": "https://www.douyin.com/video/7489412105641168187",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "发力与身体运用",
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 91.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7489412105641168187.json",
+      "teaching_note": {
+        "topic": "单打发球 人最舒服的状态就是顺着球头发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "今天我来教大家怎么样通过发球来遥控你的对手想要打出你想要的效果呢"
+          },
+          {
+            "timestamp": "00:03-00:12",
+            "text": "想要打出你想要的效果呢第一种发球 要求速度快球头平"
+          },
+          {
+            "timestamp": "01:03-01:07",
+            "text": "适用很多朋友问我为什么喜欢正手发球因为正手发球消得更容易"
+          },
+          {
+            "timestamp": "01:03-01:19",
+            "text": "很多朋友问我为什么喜欢正手发球因为正手发球消得更容易我想要球过往就追"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:22",
+            "text": "那也就是说我的对手可以顺着球头的方向直接去激打"
+          },
+          {
+            "timestamp": "00:49-00:56",
+            "text": "那也就是说它很容易可以把球拍伸到球的下面那么搓和挑都是非常容易的"
+          },
+          {
+            "timestamp": "00:57-01:01",
+            "text": "我要跟对手打拉掉我需要让这个球变慢场地变大"
+          },
+          {
+            "timestamp": "01:23-01:26",
+            "text": "好了他先站位比较靠后了我就可以发往前了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7488538000524119356",
+      "title": "与高政泽二战 早知道不用他的球拍了，不过这次给他造成了不小的麻烦，并且最后逼出了他的教学视频",
+      "url": "https://www.douyin.com/video/7488538000524119356",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 265.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7488538000524119356.json",
+      "teaching_note": {
+        "topic": "与高政泽二战 早知道不用他的球拍了",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:14-00:17",
+            "text": "你说这怎么可以呢对不对根本不行的嘛"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:10-00:15",
+            "text": "你说说前前还跟我说练力量还要再过来收我你说这怎么可以呢"
+          },
+          {
+            "timestamp": "00:12-00:16",
+            "text": "练力量还要再过来收我你说这怎么可以呢对不对"
+          },
+          {
+            "timestamp": "03:56-03:59",
+            "text": "哎先安心的走吧可以了啊"
+          },
+          {
+            "timestamp": "04:10-04:15",
+            "text": "嗯我还可以说出教学视频我还有干货没有教给兄弟们呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7488280037955816762",
+      "title": "羽球科普 近网球的出现意味着四方球的出现，双方的跑动都会加大，球的弧度会变高，适合自己体力或者技术及稳定性比对面有优势时使用",
+      "url": "https://www.douyin.com/video/7488280037955816762",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 111.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7488280037955816762.json",
+      "teaching_note": {
+        "topic": "羽球科普 近网球的出现意味着四方球的出现",
+        "key_evidence": [
+          {
+            "timestamp": "01:28-01:34",
+            "text": "如果我想这个球平那这个抛物线也就平落点会变人"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:38-01:43",
+            "text": "以逼性来保护我能不能通过一个有点高度向下垂直下落的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:05",
+            "text": "自己却不知道目的性那再练都是白费那我们今天向大家来介绍"
+          },
+          {
+            "timestamp": "00:31-00:41",
+            "text": "那一定是攻击它放这么高 一定会为服务来 你来服务"
+          },
+          {
+            "timestamp": "01:07-01:12",
+            "text": "也就是这种球我们打完了我们就不需要再向后撤因为就算对手挑到后场"
+          },
+          {
+            "timestamp": "01:22-01:28",
+            "text": "如果您也有这样的情况一定是对质量有太高的要求我们在往前是有取舍的"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7486788550298471739",
+      "title": "网前撤后场手部细节 场景是网前撤后场，不是中场撤后场，只要把肘先抬起来到合适的位置怎么抬怎么摆都可以",
+      "url": "https://www.douyin.com/video/7486788550298471739",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "网前技术",
+        "中前场与抽挡",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 144.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7486788550298471739.json",
+      "teaching_note": {
+        "topic": "网前撤后场手部细节 场景是网前撤后场",
+        "key_evidence": [
+          {
+            "timestamp": "00:55-01:02",
+            "text": "那么我们不但省力而且可以进入到一个放松发力的状态不对"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:57-01:04",
+            "text": "而且可以进入到一个放松发力的状态不对那怎么霸王杀的呢"
+          },
+          {
+            "timestamp": "01:20-01:32",
+            "text": "才抬起来抬是不对啊那怎么去练呀"
+          },
+          {
+            "timestamp": "01:37-01:41",
+            "text": "抬起来就可以了还是不对如果对方来球很快怎么办呀"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:12-00:17",
+            "text": "那正确的动作一定是我的双手是放松的跟着身体去摆动"
+          },
+          {
+            "timestamp": "00:55-01:02",
+            "text": "那么我们不但省力而且可以进入到一个放松发力的状态不对"
+          },
+          {
+            "timestamp": "01:35-01:39",
+            "text": "只要到机球的时候抬起来就可以了还是不对"
+          },
+          {
+            "timestamp": "01:46-01:50",
+            "text": "对方来球很快的时候我要需要用正手来解我肯定是在中途"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7486058135547891004",
+      "title": "动作比较 大家需要根据能力选择球拍，而不同的重量的球拍，从动作的体现上会有区别，但是动作的本质都是一样的",
+      "url": "https://www.douyin.com/video/7486058135547891004",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 217.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7486058135547891004.json",
+      "teaching_note": {
+        "topic": "动作比较 大家需要根据能力选择球拍",
+        "key_evidence": [
+          {
+            "timestamp": "00:26-00:34",
+            "text": "那就各自用各自的球拍然后用自己最舒服的动作来杀球来 你来一个"
+          },
+          {
+            "timestamp": "01:42-01:48",
+            "text": "来 我们来往前来贴球发力很贴"
+          },
+          {
+            "timestamp": "02:40-02:42",
+            "text": "原理是一样的发力是一样的只不过"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "03:24-03:30",
+            "text": "确定就只有一个动作我们不要去盲目地去学习而且球拍的重量"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:11-00:19",
+            "text": "还和球拍有关系啊来 这样我们先测一下高教练的球拍有多重96.5 标准的三游球拍"
+          },
+          {
+            "timestamp": "00:26-00:34",
+            "text": "那就各自用各自的球拍然后用自己最舒服的动作来杀球来 你来一个"
+          },
+          {
+            "timestamp": "02:11-02:18",
+            "text": "这都没到位了但是你再用我的动作来退就是你可以打得出手更快一点"
+          },
+          {
+            "timestamp": "02:42-02:48",
+            "text": "只不过咱们可以受身体力量的影响和我们手里气台的重量"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7485692231404342586",
+      "title": "发力第二集 大家不要错误的去伸胳膊，要学会利用身体去拿高点",
+      "url": "https://www.douyin.com/video/7485692231404342586",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 104.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7485692231404342586.json",
+      "teaching_note": {
+        "topic": "发力第二集 大家不要错误的去伸胳膊",
+        "key_evidence": [
+          {
+            "timestamp": "01:11-01:14",
+            "text": "对不对杀球怎么压呢杀球是动作的后半段"
+          },
+          {
+            "timestamp": "01:11-01:16",
+            "text": "杀球怎么压呢杀球是动作的后半段架好球拍"
+          },
+          {
+            "timestamp": "01:31-01:36",
+            "text": "需要在动作的后半段架倒球拍面开始向下"
+          },
+          {
+            "timestamp": "01:38-01:40",
+            "text": "用动作的后半段极球就是杀球"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:08-01:13",
+            "text": "我的我向前顶着就开始向上对不对杀球怎么压呢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:36-00:40",
+            "text": "来需要我的剪辑师现在给我做一条辅度线这里"
+          },
+          {
+            "timestamp": "01:22-01:26",
+            "text": "那就是高点如果再往前走打倒球"
+          },
+          {
+            "timestamp": "01:29-01:34",
+            "text": "只不过扣杀需要在动作的后半段架倒球拍面"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7484563688096091449",
+      "title": "发力第一集 大家没看懂就在看一遍，做辅助训练的时候小臂一定要特别放松",
+      "url": "https://www.douyin.com/video/7484563688096091449",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 159.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7484563688096091449.json",
+      "teaching_note": {
+        "topic": "发力第一集 大家没看懂就在看一遍",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:11",
+            "text": "这是什么鬼动作你是不是还在这么挥拍没有办法把顶肘做充分"
+          },
+          {
+            "timestamp": "01:52-02:03",
+            "text": "当我学会利用走的时候也就是说我现在杀球就可以保护上利了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:12-00:18",
+            "text": "但是依然感觉使不到大臂的力量或者使不对导了拍也不对"
+          },
+          {
+            "timestamp": "00:15-00:19",
+            "text": "或者使不对导了拍也不对那是为什么呢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:37-00:44",
+            "text": "如果大臂带动小臂要出拍的话我一定是大臂先走先向前小臂在这个空间上没有动过"
+          },
+          {
+            "timestamp": "00:49-00:56",
+            "text": "顺利甩出去那也就是说我要找到一种先行的感觉那么如果你找不到这种感觉呢"
+          },
+          {
+            "timestamp": "01:15-01:25",
+            "text": "推到底之后再把我的大臂以肘为整个动作的最前端拉到前面来"
+          },
+          {
+            "timestamp": "01:25-01:30",
+            "text": "来回的去找这种大臂先走也就是走先走的这种感觉好了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7483346020332522812",
+      "title": "发球变化 发球隐蔽是非常重要的",
+      "url": "https://www.douyin.com/video/7483346020332522812",
+      "category": "发球与接发",
+      "tags": [
+        "发球与接发",
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-004/7483346020332522812.json",
+      "teaching_note": {
+        "topic": "发球变化 发球隐蔽是非常重要的",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:06",
+            "text": "我们在发球的时候 人瞄着直线在发的一瞬间 把球头朝离皮"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:04-00:13",
+            "text": "在发的一瞬间 把球头朝离皮然后我的肘朝着球头的方向 顺势一带就可以打出这样的枪"
+          },
+          {
+            "timestamp": "00:06-00:14",
+            "text": "然后我的肘朝着球头的方向 顺势一带就可以打出这样的枪这边是相处的道理"
+          },
+          {
+            "timestamp": "00:13-00:19",
+            "text": "这边是相处的道理我整个人先瞄着直线在发的一瞬间 把球头朝外皮"
+          },
+          {
+            "timestamp": "00:19-00:27",
+            "text": "那么我整个胳膊 向左前方去送就可以打出这样的枪人在家中堂 球技心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7480852601798511929",
+      "title": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在挑战",
+      "url": "https://www.douyin.com/video/7480852601798511929",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 140.9,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-004/7480852601798511929.json",
+      "teaching_note": {
+        "topic": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {
