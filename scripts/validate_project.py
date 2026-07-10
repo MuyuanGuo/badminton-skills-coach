@@ -17,6 +17,7 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
+    "skills/liuhui-badminton-coach-full/references/knowledge-base.json",
 ]
 for relative_path in json_paths:
     path = ROOT / relative_path
@@ -25,15 +26,20 @@ for relative_path in json_paths:
 
 ET.parse(ROOT / "output" / "liuhui-pilot-knowledge-map.drawio")
 
-skill_path = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
-skill_text = skill_path.read_text(encoding="utf-8")
-frontmatter = re.match(r"\A---\n(.*?)\n---\n", skill_text, re.DOTALL)
-if not frontmatter:
-    raise SystemExit("SKILL.md is missing YAML frontmatter")
-if not re.search(r"^name:\s+liuhui-badminton-coach$", frontmatter.group(1), re.MULTILINE):
-    raise SystemExit("SKILL.md has an invalid name")
-if not re.search(r"^description:\s+\S+", frontmatter.group(1), re.MULTILINE):
-    raise SystemExit("SKILL.md is missing a description")
+def validate_skill_frontmatter(skill_name):
+    skill_path = ROOT / "skills" / skill_name / "SKILL.md"
+    skill_text = skill_path.read_text(encoding="utf-8")
+    frontmatter = re.match(r"\A---\n(.*?)\n---\n", skill_text, re.DOTALL)
+    if not frontmatter:
+        raise SystemExit(f"{skill_name}/SKILL.md is missing YAML frontmatter")
+    if not re.search(rf"^name:\s+{re.escape(skill_name)}$", frontmatter.group(1), re.MULTILINE):
+        raise SystemExit(f"{skill_name}/SKILL.md has an invalid name")
+    if not re.search(r"^description:\s+\S+", frontmatter.group(1), re.MULTILINE):
+        raise SystemExit(f"{skill_name}/SKILL.md is missing a description")
+
+
+validate_skill_frontmatter("liuhui-badminton-coach")
+validate_skill_frontmatter("liuhui-badminton-coach-full")
 
 knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "pilot_knowledge_base.json").read_text(encoding="utf-8")
@@ -54,6 +60,8 @@ douyin_knowledge = json.loads(
 )
 if len(douyin_knowledge["videos"]) < 25:
     raise SystemExit("Full Douyin knowledge base regressed below pilot size")
+if len(douyin_knowledge["videos"]) < 405:
+    raise SystemExit(f"Expected at least 405 full Douyin knowledge videos, found {len(douyin_knowledge['videos'])}")
 
 skill_knowledge = json.loads(
     (
@@ -65,6 +73,18 @@ skill_knowledge = json.loads(
     ).read_text(encoding="utf-8")
 )
 if skill_knowledge != knowledge:
-    raise SystemExit("Skill knowledge base is out of sync with project knowledge base")
+    raise SystemExit("Pilot skill knowledge base is out of sync with project pilot knowledge base")
 
-print("Validated JSON, Draw.io, Skill metadata, and 25-video knowledge sync.")
+full_skill_knowledge = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach-full"
+        / "references"
+        / "knowledge-base.json"
+    ).read_text(encoding="utf-8")
+)
+if full_skill_knowledge != douyin_knowledge:
+    raise SystemExit("Full skill knowledge base is out of sync with full Douyin knowledge base")
+
+print("Validated JSON, Draw.io, Skill metadata, pilot sync, and full skill sync.")
