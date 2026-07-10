@@ -1,15 +1,14 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T05:45:47.005531+00:00",
+  "updated_at": "2026-07-10T05:49:45.185415+00:00",
   "queue_counts": {
-    "transcribed": 366,
-    "extraction_failed": 35,
-    "pending": 4
+    "transcribed": 370,
+    "extraction_failed": 35
   },
   "knowledge_counts": {
-    "videos": 366,
-    "ready": 307,
+    "videos": 370,
+    "ready": 311,
     "needs_visual_review": 59,
     "curated": 3
   },
@@ -17499,6 +17498,159 @@
           {
             "timestamp": "00:36-00:40",
             "text": "不過這個素材不錯我們可以下棋角 變胖"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7052600326116887812",
+      "title": "00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋",
+      "url": "https://www.douyin.com/video/7052600326116887812",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 47.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-047/7052600326116887812.json",
+      "teaching_note": {
+        "topic": "00:00 / 00:47 后场发力下集",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:08",
+            "text": "好的,我们接上一期视频讲到这个我们杀球或者打高远球的挥胖路径那么究竟是什么样子呢?挥胖动作不一太大"
+          },
+          {
+            "timestamp": "00:23-00:46",
+            "text": "所以说我们要把这个挥胖简化,现在就是一个什么技术简化的时代架盘,脚登地,腿发力,腿顶宽,宽,用腰,腰带肩,肩带肘肘带慢,万代指,旋转发力,就可以了"
+          },
+          {
+            "timestamp": "00:28-00:46",
+            "text": "架盘,脚登地,腿发力,腿顶宽,宽,用腰,腰带肩,肩带肘肘带慢,万代指,旋转发力,就可以了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:13-00:23",
+            "text": "但如果这球不在前点呢,在实战中经常会在高点和后点呢我们的挥胖路径难道是这样打的吗?越被动这个动作还要挥到尾胖吗?不是了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:05-00:17",
+            "text": "那么究竟是什么样子呢?挥胖动作不一太大我们看一下,这样的一个动作如果说舒服,我们可以这么打但如果这球不在前点呢,在实战中经常会在高点和后点呢"
+          },
+          {
+            "timestamp": "00:28-00:46",
+            "text": "架盘,脚登地,腿发力,腿顶宽,宽,用腰,腰带肩,肩带肘肘带慢,万代指,旋转发力,就可以了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7052519937125911846",
+      "title": "技术简化的时代，要跟上技术发展的进程",
+      "url": "https://www.douyin.com/video/7052519937125911846",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 21.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-047/7052519937125911846.json",
+      "teaching_note": {
+        "topic": "技术简化的时代",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:09",
+            "text": "你看你现在这个砂球啊发力动作太大了我们在砂球的时候"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:07-00:12",
+            "text": "我们在砂球的时候不要把这个力量全使在动作的幅度上"
+          }
+        ],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7052252250189696267",
+      "title": "接上期的第二集，不同的位置选择不同的搓球技术",
+      "url": "https://www.douyin.com/video/7052252250189696267",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 45.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-047/7052252250189696267.json",
+      "teaching_note": {
+        "topic": "接上期的第二集",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:08",
+            "text": "这个球已经是在你右边了你为什么要使用搓球呢比如说这个球在你右身边的时候"
+          },
+          {
+            "timestamp": "00:12-00:16",
+            "text": "叫做斩搓比如说对手如果勾球过来或者球在你右边"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:13",
+            "text": "那么我们或者说球对手勾过来我们应该使用另一个往前技术叫做斩搓"
+          },
+          {
+            "timestamp": "00:16-00:23",
+            "text": "你总不至于这个球这么肥然后你去拿球盘这么追着它去搓吧那这样的话很容易搓刺或者搓跑"
+          },
+          {
+            "timestamp": "00:20-00:26",
+            "text": "那这样的话很容易搓刺或者搓跑那么这个时候我们应该顺着球头去做这种斩搓"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7052148706681883907",
+      "title": "搓球的方向很重要，网前搓球第一集",
+      "url": "https://www.douyin.com/video/7052148706681883907",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 64.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-047/7052148706681883907.json",
+      "teaching_note": {
+        "topic": "搓球的方向很重要",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:04-00:07",
+            "text": "不用看了肯定不对为什么"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:51-00:53",
+            "text": "把正规的戳球应该是什么样的"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

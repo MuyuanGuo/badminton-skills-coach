@@ -1,10 +1,9 @@
 {
-  "updated_at": "2026-07-10T05:45:45.279122+00:00",
+  "updated_at": "2026-07-10T05:49:43.669440+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 366,
-    "extraction_failed": 35,
-    "pending": 4
+    "transcribed": 370,
+    "extraction_failed": 35
   },
   "items": [
     {
@@ -4825,10 +4824,10 @@
       "title": "00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-047/7052600326116887812.mp4",
+      "duration_seconds": 47.438,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4837,10 +4836,10 @@
       "title": "技术简化的时代，要跟上技术发展的进程#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-047/7052519937125911846.mp4",
+      "duration_seconds": 21.687,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4849,10 +4848,10 @@
       "title": "接上期的第二集，不同的位置选择不同的搓球技术#羽毛球教学 #日常训练 #羽毛球训练 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-047/7052252250189696267.mp4",
+      "duration_seconds": 45.186,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4861,10 +4860,10 @@
       "title": "搓球的方向很重要，网前搓球第一集#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-047/7052148706681883907.mp4",
+      "duration_seconds": 64.412,
+      "attempts": 1,
       "error": null
     }
   ]
