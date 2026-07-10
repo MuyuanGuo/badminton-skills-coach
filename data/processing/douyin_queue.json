@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T05:49:43.669440+00:00",
+  "updated_at": "2026-07-10T16:15:54.137821+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 370,
-    "extraction_failed": 35
+    "transcribed": 375,
+    "media_ready": 30
   },
   "items": [
     {
@@ -36,11 +36,11 @@
       "title": "架拍的选择 在两个极端架拍的中间位置，就是最普通的架拍！没有绝对的对错，符合场景，符合自己的情况就是对！ #羽毛球#刘辉羽毛球#羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after slow retry"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003a/7658231159860261361.m4a",
+      "duration_seconds": 108.787,
+      "attempts": 6,
+      "error": null
     },
     {
       "video_id": "7656927370758796145",
@@ -60,11 +60,11 @@
       "title": "一句话概括发力 其实所有的发力都逃不过这句话，击球前胳膊带着拍子，击球后拍头戴着胳膊，业余球友也不要使用高难度框架，没有足够的能力和配套，价值不高#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after slow retry"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003a/7656560952972884730.m4a",
+      "duration_seconds": 176.961,
+      "attempts": 6,
+      "error": null
     },
     {
       "video_id": "7652440366436945017",
@@ -408,11 +408,11 @@
       "title": "体系认知1 希望大家一定要看完，会非常有收获#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 3,
-      "error": "media URL not observed after extended wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003a/7600107130034047973.m4a",
+      "duration_seconds": 297.285,
+      "attempts": 7,
+      "error": null
     },
     {
       "video_id": "7598855095372185273",
@@ -456,11 +456,11 @@
       "title": "深夜高级教学 张旌懿平时使用的为快速框架，今天让他体验下力量框架，深夜教学穿着略显随意望海涵#刘辉羽毛球 #羽毛球教学 #羽毛球",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 3,
-      "error": "media URL not observed after extended wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003a/7595804581259641521.m4a",
+      "duration_seconds": 161.821,
+      "attempts": 8,
+      "error": null
     },
     {
       "video_id": "7593661008519810289",
@@ -516,11 +516,11 @@
       "title": "发小球进阶 大家总是关注球飞的贴不贴，贴当然重要，但是力量控制到过网能落也很重要#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003a/7589590613499595185.mp4",
+      "duration_seconds": 44.189,
+      "attempts": 6,
+      "error": null
     },
     {
       "video_id": "7588747058782683513",
@@ -528,11 +528,11 @@
       "title": "劈球进阶 转着劈，加更快更多的腰腹动作就成功啦，击球点要往后放#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7588747058782683513.mp4",
+      "duration_seconds": 53.166667,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7587362379455778097",
@@ -540,11 +540,11 @@
       "title": "滑拍进阶 但是滑拍球快了落点会远，想近就需要抛物线更明显，会慢#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 #华羽",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7587362379455778097.m4a",
+      "duration_seconds": 69.521,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7586613438625959217",
@@ -552,11 +552,11 @@
       "title": "单打防守 主要在于省步子，和好衔接，当对方球速非常快的时候就只能这样接了#刘辉羽毛球 #羽毛球#羽毛球教学 #华羽",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7586613438625959217.m4a",
+      "duration_seconds": 153.762,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7582017752145136945",
@@ -576,11 +576,11 @@
       "title": "反手发力 华羽新球拍预计12.6，谢谢大家的关注#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7577392474555210597.m4a",
+      "duration_seconds": 72.538,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7573211923485260537",
@@ -588,11 +588,11 @@
       "title": "2.7万 孙超架拍特点 希望大家多提这样的问题，我的高级教练组成员很喜欢这种访谈类的技术探讨，今天出场的两位教练分别是前天津队主教练@冠军默大爷 ，和前陕西省省队主教练@Ldj",
       "category": "后场技术",
       "tags": "后场技术",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7573211923485260537.m4a",
+      "duration_seconds": 171.664,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7571574635323124145",
@@ -696,11 +696,11 @@
       "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 #羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7552759261840952636.mp4",
+      "duration_seconds": 12.466667,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7551459420703837498",
@@ -720,11 +720,11 @@
       "title": "3.3万 反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果#羽毛球#刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after extended wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7550305145877155131.m4a",
+      "duration_seconds": 157.5,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7548394643144068411",
@@ -2724,11 +2724,11 @@
       "title": "1.4万 一个好搭档真是省劲儿#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7210592889141775627.mp4",
+      "duration_seconds": 163.42059,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7209108124924464387",
@@ -2736,11 +2736,11 @@
       "title": "1.5万 我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7209108124924464387.mp4",
+      "duration_seconds": 142.406009,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7206510177317702924",
@@ -2748,11 +2748,11 @@
       "title": "打出一个能高兴一天的学，备战世界公开赛的不要学哦#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7206510177317702924.mp4",
+      "duration_seconds": 143.366667,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7205399670959459623",
@@ -2796,11 +2796,11 @@
       "title": "这种天然教研有人看嘛？对方直线可以回，就是威胁会很小#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7200944470446050599.mp4",
+      "duration_seconds": 71.533333,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7200204622852623628",
@@ -2832,11 +2832,11 @@
       "title": "解题思路，遇到高质量防守且自己冲劲儿过猛，可以使用停顿技术重新回到拉吊节奏#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7195014413932367116.mp4",
+      "duration_seconds": 99.666667,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7193151905139395872",
@@ -2844,11 +2844,11 @@
       "title": "今天恢复直播。就算压不住，也有效果，遇到平高有条件直接反加速#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7193151905139395872.mp4",
+      "duration_seconds": 127.1,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7189812762409782539",
@@ -2868,11 +2868,11 @@
       "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的#羽毛球 #单打 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7185744630439333153.mp4",
+      "duration_seconds": 327.666667,
+      "attempts": 4,
+      "error": null
     },
     {
       "video_id": "7185360811248864544",
@@ -2880,11 +2880,11 @@
       "title": "就像跑步重心要在前面，倒退跑重心要在后面一样#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7185360811248864544.mp4",
+      "duration_seconds": 75.466667,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7184618028619910433",
@@ -2892,11 +2892,11 @@
       "title": "1.6万 各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7184618028619910433.mp4",
+      "duration_seconds": 131,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7183132124801682726",
@@ -2904,11 +2904,11 @@
       "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7183132124801682726.mp4",
+      "duration_seconds": 19.433333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7182762294294744332",
@@ -2940,11 +2940,11 @@
       "title": "现场嘈杂，说话声音大了点，各位见谅#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7175339579392707878.mp4",
+      "duration_seconds": 83,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7174969770511551756",
@@ -2952,11 +2952,11 @@
       "title": "承认被动，是一件很难的事#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7174969770511551756.mp4",
+      "duration_seconds": 88.6,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7174229898238676228",
@@ -3000,11 +3000,11 @@
       "title": "腰腹有带动，引拍会因为惯性自然出现，出拍轨迹就正了，出手速度也快了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7169772952039345411.mp4",
+      "duration_seconds": 89.933333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7169038502280154380",
@@ -3060,11 +3060,11 @@
       "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7164948889630493991.mp4",
+      "duration_seconds": 77.2,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7163836275487804676",
@@ -3072,11 +3072,11 @@
       "title": "最容易忽略的发力小细节，还有好为人师，有人喜欢有人讨厌，所以平时打球更多的时候大家选择的大多都是沉默#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7163836275487804676.mp4",
+      "duration_seconds": 61.366667,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7161980324409363712",
@@ -3156,11 +3156,11 @@
       "title": "本视频适合已经掌握一定程度，就差临门一脚的球友朋友们#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7156043406962134306.mp4",
+      "duration_seconds": 65.166667,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7154558892742151464",
@@ -3168,11 +3168,11 @@
       "title": "一句话，挡的近，人往前走。挡的远，不要动#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7154558892742151464.mp4",
+      "duration_seconds": 71.133333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7154187492487335203",
@@ -3192,11 +3192,11 @@
       "title": "被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7153445193713290511.mp4",
+      "duration_seconds": 120.466667,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7151961376448138531",
@@ -3204,11 +3204,11 @@
       "title": "安排，正反手一起#羽毛球教学 #羽毛球训练 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7151961376448138531.mp4",
+      "duration_seconds": 41.633333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7151589626031901992",
@@ -3228,11 +3228,11 @@
       "title": "跳出束缚，灵活握拍#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7150847019320429839.mp4",
+      "duration_seconds": 20.033333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7149363344649047311",
@@ -3252,11 +3252,11 @@
       "title": "身体是歪的作用，1腰腹纵向发力成功介入，2肩膀和肘顶起来拿到了高点，3手臂和脸有了自然距离#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7148990784363138344.mp4",
+      "duration_seconds": 99.833333,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7148267452877638944",
@@ -3264,11 +3264,11 @@
       "title": "这种球对方太主动，等球不转了在打也不行，点就太低了#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7148267452877638944.mp4",
+      "duration_seconds": 73.7,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7146762792438074665",
@@ -3588,11 +3588,11 @@
       "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者@皓憨憨 #刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "extraction_failed",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 2,
-      "error": "media URL not observed after bounded wait"
+      "status": "media_ready",
+      "media_path": "data/raw_videos/douyin/failed-retry-002/7115598014642736424.mp4",
+      "duration_seconds": 36,
+      "attempts": 3,
+      "error": null
     },
     {
       "video_id": "7115241358255803683",
