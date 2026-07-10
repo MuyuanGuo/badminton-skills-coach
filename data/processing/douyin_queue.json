@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T03:41:13.713693+00:00",
+  "updated_at": "2026-07-10T03:50:20.839911+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 279,
+    "transcribed": 286,
     "extraction_failed": 35,
-    "pending": 91
+    "pending": 84
   },
   "items": [
     {
@@ -3733,10 +3733,10 @@
       "title": "向前的挥拍，可以使挥拍的力最高效的发挥#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7102635326803332393.mp4",
+      "duration_seconds": 73.793,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3745,10 +3745,10 @@
       "title": "发力越大，形变越大，高远球有的时候确实不用这样，因为高远球没有用多大的力#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7101123673062378767.mp4",
+      "duration_seconds": 108.785,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3757,10 +3757,10 @@
       "title": "职业运动员上网因为身体能力强，大部分采用跨步，但是依然每局还是能见到垫步的出现#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7099644893269839144.mp4",
+      "duration_seconds": 91.696,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3769,10 +3769,10 @@
       "title": "最后有彩蛋，学习顺序，先得会反手的发力，和普通的鲨球，才能学这个#羽毛球 #刘辉羽毛球 #全民健身线上运动会 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7098897570482670888.mp4",
+      "duration_seconds": 120.349,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3781,10 +3781,10 @@
       "title": "教科书动作教不出高手，但是实战动作可以#羽毛球 #羽毛球教学 #刘辉羽毛球 #全民健身线上运动会 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7098156298415459599.mp4",
+      "duration_seconds": 86.866,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3793,10 +3793,10 @@
       "title": "正手同样的道理，手指发力进阶版#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7097413480747191587.mp4",
+      "duration_seconds": 72.725,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3805,10 +3805,10 @@
       "title": "手指是末梢的发力，前面还需要很多带动，食指拇指都需要发力，只不过是支撑#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-036/7097047150479084835.mp4",
+      "duration_seconds": 147.795,
+      "attempts": 1,
       "error": null
     },
     {
