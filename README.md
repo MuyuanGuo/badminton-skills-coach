@@ -179,6 +179,8 @@ data/
     douyin_knowledge_base.json     当前 405 条全量知识库
     topic_index.json               自动生成的主题索引
     pilot_teaching_notes.json      试点人工笔记
+  review/
+    visual_review_queue.json       待视觉复核视频队列
 
 scripts/
   classify_douyin_catalog.mjs      目录主题分类
@@ -189,6 +191,7 @@ scripts/
   batch_transcribe_directory.py    目录转写
   build_douyin_knowledge.py        构建全量知识库
   build_topic_index.py             构建主题索引
+  build_visual_review_queue.py     构建视觉复核队列
   validate_project.py              项目验证
   evaluate_liuhui_skill.py         检索评估
 
@@ -202,6 +205,7 @@ skills/
 
 output/
   failed_extraction_review.*       35 条失败项复核记录
+  visual_review_queue.md           视觉复核工作单
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
 ```
@@ -217,6 +221,8 @@ data/
     douyin_knowledge_base.json     Current full 405-video knowledge base
     topic_index.json               Generated topic index
     pilot_teaching_notes.json      Curated pilot notes
+  review/
+    visual_review_queue.json       Visual-review queue
 
 scripts/
   classify_douyin_catalog.mjs      Topic classification helper
@@ -227,6 +233,7 @@ scripts/
   batch_transcribe_directory.py    Directory transcription runner
   build_douyin_knowledge.py        Full knowledge-base builder
   build_topic_index.py             Topic-index builder
+  build_visual_review_queue.py     Visual-review queue builder
   validate_project.py              Repository validation
   evaluate_liuhui_skill.py         Retrieval evaluation
 
@@ -240,6 +247,7 @@ skills/
 
 output/
   failed_extraction_review.*       Review report for the recovered 35 failures
+  visual_review_queue.md           Visual-review worksheet
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
 ```
@@ -630,6 +638,7 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/build_douyin_knowledge.py
 python3 scripts/build_topic_index.py
+python3 scripts/build_visual_review_queue.py
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "后场被动怎么架拍"
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "被压到底线怎么办" --mode semantic
 ```

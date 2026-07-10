@@ -1,0 +1,2158 @@
+{
+  "version": "visual-review-queue-v1",
+  "source": "data/knowledge/douyin_knowledge_base.json",
+  "topic_index": "data/knowledge/topic_index.json",
+  "total_pending": 66,
+  "status_counts": {
+    "pending": 66
+  },
+  "allowed_review_statuses": [
+    "pending",
+    "approved",
+    "needs_correction",
+    "not_teaching",
+    "low_value"
+  ],
+  "items": [
+    {
+      "rank": 1,
+      "review_status": "pending",
+      "priority_score": 28,
+      "priority_reasons": [
+        "category:后场技术+12",
+        "terms:杀球,发力,纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "杀球",
+        "发力",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7567155406117533051",
+      "title": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来",
+      "url": "https://www.douyin.com/video/7567155406117533051",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错",
+        "比赛分析",
+        "装备与参数"
+      ],
+      "duration_seconds": 61.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 2,
+      "review_status": "pending",
+      "priority_score": 27,
+      "priority_reasons": [
+        "category:步法与移动+10",
+        "terms:步法,握拍,纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "步法",
+        "握拍",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7214304020775652620",
+      "title": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
+      "url": "https://www.douyin.com/video/7214304020775652620",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 130.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 3,
+      "review_status": "pending",
+      "priority_score": 25,
+      "priority_reasons": [
+        "category:后场技术+12",
+        "terms:架拍,发力,纠错"
+      ],
+      "matched_terms": [
+        "架拍",
+        "发力",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7498295344284093755",
+      "title": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量",
+      "url": "https://www.douyin.com/video/7498295344284093755",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 36.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 4,
+      "review_status": "pending",
+      "priority_score": 25,
+      "priority_reasons": [
+        "category:步法与移动+10",
+        "terms:步法,回动,纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "步法",
+        "回动",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7059589039694957864",
+      "title": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
+      "url": "https://www.douyin.com/video/7059589039694957864",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 72.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 5,
+      "review_status": "pending",
+      "priority_score": 24,
+      "priority_reasons": [
+        "category:发力与身体运用+11",
+        "terms:发力,纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "发力",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7209108124924464387",
+      "title": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
+      "url": "https://www.douyin.com/video/7209108124924464387",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 142.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 6,
+      "review_status": "pending",
+      "priority_score": 23,
+      "priority_reasons": [
+        "category:后场技术+12",
+        "terms:双打,防守,纠错"
+      ],
+      "matched_terms": [
+        "双打",
+        "防守",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7115241358255803683",
+      "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+      "url": "https://www.douyin.com/video/7115241358255803683",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 33.5,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 7,
+      "review_status": "pending",
+      "priority_score": 21,
+      "priority_reasons": [
+        "category:双打战术+9",
+        "terms:双打,纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "双打",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7205399670959459623",
+      "title": "压抽才是双打的主旋律，没人一上来就挑给你",
+      "url": "https://www.douyin.com/video/7205399670959459623",
+      "category": "双打战术",
+      "tags": [
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 120.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "压抽才是双打的主旋律，没人一上来就挑给你 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 8,
+      "review_status": "pending",
+      "priority_score": 20,
+      "priority_reasons": [
+        "category:后场技术+12",
+        "terms:杀球",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "杀球"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7090377448017235234",
+      "title": "打羽毛球最爽的就是杀球和接杀",
+      "url": "https://www.douyin.com/video/7090377448017235234",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 61.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "打羽毛球最爽的就是杀球和接杀 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 9,
+      "review_status": "pending",
+      "priority_score": 19,
+      "priority_reasons": [
+        "category:中前场与抽挡+8",
+        "terms:抽挡,握拍,纠错"
+      ],
+      "matched_terms": [
+        "抽挡",
+        "握拍",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7447084061371272507",
+      "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+      "url": "https://www.douyin.com/video/7447084061371272507",
+      "category": "中前场与抽挡",
+      "tags": [
+        "中前场与抽挡",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 34.5,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "握拍微调 抽挡反手为主，尽量不做正反手转换 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 10,
+      "review_status": "pending",
+      "priority_score": 19,
+      "priority_reasons": [
+        "category:发力与身体运用+11",
+        "terms:发力,纠错"
+      ],
+      "matched_terms": [
+        "发力",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7552759261840952636",
+      "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了",
+      "url": "https://www.douyin.com/video/7552759261840952636",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 12.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 11,
+      "review_status": "pending",
+      "priority_score": 19,
+      "priority_reasons": [
+        "category:发力与身体运用+11",
+        "terms:发力,纠错"
+      ],
+      "matched_terms": [
+        "发力",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7324887936980274432",
+      "title": "羽毛球发力入门级测试",
+      "url": "https://www.douyin.com/video/7324887936980274432",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 6.1,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "羽毛球发力入门级测试 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 12,
+      "review_status": "pending",
+      "priority_score": 18,
+      "priority_reasons": [
+        "category:双打战术+9",
+        "terms:双打",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "双打"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7496715538836704571",
+      "title": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
+      "url": "https://www.douyin.com/video/7496715538836704571",
+      "category": "双打战术",
+      "tags": [
+        "双打战术"
+      ],
+      "duration_seconds": 168.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 13,
+      "review_status": "pending",
+      "priority_score": 18,
+      "priority_reasons": [
+        "category:步法与移动+10",
+        "terms:步法,纠错"
+      ],
+      "matched_terms": [
+        "步法",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7065157571816000809",
+      "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+      "url": "https://www.douyin.com/video/7065157571816000809",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步， / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 14,
+      "review_status": "pending",
+      "priority_score": 18,
+      "priority_reasons": [
+        "category:步法与移动+10",
+        "terms:步法,纠错"
+      ],
+      "matched_terms": [
+        "步法",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7167546787073477900",
+      "title": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？",
+      "url": "https://www.douyin.com/video/7167546787073477900",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 35.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？ / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 15,
+      "review_status": "pending",
+      "priority_score": 16,
+      "priority_reasons": [
+        "category:握拍与基本动作+6",
+        "terms:握拍,纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "握拍",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7060717442825309480",
+      "title": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
+      "url": "https://www.douyin.com/video/7060717442825309480",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 93.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 16,
+      "review_status": "pending",
+      "priority_score": 15,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:双打,纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "双打",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7405420818009722146",
+      "title": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗",
+      "url": "https://www.douyin.com/video/7405420818009722146",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 314.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 17,
+      "review_status": "pending",
+      "priority_score": 15,
+      "priority_reasons": [
+        "category:网前技术+3",
+        "terms:网前,纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "网前",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7197605327993310467",
+      "title": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率",
+      "url": "https://www.douyin.com/video/7197605327993310467",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 218.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 18,
+      "review_status": "pending",
+      "priority_score": 15,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:防守,纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "防守",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7146394347586587919",
+      "title": "9976 羽毛球的防守其实打起来比进攻还爽😅",
+      "url": "https://www.douyin.com/video/7146394347586587919",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 83.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "9976 羽毛球的防守其实打起来比进攻还爽😅 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 19,
+      "review_status": "pending",
+      "priority_score": 14,
+      "priority_reasons": [
+        "category:网前技术+3",
+        "terms:双打,网前,纠错"
+      ],
+      "matched_terms": [
+        "双打",
+        "网前",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7071800926553541922",
+      "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
+      "url": "https://www.douyin.com/video/7071800926553541922",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 21.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 20,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:双打战术+9",
+        "terms:双打"
+      ],
+      "matched_terms": [
+        "双打"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7423714121620737315",
+      "title": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？",
+      "url": "https://www.douyin.com/video/7423714121620737315",
+      "category": "双打战术",
+      "tags": [
+        "双打战术"
+      ],
+      "duration_seconds": 46.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？ / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 21,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:握拍与基本动作+6",
+        "terms:握拍,纠错"
+      ],
+      "matched_terms": [
+        "握拍",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7078852452442836224",
+      "title": "我说握拍千变万化",
+      "url": "https://www.douyin.com/video/7078852452442836224",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "我说握拍千变万化 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 22,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:握拍与基本动作+6",
+        "terms:握拍,纠错"
+      ],
+      "matched_terms": [
+        "握拍",
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7150847019320429839",
+      "title": "跳出束缚，灵活握拍",
+      "url": "https://www.douyin.com/video/7150847019320429839",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 20.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "跳出束缚，灵活握拍 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 23,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7210592889141775627",
+      "title": "一个好搭档真是省劲儿",
+      "url": "https://www.douyin.com/video/7210592889141775627",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 163.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "一个好搭档真是省劲儿 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 24,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7400221745208167695",
+      "title": "外籍对抗 新成员都很给力",
+      "url": "https://www.douyin.com/video/7400221745208167695",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 279.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "外籍对抗 新成员都很给力 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 25,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7245471347210554639",
+      "title": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅",
+      "url": "https://www.douyin.com/video/7245471347210554639",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 200.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 26,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7223584265072692518",
+      "title": "晚上直播带雷霆100测评",
+      "url": "https://www.douyin.com/video/7223584265072692518",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 128.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "晚上直播带雷霆100测评 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 27,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7070320753916366095",
+      "title": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂",
+      "url": "https://www.douyin.com/video/7070320753916366095",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 129.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 28,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7249558167288335656",
+      "title": "这次别再说对手弱了，很年轻的健将 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负",
+      "url": "https://www.douyin.com/video/7249558167288335656",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 405.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "这次别再说对手弱了，很年轻的健将 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 29,
+      "review_status": "pending",
+      "priority_score": 13,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7200204622852623628",
+      "title": "这次确实是恢复局了，晚上直播",
+      "url": "https://www.douyin.com/video/7200204622852623628",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 187.7,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "这次确实是恢复局了，晚上直播 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 30,
+      "review_status": "pending",
+      "priority_score": 12,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:双打",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "双打"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7627338837022917809",
+      "title": "萌辉组合 混双怎么比单打还累？还好我的女搭档足够强",
+      "url": "https://www.douyin.com/video/7627338837022917809",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "双打战术"
+      ],
+      "duration_seconds": 129.1,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "萌辉组合 混双怎么比单打还累？还好我的女搭档足够强 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 31,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7408162190647217460",
+      "title": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了",
+      "url": "https://www.douyin.com/video/7408162190647217460",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 139.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 32,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7071430658584857891",
+      "title": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手",
+      "url": "https://www.douyin.com/video/7071430658584857891",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 167.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 33,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:纠错",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7381785580268473635",
+      "title": "高端局 腿伤都快给我跑复发了 16比21 21比17",
+      "url": "https://www.douyin.com/video/7381785580268473635",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 348.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "高端局 腿伤都快给我跑复发了 16比21 21比17 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 34,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7091101085535915279",
+      "title": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
+      "url": "https://www.douyin.com/video/7091101085535915279",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 70.0,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 35,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7471361140719652154",
+      "title": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意",
+      "url": "https://www.douyin.com/video/7471361140719652154",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 113.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 36,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7367561803234069800",
+      "title": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦",
+      "url": "https://www.douyin.com/video/7367561803234069800",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 68.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 37,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7358661350945525007",
+      "title": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿",
+      "url": "https://www.douyin.com/video/7358661350945525007",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 72.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 38,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7164948889630493991",
+      "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难",
+      "url": "https://www.douyin.com/video/7164948889630493991",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 39,
+      "review_status": "pending",
+      "priority_score": 11,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错",
+        "duration>=60+3"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7159382785092783375",
+      "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
+      "url": "https://www.douyin.com/video/7159382785092783375",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 95.1,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 40,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7476768272864644409",
+      "title": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废",
+      "url": "https://www.douyin.com/video/7476768272864644409",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 212.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 41,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7615737190207725937",
+      "title": "与蔡晓源单打 本来定的是打一局，21-19 18-21 弃！但是打蔡龙虎就是得拐他！！！",
+      "url": "https://www.douyin.com/video/7615737190207725937",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 181.7,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "与蔡晓源单打 本来定的是打一局，21-19 18-21 弃！但是打蔡龙虎就是得拐他！！！ / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 42,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7516012808523222329",
+      "title": "与高政泽单打 南村群童欺我老无力，忍能对面为盗贼",
+      "url": "https://www.douyin.com/video/7516012808523222329",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 270.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "与高政泽单打 南村群童欺我老无力，忍能对面为盗贼 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 43,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7480852601798511929",
+      "title": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在挑战",
+      "url": "https://www.douyin.com/video/7480852601798511929",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 140.9,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 44,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7409137525006060840",
+      "title": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24",
+      "url": "https://www.douyin.com/video/7409137525006060840",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 315.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 45,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "duration>=60+3",
+        "duration>=120+2"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7185744630439333153",
+      "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的",
+      "url": "https://www.douyin.com/video/7185744630439333153",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 327.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 46,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7330090280055491874",
+      "title": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦",
+      "url": "https://www.douyin.com/video/7330090280055491874",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 47,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7085903098853592335",
+      "title": "交作业了😂",
+      "url": "https://www.douyin.com/video/7085903098853592335",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 17.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "交作业了😂 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 48,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7159754364297448715",
+      "title": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！",
+      "url": "https://www.douyin.com/video/7159754364297448715",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 30.9,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！ / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 49,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7382052454063492392",
+      "title": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。",
+      "url": "https://www.douyin.com/video/7382052454063492392",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 50,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7061422431386324264",
+      "title": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+      "url": "https://www.douyin.com/video/7061422431386324264",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 25.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 51,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7340472371322686755",
+      "title": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人",
+      "url": "https://www.douyin.com/video/7340472371322686755",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 29.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 52,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7087020706680048930",
+      "title": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊",
+      "url": "https://www.douyin.com/video/7087020706680048930",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 53,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7149363344649047311",
+      "title": "大家找找有没有违例",
+      "url": "https://www.douyin.com/video/7149363344649047311",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 41.2,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "大家找找有没有违例 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 54,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7088881901209013545",
+      "title": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂",
+      "url": "https://www.douyin.com/video/7088881901209013545",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 55,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7370160247467494691",
+      "title": "最近恢复了一些，大家帮我看看球速恢复到300了吗？",
+      "url": "https://www.douyin.com/video/7370160247467494691",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 14.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "最近恢复了一些，大家帮我看看球速恢复到300了吗？ / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 56,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7354580584229866787",
+      "title": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对",
+      "url": "https://www.douyin.com/video/7354580584229866787",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 38.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 57,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7143811094698528040",
+      "title": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。",
+      "url": "https://www.douyin.com/video/7143811094698528040",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.1,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 58,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7496238975796333881",
+      "title": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看",
+      "url": "https://www.douyin.com/video/7496238975796333881",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 23.7,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 59,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7080341135545126144",
+      "title": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
+      "url": "https://www.douyin.com/video/7080341135545126144",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 46.8,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 60,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7066977429230718223",
+      "title": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂",
+      "url": "https://www.douyin.com/video/7066977429230718223",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 31.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 61,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7415820467606473999",
+      "title": "走火入魔 最近看啥都像羽毛球",
+      "url": "https://www.douyin.com/video/7415820467606473999",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 28.5,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "走火入魔 最近看啥都像羽毛球 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 62,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7183132124801682726",
+      "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列",
+      "url": "https://www.douyin.com/video/7183132124801682726",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.4,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 63,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7292235083715448104",
+      "title": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教",
+      "url": "https://www.douyin.com/video/7292235083715448104",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 49.6,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 64,
+      "review_status": "pending",
+      "priority_score": 8,
+      "priority_reasons": [
+        "category:训练与纠错+5",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7182762294294744332",
+      "title": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复",
+      "url": "https://www.douyin.com/video/7182762294294744332",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 35.9,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 65,
+      "review_status": "pending",
+      "priority_score": 6,
+      "priority_reasons": [
+        "category:单打战术+3",
+        "terms:纠错"
+      ],
+      "matched_terms": [
+        "纠错"
+      ],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7404091511773613347",
+      "title": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向",
+      "url": "https://www.douyin.com/video/7404091511773613347",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.3,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向 / 口播不足，需视觉分析后生成教学结论。"
+    },
+    {
+      "rank": 66,
+      "review_status": "pending",
+      "priority_score": 3,
+      "priority_reasons": [
+        "category:单打战术+3"
+      ],
+      "matched_terms": [],
+      "topic_hits": [],
+      "representative_hits": [],
+      "video_id": "7136376084920012032",
+      "title": "最难模仿的，是球速，还有身高能打出的落点",
+      "url": "https://www.douyin.com/video/7136376084920012032",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 18.9,
+      "confidence": "low",
+      "review_checklist": [
+        "confirm_teaching_content",
+        "confirm_terms_and_action_direction",
+        "capture_1_to_3_timestamped_cues",
+        "mark_approved_needs_correction_not_teaching_or_low_value"
+      ],
+      "review_notes": "",
+      "teaching_note_preview": "最难模仿的，是球速，还有身高能打出的落点 / 口播不足，需视觉分析后生成教学结论。"
+    }
+  ]
+}

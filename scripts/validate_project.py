@@ -14,6 +14,7 @@ json_paths = [
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
+    "data/review/visual_review_queue.json",
     "data/pilot_25_videos.json",
     "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
@@ -100,4 +101,24 @@ for required_heading in ["今日 15 分钟", "3 天修正", "2 周巩固", "来�
     if required_heading not in practice_template_text:
         raise SystemExit(f"Practice-plan template is missing {required_heading}")
 
-print("Validated JSON, Draw.io, Skill metadata, full skill sync, topic index, and practice template.")
+review_queue = json.loads(
+    (ROOT / "data" / "review" / "visual_review_queue.json").read_text(encoding="utf-8")
+)
+expected_review_count = sum(
+    video["processing_status"] == "needs_visual_review"
+    for video in douyin_knowledge["videos"]
+)
+if review_queue["total_pending"] != expected_review_count:
+    raise SystemExit("Visual review queue is out of sync with needs_visual_review videos")
+if len(review_queue["items"]) != expected_review_count:
+    raise SystemExit("Visual review queue item count does not match pending count")
+if any(item["review_status"] not in review_queue["allowed_review_statuses"] for item in review_queue["items"]):
+    raise SystemExit("Visual review queue contains an invalid review status")
+
+review_markdown = ROOT / "output" / "visual_review_queue.md"
+if not review_markdown.exists():
+    raise SystemExit("Visual review queue markdown is missing")
+if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
+    raise SystemExit("Visual review queue markdown is missing top-priority items")
+
+print("Validated JSON, Draw.io, Skill metadata, full skill sync, topic index, practice template, and visual review queue.")
