@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T16:26:39.708197+00:00",
+  "updated_at": "2026-07-10T16:31:09.895934+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 385,
-    "media_ready": 20
+    "transcribed": 390,
+    "media_ready": 15
   },
   "items": [
     {
@@ -2796,10 +2796,10 @@
       "title": "这种天然教研有人看嘛？对方直线可以回，就是威胁会很小#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7200944470446050599.mp4",
-      "duration_seconds": 71.533333,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003d/7200944470446050599.mp4",
+      "duration_seconds": 71.494,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2832,10 +2832,10 @@
       "title": "解题思路，遇到高质量防守且自己冲劲儿过猛，可以使用停顿技术重新回到拉吊节奏#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7195014413932367116.mp4",
-      "duration_seconds": 99.666667,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003d/7195014413932367116.mp4",
+      "duration_seconds": 99.614,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2844,10 +2844,10 @@
       "title": "今天恢复直播。就算压不住，也有效果，遇到平高有条件直接反加速#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7193151905139395872.mp4",
-      "duration_seconds": 127.1,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003d/7193151905139395872.mp4",
+      "duration_seconds": 127.036,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2868,10 +2868,10 @@
       "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的#羽毛球 #单打 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7185744630439333153.mp4",
-      "duration_seconds": 327.666667,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003d/7185744630439333153.mp4",
+      "duration_seconds": 327.612,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2880,10 +2880,10 @@
       "title": "就像跑步重心要在前面，倒退跑重心要在后面一样#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7185360811248864544.mp4",
-      "duration_seconds": 75.466667,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003d/7185360811248864544.mp4",
+      "duration_seconds": 75.418,
+      "attempts": 4,
       "error": null
     },
     {

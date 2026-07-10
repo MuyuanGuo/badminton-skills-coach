@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:26:40.440266+00:00",
+  "updated_at": "2026-07-10T16:31:10.586467+00:00",
   "queue_counts": {
-    "transcribed": 385,
-    "media_ready": 20
+    "transcribed": 390,
+    "media_ready": 15
   },
   "knowledge_counts": {
-    "videos": 385,
-    "ready": 323,
-    "needs_visual_review": 62,
+    "videos": 390,
+    "ready": 327,
+    "needs_visual_review": 63,
     "curated": 3
   },
   "videos": [
@@ -11420,6 +11420,31 @@
       }
     },
     {
+      "video_id": "7200944470446050599",
+      "title": "这种天然教研有人看嘛？对方直线可以回，就是威胁会很小",
+      "url": "https://www.douyin.com/video/7200944470446050599",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 71.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003d/7200944470446050599.json",
+      "teaching_note": {
+        "topic": "这种天然教研有人看嘛？对方直线可以回",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:15-00:18",
+            "text": "得抢你不可以接着接不了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7200204622852623628",
       "title": "这次确实是恢复局了，晚上直播",
       "url": "https://www.douyin.com/video/7200204622852623628",
@@ -11461,6 +11486,107 @@
       }
     },
     {
+      "video_id": "7195014413932367116",
+      "title": "解题思路，遇到高质量防守且自己冲劲儿过猛，可以使用停顿技术重新回到拉吊节奏",
+      "url": "https://www.douyin.com/video/7195014413932367116",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 99.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003d/7195014413932367116.json",
+      "teaching_note": {
+        "topic": "解题思路",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:07",
+            "text": "您是否也经常被骗启动部呢其实就是在对手非常主动的时候"
+          },
+          {
+            "timestamp": "00:37-00:46",
+            "text": "他急速上网上来向回去成为一个最大的难点因此我可以在防守上做文章防守的时候把球顶出去让他没有办法搓球"
+          },
+          {
+            "timestamp": "00:40-00:48",
+            "text": "因此我可以在防守上做文章防守的时候把球顶出去让他没有办法搓球首先他的人移动的很快"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:05-00:12",
+            "text": "其实就是在对手非常主动的时候我们不愿意承认被动罢了像这种对手拿点非常好早早的做出框架"
+          },
+          {
+            "timestamp": "00:19-00:25",
+            "text": "他就会搓那么我们要做的就是乖乖的站在原地不要动等他球出来"
+          },
+          {
+            "timestamp": "00:24-00:29",
+            "text": "等他球出来上去承认被动给对手起球只要挑的质量不差"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:55-01:04",
+            "text": "如果我挡的比较高对手拿点高优先保护直线我们右脚在前因为对手推斜线的平球我们是可以拦住的"
+          },
+          {
+            "timestamp": "00:58-01:08",
+            "text": "优先保护直线我们右脚在前因为对手推斜线的平球我们是可以拦住的如果我挡的这两高对手拿点低我们就可以去抓斜线了"
+          },
+          {
+            "timestamp": "01:01-01:10",
+            "text": "因为对手推斜线的平球我们是可以拦住的如果我挡的这两高对手拿点低我们就可以去抓斜线了因为直线平球的威胁已经没有了"
+          },
+          {
+            "timestamp": "01:12-01:19",
+            "text": "他人回不去是关键所以当我们在逆境中要先忍住但是并不是一辈子忍让"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7193151905139395872",
+      "title": "今天恢复直播。就算压不住，也有效果，遇到平高有条件直接反加速",
+      "url": "https://www.douyin.com/video/7193151905139395872",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 127.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003d/7193151905139395872.json",
+      "teaching_note": {
+        "topic": "今天恢复直播。就算压不住",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:24",
+            "text": "第二我赢出一个背动的位置这个时候我们可以干什么呢使用一个蓝调技术"
+          },
+          {
+            "timestamp": "00:54-01:00",
+            "text": "那这个时候它压完一个平球我当然是可以有一个扁斜线了而且我们所在的位置"
+          },
+          {
+            "timestamp": "00:59-01:02",
+            "text": "而且我们所在的位置应该不会超过一线按这种平球"
+          },
+          {
+            "timestamp": "01:52-01:56",
+            "text": "我们发半场给它然后打完了快点像写线一动"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7189812762409782539",
       "title": "指似铁，腕如棉，拍臂为鞭",
       "url": "https://www.douyin.com/video/7189812762409782539",
@@ -11493,6 +11619,85 @@
           {
             "timestamp": "00:39-00:47",
             "text": "它会发生一次形变然后比如说它在高速中突然一下子停下了又会发生一次形变"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7185744630439333153",
+      "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的",
+      "url": "https://www.douyin.com/video/7185744630439333153",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 327.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003d/7185744630439333153.json",
+      "teaching_note": {
+        "topic": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7185360811248864544",
+      "title": "就像跑步重心要在前面，倒退跑重心要在后面一样",
+      "url": "https://www.douyin.com/video/7185360811248864544",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 75.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003d/7185360811248864544.json",
+      "teaching_note": {
+        "topic": "就像跑步重心要在前面",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:10",
+            "text": "等一下来看一下这个步法回动首先在这个球发的"
+          },
+          {
+            "timestamp": "00:11-00:17",
+            "text": "那我肯定出来的时候要用重心带动身体打完了之后"
+          },
+          {
+            "timestamp": "00:17-00:23",
+            "text": "我怎么回动呢是重心就要像什么方向盘一样往回去拉身体"
+          },
+          {
+            "timestamp": "00:30-00:37",
+            "text": "看我的腰有一个明显向右的一个倾斜重心带动人一起回动那这样我人就回得快了"
+          },
+          {
+            "timestamp": "00:36-00:40",
+            "text": "那这样我人就回得快了那如果我想向前回动呢哎我就可以"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:26-00:33",
+            "text": "那我这个派出来了之后再就应该是这种身体看我的腰有一个明显向右的一个倾斜"
+          },
+          {
+            "timestamp": "00:39-00:46",
+            "text": "哎我就可以我就可以向前去押也就是说我人想向哪儿移动"
+          },
+          {
+            "timestamp": "00:44-00:48",
+            "text": "也就是说我人想向哪儿移动应该是让我的核心也就是我的腰"
+          },
+          {
+            "timestamp": "01:09-01:15",
+            "text": "妈妈的话重视梦想我不会再走傍现在家中堂球技新中掌"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
