@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T05:15:21.751981+00:00",
+  "updated_at": "2026-07-10T05:22:13.675525+00:00",
   "queue_counts": {
-    "transcribed": 338,
+    "transcribed": 345,
     "extraction_failed": 35,
-    "pending": 32
+    "pending": 25
   },
   "knowledge_counts": {
-    "videos": 338,
-    "ready": 283,
-    "needs_visual_review": 55,
+    "videos": 345,
+    "ready": 289,
+    "needs_visual_review": 56,
     "curated": 3
   },
   "videos": [
@@ -16203,6 +16203,114 @@
       }
     },
     {
+      "video_id": "7065491791167999232",
+      "title": "挥拍路径向斜下方就是保证球尽可能的会平，任何网前高位都可以用，球平行过网了注意抓对手推球",
+      "url": "https://www.douyin.com/video/7065491791167999232",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 32.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7065491791167999232.json",
+      "teaching_note": {
+        "topic": "挥拍路径向斜下方就是保证球尽可能的会平",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:12",
+            "text": "今天我们来学习双打的搓放往前拍面向鞋上方,挥拍路径向鞋下方手腕带动大拇指和后三指发力"
+          },
+          {
+            "timestamp": "00:06-00:16",
+            "text": "拍面向鞋上方,挥拍路径向鞋下方手腕带动大拇指和后三指发力正对球网瞄准往带,球过往一定要平"
+          },
+          {
+            "timestamp": "00:12-00:26",
+            "text": "正对球网瞄准往带,球过往一定要平正手也一样,只是手腕带动后三指和十指发力注意搓放时球要在我们的外侧"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:23",
+            "text": "手腕带动大拇指和后三指发力正对球网瞄准往带,球过往一定要平正手也一样,只是手腕带动后三指和十指发力"
+          },
+          {
+            "timestamp": "00:16-00:31",
+            "text": "正手也一样,只是手腕带动后三指和十指发力注意搓放时球要在我们的外侧人在家中堂,球技心中掌"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7065157571816000809",
+      "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+      "url": "https://www.douyin.com/video/7065157571816000809",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-043/7065157571816000809.json",
+      "teaching_note": {
+        "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7064753436809514281",
+      "title": "发个老库存，垫步和并步都接双脚起跳的合适步法",
+      "url": "https://www.douyin.com/video/7064753436809514281",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 37.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7064753436809514281.json",
+      "teaching_note": {
+        "topic": "发个老库存",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:12",
+            "text": "并不加横跳可以有效的蓝节平高球进行进攻突击两脚横跳"
+          },
+          {
+            "timestamp": "00:18-00:26",
+            "text": "并不也是最容易接双脚起跳的起跳时使用A字架拍法双手由下至上摆动"
+          },
+          {
+            "timestamp": "00:27-00:35",
+            "text": "辅助起跳打完球时注意回动人在家中堂"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:06-00:12",
+            "text": "并不加横跳可以有效的蓝节平高球进行进攻突击两脚横跳"
+          },
+          {
+            "timestamp": "00:27-00:35",
+            "text": "辅助起跳打完球时注意回动人在家中堂"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7064372942880148777",
       "title": "这个实战很行，击球点在额头前或上一个头的位置",
       "url": "https://www.douyin.com/video/7064372942880148777",
@@ -16246,6 +16354,199 @@
             "text": "剛開始練習時我們可以拍面向前準備熟練後拍面可以向外這樣增加這個動作的欺騙性"
           }
         ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7064010057020673314",
+      "title": "身前位勾球，和侧身位的勾球不一样，正手也存在变拍，只不过没反手那么需要",
+      "url": "https://www.douyin.com/video/7064010057020673314",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 88.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7064010057020673314.json",
+      "teaching_note": {
+        "topic": "身前位勾球",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "今天我们来学习正反手侧身位勾球最近我看大家勾球啊 勾都不理想"
+          },
+          {
+            "timestamp": "00:03-00:11",
+            "text": "最近我看大家勾球啊 勾都不理想那么主要呢 面对于我们左边侧身位勾球和右边的侧身位勾球"
+          },
+          {
+            "timestamp": "00:05-00:13",
+            "text": "那么主要呢 面对于我们左边侧身位勾球和右边的侧身位勾球首先我们拿拍"
+          },
+          {
+            "timestamp": "00:15-00:21",
+            "text": "如果球在身前位还是可以采用斜冷握拍的勾球为什么 角度不够"
+          },
+          {
+            "timestamp": "00:23-00:29",
+            "text": "手指拇指捏两侧你们的勾球单纯是靠手腕的翻动在勾那不行了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:11-00:16",
+            "text": "首先我们拿拍不能顶在正面和斜冷上了如果球在身前位"
+          },
+          {
+            "timestamp": "01:05-01:14",
+            "text": "来 看这边不要单纯的靠手腕翻不要单纯的靠手腕翻"
+          },
+          {
+            "timestamp": "01:09-01:15",
+            "text": "不要单纯的靠手腕翻不要单纯的靠手腕翻抬肘 降肘"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:15",
+            "text": "和右边的侧身位勾球首先我们拿拍不能顶在正面和斜冷上了"
+          },
+          {
+            "timestamp": "00:15-00:21",
+            "text": "如果球在身前位还是可以采用斜冷握拍的勾球为什么 角度不够"
+          },
+          {
+            "timestamp": "00:40-00:48",
+            "text": "这样拍速换再加上手指的脸动和手腕的横带当球在我们左边侧身"
+          },
+          {
+            "timestamp": "00:46-00:53",
+            "text": "当球在我们左边侧身就需要十指拇指捏两侧的握拍来活手腕的角度"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7063638911301520680",
+      "title": "打这个球一定要注意对手网前球员的站位，站中间的时候一定不要用",
+      "url": "https://www.douyin.com/video/7063638911301520680",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 50.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7063638911301520680.json",
+      "teaching_note": {
+        "topic": "打这个球一定要注意对手网前球员的站位",
+        "key_evidence": [
+          {
+            "timestamp": "00:31-00:41",
+            "text": "在右半球时挡完圆网抓退时使用那么发力方式还是小臂带动手腕手指去发力那么销和打借助的比例"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:11",
+            "text": "今天我们来学习第二个假动作首先我们拿大拇指顶在正宽面上把球拍从后向前回"
+          },
+          {
+            "timestamp": "00:14-00:22",
+            "text": "外侧也就是我们的右侧倾斜瞬间的再把球拍向外摆那么整体还是连销带打"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7063280271403060520",
+      "title": "先学第一种，完了再进阶动作，",
+      "url": "https://www.douyin.com/video/7063280271403060520",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 83.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7063280271403060520.json",
+      "teaching_note": {
+        "topic": "先学第一种",
+        "key_evidence": [
+          {
+            "timestamp": "00:09-00:13",
+            "text": "这边我们要先感受这个手指的发力后三指往回楼"
+          },
+          {
+            "timestamp": "00:44-00:52",
+            "text": "来扔球凭推球的最佳线路是推直线因为斜线的平推球"
+          },
+          {
+            "timestamp": "01:01-01:13",
+            "text": "再试一试啊当我们学会拍面朝前推球的时候就要开始学习和搓球动作一致的推球"
+          },
+          {
+            "timestamp": "01:06-01:15",
+            "text": "当我们学会拍面朝前推球的时候就要开始学习和搓球动作一致的推球假搓真推的动作"
+          },
+          {
+            "timestamp": "01:13-01:20",
+            "text": "假搓真推的动作可以让我们的对手在防守时注意力受到前后的拉扯"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:09",
+            "text": "你看刚开始学的时候没错我们就先感受这个推球的人呢"
+          },
+          {
+            "timestamp": "00:09-00:13",
+            "text": "这边我们要先感受这个手指的发力后三指往回楼"
+          },
+          {
+            "timestamp": "00:23-00:29",
+            "text": "跟拖球的隐蔽性去配合所以说我们要先摆出一个拖球的姿势大拇指顶在这个邪冷上"
+          },
+          {
+            "timestamp": "01:13-01:20",
+            "text": "假搓真推的动作可以让我们的对手在防守时注意力受到前后的拉扯"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7062570553936268559",
+      "title": "羽毛球就是投掷传导发力，今天别看假动作了，看点真的吧😄",
+      "url": "https://www.douyin.com/video/7062570553936268559",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 35.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-043/7062570553936268559.json",
+      "teaching_note": {
+        "topic": "羽毛球就是投掷传导发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:08",
+            "text": "其实与毛球的上手发力就是投掷动作立得走向游下之上环环相扣"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },

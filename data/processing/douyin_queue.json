@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T05:15:20.065180+00:00",
+  "updated_at": "2026-07-10T05:22:12.418100+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 338,
+    "transcribed": 345,
     "extraction_failed": 35,
-    "pending": 32
+    "pending": 25
   },
   "items": [
     {
@@ -4465,10 +4465,10 @@
       "title": "挥拍路径向斜下方就是保证球尽可能的会平，任何网前高位都可以用，球平行过网了注意抓对手推球#羽毛球训练 #羽毛球教学 #羽毛球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7065491791167999232.mp4",
+      "duration_seconds": 32.229,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4477,10 +4477,10 @@
       "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，#羽毛球训练 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7065157571816000809.mp4",
+      "duration_seconds": 19.574,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4489,10 +4489,10 @@
       "title": "发个老库存，垫步和并步都接双脚起跳的合适步法#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7064753436809514281.mp4",
+      "duration_seconds": 37.547,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4513,10 +4513,10 @@
       "title": "身前位勾球，和侧身位的勾球不一样，正手也存在变拍，只不过没反手那么需要#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7064010057020673314.mp4",
+      "duration_seconds": 88.607,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4525,10 +4525,10 @@
       "title": "打这个球一定要注意对手网前球员的站位，站中间的时候一定不要用#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7063638911301520680.mp4",
+      "duration_seconds": 50.596,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4537,10 +4537,10 @@
       "title": "先学第一种，完了再进阶动作，#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7063280271403060520.mp4",
+      "duration_seconds": 83.801,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4549,10 +4549,10 @@
       "title": "羽毛球就是投掷传导发力，今天别看假动作了，看点真的吧😄#羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-043/7062570553936268559.mp4",
+      "duration_seconds": 35.596,
+      "attempts": 1,
       "error": null
     },
     {
