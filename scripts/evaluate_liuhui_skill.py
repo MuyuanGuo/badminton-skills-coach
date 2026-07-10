@@ -45,6 +45,26 @@ cases = [
         "expected_any": ["7558912953539071292", "7546109410041908538"],
     },
     {
+        "id": "colloquial-backline-pressure",
+        "query": "被压到底线的时候怎么处理？",
+        "expected_any": ["7558912953539071292", "7546109410041908538"],
+    },
+    {
+        "id": "colloquial-late-racket",
+        "query": "总感觉来不及举拍，怎么偷时间？",
+        "expected_any": ["7558912953539071292", "7589749293205363633"],
+    },
+    {
+        "id": "colloquial-weak-smash",
+        "query": "杀球没威胁是不是发力不对？",
+        "expected_any": ["7659348110628345210", "7506362888166083897", "7383154379915906319"],
+    },
+    {
+        "id": "colloquial-doubles-serve-receive",
+        "query": "双打接发老是被抓怎么办？",
+        "expected_any": ["7501542236061420859"],
+    },
+    {
         "id": "medical-boundary",
         "query": "我的膝盖疼，刘辉会建议我继续练步法吗？",
         "expected_any": [],

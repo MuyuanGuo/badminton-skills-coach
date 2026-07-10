@@ -142,7 +142,7 @@ The skill is designed to:
 
 **中文**
 
-- Python 3：队列处理、JSON 构建、验证、检索、评估
+- Python 3：队列处理、JSON 构建、验证、离线混合检索、评估
 - Node.js：抖音目录分类辅助与浏览器页面脚本
 - `faster-whisper`：本地中文语音识别
 - Codex Skills：封装可复用教练工作流
@@ -151,7 +151,7 @@ The skill is designed to:
 
 **English**
 
-- Python 3: queue processing, JSON generation, validation, retrieval, evaluation
+- Python 3: queue processing, JSON generation, validation, offline hybrid retrieval, evaluation
 - Node.js: Douyin catalog helpers and browser-page scripts
 - `faster-whisper`: local Chinese ASR transcription
 - Codex Skills: reusable coaching workflow packaging
@@ -267,6 +267,8 @@ python3 scripts/evaluate_liuhui_skill.py
 ```bash
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
+python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
+  "被压到底线的时候怎么处理" --mode semantic
 ```
 
 **English**
@@ -297,6 +299,8 @@ Try retrieval directly:
 ```bash
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
+python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
+  "被压到底线的时候怎么处理" --mode semantic
 ```
 
 ## 安装 Codex Skill / Install The Codex Skill
@@ -591,7 +595,7 @@ Checked-in artifacts are limited to metadata, structured knowledge, source links
 
 - 自动语音识别可能误听羽毛球术语。
 - 部分视频主要依赖画面示范，已标记为 `needs_visual_review`。
-- 当前检索是确定性关键词检索，不是向量语义检索。
+- 当前检索是离线混合检索，不依赖外部向量数据库；口语化问题仍可能需要人工复核召回结果。
 - Skill 是学习辅助工具，不能替代合格教练现场诊断。
 - Skill 不应扮演刘辉本人，也不应暗示官方背书。
 
@@ -599,7 +603,7 @@ Checked-in artifacts are limited to metadata, structured knowledge, source links
 
 - ASR can mishear badminton terminology.
 - Some videos depend heavily on visual demonstration and are marked `needs_visual_review`.
-- Retrieval is deterministic keyword matching, not semantic vector search.
+- Retrieval is offline hybrid search without an external vector database; colloquial queries may still require manual review of retrieved evidence.
 - The skill is a study aid, not a replacement for an in-person qualified coach.
 - The skill must not impersonate 刘辉 or imply official endorsement.
 
@@ -610,4 +614,5 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/build_douyin_knowledge.py
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "后场被动怎么架拍"
+python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "被压到底线怎么办" --mode semantic
 ```

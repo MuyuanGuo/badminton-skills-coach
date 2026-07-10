@@ -16,7 +16,9 @@ Base answers on `references/knowledge-base.json`. Treat it as the current full s
 python3 scripts/search_knowledge.py "用户问题或关键词"
 ```
 
-3. Read the returned entries and evidence timestamps.
+The default mode is hybrid retrieval: exact keyword matches plus lightweight semantic similarity. For debugging, use `--mode keyword` or `--mode semantic`.
+
+3. Read the returned entries, including `keyword_score`, `semantic_score`, and evidence timestamps.
 4. Answer in this order:
    - Diagnosis
    - Relevant principle
@@ -59,4 +61,4 @@ When multiple videos support a point, cite no more than three strongest sources.
 
 - `references/knowledge-base.json`: full structured knowledge entries for 405 processed teaching videos.
 - `references/evaluation-prompts.md`: questions used to test retrieval and answer quality.
-- `scripts/search_knowledge.py`: deterministic keyword retrieval over titles, categories, tags, and timestamped evidence.
+- `scripts/search_knowledge.py`: offline hybrid retrieval over titles, categories, tags, and timestamped evidence.
