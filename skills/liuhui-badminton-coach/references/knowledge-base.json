@@ -1,17 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T22:13:34.986934+00:00",
+  "updated_at": "2026-07-10T22:40:02.125263+00:00",
   "queue_counts": {
     "transcribed": 405
   },
   "knowledge_counts": {
     "videos": 405,
-    "ready": 355,
-    "needs_visual_review": 41,
-    "not_teaching": 9,
+    "ready": 358,
+    "not_teaching": 47,
     "curated": 3,
-    "visual_reviewed": 16
+    "visual_reviewed": 19
   },
   "videos": [
     {
@@ -1045,16 +1044,20 @@
         "双打战术"
       ],
       "duration_seconds": 129.1,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-001/7627338837022917809.json",
       "teaching_note": {
         "topic": "萌辉组合 混双怎么比单打还累？还好我的女搭档足够强",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513610+00:00"
     },
     {
       "video_id": "7626127268884067249",
@@ -1434,16 +1437,20 @@
         "单打战术"
       ],
       "duration_seconds": 181.7,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-001/7615737190207725937.json",
       "teaching_note": {
         "topic": "与蔡晓源单打 本来定的是打一局，21-19 18-21 弃！但是打蔡龙虎就是得拐他！！！",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514001+00:00"
     },
     {
       "video_id": "7614167503938610417",
@@ -4420,16 +4427,20 @@
         "单打战术"
       ],
       "duration_seconds": 270.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-003/7516012808523222329.json",
       "teaching_note": {
         "topic": "与高政泽单打 南村群童欺我老无力，忍能对面为盗贼",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514030+00:00"
     },
     {
       "video_id": "7515625891511995706",
@@ -5282,16 +5293,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 23.7,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-004/7496238975796333881.json",
       "teaching_note": {
         "topic": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514531+00:00"
     },
     {
       "video_id": "7494729488699559225",
@@ -5931,16 +5946,20 @@
         "单打战术"
       ],
       "duration_seconds": 140.9,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-004/7480852601798511929.json",
       "teaching_note": {
         "topic": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514068+00:00"
     },
     {
       "video_id": "7476768272864644409",
@@ -5951,16 +5970,20 @@
         "单打战术"
       ],
       "duration_seconds": 212.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-005/7476768272864644409.json",
       "teaching_note": {
         "topic": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513968+00:00"
     },
     {
       "video_id": "7475440958130097466",
@@ -6035,16 +6058,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 113.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-005/7471361140719652154.json",
       "teaching_note": {
         "topic": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513804+00:00"
     },
     {
       "video_id": "7459867608460840252",
@@ -6636,16 +6663,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 28.5,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-006/7415820467606473999.json",
       "teaching_note": {
         "topic": "走火入魔 最近看啥都像羽毛球",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514622+00:00"
     },
     {
       "video_id": "7414339897990843663",
@@ -6849,16 +6880,20 @@
         "单打战术"
       ],
       "duration_seconds": 315.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-006/7409137525006060840.json",
       "teaching_note": {
         "topic": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514104+00:00"
     },
     {
       "video_id": "7408162190647217460",
@@ -6870,16 +6905,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 139.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-006/7408162190647217460.json",
       "teaching_note": {
         "topic": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513650+00:00"
     },
     {
       "video_id": "7406541084219821312",
@@ -6969,16 +7008,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 27.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-007/7404091511773613347.json",
       "teaching_note": {
         "topic": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514741+00:00"
     },
     {
       "video_id": "7400221745208167695",
@@ -7370,16 +7413,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 55.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-008/7382052454063492392.json",
       "teaching_note": {
         "topic": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514254+00:00"
     },
     {
       "video_id": "7381785580268473635",
@@ -7391,16 +7438,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 348.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-008/7381785580268473635.json",
       "teaching_note": {
         "topic": "高端局 腿伤都快给我跑复发了 16比21 21比17",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513716+00:00"
     },
     {
       "video_id": "7380562375188974888",
@@ -7496,16 +7547,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 14.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-008/7370160247467494691.json",
       "teaching_note": {
         "topic": "最近恢复了一些，大家帮我看看球速恢复到300了吗？",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514437+00:00"
     },
     {
       "video_id": "7369052560818195752",
@@ -7575,16 +7630,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 68.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-009/7367561803234069800.json",
       "teaching_note": {
         "topic": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513835+00:00"
     },
     {
       "video_id": "7358661350945525007",
@@ -7595,16 +7654,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 72.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-009/7358661350945525007.json",
       "teaching_note": {
         "topic": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513867+00:00"
     },
     {
       "video_id": "7357171384377740544",
@@ -7673,16 +7736,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 38.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-009/7354580584229866787.json",
       "teaching_note": {
         "topic": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514468+00:00"
     },
     {
       "video_id": "7353467942706695458",
@@ -8070,16 +8137,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 29.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-010/7340472371322686755.json",
       "teaching_note": {
         "topic": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514315+00:00"
     },
     {
       "video_id": "7335277415456836898",
@@ -8199,16 +8270,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 55.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-011/7330090280055491874.json",
       "teaching_note": {
         "topic": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514166+00:00"
     },
     {
       "video_id": "7327483273536474408",
@@ -9094,16 +9169,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 49.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-013/7292235083715448104.json",
       "teaching_note": {
         "topic": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514683+00:00"
     },
     {
       "video_id": "7291120515530493184",
@@ -10243,16 +10322,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 405.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-016/7249558167288335656.json",
       "teaching_note": {
         "topic": "这次别再说对手弱了，很年轻的健将 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513544+00:00"
     },
     {
       "video_id": "7248074193118547240",
@@ -10898,16 +10981,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 128.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-018/7223584265072692518.json",
       "teaching_note": {
         "topic": "晚上直播带雷霆100测评",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513181+00:00"
     },
     {
       "video_id": "7220984919747497255",
@@ -11552,16 +11639,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 187.7,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-020/7200204622852623628.json",
       "teaching_note": {
         "topic": "这次确实是恢复局了，晚上直播",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513577+00:00"
     },
     {
       "video_id": "7197605327993310467",
@@ -11736,16 +11827,20 @@
         "单打战术"
       ],
       "duration_seconds": 327.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/failed-retry-003d/7185744630439333153.json",
       "teaching_note": {
         "topic": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514137+00:00"
     },
     {
       "video_id": "7185360811248864544",
@@ -11879,16 +11974,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 19.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/failed-retry-003e/7183132124801682726.json",
       "teaching_note": {
         "topic": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514654+00:00"
     },
     {
       "video_id": "7182762294294744332",
@@ -11899,16 +11998,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 35.9,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-023/7182762294294744332.json",
       "teaching_note": {
         "topic": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514712+00:00"
     },
     {
       "video_id": "7182019728024538380",
@@ -12473,16 +12576,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 77.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/failed-retry-003f/7164948889630493991.json",
       "teaching_note": {
         "topic": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513898+00:00"
     },
     {
       "video_id": "7163836275487804676",
@@ -12611,16 +12718,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 30.9,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-027/7159754364297448715.json",
       "teaching_note": {
         "topic": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514224+00:00"
     },
     {
       "video_id": "7159382785092783375",
@@ -12631,16 +12742,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 95.1,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-026/7159382785092783375.json",
       "teaching_note": {
         "topic": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513928+00:00"
     },
     {
       "video_id": "7158640349798255907",
@@ -13114,16 +13229,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 41.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-029/7149363344649047311.json",
       "teaching_note": {
         "topic": "大家找找有没有违例",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514379+00:00"
     },
     {
       "video_id": "7148990784363138344",
@@ -13401,16 +13520,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 27.1,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-031/7143811094698528040.json",
       "teaching_note": {
         "topic": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514500+00:00"
     },
     {
       "video_id": "7142313105324870950",
@@ -13756,16 +13879,20 @@
         "单打战术"
       ],
       "duration_seconds": 18.9,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-032/7136376084920012032.json",
       "teaching_note": {
         "topic": "最难模仿的，是球速，还有身高能打出的落点",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514769+00:00"
     },
     {
       "video_id": "7133406724035185920",
@@ -15851,16 +15978,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 70.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-037/7091101085535915279.json",
       "teaching_note": {
         "topic": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是羽毛球击球动作中的一些发力方式和一些生活中常见动作的发力方式很像。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是羽毛球击球动作中的一些发力方式和一些生活中常见动作的发力方式很像。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是羽毛球击球动作中的一些发力方式和一些生活中常见动作的发力方式很像。",
+      "reviewed_at": "2026-07-10T22:39:41.513771+00:00"
     },
     {
       "video_id": "7090377448017235234",
@@ -15940,16 +16077,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 19.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-037/7088881901209013545.json",
       "teaching_note": {
         "topic": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514409+00:00"
     },
     {
       "video_id": "7088510866093591808",
@@ -16102,16 +16243,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 27.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-038/7087020706680048930.json",
       "teaching_note": {
         "topic": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514348+00:00"
     },
     {
       "video_id": "7086648517627858176",
@@ -16233,16 +16378,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 17.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-038/7085903098853592335.json",
       "teaching_note": {
         "topic": "交作业了😂",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514196+00:00"
     },
     {
       "video_id": "7085169366005714217",
@@ -16630,16 +16779,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 46.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-039/7080341135545126144.json",
       "teaching_note": {
         "topic": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，正反手网前不同击球方式的动作一致性，以及球路变化",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，正反手网前不同击球方式的动作一致性，以及球路变化"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，正反手网前不同击球方式的动作一致性，以及球路变化",
+      "reviewed_at": "2026-07-10T22:39:41.514565+00:00"
     },
     {
       "video_id": "7079966173307194639",
@@ -17345,16 +17504,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 167.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-041/7071430658584857891.json",
       "teaching_note": {
         "topic": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513685+00:00"
     },
     {
       "video_id": "7071068959021255951",
@@ -17400,16 +17563,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 129.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-041/7070320753916366095.json",
       "teaching_note": {
         "topic": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513504+00:00"
     },
     {
       "video_id": "7069948509838904591",
@@ -17763,16 +17930,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 31.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-042/7066977429230718223.json",
       "teaching_note": {
         "topic": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514594+00:00"
     },
     {
       "video_id": "7066596981992394025",
@@ -18261,16 +18432,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 25.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-044/7061422431386324264.json",
       "teaching_note": {
         "topic": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作演示，讲的是一些击球假动作",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作演示，讲的是一些击球假动作"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作演示，讲的是一些击球假动作",
+      "reviewed_at": "2026-07-10T22:39:41.514286+00:00"
     },
     {
       "video_id": "7060717442825309480",

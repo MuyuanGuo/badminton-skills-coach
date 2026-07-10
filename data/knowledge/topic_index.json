@@ -2,16 +2,16 @@
   "version": "topic-index-v1",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-10T22:13:34.986934+00:00",
+  "source_updated_at": "2026-07-10T22:40:02.125263+00:00",
   "video_count": 405,
-  "indexable_video_count": 396,
-  "assigned_video_count": 344,
+  "indexable_video_count": 358,
+  "assigned_video_count": 343,
   "multi_topic_video_count": 294,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
-      "video_count": 210,
+      "video_count": 211,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -218,8 +218,8 @@
             "滑板",
             "假动作"
           ],
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 19,
+          "ready_count": 19,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -231,6 +231,16 @@
               "processing_status": "ready",
               "topic": "一定要看过上集再看下集啊朋友们",
               "score": 6
+            },
+            {
+              "video_id": "7061422431386324264",
+              "title": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+              "url": "https://www.douyin.com/video/7061422431386324264",
+              "category": "训练与纠错",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+              "score": 4
             },
             {
               "video_id": "7115241358255803683",
@@ -261,16 +271,6 @@
               "processing_status": "ready",
               "topic": "来球快速时的后场架拍选择",
               "score": 3
-            },
-            {
-              "video_id": "7659348110628345210",
-              "title": "杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意!",
-              "url": "https://www.douyin.com/video/7659348110628345210",
-              "category": "后场技术",
-              "confidence": "curated",
-              "processing_status": "ready",
-              "topic": "快速突击中的杀球落点与身体姿态",
-              "score": 3
             }
           ]
         },
@@ -282,8 +282,8 @@
             "反手高远"
           ],
           "video_count": 65,
-          "ready_count": 64,
-          "needs_visual_review_count": 1,
+          "ready_count": 65,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7296314453379910947",
@@ -669,7 +669,7 @@
     {
       "name": "发力与身体运用",
       "description": "放松发力、旋转传导、腰腹、手腕与击球发力区间。",
-      "video_count": 223,
+      "video_count": 224,
       "subtopics": [
         {
           "name": "放松与爆发",
@@ -679,8 +679,8 @@
             "发力",
             "打透"
           ],
-          "video_count": 143,
-          "ready_count": 143,
+          "video_count": 144,
+          "ready_count": 144,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -997,7 +997,7 @@
     {
       "name": "中前场与抽挡",
       "description": "抽挡、接杀、防守、网前技术和中前场转换。",
-      "video_count": 104,
+      "video_count": 105,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -1136,8 +1136,8 @@
             "扑球",
             "滚网"
           ],
-          "video_count": 49,
-          "ready_count": 49,
+          "video_count": 50,
+          "ready_count": 50,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1324,7 +1324,7 @@
     {
       "name": "双打战术",
       "description": "双打轮转、防守站位、封网、进攻组织和发接发配合。",
-      "video_count": 60,
+      "video_count": 59,
       "subtopics": [
         {
           "name": "双打发接发",
@@ -1589,9 +1589,9 @@
             "压制",
             "后杀前封"
           ],
-          "video_count": 35,
+          "video_count": 34,
           "ready_count": 34,
-          "needs_visual_review_count": 1,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7278130800220998946",
@@ -1847,7 +1847,7 @@
     {
       "name": "训练与纠错",
       "description": "训练设计、常见错误、实战复盘和恢复对抗能力。",
-      "video_count": 152,
+      "video_count": 149,
       "subtopics": [
         {
           "name": "训练方法",
@@ -1986,9 +1986,9 @@
             "复盘",
             "比赛"
           ],
-          "video_count": 31,
+          "video_count": 30,
           "ready_count": 30,
-          "needs_visual_review_count": 1,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7083684012513840424",
@@ -2050,9 +2050,9 @@
             "对抗能力",
             "精疲力尽"
           ],
-          "video_count": 9,
+          "video_count": 7,
           "ready_count": 7,
-          "needs_visual_review_count": 2,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7432633273060314408",

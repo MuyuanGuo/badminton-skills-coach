@@ -5,7 +5,7 @@ description: Evidence-backed badminton coaching from the full 405-video indexed 
 
 # 刘辉羽毛球教练
 
-Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed videos, including entries marked `ready`, `needs_visual_review`, and `not_teaching`.
+Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed videos, including `ready` teaching entries and `not_teaching` exclusions.
 
 Use `references/topic-index.md` to orient the user's question in the teaching map before answering. The topic index is only a map; timestamped evidence must still come from retrieved knowledge entries.
 

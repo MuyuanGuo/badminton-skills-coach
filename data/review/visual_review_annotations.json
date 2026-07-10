@@ -1,14 +1,24 @@
 {
   "version": "visual-review-annotations-v1",
   "source": "output/visual_review_queue.md",
-  "reviewed_count": 25,
+  "reviewed_count": 66,
   "status_counts": {
-    "approved": 14,
+    "approved": 17,
     "needs_correction": 2,
-    "not_teaching": 9,
+    "not_teaching": 47,
     "low_value": 0
   },
   "items": [
+    {
+      "rank": 1,
+      "video_id": "7223584265072692518",
+      "title": "晚上直播带雷霆100测评",
+      "url": "https://www.douyin.com/video/7223584265072692518",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513181+00:00"
+    },
     {
       "rank": 1,
       "video_id": "7567155406117533051",
@@ -21,6 +31,16 @@
     },
     {
       "rank": 2,
+      "video_id": "7070320753916366095",
+      "title": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂",
+      "url": "https://www.douyin.com/video/7070320753916366095",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513504+00:00"
+    },
+    {
+      "rank": 2,
       "video_id": "7214304020775652620",
       "title": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
       "url": "https://www.douyin.com/video/7214304020775652620",
@@ -28,6 +48,16 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法",
       "reviewed_at": "2026-07-10T22:13:28.704730+00:00"
+    },
+    {
+      "rank": 3,
+      "video_id": "7249558167288335656",
+      "title": "这次别再说对手弱了，很年轻的健将 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负",
+      "url": "https://www.douyin.com/video/7249558167288335656",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513544+00:00"
     },
     {
       "rank": 3,
@@ -50,6 +80,16 @@
       "reviewed_at": "2026-07-10T22:13:28.704811+00:00"
     },
     {
+      "rank": 4,
+      "video_id": "7200204622852623628",
+      "title": "这次确实是恢复局了，晚上直播",
+      "url": "https://www.douyin.com/video/7200204622852623628",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513577+00:00"
+    },
+    {
       "rank": 5,
       "video_id": "7209108124924464387",
       "title": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
@@ -60,6 +100,16 @@
       "reviewed_at": "2026-07-10T22:13:28.704849+00:00"
     },
     {
+      "rank": 5,
+      "video_id": "7627338837022917809",
+      "title": "萌辉组合 混双怎么比单打还累？还好我的女搭档足够强",
+      "url": "https://www.douyin.com/video/7627338837022917809",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513610+00:00"
+    },
+    {
       "rank": 6,
       "video_id": "7115241358255803683",
       "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
@@ -68,6 +118,26 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。",
       "reviewed_at": "2026-07-10T22:13:28.704893+00:00"
+    },
+    {
+      "rank": 6,
+      "video_id": "7408162190647217460",
+      "title": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了",
+      "url": "https://www.douyin.com/video/7408162190647217460",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513650+00:00"
+    },
+    {
+      "rank": 7,
+      "video_id": "7071430658584857891",
+      "title": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手",
+      "url": "https://www.douyin.com/video/7071430658584857891",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513685+00:00"
     },
     {
       "rank": 7,
@@ -90,6 +160,26 @@
       "reviewed_at": "2026-07-10T22:13:28.704962+00:00"
     },
     {
+      "rank": 8,
+      "video_id": "7381785580268473635",
+      "title": "高端局 腿伤都快给我跑复发了 16比21 21比17",
+      "url": "https://www.douyin.com/video/7381785580268473635",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513716+00:00"
+    },
+    {
+      "rank": 9,
+      "video_id": "7091101085535915279",
+      "title": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
+      "url": "https://www.douyin.com/video/7091101085535915279",
+      "category": "训练与纠错",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是羽毛球击球动作中的一些发力方式和一些生活中常见动作的发力方式很像。",
+      "reviewed_at": "2026-07-10T22:39:41.513771+00:00"
+    },
+    {
       "rank": 9,
       "video_id": "7447084061371272507",
       "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
@@ -98,6 +188,16 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是前场抽挡中的握拍方式和击球位置的关系，另外还有一个原则是抽挡以反手握拍为主，尽量不做正反手转换，因为抽挡的节奏一般比较快，没时间换正反手，只能微调握拍方式。",
       "reviewed_at": "2026-07-10T22:13:28.704999+00:00"
+    },
+    {
+      "rank": 10,
+      "video_id": "7471361140719652154",
+      "title": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意",
+      "url": "https://www.douyin.com/video/7471361140719652154",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513804+00:00"
     },
     {
       "rank": 10,
@@ -120,6 +220,26 @@
       "reviewed_at": "2026-07-10T22:13:28.705061+00:00"
     },
     {
+      "rank": 11,
+      "video_id": "7367561803234069800",
+      "title": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦",
+      "url": "https://www.douyin.com/video/7367561803234069800",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513835+00:00"
+    },
+    {
+      "rank": 12,
+      "video_id": "7358661350945525007",
+      "title": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿",
+      "url": "https://www.douyin.com/video/7358661350945525007",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513867+00:00"
+    },
+    {
       "rank": 12,
       "video_id": "7496715538836704571",
       "title": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
@@ -138,6 +258,26 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。",
       "reviewed_at": "2026-07-10T22:13:28.705125+00:00"
+    },
+    {
+      "rank": 13,
+      "video_id": "7164948889630493991",
+      "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难",
+      "url": "https://www.douyin.com/video/7164948889630493991",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513898+00:00"
+    },
+    {
+      "rank": 14,
+      "video_id": "7159382785092783375",
+      "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍",
+      "url": "https://www.douyin.com/video/7159382785092783375",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513928+00:00"
     },
     {
       "rank": 14,
@@ -160,6 +300,16 @@
       "reviewed_at": "2026-07-10T22:13:28.705196+00:00"
     },
     {
+      "rank": 15,
+      "video_id": "7476768272864644409",
+      "title": "与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废",
+      "url": "https://www.douyin.com/video/7476768272864644409",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.513968+00:00"
+    },
+    {
       "rank": 16,
       "video_id": "7405420818009722146",
       "title": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗",
@@ -168,6 +318,16 @@
       "review_status": "not_teaching",
       "review_notes": "非教学视频",
       "reviewed_at": "2026-07-10T22:13:28.705229+00:00"
+    },
+    {
+      "rank": 16,
+      "video_id": "7615737190207725937",
+      "title": "与蔡晓源单打 本来定的是打一局，21-19 18-21 弃！但是打蔡龙虎就是得拐他！！！",
+      "url": "https://www.douyin.com/video/7615737190207725937",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514001+00:00"
     },
     {
       "rank": 17,
@@ -180,6 +340,16 @@
       "reviewed_at": "2026-07-10T22:13:28.705260+00:00"
     },
     {
+      "rank": 17,
+      "video_id": "7516012808523222329",
+      "title": "与高政泽单打 南村群童欺我老无力，忍能对面为盗贼",
+      "url": "https://www.douyin.com/video/7516012808523222329",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514030+00:00"
+    },
+    {
       "rank": 18,
       "video_id": "7146394347586587919",
       "title": "9976 羽毛球的防守其实打起来比进攻还爽😅",
@@ -190,6 +360,16 @@
       "reviewed_at": "2026-07-10T22:13:28.705294+00:00"
     },
     {
+      "rank": 18,
+      "video_id": "7480852601798511929",
+      "title": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在挑战",
+      "url": "https://www.douyin.com/video/7480852601798511929",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514068+00:00"
+    },
+    {
       "rank": 19,
       "video_id": "7071800926553541922",
       "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
@@ -198,6 +378,26 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，演示网前平搓技术",
       "reviewed_at": "2026-07-10T22:13:28.705368+00:00"
+    },
+    {
+      "rank": 19,
+      "video_id": "7409137525006060840",
+      "title": "外籍单打2.0 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24",
+      "url": "https://www.douyin.com/video/7409137525006060840",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514104+00:00"
+    },
+    {
+      "rank": 20,
+      "video_id": "7185744630439333153",
+      "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的",
+      "url": "https://www.douyin.com/video/7185744630439333153",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514137+00:00"
     },
     {
       "rank": 20,
@@ -220,6 +420,26 @@
       "reviewed_at": "2026-07-10T22:13:28.705431+00:00"
     },
     {
+      "rank": 21,
+      "video_id": "7330090280055491874",
+      "title": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦",
+      "url": "https://www.douyin.com/video/7330090280055491874",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514166+00:00"
+    },
+    {
+      "rank": 22,
+      "video_id": "7085903098853592335",
+      "title": "交作业了😂",
+      "url": "https://www.douyin.com/video/7085903098853592335",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514196+00:00"
+    },
+    {
       "rank": 22,
       "video_id": "7150847019320429839",
       "title": "跳出束缚，灵活握拍",
@@ -228,6 +448,16 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，演示网前反手勾对角的动作，击球点分别在身前和身后",
       "reviewed_at": "2026-07-10T22:13:28.705462+00:00"
+    },
+    {
+      "rank": 23,
+      "video_id": "7159754364297448715",
+      "title": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！",
+      "url": "https://www.douyin.com/video/7159754364297448715",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514224+00:00"
     },
     {
       "rank": 23,
@@ -241,6 +471,16 @@
     },
     {
       "rank": 24,
+      "video_id": "7382052454063492392",
+      "title": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。",
+      "url": "https://www.douyin.com/video/7382052454063492392",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514254+00:00"
+    },
+    {
+      "rank": 24,
       "video_id": "7400221745208167695",
       "title": "外籍对抗 新成员都很给力",
       "url": "https://www.douyin.com/video/7400221745208167695",
@@ -251,6 +491,16 @@
     },
     {
       "rank": 25,
+      "video_id": "7061422431386324264",
+      "title": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+      "url": "https://www.douyin.com/video/7061422431386324264",
+      "category": "训练与纠错",
+      "review_status": "approved",
+      "review_notes": "纯动作演示，讲的是一些击球假动作",
+      "reviewed_at": "2026-07-10T22:39:41.514286+00:00"
+    },
+    {
+      "rank": 25,
       "video_id": "7245471347210554639",
       "title": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅",
       "url": "https://www.douyin.com/video/7245471347210554639",
@@ -258,6 +508,166 @@
       "review_status": "not_teaching",
       "review_notes": "非教学视频",
       "reviewed_at": "2026-07-10T22:13:28.705557+00:00"
+    },
+    {
+      "rank": 26,
+      "video_id": "7340472371322686755",
+      "title": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人",
+      "url": "https://www.douyin.com/video/7340472371322686755",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514315+00:00"
+    },
+    {
+      "rank": 27,
+      "video_id": "7087020706680048930",
+      "title": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊",
+      "url": "https://www.douyin.com/video/7087020706680048930",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514348+00:00"
+    },
+    {
+      "rank": 28,
+      "video_id": "7149363344649047311",
+      "title": "大家找找有没有违例",
+      "url": "https://www.douyin.com/video/7149363344649047311",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514379+00:00"
+    },
+    {
+      "rank": 29,
+      "video_id": "7088881901209013545",
+      "title": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂",
+      "url": "https://www.douyin.com/video/7088881901209013545",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514409+00:00"
+    },
+    {
+      "rank": 30,
+      "video_id": "7370160247467494691",
+      "title": "最近恢复了一些，大家帮我看看球速恢复到300了吗？",
+      "url": "https://www.douyin.com/video/7370160247467494691",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514437+00:00"
+    },
+    {
+      "rank": 31,
+      "video_id": "7354580584229866787",
+      "title": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对",
+      "url": "https://www.douyin.com/video/7354580584229866787",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514468+00:00"
+    },
+    {
+      "rank": 32,
+      "video_id": "7143811094698528040",
+      "title": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。",
+      "url": "https://www.douyin.com/video/7143811094698528040",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514500+00:00"
+    },
+    {
+      "rank": 33,
+      "video_id": "7496238975796333881",
+      "title": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看",
+      "url": "https://www.douyin.com/video/7496238975796333881",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514531+00:00"
+    },
+    {
+      "rank": 34,
+      "video_id": "7080341135545126144",
+      "title": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
+      "url": "https://www.douyin.com/video/7080341135545126144",
+      "category": "训练与纠错",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，正反手网前不同击球方式的动作一致性，以及球路变化",
+      "reviewed_at": "2026-07-10T22:39:41.514565+00:00"
+    },
+    {
+      "rank": 35,
+      "video_id": "7066977429230718223",
+      "title": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂",
+      "url": "https://www.douyin.com/video/7066977429230718223",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514594+00:00"
+    },
+    {
+      "rank": 36,
+      "video_id": "7415820467606473999",
+      "title": "走火入魔 最近看啥都像羽毛球",
+      "url": "https://www.douyin.com/video/7415820467606473999",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514622+00:00"
+    },
+    {
+      "rank": 37,
+      "video_id": "7183132124801682726",
+      "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列",
+      "url": "https://www.douyin.com/video/7183132124801682726",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514654+00:00"
+    },
+    {
+      "rank": 38,
+      "video_id": "7292235083715448104",
+      "title": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教",
+      "url": "https://www.douyin.com/video/7292235083715448104",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514683+00:00"
+    },
+    {
+      "rank": 39,
+      "video_id": "7182762294294744332",
+      "title": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复",
+      "url": "https://www.douyin.com/video/7182762294294744332",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514712+00:00"
+    },
+    {
+      "rank": 40,
+      "video_id": "7404091511773613347",
+      "title": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向",
+      "url": "https://www.douyin.com/video/7404091511773613347",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514741+00:00"
+    },
+    {
+      "rank": 41,
+      "video_id": "7136376084920012032",
+      "title": "最难模仿的，是球速，还有身高能打出的落点",
+      "url": "https://www.douyin.com/video/7136376084920012032",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:39:41.514769+00:00"
     }
   ]
 }

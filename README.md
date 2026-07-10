@@ -27,9 +27,9 @@ The project does not impersonate the creator and does not claim endorsement. Its
 - 已完成媒体获取、转写、结构化入库：`405 / 405` 条
 - 已解决此前 `35` 条媒体提取失败项，最终剩余失败：`0` 条
 - 全量知识库视频数：`405` 条
-- 可直接用于检索回答：`355` 条
-- 需要视觉复核：`41` 条
-- 已人工确认为非教学：`9` 条
+- 可直接用于检索回答：`358` 条
+- 需要视觉复核：`0` 条
+- 已人工确认为非教学：`47` 条
 - GitHub Actions 验证通过，当前队列全部为 `transcribed`
 
 原始视频、音频、完整转写文本、临时 CDN URL、模型缓存和本地虚拟环境都不会提交到 Git。
@@ -43,9 +43,9 @@ As of the latest checked-in version:
 - Media extracted, transcribed, and structured into the knowledge base: `405 / 405`
 - Previously failed media extraction items recovered: `35`, with `0` remaining failures
 - Full knowledge-base videos: `405`
-- Ready for direct evidence-backed retrieval: `355`
-- Marked as requiring visual review: `41`
-- Manually confirmed as non-teaching: `9`
+- Ready for direct evidence-backed retrieval: `358`
+- Marked as requiring visual review: `0`
+- Manually confirmed as non-teaching: `47`
 - GitHub Actions validation is passing, and every queue item is now `transcribed`
 
 Raw video/audio files, full transcripts, temporary CDN URLs, model caches, and local virtual environments are intentionally excluded from Git.
@@ -119,7 +119,7 @@ Skill 的设计原则：
 - 按固定回答合同输出证据型教练建议
 - 在用户需要训练安排时输出练习处方
 - 优先使用有转写证据或人工整理证据的内容
-- 对需要视觉复核的视频保持谨慎
+- 跳过已确认为非教学的视频
 - 不扮演刘辉本人，不暗示官方认可
 
 **English**
@@ -145,7 +145,7 @@ The skill is designed to:
 - Follow a fixed answer contract for evidence-backed coaching responses
 - Produce a practice-plan prescription when the user asks how to train
 - Prefer transcript-backed or curated evidence
-- Be cautious when a video needs visual review
+- Skip videos manually confirmed as non-teaching
 - Avoid impersonating 刘辉 or implying official endorsement
 
 ## 技术栈 / Technology Stack
@@ -620,7 +620,7 @@ Checked-in artifacts are limited to metadata, structured knowledge, source links
 **中文**
 
 - 自动语音识别可能误听羽毛球术语。
-- 部分视频主要依赖画面示范，已标记为 `needs_visual_review`。
+- 视觉复核已完成；已确认为非教学的视频标记为 `not_teaching`，不作为 Skill 证据。
 - 当前检索是离线混合检索，不依赖外部向量数据库；口语化问题仍可能需要人工复核召回结果。
 - Skill 是学习辅助工具，不能替代合格教练现场诊断。
 - Skill 不应扮演刘辉本人，也不应暗示官方背书。
@@ -628,7 +628,7 @@ Checked-in artifacts are limited to metadata, structured knowledge, source links
 **English**
 
 - ASR can mishear badminton terminology.
-- Some videos depend heavily on visual demonstration and are marked `needs_visual_review`.
+- Visual review is complete; videos confirmed as non-teaching are marked `not_teaching` and excluded from Skill evidence.
 - Retrieval is offline hybrid search without an external vector database; colloquial queries may still require manual review of retrieved evidence.
 - The skill is a study aid, not a replacement for an in-person qualified coach.
 - The skill must not impersonate 刘辉 or imply official endorsement.
