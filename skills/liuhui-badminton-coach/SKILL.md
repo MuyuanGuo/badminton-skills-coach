@@ -7,6 +7,8 @@ description: Evidence-backed badminton coaching from the full 405-video indexed 
 
 Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed teaching videos, including entries marked `ready` and entries marked `needs_visual_review`.
 
+Use `references/topic-index.md` to orient the user's question in the teaching map before answering. The topic index is only a map; timestamped evidence must still come from retrieved knowledge entries.
+
 ## Answer Workflow
 
 1. Identify the user's movement, situation, skill level, and desired outcome.
@@ -19,19 +21,29 @@ python3 scripts/search_knowledge.py "用户问题或关键词"
 The default mode is hybrid retrieval: exact keyword matches plus lightweight semantic similarity. For debugging, use `--mode keyword` or `--mode semantic`.
 
 3. Read the returned entries, including `keyword_score`, `semantic_score`, and evidence timestamps.
-4. Answer in this order:
-   - Diagnosis
-   - Relevant principle
-   - Concrete correction cues
-   - One progressive drill
-   - Source video and timestamp
-5. Ask for a short video or missing context only when it would materially change the diagnosis.
+4. If results are broad or ambiguous, check `references/topic-index.md` for the nearest topic keywords and rerun retrieval once.
+5. Answer using the Answer Contract below.
+6. Ask for a short video or missing context only when it would materially change the diagnosis.
+
+## Answer Contract
+
+For technique questions, answer in this order:
+
+1. **诊断**: identify the likely movement problem and the context where it appears.
+2. **刘辉相关原则**: state the closest evidence-backed principle from the knowledge base.
+3. **纠正提示**: give one or two concrete cues the user can try immediately.
+4. **练习方法**: give one progressive drill with time, reps, or success criteria.
+5. **证据来源**: cite source video title, timestamp, and URL for each evidence-backed point.
+6. **置信边界**: say what is certain, what is inferred, and what would require visual review or the user's own video.
+
+Keep the answer practical. Do not over-answer with every retrieved video; pick the strongest one to three sources.
 
 ## Evidence Rules
 
 - Prefer `confidence: curated` entries.
 - Use `confidence: medium` entries as leads; state that their wording comes from automatic transcription.
 - Do not derive technique conclusions from `needs_visual_review` entries without reviewing the video.
+- If a source only appears in `references/topic-index.md`, use it as a search lead, not as final evidence.
 - Correct obvious ASR homophones only when title and context make the term unambiguous.
 - Preserve distinctions between active and passive situations, singles and doubles, and beginner and advanced execution.
 - If sources disagree, describe the applicable conditions instead of selecting one rule universally.
@@ -60,5 +72,6 @@ When multiple videos support a point, cite no more than three strongest sources.
 ## Resources
 
 - `references/knowledge-base.json`: full structured knowledge entries for 405 processed teaching videos.
+- `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/evaluation-prompts.md`: questions used to test retrieval and answer quality.
 - `scripts/search_knowledge.py`: offline hybrid retrieval over titles, categories, tags, and timestamped evidence.

@@ -13,6 +13,7 @@ json_paths = [
     "data/knowledge/pilot_knowledge_base.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
+    "data/knowledge/topic_index.json",
     "data/pilot_25_videos.json",
     "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
@@ -67,4 +68,22 @@ skill_knowledge = json.loads(
 if skill_knowledge != douyin_knowledge:
     raise SystemExit("Skill knowledge base is out of sync with full Douyin knowledge base")
 
-print("Validated JSON, Draw.io, Skill metadata, and full skill sync.")
+topic_index = json.loads(
+    (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")
+)
+if topic_index["video_count"] != len(douyin_knowledge["videos"]):
+    raise SystemExit("Topic index video count is out of sync with full knowledge base")
+if topic_index["assigned_video_count"] < 300:
+    raise SystemExit(
+        f"Topic index assigned too few videos: {topic_index['assigned_video_count']}"
+    )
+if len(topic_index["categories"]) < 8:
+    raise SystemExit("Topic index is missing expected top-level categories")
+
+topic_markdown = ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-index.md"
+if not topic_markdown.exists():
+    raise SystemExit("Skill topic index markdown is missing")
+if "## Topic Map" not in topic_markdown.read_text(encoding="utf-8"):
+    raise SystemExit("Skill topic index markdown is missing the topic map")
+
+print("Validated JSON, Draw.io, Skill metadata, full skill sync, and topic index.")

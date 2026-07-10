@@ -22,6 +22,7 @@ jobs:
         run: |
           python -m py_compile \
             scripts/evaluate_liuhui_skill.py \
+            scripts/build_topic_index.py \
             scripts/generate_pilot_drawio.py \
             scripts/select_pilot_videos.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
@@ -31,4 +32,3 @@ jobs:
 
       - name: Run retrieval evaluation
         run: python scripts/evaluate_liuhui_skill.py
-
