@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T04:15:51.257441+00:00",
+  "updated_at": "2026-07-10T04:28:49.057326+00:00",
   "queue_counts": {
-    "transcribed": 298,
+    "transcribed": 310,
     "extraction_failed": 35,
-    "pending": 72
+    "pending": 60
   },
   "knowledge_counts": {
-    "videos": 298,
-    "ready": 251,
-    "needs_visual_review": 47,
+    "videos": 310,
+    "ready": 261,
+    "needs_visual_review": 49,
     "curated": 3
   },
   "videos": [
@@ -14324,6 +14324,561 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7088510866093591808",
+      "title": "最后一句话很重要，动作不能大，才能有连续性",
+      "url": "https://www.douyin.com/video/7088510866093591808",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 76.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7088510866093591808.json",
+      "teaching_note": {
+        "topic": "最后一句话很重要",
+        "key_evidence": [
+          {
+            "timestamp": "00:32-00:40",
+            "text": "我们更加的灵活那么关于手腕带动手指的发力手指采用后三指往回楼"
+          },
+          {
+            "timestamp": "00:40-00:48",
+            "text": "大目之往前顶的方式那么虎口的位置一定要有缝隙才更好发力那么手腕"
+          },
+          {
+            "timestamp": "01:09-01:16",
+            "text": "一定要做到球拍有趣有回做弹动式的发力人在家中堂球技心中长"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:04-00:13",
+            "text": "今天我来教大家如何对墙进行抽档首先我们要清楚抽档的动作那么我们抽档通常使用反手为主"
+          },
+          {
+            "timestamp": "00:19-00:24",
+            "text": "但是我们在抽档的过程中也不是说不可以换成正手但是要以反手为主"
+          },
+          {
+            "timestamp": "00:40-00:48",
+            "text": "大目之往前顶的方式那么虎口的位置一定要有缝隙才更好发力那么手腕"
+          },
+          {
+            "timestamp": "01:08-01:13",
+            "text": "而且在我们练习的过程中一定要做到球拍有趣有回做弹动式的发力"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7088131899348028687",
+      "title": "今天没带护膝，不太敢跑，大家见谅😂",
+      "url": "https://www.douyin.com/video/7088131899348028687",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 44.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7088131899348028687.json",
+      "teaching_note": {
+        "topic": "今天没带护膝",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:12",
+            "text": "怎么避免跟剑受伤呢那么首先我们要考虑到我们后车的步伐您是不是脚尖朝前的落地啊"
+          },
+          {
+            "timestamp": "00:27-00:36",
+            "text": "不仅可以保护我们不会受伤还可以让我们的前灯更加的有力那么再推荐一个增加保护力的训练吧"
+          },
+          {
+            "timestamp": "00:30-00:41",
+            "text": "还可以让我们的前灯更加的有力那么再推荐一个增加保护力的训练吧我们一只脚做25个一组换脚做5组就可以了"
+          },
+          {
+            "timestamp": "00:34-00:43",
+            "text": "那么再推荐一个增加保护力的训练吧我们一只脚做25个一组换脚做5组就可以了人在家中堂求祭心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7087759120761228578",
+      "title": "快@ 你们的女搭档来学习吧",
+      "url": "https://www.douyin.com/video/7087759120761228578",
+      "category": "双打战术",
+      "tags": [
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 123.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7087759120761228578.json",
+      "teaching_note": {
+        "topic": "快@ 你们的女搭档来学习吧",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:06",
+            "text": "当女选手被压在后场如何安全有效的轮转向前呢今天我来教你"
+          },
+          {
+            "timestamp": "00:50-01:00",
+            "text": "因为我们让男队友自己档网往前跟的话我们很难组织有效的防守反击方法3 我们打一个斜线或者中路的杀上网"
+          },
+          {
+            "timestamp": "01:40-01:48",
+            "text": "且对方后场球员拿点不高时我们可以自己举趴向前打防守反击因为我们看这个姿态"
+          },
+          {
+            "timestamp": "01:49-02:00",
+            "text": "以他的横向惯性所致那么这个球对方的进攻一定没有什么威胁那么这里也是一个相同的样子"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:27-00:35",
+            "text": "方法2 自己和队友的档网上网可以通过自己的一个档网然后人顺势前跟"
+          },
+          {
+            "timestamp": "00:33-00:39",
+            "text": "然后人顺势前跟然后还是保证在对手击到球之前我们再往前取位"
+          },
+          {
+            "timestamp": "01:40-01:48",
+            "text": "且对方后场球员拿点不高时我们可以自己举趴向前打防守反击因为我们看这个姿态"
+          },
+          {
+            "timestamp": "01:49-02:00",
+            "text": "以他的横向惯性所致那么这个球对方的进攻一定没有什么威胁那么这里也是一个相同的样子"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7087020706680048930",
+      "title": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊",
+      "url": "https://www.douyin.com/video/7087020706680048930",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-038/7087020706680048930.json",
+      "teaching_note": {
+        "topic": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7086648517627858176",
+      "title": "大家除了这两集，还可以结合我置顶的第一个作品看",
+      "url": "https://www.douyin.com/video/7086648517627858176",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 103.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7086648517627858176.json",
+      "teaching_note": {
+        "topic": "大家除了这两集",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "好的 我们首先从一个准备动作十指拇指捏两侧的握拍到完成架排准备开始"
+          },
+          {
+            "timestamp": "00:39-00:43",
+            "text": "去把这个握拍呢从一个准备姿势的握拍变成半全式的握拍"
+          },
+          {
+            "timestamp": "01:17-01:23",
+            "text": "只学了一个准备动作并没有学发力的那一瞬间握拍应该是什么样的"
+          },
+          {
+            "timestamp": "01:18-01:25",
+            "text": "并没有学发力的那一瞬间握拍应该是什么样的素材 我给到大家"
+          },
+          {
+            "timestamp": "01:35-01:40",
+            "text": "我们准备发力变成一个半全式的握拍完成机球"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:50-00:55",
+            "text": "半全式的握拍也完全没有问题好的 我后面会附上手部细节"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "好的 我们首先从一个准备动作十指拇指捏两侧的握拍"
+          },
+          {
+            "timestamp": "00:53-00:58",
+            "text": "好的 我后面会附上手部细节那么现在我们先来观察一下这些职业运动员"
+          },
+          {
+            "timestamp": "01:09-01:14",
+            "text": "如果想要打出边甩那就必须得是一个半全式或者全式"
+          },
+          {
+            "timestamp": "01:18-01:25",
+            "text": "并没有学发力的那一瞬间握拍应该是什么样的素材 我给到大家"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7086276287681137961",
+      "title": "半拳式握拍是发力必备的握拍，没有半拳式，基本出现不了鞭甩，因为大拇指会卡住",
+      "url": "https://www.douyin.com/video/7086276287681137961",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 71.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7086276287681137961.json",
+      "teaching_note": {
+        "topic": "半拳式握拍是发力必备的握拍",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:09",
+            "text": "还有多少朋友不知道其实与毛球上手发力用的是半全式的握拍那么我找了很多素材"
+          },
+          {
+            "timestamp": "00:07-00:17",
+            "text": "那么我找了很多素材来看一下职业选手在发力时使用的握拍及旋转发力其实半全式的握拍就是十指在上"
+          },
+          {
+            "timestamp": "00:42-00:53",
+            "text": "虎口空的目的也是为了更加的方便我们正反手的切换那么一旦进入到我们需要正手发力的时候我们就要从我们的准备握拍变成半全式"
+          },
+          {
+            "timestamp": "00:46-00:57",
+            "text": "那么一旦进入到我们需要正手发力的时候我们就要从我们的准备握拍变成半全式就像我们从准备的握拍中变成反手握拍一样"
+          },
+          {
+            "timestamp": "00:49-01:00",
+            "text": "我们就要从我们的准备握拍变成半全式就像我们从准备的握拍中变成反手握拍一样如果我找了这么多素材"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:42-00:53",
+            "text": "虎口空的目的也是为了更加的方便我们正反手的切换那么一旦进入到我们需要正手发力的时候我们就要从我们的准备握拍变成半全式"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7085903098853592335",
+      "title": "交作业了😂",
+      "url": "https://www.douyin.com/video/7085903098853592335",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 17.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-038/7085903098853592335.json",
+      "teaching_note": {
+        "topic": "交作业了😂",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7085169366005714217",
+      "title": "1 白鞋白胶布2低重心步法回动3低重心步法训练，这是我自创训练",
+      "url": "https://www.douyin.com/video/7085169366005714217",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 158.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7085169366005714217.json",
+      "teaching_note": {
+        "topic": "1 白鞋白胶布2低重心步法回动3低重心步法训练",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "哎 灰哥 干嘛呢我今天要教大家做低重心的步法那么我先把球鞋保护一下"
+          },
+          {
+            "timestamp": "00:26-00:34",
+            "text": "好的 那么今天我来教大家低重心的步法以及回动和如何训练那么这个训练在家里就可以做"
+          },
+          {
+            "timestamp": "00:34-00:39",
+            "text": "那么首先呢我们先来看低重心的步法我们低重心处于一个被动姿态"
+          },
+          {
+            "timestamp": "02:01-02:08",
+            "text": "我们现在回到起点开始使用低重心步法进行简球训练我们一定不要抛球"
+          },
+          {
+            "timestamp": "02:13-02:31",
+            "text": "然后我们把球全部都减回起点即可好的 那么这个低重心的步法和训练你们学会了吗"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:35-00:41",
+            "text": "我们先来看低重心的步法我们低重心处于一个被动姿态那么我们救球出去之后"
+          },
+          {
+            "timestamp": "00:52-00:59",
+            "text": "把我们的后腰往后转在我们使用被动步法接球时我们通过跟脚往后拉腰的方式"
+          },
+          {
+            "timestamp": "01:01-01:10",
+            "text": "来抵消我们从后向前的惯性千万不要让我们的重心超过膝盖一旦超过膝盖 第一会往前扎"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:28-00:35",
+            "text": "低重心的步法以及回动和如何训练那么这个训练在家里就可以做那么首先呢"
+          },
+          {
+            "timestamp": "01:43-01:47",
+            "text": "稍微远一点的我可能要一步再加一个垫步那么再远一点的"
+          },
+          {
+            "timestamp": "01:53-01:59",
+            "text": "大概如果刚开始做20个一组减3组就可以我们可以逐个的去递增"
+          },
+          {
+            "timestamp": "02:08-02:29",
+            "text": "要把球放在这个踢字线上然后我们把球全部都减回起点即可好的 那么这个低重心的步法和训练"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7084422988291935523",
+      "title": "腰腹的使用是小而快的爆发力，不要转的太狠太大",
+      "url": "https://www.douyin.com/video/7084422988291935523",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 99.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7084422988291935523.json",
+      "teaching_note": {
+        "topic": "腰腹的使用是小而快的爆发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:40-00:53",
+            "text": "我这个时候是从一个人微微向前攻的状态下开始进行引动发力这个时候我的腰先进行了一个"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "来再看一遍那么上去是一个边甩 外旋发力在实际肌球中"
+          },
+          {
+            "timestamp": "01:20-01:26",
+            "text": "在实际肌球中我们的腰斧用的还是爆发力要小而快 不要转的太多"
+          },
+          {
+            "timestamp": "01:28-01:37",
+            "text": "此时是左脚登地把力量传达到核心 腹外斜肌和后腰发力再带动上肢出边甩外旋"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:21-01:28",
+            "text": "我们的腰斧用的还是爆发力要小而快 不要转的太多观察我的肌球动作"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:17",
+            "text": "我们的腰斧是如何参与带动的首先我们要清楚 这样的动作这样的动作 用的是斧"
+          },
+          {
+            "timestamp": "00:45-00:56",
+            "text": "开始进行引动发力这个时候我的腰先进行了一个向右鞋上方转动的感觉"
+          },
+          {
+            "timestamp": "01:07-01:16",
+            "text": "就是左脚登地带动身体了然后右脚是起到了什么 稳定作用来再看一遍"
+          },
+          {
+            "timestamp": "01:29-01:39",
+            "text": "把力量传达到核心 腹外斜肌和后腰发力再带动上肢出边甩外旋人在家中堂球技心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7083684012513840424",
+      "title": "各位想在天上飞，得先学会交叉步贴地飞哦😂",
+      "url": "https://www.douyin.com/video/7083684012513840424",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 79.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7083684012513840424.json",
+      "teaching_note": {
+        "topic": "各位想在天上飞",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:07",
+            "text": "当大家需要急速启动时我的左脚脚肩发生了一个黏动"
+          },
+          {
+            "timestamp": "00:30-00:36",
+            "text": "那么这样的一个伸展能让我们的发力更加的顺畅注意看我启动时候的左脚"
+          },
+          {
+            "timestamp": "00:32-00:44",
+            "text": "能让我们的发力更加的顺畅注意看我启动时候的左脚在实战中的比赛里"
+          },
+          {
+            "timestamp": "00:36-00:49",
+            "text": "在实战中的比赛里非常的常见这样的步法来移动因为这样的步法呢"
+          },
+          {
+            "timestamp": "01:00-01:11",
+            "text": "已经是一个横向的了那么除了杀球和高远球当然还可以打掉球"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:07",
+            "text": "当大家需要急速启动时我的左脚脚肩发生了一个黏动"
+          },
+          {
+            "timestamp": "00:32-00:44",
+            "text": "能让我们的发力更加的顺畅注意看我启动时候的左脚在实战中的比赛里"
+          },
+          {
+            "timestamp": "00:54-00:58",
+            "text": "当然了用它是完全可以进行高远球机打的"
+          },
+          {
+            "timestamp": "00:57-01:02",
+            "text": "高远球机打的注意看此时带自影的左脚已经是一个横向的了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7082564138752281896",
+      "title": "既然朋友们都这么给我面子，想让我完成这个挑战，那我就献丑了👊🏻大家继续喊博主们挑战接力吧",
+      "url": "https://www.douyin.com/video/7082564138752281896",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 35.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7082564138752281896.json",
+      "teaching_note": {
+        "topic": "既然朋友们都这么给我面子",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7081831033515117865",
+      "title": "反手不行的来用正手变吧，也很方便，可以从反手直接切换",
+      "url": "https://www.douyin.com/video/7081831033515117865",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 74.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-038/7081831033515117865.json",
+      "teaching_note": {
+        "topic": "反手不行的来用正手变吧",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:21",
+            "text": "我現在大部分只頂在這個正框面上那麽我來進行常規的雙打防守那麽當對手殺到我的右側區域的時候"
+          },
+          {
+            "timestamp": "00:37-00:45",
+            "text": "來給球拍形成加速重心有一個從用往左移的感覺如果這個球是奔著追身來的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:48-00:53",
+            "text": "可能也會有朋友問為什麽不能用正常的握板去變這個線呢答案是第一"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:26",
+            "text": "那麽當對手殺到我的右側區域的時候我想用正手來進行變線可不可以呢可以 那麽我只要把這個反手握攀"
+          },
+          {
+            "timestamp": "00:21-00:28",
+            "text": "我想用正手來進行變線可不可以呢可以 那麽我只要把這個反手握攀再往右拽的過程中"
+          },
+          {
+            "timestamp": "00:23-00:32",
+            "text": "可以 那麽我只要把這個反手握攀再往右拽的過程中把大拇指放到球拍的下面去"
+          },
+          {
+            "timestamp": "00:43-00:49",
+            "text": "如果這個球是奔著追身來的我們人可以怎麽樣再讓可能也會有朋友問"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {

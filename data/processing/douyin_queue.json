@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T04:15:49.854084+00:00",
+  "updated_at": "2026-07-10T04:28:48.222329+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 298,
+    "transcribed": 310,
     "extraction_failed": 35,
-    "pending": 72
+    "pending": 60
   },
   "items": [
     {
@@ -3961,10 +3961,10 @@
       "title": "最后一句话很重要，动作不能大，才能有连续性#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7088510866093591808.mp4",
+      "duration_seconds": 76.44,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3973,10 +3973,10 @@
       "title": "今天没带护膝，不太敢跑，大家见谅😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7088131899348028687.mp4",
+      "duration_seconds": 43.955,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3985,10 +3985,10 @@
       "title": "快@ 你们的女搭档来学习吧#羽毛球 #羽毛球教学 #羽毛球训练 #羽毛球混双 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7087759120761228578.mp4",
+      "duration_seconds": 123.437,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3997,10 +3997,10 @@
       "title": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7087020706680048930.mp4",
+      "duration_seconds": 27.191,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4009,10 +4009,10 @@
       "title": "大家除了这两集，还可以结合我置顶的第一个作品看#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7086648517627858176.mp4",
+      "duration_seconds": 103.166,
+      "attempts": 2,
       "error": null
     },
     {
@@ -4021,10 +4021,10 @@
       "title": "半拳式握拍是发力必备的握拍，没有半拳式，基本出现不了鞭甩，因为大拇指会卡住#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7086276287681137961.mp4",
+      "duration_seconds": 71.634,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4033,10 +4033,10 @@
       "title": "交作业了😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7085903098853592335.mp4",
+      "duration_seconds": 17.392,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4045,10 +4045,10 @@
       "title": "1 白鞋白胶布2低重心步法回动3低重心步法训练，这是我自创训练#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7085169366005714217.mp4",
+      "duration_seconds": 158.035,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4057,10 +4057,10 @@
       "title": "腰腹的使用是小而快的爆发力，不要转的太狠太大#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7084422988291935523.mp4",
+      "duration_seconds": 99.823,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4069,10 +4069,10 @@
       "title": "各位想在天上飞，得先学会交叉步贴地飞哦😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7083684012513840424.mp4",
+      "duration_seconds": 79.853,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4081,10 +4081,10 @@
       "title": "既然朋友们都这么给我面子，想让我完成这个挑战，那我就献丑了👊🏻大家继续喊博主们挑战接力吧#羽毛球 #羽毛球训练 #羽毛球教学",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7082564138752281896.mp4",
+      "duration_seconds": 35.318,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4093,10 +4093,10 @@
       "title": "反手不行的来用正手变吧，也很方便，可以从反手直接切换#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-038/7081831033515117865.mp4",
+      "duration_seconds": 74.791,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4108,8 +4108,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7080735688819281193",
