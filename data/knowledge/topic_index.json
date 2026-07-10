@@ -2,15 +2,16 @@
   "version": "topic-index-v1",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-10T16:42:05.410343+00:00",
+  "source_updated_at": "2026-07-10T22:13:34.986934+00:00",
   "video_count": 405,
-  "assigned_video_count": 334,
-  "multi_topic_video_count": 283,
+  "indexable_video_count": 396,
+  "assigned_video_count": 344,
+  "multi_topic_video_count": 294,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
-      "video_count": 202,
+      "video_count": 210,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -22,8 +23,8 @@
             "摆脱",
             "反手后场"
           ],
-          "video_count": 74,
-          "ready_count": 74,
+          "video_count": 77,
+          "ready_count": 77,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -88,8 +89,8 @@
             "点杀",
             "落点"
           ],
-          "video_count": 77,
-          "ready_count": 77,
+          "video_count": 82,
+          "ready_count": 82,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -101,6 +102,16 @@
               "processing_status": "ready",
               "topic": "快速突击中的杀球落点与身体姿态",
               "score": 26
+            },
+            {
+              "video_id": "7567155406117533051",
+              "title": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来",
+              "url": "https://www.douyin.com/video/7567155406117533051",
+              "category": "后场技术",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合",
+              "score": 8
             },
             {
               "video_id": "7485692231404342586",
@@ -131,16 +142,6 @@
               "processing_status": "ready",
               "topic": "重杀",
               "score": 6
-            },
-            {
-              "video_id": "7440406891664133428",
-              "title": "压球新讲 就算追求贴球发力，也得是建立在能把动作做完的基础上贴，怕打不到球也会本能的把球拍接近球而失去发力空间，这都是不对的",
-              "url": "https://www.douyin.com/video/7440406891664133428",
-              "category": "发力与身体运用",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "压球新讲 就算追求贴球发力",
-              "score": 5
             }
           ]
         },
@@ -154,8 +155,8 @@
             "顶肘"
           ],
           "video_count": 61,
-          "ready_count": 60,
-          "needs_visual_review_count": 1,
+          "ready_count": 61,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7589749293205363633",
@@ -217,8 +218,8 @@
             "滑板",
             "假动作"
           ],
-          "video_count": 16,
-          "ready_count": 16,
+          "video_count": 18,
+          "ready_count": 18,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -230,6 +231,16 @@
               "processing_status": "ready",
               "topic": "一定要看过上集再看下集啊朋友们",
               "score": 6
+            },
+            {
+              "video_id": "7115241358255803683",
+              "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+              "url": "https://www.douyin.com/video/7115241358255803683",
+              "category": "后场技术",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+              "score": 4
             },
             {
               "video_id": "7427416335900020008",
@@ -260,16 +271,6 @@
               "processing_status": "ready",
               "topic": "快速突击中的杀球落点与身体姿态",
               "score": 3
-            },
-            {
-              "video_id": "7558912953539071292",
-              "title": "被动高远 别说这样容易抡大臂，不这样偷出来时间抢架拍位置也是个输，真被动就没时间侧身，没时间架拍，没空间做正常架拍了，所以大家总说职业选手不架拍，其实架了，只不过没做那么主动的架拍罢了",
-              "url": "https://www.douyin.com/video/7558912953539071292",
-              "category": "后场技术",
-              "confidence": "curated",
-              "processing_status": "ready",
-              "topic": "被动后场高远球的引拍、击球点与身体姿态",
-              "score": 3
             }
           ]
         },
@@ -280,9 +281,9 @@
             "反拍",
             "反手高远"
           ],
-          "video_count": 60,
-          "ready_count": 58,
-          "needs_visual_review_count": 2,
+          "video_count": 65,
+          "ready_count": 64,
+          "needs_visual_review_count": 1,
           "representative_videos": [
             {
               "video_id": "7296314453379910947",
@@ -305,6 +306,16 @@
               "score": 10
             },
             {
+              "video_id": "7447084061371272507",
+              "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "url": "https://www.douyin.com/video/7447084061371272507",
+              "category": "中前场与抽挡",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "score": 10
+            },
+            {
               "video_id": "7169038502280154380",
               "title": "对付速度快的对手用，速度慢的就直接抢",
               "url": "https://www.douyin.com/video/7169038502280154380",
@@ -323,16 +334,6 @@
               "processing_status": "ready",
               "topic": "腰腹发力 手放好位置",
               "score": 8
-            },
-            {
-              "video_id": "7541623926234811705",
-              "title": "反手高远球 提供一个训练方法，方法不唯一",
-              "url": "https://www.douyin.com/video/7541623926234811705",
-              "category": "后场技术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "反手高远球 提供一个训练方法",
-              "score": 7
             }
           ]
         }
@@ -341,7 +342,7 @@
     {
       "name": "步法与移动",
       "description": "启动、移动、回动、低重心和不同区域步法。",
-      "video_count": 96,
+      "video_count": 100,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -351,8 +352,8 @@
             "起动",
             "蹬地"
           ],
-          "video_count": 32,
-          "ready_count": 32,
+          "video_count": 33,
+          "ready_count": 33,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -415,8 +416,8 @@
             "衔接",
             "下一拍"
           ],
-          "video_count": 28,
-          "ready_count": 28,
+          "video_count": 30,
+          "ready_count": 30,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -479,8 +480,8 @@
             "垫步",
             "步伐"
           ],
-          "video_count": 22,
-          "ready_count": 22,
+          "video_count": 25,
+          "ready_count": 25,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -492,6 +493,16 @@
               "processing_status": "ready",
               "topic": "终于有时间再更新步法了",
               "score": 9
+            },
+            {
+              "video_id": "7065157571816000809",
+              "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+              "url": "https://www.douyin.com/video/7065157571816000809",
+              "category": "步法与移动",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+              "score": 6
             },
             {
               "video_id": "7056244399390412064",
@@ -522,16 +533,6 @@
               "processing_status": "ready",
               "topic": "职业运动员上网因为身体能力强",
               "score": 4
-            },
-            {
-              "video_id": "7589749293205363633",
-              "title": "后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及",
-              "url": "https://www.douyin.com/video/7589749293205363633",
-              "category": "后场技术",
-              "confidence": "curated",
-              "processing_status": "ready",
-              "topic": "来球快速时的后场架拍选择",
-              "score": 3
             }
           ]
         },
@@ -607,8 +608,8 @@
             "上网",
             "前后步法"
           ],
-          "video_count": 19,
-          "ready_count": 19,
+          "video_count": 20,
+          "ready_count": 20,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -632,6 +633,16 @@
               "score": 4
             },
             {
+              "video_id": "7065157571816000809",
+              "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+              "url": "https://www.douyin.com/video/7065157571816000809",
+              "category": "步法与移动",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+              "score": 4
+            },
+            {
               "video_id": "7659348110628345210",
               "title": "杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意!",
               "url": "https://www.douyin.com/video/7659348110628345210",
@@ -650,16 +661,6 @@
               "processing_status": "ready",
               "topic": "来球快速时的后场架拍选择",
               "score": 3
-            },
-            {
-              "video_id": "7558912953539071292",
-              "title": "被动高远 别说这样容易抡大臂，不这样偷出来时间抢架拍位置也是个输，真被动就没时间侧身，没时间架拍，没空间做正常架拍了，所以大家总说职业选手不架拍，其实架了，只不过没做那么主动的架拍罢了",
-              "url": "https://www.douyin.com/video/7558912953539071292",
-              "category": "后场技术",
-              "confidence": "curated",
-              "processing_status": "ready",
-              "topic": "被动后场高远球的引拍、击球点与身体姿态",
-              "score": 3
             }
           ]
         }
@@ -668,7 +669,7 @@
     {
       "name": "发力与身体运用",
       "description": "放松发力、旋转传导、腰腹、手腕与击球发力区间。",
-      "video_count": 218,
+      "video_count": 223,
       "subtopics": [
         {
           "name": "放松与爆发",
@@ -679,8 +680,8 @@
             "打透"
           ],
           "video_count": 143,
-          "ready_count": 141,
-          "needs_visual_review_count": 2,
+          "ready_count": 143,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7628342769941691121",
@@ -743,8 +744,8 @@
             "转体",
             "身体"
           ],
-          "video_count": 77,
-          "ready_count": 77,
+          "video_count": 78,
+          "ready_count": 78,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -807,8 +808,8 @@
             "拍面",
             "握拍"
           ],
-          "video_count": 105,
-          "ready_count": 105,
+          "video_count": 111,
+          "ready_count": 111,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -996,7 +997,7 @@
     {
       "name": "中前场与抽挡",
       "description": "抽挡、接杀、防守、网前技术和中前场转换。",
-      "video_count": 97,
+      "video_count": 104,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -1006,10 +1007,20 @@
             "高速对抗",
             "快球"
           ],
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 9,
+          "ready_count": 9,
           "needs_visual_review_count": 0,
           "representative_videos": [
+            {
+              "video_id": "7447084061371272507",
+              "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "url": "https://www.douyin.com/video/7447084061371272507",
+              "category": "中前场与抽挡",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "score": 8
+            },
             {
               "video_id": "7652440366436945017",
               "title": "高速对抗步法 小姐姐是两省冠军🏆，这种情况属于高速对抗状态下，就是球都比较平，没有侧身的时间和意义",
@@ -1049,16 +1060,6 @@
               "processing_status": "ready",
               "topic": "被动后场高远球的引拍、击球点与身体姿态",
               "score": 3
-            },
-            {
-              "video_id": "7506736569824726332",
-              "title": "抽挡连贯 我知道有些兄弟很要强，受不了这种屈辱，就是不能承认被动，没关系，打羽毛球吧，它一定会教会你",
-              "url": "https://www.douyin.com/video/7506736569824726332",
-              "category": "中前场与抽挡",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "抽挡连贯 我知道有些兄弟很要强",
-              "score": 2
             }
           ]
         },
@@ -1070,9 +1071,9 @@
             "防反",
             "挡杀"
           ],
-          "video_count": 39,
-          "ready_count": 38,
-          "needs_visual_review_count": 1,
+          "video_count": 41,
+          "ready_count": 41,
+          "needs_visual_review_count": 0,
           "representative_videos": [
             {
               "video_id": "7621243051541587889",
@@ -1105,6 +1106,16 @@
               "score": 6
             },
             {
+              "video_id": "7115241358255803683",
+              "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+              "url": "https://www.douyin.com/video/7115241358255803683",
+              "category": "后场技术",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+              "score": 6
+            },
+            {
               "video_id": "7110033991918554402",
               "title": "所以我说我说我打球很猥琐🧐，又让你当了次背景板 ，",
               "url": "https://www.douyin.com/video/7110033991918554402",
@@ -1113,16 +1124,6 @@
               "processing_status": "ready",
               "topic": "所以我说我说我打球很猥琐🧐",
               "score": 6
-            },
-            {
-              "video_id": "7195014413932367116",
-              "title": "解题思路，遇到高质量防守且自己冲劲儿过猛，可以使用停顿技术重新回到拉吊节奏",
-              "url": "https://www.douyin.com/video/7195014413932367116",
-              "category": "单打战术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "解题思路",
-              "score": 5
             }
           ]
         },
@@ -1135,8 +1136,8 @@
             "扑球",
             "滚网"
           ],
-          "video_count": 47,
-          "ready_count": 47,
+          "video_count": 49,
+          "ready_count": 49,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1198,8 +1199,8 @@
             "放网",
             "网前球"
           ],
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 14,
+          "ready_count": 14,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1262,8 +1263,8 @@
             "连贯",
             "封网"
           ],
-          "video_count": 17,
-          "ready_count": 17,
+          "video_count": 18,
+          "ready_count": 18,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1323,7 +1324,7 @@
     {
       "name": "双打战术",
       "description": "双打轮转、防守站位、封网、进攻组织和发接发配合。",
-      "video_count": 58,
+      "video_count": 60,
       "subtopics": [
         {
           "name": "双打发接发",
@@ -1524,8 +1525,8 @@
             "抢网",
             "前场"
           ],
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 12,
+          "ready_count": 12,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1588,8 +1589,8 @@
             "压制",
             "后杀前封"
           ],
-          "video_count": 34,
-          "ready_count": 33,
+          "video_count": 35,
+          "ready_count": 34,
           "needs_visual_review_count": 1,
           "representative_videos": [
             {
@@ -1846,7 +1847,7 @@
     {
       "name": "训练与纠错",
       "description": "训练设计、常见错误、实战复盘和恢复对抗能力。",
-      "video_count": 150,
+      "video_count": 152,
       "subtopics": [
         {
           "name": "训练方法",
@@ -1857,8 +1858,8 @@
             "三步",
             "方法"
           ],
-          "video_count": 50,
-          "ready_count": 50,
+          "video_count": 51,
+          "ready_count": 51,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -1985,8 +1986,8 @@
             "复盘",
             "比赛"
           ],
-          "video_count": 29,
-          "ready_count": 28,
+          "video_count": 31,
+          "ready_count": 30,
           "needs_visual_review_count": 1,
           "representative_videos": [
             {
@@ -2049,9 +2050,9 @@
             "对抗能力",
             "精疲力尽"
           ],
-          "video_count": 10,
+          "video_count": 9,
           "ready_count": 7,
-          "needs_visual_review_count": 3,
+          "needs_visual_review_count": 2,
           "representative_videos": [
             {
               "video_id": "7432633273060314408",
@@ -2110,7 +2111,7 @@
     {
       "name": "握拍与基本动作",
       "description": "握拍、基础挥拍、基础动作和拍面控制。",
-      "video_count": 118,
+      "video_count": 122,
       "subtopics": [
         {
           "name": "握拍",
@@ -2119,8 +2120,8 @@
             "正手握拍",
             "反手握拍"
           ],
-          "video_count": 34,
-          "ready_count": 34,
+          "video_count": 38,
+          "ready_count": 38,
           "needs_visual_review_count": 0,
           "representative_videos": [
             {
@@ -2144,6 +2145,16 @@
               "score": 10
             },
             {
+              "video_id": "7447084061371272507",
+              "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "url": "https://www.douyin.com/video/7447084061371272507",
+              "category": "中前场与抽挡",
+              "confidence": "visual_reviewed",
+              "processing_status": "ready",
+              "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+              "score": 10
+            },
+            {
               "video_id": "7656927370758796145",
               "title": "双打抓回头 紫电青霜不要去掉低胶，如果一定要去掉低胶，或者已经去掉底胶，就要考虑结合自己的能力，也要换掉拍头的连钉，普通的线孔就在盒子里赠送了的",
               "url": "https://www.douyin.com/video/7656927370758796145",
@@ -2162,16 +2173,6 @@
               "processing_status": "ready",
               "topic": "打出一个能高兴一天的学",
               "score": 9
-            },
-            {
-              "video_id": "7169038502280154380",
-              "title": "对付速度快的对手用，速度慢的就直接抢",
-              "url": "https://www.douyin.com/video/7169038502280154380",
-              "category": "训练与纠错",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "对付速度快的对手用",
-              "score": 8
             }
           ]
         },

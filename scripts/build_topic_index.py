@@ -148,14 +148,19 @@ def build_index(data):
     categories = []
     coverage_counter = Counter()
     assigned_video_ids = set()
-    text_cache = {video["video_id"]: video_text(video) for video in data["videos"]}
+    videos = [
+        video
+        for video in data["videos"]
+        if video["processing_status"] not in {"not_teaching", "low_value"}
+    ]
+    text_cache = {video["video_id"]: video_text(video) for video in videos}
 
     for category in TAXONOMY:
         subtopics = []
         category_video_ids = set()
         for name, keywords in category["subtopics"].items():
             matches = []
-            for video in data["videos"]:
+            for video in videos:
                 score = video_score(video, text_cache[video["video_id"]], keywords)
                 if score > 0:
                     matches.append(compact_video(video, score))
@@ -199,6 +204,7 @@ def build_index(data):
         "scope": data.get("scope"),
         "source_updated_at": data.get("updated_at"),
         "video_count": len(data["videos"]),
+        "indexable_video_count": len(videos),
         "assigned_video_count": len(assigned_video_ids),
         "multi_topic_video_count": sum(count > 1 for count in coverage_counter.values()),
         "categories": categories,

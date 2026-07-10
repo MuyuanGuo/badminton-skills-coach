@@ -1,0 +1,263 @@
+{
+  "version": "visual-review-annotations-v1",
+  "source": "output/visual_review_queue.md",
+  "reviewed_count": 25,
+  "status_counts": {
+    "approved": 14,
+    "needs_correction": 2,
+    "not_teaching": 9,
+    "low_value": 0
+  },
+  "items": [
+    {
+      "rank": 1,
+      "video_id": "7567155406117533051",
+      "title": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来",
+      "url": "https://www.douyin.com/video/7567155406117533051",
+      "category": "后场技术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是不同体系的杀球发力中，手指手腕、手臂、身体各发力多少，不同体系的杀球各有什么特点，以及什么人应该使用什么样的杀球方式。",
+      "reviewed_at": "2026-07-10T22:13:28.704404+00:00"
+    },
+    {
+      "rank": 2,
+      "video_id": "7214304020775652620",
+      "title": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
+      "url": "https://www.douyin.com/video/7214304020775652620",
+      "category": "步法与移动",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法",
+      "reviewed_at": "2026-07-10T22:13:28.704730+00:00"
+    },
+    {
+      "rank": 3,
+      "video_id": "7498295344284093755",
+      "title": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量",
+      "url": "https://www.douyin.com/video/7498295344284093755",
+      "category": "后场技术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，有正手后场高远球，平高球、杀球、抽球，反手后场高远球，平高球、杀球、推球",
+      "reviewed_at": "2026-07-10T22:13:28.704771+00:00"
+    },
+    {
+      "rank": 4,
+      "video_id": "7059589039694957864",
+      "title": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
+      "url": "https://www.douyin.com/video/7059589039694957864",
+      "category": "步法与移动",
+      "review_status": "needs_correction",
+      "review_notes": "讲的是击球后回位的步伐，有口播，按转写的结果加进skill",
+      "reviewed_at": "2026-07-10T22:13:28.704811+00:00"
+    },
+    {
+      "rank": 5,
+      "video_id": "7209108124924464387",
+      "title": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
+      "url": "https://www.douyin.com/video/7209108124924464387",
+      "category": "发力与身体运用",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是正手位接杀变线",
+      "reviewed_at": "2026-07-10T22:13:28.704849+00:00"
+    },
+    {
+      "rank": 6,
+      "video_id": "7115241358255803683",
+      "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
+      "url": "https://www.douyin.com/video/7115241358255803683",
+      "category": "后场技术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。",
+      "reviewed_at": "2026-07-10T22:13:28.704893+00:00"
+    },
+    {
+      "rank": 7,
+      "video_id": "7205399670959459623",
+      "title": "压抽才是双打的主旋律，没人一上来就挑给你",
+      "url": "https://www.douyin.com/video/7205399670959459623",
+      "category": "双打战术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是双打中要通过下压来逼迫对手起球，为自己创造更多的进攻机会。而在对手不起球的时候，要习惯并打好平抽、挡网一类的球，避免失误。",
+      "reviewed_at": "2026-07-10T22:13:28.704930+00:00"
+    },
+    {
+      "rank": 8,
+      "video_id": "7090377448017235234",
+      "title": "打羽毛球最爽的就是杀球和接杀",
+      "url": "https://www.douyin.com/video/7090377448017235234",
+      "category": "后场技术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示实战中杀球和接杀的动作",
+      "reviewed_at": "2026-07-10T22:13:28.704962+00:00"
+    },
+    {
+      "rank": 9,
+      "video_id": "7447084061371272507",
+      "title": "握拍微调 抽挡反手为主，尽量不做正反手转换",
+      "url": "https://www.douyin.com/video/7447084061371272507",
+      "category": "中前场与抽挡",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是前场抽挡中的握拍方式和击球位置的关系，另外还有一个原则是抽挡以反手握拍为主，尽量不做正反手转换，因为抽挡的节奏一般比较快，没时间换正反手，只能微调握拍方式。",
+      "reviewed_at": "2026-07-10T22:13:28.704999+00:00"
+    },
+    {
+      "rank": 10,
+      "video_id": "7552759261840952636",
+      "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了",
+      "url": "https://www.douyin.com/video/7552759261840952636",
+      "category": "发力与身体运用",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是挑到底线附近的高球要放松做力传导才能杀下去",
+      "reviewed_at": "2026-07-10T22:13:28.705032+00:00"
+    },
+    {
+      "rank": 11,
+      "video_id": "7324887936980274432",
+      "title": "羽毛球发力入门级测试",
+      "url": "https://www.douyin.com/video/7324887936980274432",
+      "category": "发力与身体运用",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705061+00:00"
+    },
+    {
+      "rank": 12,
+      "video_id": "7496715538836704571",
+      "title": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
+      "url": "https://www.douyin.com/video/7496715538836704571",
+      "category": "双打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705092+00:00"
+    },
+    {
+      "rank": 13,
+      "video_id": "7065157571816000809",
+      "title": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
+      "url": "https://www.douyin.com/video/7065157571816000809",
+      "category": "步法与移动",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。",
+      "reviewed_at": "2026-07-10T22:13:28.705125+00:00"
+    },
+    {
+      "rank": 14,
+      "video_id": "7167546787073477900",
+      "title": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？",
+      "url": "https://www.douyin.com/video/7167546787073477900",
+      "category": "步法与移动",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，在跑动不到位，无法通过步伐找到合理击球点的时候，如何通过手臂找球并打出高质量的回球。",
+      "reviewed_at": "2026-07-10T22:13:28.705161+00:00"
+    },
+    {
+      "rank": 15,
+      "video_id": "7060717442825309480",
+      "title": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
+      "url": "https://www.douyin.com/video/7060717442825309480",
+      "category": "握拍与基本动作",
+      "review_status": "needs_correction",
+      "review_notes": "讲的是反手过渡，有口播，按转写的结果加进skill",
+      "reviewed_at": "2026-07-10T22:13:28.705196+00:00"
+    },
+    {
+      "rank": 16,
+      "video_id": "7405420818009722146",
+      "title": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗",
+      "url": "https://www.douyin.com/video/7405420818009722146",
+      "category": "单打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705229+00:00"
+    },
+    {
+      "rank": 17,
+      "video_id": "7197605327993310467",
+      "title": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率",
+      "url": "https://www.douyin.com/video/7197605327993310467",
+      "category": "网前技术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705260+00:00"
+    },
+    {
+      "rank": 18,
+      "video_id": "7146394347586587919",
+      "title": "9976 羽毛球的防守其实打起来比进攻还爽😅",
+      "url": "https://www.douyin.com/video/7146394347586587919",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705294+00:00"
+    },
+    {
+      "rank": 19,
+      "video_id": "7071800926553541922",
+      "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
+      "url": "https://www.douyin.com/video/7071800926553541922",
+      "category": "网前技术",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示网前平搓技术",
+      "reviewed_at": "2026-07-10T22:13:28.705368+00:00"
+    },
+    {
+      "rank": 20,
+      "video_id": "7423714121620737315",
+      "title": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？",
+      "url": "https://www.douyin.com/video/7423714121620737315",
+      "category": "双打战术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705399+00:00"
+    },
+    {
+      "rank": 21,
+      "video_id": "7078852452442836224",
+      "title": "我说握拍千变万化",
+      "url": "https://www.douyin.com/video/7078852452442836224",
+      "category": "握拍与基本动作",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是不同握拍方式对应的击球动作和击球位置",
+      "reviewed_at": "2026-07-10T22:13:28.705431+00:00"
+    },
+    {
+      "rank": 22,
+      "video_id": "7150847019320429839",
+      "title": "跳出束缚，灵活握拍",
+      "url": "https://www.douyin.com/video/7150847019320429839",
+      "category": "握拍与基本动作",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示网前反手勾对角的动作，击球点分别在身前和身后",
+      "reviewed_at": "2026-07-10T22:13:28.705462+00:00"
+    },
+    {
+      "rank": 23,
+      "video_id": "7210592889141775627",
+      "title": "一个好搭档真是省劲儿",
+      "url": "https://www.douyin.com/video/7210592889141775627",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705491+00:00"
+    },
+    {
+      "rank": 24,
+      "video_id": "7400221745208167695",
+      "title": "外籍对抗 新成员都很给力",
+      "url": "https://www.douyin.com/video/7400221745208167695",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705526+00:00"
+    },
+    {
+      "rank": 25,
+      "video_id": "7245471347210554639",
+      "title": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅",
+      "url": "https://www.douyin.com/video/7245471347210554639",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705557+00:00"
+    }
+  ]
+}

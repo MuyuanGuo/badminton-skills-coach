@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "data" / "processing" / "douyin_queue.json"
 TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "douyin"
 CURATED_PATH = ROOT / "data" / "knowledge" / "pilot_teaching_notes.json"
+REVIEW_ANNOTATIONS_PATH = ROOT / "data" / "review" / "visual_review_annotations.json"
 OUTPUT_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 
 TEACHING_TERMS = re.compile(
@@ -64,6 +65,15 @@ def select_evidence(segments, pattern, limit):
 queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
 curated_data = json.loads(CURATED_PATH.read_text(encoding="utf-8"))
 curated = {item["video_id"]: item for item in curated_data["videos"]}
+if REVIEW_ANNOTATIONS_PATH.exists():
+    review_annotations_data = json.loads(REVIEW_ANNOTATIONS_PATH.read_text(encoding="utf-8"))
+    review_annotations = {
+        item["video_id"]: item
+        for item in review_annotations_data.get("items", [])
+        if item.get("review_status") != "pending"
+    }
+else:
+    review_annotations = {}
 transcripts = {
     path.stem: path
     for path in TRANSCRIPT_ROOT.rglob("*.json")
@@ -106,7 +116,40 @@ for item in queue["items"]:
             "action_cues": [],
             "note": "口播不足，需视觉分析后生成教学结论。",
         }
+    review_annotation = review_annotations.get(item["video_id"])
+    if review_annotation:
+        record["review_status"] = review_annotation["review_status"]
+        record["review_notes"] = review_annotation["review_notes"]
+        record["reviewed_at"] = review_annotation["reviewed_at"]
+        if review_annotation["review_status"] == "not_teaching":
+            record["processing_status"] = "not_teaching"
+            record["confidence"] = "reviewed_non_teaching"
+            record["teaching_note"] = {
+                "topic": clean_title(item["title"])[:100],
+                "review_summary": review_annotation["review_notes"],
+                "key_evidence": [],
+                "error_evidence": [],
+                "action_cues": [],
+                "note": "人工视觉复核：非教学视频，不作为教练证据使用。",
+            }
+        else:
+            record["processing_status"] = "ready"
+            record["confidence"] = "visual_reviewed"
+            note = record.get("teaching_note") or {}
+            note["review_summary"] = review_annotation["review_notes"]
+            note["visual_review_evidence"] = [
+                {
+                    "timestamp": "visual_review_no_timestamp",
+                    "text": review_annotation["review_notes"],
+                }
+            ]
+            note["note"] = "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。"
+            record["teaching_note"] = note
     records.append(record)
+
+status_counts = {}
+for record in records:
+    status_counts[record["processing_status"]] = status_counts.get(record["processing_status"], 0) + 1
 
 OUTPUT_PATH.write_text(
     json.dumps({
@@ -116,11 +159,9 @@ OUTPUT_PATH.write_text(
         "queue_counts": queue["counts"],
         "knowledge_counts": {
             "videos": len(records),
-            "ready": sum(item["processing_status"] == "ready" for item in records),
-            "needs_visual_review": sum(
-                item["processing_status"] == "needs_visual_review" for item in records
-            ),
+            **status_counts,
             "curated": sum(item["confidence"] == "curated" for item in records),
+            "visual_reviewed": sum(item["confidence"] == "visual_reviewed" for item in records),
         },
         "videos": records,
     }, ensure_ascii=False, indent=2) + "\n",
@@ -133,4 +174,5 @@ print(json.dumps({
     "needs_visual_review": sum(
         item["processing_status"] == "needs_visual_review" for item in records
     ),
+    "not_teaching": sum(item["processing_status"] == "not_teaching" for item in records),
 }, ensure_ascii=False))

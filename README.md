@@ -27,8 +27,9 @@ The project does not impersonate the creator and does not claim endorsement. Its
 - 已完成媒体获取、转写、结构化入库：`405 / 405` 条
 - 已解决此前 `35` 条媒体提取失败项，最终剩余失败：`0` 条
 - 全量知识库视频数：`405` 条
-- 可直接用于检索回答：`339` 条
-- 需要视觉复核：`66` 条
+- 可直接用于检索回答：`355` 条
+- 需要视觉复核：`41` 条
+- 已人工确认为非教学：`9` 条
 - GitHub Actions 验证通过，当前队列全部为 `transcribed`
 
 原始视频、音频、完整转写文本、临时 CDN URL、模型缓存和本地虚拟环境都不会提交到 Git。
@@ -42,8 +43,9 @@ As of the latest checked-in version:
 - Media extracted, transcribed, and structured into the knowledge base: `405 / 405`
 - Previously failed media extraction items recovered: `35`, with `0` remaining failures
 - Full knowledge-base videos: `405`
-- Ready for direct evidence-backed retrieval: `339`
-- Marked as requiring visual review: `66`
+- Ready for direct evidence-backed retrieval: `355`
+- Marked as requiring visual review: `41`
+- Manually confirmed as non-teaching: `9`
 - GitHub Actions validation is passing, and every queue item is now `transcribed`
 
 Raw video/audio files, full transcripts, temporary CDN URLs, model caches, and local virtual environments are intentionally excluded from Git.
@@ -638,6 +640,7 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/build_douyin_knowledge.py
 python3 scripts/build_topic_index.py
+python3 scripts/apply_visual_review_notes.py
 python3 scripts/build_visual_review_queue.py
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "后场被动怎么架拍"
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "被压到底线怎么办" --mode semantic

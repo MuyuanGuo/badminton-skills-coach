@@ -14,6 +14,7 @@ json_paths = [
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
+    "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
     "data/pilot_25_videos.json",
     "data/processing/douyin_queue.json",
@@ -74,6 +75,11 @@ topic_index = json.loads(
 )
 if topic_index["video_count"] != len(douyin_knowledge["videos"]):
     raise SystemExit("Topic index video count is out of sync with full knowledge base")
+if topic_index["indexable_video_count"] != sum(
+    video["processing_status"] not in {"not_teaching", "low_value"}
+    for video in douyin_knowledge["videos"]
+):
+    raise SystemExit("Topic index indexable count is out of sync with review statuses")
 if topic_index["assigned_video_count"] < 300:
     raise SystemExit(
         f"Topic index assigned too few videos: {topic_index['assigned_video_count']}"
@@ -104,6 +110,11 @@ for required_heading in ["今日 15 分钟", "3 天修正", "2 周巩固", "来�
 review_queue = json.loads(
     (ROOT / "data" / "review" / "visual_review_queue.json").read_text(encoding="utf-8")
 )
+review_annotations = json.loads(
+    (ROOT / "data" / "review" / "visual_review_annotations.json").read_text(encoding="utf-8")
+)
+if review_annotations["reviewed_count"] < 25:
+    raise SystemExit("Expected at least 25 visual review annotations")
 expected_review_count = sum(
     video["processing_status"] == "needs_visual_review"
     for video in douyin_knowledge["videos"]

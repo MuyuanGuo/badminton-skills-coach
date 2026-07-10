@@ -22,6 +22,8 @@ jobs:
         run: |
           python -m py_compile \
             scripts/evaluate_liuhui_skill.py \
+            scripts/apply_visual_review_notes.py \
+            scripts/build_douyin_knowledge.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/generate_pilot_drawio.py \

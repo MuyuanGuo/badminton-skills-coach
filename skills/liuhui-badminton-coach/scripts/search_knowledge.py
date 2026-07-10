@@ -150,6 +150,8 @@ def score(video):
 
 ranked = []
 for video in data["videos"]:
+    if video["processing_status"] in {"not_teaching", "low_value"}:
+        continue
     value, keyword_value, semantic_value, matched = score(video)
     if value > 0 and (matched or semantic_value > 0.08):
         ranked.append({

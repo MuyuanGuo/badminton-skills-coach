@@ -1,15 +1,17 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:42:05.410343+00:00",
+  "updated_at": "2026-07-10T22:13:34.986934+00:00",
   "queue_counts": {
     "transcribed": 405
   },
   "knowledge_counts": {
     "videos": 405,
-    "ready": 339,
-    "needs_visual_review": 66,
-    "curated": 3
+    "ready": 355,
+    "needs_visual_review": 41,
+    "not_teaching": 9,
+    "curated": 3,
+    "visual_reviewed": 16
   },
   "videos": [
     {
@@ -2915,16 +2917,26 @@
         "装备与参数"
       ],
       "duration_seconds": 61.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-002/7567155406117533051.json",
       "teaching_note": {
         "topic": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是不同体系的杀球发力中，手指手腕、手臂、身体各发力多少，不同体系的杀球各有什么特点，以及什么人应该使用什么样的杀球方式。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是不同体系的杀球发力中，手指手腕、手臂、身体各发力多少，不同体系的杀球各有什么特点，以及什么人应该使用什么样的杀球方式。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是不同体系的杀球发力中，手指手腕、手臂、身体各发力多少，不同体系的杀球各有什么特点，以及什么人应该使用什么样的杀球方式。",
+      "reviewed_at": "2026-07-10T22:13:28.704404+00:00"
     },
     {
       "video_id": "7563513758061114875",
@@ -3167,16 +3179,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 12.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/failed-retry-003c/7552759261840952636.json",
       "teaching_note": {
         "topic": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是挑到底线附近的高球要放松做力传导才能杀下去",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是挑到底线附近的高球要放松做力传导才能杀下去"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是挑到底线附近的高球要放松做力传导才能杀下去",
+      "reviewed_at": "2026-07-10T22:13:28.705032+00:00"
     },
     {
       "video_id": "7551459420703837498",
@@ -5163,16 +5185,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 36.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-004/7498295344284093755.json",
       "teaching_note": {
         "topic": "乱教3.0 学会通过架拍改善自己的顶肘，从而获得力量",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，有正手后场高远球，平高球、杀球、抽球，反手后场高远球，平高球、杀球、推球",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，有正手后场高远球，平高球、杀球、抽球，反手后场高远球，平高球、杀球、推球"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，有正手后场高远球，平高球、杀球、抽球，反手后场高远球，平高球、杀球、推球",
+      "reviewed_at": "2026-07-10T22:13:28.704771+00:00"
     },
     {
       "video_id": "7497098752897879355",
@@ -5226,16 +5258,20 @@
         "双打战术"
       ],
       "duration_seconds": 168.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-004/7496715538836704571.json",
       "teaching_note": {
         "topic": "双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705092+00:00"
     },
     {
       "video_id": "7496238975796333881",
@@ -6212,16 +6248,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 34.5,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-005/7447084061371272507.json",
       "teaching_note": {
         "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是前场抽挡中的握拍方式和击球位置的关系，另外还有一个原则是抽挡以反手握拍为主，尽量不做正反手转换，因为抽挡的节奏一般比较快，没时间换正反手，只能微调握拍方式。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是前场抽挡中的握拍方式和击球位置的关系，另外还有一个原则是抽挡以反手握拍为主，尽量不做正反手转换，因为抽挡的节奏一般比较快，没时间换正反手，只能微调握拍方式。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是前场抽挡中的握拍方式和击球位置的关系，另外还有一个原则是抽挡以反手握拍为主，尽量不做正反手转换，因为抽挡的节奏一般比较快，没时间换正反手，只能微调握拍方式。",
+      "reviewed_at": "2026-07-10T22:13:28.704999+00:00"
     },
     {
       "video_id": "7445495930280856892",
@@ -6488,16 +6534,20 @@
         "双打战术"
       ],
       "duration_seconds": 46.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-005/7423714121620737315.json",
       "teaching_note": {
         "topic": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705399+00:00"
     },
     {
       "video_id": "7422121561559272739",
@@ -6894,16 +6944,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 314.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/pilot/7405420818009722146.json",
       "teaching_note": {
         "topic": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705229+00:00"
     },
     {
       "video_id": "7404091511773613347",
@@ -6935,16 +6989,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 279.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-007/7400221745208167695.json",
       "teaching_note": {
         "topic": "外籍对抗 新成员都很给力",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705526+00:00"
     },
     {
       "video_id": "7397746202562956559",
@@ -8182,16 +8240,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 6.1,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-011/7324887936980274432.json",
       "teaching_note": {
         "topic": "羽毛球发力入门级测试",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705061+00:00"
     },
     {
       "video_id": "7322291358931127592",
@@ -10336,16 +10398,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 200.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-016/7245471347210554639.json",
       "teaching_note": {
         "topic": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705557+00:00"
     },
     {
       "video_id": "7242877295336164642",
@@ -11041,16 +11107,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 130.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/pilot/7214304020775652620.json",
       "teaching_note": {
         "topic": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法",
+      "reviewed_at": "2026-07-10T22:13:28.704730+00:00"
     },
     {
       "video_id": "7213191190382972172",
@@ -11180,16 +11256,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 163.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/failed-retry-003c/7210592889141775627.json",
       "teaching_note": {
         "topic": "一个好搭档真是省劲儿",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705491+00:00"
     },
     {
       "video_id": "7209108124924464387",
@@ -11201,16 +11281,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 142.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/failed-retry-003c/7209108124924464387.json",
       "teaching_note": {
         "topic": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是正手位接杀变线",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是正手位接杀变线"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是正手位接杀变线",
+      "reviewed_at": "2026-07-10T22:13:28.704849+00:00"
     },
     {
       "video_id": "7206510177317702924",
@@ -11286,16 +11376,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 120.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-021/7205399670959459623.json",
       "teaching_note": {
         "topic": "压抽才是双打的主旋律，没人一上来就挑给你",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是双打中要通过下压来逼迫对手起球，为自己创造更多的进攻机会。而在对手不起球的时候，要习惯并打好平抽、挡网一类的球，避免失误。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是双打中要通过下压来逼迫对手起球，为自己创造更多的进攻机会。而在对手不起球的时候，要习惯并打好平抽、挡网一类的球，避免失误。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是双打中要通过下压来逼迫对手起球，为自己创造更多的进攻机会。而在对手不起球的时候，要习惯并打好平抽、挡网一类的球，避免失误。",
+      "reviewed_at": "2026-07-10T22:13:28.704930+00:00"
     },
     {
       "video_id": "7203541969530883361",
@@ -11473,16 +11573,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 218.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-021/7197605327993310467.json",
       "teaching_note": {
         "topic": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705260+00:00"
     },
     {
       "video_id": "7195014413932367116",
@@ -12272,16 +12376,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 35.8,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-025/7167546787073477900.json",
       "teaching_note": {
         "topic": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，在跑动不到位，无法通过步伐找到合理击球点的时候，如何通过手臂找球并打出高质量的回球。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，在跑动不到位，无法通过步伐找到合理击球点的时候，如何通过手臂找球并打出高质量的回球。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，在跑动不到位，无法通过步伐找到合理击球点的时候，如何通过手臂找球并打出高质量的回球。",
+      "reviewed_at": "2026-07-10T22:13:28.705161+00:00"
     },
     {
       "video_id": "7167176069978623236",
@@ -12970,16 +13084,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 20.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/failed-retry-003g/7150847019320429839.json",
       "teaching_note": {
         "topic": "跳出束缚，灵活握拍",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，演示网前反手勾对角的动作，击球点分别在身前和身后",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，演示网前反手勾对角的动作，击球点分别在身前和身后"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示网前反手勾对角的动作，击球点分别在身前和身后",
+      "reviewed_at": "2026-07-10T22:13:28.705462+00:00"
     },
     {
       "video_id": "7149363344649047311",
@@ -13142,16 +13266,20 @@
         "训练与纠错"
       ],
       "duration_seconds": 83.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "transcript_file": "data/transcripts/douyin/batch-031/7146394347586587919.json",
       "teaching_note": {
         "topic": "9976 羽毛球的防守其实打起来比进攻还爽😅",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-10T22:13:28.705294+00:00"
     },
     {
       "video_id": "7145708380047297833",
@@ -14332,16 +14460,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 33.5,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-034/7115241358255803683.json",
       "teaching_note": {
         "topic": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。",
+      "reviewed_at": "2026-07-10T22:13:28.704893+00:00"
     },
     {
       "video_id": "7114483272972881193",
@@ -15733,16 +15871,26 @@
         "后场技术"
       ],
       "duration_seconds": 61.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-037/7090377448017235234.json",
       "teaching_note": {
         "topic": "打羽毛球最爽的就是杀球和接杀",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，演示实战中杀球和接杀的动作",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，演示实战中杀球和接杀的动作"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示实战中杀球和接杀的动作",
+      "reviewed_at": "2026-07-10T22:13:28.704962+00:00"
     },
     {
       "video_id": "7089632297791671587",
@@ -16536,16 +16684,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 27.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-039/7078852452442836224.json",
       "teaching_note": {
         "topic": "我说握拍千变万化",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，讲的是不同握拍方式对应的击球动作和击球位置",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，讲的是不同握拍方式对应的击球动作和击球位置"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，讲的是不同握拍方式对应的击球动作和击球位置",
+      "reviewed_at": "2026-07-10T22:13:28.705431+00:00"
     },
     {
       "video_id": "7078487171803467042",
@@ -17156,16 +17314,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 21.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-041/7071800926553541922.json",
       "teaching_note": {
         "topic": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，演示网前平搓技术",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，演示网前平搓技术"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示网前平搓技术",
+      "reviewed_at": "2026-07-10T22:13:28.705368+00:00"
     },
     {
       "video_id": "7071430658584857891",
@@ -17733,16 +17901,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 19.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-043/7065157571816000809.json",
       "teaching_note": {
         "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。",
+      "reviewed_at": "2026-07-10T22:13:28.705125+00:00"
     },
     {
       "video_id": "7064753436809514281",
@@ -18104,16 +18282,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 93.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-044/7060717442825309480.json",
       "teaching_note": {
         "topic": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "讲的是反手过渡，有口播，按转写的结果加进skill",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "讲的是反手过渡，有口播，按转写的结果加进skill"
+          }
+        ]
+      },
+      "review_status": "needs_correction",
+      "review_notes": "讲的是反手过渡，有口播，按转写的结果加进skill",
+      "reviewed_at": "2026-07-10T22:13:28.705196+00:00"
     },
     {
       "video_id": "7059927286186822946",
@@ -18183,16 +18371,26 @@
         "训练与纠错"
       ],
       "duration_seconds": 72.6,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "transcript_file": "data/transcripts/douyin/batch-044/7059589039694957864.json",
       "teaching_note": {
         "topic": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
         "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "口播不足，需视觉分析后生成教学结论。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "讲的是击球后回位的步伐，有口播，按转写的结果加进skill",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "讲的是击球后回位的步伐，有口播，按转写的结果加进skill"
+          }
+        ]
+      },
+      "review_status": "needs_correction",
+      "review_notes": "讲的是击球后回位的步伐，有口播，按转写的结果加进skill",
+      "reviewed_at": "2026-07-10T22:13:28.704811+00:00"
     },
     {
       "video_id": "7059205903639121187",

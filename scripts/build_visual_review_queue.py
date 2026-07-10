@@ -213,7 +213,7 @@ def render_markdown(queue):
         "## Top Priority Items",
         "",
     ]
-    for item in queue["items"][:25]:
+    for item in queue["items"]:
         lines.extend(
             [
                 f"### {item['rank']}. {item['title']}",

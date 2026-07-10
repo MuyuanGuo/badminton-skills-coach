@@ -5,7 +5,7 @@ description: Evidence-backed badminton coaching from the full 405-video indexed 
 
 # 刘辉羽毛球教练
 
-Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed teaching videos, including entries marked `ready` and entries marked `needs_visual_review`.
+Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed videos, including entries marked `ready`, `needs_visual_review`, and `not_teaching`.
 
 Use `references/topic-index.md` to orient the user's question in the teaching map before answering. The topic index is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
@@ -57,8 +57,10 @@ Keep volume conservative. Do not promise fixed-date improvement.
 ## Evidence Rules
 
 - Prefer `confidence: curated` entries.
+- Use `confidence: visual_reviewed` entries as reviewed visual teaching notes. If they have no precise timestamp, say they come from manual visual review rather than transcript evidence.
 - Use `confidence: medium` entries as leads; state that their wording comes from automatic transcription.
 - Do not derive technique conclusions from `needs_visual_review` entries without reviewing the video.
+- Do not use `processing_status: not_teaching` or `processing_status: low_value` as coaching evidence.
 - If a source only appears in `references/topic-index.md`, use it as a search lead, not as final evidence.
 - Correct obvious ASR homophones only when title and context make the term unambiguous.
 - Preserve distinctions between active and passive situations, singles and doubles, and beginner and advanced execution.
