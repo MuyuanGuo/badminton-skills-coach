@@ -207,7 +207,9 @@ skills/
     SKILL.md
     references/knowledge-base.json
     references/topic-index.md
+    references/topic-map.json
     references/practice-plan-template.md
+    scripts/navigate_topics.py
     scripts/search_knowledge.py
 
 output/
@@ -258,7 +260,9 @@ skills/
     SKILL.md
     references/knowledge-base.json
     references/topic-index.md
+    references/topic-map.json
     references/practice-plan-template.md
+    scripts/navigate_topics.py
     scripts/search_knowledge.py
 
 output/

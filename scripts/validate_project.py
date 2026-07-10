@@ -22,6 +22,7 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
+    "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
 for relative_path in json_paths:
     path = ROOT / relative_path
@@ -79,10 +80,19 @@ topic_index = json.loads(
 knowledge_graph = json.loads(
     (ROOT / "data" / "knowledge" / "knowledge_graph_summary.json").read_text(encoding="utf-8")
 )
+skill_topic_map = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "topic-map.json"
+    ).read_text(encoding="utf-8")
+)
 golden_questions = json.loads(
     (ROOT / "data" / "evaluation" / "golden_questions.json").read_text(encoding="utf-8")
 )
-if len(golden_questions.get("cases", [])) < 18:
+if len(golden_questions.get("cases", [])) < 20:
     raise SystemExit("Golden question set has too few cases")
 
 if topic_index["video_count"] != len(douyin_knowledge["videos"]):
@@ -102,6 +112,8 @@ if knowledge_graph["source_updated_at"] != topic_index["source_updated_at"]:
     raise SystemExit("Knowledge graph summary is stale relative to the topic index")
 if knowledge_graph["indexable_video_count"] != topic_index["indexable_video_count"]:
     raise SystemExit("Knowledge graph summary is out of sync with the topic index")
+if skill_topic_map != knowledge_graph:
+    raise SystemExit("Skill topic map is out of sync with the knowledge graph summary")
 if len(knowledge_graph["categories"]) != len(topic_index["categories"]):
     raise SystemExit("Knowledge graph summary category count is out of sync")
 for graph_output in [

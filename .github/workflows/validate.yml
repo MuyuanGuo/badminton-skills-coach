@@ -30,6 +30,7 @@ jobs:
             scripts/generate_knowledge_graph.py \
             scripts/generate_pilot_drawio.py \
             scripts/select_pilot_videos.py \
+            skills/liuhui-badminton-coach/scripts/navigate_topics.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
       - name: Validate repository artifacts
