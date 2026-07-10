@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-09T23:41:34.048574+00:00",
+  "updated_at": "2026-07-10T00:42:11.759298+00:00",
   "queue_counts": {
-    "transcribed": 243,
-    "extraction_failed": 32,
-    "pending": 130
+    "transcribed": 250,
+    "extraction_failed": 34,
+    "pending": 121
   },
   "knowledge_counts": {
-    "videos": 243,
-    "ready": 203,
-    "needs_visual_review": 40,
+    "videos": 250,
+    "ready": 208,
+    "needs_visual_review": 42,
     "curated": 3
   },
   "videos": [
@@ -11676,6 +11676,335 @@
           {
             "timestamp": "00:19-00:27",
             "text": "我们看到运动员的虎口已经对准了拍面方向我们再通过激完球之后定格来看一下"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7146394347586587919",
+      "title": "9976 羽毛球的防守其实打起来比进攻还爽😅",
+      "url": "https://www.douyin.com/video/7146394347586587919",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 83.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-031/7146394347586587919.json",
+      "teaching_note": {
+        "topic": "9976 羽毛球的防守其实打起来比进攻还爽😅",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7145708380047297833",
+      "title": "兄弟们也可以看往期的手指发力，贴球发力来做铺垫",
+      "url": "https://www.douyin.com/video/7145708380047297833",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 75.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-031/7145708380047297833.json",
+      "teaching_note": {
+        "topic": "兄弟们也可以看往期的手指发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:18",
+            "text": "可是慢镜头下隐拍力传导一个不少这就是所谓的贴球发力我们如何做到发力短促集中"
+          },
+          {
+            "timestamp": "00:10-00:23",
+            "text": "这就是所谓的贴球发力我们如何做到发力短促集中其实就是不通过主动的隐拍去机球"
+          },
+          {
+            "timestamp": "00:59-01:06",
+            "text": "再伸着这种力传导出现隐拍之后再去通过手腕和手指的配合发力将球打出"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:29-00:37",
+            "text": "突然从静止一脚油门踩下去我们的人一定是向后座上靠那球拍也一样"
+          },
+          {
+            "timestamp": "00:42-00:50",
+            "text": "那球拍如果是放松的话它一定会先向后我们找个有代表性的"
+          },
+          {
+            "timestamp": "00:57-01:05",
+            "text": "而出现的这种自然隐拍再伸着这种力传导出现隐拍之后再去通过手腕和手指的配合发力"
+          },
+          {
+            "timestamp": "00:59-01:06",
+            "text": "再伸着这种力传导出现隐拍之后再去通过手腕和手指的配合发力将球打出"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7144168689510649128",
+      "title": "贴网球需要一定的抛物线，所以这样的高度不算高，有人守在网前就不要搓了",
+      "url": "https://www.douyin.com/video/7144168689510649128",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 123.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-031/7144168689510649128.json",
+      "teaching_note": {
+        "topic": "贴网球需要一定的抛物线",
+        "key_evidence": [
+          {
+            "timestamp": "00:48-00:53",
+            "text": "那这个视角确实看不到拍面的倾斜和下垂了但是我们可以看到"
+          },
+          {
+            "timestamp": "00:52-00:57",
+            "text": "但是我们可以看到我们拍面是如何控球的靠里的位置斩戳"
+          },
+          {
+            "timestamp": "00:56-01:01",
+            "text": "靠里的位置斩戳拍面不要立让球跟随我们的惯性"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:56-01:01",
+            "text": "靠里的位置斩戳拍面不要立让球跟随我们的惯性"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "把球给包裹进来让它不要向边再飞了好的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:05-01:13",
+            "text": "那么我横向的力给它少了一些让球缓缓的向外飞就可以了那很靠边线的球"
+          },
+          {
+            "timestamp": "01:11-01:17",
+            "text": "那很靠边线的球我必须要通过这种立球拍的方式把球给包裹进来"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "把球给包裹进来让它不要向边再飞了好的"
+          },
+          {
+            "timestamp": "01:53-02:00",
+            "text": "给球像正手一样形成一个包裹保证它不会再向外而导致出界"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7143811094698528040",
+      "title": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。",
+      "url": "https://www.douyin.com/video/7143811094698528040",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.1,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-031/7143811094698528040.json",
+      "teaching_note": {
+        "topic": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7142313105324870950",
+      "title": "s上网小飞侠“两步一冲”，曹植当年要有这样的七步早就蹬出皇宫了！",
+      "url": "https://www.douyin.com/video/7142313105324870950",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 129.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-031/7142313105324870950.json",
+      "teaching_note": {
+        "topic": "s上网小飞侠“两步一冲”",
+        "key_evidence": [
+          {
+            "timestamp": "00:03-00:09",
+            "text": "那么如果你也想成为一个杀伤王小飞侠的话那么一定要注意在我们杀球之后我们的左脚一定要向后伸"
+          },
+          {
+            "timestamp": "00:09-00:15",
+            "text": "伸完了左脚我们的这个灯力就能起来那么能够抢成迅速回动的动力那么到了往前之后呢"
+          },
+          {
+            "timestamp": "00:17-00:24",
+            "text": "移往前做一定的这样的一个拖拽能够更好地方面我们的这个跨步的重心还原这样我们向后灯的时候"
+          },
+          {
+            "timestamp": "01:02-01:10",
+            "text": "这样的话左脚没有离开中线比较省位置但是当我们重心特别偏或者速度惯性特别大的时候"
+          },
+          {
+            "timestamp": "01:13-01:20",
+            "text": "谁还能用一个腿再蹬回来呢那这个时候就要做跟脚回动分能力"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:09",
+            "text": "那么如果你也想成为一个杀伤王小飞侠的话那么一定要注意在我们杀球之后我们的左脚一定要向后伸"
+          },
+          {
+            "timestamp": "00:14-00:19",
+            "text": "那么到了往前之后呢我们一定要把这个左脚啊移往前做一定的这样的一个拖拽"
+          },
+          {
+            "timestamp": "00:15-00:22",
+            "text": "我们一定要把这个左脚啊移往前做一定的这样的一个拖拽能够更好地方面我们的这个跨步的重心还原"
+          },
+          {
+            "timestamp": "01:12-01:19",
+            "text": "这么快的速度谁还能用一个腿再蹬回来呢那这个时候就要做跟脚回动"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7141570854437063977",
+      "title": "总结，看对方的重心有没有丢失，如果进攻的效果好，对手重心没了，肯定还是可以勾的",
+      "url": "https://www.douyin.com/video/7141570854437063977",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 91.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-031/7141570854437063977.json",
+      "teaching_note": {
+        "topic": "总结",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:10",
+            "text": "那么说到勾球的击战书其实使用很简单就是我们只要对手别站在中场都可以勾"
+          },
+          {
+            "timestamp": "00:10-00:22",
+            "text": "比如说对场站到左边底线去他在这里掉了一个直线我可以勾球但是他如果在中场待着没动"
+          },
+          {
+            "timestamp": "00:27-00:35",
+            "text": "挡了一个网我上来这个时候勾球那也就是说我会把我整个身位控当全暴露出来"
+          },
+          {
+            "timestamp": "00:30-00:40",
+            "text": "那也就是说我会把我整个身位控当全暴露出来这种情况是绝对不能勾球的来我们试一下"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:30-00:40",
+            "text": "那也就是说我会把我整个身位控当全暴露出来这种情况是绝对不能勾球的来我们试一下"
+          },
+          {
+            "timestamp": "01:04-01:12",
+            "text": "而且勾完还要注意跟球就我不能勾完之后就看着不动了那如果对手接起来的呢"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:14",
+            "text": "那么说到勾球的击战书其实使用很简单就是我们只要对手别站在中场都可以勾比如说对场站到左边底线去"
+          },
+          {
+            "timestamp": "00:10-00:22",
+            "text": "比如说对场站到左边底线去他在这里掉了一个直线我可以勾球但是他如果在中场待着没动"
+          },
+          {
+            "timestamp": "00:52-01:11",
+            "text": "那就会出现这样的情况而且勾完还要注意跟球就我不能勾完之后就看着不动了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7141200093922790688",
+      "title": "9243 纠错小课堂2 之准备框架",
+      "url": "https://www.douyin.com/video/7141200093922790688",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 144.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-031/7141200093922790688.json",
+      "teaching_note": {
+        "topic": "9243 纠错小课堂2 之准备框架",
+        "key_evidence": [
+          {
+            "timestamp": "00:48-00:53",
+            "text": "比如说我做后场一个登转动作基本就是架拍动作一个接杀动作"
+          },
+          {
+            "timestamp": "01:57-02:06",
+            "text": "那你就可能变成这种轮肩的动作从而导致我们的回动的这个将李教练先做示范"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:17-01:21",
+            "text": "而不是说谁球0常或者说我打得好不好的问题对不对"
+          },
+          {
+            "timestamp": "01:28-01:34",
+            "text": "那我闹两句这里面很多的业余确就有问题了那我们不能做这样的动作"
+          },
+          {
+            "timestamp": "01:30-01:36",
+            "text": "这里面很多的业余确就有问题了那我们不能做这样的动作那为什么丹哥可以做"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:40-00:48",
+            "text": "在准备的时候把我们的肘和大臂尽可能抬高一点保证业下有一定的空间那这样我在来球的时候取位"
+          },
+          {
+            "timestamp": "01:22-01:25",
+            "text": "那我也说完了张教练必须得整两句来整两句"
+          },
+          {
+            "timestamp": "01:32-01:38",
+            "text": "那我们不能做这样的动作那为什么丹哥可以做一些大赛当中的专业选手"
+          },
+          {
+            "timestamp": "01:39-01:43",
+            "text": "他们也是把这个牌子放到这然后我们再去机球了我跟他到底插在哪里"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

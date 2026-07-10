@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-09T23:43:44.838Z",
+  "updated_at": "2026-07-10T00:42:11.115412+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 243,
+    "transcribed": 250,
     "extraction_failed": 34,
-    "pending": 128
+    "pending": 121
   },
   "items": [
     {
@@ -3289,11 +3289,11 @@
       "title": "9976 羽毛球的防守其实打起来比进攻还爽😅#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7146394347586587919.mp4",
+      "duration_seconds": 83.569,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7145708380047297833",
@@ -3301,11 +3301,11 @@
       "title": "兄弟们也可以看往期的手指发力，贴球发力来做铺垫#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7145708380047297833.mp4",
+      "duration_seconds": 75.674,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7144168689510649128",
@@ -3313,11 +3313,11 @@
       "title": "贴网球需要一定的抛物线，所以这样的高度不算高，有人守在网前就不要搓了#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7144168689510649128.mp4",
+      "duration_seconds": 123.809,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7143811094698528040",
@@ -3325,11 +3325,11 @@
       "title": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7143811094698528040.mp4",
+      "duration_seconds": 27.051,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7142313105324870950",
@@ -3337,11 +3337,11 @@
       "title": "1.9万 s上网小飞侠“两步一冲”，曹植当年要有这样的七步早就蹬出皇宫了！#羽毛球步伐 #羽毛球教学 @抖音热点宝",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7142313105324870950.mp4",
+      "duration_seconds": 129.451,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7141570854437063977",
@@ -3349,10 +3349,10 @@
       "title": "总结，看对方的重心有没有丢失，如果进攻的效果好，对手重心没了，肯定还是可以勾的#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7141570854437063977.mp4",
+      "duration_seconds": 91.254,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3361,10 +3361,10 @@
       "title": "9243 纠错小课堂2 之准备框架 #羽毛球#羽毛球教学 #羽毛球训练",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-031/7141200093922790688.mp4",
+      "duration_seconds": 144.544,
+      "attempts": 1,
       "error": null
     },
     {
