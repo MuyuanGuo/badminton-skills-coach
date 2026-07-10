@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T16:31:09.895934+00:00",
+  "updated_at": "2026-07-10T16:35:15.896538+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 390,
-    "media_ready": 15
+    "transcribed": 395,
+    "media_ready": 10
   },
   "items": [
     {
@@ -2892,10 +2892,10 @@
       "title": "1.6万 各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7184618028619910433.mp4",
-      "duration_seconds": 131,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003e/7184618028619910433.mp4",
+      "duration_seconds": 130.984,
+      "attempts": 4,
       "error": null
     },
     {
@@ -2904,10 +2904,10 @@
       "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7183132124801682726.mp4",
-      "duration_seconds": 19.433333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003e/7183132124801682726.mp4",
+      "duration_seconds": 19.412,
+      "attempts": 4,
       "error": null
     },
     {
@@ -2940,10 +2940,10 @@
       "title": "现场嘈杂，说话声音大了点，各位见谅#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7175339579392707878.mp4",
-      "duration_seconds": 83,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003e/7175339579392707878.mp4",
+      "duration_seconds": 82.942,
+      "attempts": 4,
       "error": null
     },
     {
@@ -2952,10 +2952,10 @@
       "title": "承认被动，是一件很难的事#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手 #刘辉羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7174969770511551756.mp4",
-      "duration_seconds": 88.6,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003e/7174969770511551756.mp4",
+      "duration_seconds": 88.538,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3000,10 +3000,10 @@
       "title": "腰腹有带动，引拍会因为惯性自然出现，出拍轨迹就正了，出手速度也快了#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7169772952039345411.mp4",
-      "duration_seconds": 89.933333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003e/7169772952039345411.mp4",
+      "duration_seconds": 89.884,
+      "attempts": 4,
       "error": null
     },
     {

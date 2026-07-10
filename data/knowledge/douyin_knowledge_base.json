@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:31:10.586467+00:00",
+  "updated_at": "2026-07-10T16:35:16.636209+00:00",
   "queue_counts": {
-    "transcribed": 390,
-    "media_ready": 15
+    "transcribed": 395,
+    "media_ready": 10
   },
   "knowledge_counts": {
-    "videos": 390,
-    "ready": 327,
-    "needs_visual_review": 63,
+    "videos": 395,
+    "ready": 331,
+    "needs_visual_review": 64,
     "curated": 3
   },
   "videos": [
@@ -11704,6 +11704,90 @@
       }
     },
     {
+      "video_id": "7184618028619910433",
+      "title": "各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许",
+      "url": "https://www.douyin.com/video/7184618028619910433",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 131.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003e/7184618028619910433.json",
+      "teaching_note": {
+        "topic": "各位不要钻牛角尖里",
+        "key_evidence": [
+          {
+            "timestamp": "00:31-00:37",
+            "text": "我这右手现在发不上力就羽毛球的发力中不只有右脚登地转宽"
+          },
+          {
+            "timestamp": "00:39-00:44",
+            "text": "其实在很多情况下我们都是在用左腿发力的比如说"
+          },
+          {
+            "timestamp": "00:44-00:48",
+            "text": "比赛中这种左脚登地发力的情况呢是非常常见的"
+          },
+          {
+            "timestamp": "00:47-00:51",
+            "text": "是非常常见的高远 调球和扣球都是可以打的"
+          },
+          {
+            "timestamp": "00:58-01:02",
+            "text": "就是在这种时候我们都是左脚登地发力带动了什么"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:22-01:26",
+            "text": "那刚才这个球的高度是不是时间完全来不及所以这个时候"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:48-00:58",
+            "text": "高远 调球和扣球都是可以打的看到没"
+          },
+          {
+            "timestamp": "01:16-01:22",
+            "text": "就卸了我就必须得用右脚再组织出来一个新的跳法"
+          },
+          {
+            "timestamp": "01:18-01:23",
+            "text": "我就必须得用右脚再组织出来一个新的跳法那刚才这个球的高度"
+          },
+          {
+            "timestamp": "01:33-01:36",
+            "text": "那也就是说我是可以站在这不用右脚"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7183132124801682726",
+      "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列",
+      "url": "https://www.douyin.com/video/7183132124801682726",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003e/7183132124801682726.json",
+      "teaching_note": {
+        "topic": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7182762294294744332",
       "title": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复",
       "url": "https://www.douyin.com/video/7182762294294744332",
@@ -11774,6 +11858,114 @@
           {
             "timestamp": "00:49-01:08",
             "text": "横过来 来 再向左后方登一下 感觉一下感觉怎么样 比刚才劲大了 那咱们再试一试 把这个脚后跟抬起来 再向右下什么感觉 更大了 那为什么把脚后跟抬起来更大了呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7175339579392707878",
+      "title": "现场嘈杂，说话声音大了点，各位见谅",
+      "url": "https://www.douyin.com/video/7175339579392707878",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 82.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003e/7175339579392707878.json",
+      "teaching_note": {
+        "topic": "现场嘈杂",
+        "key_evidence": [
+          {
+            "timestamp": "00:18-00:23",
+            "text": "最大程度的拉扯是哪斜线高远的站在那底角去"
+          },
+          {
+            "timestamp": "00:23-00:32",
+            "text": "他从这个位置对着斜线打一个高远挥发这样的一个动作如果是滑拍直线"
+          },
+          {
+            "timestamp": "00:32-00:50",
+            "text": "才对我最有拉扯效果,知道吗看教练打一个斜线高远球懂了吗"
+          },
+          {
+            "timestamp": "00:37-00:58",
+            "text": "懂了吗其实就是模拟斜线高远球的朝向动作及球点"
+          },
+          {
+            "timestamp": "00:58-01:05",
+            "text": "或者这个球在中间或者这个球在头顶都是一样的我们的目标都是对手正手的高远球"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7174969770511551756",
+      "title": "承认被动，是一件很难的事",
+      "url": "https://www.douyin.com/video/7174969770511551756",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 88.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003e/7174969770511551756.json",
+      "teaching_note": {
+        "topic": "承认被动",
+        "key_evidence": [
+          {
+            "timestamp": "00:03-00:07",
+            "text": "我会出现这种重心往前扎的情况你自己不知道重心要往后拽着"
+          },
+          {
+            "timestamp": "00:13-00:19",
+            "text": "看到人家抢网你就往前跑啊跑重心这么高到底下的时候马上要接球了"
+          },
+          {
+            "timestamp": "00:21-00:25",
+            "text": "那你肯定会绝屁股的你重心怎么也控制不住为什么"
+          },
+          {
+            "timestamp": "00:40-00:45",
+            "text": "哎我的重心也下去了那这个时候左手是干什么的"
+          },
+          {
+            "timestamp": "00:54-01:00",
+            "text": "还不如直接撑一下地我重心都往左偏了我手一撑地"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:25-00:30",
+            "text": "应该打完这个球之后你发现自己要被动了你是随着球的下落"
+          },
+          {
+            "timestamp": "00:35-00:39",
+            "text": "看我一看这个球被动了我现在姿态是比较高的"
+          },
+          {
+            "timestamp": "00:47-00:50",
+            "text": "保持平衡对不对我左手是保持平衡的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:24-00:29",
+            "text": "为什么应该打完这个球之后你发现自己要被动了"
+          },
+          {
+            "timestamp": "01:09-01:12",
+            "text": "懂不懂来再试试立步了"
+          },
+          {
+            "timestamp": "01:19-01:19",
+            "text": "好再来"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
@@ -11963,6 +12155,44 @@
             "text": "他就把小臂甩出去了来 你再试试背叛太早"
           }
         ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7169772952039345411",
+      "title": "腰腹有带动，引拍会因为惯性自然出现，出拍轨迹就正了，出手速度也快了",
+      "url": "https://www.douyin.com/video/7169772952039345411",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 89.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003e/7169772952039345411.json",
+      "teaching_note": {
+        "topic": "腰腹有带动",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:12",
+            "text": "我感觉要灰趴没有腰腹带动的话不只会影响发力还会影响出趴轨迹"
+          },
+          {
+            "timestamp": "00:26-00:31",
+            "text": "那这样的话我小B要是想要发力的话它只会沿着肘的朝向去发力"
+          },
+          {
+            "timestamp": "00:27-00:33",
+            "text": "我小B要是想要发力的话它只会沿着肘的朝向去发力那也就是说我一边转一边挥的话"
+          },
+          {
+            "timestamp": "00:36-00:41",
+            "text": "会打消而不是一个从后向前的发力但是如果说"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
