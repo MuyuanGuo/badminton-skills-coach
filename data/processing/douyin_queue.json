@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T04:28:48.222329+00:00",
+  "updated_at": "2026-07-10T04:34:55.382955+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 310,
+    "transcribed": 317,
     "extraction_failed": 35,
-    "pending": 60
+    "pending": 53
   },
   "items": [
     {
@@ -4105,11 +4105,11 @@
       "title": "看不清握拍的朋友去看之前发的#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7081451189262355747.mp4",
+      "duration_seconds": 75.302,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7080735688819281193",
@@ -4117,10 +4117,10 @@
       "title": "别练了今天，研究研究战术吧#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7080735688819281193.mp4",
+      "duration_seconds": 66.409,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4129,10 +4129,10 @@
       "title": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7080341135545126144.mp4",
+      "duration_seconds": 46.835,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4141,10 +4141,10 @@
       "title": "一定注意扔球高度，和球头的朝向，不是随便扔起来就行，要尽量模拟球从对面飞来，可以先练习抛球，能抛稳了在打#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7079966173307194639.mp4",
+      "duration_seconds": 69.265,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4153,10 +4153,10 @@
       "title": "我说握拍千变万化#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7078852452442836224.mp4",
+      "duration_seconds": 27.283,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4165,10 +4165,10 @@
       "title": "总之球必须向我们飞来才有练的价值。不需要网，网前练的就是控球感，练自由使用技术，有面墙就行#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7078487171803467042.mp4",
+      "duration_seconds": 26.796,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4177,10 +4177,10 @@
       "title": "这样练球落点准，而且球头和追球的感觉很真实#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-039/7078117752275225891.mp4",
+      "duration_seconds": 48.971,
+      "attempts": 1,
       "error": null
     },
     {

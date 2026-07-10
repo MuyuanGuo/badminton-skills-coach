@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T04:28:49.057326+00:00",
+  "updated_at": "2026-07-10T04:34:57.019177+00:00",
   "queue_counts": {
-    "transcribed": 310,
+    "transcribed": 317,
     "extraction_failed": 35,
-    "pending": 60
+    "pending": 53
   },
   "knowledge_counts": {
-    "videos": 310,
-    "ready": 261,
-    "needs_visual_review": 49,
+    "videos": 317,
+    "ready": 266,
+    "needs_visual_review": 51,
     "curated": 3
   },
   "videos": [
@@ -14876,6 +14876,277 @@
           {
             "timestamp": "00:43-00:49",
             "text": "如果這個球是奔著追身來的我們人可以怎麽樣再讓可能也會有朋友問"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7081451189262355747",
+      "title": "看不清握拍的朋友去看之前发的",
+      "url": "https://www.douyin.com/video/7081451189262355747",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 75.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-039/7081451189262355747.json",
+      "teaching_note": {
+        "topic": "看不清握拍的朋友去看之前发的",
+        "key_evidence": [
+          {
+            "timestamp": "00:10-00:19",
+            "text": "为我们的抽烹抬肘留出一个时间握拍采用握着正宽面的握拍那么我们先是一个引肘上体准备发力"
+          },
+          {
+            "timestamp": "00:13-00:23",
+            "text": "握拍采用握着正宽面的握拍那么我们先是一个引肘上体准备发力而且一引肘球拍自然而然地被拉到了身体右侧"
+          },
+          {
+            "timestamp": "00:32-00:41",
+            "text": "我们还是要做编甩和卸力那么我们顺势做出旋转发力那么整个人的重心还要有一个向右的偏移"
+          },
+          {
+            "timestamp": "00:34-00:44",
+            "text": "那么我们顺势做出旋转发力那么整个人的重心还要有一个向右的偏移为我们这个变线腾出一并的空间"
+          },
+          {
+            "timestamp": "01:05-01:11",
+            "text": "大家要注意了旋转的目的是为了发力和卸力所以说机球还是打过去的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:26-00:34",
+            "text": "先把球拍做一个向左激打的动作但是不能以弹机为结束我们还是要做编甩和卸力"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:13-00:23",
+            "text": "握拍采用握着正宽面的握拍那么我们先是一个引肘上体准备发力而且一引肘球拍自然而然地被拉到了身体右侧"
+          },
+          {
+            "timestamp": "00:23-00:32",
+            "text": "我们在腹前进行机球的时候先把球拍做一个向左激打的动作但是不能以弹机为结束"
+          },
+          {
+            "timestamp": "01:02-01:09",
+            "text": "向那个方向进行变线大家要注意了旋转的目的是为了发力和卸力"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7080735688819281193",
+      "title": "别练了今天，研究研究战术吧",
+      "url": "https://www.douyin.com/video/7080735688819281193",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 66.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-039/7080735688819281193.json",
+      "teaching_note": {
+        "topic": "别练了今天",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:14",
+            "text": "当对方进攻球员在场地一侧进攻并且对方封网选手在往前中间位置封网时我们就可以通过一个挡网把两个人引优到一边"
+          },
+          {
+            "timestamp": "00:21-00:36",
+            "text": "那么重新拿回制空权的我通过观察发现对手正在荒芒的从前后进攻站位向平行防守站位进行轮转而我方刚好满足了后杀前锋的进攻状态"
+          },
+          {
+            "timestamp": "00:26-00:38",
+            "text": "发现对手正在荒芒的从前后进攻站位向平行防守站位进行轮转而我方刚好满足了后杀前锋的进攻状态尽管这个球对方挑了非常到位"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:43-00:52",
+            "text": "这个球对方回到了中央的位置那么我绝对不能上去打一个平抽球因为这会对方的站位非常的牢固是绝对不怕平抽的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:17",
+            "text": "当对方进攻球员在场地一侧进攻并且对方封网选手在往前中间位置封网时我们就可以通过一个挡网把两个人引优到一边然后我们再通过变线的方式来进行摆脱"
+          },
+          {
+            "timestamp": "00:10-00:21",
+            "text": "我们就可以通过一个挡网把两个人引优到一边然后我们再通过变线的方式来进行摆脱那么现在在屏幕上方的斜线区域明显的空档已经出现"
+          },
+          {
+            "timestamp": "00:36-00:45",
+            "text": "尽管这个球对方挑了非常到位但是他们力足未稳 我们有位置优势还是可以强攻的这个球对方回到了中央的位置"
+          },
+          {
+            "timestamp": "00:54-01:06",
+            "text": "他很容易在移动中被对手平抽集火所以这个球必须果断地把压制进行到底达成双压人在家中堂 球技心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7080341135545126144",
+      "title": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
+      "url": "https://www.douyin.com/video/7080341135545126144",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 46.8,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-039/7080341135545126144.json",
+      "teaching_note": {
+        "topic": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7079966173307194639",
+      "title": "一定注意扔球高度，和球头的朝向，不是随便扔起来就行，要尽量模拟球从对面飞来，可以先练习抛球，能抛稳了在打",
+      "url": "https://www.douyin.com/video/7079966173307194639",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 69.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-039/7079966173307194639.json",
+      "teaching_note": {
+        "topic": "一定注意扔球高度",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:20",
+            "text": "判斗队 忘给任何来干吗给大家介绍一个可以那么首先我们要会拿球"
+          },
+          {
+            "timestamp": "00:12-00:24",
+            "text": "给大家介绍一个可以那么首先我们要会拿球我们的中指和拇指负责固定我们第二个球"
+          },
+          {
+            "timestamp": "00:51-01:01",
+            "text": "用这样的方式给球形成一个固定不熟练的朋友也可以一个一个的进行抛球还是球毛朝向这个小臂的位置"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7078852452442836224",
+      "title": "我说握拍千变万化",
+      "url": "https://www.douyin.com/video/7078852452442836224",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 27.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-039/7078852452442836224.json",
+      "teaching_note": {
+        "topic": "我说握拍千变万化",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7078487171803467042",
+      "title": "总之球必须向我们飞来才有练的价值。不需要网，网前练的就是控球感，练自由使用技术，有面墙就行",
+      "url": "https://www.douyin.com/video/7078487171803467042",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 26.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-039/7078487171803467042.json",
+      "teaching_note": {
+        "topic": "总之球必须向我们飞来才有练的价值。不需要网",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:07",
+            "text": "自己练习技术的方式对着墙发球发高一点人往后站"
+          },
+          {
+            "timestamp": "00:11-00:18",
+            "text": "人站的厚一点我们才有向前的空间如果发球发的不好的话我们还可以拿左手抛球"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:14-00:20",
+            "text": "如果发球发的不好的话我们还可以拿左手抛球但是就要把吃拍手先伸出来"
+          },
+          {
+            "timestamp": "00:16-00:22",
+            "text": "我们还可以拿左手抛球但是就要把吃拍手先伸出来因为手抛球的力道很小"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7078117752275225891",
+      "title": "这样练球落点准，而且球头和追球的感觉很真实",
+      "url": "https://www.douyin.com/video/7078117752275225891",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 49.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-039/7078117752275225891.json",
+      "teaching_note": {
+        "topic": "这样练球落点准",
+        "key_evidence": [
+          {
+            "timestamp": "00:10-00:21",
+            "text": "尽可能的抛高一点 给我们自己跑动一些时间那么左手拿着球拍 拍面和地面水平这样我们用右手抓过来的时候 刚好就可以拿在鞋轮上"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:10",
+            "text": "好的 今天教大家一个可以自己练反手的方法那么首先呢 我们要用右手抛球"
+          },
+          {
+            "timestamp": "00:13-00:25",
+            "text": "那么左手拿着球拍 拍面和地面水平这样我们用右手抓过来的时候 刚好就可以拿在鞋轮上剪球的时候 用一个弓箭步练习一下回味"
+          },
+          {
+            "timestamp": "00:21-00:43",
+            "text": "剪球的时候 用一个弓箭步练习一下回味第二次的时候 可以换一条腿还有一种方法 就是拿拍 掂着给自己去打反手"
+          },
+          {
+            "timestamp": "00:39-00:48",
+            "text": "还有一种方法 就是拿拍 掂着给自己去打反手但是拍子一定不如手扔得准人在家中堂 球技心中长"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
