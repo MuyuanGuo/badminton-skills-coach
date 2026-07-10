@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T16:22:19.908984+00:00",
+  "updated_at": "2026-07-10T16:26:39.708197+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 380,
-    "media_ready": 25
+    "transcribed": 385,
+    "media_ready": 20
   },
   "items": [
     {
@@ -696,10 +696,10 @@
       "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 #羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7552759261840952636.mp4",
-      "duration_seconds": 12.466667,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003c/7552759261840952636.mp4",
+      "duration_seconds": 12.424,
+      "attempts": 5,
       "error": null
     },
     {
@@ -720,10 +720,10 @@
       "title": "3.3万 反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果#羽毛球#刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7550305145877155131.m4a",
-      "duration_seconds": 157.5,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003c/7550305145877155131.m4a",
+      "duration_seconds": 157.502,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2724,10 +2724,10 @@
       "title": "1.4万 一个好搭档真是省劲儿#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7210592889141775627.mp4",
-      "duration_seconds": 163.42059,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003c/7210592889141775627.mp4",
+      "duration_seconds": 163.422,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2736,10 +2736,10 @@
       "title": "1.5万 我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的#羽毛球 #刘辉羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7209108124924464387.mp4",
-      "duration_seconds": 142.406009,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003c/7209108124924464387.mp4",
+      "duration_seconds": 142.408,
+      "attempts": 5,
       "error": null
     },
     {
@@ -2748,10 +2748,10 @@
       "title": "打出一个能高兴一天的学，备战世界公开赛的不要学哦#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7206510177317702924.mp4",
-      "duration_seconds": 143.366667,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003c/7206510177317702924.mp4",
+      "duration_seconds": 143.36,
+      "attempts": 5,
       "error": null
     },
     {

@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:22:20.722599+00:00",
+  "updated_at": "2026-07-10T16:26:40.440266+00:00",
   "queue_counts": {
-    "transcribed": 380,
-    "media_ready": 25
+    "transcribed": 385,
+    "media_ready": 20
   },
   "knowledge_counts": {
-    "videos": 380,
-    "ready": 321,
-    "needs_visual_review": 59,
+    "videos": 385,
+    "ready": 323,
+    "needs_visual_review": 62,
     "curated": 3
   },
   "videos": [
@@ -3159,6 +3159,27 @@
       }
     },
     {
+      "video_id": "7552759261840952636",
+      "title": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了",
+      "url": "https://www.douyin.com/video/7552759261840952636",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 12.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003c/7552759261840952636.json",
+      "teaching_note": {
+        "topic": "放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7551459420703837498",
       "title": "快速架拍和力量架拍 在两者中间的架拍就是标准的普通架拍，既不会太慢，也不会没力，但是又都做不到极致的快和重，大家结合使用哦",
       "url": "https://www.douyin.com/video/7551459420703837498",
@@ -3206,6 +3227,54 @@
             "text": "我的力量难以施展那这个时候我们应该放松抬趴把大臂的开关调大"
           }
         ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7550305145877155131",
+      "title": "反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果",
+      "url": "https://www.douyin.com/video/7550305145877155131",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 157.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003c/7550305145877155131.json",
+      "teaching_note": {
+        "topic": "反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果",
+        "key_evidence": [
+          {
+            "timestamp": "00:04-00:09",
+            "text": "为了骂我这个反手杀球不往地上钻你这是抽啥"
+          },
+          {
+            "timestamp": "00:45-00:52",
+            "text": "他就和你正手抽球是一个感觉所以在这个框架里是不可能出来杀球的这叫抽高远"
+          },
+          {
+            "timestamp": "00:50-00:57",
+            "text": "这叫抽高远比如说我打高远对吧"
+          },
+          {
+            "timestamp": "00:57-01:00",
+            "text": "这叫抽高远你要杀球的话你看自然就是抽啥"
+          },
+          {
+            "timestamp": "01:07-01:13",
+            "text": "这个肘就是向上顶的他就和你后场发力是一样的也就是说他是属于反手的后场技术"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:17-00:22",
+            "text": "对都看过呀你不用你肯定是不是觉得他有问题但我告诉你他是对的"
+          }
+        ],
+        "action_cues": [],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
@@ -11098,6 +11167,111 @@
           {
             "timestamp": "00:52-01:00",
             "text": "我就能知道,我現在捏著感覺是兩個窄面那這個握拍的角度一定不對那我讓球拍轉一點呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7210592889141775627",
+      "title": "一个好搭档真是省劲儿",
+      "url": "https://www.douyin.com/video/7210592889141775627",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 163.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003c/7210592889141775627.json",
+      "teaching_note": {
+        "topic": "一个好搭档真是省劲儿",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7209108124924464387",
+      "title": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
+      "url": "https://www.douyin.com/video/7209108124924464387",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 142.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003c/7209108124924464387.json",
+      "teaching_note": {
+        "topic": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7206510177317702924",
+      "title": "打出一个能高兴一天的学，备战世界公开赛的不要学哦",
+      "url": "https://www.douyin.com/video/7206510177317702924",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 143.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003c/7206510177317702924.json",
+      "teaching_note": {
+        "topic": "打出一个能高兴一天的学",
+        "key_evidence": [
+          {
+            "timestamp": "00:05-00:15",
+            "text": "大家想学这招回头望月首先我们要清楚握拍那么握拍一定要拿到食指和拇指捏在两个窄面上"
+          },
+          {
+            "timestamp": "00:08-00:18",
+            "text": "首先我们要清楚握拍那么握拍一定要拿到食指和拇指捏在两个窄面上因为我们的机球位置类似于我们身体的后侧"
+          },
+          {
+            "timestamp": "00:42-00:52",
+            "text": "都能为球拍提供更大的灵活性就是握拍然后动作首先如果你会在这种被动位去做这种抽球动作"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:18-00:25",
+            "text": "那我们倒退一下这种位置属于一个极度被动的反守位那肯定为了能活出手腕的角度"
+          },
+          {
+            "timestamp": "00:46-00:54",
+            "text": "就是握拍然后动作首先如果你会在这种被动位去做这种抽球动作那么就是它了"
+          },
+          {
+            "timestamp": "01:22-01:27",
+            "text": "我只能接到这条区域的球不能再远了再远了人就要这么转了"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:18",
+            "text": "首先我们要清楚握拍那么握拍一定要拿到食指和拇指捏在两个窄面上因为我们的机球位置类似于我们身体的后侧"
+          },
+          {
+            "timestamp": "00:23-00:30",
+            "text": "那肯定为了能活出手腕的角度我们必须要食指拇指拿在两个窄面上如果我大目之顶在宽面上"
+          },
+          {
+            "timestamp": "00:46-00:54",
+            "text": "就是握拍然后动作首先如果你会在这种被动位去做这种抽球动作那么就是它了"
+          },
+          {
+            "timestamp": "01:06-01:13",
+            "text": "接下来球感首先这个球比我们想象中的更靠近追深大家在练这排球的时候"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
