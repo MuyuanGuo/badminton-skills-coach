@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T05:22:12.418100+00:00",
+  "updated_at": "2026-07-10T05:30:41.894760+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 345,
+    "transcribed": 352,
     "extraction_failed": 35,
-    "pending": 25
+    "pending": 18
   },
   "items": [
     {
@@ -4561,10 +4561,10 @@
       "title": "同水平对抗慎重使用。对方网前球员站中线时死活不要用😂#羽毛球训练 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7062171437569805609.mp4",
+      "duration_seconds": 63.391,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4573,10 +4573,10 @@
       "title": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走#羽毛球 #羽毛球训练 #羽毛球教学",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7061422431386324264.mp4",
+      "duration_seconds": 25.426,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4585,10 +4585,10 @@
       "title": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7060717442825309480.mp4",
+      "duration_seconds": 92.996,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4597,10 +4597,10 @@
       "title": "不熟练的大拇指定正面，熟练后可以顶斜棱，释放更多的角度#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7059927286186822946.mp4",
+      "duration_seconds": 64.226,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4609,10 +4609,10 @@
       "title": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7059589039694957864.mp4",
+      "duration_seconds": 72.586,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4621,10 +4621,10 @@
       "title": "小孩子和球友正手位大距离位移打高远球，前交叉步的要求更高，后交叉容易，距离相近#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7059205903639121187.mp4",
+      "duration_seconds": 87.98,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4633,10 +4633,10 @@
       "title": "视频后面有慢动作和细节文字讲解#羽毛球 #羽毛球训练 #快乐羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-044/7058464382786784547.mp4",
+      "duration_seconds": 63.739,
+      "attempts": 1,
       "error": null
     },
     {

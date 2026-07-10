@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T05:22:13.675525+00:00",
+  "updated_at": "2026-07-10T05:30:43.266724+00:00",
   "queue_counts": {
-    "transcribed": 345,
+    "transcribed": 352,
     "extraction_failed": 35,
-    "pending": 25
+    "pending": 18
   },
   "knowledge_counts": {
-    "videos": 345,
-    "ready": 289,
-    "needs_visual_review": 56,
+    "videos": 352,
+    "ready": 293,
+    "needs_visual_review": 59,
     "curated": 3
   },
   "videos": [
@@ -16547,6 +16547,255 @@
         ],
         "error_evidence": [],
         "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7062171437569805609",
+      "title": "同水平对抗慎重使用。对方网前球员站中线时死活不要用😂",
+      "url": "https://www.douyin.com/video/7062171437569805609",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 63.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-044/7062171437569805609.json",
+      "teaching_note": {
+        "topic": "同水平对抗慎重使用。对方网前球员站中线时死活不要用😂",
+        "key_evidence": [
+          {
+            "timestamp": "00:45-00:52",
+            "text": "就要以销为主,以打为斧那么这个球的落点是发球线如果想要球的落点更远"
+          },
+          {
+            "timestamp": "00:48-00:54",
+            "text": "那么这个球的落点是发球线如果想要球的落点更远就要打的更多,销的更少"
+          },
+          {
+            "timestamp": "00:52-00:58",
+            "text": "就要打的更多,销的更少那么这个球的落点是中前腰这个球的使用时机"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:04-00:12",
+            "text": "那么我们今天来出一个教学那么首先呢,我们把球拍稍微变一点把这个虎口对准拍子的边抗处"
+          },
+          {
+            "timestamp": "00:12-00:25",
+            "text": "这样呢,我们在机球上能增加一些机球的角度那么首先卖出脚步之后呢,我们把球拍先从外往旅河有一个从右到左机球的感觉"
+          },
+          {
+            "timestamp": "00:17-00:28",
+            "text": "那么首先卖出脚步之后呢,我们把球拍先从外往旅河有一个从右到左机球的感觉那么接触到球的一瞬间,迅速地打拍"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7061422431386324264",
+      "title": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+      "url": "https://www.douyin.com/video/7061422431386324264",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 25.4,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-044/7061422431386324264.json",
+      "teaching_note": {
+        "topic": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7060717442825309480",
+      "title": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
+      "url": "https://www.douyin.com/video/7060717442825309480",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 93.0,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-044/7060717442825309480.json",
+      "teaching_note": {
+        "topic": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7059927286186822946",
+      "title": "不熟练的大拇指定正面，熟练后可以顶斜棱，释放更多的角度",
+      "url": "https://www.douyin.com/video/7059927286186822946",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 64.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-044/7059927286186822946.json",
+      "teaching_note": {
+        "topic": "不熟练的大拇指定正面",
+        "key_evidence": [
+          {
+            "timestamp": "00:06-00:13",
+            "text": "弹是弹了 但是没有隐蔽性你的拍面举得太高 已经高过手了那么你在打这个球的时候"
+          },
+          {
+            "timestamp": "00:11-00:15",
+            "text": "那么你在打这个球的时候先抬走 再击球那动作不就大了"
+          },
+          {
+            "timestamp": "00:37-00:42",
+            "text": "还可以怎么样还可以接勾球一降走手指往这边一捻动"
+          },
+          {
+            "timestamp": "00:40-00:50",
+            "text": "手指往这边一捻动还可以接勾球好 你感觉一下"
+          },
+          {
+            "timestamp": "00:53-00:56",
+            "text": "走一带动把手指发力出手干脆"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:11-00:15",
+            "text": "那么你在打这个球的时候先抬走 再击球那动作不就大了"
+          },
+          {
+            "timestamp": "00:14-00:19",
+            "text": "那动作不就大了那么我们应该怎么样呢哎 抬走成了"
+          },
+          {
+            "timestamp": "00:17-00:22",
+            "text": "哎 抬走成了那么我们先把抬走的这个时间呢先省出来"
+          },
+          {
+            "timestamp": "00:23-00:27",
+            "text": "我们肘已经拿起来了直接就可以进行一个什么弹推"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7059589039694957864",
+      "title": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
+      "url": "https://www.douyin.com/video/7059589039694957864",
+      "category": "步法与移动",
+      "tags": [
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 72.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-044/7059589039694957864.json",
+      "teaching_note": {
+        "topic": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7059205903639121187",
+      "title": "小孩子和球友正手位大距离位移打高远球，前交叉步的要求更高，后交叉容易，距离相近",
+      "url": "https://www.douyin.com/video/7059205903639121187",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "步法与移动",
+        "训练与纠错"
+      ],
+      "duration_seconds": 88.0,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-044/7059205903639121187.json",
+      "teaching_note": {
+        "topic": "小孩子和球友正手位大距离位移打高远球",
+        "key_evidence": [
+          {
+            "timestamp": "01:05-01:11",
+            "text": "啊,很好这个步法其实还有一个名字你知道吗,叫做马来步"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:05-00:11",
+            "text": "而且你的腿还这么短,胳膊这么小那么我们肯定不能用并布并布是干什么时候使"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:49-00:58",
+            "text": "我们一个灯转,来看教练脚下再加一个垫布就可以一个垫布,接跳挥就可以"
+          },
+          {
+            "timestamp": "00:52-00:59",
+            "text": "脚下再加一个垫布就可以一个垫布,接跳挥就可以你虽然各个小"
+          },
+          {
+            "timestamp": "00:59-01:05",
+            "text": "但是这个垫布只要垫的大一点脚灯里面你也可以做的试一试"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7058464382786784547",
+      "title": "视频后面有慢动作和细节文字讲解",
+      "url": "https://www.douyin.com/video/7058464382786784547",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 63.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-044/7058464382786784547.json",
+      "teaching_note": {
+        "topic": "视频后面有慢动作和细节文字讲解",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:05-00:10",
+            "text": "但是你练得得对首先看那么球插在网带上的普球训练"
+          },
+          {
+            "timestamp": "00:15-00:21",
+            "text": "那么如果不变拍正常去打的话那你首先注意处网就算打着球的话"
+          },
+          {
+            "timestamp": "00:33-00:38",
+            "text": "我们把它变成仓印过然后呢灯起来就像雨刹器"
+          },
+          {
+            "timestamp": "00:45-00:47",
+            "text": "这种感觉自己再感觉一下"
+          }
+        ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
