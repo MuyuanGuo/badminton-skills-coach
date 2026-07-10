@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T16:15:54.137821+00:00",
+  "updated_at": "2026-07-10T16:22:19.908984+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 375,
-    "media_ready": 30
+    "transcribed": 380,
+    "media_ready": 25
   },
   "items": [
     {
@@ -528,10 +528,10 @@
       "title": "劈球进阶 转着劈，加更快更多的腰腹动作就成功啦，击球点要往后放#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7588747058782683513.mp4",
-      "duration_seconds": 53.166667,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003b/7588747058782683513.mp4",
+      "duration_seconds": 53.152,
+      "attempts": 5,
       "error": null
     },
     {
@@ -540,10 +540,10 @@
       "title": "滑拍进阶 但是滑拍球快了落点会远，想近就需要抛物线更明显，会慢#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 #华羽",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7587362379455778097.m4a",
-      "duration_seconds": 69.521,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003b/7587362379455778097.m4a",
+      "duration_seconds": 69.545,
+      "attempts": 5,
       "error": null
     },
     {
@@ -552,10 +552,10 @@
       "title": "单打防守 主要在于省步子，和好衔接，当对方球速非常快的时候就只能这样接了#刘辉羽毛球 #羽毛球#羽毛球教学 #华羽",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7586613438625959217.m4a",
-      "duration_seconds": 153.762,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003b/7586613438625959217.m4a",
+      "duration_seconds": 153.787,
+      "attempts": 5,
       "error": null
     },
     {
@@ -576,10 +576,10 @@
       "title": "反手发力 华羽新球拍预计12.6，谢谢大家的关注#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7577392474555210597.m4a",
-      "duration_seconds": 72.538,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003b/7577392474555210597.m4a",
+      "duration_seconds": 72.564,
+      "attempts": 5,
       "error": null
     },
     {
@@ -588,10 +588,10 @@
       "title": "2.7万 孙超架拍特点 希望大家多提这样的问题，我的高级教练组成员很喜欢这种访谈类的技术探讨，今天出场的两位教练分别是前天津队主教练@冠军默大爷 ，和前陕西省省队主教练@Ldj",
       "category": "后场技术",
       "tags": "后场技术",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7573211923485260537.m4a",
-      "duration_seconds": 171.664,
-      "attempts": 4,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003b/7573211923485260537.m4a",
+      "duration_seconds": 171.667,
+      "attempts": 5,
       "error": null
     },
     {

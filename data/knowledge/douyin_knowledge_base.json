@@ -1,14 +1,14 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:15:55.048187+00:00",
+  "updated_at": "2026-07-10T16:22:20.722599+00:00",
   "queue_counts": {
-    "transcribed": 375,
-    "media_ready": 30
+    "transcribed": 380,
+    "media_ready": 25
   },
   "knowledge_counts": {
-    "videos": 375,
-    "ready": 316,
+    "videos": 380,
+    "ready": 321,
     "needs_visual_review": 59,
     "curated": 3
   },
@@ -2389,6 +2389,150 @@
       }
     },
     {
+      "video_id": "7588747058782683513",
+      "title": "劈球进阶 转着劈，加更快更多的腰腹动作就成功啦，击球点要往后放",
+      "url": "https://www.douyin.com/video/7588747058782683513",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 53.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003b/7588747058782683513.json",
+      "teaching_note": {
+        "topic": "劈球进阶 转着劈",
+        "key_evidence": [
+          {
+            "timestamp": "00:20-00:29",
+            "text": "球出界因为像这种需要大发力的批球我们都是在转正的过程中寄到球的"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:00-00:14",
+            "text": "你们想要打出这种爆皮重皮的效果首先不要学手上怎么做先要学身体怎么转"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:14",
+            "text": "你们想要打出这种爆皮重皮的效果首先不要学手上怎么做先要学身体怎么转"
+          },
+          {
+            "timestamp": "00:10-00:17",
+            "text": "首先不要学手上怎么做先要学身体怎么转这是人没转的状态"
+          },
+          {
+            "timestamp": "00:20-00:29",
+            "text": "球出界因为像这种需要大发力的批球我们都是在转正的过程中寄到球的"
+          },
+          {
+            "timestamp": "00:34-00:46",
+            "text": "那如果我在朝这个方向出拍再加上人这样转呢没过"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7587362379455778097",
+      "title": "滑拍进阶 但是滑拍球快了落点会远，想近就需要抛物线更明显，会慢",
+      "url": "https://www.douyin.com/video/7587362379455778097",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 69.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003b/7587362379455778097.json",
+      "teaching_note": {
+        "topic": "滑拍进阶 但是滑拍球快了落点会远",
+        "key_evidence": [
+          {
+            "timestamp": "00:56-01:02",
+            "text": "当我们把向那边打的这个动作加到一个横向的挥拍里就等于加了球速进去"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:45-00:49",
+            "text": "也就是压斑大家千万不要想着去这样动这叫小臂"
+          },
+          {
+            "timestamp": "00:48-00:51",
+            "text": "这叫小臂小臂不要动完全靠手腕压过去"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:50-00:56",
+            "text": "完全靠手腕压过去我们可以单独的去训练一下哎 这就是手腕在往那边打"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7586613438625959217",
+      "title": "单打防守 主要在于省步子，和好衔接，当对方球速非常快的时候就只能这样接了",
+      "url": "https://www.douyin.com/video/7586613438625959217",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 153.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003b/7586613438625959217.json",
+      "teaching_note": {
+        "topic": "单打防守 主要在于省步子",
+        "key_evidence": [
+          {
+            "timestamp": "01:47-01:52",
+            "text": "你不要这样出去你看 启动的时候你这个右腿右膝盖要卖打"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:49-00:52",
+            "text": "哎 对但是这个力挽 不能力死你看你力死也不行"
+          },
+          {
+            "timestamp": "00:57-01:02",
+            "text": "这儿得不能动我们看你不能出来这种感觉这一导拍人家一块还是压着你"
+          },
+          {
+            "timestamp": "01:58-02:03",
+            "text": "对而且不要浪费了那个落地你是特别喜欢什么"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:35-00:49",
+            "text": "这样的步伐是见得最多的来 先把手伸出来我看看你准备的姿势"
+          },
+          {
+            "timestamp": "01:40-01:44",
+            "text": "不你要先基本上不动脚伸着构球 构到球"
+          },
+          {
+            "timestamp": "01:43-01:47",
+            "text": "伸着构球 构到球再动一下的感觉我还发现你个新问题"
+          },
+          {
+            "timestamp": "02:06-02:11",
+            "text": "你看我一定要借着这个落地回弹你试一下"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7582017752145136945",
       "title": "升框架 童子功因为小时候没劲儿，训练量大了，通过本能就可以做出这样的升框架发力，职业选手在半场活动和拉吊中出现的比例更是高的惊人，不想误导新手，但是球友不知道也不行！因为这确实是合理的",
       "url": "https://www.douyin.com/video/7582017752145136945",
@@ -2453,6 +2597,100 @@
           {
             "timestamp": "03:01-03:08",
             "text": "这个是不是就没有重量了然后他再顺着这个去使劲总就借到力了"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7577392474555210597",
+      "title": "反手发力 华羽新球拍预计12.6，谢谢大家的关注",
+      "url": "https://www.douyin.com/video/7577392474555210597",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 72.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003b/7577392474555210597.json",
+      "teaching_note": {
+        "topic": "反手发力 华羽新球拍预计12.6",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:25",
+            "text": "看球拍做小臂的延伸肘 挖一定要软往上一顶肘"
+          },
+          {
+            "timestamp": "00:40-00:43",
+            "text": "在原地有一个滞留的感觉应该是什么一抬肘"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7573211923485260537",
+      "title": "孙超架拍特点 希望大家多提这样的问题，我的高级教练组成员很喜欢这种访谈类的技术探讨，今天出场的两位教练分别是前天津队主教练 ，和前陕西省省队主教练",
+      "url": "https://www.douyin.com/video/7573211923485260537",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 171.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003b/7573211923485260537.json",
+      "teaching_note": {
+        "topic": "孙超架拍特点 希望大家多提这样的问题",
+        "key_evidence": [
+          {
+            "timestamp": "00:14-00:24",
+            "text": "那我们根据孙超的技术动作我看到他的杀球开尖开的幅度非常大我记得好像莫格你在训练天津队的时候"
+          },
+          {
+            "timestamp": "01:17-01:26",
+            "text": "也很有自己的这个一致性在里面但是他这个架拍就有一个很好的一个特点比如他拍头已经向后倒了这种架拍"
+          },
+          {
+            "timestamp": "01:39-01:48",
+            "text": "就像刚才咱们探讨的那样他通过身体的发力和他肩膀的这个活动度非常高等于补足了这个力量"
+          },
+          {
+            "timestamp": "01:46-01:53",
+            "text": "等于补足了这个力量而这样的架拍属于他非常有个人特点的这样的架拍他等于是增加了速度"
+          },
+          {
+            "timestamp": "02:09-02:17",
+            "text": "又和他的身体又增加了挥重所以是一个很有个人特点的一个杀球所以是咱们探讨的就是告诉大家"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:28-00:31",
+            "text": "对 是的能不能给大家讲一下在我的抖音里面有一个作品"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:03-00:11",
+            "text": "大家都在讨论孙超的动力我和我专业的教练组也是做了一定的讨论正好我们三个都在电视台做过长期的解说"
+          },
+          {
+            "timestamp": "00:36-00:43",
+            "text": "那么很简单首先你要找到一个适合做这个高度的这个位置然后以双肘作为支点"
+          },
+          {
+            "timestamp": "00:53-00:58",
+            "text": "40秒的唯一组每天练习可以大大提高你的肩部柔韧性嗯"
+          },
+          {
+            "timestamp": "02:05-02:12",
+            "text": "增加了出手的速度然后通过他的肩膀和他的台拍引拍又和他的身体又增加了挥重"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
