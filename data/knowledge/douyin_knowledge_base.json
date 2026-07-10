@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:35:16.636209+00:00",
+  "updated_at": "2026-07-10T16:39:03.952148+00:00",
   "queue_counts": {
-    "transcribed": 395,
-    "media_ready": 10
+    "transcribed": 400,
+    "media_ready": 5
   },
   "knowledge_counts": {
-    "videos": 395,
-    "ready": 331,
-    "needs_visual_review": 64,
+    "videos": 400,
+    "ready": 335,
+    "needs_visual_review": 65,
     "curated": 3
   },
   "videos": [
@@ -12352,6 +12352,77 @@
       }
     },
     {
+      "video_id": "7164948889630493991",
+      "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难",
+      "url": "https://www.douyin.com/video/7164948889630493991",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003f/7164948889630493991.json",
+      "teaching_note": {
+        "topic": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7163836275487804676",
+      "title": "最容易忽略的发力小细节，还有好为人师，有人喜欢有人讨厌，所以平时打球更多的时候大家选择的大多都是沉默",
+      "url": "https://www.douyin.com/video/7163836275487804676",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 61.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003f/7163836275487804676.json",
+      "teaching_note": {
+        "topic": "最容易忽略的发力小细节",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:18",
+            "text": "就是没有脚蹬地转宽的这个动作我们要先把重心放到后脚而且后脚一定要横过来"
+          },
+          {
+            "timestamp": "00:22-00:28",
+            "text": "然后再把脚后跟抬起来增加腿部的爆发力那么我们达到一个这样的蓄力状态"
+          },
+          {
+            "timestamp": "00:26-00:32",
+            "text": "那么我们达到一个这样的蓄力状态就可以在发力的时候后脚向正,向上,向正"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:11-00:18",
+            "text": "就是没有脚蹬地转宽的这个动作我们要先把重心放到后脚而且后脚一定要横过来"
+          },
+          {
+            "timestamp": "00:13-00:19",
+            "text": "我们要先把重心放到后脚而且后脚一定要横过来为什么?"
+          },
+          {
+            "timestamp": "00:21-00:26",
+            "text": "横着脚能蹬上劲然后再把脚后跟抬起来增加腿部的爆发力"
+          },
+          {
+            "timestamp": "00:32-00:39",
+            "text": "登转把宽线带过来然后看到没有宽过来之后它就会拉着腰俗带动上肢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7161980324409363712",
       "title": "兄弟们，学不会起跳的，咱们先来个引导版吧，自己打个几次就会正式的了",
       "url": "https://www.douyin.com/video/7161980324409363712",
@@ -12640,6 +12711,61 @@
       }
     },
     {
+      "video_id": "7156043406962134306",
+      "title": "本视频适合已经掌握一定程度，就差临门一脚的球友朋友们",
+      "url": "https://www.douyin.com/video/7156043406962134306",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 65.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003f/7156043406962134306.json",
+      "teaching_note": {
+        "topic": "本视频适合已经掌握一定程度",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:01-00:05",
+            "text": "咱们跳啥一定要进去啊不是在最高点机球"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7154558892742151464",
+      "title": "一句话，挡的近，人往前走。挡的远，不要动",
+      "url": "https://www.douyin.com/video/7154558892742151464",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 71.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003f/7154558892742151464.json",
+      "teaching_note": {
+        "topic": "一句话",
+        "key_evidence": [],
+        "error_evidence": [
+          {
+            "timestamp": "00:47-01:00",
+            "text": "接下来换一个方向接杀党原网党原网加利加完利之后人不要动看他是党网还是推球"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:20-00:41",
+            "text": "不好意思这个他回过来我就可以扶他或者推他他如果挑起来呢"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7154187492487335203",
       "title": "在快节奏中不能浪费一点时间",
       "url": "https://www.douyin.com/video/7154187492487335203",
@@ -12689,6 +12815,71 @@
           {
             "timestamp": "00:46-00:49",
             "text": "正常节奏你可以转过来现在特别快"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7153445193713290511",
+      "title": "被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度",
+      "url": "https://www.douyin.com/video/7153445193713290511",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 120.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003f/7153445193713290511.json",
+      "teaching_note": {
+        "topic": "被动肯定要发力",
+        "key_evidence": [
+          {
+            "timestamp": "00:58-01:03",
+            "text": "我就应该挥到这里呀你这个挥拍应该随着你的被动和机球点的后移"
+          },
+          {
+            "timestamp": "01:09-01:12",
+            "text": "因为我更被动了我不能让我的挥拍变得动作更大"
+          },
+          {
+            "timestamp": "01:13-01:19",
+            "text": "注意腰腹要给上力浑身是爆发力传导球拍之间做完"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:22-00:28",
+            "text": "来看你不能被动了之后你挥盘还挥的动的这么大呀"
+          },
+          {
+            "timestamp": "00:46-00:51",
+            "text": "反而你动作做得越大那你被动状态下能打出去后场吗应该怎么样"
+          },
+          {
+            "timestamp": "00:58-01:03",
+            "text": "我就应该挥到这里呀你这个挥拍应该随着你的被动和机球点的后移"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:56-01:01",
+            "text": "这个球再往后一点我就应该挥到这里呀你这个挥拍应该随着你的被动"
+          },
+          {
+            "timestamp": "00:58-01:03",
+            "text": "我就应该挥到这里呀你这个挥拍应该随着你的被动和机球点的后移"
+          },
+          {
+            "timestamp": "01:06-01:10",
+            "text": "因为我们的挥盘距离不能再增加了因为我更被动了"
+          },
+          {
+            "timestamp": "01:12-01:17",
+            "text": "能不能听懂注意腰腹要给上力浑身是爆发力传导"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

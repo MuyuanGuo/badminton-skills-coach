@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-07-10T16:35:15.896538+00:00",
+  "updated_at": "2026-07-10T16:39:03.163304+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 395,
-    "media_ready": 10
+    "transcribed": 400,
+    "media_ready": 5
   },
   "items": [
     {
@@ -3060,10 +3060,10 @@
       "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7164948889630493991.mp4",
-      "duration_seconds": 77.2,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003f/7164948889630493991.mp4",
+      "duration_seconds": 77.183,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3072,10 +3072,10 @@
       "title": "最容易忽略的发力小细节，还有好为人师，有人喜欢有人讨厌，所以平时打球更多的时候大家选择的大多都是沉默#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7163836275487804676.mp4",
-      "duration_seconds": 61.366667,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003f/7163836275487804676.mp4",
+      "duration_seconds": 61.324,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3156,10 +3156,10 @@
       "title": "本视频适合已经掌握一定程度，就差临门一脚的球友朋友们#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7156043406962134306.mp4",
-      "duration_seconds": 65.166667,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003f/7156043406962134306.mp4",
+      "duration_seconds": 65.132,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3168,10 +3168,10 @@
       "title": "一句话，挡的近，人往前走。挡的远，不要动#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7154558892742151464.mp4",
-      "duration_seconds": 71.133333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003f/7154558892742151464.mp4",
+      "duration_seconds": 71.1,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3192,10 +3192,10 @@
       "title": "被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7153445193713290511.mp4",
-      "duration_seconds": 120.466667,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003f/7153445193713290511.mp4",
+      "duration_seconds": 120.465,
+      "attempts": 4,
       "error": null
     },
     {
