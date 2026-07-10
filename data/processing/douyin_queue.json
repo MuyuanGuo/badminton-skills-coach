@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T03:29:33.943038+00:00",
+  "updated_at": "2026-07-10T03:41:13.713693+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 272,
+    "transcribed": 279,
     "extraction_failed": 35,
-    "pending": 98
+    "pending": 91
   },
   "items": [
     {
@@ -3625,11 +3625,11 @@
       "title": "一定先看上集，而且不管什么样的发球一定要有目的性#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 1,
-      "error": "media URL not observed after bounded wait"
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7113001319694224655.mp4",
+      "duration_seconds": 135.953,
+      "attempts": 2,
+      "error": null
     },
     {
       "video_id": "7112628690395106560",
@@ -3661,10 +3661,10 @@
       "title": "动作有先后，才叫有带动，身体一起动就会失去带动的传导#羽毛球 #刘辉羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7110431174811602191.mp4",
+      "duration_seconds": 84.242,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3673,10 +3673,10 @@
       "title": "所以我说我说我打球很猥琐🧐，又让你当了次背景板@皓憨憨 ，#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7110033991918554402.mp4",
+      "duration_seconds": 227.695,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3685,10 +3685,10 @@
       "title": "首先要先会反手的发力动作哦#刘辉羽毛球 #羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7109288333884329231.mp4",
+      "duration_seconds": 125.945,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3697,10 +3697,10 @@
       "title": "中腰球出来，出现轮转的可能性很大#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7106697344128748835.mp4",
+      "duration_seconds": 91.742,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3709,10 +3709,10 @@
       "title": "由于球拍轻量化，羽毛球技术简化的发展。单打真的已经到了半侧身或者少转身的时代了#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7105205741954321699.mp4",
+      "duration_seconds": 88.422,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3721,10 +3721,10 @@
       "title": "弟弟从学校放出来啦@皓憨憨 ，#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-035/7103721178195397888.mp4",
+      "duration_seconds": 86.123,
+      "attempts": 1,
       "error": null
     },
     {
