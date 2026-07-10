@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T04:34:55.382955+00:00",
+  "updated_at": "2026-07-10T04:44:23.060578+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 317,
+    "transcribed": 324,
     "extraction_failed": 35,
-    "pending": 53
+    "pending": 46
   },
   "items": [
     {
@@ -4189,10 +4189,10 @@
       "title": "各种双打都需要，苍蝇拍压不住被动的球#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7077740726926298402.mp4",
+      "duration_seconds": 76.138,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4201,10 +4201,10 @@
       "title": "昨天学基础的，今天学皮的😊#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7076997927054495010.mp4",
+      "duration_seconds": 48.715,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4213,10 +4213,10 @@
       "title": "别说我我发基础教学了😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7076641227025763618.mp4",
+      "duration_seconds": 77.555,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4225,10 +4225,10 @@
       "title": "中路远网球用好了，场地会变小，做球和过渡的时候合理的使用有奇效#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7076257912192060707.mp4",
+      "duration_seconds": 118.12,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4237,10 +4237,10 @@
       "title": "胯下的就别学了，我怕你们打到自己来找我😂，别问，问就是我在医院#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7075515778073709824.mp4",
+      "duration_seconds": 84.335,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4249,10 +4249,10 @@
       "title": "这个比赛里经常见了#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7075140710332239119.mp4",
+      "duration_seconds": 95.829,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4261,10 +4261,10 @@
       "title": "双打永远保护好队友的软肋#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-040/7074399231259266344.mp4",
+      "duration_seconds": 85.914,
+      "attempts": 1,
       "error": null
     },
     {
