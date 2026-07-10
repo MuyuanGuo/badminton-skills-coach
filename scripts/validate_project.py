@@ -15,6 +15,7 @@ json_paths = [
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
     "data/knowledge/knowledge_graph_summary.json",
+    "data/evaluation/acceptance_questions.json",
     "data/evaluation/golden_questions.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
@@ -94,6 +95,13 @@ golden_questions = json.loads(
 )
 if len(golden_questions.get("cases", [])) < 20:
     raise SystemExit("Golden question set has too few cases")
+acceptance_questions = json.loads(
+    (ROOT / "data" / "evaluation" / "acceptance_questions.json").read_text(
+        encoding="utf-8"
+    )
+)
+if len(acceptance_questions.get("cases", [])) < 10:
+    raise SystemExit("Acceptance question set has too few cases")
 
 if topic_index["video_count"] != len(douyin_knowledge["videos"]):
     raise SystemExit("Topic index video count is out of sync with full knowledge base")

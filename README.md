@@ -184,6 +184,7 @@ data/
     pilot_teaching_notes.json      试点人工笔记
   evaluation/
     golden_questions.json          端到端质量回归问题
+    acceptance_questions.json      实战问答验收问题
   review/
     visual_review_queue.json       待视觉复核视频队列
 
@@ -201,6 +202,7 @@ scripts/
   validate_project.py              项目验证
   evaluate_liuhui_skill.py         检索评估
   evaluate_answer_quality.py       Golden question 质量评估
+  run_acceptance_review.py         实战问答验收
 
 skills/
   liuhui-badminton-coach/
@@ -215,6 +217,7 @@ skills/
 output/
   failed_extraction_review.*       35 条失败项复核记录
   golden_answer_review.md          Golden question 评估报告
+  skill_acceptance_review.md       实战问答验收报告
   visual_review_queue.md           视觉复核工作单
   liuhui-full-knowledge-map.drawio 全量 Draw.io 知识图谱
   liuhui-knowledge-map.mmd         Mermaid 知识图谱
@@ -237,6 +240,7 @@ data/
     pilot_teaching_notes.json      Curated pilot notes
   evaluation/
     golden_questions.json          End-to-end quality regression questions
+    acceptance_questions.json      Real-world acceptance prompts
   review/
     visual_review_queue.json       Visual-review queue
 
@@ -254,6 +258,7 @@ scripts/
   validate_project.py              Repository validation
   evaluate_liuhui_skill.py         Retrieval evaluation
   evaluate_answer_quality.py       Golden-question quality evaluation
+  run_acceptance_review.py         Real-world acceptance review
 
 skills/
   liuhui-badminton-coach/
@@ -268,6 +273,7 @@ skills/
 output/
   failed_extraction_review.*       Review report for the recovered 35 failures
   golden_answer_review.md          Golden-question evaluation report
+  skill_acceptance_review.md       Real-world acceptance review report
   visual_review_queue.md           Visual-review worksheet
   liuhui-full-knowledge-map.drawio Full Draw.io knowledge map
   liuhui-knowledge-map.mmd         Mermaid knowledge map
@@ -310,6 +316,7 @@ python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
+python3 scripts/run_acceptance_review.py
 ```
 
 直接测试检索：
@@ -344,6 +351,7 @@ python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
+python3 scripts/run_acceptance_review.py
 ```
 
 Try retrieval directly:
@@ -578,6 +586,7 @@ python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
+python3 scripts/run_acceptance_review.py
 ```
 
 **English**
@@ -607,6 +616,7 @@ python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
+python3 scripts/run_acceptance_review.py
 ```
 
 ## GitHub Actions / CI
