@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T04:54:26.250973+00:00",
+  "updated_at": "2026-07-10T05:15:20.065180+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 331,
+    "transcribed": 338,
     "extraction_failed": 35,
-    "pending": 39
+    "pending": 32
   },
   "items": [
     {
@@ -4369,10 +4369,10 @@
       "title": "女双比赛里基本都是这样杀，击球的瞬间要比脚落地早一点，“基本”同时#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；双打战术；训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7069575740836023587.mp4",
+      "duration_seconds": 168.484,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4381,10 +4381,10 @@
       "title": "使用能力要求跳杀＞单脚跳杀＞剪式跳＞遁地炮＞定杀；杀球威力跳杀＞遁地炮＞剪式跳＞单脚跳杀＞定杀，大家想学哪个留言#羽毛球教学 #羽毛球 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7068835198938516777.mp4",
+      "duration_seconds": 81.2,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4393,10 +4393,10 @@
       "title": "A字霸王杀终于出来了，大家要灵活作用技术，不要唯一#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7068465954270792994.mp4",
+      "duration_seconds": 491.45,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4405,10 +4405,10 @@
       "title": "看完这两集，再看我下集如何把它们合体，成为A字霸王杀，也会讲到收拍和半程旋转卸力的细节#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手 @唐威羽毛球",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7068092085533953315.mp4",
+      "duration_seconds": 171.154,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4429,10 +4429,10 @@
       "title": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7066977429230718223.mp4",
+      "duration_seconds": 31.602,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4441,10 +4441,10 @@
       "title": "双打分边后注意保护封住边线平高球#羽毛球训练 #羽毛球 #羽毛球教学",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7066596981992394025.mp4",
+      "duration_seconds": 48.715,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4453,10 +4453,10 @@
       "title": "双打中分完注意封直线，最后一个球大家帮忙看看，有没有压到外线#羽毛球训练 #羽毛球教学 #羽毛球 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-042/7065871561915485440.mp4",
+      "duration_seconds": 43.654,
+      "attempts": 1,
       "error": null
     },
     {
