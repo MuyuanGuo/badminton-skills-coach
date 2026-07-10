@@ -1,15 +1,15 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T05:39:23.754803+00:00",
+  "updated_at": "2026-07-10T05:45:47.005531+00:00",
   "queue_counts": {
-    "transcribed": 359,
+    "transcribed": 366,
     "extraction_failed": 35,
-    "pending": 11
+    "pending": 4
   },
   "knowledge_counts": {
-    "videos": 359,
-    "ready": 300,
+    "videos": 366,
+    "ready": 307,
     "needs_visual_review": 59,
     "curated": 3
   },
@@ -17148,6 +17148,78 @@
       }
     },
     {
+      "video_id": "7054786188086955276",
+      "title": "网前近网高位，早上很冷，请无视插兜😂，更细的教学后面或者直播间出",
+      "url": "https://www.douyin.com/video/7054786188086955276",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 55.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7054786188086955276.json",
+      "teaching_note": {
+        "topic": "网前近网高位",
+        "key_evidence": [
+          {
+            "timestamp": "00:50-00:55",
+            "text": "抬走尘望爱给后场推球或发力闪出空间就好了"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:36-00:43",
+            "text": "关于前面视频讲到往前高位近往一致性问题我想说谁和谁的动作都不可能完全一样"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:43-00:50",
+            "text": "我们只要保证最核心的对方对了然后呢适合你就好了那么正手往前和反手往前都要注意什么"
+          },
+          {
+            "timestamp": "00:45-00:51",
+            "text": "然后呢适合你就好了那么正手往前和反手往前都要注意什么抬走尘望"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7054395778814561575",
+      "title": "做两期前后场一致性的视频，你们知道用的都是那种技术嘛？后面有入门讲解，教学后期出，或者直播的时候讲吧，东西太多了，下期网前",
+      "url": "https://www.douyin.com/video/7054395778814561575",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 52.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7054395778814561575.json",
+      "teaching_note": {
+        "topic": "做两期前后场一致性的视频",
+        "key_evidence": [
+          {
+            "timestamp": "00:41-00:47",
+            "text": "前点机球拍面侧销球头披掉直线点要横上"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:28-00:32",
+            "text": "关于上手一致性首先拍架行滑拍斜线"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7054025391601650948",
       "title": "双打一般情况下的防守上集，手指破了，挥速慢，望谅解",
       "url": "https://www.douyin.com/video/7054025391601650948",
@@ -17198,6 +17270,235 @@
           {
             "timestamp": "01:01-01:09",
             "text": "一種是主動性一種是背動性主動性我們可以把球拍橫置在身體的前側那麼這樣來球"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7053654124042194215",
+      "title": "羽毛球握拍千变万化，随机应变，只是握拍，动作上面的后期会出",
+      "url": "https://www.douyin.com/video/7053654124042194215",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 45.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7053654124042194215.json",
+      "teaching_note": {
+        "topic": "羽毛球握拍千变万化",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "好 羽毛球握拍变化的想解首先标准拿拍 目的是什么呢"
+          },
+          {
+            "timestamp": "00:03-00:13",
+            "text": "首先标准拿拍 目的是什么呢为了让我们在测身的时候拍面能直接向前然后这样拿拍刚好可以使到羽毛球机球的旋转发力"
+          },
+          {
+            "timestamp": "00:05-00:16",
+            "text": "为了让我们在测身的时候拍面能直接向前然后这样拿拍刚好可以使到羽毛球机球的旋转发力好 然后第一个变化 反手伸前位"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:08",
+            "text": "好 羽毛球握拍变化的想解首先标准拿拍 目的是什么呢为了让我们在测身的时候拍面能直接向前"
+          },
+          {
+            "timestamp": "00:05-00:16",
+            "text": "为了让我们在测身的时候拍面能直接向前然后这样拿拍刚好可以使到羽毛球机球的旋转发力好 然后第一个变化 反手伸前位"
+          },
+          {
+            "timestamp": "00:08-00:18",
+            "text": "然后这样拿拍刚好可以使到羽毛球机球的旋转发力好 然后第一个变化 反手伸前位那么反手伸前位的时候"
+          },
+          {
+            "timestamp": "00:18-00:27",
+            "text": "大拇指顶在拍子正宽面 直线 斜线如果在测身位的时候需要让点所以我们要把球拍怎么样"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7053637734749031691",
+      "title": "羽毛球握拍千变万化，随机应变，只是握拍的介绍，动作后面会出，有球示范已发",
+      "url": "https://www.douyin.com/video/7053637734749031691",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 47.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7053637734749031691.json",
+      "teaching_note": {
+        "topic": "羽毛球握拍千变万化",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:15",
+            "text": "然后如果是到了这个侧身位我们用标准的羽毛球我拍"
+          },
+          {
+            "timestamp": "00:36-00:41",
+            "text": "增快我们灰泡的频率如果是在后场进攻的时候呢我们要拿在最下面"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:04-00:09",
+            "text": "为了活脚度我们可以用仓应拍的角度可以打反角度"
+          },
+          {
+            "timestamp": "00:20-00:28",
+            "text": "我们要把角度怎么样先切十度打直线再切十度打斜线"
+          },
+          {
+            "timestamp": "00:21-00:30",
+            "text": "先切十度打直线再切十度打斜线然后呢"
+          },
+          {
+            "timestamp": "00:30-00:36",
+            "text": "如果是往前风浪的时候我们可以把球拍抓到最上面减小这个利弊"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7053234542290668811",
+      "title": "羽毛球的握拍千变万化，随机应变，下期出动作及延伸",
+      "url": "https://www.douyin.com/video/7053234542290668811",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 69.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7053234542290668811.json",
+      "teaching_note": {
+        "topic": "羽毛球的握拍千变万化",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:24-00:37",
+            "text": "斜线正手伸前胃可以稍微仓印拍拍瘟了"
+          },
+          {
+            "timestamp": "00:56-01:05",
+            "text": "转十度斜线再让十度才能让出来及球比"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7053016126262988064",
+      "title": "后场发力后续集，全程挥拍和半程都是对的，使用时机不同",
+      "url": "https://www.douyin.com/video/7053016126262988064",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 129.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7053016126262988064.json",
+      "teaching_note": {
+        "topic": "后场发力后续集",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:08",
+            "text": "经过前面发的一个后场发力的视频呢大家也在讨论着这样打这个挥拍路径短后挥受伤的问题我想说"
+          },
+          {
+            "timestamp": "00:24-00:31",
+            "text": "那么手腕受伤的原因是什么手腕受伤的原因是手腕纵向发力并没有用魅旋发力"
+          },
+          {
+            "timestamp": "00:26-00:33",
+            "text": "手腕受伤的原因是手腕纵向发力并没有用魅旋发力如果比如说我举个例子"
+          },
+          {
+            "timestamp": "00:34-00:42",
+            "text": "不可能使者相迫对着顶那肯定是朝一个方向去做旋转发力那我们来看一下正规的动作"
+          },
+          {
+            "timestamp": "00:42-00:48",
+            "text": "半成挥拍全成挥拍好 慢动作"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:03-00:11",
+            "text": "大家也在讨论着这样打这个挥拍路径短后挥受伤的问题我想说如果动作对的话是绝对不会受伤的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:18",
+            "text": "如果动作对的话是绝对不会受伤的那么首先看如果说走受伤的原因是什么是你的肘并没有跟着你的身体去进行旋转"
+          },
+          {
+            "timestamp": "01:04-01:10",
+            "text": "挥全成是不熟练的朋友可以先挥全成但是这个旋转"
+          },
+          {
+            "timestamp": "01:10-01:12",
+            "text": "旋转 旋慢是一定要有的"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7052912740955999499",
+      "title": "反手负角度勾球，拇指食指捏住球拍两侧窄面，未来3期视频讲变拍",
+      "url": "https://www.douyin.com/video/7052912740955999499",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错",
+        "装备与参数"
+      ],
+      "duration_seconds": 40.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-046/7052912740955999499.json",
+      "teaching_note": {
+        "topic": "反手负角度勾球",
+        "key_evidence": [
+          {
+            "timestamp": "00:03-00:09",
+            "text": "為什麼因為現在你的握攀是一個伸前位的勾球那麼現在這個球的落點已經到了"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:18-00:24",
+            "text": "你的手腕現在已經到頭了現在已經不可能絕過就再去就斷了那現在我們把它變成一個"
+          },
+          {
+            "timestamp": "00:22-00:28",
+            "text": "那現在我們把它變成一個一個靈活可以讓點的一個握攀來 平衡球"
+          },
+          {
+            "timestamp": "00:36-00:40",
+            "text": "不過這個素材不錯我們可以下棋角 變胖"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

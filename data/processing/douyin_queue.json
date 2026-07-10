@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T05:39:22.123254+00:00",
+  "updated_at": "2026-07-10T05:45:45.279122+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 359,
+    "transcribed": 366,
     "extraction_failed": 35,
-    "pending": 11
+    "pending": 4
   },
   "items": [
     {
@@ -4729,10 +4729,10 @@
       "title": "网前近网高位，早上很冷，请无视插兜😂，更细的教学后面或者直播间出#羽毛球教学 #羽毛球 #羽毛球训练 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7054786188086955276.mp4",
+      "duration_seconds": 55.542,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4741,10 +4741,10 @@
       "title": "做两期前后场一致性的视频，你们知道用的都是那种技术嘛？后面有入门讲解，教学后期出，或者直播的时候讲吧，东西太多了，下期网前#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7054395778814561575.mp4",
+      "duration_seconds": 52.245,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4765,10 +4765,10 @@
       "title": "羽毛球握拍千变万化，随机应变，只是握拍，动作上面的后期会出#羽毛球教学 #羽毛球 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7053654124042194215.mp4",
+      "duration_seconds": 45.209,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4777,10 +4777,10 @@
       "title": "羽毛球握拍千变万化，随机应变，只是握拍的介绍，动作后面会出，有球示范已发#羽毛球教学 #羽毛球 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7053637734749031691.mp4",
+      "duration_seconds": 47.299,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4789,10 +4789,10 @@
       "title": "羽毛球的握拍千变万化，随机应变，下期出动作及延伸#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7053234542290668811.mp4",
+      "duration_seconds": 69.474,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4801,10 +4801,10 @@
       "title": "后场发力后续集，全程挥拍和半程都是对的，使用时机不同#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7053016126262988064.mp4",
+      "duration_seconds": 129.892,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4813,10 +4813,10 @@
       "title": "反手负角度勾球，拇指食指捏住球拍两侧窄面，未来3期视频讲变拍#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错；装备与参数",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-046/7052912740955999499.mp4",
+      "duration_seconds": 40.589,
+      "attempts": 1,
       "error": null
     },
     {
