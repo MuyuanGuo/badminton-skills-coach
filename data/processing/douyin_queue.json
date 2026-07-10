@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T04:44:23.060578+00:00",
+  "updated_at": "2026-07-10T04:54:26.250973+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 324,
+    "transcribed": 331,
     "extraction_failed": 35,
-    "pending": 46
+    "pending": 39
   },
   "items": [
     {
@@ -4273,10 +4273,10 @@
       "title": "好久没更新假动作了，换换脑子，一定要看前面的停顿和分球教学，不然学不会这个#羽毛球训练 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7073657979328826659.mp4",
+      "duration_seconds": 121.069,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4285,10 +4285,10 @@
       "title": "翻滚容易，球毛朝下难哦，太远太快的就不能搓了#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7072915842605878528.mp4",
+      "duration_seconds": 156.944,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4309,10 +4309,10 @@
       "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7071800926553541922.mp4",
+      "duration_seconds": 21.153,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4321,10 +4321,10 @@
       "title": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手 对手@皓憨憨",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7071430658584857891.mp4",
+      "duration_seconds": 167.323,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4333,10 +4333,10 @@
       "title": "学好停顿，可以衔接很多动作哦，而且可以改变比赛的节奏，成为节奏大师👍🏻#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错；比赛分析",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7071068959021255951.mp4",
+      "duration_seconds": 55.612,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4345,10 +4345,10 @@
       "title": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7070320753916366095.mp4",
+      "duration_seconds": 129.614,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4357,10 +4357,10 @@
       "title": "大家可以去试一试，不过要确实有需求在折球哦，头像挡住观看落点的话，可以打开评论区观看😂#羽毛球训练 #羽毛球教学 #羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-041/7069948509838904591.mp4",
+      "duration_seconds": 144.475,
+      "attempts": 1,
       "error": null
     },
     {

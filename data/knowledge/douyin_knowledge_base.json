@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T04:44:24.610269+00:00",
+  "updated_at": "2026-07-10T04:54:27.671922+00:00",
   "queue_counts": {
-    "transcribed": 324,
+    "transcribed": 331,
     "extraction_failed": 35,
-    "pending": 46
+    "pending": 39
   },
   "knowledge_counts": {
-    "videos": 324,
-    "ready": 273,
-    "needs_visual_review": 51,
+    "videos": 331,
+    "ready": 277,
+    "needs_visual_review": 54,
     "curated": 3
   },
   "videos": [
@@ -15506,6 +15506,124 @@
       }
     },
     {
+      "video_id": "7073657979328826659",
+      "title": "好久没更新假动作了，换换脑子，一定要看前面的停顿和分球教学，不然学不会这个",
+      "url": "https://www.douyin.com/video/7073657979328826659",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 121.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-041/7073657979328826659.json",
+      "teaching_note": {
+        "topic": "好久没更新假动作了",
+        "key_evidence": [
+          {
+            "timestamp": "01:20-01:24",
+            "text": "打斜线那么这个位置机球拍面都是对着斜线"
+          },
+          {
+            "timestamp": "01:37-01:41",
+            "text": "已经出来了这个球的握拍大拇指顶在正宽面"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:03-01:09",
+            "text": "那么快要接触到球的时候我们不要让他产生激打迅速的回拉"
+          },
+          {
+            "timestamp": "01:43-01:49",
+            "text": "既然他没有说直接回中我为什么不能直接打斜线呢那当然是我观察到对手"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:12-00:17",
+            "text": "首先呢我们先要了解它的使用时机在单打和混双中"
+          },
+          {
+            "timestamp": "00:21-00:27",
+            "text": "大家要适量使用那么首先这个球是在什么一个中场的中前位"
+          },
+          {
+            "timestamp": "00:31-00:37",
+            "text": "但是这个球的高度并没有达到你可以压制的这个高度那么我们还要打什么抽和推的程度"
+          },
+          {
+            "timestamp": "01:08-01:14",
+            "text": "迅速的回拉然后呢再去打第二点人呢在这个时候顺势要向前走"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7072915842605878528",
+      "title": "翻滚容易，球毛朝下难哦，太远太快的就不能搓了",
+      "url": "https://www.douyin.com/video/7072915842605878528",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 156.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-041/7072915842605878528.json",
+      "teaching_note": {
+        "topic": "翻滚容易",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "好的 今天我们来讲一讲单打的搓球那么双打的搓球要以平为主"
+          },
+          {
+            "timestamp": "00:31-00:44",
+            "text": "要求手腕带动手指发力而且手指的发力也仅仅在于这一松一紧之间手指发力的介入也并没有大家所说的那么夸张"
+          },
+          {
+            "timestamp": "00:33-00:47",
+            "text": "而且手指的发力也仅仅在于这一松一紧之间手指发力的介入也并没有大家所说的那么夸张但是其实大多数情况"
+          },
+          {
+            "timestamp": "01:24-01:40",
+            "text": "球头是朝上的球毛是朝下的那么这种搓球一旦过往落入往带之下那么对手就不再具有挑到底线的角度了"
+          },
+          {
+            "timestamp": "01:40-01:51",
+            "text": "而且球在高位的时候还有旋转作为保护那么第二种搓球基本上是借对手过来球的力或者是我们在上网的时候"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "02:09-02:15",
+            "text": "那么咱们做这个搓球也不要害怕对手会抓你的往前因为我们在架好球拍的这一瞬间"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:07-00:13",
+            "text": "因为往前有人蜂网那么单打的搓球要有一定的抛物线要以贴为主"
+          },
+          {
+            "timestamp": "00:18-00:27",
+            "text": "那么当对方这个球过来没有什么力度的时候那我们就需要手指和手腕来进行给球的施力才能让球过往"
+          },
+          {
+            "timestamp": "01:34-01:45",
+            "text": "那么这种搓球一旦过往落入往带之下那么对手就不再具有挑到底线的角度了而且球在高位的时候还有旋转作为保护"
+          },
+          {
+            "timestamp": "01:51-01:59",
+            "text": "自己带着一个很强的惯性那么我们的手指手腕就不再主动失利了以小臂带动手腕发力为主"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7072543702161296640",
       "title": "双打发球如何争取主动，就是规则高度内能拿多高拿多高，球能拿多前就拿多前😂",
       "url": "https://www.douyin.com/video/7072543702161296640",
@@ -15547,6 +15665,138 @@
             "text": "做一个羽毛球标识物双臂尽量的前身让机球点和过往的距离尽可能的缩短"
           }
         ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7071800926553541922",
+      "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
+      "url": "https://www.douyin.com/video/7071800926553541922",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "双打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 21.2,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-041/7071800926553541922.json",
+      "teaching_note": {
+        "topic": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7071430658584857891",
+      "title": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手",
+      "url": "https://www.douyin.com/video/7071430658584857891",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 167.3,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-041/7071430658584857891.json",
+      "teaching_note": {
+        "topic": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂 对手",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7071068959021255951",
+      "title": "学好停顿，可以衔接很多动作哦，而且可以改变比赛的节奏，成为节奏大师👍🏻",
+      "url": "https://www.douyin.com/video/7071068959021255951",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 55.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-041/7071068959021255951.json",
+      "teaching_note": {
+        "topic": "学好停顿",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:11",
+            "text": "好的 今天我们来学习一下往前的停顿我们先来学习比较容易上手的搓放停顿那么停顿隐蔽性的高低"
+          },
+          {
+            "timestamp": "00:31-00:39",
+            "text": "那么我们在做停顿的时候要尽可能的先把球拍贴近球之后呢 不产生击打"
+          },
+          {
+            "timestamp": "00:41-00:54",
+            "text": "斩撮的隐蔽性配套动作也是需要停顿介入的人在家中堂 球技心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7070320753916366095",
+      "title": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂",
+      "url": "https://www.douyin.com/video/7070320753916366095",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 129.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-041/7070320753916366095.json",
+      "teaching_note": {
+        "topic": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7069948509838904591",
+      "title": "大家可以去试一试，不过要确实有需求在折球哦，头像挡住观看落点的话，可以打开评论区观看😂",
+      "url": "https://www.douyin.com/video/7069948509838904591",
+      "category": "单打战术",
+      "tags": [
+        "单打战术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 144.5,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-041/7069948509838904591.json",
+      "teaching_note": {
+        "topic": "大家可以去试一试",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:23",
+            "text": "我还告诉大家怎么改变球速一个发力正确的选手站在底线附近全力一积如果球落在测速区域内则球速正常"
+          },
+          {
+            "timestamp": "00:54-01:07",
+            "text": "比较一下速度会不会发生改变现在只是这个球的落点它已经超过了测速区"
+          },
+          {
+            "timestamp": "01:48-02:01",
+            "text": "那它现在就要比刚才慢很多了好的现在是这颗羽毛球的落点那么它没有进入测速区"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
