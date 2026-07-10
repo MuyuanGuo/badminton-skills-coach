@@ -1,15 +1,14 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T16:39:03.952148+00:00",
+  "updated_at": "2026-07-10T16:42:05.410343+00:00",
   "queue_counts": {
-    "transcribed": 400,
-    "media_ready": 5
+    "transcribed": 405
   },
   "knowledge_counts": {
-    "videos": 400,
-    "ready": 335,
-    "needs_visual_review": 65,
+    "videos": 405,
+    "ready": 339,
+    "needs_visual_review": 66,
     "curated": 3
   },
   "videos": [
@@ -12886,6 +12885,57 @@
       }
     },
     {
+      "video_id": "7151961376448138531",
+      "title": "安排，正反手一起",
+      "url": "https://www.douyin.com/video/7151961376448138531",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 41.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003g/7151961376448138531.json",
+      "teaching_note": {
+        "topic": "安排",
+        "key_evidence": [
+          {
+            "timestamp": "00:03-00:10",
+            "text": "正常过拍手腕锁住做挑球的时候我们去削击球头的左侧不要让旋转出现"
+          },
+          {
+            "timestamp": "00:13-00:18",
+            "text": "做点往上捐的动作能保证击球的稳定这次向上提拉"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:06-00:12",
+            "text": "我们去削击球头的左侧不要让旋转出现反手这边大门只顶在斜冷上"
+          },
+          {
+            "timestamp": "00:23-00:28",
+            "text": "用了这球就飞了手腕锁住不要动从头到尾都是削的"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:23",
+            "text": "前面是动作现在大家记住就是手指手腕一点都别用"
+          },
+          {
+            "timestamp": "00:26-00:32",
+            "text": "从头到尾都是削的反手这边一定要向上削击手腕然后锁住"
+          },
+          {
+            "timestamp": "00:29-00:34",
+            "text": "反手这边一定要向上削击手腕然后锁住不然的话这个球交不起来"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
       "video_id": "7151589626031901992",
       "title": "兄弟们好久没安排假动作了，安排一波",
       "url": "https://www.douyin.com/video/7151589626031901992",
@@ -12911,6 +12961,27 @@
       }
     },
     {
+      "video_id": "7150847019320429839",
+      "title": "跳出束缚，灵活握拍",
+      "url": "https://www.douyin.com/video/7150847019320429839",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 20.0,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003g/7150847019320429839.json",
+      "teaching_note": {
+        "topic": "跳出束缚，灵活握拍",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
       "video_id": "7149363344649047311",
       "title": "大家找找有没有违例",
       "url": "https://www.douyin.com/video/7149363344649047311",
@@ -12928,6 +12999,95 @@
         "error_evidence": [],
         "action_cues": [],
         "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7148990784363138344",
+      "title": "身体是歪的作用，1腰腹纵向发力成功介入，2肩膀和肘顶起来拿到了高点，3手臂和脸有了自然距离",
+      "url": "https://www.douyin.com/video/7148990784363138344",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 99.8,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003g/7148990784363138344.json",
+      "teaching_note": {
+        "topic": "身体是歪的作用",
+        "key_evidence": [
+          {
+            "timestamp": "00:31-00:35",
+            "text": "都和股洞一样在颤抖说明根本没有发力第三点"
+          },
+          {
+            "timestamp": "00:51-00:56",
+            "text": "大概在额头上的位置属于一个高点杀球那由于旋转的枣"
+          },
+          {
+            "timestamp": "01:02-01:07",
+            "text": "这次这名运动员他的杀球是在额头前那球拍的回弹"
+          },
+          {
+            "timestamp": "01:17-01:21",
+            "text": "接下来我分别做伸前一点的杀球大臂带的多"
+          },
+          {
+            "timestamp": "01:22-01:25",
+            "text": "机球点稍稍高一些靠后一点的杀球大臂带的少"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:08-01:12",
+            "text": "因此这个球在哪并不是我能不能杀下去的主要原因"
+          },
+          {
+            "timestamp": "01:12-01:18",
+            "text": "而是我大臂带动小臂的时机能不能压住球接下来我分别做"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:46-00:50",
+            "text": "根据运动员大臂带动小臂的位置我们可以倒推回去得到的是"
+          },
+          {
+            "timestamp": "00:56-01:01",
+            "text": "自然球拍弹得就高再来看图片二通过大臂的位置"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7148267452877638944",
+      "title": "这种球对方太主动，等球不转了在打也不行，点就太低了",
+      "url": "https://www.douyin.com/video/7148267452877638944",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 73.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003g/7148267452877638944.json",
+      "teaching_note": {
+        "topic": "这种球对方太主动",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:07-00:13",
+            "text": "那么今天我来教大家首先当一个球出来如果是这么去转的话"
+          },
+          {
+            "timestamp": "00:51-01:13",
+            "text": "比如说我拿这个位置正手也可以解人在家中躺球技心中掌"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
       }
     },
     {
@@ -14131,6 +14291,31 @@
           {
             "timestamp": "00:35-00:44",
             "text": "要有这种感觉的话我的人就会很稳而且无论再被动我的人都不会往前扎头也能一直抬着"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7115598014642736424",
+      "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者",
+      "url": "https://www.douyin.com/video/7115598014642736424",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 35.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/failed-retry-003g/7115598014642736424.json",
+      "teaching_note": {
+        "topic": "此视频警醒伙伴们",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:10-00:17",
+            "text": "绝对就能回头那必须要投回头啊把帅记程到头"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

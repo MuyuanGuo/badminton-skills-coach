@@ -1,9 +1,8 @@
 {
-  "updated_at": "2026-07-10T16:39:03.163304+00:00",
+  "updated_at": "2026-07-10T16:42:04.730146+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 400,
-    "media_ready": 5
+    "transcribed": 405
   },
   "items": [
     {
@@ -3204,10 +3203,10 @@
       "title": "安排，正反手一起#羽毛球教学 #羽毛球训练 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7151961376448138531.mp4",
-      "duration_seconds": 41.633333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003g/7151961376448138531.mp4",
+      "duration_seconds": 41.61,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3228,10 +3227,10 @@
       "title": "跳出束缚，灵活握拍#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7150847019320429839.mp4",
-      "duration_seconds": 20.033333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003g/7150847019320429839.mp4",
+      "duration_seconds": 19.992,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3252,10 +3251,10 @@
       "title": "身体是歪的作用，1腰腹纵向发力成功介入，2肩膀和肘顶起来拿到了高点，3手臂和脸有了自然距离#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7148990784363138344.mp4",
-      "duration_seconds": 99.833333,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003g/7148990784363138344.mp4",
+      "duration_seconds": 99.776,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3264,10 +3263,10 @@
       "title": "这种球对方太主动，等球不转了在打也不行，点就太低了#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7148267452877638944.mp4",
-      "duration_seconds": 73.7,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003g/7148267452877638944.mp4",
+      "duration_seconds": 73.654,
+      "attempts": 4,
       "error": null
     },
     {
@@ -3588,10 +3587,10 @@
       "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者@皓憨憨 #刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "media_ready",
-      "media_path": "data/raw_videos/douyin/failed-retry-002/7115598014642736424.mp4",
-      "duration_seconds": 36,
-      "attempts": 3,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/failed-retry-003g/7115598014642736424.mp4",
+      "duration_seconds": 35.944,
+      "attempts": 4,
       "error": null
     },
     {
