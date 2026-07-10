@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T03:50:21.598690+00:00",
+  "updated_at": "2026-07-10T04:15:51.257441+00:00",
   "queue_counts": {
-    "transcribed": 286,
+    "transcribed": 298,
     "extraction_failed": 35,
-    "pending": 84
+    "pending": 72
   },
   "knowledge_counts": {
-    "videos": 286,
-    "ready": 242,
-    "needs_visual_review": 44,
+    "videos": 298,
+    "ready": 251,
+    "needs_visual_review": 47,
     "curated": 3
   },
   "videos": [
@@ -13820,6 +13820,510 @@
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7096301894984846632",
+      "title": "正手手指发力下集哦",
+      "url": "https://www.douyin.com/video/7096301894984846632",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "训练与纠错"
+      ],
+      "duration_seconds": 150.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7096301894984846632.json",
+      "teaching_note": {
+        "topic": "正手手指发力下集哦",
+        "key_evidence": [
+          {
+            "timestamp": "00:02-00:11",
+            "text": "其实很多朋友打这个手指发力一直都找不到大拇指和十指发力的原因那么今天刘教练告诉你"
+          },
+          {
+            "timestamp": "00:30-00:40",
+            "text": "反手先不用大拇指我们只用后三指看看能否用到手指发力那么我手腕不动就是用手指发力最好的权势"
+          },
+          {
+            "timestamp": "00:33-00:44",
+            "text": "我们只用后三指看看能否用到手指发力那么我手腕不动就是用手指发力最好的权势好 我的手腕在没有动的情况下"
+          },
+          {
+            "timestamp": "00:46-00:53",
+            "text": "我们换一个视角来看一下我的后三指是如何进行发力的大拇指还是不动"
+          },
+          {
+            "timestamp": "01:04-01:10",
+            "text": "拿大拇指顶着我们看看我的大拇指能不能独立向前发力呢显然不行"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:04-01:10",
+            "text": "拿大拇指顶着我们看看我的大拇指能不能独立向前发力呢显然不行"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:28-00:36",
+            "text": "那我们来看看细节反手先不用大拇指我们只用后三指看看能否用到手指发力"
+          },
+          {
+            "timestamp": "00:50-01:02",
+            "text": "大拇指还是不动大家注意这个时候我的手掌是空的那现在我们把球拍后三指揉紧"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7095554075210550528",
+      "title": "摇摆球对付抢网凶狠的对手，如果对方不抢网就没什么用啦😂",
+      "url": "https://www.douyin.com/video/7095554075210550528",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 63.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7095554075210550528.json",
+      "teaching_note": {
+        "topic": "摇摆球对付抢网凶狠的对手",
+        "key_evidence": [
+          {
+            "timestamp": "00:09-00:15",
+            "text": "但是过往时的摇摆差不多那么为什么苏卡木约式的发球一般人效仿不了呢"
+          },
+          {
+            "timestamp": "00:23-00:31",
+            "text": "那么首先我们正常的拿球是球头朝向自己的拍面位置那么刘教练加一点改动"
+          },
+          {
+            "timestamp": "00:34-00:40",
+            "text": "那么通过一个球头朝上呢让我们一个普通发球就能发出摇摆球的效果"
+          },
+          {
+            "timestamp": "00:55-01:01",
+            "text": "防止小伤变大伤如果发球总是下网可以适当的把拍面朝上"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "如果发球总是下网可以适当的把拍面朝上人在家中堂球技心中长"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:20-00:29",
+            "text": "刘教练给大家找了一个低配版那么首先我们正常的拿球是球头朝向自己的拍面位置"
+          },
+          {
+            "timestamp": "00:38-00:43",
+            "text": "就能发出摇摆球的效果而且大家一定要清楚还是击打球头"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "如果发球总是下网可以适当的把拍面朝上人在家中堂球技心中长"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7094813761894223139",
+      "title": "喜欢哪招评论区告诉我，不要怕失误，毕竟输就一球的事，帅是一辈子的事🧐",
+      "url": "https://www.douyin.com/video/7094813761894223139",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 117.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7094813761894223139.json",
+      "teaching_note": {
+        "topic": "喜欢哪招评论区告诉我",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:45-00:51",
+            "text": "有過牽掛 有無牽掛若是修佛先修金一槍風雪 一槍兵"
+          },
+          {
+            "timestamp": "01:28-01:34",
+            "text": "一生此生不負兩人先理共產君忍耐人居樓通四元煙"
+          },
+          {
+            "timestamp": "01:41-01:49",
+            "text": "第十二槍不時再搖起將軍大姓 戰無敵"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7094072057608047913",
+      "title": "今天本来想拍教学的，但是人手不够😂，内涵一下某地区比赛，大家知道是哪里嘛？",
+      "url": "https://www.douyin.com/video/7094072057608047913",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错",
+        "比赛分析"
+      ],
+      "duration_seconds": 74.1,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7094072057608047913.json",
+      "teaching_note": {
+        "topic": "今天本来想拍教学的",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "自己用多球练习发球呢由于这个位置和手感都已经相对的固定"
+          },
+          {
+            "timestamp": "00:17-00:29",
+            "text": "再自己模拟出来一个队友我们开始沉浸式发球训练赢了之后不要忘记和队友庆祝一下"
+          },
+          {
+            "timestamp": "00:27-00:46",
+            "text": "赢了之后不要忘记和队友庆祝一下发球战术统一思想当然也会有出现争执的时候"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:19-00:35",
+            "text": "我们开始沉浸式发球训练赢了之后不要忘记和队友庆祝一下发球战术统一思想"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:02-00:08",
+            "text": "由于这个位置和手感都已经相对的固定再加上又缺少一些实战的感觉所以说呢"
+          },
+          {
+            "timestamp": "00:08-00:17",
+            "text": "平时的训练和我们在实战中发起来感觉不一样那么首先我们可以先找一个裁判站到场上再找一个对手"
+          },
+          {
+            "timestamp": "00:15-00:22",
+            "text": "站到场上再找一个对手再自己模拟出来一个队友我们开始沉浸式发球训练"
+          },
+          {
+            "timestamp": "01:00-01:08",
+            "text": "在这种时候呢我们也可以用应演来让对手更加的幸福这都行"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7093706918492917033",
+      "title": "软压还包括点杀，远网吊球等等",
+      "url": "https://www.douyin.com/video/7093706918492917033",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 84.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7093706918492917033.json",
+      "teaching_note": {
+        "topic": "软压还包括点杀",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:18",
+            "text": "然后呢 我又不想给起给他如果我把球高远打过去可能就形成他下压我了"
+          },
+          {
+            "timestamp": "00:16-00:21",
+            "text": "可能就形成他下压我了如果对手进攻能力非常强 对不对我也不想掉球"
+          },
+          {
+            "timestamp": "00:52-01:00",
+            "text": "来 试试位置不好时全力杀球球过去的快回来也快 会让我们脚下脱节"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:16-00:21",
+            "text": "可能就形成他下压我了如果对手进攻能力非常强 对不对我也不想掉球"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:08-00:16",
+            "text": "就我现在呢 拿到一个很到位的球然后呢 我又不想给起给他如果我把球高远打过去"
+          },
+          {
+            "timestamp": "00:49-00:53",
+            "text": "轻压一样爱人上去一先机就可以了来 试试"
+          },
+          {
+            "timestamp": "01:01-01:07",
+            "text": "我们使用软压打跟进的方式可以让我们在保证下压的同时下一排更好行阶"
+          },
+          {
+            "timestamp": "01:09-01:16",
+            "text": "为什么运动员在打比赛的时候可以慢慢 悠悠地进行杀上网了来 先软压一个"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7092959332047785250",
+      "title": "也不要问为什么不放网，对方远网球这个不可能去钓鱼失误率太高，也不能挡远网，惯性大没办法抓推",
+      "url": "https://www.douyin.com/video/7092959332047785250",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "中前场与抽挡",
+        "训练与纠错"
+      ],
+      "duration_seconds": 93.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7092959332047785250.json",
+      "teaching_note": {
+        "topic": "也不要问为什么不放网",
+        "key_evidence": [
+          {
+            "timestamp": "00:09-00:19",
+            "text": "来 过来看好了 这边是刚你进攻防那么你现在是一个杀上网 在一个中路拿球的状态"
+          },
+          {
+            "timestamp": "00:52-01:04",
+            "text": "这个位置拿到球 你应该打哪边呢对 你应该去打这条线路就算它能拦到 你人就在这个场地的左侧 对不对"
+          },
+          {
+            "timestamp": "01:00-01:15",
+            "text": "就算它能拦到 你人就在这个场地的左侧 对不对好 再试一试这条线路 单独打这个分球来 就打这个套路 杀完上网直接分边"
+          },
+          {
+            "timestamp": "01:18-01:31",
+            "text": "由于杀上网自身带了一个很强的从后向前的惯性一旦推球被抓 会直接陷入到对手的防守反击当中那么不同的陷入选择一定会产生不同的结果"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:00-00:11",
+            "text": "来 等一下 你们俩过来一下 看这个球有问题来 过来"
+          },
+          {
+            "timestamp": "00:27-00:35",
+            "text": "它会在什么位置就是中间 对不对那你这个时候如果推一个斜线的话"
+          },
+          {
+            "timestamp": "00:57-01:07",
+            "text": "对 你应该去打这条线路就算它能拦到 你人就在这个场地的左侧 对不对好 再试一试这条线路 单独打这个分球"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:40-00:49",
+            "text": "那也就是你现在人在一个偏左侧的位置你推一个这边 别人只要横移一步 在这个位置可以截住现在杀一个边线直线 你这是空档啊"
+          },
+          {
+            "timestamp": "00:49-01:00",
+            "text": "那这个球你应该去打哪边呢这个位置拿到球 你应该打哪边呢对 你应该去打这条线路"
+          },
+          {
+            "timestamp": "01:00-01:15",
+            "text": "就算它能拦到 你人就在这个场地的左侧 对不对好 再试一试这条线路 单独打这个分球来 就打这个套路 杀完上网直接分边"
+          },
+          {
+            "timestamp": "01:22-01:31",
+            "text": "一旦推球被抓 会直接陷入到对手的防守反击当中那么不同的陷入选择一定会产生不同的结果"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7092220370400365839",
+      "title": "昨天太忙了，没时间拍教学了，科普和恶搞一下😂",
+      "url": "https://www.douyin.com/video/7092220370400365839",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 63.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7092220370400365839.json",
+      "teaching_note": {
+        "topic": "昨天太忙了",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:00-00:07",
+            "text": "哎 輝哥 等一下 羽毛球打成什麼程度需要更換呢嗯 那麼一般影響換球的因素呢 有三種"
+          },
+          {
+            "timestamp": "00:07-00:15",
+            "text": "第一種 戰術需求那麼這個時候我需要通過一個換球 來緩和比賽的節奏緩解我自己緊張的情緒"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7091844908973067561",
+      "title": "小细节最容易被忽略，多少人会了动作却用不出来，都是因为还没击球动作已经变形了",
+      "url": "https://www.douyin.com/video/7091844908973067561",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 108.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7091844908973067561.json",
+      "teaching_note": {
+        "topic": "小细节最容易被忽略",
+        "key_evidence": [
+          {
+            "timestamp": "01:41-01:46",
+            "text": "拖拽准备动作而让我们的发力变得更加的短促和集中"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:38-00:42",
+            "text": "我可以能接的东西太多了放往推球 对不对停顿"
+          },
+          {
+            "timestamp": "00:46-01:14",
+            "text": "来 再试一试往前无论主动被动我们都先伸手"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:24",
+            "text": "来了上手球我们首先台拍要带动身体是其次最主要是什么"
+          },
+          {
+            "timestamp": "00:28-00:34",
+            "text": "球一出来先进行一个什么框架的一个摆放我们这样一伸手一举手"
+          },
+          {
+            "timestamp": "00:37-00:41",
+            "text": "那这样一举手我可以能接的东西太多了放往推球 对不对"
+          },
+          {
+            "timestamp": "01:17-01:23",
+            "text": "能让我们的对手不敢乱动再能够威慑到对手的同时获得最大的隐蔽性"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7091101085535915279",
+      "title": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
+      "url": "https://www.douyin.com/video/7091101085535915279",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 70.0,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-037/7091101085535915279.json",
+      "teaching_note": {
+        "topic": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7090377448017235234",
+      "title": "打羽毛球最爽的就是杀球和接杀",
+      "url": "https://www.douyin.com/video/7090377448017235234",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 61.6,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-037/7090377448017235234.json",
+      "teaching_note": {
+        "topic": "打羽毛球最爽的就是杀球和接杀",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7089632297791671587",
+      "title": "鏖战两个小时，打的单打线，结尾有彩蛋",
+      "url": "https://www.douyin.com/video/7089632297791671587",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 543.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-037/7089632297791671587.json",
+      "teaching_note": {
+        "topic": "鏖战两个小时",
+        "key_evidence": [
+          {
+            "timestamp": "00:51-01:33",
+            "text": "我打算第二局消耗对手打防守反击这也太鞭了吧"
+          },
+          {
+            "timestamp": "05:47-06:38",
+            "text": "蓝衣服的已经没劲了进攻慢了许多这红的不愧是一级"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "04:38-04:52",
+            "text": "打杆滚网 克所有不能着急 还是得稳对手的体力还很充沛"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "04:12-04:38",
+            "text": "对手被我成功的消耗了第三局先提速什么活也没用"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7088881901209013545",
+      "title": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂",
+      "url": "https://www.douyin.com/video/7088881901209013545",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 19.8,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-037/7088881901209013545.json",
+      "teaching_note": {
+        "topic": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
       }
     },
     {
