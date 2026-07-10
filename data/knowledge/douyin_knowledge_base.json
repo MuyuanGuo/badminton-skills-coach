@@ -1,16 +1,16 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T00:42:11.759298+00:00",
+  "updated_at": "2026-07-10T00:48:15.483297+00:00",
   "queue_counts": {
-    "transcribed": 250,
+    "transcribed": 257,
     "extraction_failed": 34,
-    "pending": 121
+    "pending": 114
   },
   "knowledge_counts": {
-    "videos": 250,
-    "ready": 208,
-    "needs_visual_review": 42,
+    "videos": 257,
+    "ready": 214,
+    "needs_visual_review": 43,
     "curated": 3
   },
   "videos": [
@@ -12005,6 +12005,309 @@
           {
             "timestamp": "01:39-01:43",
             "text": "他们也是把这个牌子放到这然后我们再去机球了我跟他到底插在哪里"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7140089034096839976",
+      "title": "纠错小课堂成立，不定时更新，今天是腿懒三件套",
+      "url": "https://www.douyin.com/video/7140089034096839976",
+      "category": "训练与纠错",
+      "tags": [
+        "训练与纠错"
+      ],
+      "duration_seconds": 77.4,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7140089034096839976.json",
+      "teaching_note": {
+        "topic": "纠错小课堂成立",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:20",
+            "text": "我们在风网时 如果手脚不进行一起联动的话我们的挥拍会一边向横板 一边向前击 很容易打消现在我们来看一下正确的"
+          },
+          {
+            "timestamp": "00:24-00:38",
+            "text": "脚下去进行一步横跳 能大大提高我们风网的稳定性我们在发力的时候 感受不到脚登地转宽的感觉主要原因就是因为后腿绷直 并没有出现向下踩的动作"
+          },
+          {
+            "timestamp": "00:46-00:57",
+            "text": "也能让我们在转体的时候出现后功而出现腰腹的纵向发力 使我们的发力更加顺畅在我们重心高 腿伸直 去做步法时"
+          },
+          {
+            "timestamp": "00:49-01:00",
+            "text": "而出现腰腹的纵向发力 使我们的发力更加顺畅在我们重心高 腿伸直 去做步法时不只会让我们脚步慢 重心摇摆大"
+          },
+          {
+            "timestamp": "01:03-01:15",
+            "text": "从运动学表现来说 腿伸直做的是抬腿动作而低重心状态下脉步 做的是提息动作而提息比抬腿这个动作更省力 更快"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:01-00:07",
+            "text": "就错 小课堂 你的问题 我来帮发现你平时发现不到的细节"
+          }
+        ],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7138604160051612969",
+      "title": "这次时间有限，击球点还得在往前放一点，别扭的地方可以迎刃而解",
+      "url": "https://www.douyin.com/video/7138604160051612969",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 120.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7138604160051612969.json",
+      "teaching_note": {
+        "topic": "这次时间有限",
+        "key_evidence": [
+          {
+            "timestamp": "00:10-00:15",
+            "text": "第一个地方你跳起来之后没有架拍你跳起来是这样的"
+          },
+          {
+            "timestamp": "00:22-00:30",
+            "text": "你一定要是什么转跳你就看职业运员他们在杀球的时候就在机球的这一瞬间"
+          },
+          {
+            "timestamp": "00:42-00:48",
+            "text": "这个时候你腰幅用的是纵向发力进去那我人一往后攻"
+          },
+          {
+            "timestamp": "00:45-00:51",
+            "text": "那我人一往后攻你想要用这个腰幅纵向发力我自然而然你看到没有"
+          },
+          {
+            "timestamp": "00:57-01:03",
+            "text": "来 你再试一下架拍的动作还是不好你还想搞拍"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:00-00:03",
+            "text": "还是不对 你想学跳啥的话你现在保证好几个地方"
+          },
+          {
+            "timestamp": "00:18-00:24",
+            "text": "没有转过来就你不能是这样的啥你一定要是什么转跳"
+          },
+          {
+            "timestamp": "01:17-01:22",
+            "text": "再来然后还有一个问题你那个挥拍不正"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:19-00:28",
+            "text": "就你不能是这样的啥你一定要是什么转跳你就看职业运员他们在杀球的时候"
+          },
+          {
+            "timestamp": "00:31-00:37",
+            "text": "而且空洞还是架拍然后人下动的时候才是机球屈腿也不是刻意的"
+          },
+          {
+            "timestamp": "01:46-01:51",
+            "text": "这个小朋友机球点还要再往前放一点这样他人也不会养得那么厉害"
+          },
+          {
+            "timestamp": "01:49-01:57",
+            "text": "这样他人也不会养得那么厉害然后后脚也会舒服很多下次再改吧"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7137859788255284520",
+      "title": "腰腹带动出来的引拍爆发力会更强，力的传导效果会更好",
+      "url": "https://www.douyin.com/video/7137859788255284520",
+      "category": "发力与身体运用",
+      "tags": [
+        "发力与身体运用",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 125.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7137859788255284520.json",
+      "teaching_note": {
+        "topic": "腰腹带动出来的引拍爆发力会更强",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:09-00:13",
+            "text": "打这台突击啊一定要注意啊出手速度"
+          },
+          {
+            "timestamp": "00:19-00:23",
+            "text": "是不会有一个动作可以先动的比如说"
+          },
+          {
+            "timestamp": "00:25-00:29",
+            "text": "应该是什么应该是果然啊架子球拍之后"
+          },
+          {
+            "timestamp": "00:30-00:35",
+            "text": "这个纵向带动进去然后这个带动一进去看到没有"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7136376084920012032",
+      "title": "最难模仿的，是球速，还有身高能打出的落点",
+      "url": "https://www.douyin.com/video/7136376084920012032",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 18.9,
+      "processing_status": "needs_visual_review",
+      "confidence": "low",
+      "transcript_file": "data/transcripts/douyin/batch-032/7136376084920012032.json",
+      "teaching_note": {
+        "topic": "最难模仿的，是球速，还有身高能打出的落点",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "口播不足，需视觉分析后生成教学结论。"
+      }
+    },
+    {
+      "video_id": "7133406724035185920",
+      "title": "相同的框架下，一个是锁住，一个是释放",
+      "url": "https://www.douyin.com/video/7133406724035185920",
+      "category": "握拍与基本动作",
+      "tags": [
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 34.7,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7133406724035185920.json",
+      "teaching_note": {
+        "topic": "相同的框架下",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7132666254980074793",
+      "title": "唐老师 成功加入一拍流",
+      "url": "https://www.douyin.com/video/7132666254980074793",
+      "category": "后场技术",
+      "tags": [
+        "后场技术"
+      ],
+      "duration_seconds": 82.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7132666254980074793.json",
+      "teaching_note": {
+        "topic": "唐老师 成功加入一拍流",
+        "key_evidence": [],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:31-00:34",
+            "text": "我都听见杆的声音了你再听一遍你再听一遍"
+          },
+          {
+            "timestamp": "00:32-00:35",
+            "text": "你再听一遍你再听一遍那是打杆的"
+          },
+          {
+            "timestamp": "00:38-00:40",
+            "text": "来来来再弄一下来来来"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
+    {
+      "video_id": "7131178146023427328",
+      "title": "训练实录，推球动作一小，搓和勾的威胁就更大了",
+      "url": "https://www.douyin.com/video/7131178146023427328",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "训练与纠错"
+      ],
+      "duration_seconds": 96.2,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-032/7131178146023427328.json",
+      "teaching_note": {
+        "topic": "训练实录",
+        "key_evidence": [
+          {
+            "timestamp": "00:11-00:16",
+            "text": "为什么会有这样的想法呢是因为我们发力需要需要我们人体有一个"
+          },
+          {
+            "timestamp": "00:14-00:19",
+            "text": "需要我们人体有一个这样的角度我们才能向前发力对不对"
+          },
+          {
+            "timestamp": "01:15-01:21",
+            "text": "除了引力性强是吧还能让我们发力更短促和集中你就这么理解短促和集中的意思"
+          },
+          {
+            "timestamp": "01:22-01:30",
+            "text": "就行 好 收球所谓贴球发力和短促集中的发力就是在我们不影响发力的情况下"
+          },
+          {
+            "timestamp": "01:25-01:32",
+            "text": "所谓贴球发力和短促集中的发力就是在我们不影响发力的情况下让我们的动作变得更小"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:32-00:39",
+            "text": "往回拉再往前打看教练 拍着不要动地方是人向前 出来的角度没有"
+          },
+          {
+            "timestamp": "01:02-01:10",
+            "text": "再稍微快一点 先接对 不要 这个好不要让我感受到你引拍"
+          },
+          {
+            "timestamp": "01:06-01:13",
+            "text": "对 不要 这个好不要让我感受到你引拍好 不错"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:07-00:12",
+            "text": "就你上去了之后啊 你这个手先往后拉再往前打为什么会有这样的想法呢"
+          },
+          {
+            "timestamp": "00:11-00:16",
+            "text": "为什么会有这样的想法呢是因为我们发力需要需要我们人体有一个"
+          },
+          {
+            "timestamp": "00:12-00:18",
+            "text": "是因为我们发力需要需要我们人体有一个这样的角度我们才能向前发力"
+          },
+          {
+            "timestamp": "01:00-01:07",
+            "text": "这个好手啊再稍微快一点 先接对 不要 这个好"
           }
         ],
         "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"

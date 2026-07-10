@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T00:42:11.115412+00:00",
+  "updated_at": "2026-07-10T00:48:14.930796+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 250,
+    "transcribed": 257,
     "extraction_failed": 34,
-    "pending": 121
+    "pending": 114
   },
   "items": [
     {
@@ -3373,10 +3373,10 @@
       "title": "2.1万 纠错小课堂成立，不定时更新，今天是腿懒三件套#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7140089034096839976.mp4",
+      "duration_seconds": 77.415,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3385,10 +3385,10 @@
       "title": "这次时间有限，击球点还得在往前放一点，别扭的地方可以迎刃而解#羽毛球训练 #羽毛球教学 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7138604160051612969.mp4",
+      "duration_seconds": 120.651,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3397,10 +3397,10 @@
       "title": "腰腹带动出来的引拍爆发力会更强，力的传导效果会更好#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7137859788255284520.mp4",
+      "duration_seconds": 125.875,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3409,10 +3409,10 @@
       "title": "最难模仿的，是球速，还有身高能打出的落点#羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7136376084920012032.mp4",
+      "duration_seconds": 18.901,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3421,10 +3421,10 @@
       "title": "相同的框架下，一个是锁住，一个是释放#羽毛球教学 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7133406724035185920.mp4",
+      "duration_seconds": 34.667,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3433,10 +3433,10 @@
       "title": "唐老师@唐威羽毛球 成功加入一拍流#羽毛球 #刘辉羽毛球 #羽毛球杀球 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7132666254980074793.mp4",
+      "duration_seconds": 82.199,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3445,10 +3445,10 @@
       "title": "训练实录，推球动作一小，搓和勾的威胁就更大了#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-032/7131178146023427328.mp4",
+      "duration_seconds": 96.177,
+      "attempts": 1,
       "error": null
     },
     {
