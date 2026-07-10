@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T05:30:41.894760+00:00",
+  "updated_at": "2026-07-10T05:39:22.123254+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 352,
+    "transcribed": 359,
     "extraction_failed": 35,
-    "pending": 18
+    "pending": 11
   },
   "items": [
     {
@@ -4645,10 +4645,10 @@
       "title": "学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7057722299855801641.mp4",
+      "duration_seconds": 63.507,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4657,10 +4657,10 @@
       "title": "帅气的捡球动作，可以让你输的更体面😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7056953556531809547.mp4",
+      "duration_seconds": 40.449,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4669,10 +4669,10 @@
       "title": "第二个抽球把箱子打穿了哦，推荐李宁最新n68线，兼顾声音，弹性耐打，爱了，即将上市了#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7056596925721726220.mp4",
+      "duration_seconds": 76.069,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4681,10 +4681,10 @@
       "title": "分解步法种类繁多，这是练启动有代表性的，一轮一口气做完，做3组。我肯定是没做到10秒钟，要不视频太长😓#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7056244399390412064.mp4",
+      "duration_seconds": 123.135,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4693,10 +4693,10 @@
       "title": "反手高远忘记瞄边了，无视落点😂，技术入门介绍结束，后面会做更细致的教学，粉丝群499184449764#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7055859367005949187.mp4",
+      "duration_seconds": 66.525,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4705,10 +4705,10 @@
       "title": "注意击球点要在起跳的高点击，而不是向上的过程中，45度起跳是更容易的起跳杀球，视频中的侧身跳杀对身体要求更多，腿有伤，大家忽略高度😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7055491154288102667.mp4",
+      "duration_seconds": 47.647,
+      "attempts": 1,
       "error": null
     },
     {
@@ -4717,10 +4717,10 @@
       "title": "一定要看过上集再看下集啊朋友们#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-045/7055130343476710667.mp4",
+      "duration_seconds": 66.92,
+      "attempts": 1,
       "error": null
     },
     {
