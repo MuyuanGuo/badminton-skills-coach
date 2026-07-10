@@ -22,6 +22,7 @@ jobs:
         run: |
           python -m py_compile \
             scripts/evaluate_liuhui_skill.py \
+            scripts/evaluate_answer_quality.py \
             scripts/apply_visual_review_notes.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_topic_index.py \
@@ -35,3 +36,6 @@ jobs:
 
       - name: Run retrieval evaluation
         run: python scripts/evaluate_liuhui_skill.py
+
+      - name: Run golden answer evaluation
+        run: python scripts/evaluate_answer_quality.py

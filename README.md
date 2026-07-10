@@ -181,6 +181,8 @@ data/
     douyin_knowledge_base.json     当前 405 条全量知识库
     topic_index.json               自动生成的主题索引
     pilot_teaching_notes.json      试点人工笔记
+  evaluation/
+    golden_questions.json          端到端质量回归问题
   review/
     visual_review_queue.json       待视觉复核视频队列
 
@@ -196,6 +198,7 @@ scripts/
   build_visual_review_queue.py     构建视觉复核队列
   validate_project.py              项目验证
   evaluate_liuhui_skill.py         检索评估
+  evaluate_answer_quality.py       Golden question 质量评估
 
 skills/
   liuhui-badminton-coach/
@@ -207,6 +210,7 @@ skills/
 
 output/
   failed_extraction_review.*       35 条失败项复核记录
+  golden_answer_review.md          Golden question 评估报告
   visual_review_queue.md           视觉复核工作单
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
@@ -223,6 +227,8 @@ data/
     douyin_knowledge_base.json     Current full 405-video knowledge base
     topic_index.json               Generated topic index
     pilot_teaching_notes.json      Curated pilot notes
+  evaluation/
+    golden_questions.json          End-to-end quality regression questions
   review/
     visual_review_queue.json       Visual-review queue
 
@@ -238,6 +244,7 @@ scripts/
   build_visual_review_queue.py     Visual-review queue builder
   validate_project.py              Repository validation
   evaluate_liuhui_skill.py         Retrieval evaluation
+  evaluate_answer_quality.py       Golden-question quality evaluation
 
 skills/
   liuhui-badminton-coach/
@@ -249,6 +256,7 @@ skills/
 
 output/
   failed_extraction_review.*       Review report for the recovered 35 failures
+  golden_answer_review.md          Golden-question evaluation report
   visual_review_queue.md           Visual-review worksheet
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
@@ -638,6 +646,7 @@ Checked-in artifacts are limited to metadata, structured knowledge, source links
 ```bash
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
+python3 scripts/evaluate_answer_quality.py
 python3 scripts/build_douyin_knowledge.py
 python3 scripts/build_topic_index.py
 python3 scripts/apply_visual_review_notes.py

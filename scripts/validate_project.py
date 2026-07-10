@@ -14,6 +14,7 @@ json_paths = [
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
+    "data/evaluation/golden_questions.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
     "data/pilot_25_videos.json",
@@ -73,6 +74,12 @@ if skill_knowledge != douyin_knowledge:
 topic_index = json.loads(
     (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")
 )
+golden_questions = json.loads(
+    (ROOT / "data" / "evaluation" / "golden_questions.json").read_text(encoding="utf-8")
+)
+if len(golden_questions.get("cases", [])) < 18:
+    raise SystemExit("Golden question set has too few cases")
+
 if topic_index["video_count"] != len(douyin_knowledge["videos"]):
     raise SystemExit("Topic index video count is out of sync with full knowledge base")
 if topic_index["indexable_video_count"] != sum(
