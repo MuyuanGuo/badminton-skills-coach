@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T00:48:14.930796+00:00",
+  "updated_at": "2026-07-10T03:16:40.684031+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 257,
+    "transcribed": 264,
     "extraction_failed": 34,
-    "pending": 114
+    "pending": 107
   },
   "items": [
     {
@@ -3457,10 +3457,10 @@
       "title": "边打边看问题随时教，是我们商量好的，不是打到一半我突然职业病发作😂#羽毛球 #刘辉羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7130069152592645411.mp4",
+      "duration_seconds": 130.171,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3469,10 +3469,10 @@
       "title": "胳膊够着打满足不了直线必须有推送动作的条件，面对站在网前等的对手可以勾#羽毛球训练 #羽毛球 #刘辉羽毛球 @抖音小助手",
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7129696487956647208.mp4",
+      "duration_seconds": 60.604,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3481,10 +3481,10 @@
       "title": "肯定不会怕斜线，因为斜线会经过我的队友#羽毛球 #刘辉羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7128211692743363880.mp4",
+      "duration_seconds": 67.036,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3493,10 +3493,10 @@
       "title": "模拟的防守挡斜线随后抢网反击#羽毛球 #刘辉羽毛球 #迈倍力 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7127470220309957923.mp4",
+      "duration_seconds": 55.008,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3505,10 +3505,10 @@
       "title": "花两分多钟把视频看完，让朋友们不在徘徊#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7125615679402724623.mp4",
+      "duration_seconds": 162.911,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3517,10 +3517,10 @@
       "title": "被偷后场再也不用报警啦#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
       "category": "发球与接发",
       "tags": "发球与接发；后场技术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7124871920230632745.mp4",
+      "duration_seconds": 127.733,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3529,10 +3529,10 @@
       "title": "总结一句话，对方封直线抽斜线，对方站中间抽直线#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-033/7123390328643603752.mp4",
+      "duration_seconds": 62.531,
+      "attempts": 1,
       "error": null
     },
     {
