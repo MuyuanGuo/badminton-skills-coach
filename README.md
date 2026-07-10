@@ -98,14 +98,12 @@ Skill 目录：
 
 ```text
 skills/liuhui-badminton-coach/
-skills/liuhui-badminton-coach-full/
 ```
 
 在 Codex 中安装后，可以这样提问：
 
 ```text
 $liuhui-badminton-coach 我被动后场总是来不及架拍，应该怎么调整？
-$liuhui-badminton-coach-full 我被动后场总是来不及架拍，应该怎么调整？
 ```
 
 Skill 的设计原则：
@@ -123,14 +121,12 @@ The skill lives in:
 
 ```text
 skills/liuhui-badminton-coach/
-skills/liuhui-badminton-coach-full/
 ```
 
 After installing it in Codex, you can ask:
 
 ```text
 $liuhui-badminton-coach 我被动后场总是来不及架拍，应该怎么调整？
-$liuhui-badminton-coach-full 我被动后场总是来不及架拍，应该怎么调整？
 ```
 
 The skill is designed to:
@@ -191,10 +187,6 @@ skills/
     SKILL.md
     references/knowledge-base.json
     scripts/search_knowledge.py
-  liuhui-badminton-coach-full/
-    SKILL.md
-    references/knowledge-base.json
-    scripts/search_knowledge.py
 
 output/
   failed_extraction_review.*       35 条失败项复核记录
@@ -226,10 +218,6 @@ scripts/
 
 skills/
   liuhui-badminton-coach/
-    SKILL.md
-    references/knowledge-base.json
-    scripts/search_knowledge.py
-  liuhui-badminton-coach-full/
     SKILL.md
     references/knowledge-base.json
     scripts/search_knowledge.py
@@ -279,8 +267,6 @@ python3 scripts/evaluate_liuhui_skill.py
 ```bash
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
-python3 skills/liuhui-badminton-coach-full/scripts/search_knowledge.py \
-  "被动后场来不及架拍怎么办"
 ```
 
 **English**
@@ -311,8 +297,6 @@ Try retrieval directly:
 ```bash
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
-python3 skills/liuhui-badminton-coach-full/scripts/search_knowledge.py \
-  "被动后场来不及架拍怎么办"
 ```
 
 ## 安装 Codex Skill / Install The Codex Skill
@@ -324,14 +308,12 @@ python3 skills/liuhui-badminton-coach-full/scripts/search_knowledge.py \
 ```bash
 mkdir -p ~/.codex/skills
 cp -R skills/liuhui-badminton-coach ~/.codex/skills/liuhui-badminton-coach
-cp -R skills/liuhui-badminton-coach-full ~/.codex/skills/liuhui-badminton-coach-full
 ```
 
 然后在 Codex 中调用：
 
 ```text
 $liuhui-badminton-coach 如何改正杀球发力分散的问题？
-$liuhui-badminton-coach-full 如何改正杀球发力分散的问题？
 ```
 
 **English**
@@ -341,14 +323,12 @@ Copy the skill into your personal Codex skills directory:
 ```bash
 mkdir -p ~/.codex/skills
 cp -R skills/liuhui-badminton-coach ~/.codex/skills/liuhui-badminton-coach
-cp -R skills/liuhui-badminton-coach-full ~/.codex/skills/liuhui-badminton-coach-full
 ```
 
 Then invoke it in Codex:
 
 ```text
 $liuhui-badminton-coach 如何改正杀球发力分散的问题？
-$liuhui-badminton-coach-full 如何改正杀球发力分散的问题？
 ```
 
 ## 自动更新与新增视频 / Updating And Monitoring New Videos
@@ -526,16 +506,14 @@ data/knowledge/douyin_knowledge_base.json
 Skill 的引用数据位于：
 
 ```text
-skills/liuhui-badminton-coach/references/knowledge-base.json       25 条试点证据集
-skills/liuhui-badminton-coach-full/references/knowledge-base.json  405 条全量证据集
+skills/liuhui-badminton-coach/references/knowledge-base.json
 ```
 
-当前仓库同时保留两个 Skill：
+当前仓库只保留一个全量 Skill：
 
-- `liuhui-badminton-coach`：25 条 pilot 证据集，包体轻，适合快速验证流程。
-- `liuhui-badminton-coach-full`：405 条全量抖音教学视频证据集，适合实际提问和训练建议。
+- `liuhui-badminton-coach`：405 条全量抖音教学视频证据集，适合实际提问和训练建议。
 
-`scripts/validate_project.py` 会同时检查 pilot Skill 与全量 Skill 的知识库同步关系。自动更新新增视频后，应重建 `data/knowledge/douyin_knowledge_base.json`，再同步到 `skills/liuhui-badminton-coach-full/references/knowledge-base.json`。
+`scripts/validate_project.py` 会检查 Skill 引用知识库与全量知识库同步。自动更新新增视频后，应重建 `data/knowledge/douyin_knowledge_base.json`，再同步到 `skills/liuhui-badminton-coach/references/knowledge-base.json`。
 
 无论采用哪种方式，都应运行：
 
@@ -555,16 +533,14 @@ data/knowledge/douyin_knowledge_base.json
 The skill reference data lives at:
 
 ```text
-skills/liuhui-badminton-coach/references/knowledge-base.json       25-video pilot evidence set
-skills/liuhui-badminton-coach-full/references/knowledge-base.json  405-video full evidence set
+skills/liuhui-badminton-coach/references/knowledge-base.json
 ```
 
-The repository now keeps two skills side by side:
+The repository now keeps one full skill:
 
-- `liuhui-badminton-coach`: a lightweight 25-video pilot evidence set for fast workflow validation.
-- `liuhui-badminton-coach-full`: the full 405-video Douyin teaching evidence set for practical coaching questions.
+- `liuhui-badminton-coach`: the full 405-video Douyin teaching evidence set for practical coaching questions.
 
-`scripts/validate_project.py` checks that both the pilot skill and the full skill stay in sync with their source knowledge bases. After an automated update discovers and processes new videos, rebuild `data/knowledge/douyin_knowledge_base.json`, then sync it into `skills/liuhui-badminton-coach-full/references/knowledge-base.json`.
+`scripts/validate_project.py` checks that the skill stays in sync with the full source knowledge base. After an automated update discovers and processes new videos, rebuild `data/knowledge/douyin_knowledge_base.json`, then sync it into `skills/liuhui-badminton-coach/references/knowledge-base.json`.
 
 Whichever path you choose, run:
 
@@ -634,5 +610,4 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/build_douyin_knowledge.py
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py "后场被动怎么架拍"
-python3 skills/liuhui-badminton-coach-full/scripts/search_knowledge.py "后场被动怎么架拍"
 ```

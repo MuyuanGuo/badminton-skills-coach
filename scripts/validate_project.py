@@ -17,7 +17,6 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "output/liuhui-skill-retrieval-evaluation.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
-    "skills/liuhui-badminton-coach-full/references/knowledge-base.json",
 ]
 for relative_path in json_paths:
     path = ROOT / relative_path
@@ -39,13 +38,6 @@ def validate_skill_frontmatter(skill_name):
 
 
 validate_skill_frontmatter("liuhui-badminton-coach")
-validate_skill_frontmatter("liuhui-badminton-coach-full")
-
-knowledge = json.loads(
-    (ROOT / "data" / "knowledge" / "pilot_knowledge_base.json").read_text(encoding="utf-8")
-)
-if len(knowledge["videos"]) != 25:
-    raise SystemExit(f"Expected 25 pilot videos, found {len(knowledge['videos'])}")
 
 queue = json.loads(
     (ROOT / "data" / "processing" / "douyin_queue.json").read_text(encoding="utf-8")
@@ -72,19 +64,7 @@ skill_knowledge = json.loads(
         / "knowledge-base.json"
     ).read_text(encoding="utf-8")
 )
-if skill_knowledge != knowledge:
-    raise SystemExit("Pilot skill knowledge base is out of sync with project pilot knowledge base")
+if skill_knowledge != douyin_knowledge:
+    raise SystemExit("Skill knowledge base is out of sync with full Douyin knowledge base")
 
-full_skill_knowledge = json.loads(
-    (
-        ROOT
-        / "skills"
-        / "liuhui-badminton-coach-full"
-        / "references"
-        / "knowledge-base.json"
-    ).read_text(encoding="utf-8")
-)
-if full_skill_knowledge != douyin_knowledge:
-    raise SystemExit("Full skill knowledge base is out of sync with full Douyin knowledge base")
-
-print("Validated JSON, Draw.io, Skill metadata, pilot sync, and full skill sync.")
+print("Validated JSON, Draw.io, Skill metadata, and full skill sync.")
