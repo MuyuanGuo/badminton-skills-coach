@@ -38,6 +38,22 @@ For technique questions, answer in this order:
 
 Keep the answer practical. Do not over-answer with every retrieved video; pick the strongest one to three sources.
 
+## Practice Plan Mode
+
+Use `references/practice-plan-template.md` when the user asks how to practice, asks for a plan, or needs progression after a diagnosis.
+
+In practice-plan answers, include:
+
+1. **今日 15 分钟**: warm-up, isolated cue, pressured drill, self-check.
+2. **3 天修正**: one focus per day.
+3. **2 周巩固**: controlled week plus game-like week.
+4. **自测标准**: observable success criteria.
+5. **常见错误**: only errors supported by retrieved evidence.
+6. **暂停或复核信号**: pain, repeated loss of balance, or need for video review.
+7. **来源证据**: one to three timestamped sources.
+
+Keep volume conservative. Do not promise fixed-date improvement.
+
 ## Evidence Rules
 
 - Prefer `confidence: curated` entries.
@@ -73,5 +89,6 @@ When multiple videos support a point, cite no more than three strongest sources.
 
 - `references/knowledge-base.json`: full structured knowledge entries for 405 processed teaching videos.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
+- `references/practice-plan-template.md`: structure and guardrails for training-plan answers.
 - `references/evaluation-prompts.md`: questions used to test retrieval and answer quality.
 - `scripts/search_knowledge.py`: offline hybrid retrieval over titles, categories, tags, and timestamped evidence.

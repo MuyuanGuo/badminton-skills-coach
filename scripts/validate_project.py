@@ -86,4 +86,18 @@ if not topic_markdown.exists():
 if "## Topic Map" not in topic_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Skill topic index markdown is missing the topic map")
 
-print("Validated JSON, Draw.io, Skill metadata, full skill sync, and topic index.")
+practice_template = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "practice-plan-template.md"
+)
+if not practice_template.exists():
+    raise SystemExit("Skill practice-plan template is missing")
+practice_template_text = practice_template.read_text(encoding="utf-8")
+for required_heading in ["今日 15 分钟", "3 天修正", "2 周巩固", "来源证据"]:
+    if required_heading not in practice_template_text:
+        raise SystemExit(f"Practice-plan template is missing {required_heading}")
+
+print("Validated JSON, Draw.io, Skill metadata, full skill sync, topic index, and practice template.")

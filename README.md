@@ -115,6 +115,7 @@ Skill 的设计原则：
 - 引用原始抖音视频链接和时间戳
 - 区分诊断、原理、动作提示和训练方法
 - 按固定回答合同输出证据型教练建议
+- 在用户需要训练安排时输出练习处方
 - 优先使用有转写证据或人工整理证据的内容
 - 对需要视觉复核的视频保持谨慎
 - 不扮演刘辉本人，不暗示官方认可
@@ -140,6 +141,7 @@ The skill is designed to:
 - Cite source Douyin video URLs and timestamp ranges
 - Separate diagnosis, principle, correction cues, and drills
 - Follow a fixed answer contract for evidence-backed coaching responses
+- Produce a practice-plan prescription when the user asks how to train
 - Prefer transcript-backed or curated evidence
 - Be cautious when a video needs visual review
 - Avoid impersonating 刘辉 or implying official endorsement
@@ -195,6 +197,7 @@ skills/
     SKILL.md
     references/knowledge-base.json
     references/topic-index.md
+    references/practice-plan-template.md
     scripts/search_knowledge.py
 
 output/
@@ -232,6 +235,7 @@ skills/
     SKILL.md
     references/knowledge-base.json
     references/topic-index.md
+    references/practice-plan-template.md
     scripts/search_knowledge.py
 
 output/

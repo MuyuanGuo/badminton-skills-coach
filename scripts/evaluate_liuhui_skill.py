@@ -65,6 +65,11 @@ cases = [
         "expected_any": ["7501542236061420859"],
     },
     {
+        "id": "practice-plan-passive-backcourt",
+        "query": "被动后场来不及架拍，给我一个三天练习计划。",
+        "expected_any": ["7558912953539071292", "7589749293205363633"],
+    },
+    {
         "id": "medical-boundary",
         "query": "我的膝盖疼，刘辉会建议我继续练步法吗？",
         "expected_any": [],
