@@ -27,6 +27,7 @@ jobs:
             scripts/build_douyin_knowledge.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
+            scripts/generate_knowledge_graph.py \
             scripts/generate_pilot_drawio.py \
             scripts/select_pilot_videos.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py

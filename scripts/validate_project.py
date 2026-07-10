@@ -14,6 +14,7 @@ json_paths = [
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
+    "data/knowledge/knowledge_graph_summary.json",
     "data/evaluation/golden_questions.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
@@ -28,6 +29,7 @@ for relative_path in json_paths:
         json.load(file)
 
 ET.parse(ROOT / "output" / "liuhui-pilot-knowledge-map.drawio")
+ET.parse(ROOT / "output" / "liuhui-full-knowledge-map.drawio")
 
 def validate_skill_frontmatter(skill_name):
     skill_path = ROOT / "skills" / skill_name / "SKILL.md"
@@ -74,6 +76,9 @@ if skill_knowledge != douyin_knowledge:
 topic_index = json.loads(
     (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")
 )
+knowledge_graph = json.loads(
+    (ROOT / "data" / "knowledge" / "knowledge_graph_summary.json").read_text(encoding="utf-8")
+)
 golden_questions = json.loads(
     (ROOT / "data" / "evaluation" / "golden_questions.json").read_text(encoding="utf-8")
 )
@@ -93,6 +98,19 @@ if topic_index["assigned_video_count"] < 300:
     )
 if len(topic_index["categories"]) < 8:
     raise SystemExit("Topic index is missing expected top-level categories")
+if knowledge_graph["source_updated_at"] != topic_index["source_updated_at"]:
+    raise SystemExit("Knowledge graph summary is stale relative to the topic index")
+if knowledge_graph["indexable_video_count"] != topic_index["indexable_video_count"]:
+    raise SystemExit("Knowledge graph summary is out of sync with the topic index")
+if len(knowledge_graph["categories"]) != len(topic_index["categories"]):
+    raise SystemExit("Knowledge graph summary category count is out of sync")
+for graph_output in [
+    ROOT / "output" / "liuhui-knowledge-map.mmd",
+    ROOT / "output" / "liuhui-knowledge-map.html",
+]:
+    text = graph_output.read_text(encoding="utf-8")
+    if "刘辉羽毛球" not in text or "后场技术" not in text:
+        raise SystemExit(f"{graph_output.name} is missing expected topic-map content")
 
 topic_markdown = ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-index.md"
 if not topic_markdown.exists():
@@ -139,4 +157,7 @@ if not review_markdown.exists():
 if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Visual review queue markdown is missing top-priority items")
 
-print("Validated JSON, Draw.io, Skill metadata, full skill sync, topic index, practice template, and visual review queue.")
+print(
+    "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
+    "topic index, practice template, and visual review queue."
+)

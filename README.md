@@ -157,7 +157,7 @@ The skill is designed to:
 - `faster-whisper`：本地中文语音识别
 - Codex Skills：封装可复用教练工作流
 - Git / GitHub Actions：版本管理和 CI 验证
-- Draw.io：早期知识图谱与分类可视化
+- Draw.io / Mermaid / HTML：全量教学主题知识图谱与可交互浏览页
 
 **English**
 
@@ -166,7 +166,7 @@ The skill is designed to:
 - `faster-whisper`: local Chinese ASR transcription
 - Codex Skills: reusable coaching workflow packaging
 - Git / GitHub Actions: version control and CI validation
-- Draw.io: early knowledge-map and classification visualization
+- Draw.io / Mermaid / HTML: full teaching-topic knowledge graph and interactive browser page
 
 ## 仓库结构 / Repository Layout
 
@@ -180,6 +180,7 @@ data/
   knowledge/
     douyin_knowledge_base.json     当前 405 条全量知识库
     topic_index.json               自动生成的主题索引
+    knowledge_graph_summary.json   知识图谱摘要数据
     pilot_teaching_notes.json      试点人工笔记
   evaluation/
     golden_questions.json          端到端质量回归问题
@@ -196,6 +197,7 @@ scripts/
   build_douyin_knowledge.py        构建全量知识库
   build_topic_index.py             构建主题索引
   build_visual_review_queue.py     构建视觉复核队列
+  generate_knowledge_graph.py      生成 Draw.io / Mermaid / HTML 知识图谱
   validate_project.py              项目验证
   evaluate_liuhui_skill.py         检索评估
   evaluate_answer_quality.py       Golden question 质量评估
@@ -212,6 +214,9 @@ output/
   failed_extraction_review.*       35 条失败项复核记录
   golden_answer_review.md          Golden question 评估报告
   visual_review_queue.md           视觉复核工作单
+  liuhui-full-knowledge-map.drawio 全量 Draw.io 知识图谱
+  liuhui-knowledge-map.mmd         Mermaid 知识图谱
+  liuhui-knowledge-map.html        可交互知识图谱页面
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
 ```
@@ -226,6 +231,7 @@ data/
   knowledge/
     douyin_knowledge_base.json     Current full 405-video knowledge base
     topic_index.json               Generated topic index
+    knowledge_graph_summary.json   Knowledge-graph summary data
     pilot_teaching_notes.json      Curated pilot notes
   evaluation/
     golden_questions.json          End-to-end quality regression questions
@@ -242,6 +248,7 @@ scripts/
   build_douyin_knowledge.py        Full knowledge-base builder
   build_topic_index.py             Topic-index builder
   build_visual_review_queue.py     Visual-review queue builder
+  generate_knowledge_graph.py      Generate Draw.io / Mermaid / HTML knowledge maps
   validate_project.py              Repository validation
   evaluate_liuhui_skill.py         Retrieval evaluation
   evaluate_answer_quality.py       Golden-question quality evaluation
@@ -258,6 +265,9 @@ output/
   failed_extraction_review.*       Review report for the recovered 35 failures
   golden_answer_review.md          Golden-question evaluation report
   visual_review_queue.md           Visual-review worksheet
+  liuhui-full-knowledge-map.drawio Full Draw.io knowledge map
+  liuhui-knowledge-map.mmd         Mermaid knowledge map
+  liuhui-knowledge-map.html        Interactive knowledge-map page
   liuhui-pilot-knowledge-map.drawio
   liuhui-skill-retrieval-evaluation.json
 ```
@@ -292,8 +302,10 @@ python3 -m venv .venv
 运行验证：
 
 ```bash
+python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
+python3 scripts/evaluate_answer_quality.py
 ```
 
 直接测试检索：
@@ -324,8 +336,10 @@ python3 -m venv .venv
 Run validation:
 
 ```bash
+python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
+python3 scripts/evaluate_answer_quality.py
 ```
 
 Try retrieval directly:
@@ -556,8 +570,10 @@ skills/liuhui-badminton-coach/references/knowledge-base.json
 无论采用哪种方式，都应运行：
 
 ```bash
+python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
+python3 scripts/evaluate_answer_quality.py
 ```
 
 **English**
@@ -583,8 +599,10 @@ The repository now keeps one full skill:
 Whichever path you choose, run:
 
 ```bash
+python3 scripts/generate_knowledge_graph.py
 python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
+python3 scripts/evaluate_answer_quality.py
 ```
 
 ## GitHub Actions / CI
