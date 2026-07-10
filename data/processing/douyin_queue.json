@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-07-10T03:16:40.684031+00:00",
+  "updated_at": "2026-07-10T03:29:33.943038+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 264,
-    "extraction_failed": 34,
-    "pending": 107
+    "transcribed": 272,
+    "extraction_failed": 35,
+    "pending": 98
   },
   "items": [
     {
@@ -3541,10 +3541,10 @@
       "title": "训练的时候没有带麦，只能配音了，单双打都要有护边意识#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7122277769202896163.mp4",
+      "duration_seconds": 67.408,
+      "attempts": 2,
       "error": null
     },
     {
@@ -3553,10 +3553,10 @@
       "title": "重劈，注意结束点可不能靠前了，属于本人绝活😉#刘辉羽毛球 #羽毛球训练 #羽毛球教学 #羽毛球 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7118192644957818127.mp4",
+      "duration_seconds": 70.774,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3565,10 +3565,10 @@
       "title": "其实接被动球，最稳的就是两条腿尽量在中间留一条腿#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7117821949165718824.mp4",
+      "duration_seconds": 60.302,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3577,10 +3577,10 @@
       "title": "这样也绝对不会膝盖受shang了#刘辉羽毛球 #羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7117079751398919465.mp4",
+      "duration_seconds": 70.147,
+      "attempts": 2,
       "error": null
     },
     {
@@ -3589,11 +3589,11 @@
       "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者@皓憨憨 #刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
+      "status": "extraction_failed",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 2,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7115241358255803683",
@@ -3601,10 +3601,10 @@
       "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "后场技术",
       "tags": "后场技术；双打战术；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7115241358255803683.mp4",
+      "duration_seconds": 33.506,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3613,10 +3613,10 @@
       "title": "注意把肘往里往下拉也能勾的更贴#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7114483272972881193.mp4",
+      "duration_seconds": 76.394,
+      "attempts": 2,
       "error": null
     },
     {
@@ -3628,8 +3628,8 @@
       "status": "pending",
       "media_path": null,
       "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "attempts": 1,
+      "error": "media URL not observed after bounded wait"
     },
     {
       "video_id": "7112628690395106560",
@@ -3637,10 +3637,10 @@
       "title": "时间不够，太长了怕做不精细，第一集概念，第二集讲动作#刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
       "category": "训练与纠错",
       "tags": "训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7112628690395106560.mp4",
+      "duration_seconds": 120.256,
+      "attempts": 1,
       "error": null
     },
     {
@@ -3649,10 +3649,10 @@
       "title": "方法一把球放到侧面，方法二改变握拍#刘辉羽毛球 #羽毛球训练 #羽毛球教学 #羽毛球 @抖音小助手",
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
-      "status": "pending",
-      "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
+      "status": "transcribed",
+      "media_path": "data/raw_videos/douyin/batch-034/7111887264187190528.mp4",
+      "duration_seconds": 146.68,
+      "attempts": 1,
       "error": null
     },
     {
