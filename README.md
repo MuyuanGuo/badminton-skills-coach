@@ -153,6 +153,7 @@ The skill is designed to:
 **中文**
 
 - Python 3：队列处理、JSON 构建、验证、离线混合检索、评估
+- Python 标准库 HTTP 服务：本地网页问答 MVP
 - Node.js：抖音目录分类辅助与浏览器页面脚本
 - `faster-whisper`：本地中文语音识别
 - Codex Skills：封装可复用教练工作流
@@ -162,6 +163,7 @@ The skill is designed to:
 **English**
 
 - Python 3: queue processing, JSON generation, validation, offline hybrid retrieval, evaluation
+- Python standard-library HTTP server: local web Q&A MVP
 - Node.js: Douyin catalog helpers and browser-page scripts
 - `faster-whisper`: local Chinese ASR transcription
 - Codex Skills: reusable coaching workflow packaging
@@ -188,6 +190,11 @@ data/
   review/
     visual_review_queue.json       待视觉复核视频队列
 
+apps/
+  web/
+    server.py                      本地网页 API 与静态文件服务
+    static/index.html              网页问答界面
+
 scripts/
   classify_douyin_catalog.mjs      目录主题分类
   check_douyin_updates.py          检查主页新增视频
@@ -203,6 +210,7 @@ scripts/
   evaluate_liuhui_skill.py         检索评估
   evaluate_answer_quality.py       Golden question 质量评估
   run_acceptance_review.py         实战问答验收
+  test_web_mvp.py                  网页 MVP 冒烟测试
 
 skills/
   liuhui-badminton-coach/
@@ -244,6 +252,11 @@ data/
   review/
     visual_review_queue.json       Visual-review queue
 
+apps/
+  web/
+    server.py                      Local web API and static-file server
+    static/index.html              Web Q&A interface
+
 scripts/
   classify_douyin_catalog.mjs      Topic classification helper
   check_douyin_updates.py          Detect newly observed homepage videos
@@ -258,6 +271,8 @@ scripts/
   validate_project.py              Repository validation
   evaluate_liuhui_skill.py         Retrieval evaluation
   evaluate_answer_quality.py       Golden-question quality evaluation
+  run_acceptance_review.py         Real-world acceptance review
+  test_web_mvp.py                  Web MVP smoke test
   run_acceptance_review.py         Real-world acceptance review
 
 skills/
@@ -317,6 +332,7 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
 python3 scripts/run_acceptance_review.py
+python3 scripts/test_web_mvp.py
 ```
 
 直接测试检索：
@@ -326,6 +342,18 @@ python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被压到底线的时候怎么处理" --mode semantic
+```
+
+启动网页 MVP：
+
+```bash
+python3 apps/web/server.py --port 8787
+```
+
+然后打开：
+
+```text
+http://127.0.0.1:8787
 ```
 
 **English**
@@ -352,6 +380,7 @@ python3 scripts/validate_project.py
 python3 scripts/evaluate_liuhui_skill.py
 python3 scripts/evaluate_answer_quality.py
 python3 scripts/run_acceptance_review.py
+python3 scripts/test_web_mvp.py
 ```
 
 Try retrieval directly:
@@ -361,6 +390,18 @@ python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被动后场来不及架拍怎么办"
 python3 skills/liuhui-badminton-coach/scripts/search_knowledge.py \
   "被压到底线的时候怎么处理" --mode semantic
+```
+
+Start the web MVP:
+
+```bash
+python3 apps/web/server.py --port 8787
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8787
 ```
 
 ## 安装 Codex Skill / Install The Codex Skill

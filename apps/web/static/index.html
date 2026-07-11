@@ -1,0 +1,323 @@
+<div id="app">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">刘辉羽毛球教学知识库</p>
+      <h1>羽毛球技术问答</h1>
+      <p class="subhead">基于 405 条抖音教学视频索引，返回诊断、练习建议、主题路径和证据链接。</p>
+    </div>
+    <div class="status" id="status">本地 MVP</div>
+  </header>
+
+  <main class="layout">
+    <section class="composer" aria-label="提问区">
+      <label for="mode">回答模式</label>
+      <select id="mode">
+        <option value="auto">自动判断</option>
+        <option value="diagnosis">技术诊断</option>
+        <option value="learning_path">学习路径</option>
+        <option value="topic_navigation">主题导航</option>
+        <option value="practice_plan">练习计划</option>
+      </select>
+
+      <label for="query">问题</label>
+      <textarea id="query" rows="5">我杀球挺用力，但总被对手平挡回来，是不是还要练更重？</textarea>
+
+      <div class="actions">
+        <button id="ask">生成回答</button>
+      </div>
+
+      <div class="examples" aria-label="示例问题">
+        <button data-query="我想系统学杀球，按什么顺序学最合理？" data-mode="learning_path">系统学杀球</button>
+        <button data-query="刘辉的步法教学主要分哪几块？" data-mode="topic_navigation">步法主题</button>
+        <button data-query="我被动后场来不及架拍，给我一个三天计划。" data-mode="practice_plan">三天计划</button>
+        <button data-query="我膝盖疼，但想继续练低重心步法，可以硬练吗？" data-mode="auto">疼痛边界</button>
+      </div>
+    </section>
+
+    <section class="answer" aria-live="polite">
+      <div id="empty" class="empty">
+        <h2>输入问题后生成结构化回答</h2>
+        <p>网页会调用本地 API，复用现有检索和主题导航脚本。</p>
+      </div>
+      <div id="result" hidden></div>
+    </section>
+  </main>
+</div>
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f6f2;
+    --fg: #1d2421;
+    --muted: #60706a;
+    --card: #ffffff;
+    --line: #cbd5cf;
+    --accent: #176b5b;
+    --accent-soft: #dcefea;
+    --danger: #9a5968;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141817;
+      --fg: #edf3ef;
+      --muted: #a9b6b0;
+      --card: #202723;
+      --line: #3a4741;
+      --accent: #7fd0bd;
+      --accent-soft: #173b34;
+      --danger: #e0a6b4;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  #app {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 44px;
+  }
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    margin: 0 0 6px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: 0; }
+  h1 { font-size: 30px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+  p { color: var(--muted); line-height: 1.6; }
+  .subhead { margin: 8px 0 0; }
+  .status {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--muted);
+    background: var(--card);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 18px;
+    margin-top: 18px;
+    align-items: start;
+  }
+  .composer, .answer > div {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  label {
+    display: block;
+    margin: 0 0 7px;
+    font-weight: 600;
+  }
+  select, textarea, button {
+    width: 100%;
+    font: inherit;
+  }
+  select, textarea {
+    margin-bottom: 14px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  textarea { resize: vertical; min-height: 128px; }
+  button {
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 12px;
+    color: var(--fg);
+    background: var(--card);
+    cursor: pointer;
+  }
+  #ask {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .examples {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .examples button { font-size: 13px; }
+  .empty { min-height: 340px; display: grid; align-content: center; }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .pill {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 9px;
+    color: var(--muted);
+    background: var(--bg);
+    font-size: 13px;
+  }
+  .section {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-top: 14px;
+  }
+  .section:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+  ul { padding-left: 20px; }
+  li { margin: 6px 0; line-height: 1.5; }
+  .source {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+    background: color-mix(in srgb, var(--accent-soft) 42%, transparent);
+  }
+  .source a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .source small {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+  }
+  .error {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  @media (max-width: 860px) {
+    .topbar, .layout { grid-template-columns: 1fr; }
+    .examples { grid-template-columns: 1fr; }
+    h1 { font-size: 25px; }
+  }
+</style>
+
+<script>
+  const queryEl = document.getElementById("query");
+  const modeEl = document.getElementById("mode");
+  const askEl = document.getElementById("ask");
+  const emptyEl = document.getElementById("empty");
+  const resultEl = document.getElementById("result");
+  const statusEl = document.getElementById("status");
+
+  function asArray(value) {
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function renderValue(value) {
+    if (Array.isArray(value)) {
+      if (!value.length) return "<p>暂无明确证据。</p>";
+      return `<ul>${value.map(item => `<li>${renderInline(item)}</li>`).join("")}</ul>`;
+    }
+    if (typeof value === "object" && value) {
+      if (value.stage || value.goal) {
+        return `<strong>${escapeHtml(value.stage || "")}</strong>：${escapeHtml(value.goal || "")}`;
+      }
+      return `<pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>`;
+    }
+    return `<p>${escapeHtml(value || "暂无明确证据。")}</p>`;
+  }
+
+  function renderInline(value) {
+    if (typeof value === "object" && value) {
+      if (value.stage || value.goal) return renderValue(value);
+      return escapeHtml(JSON.stringify(value));
+    }
+    return escapeHtml(value);
+  }
+
+  function renderSources(sources) {
+    if (!sources || !sources.length) return "";
+    return sources.map(source => `
+      <article class="source">
+        <a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">${escapeHtml(source.title)}</a>
+        <small>${escapeHtml(source.category)} · ${escapeHtml(source.confidence)} · score ${escapeHtml(source.score)}</small>
+        ${asArray(source.evidence).slice(0, 2).map(item => `
+          <small>${escapeHtml(item.timestamp)}：${escapeHtml(item.text)}</small>
+        `).join("")}
+      </article>
+    `).join("");
+  }
+
+  function render(data) {
+    const answer = data.answer || {};
+    const sections = Object.entries(answer).map(([title, value]) => {
+      if (["证据来源", "来源证据", "代表证据"].includes(title)) {
+        return `<section class="section"><h3>${escapeHtml(title)}</h3>${renderSources(value)}</section>`;
+      }
+      return `<section class="section"><h3>${escapeHtml(title)}</h3>${renderValue(value)}</section>`;
+    }).join("");
+
+    resultEl.innerHTML = `
+      <div class="meta">
+        <span class="pill">模式：${escapeHtml(data.mode)}</span>
+        <span class="pill">证据：${escapeHtml(data.search.results.length)} 条</span>
+        <span class="pill">检索词：${escapeHtml(data.search.terms.slice(0, 6).join("、"))}</span>
+      </div>
+      ${sections}
+      <section class="section"><h3>声明</h3><p>${escapeHtml(data.disclaimer)}</p></section>
+    `;
+    emptyEl.hidden = true;
+    resultEl.hidden = false;
+  }
+
+  async function ask() {
+    const query = queryEl.value.trim();
+    if (!query) return;
+    askEl.disabled = true;
+    statusEl.textContent = "生成中";
+    try {
+      const response = await fetch("/api/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({query, mode: modeEl.value})
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "请求失败");
+      render(data);
+      statusEl.textContent = "完成";
+    } catch (error) {
+      resultEl.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
+      emptyEl.hidden = true;
+      resultEl.hidden = false;
+      statusEl.textContent = "失败";
+    } finally {
+      askEl.disabled = false;
+    }
+  }
+
+  askEl.addEventListener("click", ask);
+  document.querySelectorAll(".examples button").forEach(button => {
+    button.addEventListener("click", () => {
+      queryEl.value = button.dataset.query;
+      modeEl.value = button.dataset.mode;
+      ask();
+    });
+  });
+</script>

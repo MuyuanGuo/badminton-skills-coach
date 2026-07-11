@@ -177,7 +177,16 @@ if not review_markdown.exists():
 if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Visual review queue markdown is missing top-priority items")
 
+web_server = ROOT / "apps" / "web" / "server.py"
+web_index = ROOT / "apps" / "web" / "static" / "index.html"
+if not web_server.exists() or not web_index.exists():
+    raise SystemExit("Web MVP files are missing")
+web_index_text = web_index.read_text(encoding="utf-8")
+for required_text in ["羽毛球技术问答", "/api/ask", "证据来源"]:
+    if required_text not in web_index_text:
+        raise SystemExit(f"Web MVP index is missing {required_text}")
+
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, practice template, and visual review queue."
+    "topic index, practice template, visual review queue, and web MVP."
 )
