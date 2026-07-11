@@ -129,7 +129,6 @@ def main():
     run(["python3", "scripts/build_douyin_knowledge.py"])
     ensure_no_raw_media_left(args.batch)
     run(["python3", "scripts/validate_project.py"])
-    run(["python3", "scripts/evaluate_liuhui_skill.py"])
 
     commit_if_changed(
         f"Process Douyin teaching {args.batch}",

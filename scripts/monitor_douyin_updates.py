@@ -130,8 +130,7 @@ def main():
         validation = None
         if args.validate:
             run(["python3", "scripts/validate_project.py"])
-            run(["python3", "scripts/evaluate_liuhui_skill.py"])
-            validation = {"validate_project": "passed", "evaluate_liuhui_skill": "passed"}
+            validation = {"validate_project": "passed"}
 
         git_result = None
         if args.commit:

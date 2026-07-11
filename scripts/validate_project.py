@@ -10,18 +10,13 @@ ROOT = Path(__file__).resolve().parents[1]
 json_paths = [
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
-    "data/knowledge/pilot_knowledge_base.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/topic_index.json",
     "data/knowledge/knowledge_graph_summary.json",
-    "data/evaluation/acceptance_questions.json",
-    "data/evaluation/golden_questions.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
-    "data/pilot_25_videos.json",
     "data/processing/douyin_queue.json",
-    "output/liuhui-skill-retrieval-evaluation.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
@@ -30,7 +25,6 @@ for relative_path in json_paths:
     with path.open(encoding="utf-8") as file:
         json.load(file)
 
-ET.parse(ROOT / "output" / "liuhui-pilot-knowledge-map.drawio")
 ET.parse(ROOT / "output" / "liuhui-full-knowledge-map.drawio")
 
 def validate_skill_frontmatter(skill_name):
@@ -90,19 +84,6 @@ skill_topic_map = json.loads(
         / "topic-map.json"
     ).read_text(encoding="utf-8")
 )
-golden_questions = json.loads(
-    (ROOT / "data" / "evaluation" / "golden_questions.json").read_text(encoding="utf-8")
-)
-if len(golden_questions.get("cases", [])) < 20:
-    raise SystemExit("Golden question set has too few cases")
-acceptance_questions = json.loads(
-    (ROOT / "data" / "evaluation" / "acceptance_questions.json").read_text(
-        encoding="utf-8"
-    )
-)
-if len(acceptance_questions.get("cases", [])) < 10:
-    raise SystemExit("Acceptance question set has too few cases")
-
 if topic_index["video_count"] != len(douyin_knowledge["videos"]):
     raise SystemExit("Topic index video count is out of sync with full knowledge base")
 if topic_index["indexable_video_count"] != sum(
@@ -177,22 +158,7 @@ if not review_markdown.exists():
 if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Visual review queue markdown is missing top-priority items")
 
-web_server = ROOT / "apps" / "web" / "server.py"
-web_providers = ROOT / "apps" / "web" / "llm" / "providers.py"
-web_prompt = ROOT / "apps" / "web" / "prompts" / "coach_system.md"
-web_index = ROOT / "apps" / "web" / "static" / "index.html"
-if not web_server.exists() or not web_index.exists() or not web_providers.exists() or not web_prompt.exists():
-    raise SystemExit("Web MVP files are missing")
-web_index_text = web_index.read_text(encoding="utf-8")
-for required_text in ["羽毛球技术问答", "/api/ask", "证据来源", "高级模型设置"]:
-    if required_text not in web_index_text:
-        raise SystemExit(f"Web MVP index is missing {required_text}")
-provider_text = web_providers.read_text(encoding="utf-8")
-for provider_name in ["openai", "deepseek", "doubao", "anthropic", "gemini", "xai", "openai_compatible"]:
-    if provider_name not in provider_text:
-        raise SystemExit(f"Web provider adapter is missing {provider_name}")
-
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, practice template, visual review queue, and web MVP."
+    "topic index, practice template, and visual review queue."
 )

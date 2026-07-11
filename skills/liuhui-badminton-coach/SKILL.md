@@ -116,6 +116,5 @@ When multiple videos support a point, cite no more than three strongest sources.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
 - `references/practice-plan-template.md`: structure and guardrails for training-plan answers.
-- `references/evaluation-prompts.md`: questions used to test retrieval and answer quality.
 - `scripts/search_knowledge.py`: offline hybrid retrieval over titles, categories, tags, and timestamped evidence.
 - `scripts/navigate_topics.py`: offline topic navigation and learning-path scaffold over the structured topic map.

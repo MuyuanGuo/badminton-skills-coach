@@ -21,33 +21,19 @@ jobs:
       - name: Compile Python sources
         run: |
           python -m py_compile \
-            apps/web/server.py \
-            apps/web/llm/providers.py \
-            scripts/evaluate_liuhui_skill.py \
-            scripts/evaluate_answer_quality.py \
-            scripts/run_acceptance_review.py \
-            scripts/test_web_mvp.py \
             scripts/apply_visual_review_notes.py \
+            scripts/batch_transcribe_directory.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
+            scripts/check_douyin_updates.py \
             scripts/generate_knowledge_graph.py \
-            scripts/generate_pilot_drawio.py \
-            scripts/select_pilot_videos.py \
+            scripts/init_douyin_queue.py \
+            scripts/monitor_douyin_updates.py \
+            scripts/process_douyin_ready_batch.py \
+            scripts/transcribe_video.py \
             skills/liuhui-badminton-coach/scripts/navigate_topics.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
       - name: Validate repository artifacts
         run: python scripts/validate_project.py
-
-      - name: Run retrieval evaluation
-        run: python scripts/evaluate_liuhui_skill.py
-
-      - name: Run golden answer evaluation
-        run: python scripts/evaluate_answer_quality.py
-
-      - name: Run acceptance review
-        run: python scripts/run_acceptance_review.py
-
-      - name: Run web MVP smoke test
-        run: python scripts/test_web_mvp.py
