@@ -11,6 +11,9 @@ from server import answer_query  # noqa: E402
 
 
 def main():
+    index_text = (ROOT / "apps" / "web" / "static" / "index.html").read_text(encoding="utf-8")
+    if '<meta charset="utf-8">' not in index_text:
+        raise SystemExit("Expected UTF-8 meta tag in web index")
     answer = answer_query(
         "我想系统学杀球，按什么顺序学最合理？",
         "learning_path",

@@ -202,6 +202,12 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self):
+        self.serve_static(send_body=True)
+
+    def do_HEAD(self):
+        self.serve_static(send_body=False)
+
+    def serve_static(self, send_body):
         path = urlparse(self.path).path
         if path == "/health":
             self.send_json({"ok": True})
@@ -212,11 +218,15 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error(404)
             return
         content = target.read_bytes()
+        content_type = mimetypes.guess_type(str(target))[0] or "application/octet-stream"
+        if content_type.startswith("text/") or content_type in {"application/javascript", "application/json"}:
+            content_type = f"{content_type}; charset=utf-8"
         self.send_response(200)
-        self.send_header("Content-Type", mimetypes.guess_type(str(target))[0] or "application/octet-stream")
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
+        if send_body:
+            self.wfile.write(content)
 
     def do_POST(self):
         path = urlparse(self.path).path
