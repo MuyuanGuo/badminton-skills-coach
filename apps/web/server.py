@@ -2,7 +2,10 @@
 import argparse
 import json
 import mimetypes
+import os
 import subprocess
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -21,10 +24,17 @@ ANSWER_SECTIONS = {
     "boundary": ["边界说明", "安全替代", "证据边界"],
 }
 
+LLM_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
+OPENAI_RESPONSES_URL = os.getenv("OPENAI_RESPONSES_URL", "https://api.openai.com/v1/responses")
+
 
 def run_json(command):
     completed = subprocess.run(command, check=True, capture_output=True, text=True)
     return json.loads(completed.stdout)
+
+
+def llm_available():
+    return bool(os.getenv("OPENAI_API_KEY"))
 
 
 def infer_mode(query, requested_mode):
@@ -158,6 +168,82 @@ def build_boundary(query, sources):
     }
 
 
+def source_for_prompt(source):
+    return {
+        "video_id": source.get("video_id"),
+        "title": source.get("title"),
+        "url": source.get("url"),
+        "category": source.get("category"),
+        "confidence": source.get("confidence"),
+        "score": source.get("score"),
+        "teaching_note": source.get("teaching_note"),
+    }
+
+
+def parse_response_text(payload):
+    if payload.get("output_text"):
+        return payload["output_text"]
+    chunks = []
+    for item in payload.get("output", []):
+        for content in item.get("content", []):
+            text = content.get("text")
+            if text:
+                chunks.append(text)
+    return "\n".join(chunks).strip()
+
+
+def synthesize_with_llm(query, answer_mode, template_answer, sources, navigation):
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        return None
+
+    prompt_payload = {
+        "query": query,
+        "mode": answer_mode,
+        "required_sections": ANSWER_SECTIONS[answer_mode],
+        "template_answer": template_answer,
+        "navigation": navigation,
+        "sources": [source_for_prompt(item) for item in sources[:5]],
+    }
+    system_prompt = (
+        "你是一个羽毛球技术问答助手。必须基于给定证据回答，不能冒充刘辉本人，"
+        "不能暗示官方授权或背书。回答使用简洁中文，按 required_sections 的顺序组织。"
+        "每个证据支持的要点都要引用视频标题、时间戳或说明人工视觉复核、URL。"
+        "如果证据不足，明确说明边界。疼痛或伤病问题不能医疗诊断，应建议暂停疼痛动作并咨询专业人士。"
+    )
+    request_payload = {
+        "model": LLM_MODEL,
+        "input": [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": "请根据以下 JSON 生成最终网页回答：\n"
+                + json.dumps(prompt_payload, ensure_ascii=False, indent=2),
+            },
+        ],
+        "temperature": 0.2,
+    }
+    request = urllib.request.Request(
+        OPENAI_RESPONSES_URL,
+        data=json.dumps(request_payload, ensure_ascii=False).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=45) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        detail = error.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"OpenAI API error {error.code}: {detail}") from error
+    text = parse_response_text(payload)
+    if not text:
+        raise RuntimeError("OpenAI API returned no answer text")
+    return text
+
+
 def answer_query(query, mode):
     answer_mode = infer_mode(query, mode)
     navigation = None
@@ -178,15 +264,32 @@ def answer_query(query, mode):
     else:
         answer = build_diagnosis(query, sources)
 
+    answer_text = None
+    generator = "template"
+    llm_error = None
+    try:
+        answer_text = synthesize_with_llm(query, answer_mode, answer, sources, navigation)
+        if answer_text:
+            generator = "llm"
+    except Exception as error:
+        llm_error = str(error)
+
     return {
         "query": query,
         "mode": answer_mode,
+        "generator": generator,
         "sections": ANSWER_SECTIONS[answer_mode],
+        "answer_text": answer_text,
         "answer": answer,
         "navigation": navigation,
         "search": {
             "terms": search.get("terms", []),
             "results": [compact_source(item) for item in sources],
+        },
+        "llm": {
+            "available": llm_available(),
+            "model": LLM_MODEL if llm_available() else None,
+            "error": llm_error,
         },
         "disclaimer": "非刘辉本人，不代表本人或机构官方背书；回答基于当前索引的公开教学知识库。",
     }
@@ -210,7 +313,7 @@ class Handler(BaseHTTPRequestHandler):
     def serve_static(self, send_body):
         path = urlparse(self.path).path
         if path == "/health":
-            self.send_json({"ok": True})
+            self.send_json({"ok": True, "llm_available": llm_available()})
             return
         relative = "index.html" if path in {"/", ""} else path.lstrip("/")
         target = (STATIC_DIR / relative).resolve()

@@ -356,6 +356,16 @@ python3 apps/web/server.py --port 8787
 http://127.0.0.1:8787
 ```
 
+默认网页使用离线模板综合回答，优点是零依赖、可本地运行，缺点是表达质量低于 Codex Skill。若要接近 Codex 内 Skill 的回答质量，配置 OpenAI API：
+
+```bash
+export OPENAI_API_KEY="你的 API key"
+export OPENAI_MODEL="gpt-4.1-mini"
+python3 apps/web/server.py --port 8787
+```
+
+后端会继续先检索本地知识库和主题图谱，再把证据、模式和回答规范交给模型生成最终回答。没有 `OPENAI_API_KEY` 时自动回退到离线模板。
+
 **English**
 
 Clone the repository:
@@ -403,6 +413,16 @@ Then open:
 ```text
 http://127.0.0.1:8787
 ```
+
+By default, the web app uses deterministic local templates. That keeps it dependency-free, but answer quality is lower than the Codex Skill. To enable higher-quality synthesis, configure the OpenAI API:
+
+```bash
+export OPENAI_API_KEY="your API key"
+export OPENAI_MODEL="gpt-4.1-mini"
+python3 apps/web/server.py --port 8787
+```
+
+The backend still retrieves local evidence and topic-map context first, then sends the evidence, mode, and answer contract to the model. Without `OPENAI_API_KEY`, it automatically falls back to the local template.
 
 ## 安装 Codex Skill / Install The Codex Skill
 

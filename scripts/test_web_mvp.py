@@ -20,6 +20,8 @@ def main():
     )
     if answer["mode"] != "learning_path":
         raise SystemExit("Expected learning_path mode")
+    if answer["generator"] not in {"template", "llm"}:
+        raise SystemExit("Expected valid answer generator")
     if not answer["search"]["results"]:
         raise SystemExit("Expected evidence results")
     if "学习顺序" not in answer["answer"]:

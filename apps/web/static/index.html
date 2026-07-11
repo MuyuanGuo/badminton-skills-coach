@@ -11,7 +11,7 @@
     <div>
       <p class="eyebrow">刘辉羽毛球教学知识库</p>
       <h1>羽毛球技术问答</h1>
-      <p class="subhead">基于 405 条抖音教学视频索引，返回诊断、练习建议、主题路径和证据链接。</p>
+      <p class="subhead">基于 405 条抖音教学视频索引，返回诊断、练习建议、主题路径和证据链接。配置 OpenAI API 后使用高质量综合回答。</p>
     </div>
     <div class="status" id="status">本地 MVP</div>
   </header>
@@ -186,6 +186,11 @@
     padding-top: 14px;
     margin-top: 14px;
   }
+  .llm-answer {
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 15px;
+  }
   .section:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
   ul { padding-left: 20px; }
   li { margin: 6px 0; line-height: 1.5; }
@@ -275,6 +280,12 @@
 
   function render(data) {
     const answer = data.answer || {};
+    const generated = data.answer_text ? `
+      <section class="section">
+        <h3>回答</h3>
+        <div class="llm-answer">${escapeHtml(data.answer_text)}</div>
+      </section>
+    ` : "";
     const sections = Object.entries(answer).map(([title, value]) => {
       if (["证据来源", "来源证据", "代表证据"].includes(title)) {
         return `<section class="section"><h3>${escapeHtml(title)}</h3>${renderSources(value)}</section>`;
@@ -285,9 +296,12 @@
     resultEl.innerHTML = `
       <div class="meta">
         <span class="pill">模式：${escapeHtml(data.mode)}</span>
+        <span class="pill">生成：${escapeHtml(data.generator === "llm" ? "LLM 综合" : "离线模板")}</span>
         <span class="pill">证据：${escapeHtml(data.search.results.length)} 条</span>
         <span class="pill">检索词：${escapeHtml(data.search.terms.slice(0, 6).join("、"))}</span>
       </div>
+      ${data.llm && data.llm.error ? `<p class="error">LLM 生成失败，已回退到离线模板：${escapeHtml(data.llm.error)}</p>` : ""}
+      ${generated}
       ${sections}
       <section class="section"><h3>声明</h3><p>${escapeHtml(data.disclaimer)}</p></section>
     `;
