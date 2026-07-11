@@ -1,12 +1,12 @@
 {
   "source_profile": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "generated_at": "2026-07-09T03:38:33.088Z",
+  "generated_at": "2026-07-11T03:44:28.949075+00:00",
   "methodology": "基于主页作品区与标题文案的规则初筛；待复核项需查看视频画面或逐条作者页。",
   "counts": {
-    "total": 470,
+    "total": 471,
     "kept_teaching": 405,
     "review": 0,
-    "excluded_ads": 16,
+    "excluded_ads": 17,
     "excluded_non_teaching": 49
   },
   "videos": [

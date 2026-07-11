@@ -2,10 +2,17 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-07-09T03:28:36.312Z",
-  "collected_unique_links": 470,
-  "note": "页面声明460个作品；滚动页共捕获470个唯一视频链接，可能包含置顶、共创或推荐内容，后续需按作者复核。",
+  "collected_at": "2026-07-11T03:44:28.940269+00:00",
+  "collected_unique_links": 471,
+  "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7661007346362449893",
+      "url": "https://www.douyin.com/video/7661007346362449893",
+      "title": "华羽球线 各位穿线师辛苦了！也是因为有你们这个行业才能这么好#羽毛球 #刘辉羽毛球 #华羽",
+      "teaching_candidate": "unknown",
+      "raw_text": "华羽球线 各位穿线师辛苦了！也是因为有你们这个行业才能这么好#羽毛球 #刘辉羽毛球 #华羽"
+    },
     {
       "video_id": "7659991105622862457",
       "url": "https://www.douyin.com/video/7659991105622862457",
