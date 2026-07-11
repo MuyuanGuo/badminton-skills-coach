@@ -2,19 +2,21 @@
 import argparse
 import json
 import mimetypes
-import os
 import subprocess
-import urllib.error
-import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
+
+from llm import providers
 
 
 ROOT = Path(__file__).resolve().parents[2]
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 SEARCH = ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "search_knowledge.py"
 NAVIGATE = ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "navigate_topics.py"
+SYSTEM_PROMPT = (Path(__file__).resolve().parent / "prompts" / "coach_system.md").read_text(
+    encoding="utf-8"
+)
 
 ANSWER_SECTIONS = {
     "diagnosis": ["诊断", "刘辉相关原则", "纠正提示", "练习方法", "证据来源", "置信边界"],
@@ -24,17 +26,9 @@ ANSWER_SECTIONS = {
     "boundary": ["边界说明", "安全替代", "证据边界"],
 }
 
-LLM_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
-OPENAI_RESPONSES_URL = os.getenv("OPENAI_RESPONSES_URL", "https://api.openai.com/v1/responses")
-
-
 def run_json(command):
     completed = subprocess.run(command, check=True, capture_output=True, text=True)
     return json.loads(completed.stdout)
-
-
-def llm_available():
-    return bool(os.getenv("OPENAI_API_KEY"))
 
 
 def infer_mode(query, requested_mode):
@@ -180,23 +174,11 @@ def source_for_prompt(source):
     }
 
 
-def parse_response_text(payload):
-    if payload.get("output_text"):
-        return payload["output_text"]
-    chunks = []
-    for item in payload.get("output", []):
-        for content in item.get("content", []):
-            text = content.get("text")
-            if text:
-                chunks.append(text)
-    return "\n".join(chunks).strip()
-
-
-def synthesize_with_llm(query, answer_mode, template_answer, sources, navigation):
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
+def synthesize_with_llm(query, answer_mode, template_answer, sources, navigation, request_llm):
+    request_llm = request_llm or {}
+    provider = providers.provider_from_request(request_llm)
+    if provider == "template":
         return None
-
     prompt_payload = {
         "query": query,
         "mode": answer_mode,
@@ -205,46 +187,13 @@ def synthesize_with_llm(query, answer_mode, template_answer, sources, navigation
         "navigation": navigation,
         "sources": [source_for_prompt(item) for item in sources[:5]],
     }
-    system_prompt = (
-        "你是一个羽毛球技术问答助手。必须基于给定证据回答，不能冒充刘辉本人，"
-        "不能暗示官方授权或背书。回答使用简洁中文，按 required_sections 的顺序组织。"
-        "每个证据支持的要点都要引用视频标题、时间戳或说明人工视觉复核、URL。"
-        "如果证据不足，明确说明边界。疼痛或伤病问题不能医疗诊断，应建议暂停疼痛动作并咨询专业人士。"
+    user_prompt = "请根据以下 JSON 生成最终网页回答：\n" + json.dumps(
+        prompt_payload, ensure_ascii=False, indent=2
     )
-    request_payload = {
-        "model": LLM_MODEL,
-        "input": [
-            {"role": "system", "content": system_prompt},
-            {
-                "role": "user",
-                "content": "请根据以下 JSON 生成最终网页回答：\n"
-                + json.dumps(prompt_payload, ensure_ascii=False, indent=2),
-            },
-        ],
-        "temperature": 0.2,
-    }
-    request = urllib.request.Request(
-        OPENAI_RESPONSES_URL,
-        data=json.dumps(request_payload, ensure_ascii=False).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(request, timeout=45) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        detail = error.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"OpenAI API error {error.code}: {detail}") from error
-    text = parse_response_text(payload)
-    if not text:
-        raise RuntimeError("OpenAI API returned no answer text")
-    return text
+    return providers.synthesize(provider, request_llm, SYSTEM_PROMPT, user_prompt)
 
 
-def answer_query(query, mode):
+def answer_query(query, mode, request_llm=None):
     answer_mode = infer_mode(query, mode)
     navigation = None
     if answer_mode in {"learning_path", "topic_navigation"}:
@@ -267,10 +216,23 @@ def answer_query(query, mode):
     answer_text = None
     generator = "template"
     llm_error = None
+    llm_meta = providers.availability(request_llm)
     try:
-        answer_text = synthesize_with_llm(query, answer_mode, answer, sources, navigation)
-        if answer_text:
+        synthesized = synthesize_with_llm(
+            query, answer_mode, answer, sources, navigation, request_llm
+        )
+        if synthesized:
+            answer_text = synthesized["text"]
             generator = "llm"
+            llm_meta.update(
+                {
+                    "provider": synthesized["provider"],
+                    "provider_label": synthesized["provider_label"],
+                    "model": synthesized["model"],
+                    "key_source": synthesized["key_source"],
+                    "available": True,
+                }
+            )
     except Exception as error:
         llm_error = str(error)
 
@@ -287,8 +249,7 @@ def answer_query(query, mode):
             "results": [compact_source(item) for item in sources],
         },
         "llm": {
-            "available": llm_available(),
-            "model": LLM_MODEL if llm_available() else None,
+            **llm_meta,
             "error": llm_error,
         },
         "disclaimer": "非刘辉本人，不代表本人或机构官方背书；回答基于当前索引的公开教学知识库。",
@@ -313,7 +274,7 @@ class Handler(BaseHTTPRequestHandler):
     def serve_static(self, send_body):
         path = urlparse(self.path).path
         if path == "/health":
-            self.send_json({"ok": True, "llm_available": llm_available()})
+            self.send_json({"ok": True, "llm": providers.availability()})
             return
         relative = "index.html" if path in {"/", ""} else path.lstrip("/")
         target = (STATIC_DIR / relative).resolve()
@@ -341,10 +302,11 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
             query = str(payload.get("query", "")).strip()
             mode = str(payload.get("mode", "auto")).strip() or "auto"
+            request_llm = payload.get("llm") or {}
             if not query:
                 self.send_json({"error": "query is required"}, status=400)
                 return
-            self.send_json(answer_query(query, mode))
+            self.send_json(answer_query(query, mode, request_llm))
         except subprocess.CalledProcessError as error:
             self.send_json({"error": "backend command failed", "detail": error.stderr}, status=500)
         except Exception as error:

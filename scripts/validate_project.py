@@ -178,13 +178,19 @@ if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Visual review queue markdown is missing top-priority items")
 
 web_server = ROOT / "apps" / "web" / "server.py"
+web_providers = ROOT / "apps" / "web" / "llm" / "providers.py"
+web_prompt = ROOT / "apps" / "web" / "prompts" / "coach_system.md"
 web_index = ROOT / "apps" / "web" / "static" / "index.html"
-if not web_server.exists() or not web_index.exists():
+if not web_server.exists() or not web_index.exists() or not web_providers.exists() or not web_prompt.exists():
     raise SystemExit("Web MVP files are missing")
 web_index_text = web_index.read_text(encoding="utf-8")
-for required_text in ["羽毛球技术问答", "/api/ask", "证据来源"]:
+for required_text in ["羽毛球技术问答", "/api/ask", "证据来源", "高级模型设置"]:
     if required_text not in web_index_text:
         raise SystemExit(f"Web MVP index is missing {required_text}")
+provider_text = web_providers.read_text(encoding="utf-8")
+for provider_name in ["openai", "deepseek", "doubao", "anthropic", "gemini", "xai", "openai_compatible"]:
+    if provider_name not in provider_text:
+        raise SystemExit(f"Web provider adapter is missing {provider_name}")
 
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "

@@ -356,15 +356,32 @@ python3 apps/web/server.py --port 8787
 http://127.0.0.1:8787
 ```
 
-默认网页使用离线模板综合回答，优点是零依赖、可本地运行，缺点是表达质量低于 Codex Skill。若要接近 Codex 内 Skill 的回答质量，配置 OpenAI API：
+默认网页使用离线模板综合回答，优点是零依赖、可本地运行，缺点是表达质量低于 Codex Skill。若要接近 Codex 内 Skill 的回答质量，可以用两种方式提供模型 API key。
+
+方式一：后端环境变量。适合托管服务或本机长期使用。
 
 ```bash
-export OPENAI_API_KEY="你的 API key"
-export OPENAI_MODEL="gpt-4.1-mini"
+export LLM_PROVIDER="deepseek"
+export DEEPSEEK_API_KEY="你的 API key"
+export DEEPSEEK_MODEL="deepseek-chat"
 python3 apps/web/server.py --port 8787
 ```
 
-后端会继续先检索本地知识库和主题图谱，再把证据、模式和回答规范交给模型生成最终回答。没有 `OPENAI_API_KEY` 时自动回退到离线模板。
+方式二：网页 BYOK。适合内测或高级用户。打开网页后在“高级模型设置”中选择 provider，临时输入 API key、模型名和可选 Base URL。该 key 只随本次请求发给本地后端，不写入仓库、不落盘。
+
+支持的 provider：
+
+```text
+openai              OPENAI_API_KEY / OPENAI_MODEL
+deepseek            DEEPSEEK_API_KEY / DEEPSEEK_MODEL
+doubao              ARK_API_KEY / DOUBAO_MODEL
+anthropic           ANTHROPIC_API_KEY / ANTHROPIC_MODEL
+gemini              GEMINI_API_KEY / GEMINI_MODEL
+xai                 XAI_API_KEY / XAI_MODEL
+openai_compatible   OPENAI_COMPATIBLE_API_KEY / OPENAI_COMPATIBLE_MODEL / OPENAI_COMPATIBLE_BASE_URL
+```
+
+后端会继续先检索本地知识库和主题图谱，再把证据、模式和回答规范交给模型生成最终回答。没有可用 API key 时自动回退到离线模板。
 
 **English**
 
@@ -414,15 +431,32 @@ Then open:
 http://127.0.0.1:8787
 ```
 
-By default, the web app uses deterministic local templates. That keeps it dependency-free, but answer quality is lower than the Codex Skill. To enable higher-quality synthesis, configure the OpenAI API:
+By default, the web app uses deterministic local templates. That keeps it dependency-free, but answer quality is lower than the Codex Skill. To enable higher-quality synthesis, provide a model API key in either of two ways.
+
+Option 1: server environment variables. This is best for hosted deployments or local long-running use.
 
 ```bash
-export OPENAI_API_KEY="your API key"
-export OPENAI_MODEL="gpt-4.1-mini"
+export LLM_PROVIDER="deepseek"
+export DEEPSEEK_API_KEY="your API key"
+export DEEPSEEK_MODEL="deepseek-chat"
 python3 apps/web/server.py --port 8787
 ```
 
-The backend still retrieves local evidence and topic-map context first, then sends the evidence, mode, and answer contract to the model. Without `OPENAI_API_KEY`, it automatically falls back to the local template.
+Option 2: web BYOK. This is useful for testing or advanced users. Open the page, expand "高级模型设置", choose a provider, and enter a temporary API key, model, and optional Base URL. The key is sent only with the current request to the local backend; it is not written to the repo or stored on disk.
+
+Supported providers:
+
+```text
+openai              OPENAI_API_KEY / OPENAI_MODEL
+deepseek            DEEPSEEK_API_KEY / DEEPSEEK_MODEL
+doubao              ARK_API_KEY / DOUBAO_MODEL
+anthropic           ANTHROPIC_API_KEY / ANTHROPIC_MODEL
+gemini              GEMINI_API_KEY / GEMINI_MODEL
+xai                 XAI_API_KEY / XAI_MODEL
+openai_compatible   OPENAI_COMPATIBLE_API_KEY / OPENAI_COMPATIBLE_MODEL / OPENAI_COMPATIBLE_BASE_URL
+```
+
+The backend still retrieves local evidence and topic-map context first, then sends the evidence, mode, and answer contract to the model. Without an available API key, it automatically falls back to the local template.
 
 ## 安装 Codex Skill / Install The Codex Skill
 

@@ -17,11 +17,14 @@ def main():
     answer = answer_query(
         "我想系统学杀球，按什么顺序学最合理？",
         "learning_path",
+        {"provider": "template"},
     )
     if answer["mode"] != "learning_path":
         raise SystemExit("Expected learning_path mode")
     if answer["generator"] not in {"template", "llm"}:
         raise SystemExit("Expected valid answer generator")
+    if answer["llm"]["provider"] != "template":
+        raise SystemExit("Expected template provider in smoke test")
     if not answer["search"]["results"]:
         raise SystemExit("Expected evidence results")
     if "学习顺序" not in answer["answer"]:

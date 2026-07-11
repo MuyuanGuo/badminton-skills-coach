@@ -22,6 +22,7 @@ jobs:
         run: |
           python -m py_compile \
             apps/web/server.py \
+            apps/web/llm/providers.py \
             scripts/evaluate_liuhui_skill.py \
             scripts/evaluate_answer_quality.py \
             scripts/run_acceptance_review.py \

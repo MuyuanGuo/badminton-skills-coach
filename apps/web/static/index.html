@@ -30,6 +30,32 @@
       <label for="query">问题</label>
       <textarea id="query" rows="5">我杀球挺用力，但总被对手平挡回来，是不是还要练更重？</textarea>
 
+      <details class="advanced">
+        <summary>高级模型设置</summary>
+        <p>不填写 API key 时使用后端环境变量；仍无可用 key 时自动回退离线模板。页面不会保存 API key。</p>
+        <label for="provider">模型供应商</label>
+        <select id="provider">
+          <option value="">使用后端默认</option>
+          <option value="template">离线模板</option>
+          <option value="openai">OpenAI</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="doubao">豆包/火山方舟</option>
+          <option value="anthropic">Claude/Anthropic</option>
+          <option value="gemini">Gemini</option>
+          <option value="xai">Grok/xAI</option>
+          <option value="openai_compatible">OpenAI-compatible</option>
+        </select>
+
+        <label for="model">模型名</label>
+        <input id="model" type="text" placeholder="例如 deepseek-chat / gpt-4.1-mini">
+
+        <label for="api-key">临时 API key</label>
+        <input id="api-key" type="password" autocomplete="off" placeholder="仅本次请求发送到本地后端，不落盘">
+
+        <label for="base-url">自定义 Base URL</label>
+        <input id="base-url" type="text" placeholder="仅 openai_compatible 或自定义网关需要">
+      </details>
+
       <div class="actions">
         <button id="ask">生成回答</button>
       </div>
@@ -136,7 +162,7 @@
     width: 100%;
     font: inherit;
   }
-  select, textarea {
+  input, select, textarea {
     margin-bottom: 14px;
     border: 1px solid var(--line);
     border-radius: 7px;
@@ -164,6 +190,20 @@
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-top: 14px;
+  }
+  .advanced {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 14px;
+  }
+  .advanced summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .advanced p {
+    margin: 8px 0 12px;
+    font-size: 13px;
   }
   .examples button { font-size: 13px; }
   .empty { min-height: 340px; display: grid; align-content: center; }
@@ -226,6 +266,10 @@
   const queryEl = document.getElementById("query");
   const modeEl = document.getElementById("mode");
   const askEl = document.getElementById("ask");
+  const providerEl = document.getElementById("provider");
+  const modelEl = document.getElementById("model");
+  const apiKeyEl = document.getElementById("api-key");
+  const baseUrlEl = document.getElementById("base-url");
   const emptyEl = document.getElementById("empty");
   const resultEl = document.getElementById("result");
   const statusEl = document.getElementById("status");
@@ -318,7 +362,16 @@
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({query, mode: modeEl.value})
+        body: JSON.stringify({
+          query,
+          mode: modeEl.value,
+          llm: {
+            provider: providerEl.value,
+            model: modelEl.value.trim(),
+            api_key: apiKeyEl.value.trim(),
+            base_url: baseUrlEl.value.trim()
+          }
+        })
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "请求失败");
