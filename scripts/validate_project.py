@@ -49,6 +49,12 @@ if len(queue["items"]) < 405:
 if sum(queue["counts"].values()) != len(queue["items"]):
     raise SystemExit("Douyin queue counts do not sum to the queue length")
 
+video_index = json.loads(
+    (ROOT / "data" / "douyin_video_index.json").read_text(encoding="utf-8")
+)
+teaching_filter = json.loads(
+    (ROOT / "data" / "douyin_teaching_filtered.json").read_text(encoding="utf-8")
+)
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
 )
@@ -68,6 +74,27 @@ skill_knowledge = json.loads(
 )
 if skill_knowledge != douyin_knowledge:
     raise SystemExit("Skill knowledge base is out of sync with full Douyin knowledge base")
+
+ready_count = sum(video["processing_status"] == "ready" for video in douyin_knowledge["videos"])
+review_excluded_count = sum(
+    video["processing_status"] in {"not_teaching", "low_value"}
+    for video in douyin_knowledge["videos"]
+)
+pre_pipeline_excluded_count = (
+    teaching_filter["counts"].get("excluded_ads", 0)
+    + teaching_filter["counts"].get("excluded_non_teaching", 0)
+    + teaching_filter["counts"].get("review", 0)
+)
+all_collected_count = len(video_index["videos"])
+if all_collected_count != ready_count + review_excluded_count + pre_pipeline_excluded_count:
+    raise SystemExit(
+        "Collected-video accounting is inconsistent: expected all videos to equal "
+        "ready teaching evidence plus excluded videos"
+    )
+if teaching_filter["counts"]["kept_teaching"] != len(queue["items"]):
+    raise SystemExit("Teaching filter kept count is out of sync with processing queue")
+if ready_count != douyin_knowledge["knowledge_counts"].get("ready"):
+    raise SystemExit("Knowledge ready count is out of sync with video statuses")
 
 topic_index = json.loads(
     (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")

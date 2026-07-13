@@ -24,24 +24,20 @@ This Skill does not impersonate Liu Hui and does not claim endorsement. It is a 
 
 **中文**
 
-- 抖音主页公开视频索引：`472` 条
-- 筛选出的教学候选视频：`406` 条
-- 已处理入库视频：`406 / 406`
-- 当前知识库视频数：`406`
-- 可直接用于检索回答：`359` 条
-- 已排除非教学/广告器材内容：`66` 条
+- 获取到的抖音公开视频：`472` 条
+- 已排除非教学/广告器材内容：`113` 条
+- 可加入 Skill 知识库的教学视频：`359` 条
+- 已完成处理流水线：`406` 条
 - 待视觉复核：`0` 条
 - Codex Skill：`skills/liuhui-badminton-coach/`
 - 全量思维图：`output/liuhui-full-knowledge-map.drawio`
 
 **English**
 
-- Public Douyin profile videos indexed: `472`
-- Teaching candidates selected: `406`
-- Processed into the knowledge base: `406 / 406`
-- Current knowledge-base videos: `406`
-- Directly usable for retrieval-backed answers: `359`
-- Excluded as non-teaching, ads, or equipment-only content: `66`
+- Public Douyin videos collected: `472`
+- Excluded as non-teaching, ads, or equipment-only content: `113`
+- Teaching videos usable in the Skill knowledge base: `359`
+- Processed through the pipeline: `406`
 - Pending visual review: `0`
 - Codex Skill: `skills/liuhui-badminton-coach/`
 - Full topic map: `output/liuhui-full-knowledge-map.drawio`
