@@ -21,11 +21,24 @@ repository monitor consumes the saved JSON through:
     return String(value || "").replace(/\s+/g, " ").trim();
   }
 
+  function isProfileFeedAnchor(anchor) {
+    const href = anchor.href || anchor.getAttribute("href") || "";
+    if (href.includes("source=Baiduspider")) return false;
+    if (anchor.closest("footer, .user-page-footer")) return false;
+
+    const listItem = anchor.closest("li");
+    if (listItem) return true;
+
+    const text = normalizeText(anchor.innerText || anchor.getAttribute("title") || "");
+    return /刘辉羽毛球|羽毛球/.test(text);
+  }
+
   function findVideoLinks() {
     const anchors = Array.from(document.querySelectorAll('a[href*="/video/"]'));
     const byId = new Map();
 
     for (const anchor of anchors) {
+      if (!isProfileFeedAnchor(anchor)) continue;
       const href = anchor.href || anchor.getAttribute("href") || "";
       const match = href.match(/\/video\/(\d+)/);
       if (!match) continue;

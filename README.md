@@ -85,6 +85,7 @@ scripts/
   prepare_douyin_media_batch.py    Create curl configs from media-asset snapshots
   init_douyin_queue.py             Build or refresh the processing queue
   process_douyin_ready_batch.py    Download, transcribe, rebuild, validate, commit
+  report_pipeline_status.py        Summarize current counts, failures, and next action
   run_full_update_pipeline.py      One-command local update wrapper
   batch_transcribe_directory.py    Transcribe local media directories
   transcribe_video.py              Transcribe one video/audio file
@@ -358,6 +359,12 @@ cp -R skills/liuhui-badminton-coach ~/.codex/skills/liuhui-badminton-coach
 
 ## 验证 / Validation
 
+查看当前维护状态：
+
+```bash
+python3 scripts/report_pipeline_status.py
+```
+
 ```bash
 python3 -m py_compile \
   scripts/apply_visual_review_notes.py \
@@ -372,6 +379,7 @@ python3 -m py_compile \
   scripts/monitor_douyin_updates.py \
   scripts/prepare_douyin_media_batch.py \
   scripts/process_douyin_ready_batch.py \
+  scripts/report_pipeline_status.py \
   scripts/run_full_update_pipeline.py \
   scripts/transcribe_video.py \
   scripts/update_readme_status.py \
