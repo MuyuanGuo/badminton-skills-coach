@@ -1,11 +1,11 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 405-video indexed teaching knowledge base of Douyin creator 刘辉羽毛球. Use when diagnosing badminton technique, explaining strokes or footwork, comparing tactical choices, designing practice drills, or answering questions about 刘辉's teaching across the expanded Douyin archive. Retrieve relevant entries from the bundled full knowledge base and cite video links with timestamps. Do not use to impersonate 刘辉 or claim that generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing badminton technique, explaining strokes or footwork, comparing tactical choices, designing practice drills, or answering questions about 刘辉's teaching across the expanded Douyin archive. Retrieve relevant entries from the bundled full knowledge base and cite video links with timestamps. Do not use to impersonate 刘辉 or claim that generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
 
-Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 405 processed videos, including `ready` teaching entries and `not_teaching` exclusions.
+Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 359 `ready` teaching entries and `not_teaching` exclusions.
 
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
@@ -112,7 +112,7 @@ When multiple videos support a point, cite no more than three strongest sources.
 
 ## Resources
 
-- `references/knowledge-base.json`: full structured knowledge entries for 405 processed teaching videos.
+- `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 359 ready teaching videos.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
 - `references/practice-plan-template.md`: structure and guardrails for training-plan answers.

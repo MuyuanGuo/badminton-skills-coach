@@ -1,4 +1,4 @@
 interface:
   display_name: "刘辉羽毛球教练"
-  short_description: "基于405条刘辉羽毛球教学视频知识库，提供证据型技术诊断与训练建议"
+  short_description: "基于406条已处理刘辉羽毛球视频、其中359条可用教学视频，提供证据型技术诊断与训练建议"
   default_prompt: "Use $liuhui-badminton-coach to diagnose my badminton technique and recommend evidence-backed corrections from the full Douyin knowledge base."
