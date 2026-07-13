@@ -89,6 +89,8 @@ scripts/
   run_full_update_pipeline.py      One-command local update wrapper
   batch_transcribe_directory.py    Transcribe local media directories
   transcribe_video.py              Transcribe one video/audio file
+  test_douyin_pipeline.py          Classification regression tests
+  test_douyin_profile_snapshot_dom.mjs
   build_douyin_knowledge.py        Rebuild the full knowledge base
   build_topic_index.py             Rebuild the topic index
   build_visual_review_queue.py     Rebuild the visual-review queue
@@ -381,15 +383,18 @@ python3 -m py_compile \
   scripts/process_douyin_ready_batch.py \
   scripts/report_pipeline_status.py \
   scripts/run_full_update_pipeline.py \
+  scripts/test_douyin_pipeline.py \
   scripts/transcribe_video.py \
   scripts/update_readme_status.py \
   skills/liuhui-badminton-coach/scripts/navigate_topics.py \
   skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
+python3 scripts/test_douyin_pipeline.py
+node scripts/test_douyin_profile_snapshot_dom.mjs
 python3 scripts/validate_project.py
 ```
 
-`validate_project.py` checks JSON validity, Draw.io XML validity, Skill frontmatter, queue counts, full knowledge-base sync, topic-index sync, topic-map sync, practice-plan template coverage, and visual-review queue consistency.
+The regression tests cover classification decisions and prevent the Douyin profile snapshot helper from treating footer/hot-recommendation links as creator videos. `validate_project.py` checks JSON validity, Draw.io XML validity, Skill frontmatter, queue counts, full knowledge-base sync, topic-index sync, topic-map sync, practice-plan template coverage, and visual-review queue consistency.
 
 ## 边界 / Boundaries
 
