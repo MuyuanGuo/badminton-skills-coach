@@ -12,10 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 json_paths = [
     "config/answer_modality_rules.json",
     "config/douyin_classification_rules.json",
+    "config/feedback_rules.json",
     "config/retrieval_rules.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
+    "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -26,6 +28,7 @@ json_paths = [
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
+    "skills/liuhui-badminton-coach/references/feedback-rules.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
@@ -131,6 +134,30 @@ if set(answer_modality_rules["modes"]) != {
     "video_primary",
 }:
     raise SystemExit("Answer modality rules must define all three answer modes")
+
+feedback_rules = json.loads(
+    (ROOT / "config" / "feedback_rules.json").read_text(encoding="utf-8")
+)
+skill_feedback_rules = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "feedback-rules.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_feedback_rules != feedback_rules:
+    raise SystemExit("Skill feedback rules are out of sync with project config")
+if feedback_rules["skill_version"] != "1.1.0-dev":
+    raise SystemExit("Development feedback rules must identify version 1.1.0-dev")
+if set(feedback_rules["queue_statuses"]) != {
+    "pending_review",
+    "needs_clarification",
+    "accepted",
+    "rejected",
+}:
+    raise SystemExit("Feedback queue status contract is incomplete")
 
 ready_count = sum(video["processing_status"] == "ready" for video in douyin_knowledge["videos"])
 review_excluded_count = sum(
@@ -300,11 +327,52 @@ for required_answer_contract in [
     "Never return a link-only answer",
     "核心视频与观看重点",
     "完整相关视频",
+    "V1",
+    "scripts/feedback.py record",
+    "Never upload local feedback without explicit consent",
 ]:
     if required_answer_contract not in skill_text:
         raise SystemExit(
             f"Skill text/video answer contract is missing: {required_answer_contract}"
         )
+
+feedback_script = (
+    ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "feedback.py"
+)
+feedback_workflow = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "feedback-workflow.md"
+)
+if not feedback_script.exists() or not feedback_workflow.exists():
+    raise SystemExit("Skill feedback scripts or workflow are missing")
+
+feedback_issue_form = ROOT / ".github" / "ISSUE_TEMPLATE" / "skill-feedback.yml"
+if not feedback_issue_form.exists():
+    raise SystemExit("GitHub Skill feedback issue form is missing")
+feedback_issue_text = feedback_issue_form.read_text(encoding="utf-8")
+for required_issue_field in [
+    "用户问题",
+    "最有价值的视频",
+    "明确不相关的视频",
+    "遗漏的视频",
+    "文字回答问题",
+    "隐私确认",
+]:
+    if required_issue_field not in feedback_issue_text:
+        raise SystemExit(f"GitHub feedback form is missing: {required_issue_field}")
+
+feedback_cases = json.loads(
+    (ROOT / "data" / "evaluation" / "feedback_parser_cases.json").read_text(
+        encoding="utf-8"
+    )
+)
+if len(feedback_cases["cases"]) < 8:
+    raise SystemExit("Feedback parser evaluation has too few cases")
+if not set(feedback_cases["video_map"].values()).issubset(ready_video_ids):
+    raise SystemExit("Feedback parser evaluation references a non-ready video")
 
 practice_template = (
     ROOT
@@ -347,5 +415,6 @@ if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
 
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, answer modality contract, practice template, and visual review queue."
+    "topic index, answer modality contract, feedback workflow, practice template, "
+    "and visual review queue."
 )

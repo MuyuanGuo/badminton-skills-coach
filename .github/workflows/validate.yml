@@ -2,7 +2,7 @@ name: Validate knowledge pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
 
 permissions:
@@ -39,15 +39,18 @@ jobs:
             scripts/report_pipeline_status.py \
             scripts/run_full_update_pipeline.py \
             scripts/test_douyin_pipeline.py \
+            scripts/test_feedback_pipeline.py \
             scripts/test_search_knowledge.py \
             scripts/transcribe_video.py \
             scripts/update_readme_status.py \
             skills/liuhui-badminton-coach/scripts/navigate_topics.py \
+            skills/liuhui-badminton-coach/scripts/feedback.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
       - name: Run regression tests
         run: |
           python scripts/test_douyin_pipeline.py
+          python scripts/test_feedback_pipeline.py
           python scripts/test_search_knowledge.py
           python scripts/evaluate_answer_policy.py
           python scripts/evaluate_retrieval.py

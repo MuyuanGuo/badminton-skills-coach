@@ -1,0 +1,81 @@
+name: Skill 回答反馈
+description: 提交有价值、无关或遗漏的视频，以及文字回答问题
+title: "[Skill Feedback] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢帮助改进 Skill。请不要提交私人视频、完整聊天记录、联系方式或其他敏感信息。未被选中的视频不会被视为“不相关”；只有明确填写在“不相关”一栏的视频才会作为负面反馈。
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 用户问题
+      description: 请填写经过脱敏的问题原文，以及必要的单打/双打、水平或主动/被动场景。
+      placeholder: 双打轮转时，队友被动回球后我应该什么时候补位？
+    validations:
+      required: true
+
+  - type: input
+    id: answer-id
+    attributes:
+      label: 回答编号
+      description: 如果回答中提供或你保留了 answer_id，可以填写；没有可留空。
+
+  - type: textarea
+    id: helpful-videos
+    attributes:
+      label: 最有价值的视频
+      description: 请粘贴一个或多个抖音视频链接或视频 ID，并简要说明价值。不要只写 V1、V2。
+      placeholder: https://www.douyin.com/video/7614167503938610417 - 实战轮转示范最清楚
+
+  - type: textarea
+    id: irrelevant-videos
+    attributes:
+      label: 明确不相关的视频
+      description: 只填写你确认与问题关系不大的视频链接或视频 ID。
+
+  - type: textarea
+    id: missing-videos
+    attributes:
+      label: 遗漏的视频
+      description: 如果你知道答案没有列出的相关视频，请填写链接或视频 ID。
+
+  - type: dropdown
+    id: text-issue
+    attributes:
+      label: 文字回答问题
+      multiple: true
+      options:
+        - 没有明显问题
+        - 文字内容有遗漏
+        - 存在错误结论
+        - 过于笼统
+        - 过于冗长
+        - 难以执行
+        - 不适合提问场景
+    validations:
+      required: true
+
+  - type: textarea
+    id: comment
+    attributes:
+      label: 补充说明
+      description: 说明遗漏了什么、哪里不适用，或你为什么认为某个视频最有价值。
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本信息
+      description: 例如 v1.0.0 或 1.1.0-dev；不知道可填写 unknown。
+      placeholder: 1.1.0-dev
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我确认以上内容可以公开出现在 GitHub Issue 中，且不包含私人视频、完整聊天记录或敏感信息。
+          required: true

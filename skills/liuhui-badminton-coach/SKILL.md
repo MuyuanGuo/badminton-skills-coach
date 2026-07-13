@@ -1,6 +1,6 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing badminton technique, explaining strokes or footwork, comparing tactical choices, designing practice drills, or answering questions about 刘辉's teaching across the expanded Douyin archive. Give complete evidence-backed text for concepts that text can explain, use videos for demonstrations that require watching, and cite all worthwhile related videos. Do not use to impersonate 刘辉 or claim that generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording explicit user feedback on a prior Skill answer. Give complete evidence-backed text where text works, cite all worthwhile related videos with stable V1...Vn labels, and queue feedback for human review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
@@ -10,6 +10,8 @@ Base answers on `references/knowledge-base.json`. Treat it as the current full s
 Use `references/retrieval-index.json` for high-recall discovery across every ready video's full transcript-derived term set, topic memberships, and hashed character features. It deliberately contains no full transcript text. Use `references/retrieval-rules.json` for bidirectional badminton terminology expansion.
 
 Use `references/answer-modality-rules.json` to allocate explanatory work between text and video. Never treat text and video as alternatives: every answer needs useful text, and every confirmed worthwhile video needs to remain discoverable.
+
+Use `references/feedback-rules.json` and `references/feedback-workflow.md` to assign stable video labels, persist context only after explicit feedback, parse that feedback, and queue it for human review. Never let raw feedback change retrieval automatically.
 
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
@@ -47,8 +49,10 @@ python3 scripts/search_knowledge.py "用户问题" --video-id VIDEO_ID --video-i
 ```
 
 8. If retrieval is broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Never silently solve breadth by lowering the result limit.
-9. Answer using the allocation and answer contracts below.
-10. Ask for a short video or missing context only when it would materially change the diagnosis.
+9. Assign every confirmed worthwhile video one stable label from `V1` through `Vn`, ordered by usefulness to this answer. Reuse the same label if a core video appears again in the complete list; never assign two labels to one video.
+10. Keep the final question and `V` label mapping in task context. Do not write an answer context or feedback file until the user explicitly gives feedback.
+11. Answer using the allocation and answer contracts below.
+12. Ask for a short video or missing context only when it would materially change the diagnosis.
 
 ## Text And Video Allocation
 
@@ -72,11 +76,24 @@ Answer in this order, adapting section depth to the selected mode:
 1. **直接回答**: answer the user's actual question and identify the applicable situation.
 2. **文字解释**: synthesize all distinct relevant points that can be expressed reliably in text, including principles, decision logic, errors, cues, or practice as appropriate.
 3. **适用边界**: distinguish active/passive, singles/doubles, skill levels, and conditions where advice changes.
-4. **核心视频与观看重点**: cite the strongest one to three videos. For each, give the relevance reason, what to observe, timestamp when available, and URL.
-5. **完整相关视频**: list every remaining confirmed directly relevant and worthwhile video with title, URL, and a concise relevance reason. Group long lists by subtopic. Do not promote broad topic-only leads as confirmed relevant.
+4. **核心视频与观看重点**: cite the strongest one to three videos with their stable `V` labels. For each, give the relevance reason, what to observe, timestamp when available, and URL.
+5. **完整相关视频**: list every remaining confirmed directly relevant and worthwhile video with its stable `V` label, title, URL, and a concise relevance reason. Group long lists by subtopic. Do not promote broad topic-only leads as confirmed relevant.
 6. **置信边界**: say what is certain, what is inferred, and what requires watching the source video or reviewing the user's own video.
 
 Keep the answer practical but do not omit useful text merely to stay short. Use only the strongest one to three videos to support each conclusion, while preserving the complete confirmed-related video list separately.
+
+End with one compact optional example using only labels that exist in this answer, such as `反馈示例：V1 最有价值；V2 不相关；文字漏了“……”`. Do not ask for a rating and do not imply that unselected videos are negative feedback.
+
+## Feedback Mode
+
+Use this mode when the user explicitly evaluates a previous Skill answer, names useful or irrelevant `V` labels, identifies a missing video, or reports a textual omission or error.
+
+1. Read `references/feedback-workflow.md`.
+2. Record the user's original wording, prior question, and exact `V` mapping in one operation with `scripts/feedback.py record`. Use `create-answer` plus `submit` only when an answer context was explicitly persisted earlier.
+3. Confirm the parsed helpful, irrelevant, missing-video, and text-issue signals in plain language.
+4. If the record is `needs_clarification`, ask only about unknown or contradictory labels.
+5. State that the feedback is queued locally for review and has not automatically changed retrieval or the knowledge base.
+6. Never treat a video the user did not select as irrelevant. Never upload local feedback without explicit consent.
 
 ## Topic Navigation Mode
 
