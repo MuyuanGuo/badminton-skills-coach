@@ -1,4 +1,4 @@
-# Badminton Skills Coach 1.0 / 刘辉羽毛球教练 Skill
+# Badminton Skills Coach / 刘辉羽毛球教练 Skill
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
 
