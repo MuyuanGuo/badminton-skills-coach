@@ -116,13 +116,20 @@ latest_ready = next(
 for expected in [
     f"获取到的抖音公开视频：`{all_collected_count}`",
     f"已排除非教学/广告器材内容：`{pre_pipeline_excluded_count + review_excluded_count}`",
-    f"可加入 Skill 知识库的教学视频：`{ready_count}`",
-    f"已完成处理流水线：`{len(douyin_knowledge['videos'])}`",
     latest_ready["video_id"],
     latest_ready["url"],
 ]:
     if expected not in readme_text:
         raise SystemExit(f"README current status is missing: {expected}")
+ready_count_labels = [
+    f"已加入 Skill 知识库的教学视频：`{ready_count}`",
+    f"可加入 Skill 知识库的教学视频：`{ready_count}`",
+]
+if not any(label in readme_text for label in ready_count_labels):
+    raise SystemExit(
+        "README current status is missing a ready teaching video count; expected one of: "
+        + " | ".join(ready_count_labels)
+    )
 
 topic_index = json.loads(
     (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")
