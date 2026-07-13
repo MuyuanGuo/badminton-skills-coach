@@ -95,6 +95,21 @@ if teaching_filter["counts"]["kept_teaching"] != len(queue["items"]):
     raise SystemExit("Teaching filter kept count is out of sync with processing queue")
 if ready_count != douyin_knowledge["knowledge_counts"].get("ready"):
     raise SystemExit("Knowledge ready count is out of sync with video statuses")
+readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
+latest_ready = next(
+    video for video in douyin_knowledge["videos"]
+    if video["processing_status"] == "ready"
+)
+for expected in [
+    f"获取到的抖音公开视频：`{all_collected_count}`",
+    f"已排除非教学/广告器材内容：`{pre_pipeline_excluded_count + review_excluded_count}`",
+    f"可加入 Skill 知识库的教学视频：`{ready_count}`",
+    f"已完成处理流水线：`{len(douyin_knowledge['videos'])}`",
+    latest_ready["video_id"],
+    latest_ready["url"],
+]:
+    if expected not in readme_text:
+        raise SystemExit(f"README current status is missing: {expected}")
 
 topic_index = json.loads(
     (ROOT / "data" / "knowledge" / "topic_index.json").read_text(encoding="utf-8")

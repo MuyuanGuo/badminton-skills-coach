@@ -127,6 +127,18 @@ def main():
         str(QUEUE_PATH.relative_to(ROOT)),
     ])
     run(["python3", "scripts/build_douyin_knowledge.py"])
+    run(["python3", "scripts/build_topic_index.py"])
+    run(["python3", "scripts/build_visual_review_queue.py"])
+    run(["python3", "scripts/generate_knowledge_graph.py"])
+    shutil.copyfile(
+        ROOT / "data" / "knowledge" / "douyin_knowledge_base.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "knowledge-base.json",
+    )
+    shutil.copyfile(
+        ROOT / "data" / "knowledge" / "knowledge_graph_summary.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-map.json",
+    )
+    run(["python3", "scripts/update_readme_status.py"])
     ensure_no_raw_media_left(args.batch)
     run(["python3", "scripts/validate_project.py"])
 

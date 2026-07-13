@@ -29,6 +29,7 @@ This Skill does not impersonate Liu Hui and does not claim endorsement. It is a 
 - 可加入 Skill 知识库的教学视频：`359` 条
 - 已完成处理流水线：`406` 条
 - 待视觉复核：`0` 条
+- 最新入库教学视频：[网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097)（`7661940775983482097`）
 - Codex Skill：`skills/liuhui-badminton-coach/`
 - 全量思维图：`output/liuhui-full-knowledge-map.drawio`
 
@@ -39,6 +40,7 @@ This Skill does not impersonate Liu Hui and does not claim endorsement. It is a 
 - Teaching videos usable in the Skill knowledge base: `359`
 - Processed through the pipeline: `406`
 - Pending visual review: `0`
+- Latest teaching video added to the knowledge base: [网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097) (`7661940775983482097`)
 - Codex Skill: `skills/liuhui-badminton-coach/`
 - Full topic map: `output/liuhui-full-knowledge-map.drawio`
 
