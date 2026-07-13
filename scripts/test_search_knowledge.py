@@ -38,6 +38,8 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(first["coverage"]["next_manifest_offset"], 5)
         self.assertEqual(second["coverage"]["manifest_offset"], 5)
         self.assertEqual(second["results"], [])
+        self.assertEqual(first["answer_guidance"]["mode"], "balanced")
+        self.assertEqual(second["answer_guidance"]["mode"], "balanced")
         first_ids = {item["video_id"] for item in first["candidate_manifest"]}
         second_ids = {item["video_id"] for item in second["candidate_manifest"]}
         self.assertFalse(first_ids & second_ids)
@@ -51,6 +53,20 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(payload["results"][0]["video_id"], video_id)
         self.assertIn("teaching_note", payload["results"][0])
         self.assertIn("query_match", payload["results"][0])
+        self.assertEqual(payload["answer_guidance"]["mode"], "balanced")
+
+    def test_answer_mode_keeps_text_and_video_obligations(self):
+        cases = {
+            "双打轮转时什么时候补位": "text_primary",
+            "杀球动作怎么发力": "balanced",
+            "正手握拍应该怎么握": "video_primary",
+        }
+        for query, expected_mode in cases.items():
+            with self.subTest(query=query):
+                guidance = self.search_module.classify_answer_mode(query)
+                self.assertEqual(guidance["mode"], expected_mode)
+                self.assertGreaterEqual(len(guidance["text_obligations"]), 3)
+                self.assertGreaterEqual(len(guidance["video_obligations"]), 3)
 
     def test_search_never_returns_excluded_videos(self):
         payload = self.search_module.search("训练 方法", manifest_limit=None)

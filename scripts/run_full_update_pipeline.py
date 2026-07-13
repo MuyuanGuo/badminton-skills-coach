@@ -31,6 +31,10 @@ def sync_skill_references():
         ROOT / "config" / "retrieval_rules.json",
         ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-rules.json",
     )
+    shutil.copyfile(
+        ROOT / "config" / "answer_modality_rules.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "answer-modality-rules.json",
+    )
 
 
 def main():
@@ -73,6 +77,7 @@ def main():
         sync_skill_references()
         run(["python3", "scripts/update_readme_status.py"])
         run(["python3", "scripts/evaluate_retrieval.py"])
+        run(["python3", "scripts/evaluate_answer_policy.py"])
         run(["python3", "scripts/validate_project.py"])
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))

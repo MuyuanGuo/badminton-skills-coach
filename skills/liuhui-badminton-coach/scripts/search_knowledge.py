@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 KNOWLEDGE_PATH = ROOT / "references" / "knowledge-base.json"
 RETRIEVAL_INDEX_PATH = ROOT / "references" / "retrieval-index.json"
 RULES_PATH = ROOT / "references" / "retrieval-rules.json"
+ANSWER_RULES_PATH = ROOT / "references" / "answer-modality-rules.json"
 
 FIELD_WEIGHTS = {
     "title": 4.0,
@@ -36,6 +37,76 @@ def flatten(value):
 
 def normalize(text):
     return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", text.lower()))
+
+
+def load_answer_rules():
+    return json.loads(ANSWER_RULES_PATH.read_text(encoding="utf-8"))
+
+
+def classify_answer_mode(query, rules=None):
+    rules = rules or load_answer_rules()
+    query_normalized = normalize(query)
+    scores = {}
+    matched_signals = {}
+    for mode, config in rules["modes"].items():
+        matched = []
+        score = 0.0
+        for term, weight in config["signals"].items():
+            if normalize(term) in query_normalized:
+                matched.append(term)
+                score += weight
+        scores[mode] = score
+        matched_signals[mode] = matched
+
+    decisive_text = [
+        term
+        for term in rules["decision"]["decisive_text_terms"]
+        if normalize(term) in query_normalized
+    ]
+    decisive_video = [
+        term
+        for term in rules["decision"]["decisive_video_terms"]
+        if normalize(term) in query_normalized
+    ]
+    if decisive_text and decisive_video:
+        mode = "balanced"
+        reason = "query_contains_both_textual_decision_and_visual_form_signals"
+    elif decisive_video:
+        mode = "video_primary"
+        reason = "query_contains_visual_form_signal"
+    elif decisive_text:
+        mode = "text_primary"
+        reason = "query_contains_textual_decision_signal"
+    else:
+        ranked_modes = sorted(scores, key=lambda item: (-scores[item], item))
+        top_mode = ranked_modes[0]
+        second_score = scores[ranked_modes[1]]
+        if scores[top_mode] <= 0:
+            mode = rules["default_mode"]
+            reason = "no_mode_signal_defaulted_to_balanced"
+        elif top_mode == "balanced":
+            mode = "balanced"
+            reason = "execution_and_demonstration_signals_dominate"
+        elif scores[top_mode] - second_score >= rules["decision"]["minimum_score_margin"]:
+            mode = top_mode
+            reason = "one_mode_has_clear_score_margin"
+        else:
+            mode = "balanced"
+            reason = "mixed_signals_without_clear_margin"
+
+    config = rules["modes"][mode]
+    return {
+        "mode": mode,
+        "label": config["label"],
+        "reason": reason,
+        "scores": scores,
+        "matched_signals": matched_signals,
+        "decisive_text_terms": decisive_text,
+        "decisive_video_terms": decisive_video,
+        "text_obligations": config["text_obligations"],
+        "video_obligations": config["video_obligations"],
+        "global_obligations": rules["global_obligations"],
+    }
 
 
 def ngram_hash(value):
@@ -398,6 +469,7 @@ def search(
     manifest_limit=None,
 ):
     knowledge, retrieval_index, rules = load_resources()
+    answer_guidance = classify_answer_mode(query)
     ranked, expansion = rank_candidates(
         query,
         knowledge,
@@ -423,6 +495,15 @@ def search(
         "query": query,
         "mode": mode,
         "recall_mode": recall_mode,
+        "answer_guidance": (
+            answer_guidance
+            if manifest_offset == 0
+            else {
+                "pagination": True,
+                "mode": answer_guidance["mode"],
+                "see_manifest_offset": 0,
+            }
+        ),
         "query_expansion": (
             {
                 key: value
@@ -480,7 +561,12 @@ def lookup_videos(video_ids, query=""):
         if video_id in candidates:
             result["query_match"] = candidates[video_id]
         results.append(result)
-    return {"query": query, "results": results, "missing_video_ids": missing}
+    return {
+        "query": query,
+        "answer_guidance": classify_answer_mode(query) if query else None,
+        "results": results,
+        "missing_video_ids": missing,
+    }
 
 
 def main():

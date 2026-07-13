@@ -20,6 +20,7 @@
 
 - 回答羽毛球技术问题，例如杀球、吊球、网前、步法、发接发、双打轮转、发力和纠错。
 - 通过原词、双向同义词、完整主题归属和全转写哈希特征进行高召回检索，并引用视频标题、时间戳和抖音链接。
+- 根据问题内容分配文字与视频的作用：战术和原则用文字完整总结，动作形态与动态细节用文字说明观察点并以视频示范为主。
 - 根据主题图谱给出系统学习路径，而不是只回答单个动作。
 - 生成保守的训练计划，包括今日练习、3 天修正、2 周巩固和自测标准。
 - 标注置信边界：哪些来自人工复核，哪些来自自动转写，哪些需要用户视频才能进一步诊断。
@@ -49,9 +50,10 @@ Skill 的回答流程是：
 
 1. 先判断用户的问题属于哪个动作、场景和水平。
 2. 用 `scripts/search_knowledge.py` 对知识库和全量检索索引执行高召回检索。
-3. 检查完整候选清单，不因结果排在前 12 条之外就直接丢弃。
-4. 必要时用 `scripts/navigate_topics.py` 定位主题图谱，再缩小场景重检。
-5. 按“诊断、刘辉相关原则、纠正提示、练习方法、核心证据、完整相关视频、置信边界”输出。
+3. 根据检索返回的 `answer_guidance` 选择“文字为主、文字视频并重、视频为主”，三种模式都必须给出有用文字和完整相关视频。
+4. 检查完整候选清单，不因结果排在前 12 条之外就直接丢弃。
+5. 必要时用 `scripts/navigate_topics.py` 定位主题图谱，再缩小场景重检。
+6. 按“直接回答、文字解释、适用边界、核心视频与观看重点、完整相关视频、置信边界”输出。
 
 ## 主要产物
 
@@ -61,6 +63,7 @@ skills/liuhui-badminton-coach/
   references/knowledge-base.json   全量结构化知识库
   references/retrieval-index.json  全量教学视频高召回索引
   references/retrieval-rules.json  双向同义词和检索阈值
+  references/answer-modality-rules.json
   references/topic-index.md        可读主题索引
   references/topic-map.json        结构化主题图谱
   references/practice-plan-template.md
@@ -72,6 +75,7 @@ data/
   douyin_teaching_filtered.json    教学候选与排除计数
   processing/douyin_queue.json     入库处理队列
   evaluation/retrieval_cases.json  检索召回回归用例
+  evaluation/answer_modality_cases.json
   knowledge/douyin_knowledge_base.json
   knowledge/retrieval_index.json
   knowledge/topic_index.json
@@ -86,6 +90,7 @@ output/
   visual_review_queue.md           视觉复核工作表
 
 config/
+  answer_modality_rules.json       文字/视频回答分工规则
   douyin_classification_rules.json 教学/非教学分类规则
   retrieval_rules.json             检索扩展词和阈值
 
@@ -96,6 +101,7 @@ scripts/
   process_douyin_ready_batch.py    下载、转写、重建、验证、提交
   run_full_update_pipeline.py      重建知识库、图谱和 Skill 引用
   build_retrieval_index.py         从完整转写生成无正文检索索引
+  evaluate_answer_policy.py        评测文字/视频回答模式
   evaluate_retrieval.py            评测已知相关视频召回率
   validate_project.py              项目一致性验证
 ```
@@ -203,6 +209,7 @@ python3 -m py_compile \
   scripts/build_visual_review_queue.py \
   scripts/check_douyin_updates.py \
   scripts/douyin_pipeline.py \
+  scripts/evaluate_answer_policy.py \
   scripts/evaluate_retrieval.py \
   scripts/generate_knowledge_graph.py \
   scripts/init_douyin_queue.py \
@@ -221,6 +228,7 @@ python3 -m py_compile \
 
 python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_search_knowledge.py
+python3 scripts/evaluate_answer_policy.py
 python3 scripts/evaluate_retrieval.py
 node scripts/test_douyin_profile_snapshot_dom.mjs
 python3 scripts/validate_project.py
@@ -230,6 +238,7 @@ GitHub Actions 会执行同样的核心验证：
 
 - Python 源码编译。
 - 分类规则回归测试。
+- 回答媒介分工测试：`16` 个问题均正确进入文字为主、文字视频并重或视频为主模式，并检查每种模式同时保留文字与视频义务。
 - 检索召回回归测试：当前人工已知相关集为 `10` 个问题、`28` 条视频，要求候选召回率为 `100%`，且每题主证据进入前 `12` 条。
 - 抖音主页快照过滤回归测试，防止把 footer / 热门推荐视频误当成作者作品。
 - JSON、Draw.io、Skill frontmatter、队列计数、知识库同步、主题索引、主题图谱和视觉复核队列一致性验证。
@@ -237,7 +246,7 @@ GitHub Actions 会执行同样的核心验证：
 ## 技术栈
 
 - Codex Skills：封装教练工作流和回答规范。
-- Python 3：队列处理、知识库构建、高召回检索、主题索引、图谱生成和验证。
+- Python 3：队列处理、知识库构建、高召回检索、回答媒介分工、主题索引、图谱生成和验证。
 - `faster-whisper`：本地中文语音转写。
 - Browser-side JavaScript：从已登录抖音页面提取主页快照和视频媒体资源。
 - Draw.io / Mermaid / HTML：生成全量教学主题图谱。

@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "description": "验证 Skill 是否把文字解释与视频演示分配到合适模式。模式只改变侧重，不允许省略文字答案或相关视频。",
+  "cases": [
+    {
+      "query": "双打接发怎么抢主动",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "双打轮转时什么时候补位",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "杀球落点应该如何选择",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "单打被动后场应该打直线还是斜线",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "防守反击的战术思路是什么",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "正手握拍应该怎么握",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "拍面总是控制不住",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "杀球时手肘应该放在哪里",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "正手高远球的击球姿势是什么样",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "网前搓球怎么控制拍面",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "被动后场来不及架拍如何调整",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "平抽挡怎样连续发力",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "步法启动慢而且回动不及时",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "杀球动作怎么发力",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "如何练习吊球和杀球衔接",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "双打接发战术和接发握拍应该怎么调整",
+      "expected_mode": "balanced"
+    }
+  ]
+}

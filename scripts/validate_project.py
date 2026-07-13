@@ -10,10 +10,12 @@ from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_
 ROOT = Path(__file__).resolve().parents[1]
 
 json_paths = [
+    "config/answer_modality_rules.json",
     "config/douyin_classification_rules.json",
     "config/retrieval_rules.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
+    "data/evaluation/answer_modality_cases.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -23,6 +25,7 @@ json_paths = [
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
+    "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
@@ -108,6 +111,27 @@ skill_retrieval_rules = json.loads(
 if skill_retrieval_rules != retrieval_rules:
     raise SystemExit("Skill retrieval rules are out of sync with project config")
 
+answer_modality_rules = json.loads(
+    (ROOT / "config" / "answer_modality_rules.json").read_text(encoding="utf-8")
+)
+skill_answer_modality_rules = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "answer-modality-rules.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_answer_modality_rules != answer_modality_rules:
+    raise SystemExit("Skill answer modality rules are out of sync with project config")
+if set(answer_modality_rules["modes"]) != {
+    "text_primary",
+    "balanced",
+    "video_primary",
+}:
+    raise SystemExit("Answer modality rules must define all three answer modes")
+
 ready_count = sum(video["processing_status"] == "ready" for video in douyin_knowledge["videos"])
 review_excluded_count = sum(
     video["processing_status"] in {"not_teaching", "low_value"}
@@ -180,6 +204,19 @@ for case in retrieval_cases["cases"]:
         raise SystemExit("Retrieval evaluation primary video is not in expected videos")
     if not expected_ids.issubset(ready_video_ids):
         raise SystemExit("Retrieval evaluation references a non-ready or missing video")
+
+answer_modality_cases = json.loads(
+    (ROOT / "data" / "evaluation" / "answer_modality_cases.json").read_text(
+        encoding="utf-8"
+    )
+)
+allowed_answer_modes = set(answer_modality_rules["modes"])
+if len(answer_modality_cases["cases"]) < 15:
+    raise SystemExit("Answer modality evaluation has too few cases")
+if {
+    case["expected_mode"] for case in answer_modality_cases["cases"]
+} != allowed_answer_modes:
+    raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
 latest_ready = next(
     video for video in douyin_knowledge["videos"]
@@ -253,6 +290,22 @@ if not topic_markdown.exists():
 if "## Topic Map" not in topic_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Skill topic index markdown is missing the topic map")
 
+skill_text = (
+    ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
+).read_text(encoding="utf-8")
+for required_answer_contract in [
+    "text_primary",
+    "balanced",
+    "video_primary",
+    "Never return a link-only answer",
+    "核心视频与观看重点",
+    "完整相关视频",
+]:
+    if required_answer_contract not in skill_text:
+        raise SystemExit(
+            f"Skill text/video answer contract is missing: {required_answer_contract}"
+        )
+
 practice_template = (
     ROOT
     / "skills"
@@ -294,5 +347,5 @@ if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
 
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, practice template, and visual review queue."
+    "topic index, answer modality contract, practice template, and visual review queue."
 )

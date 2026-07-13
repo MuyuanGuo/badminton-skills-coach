@@ -29,6 +29,7 @@ jobs:
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
             scripts/douyin_pipeline.py \
+            scripts/evaluate_answer_policy.py \
             scripts/evaluate_retrieval.py \
             scripts/generate_knowledge_graph.py \
             scripts/init_douyin_queue.py \
@@ -48,6 +49,7 @@ jobs:
         run: |
           python scripts/test_douyin_pipeline.py
           python scripts/test_search_knowledge.py
+          python scripts/evaluate_answer_policy.py
           python scripts/evaluate_retrieval.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
 

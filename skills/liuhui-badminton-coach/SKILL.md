@@ -1,6 +1,6 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing badminton technique, explaining strokes or footwork, comparing tactical choices, designing practice drills, or answering questions about 刘辉's teaching across the expanded Douyin archive. Retrieve relevant entries from the bundled full knowledge base and cite video links with timestamps. Do not use to impersonate 刘辉 or claim that generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing badminton technique, explaining strokes or footwork, comparing tactical choices, designing practice drills, or answering questions about 刘辉's teaching across the expanded Douyin archive. Give complete evidence-backed text for concepts that text can explain, use videos for demonstrations that require watching, and cite all worthwhile related videos. Do not use to impersonate 刘辉 or claim that generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
@@ -8,6 +8,8 @@ description: Evidence-backed badminton coaching from the full 406-video processe
 Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 359 `ready` teaching entries and `not_teaching` exclusions.
 
 Use `references/retrieval-index.json` for high-recall discovery across every ready video's full transcript-derived term set, topic memberships, and hashed character features. It deliberately contains no full transcript text. Use `references/retrieval-rules.json` for bidirectional badminton terminology expansion.
+
+Use `references/answer-modality-rules.json` to allocate explanatory work between text and video. Never treat text and video as alternatives: every answer needs useful text, and every confirmed worthwhile video needs to remain discoverable.
 
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
@@ -30,36 +32,51 @@ python3 scripts/search_knowledge.py "用户问题或关键词" --recall-mode exh
 
 The default hybrid retrieval unions four channels: structured fields, full-transcript lexicon hits, complete topic memberships, and hashed transcript n-grams. For debugging, use `--mode keyword` or `--mode semantic`.
 
-4. Read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Do not stop after the top three results. If `coverage.next_manifest_offset` is not null, rerun with that offset until it becomes null:
+4. Read `answer_guidance` first, then read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Use the guidance as the default text/video allocation. If the question contains multiple subproblems, apply the appropriate mode to each subproblem.
+5. Do not stop after the top three results. If `coverage.next_manifest_offset` is not null, rerun with that offset until it becomes null:
 
 ```bash
 python3 scripts/search_knowledge.py "用户问题" --manifest-offset NEXT_OFFSET
 ```
 
-5. Review every page, every `direct` candidate, and every plausible `strong_related` candidate. Treat `topic_related` and `semantic_lead` candidates as recall safeguards, not automatic proof of relevance.
-6. Fetch stored evidence for every finalist, including plausible candidates outside the top ranked results, repeating `--video-id` as needed:
+6. Review every page, every `direct` candidate, and every plausible `strong_related` candidate. Treat `topic_related` and `semantic_lead` candidates as recall safeguards, not automatic proof of relevance.
+7. Fetch stored evidence for every finalist, including plausible candidates outside the top ranked results, repeating `--video-id` as needed:
 
 ```bash
 python3 scripts/search_knowledge.py "用户问题" --video-id VIDEO_ID --video-id VIDEO_ID
 ```
 
-7. If retrieval is broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Never silently solve breadth by lowering the result limit.
-8. Answer using the relevant contract below.
-9. Ask for a short video or missing context only when it would materially change the diagnosis.
+8. If retrieval is broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Never silently solve breadth by lowering the result limit.
+9. Answer using the allocation and answer contracts below.
+10. Ask for a short video or missing context only when it would materially change the diagnosis.
+
+## Text And Video Allocation
+
+Apply the mode returned in `answer_guidance`:
+
+- **`text_primary` / 文字为主，视频演示**: synthesize every distinct, directly relevant, evidence-backed tactical principle, decision rule, applicable condition, exception, and training implication that text can explain. Use videos to demonstrate real rallies, choices, consequences, and the original lesson. Never replace a clear tactical explanation with links.
+- **`balanced` / 文字与视频并重**: explain purpose, timing, movement or force logic, common errors, cues, and practice methods in text. Use videos for continuity, rhythm, spatial relationships, and variations under pressure. Explicitly identify what the user must watch rather than infer from prose alone.
+- **`video_primary` / 文字说明基础，视频承担主要示范**: still explain the purpose, a small set of reliable observation points, common errors, and self-checks in text. Let video carry grip shape, racket-face change, posture, relative body position, trajectory, and other details that cannot be learned reliably from prose.
+
+For every mode:
+
+- Cover all distinct relevant conclusions supported by the reviewed evidence; deduplicate them instead of copying transcripts.
+- Never return a link-only answer.
+- Never use detailed prose to pretend that a visual form or dynamic sequence has been fully taught.
+- Preserve every confirmed directly relevant and worthwhile video. Separate core evidence from the complete related-video list.
 
 ## Answer Contract
 
-For technique questions, answer in this order:
+Answer in this order, adapting section depth to the selected mode:
 
-1. **诊断**: identify the likely movement problem and the context where it appears.
-2. **刘辉相关原则**: state the closest evidence-backed principle from the knowledge base.
-3. **纠正提示**: give one or two concrete cues the user can try immediately.
-4. **练习方法**: give one progressive drill with time, reps, or success criteria.
-5. **核心证据**: cite the strongest one to three source videos with title, timestamp, and URL for each evidence-backed point.
-6. **完整相关视频**: list every candidate that remains directly relevant after reviewing the exhaustive manifest, including title and URL. Group long lists by subtopic. Do not include broad topic-only leads as if they were confirmed relevant.
-7. **置信边界**: say what is certain, what is inferred, and what would require visual review or the user's own video.
+1. **直接回答**: answer the user's actual question and identify the applicable situation.
+2. **文字解释**: synthesize all distinct relevant points that can be expressed reliably in text, including principles, decision logic, errors, cues, or practice as appropriate.
+3. **适用边界**: distinguish active/passive, singles/doubles, skill levels, and conditions where advice changes.
+4. **核心视频与观看重点**: cite the strongest one to three videos. For each, give the relevance reason, what to observe, timestamp when available, and URL.
+5. **完整相关视频**: list every remaining confirmed directly relevant and worthwhile video with title, URL, and a concise relevance reason. Group long lists by subtopic. Do not promote broad topic-only leads as confirmed relevant.
+6. **置信边界**: say what is certain, what is inferred, and what requires watching the source video or reviewing the user's own video.
 
-Keep the coaching advice practical. Use only the strongest one to three videos to support conclusions, while preserving the complete confirmed-related video list separately.
+Keep the answer practical but do not omit useful text merely to stay short. Use only the strongest one to three videos to support each conclusion, while preserving the complete confirmed-related video list separately.
 
 ## Topic Navigation Mode
 
@@ -134,6 +151,7 @@ When multiple videos support a point, cite no more than three strongest sources.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
 - `references/retrieval-index.json`: full ready-video retrieval index with transcript-derived terms, complete topic memberships, and n-gram hashes that contain no transcript text.
 - `references/retrieval-rules.json`: bidirectional synonyms, stop phrases, and retrieval thresholds.
+- `references/answer-modality-rules.json`: text-primary, balanced, and video-primary allocation rules and obligations.
 - `references/practice-plan-template.md`: structure and guardrails for training-plan answers.
 - `scripts/search_knowledge.py`: offline high-recall retrieval with exhaustive candidate manifests and per-video evidence lookup.
 - `scripts/navigate_topics.py`: offline topic navigation and learning-path scaffold over the structured topic map.

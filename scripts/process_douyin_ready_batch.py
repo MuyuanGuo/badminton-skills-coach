@@ -186,9 +186,14 @@ def main():
         ROOT / "config" / "retrieval_rules.json",
         ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-rules.json",
     )
+    shutil.copyfile(
+        ROOT / "config" / "answer_modality_rules.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "answer-modality-rules.json",
+    )
     run(["python3", "scripts/update_readme_status.py"])
     ensure_no_raw_media_left(args.batch)
     run(["python3", "scripts/evaluate_retrieval.py"])
+    run(["python3", "scripts/evaluate_answer_policy.py"])
     run(["python3", "scripts/validate_project.py"])
 
     commit_if_changed(
