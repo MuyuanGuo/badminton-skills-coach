@@ -23,6 +23,14 @@ def sync_skill_references():
         ROOT / "data" / "knowledge" / "knowledge_graph_summary.json",
         ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-map.json",
     )
+    shutil.copyfile(
+        ROOT / "data" / "knowledge" / "retrieval_index.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-index.json",
+    )
+    shutil.copyfile(
+        ROOT / "config" / "retrieval_rules.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-rules.json",
+    )
 
 
 def main():
@@ -57,12 +65,14 @@ def main():
         for command in [
             ["python3", "scripts/build_douyin_knowledge.py"],
             ["python3", "scripts/build_topic_index.py"],
+            ["python3", "scripts/build_retrieval_index.py"],
             ["python3", "scripts/build_visual_review_queue.py"],
             ["python3", "scripts/generate_knowledge_graph.py"],
         ]:
             run(command)
         sync_skill_references()
         run(["python3", "scripts/update_readme_status.py"])
+        run(["python3", "scripts/evaluate_retrieval.py"])
         run(["python3", "scripts/validate_project.py"])
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))

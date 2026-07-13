@@ -24,10 +24,12 @@ jobs:
             scripts/apply_visual_review_notes.py \
             scripts/batch_transcribe_directory.py \
             scripts/build_douyin_knowledge.py \
+            scripts/build_retrieval_index.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
             scripts/douyin_pipeline.py \
+            scripts/evaluate_retrieval.py \
             scripts/generate_knowledge_graph.py \
             scripts/init_douyin_queue.py \
             scripts/monitor_douyin_updates.py \
@@ -36,6 +38,7 @@ jobs:
             scripts/report_pipeline_status.py \
             scripts/run_full_update_pipeline.py \
             scripts/test_douyin_pipeline.py \
+            scripts/test_search_knowledge.py \
             scripts/transcribe_video.py \
             scripts/update_readme_status.py \
             skills/liuhui-badminton-coach/scripts/navigate_topics.py \
@@ -44,6 +47,8 @@ jobs:
       - name: Run regression tests
         run: |
           python scripts/test_douyin_pipeline.py
+          python scripts/test_search_knowledge.py
+          python scripts/evaluate_retrieval.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
 
       - name: Validate repository artifacts

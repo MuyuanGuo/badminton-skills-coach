@@ -7,6 +7,8 @@ description: Evidence-backed badminton coaching from the full 406-video processe
 
 Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 359 `ready` teaching entries and `not_teaching` exclusions.
 
+Use `references/retrieval-index.json` for high-recall discovery across every ready video's full transcript-derived term set, topic memberships, and hashed character features. It deliberately contains no full transcript text. Use `references/retrieval-rules.json` for bidirectional badminton terminology expansion.
+
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
 ## Answer Workflow
@@ -20,18 +22,30 @@ python3 scripts/navigate_topics.py "用户问题或关键词"
 
 Use the returned `intent`, top `matches`, `suggested_search_queries`, and `learning_path` to choose the nearest teaching module.
 
-3. Run:
+3. Run exhaustive retrieval:
 
 ```bash
-python3 scripts/search_knowledge.py "用户问题或关键词"
+python3 scripts/search_knowledge.py "用户问题或关键词" --recall-mode exhaustive --limit 12
 ```
 
-The default mode is hybrid retrieval: exact keyword matches plus lightweight semantic similarity. For debugging, use `--mode keyword` or `--mode semantic`.
+The default hybrid retrieval unions four channels: structured fields, full-transcript lexicon hits, complete topic memberships, and hashed transcript n-grams. For debugging, use `--mode keyword` or `--mode semantic`.
 
-4. Read the returned entries, including `keyword_score`, `semantic_score`, and evidence timestamps.
-5. If results are broad or ambiguous, use `references/topic-index.md` or `scripts/navigate_topics.py` for the nearest topic keywords and rerun retrieval once.
-6. Answer using the relevant contract below.
-7. Ask for a short video or missing context only when it would materially change the diagnosis.
+4. Read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Do not stop after the top three results. If `coverage.next_manifest_offset` is not null, rerun with that offset until it becomes null:
+
+```bash
+python3 scripts/search_knowledge.py "用户问题" --manifest-offset NEXT_OFFSET
+```
+
+5. Review every page, every `direct` candidate, and every plausible `strong_related` candidate. Treat `topic_related` and `semantic_lead` candidates as recall safeguards, not automatic proof of relevance.
+6. Fetch stored evidence for every finalist, including plausible candidates outside the top ranked results, repeating `--video-id` as needed:
+
+```bash
+python3 scripts/search_knowledge.py "用户问题" --video-id VIDEO_ID --video-id VIDEO_ID
+```
+
+7. If retrieval is broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Never silently solve breadth by lowering the result limit.
+8. Answer using the relevant contract below.
+9. Ask for a short video or missing context only when it would materially change the diagnosis.
 
 ## Answer Contract
 
@@ -41,10 +55,11 @@ For technique questions, answer in this order:
 2. **刘辉相关原则**: state the closest evidence-backed principle from the knowledge base.
 3. **纠正提示**: give one or two concrete cues the user can try immediately.
 4. **练习方法**: give one progressive drill with time, reps, or success criteria.
-5. **证据来源**: cite source video title, timestamp, and URL for each evidence-backed point.
-6. **置信边界**: say what is certain, what is inferred, and what would require visual review or the user's own video.
+5. **核心证据**: cite the strongest one to three source videos with title, timestamp, and URL for each evidence-backed point.
+6. **完整相关视频**: list every candidate that remains directly relevant after reviewing the exhaustive manifest, including title and URL. Group long lists by subtopic. Do not include broad topic-only leads as if they were confirmed relevant.
+7. **置信边界**: say what is certain, what is inferred, and what would require visual review or the user's own video.
 
-Keep the answer practical. Do not over-answer with every retrieved video; pick the strongest one to three sources.
+Keep the coaching advice practical. Use only the strongest one to three videos to support conclusions, while preserving the complete confirmed-related video list separately.
 
 ## Topic Navigation Mode
 
@@ -90,6 +105,8 @@ Keep volume conservative. Do not promise fixed-date improvement.
 - If sources disagree, describe the applicable conditions instead of selecting one rule universally.
 - If evidence is absent, say the full indexed knowledge base does not cover the question.
 - Treat a general video match as insufficient proof of a specific detail; require timestamped evidence that directly addresses the detail.
+- Do not claim that retrieval mathematically proves semantic completeness. The exhaustive manifest proves that no candidate produced by the configured retrieval channels was truncated; the evaluation set measures known-case recall.
+- Never discard a candidate solely because it is outside the top result limit. Inspect its manifest entry and fetch its evidence when it may address the user's exact situation.
 
 ## Coaching Style
 
@@ -115,6 +132,8 @@ When multiple videos support a point, cite no more than three strongest sources.
 - `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 359 ready teaching videos.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
+- `references/retrieval-index.json`: full ready-video retrieval index with transcript-derived terms, complete topic memberships, and n-gram hashes that contain no transcript text.
+- `references/retrieval-rules.json`: bidirectional synonyms, stop phrases, and retrieval thresholds.
 - `references/practice-plan-template.md`: structure and guardrails for training-plan answers.
-- `scripts/search_knowledge.py`: offline hybrid retrieval over titles, categories, tags, and timestamped evidence.
+- `scripts/search_knowledge.py`: offline high-recall retrieval with exhaustive candidate manifests and per-video evidence lookup.
 - `scripts/navigate_topics.py`: offline topic navigation and learning-path scaffold over the structured topic map.

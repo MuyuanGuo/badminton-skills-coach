@@ -11,16 +11,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 json_paths = [
     "config/douyin_classification_rules.json",
+    "config/retrieval_rules.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
+    "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
+    "data/knowledge/retrieval_index.json",
     "data/knowledge/topic_index.json",
     "data/knowledge/knowledge_graph_summary.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
+    "skills/liuhui-badminton-coach/references/retrieval-index.json",
+    "skills/liuhui-badminton-coach/references/retrieval-rules.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
 for relative_path in json_paths:
@@ -88,6 +93,21 @@ skill_knowledge = json.loads(
 if skill_knowledge != douyin_knowledge:
     raise SystemExit("Skill knowledge base is out of sync with full Douyin knowledge base")
 
+retrieval_rules = json.loads(
+    (ROOT / "config" / "retrieval_rules.json").read_text(encoding="utf-8")
+)
+skill_retrieval_rules = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "retrieval-rules.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_retrieval_rules != retrieval_rules:
+    raise SystemExit("Skill retrieval rules are out of sync with project config")
+
 ready_count = sum(video["processing_status"] == "ready" for video in douyin_knowledge["videos"])
 review_excluded_count = sum(
     video["processing_status"] in {"not_teaching", "low_value"}
@@ -108,6 +128,58 @@ if teaching_filter["counts"]["kept_teaching"] != len(queue["items"]):
     raise SystemExit("Teaching filter kept count is out of sync with processing queue")
 if ready_count != douyin_knowledge["knowledge_counts"].get("ready"):
     raise SystemExit("Knowledge ready count is out of sync with video statuses")
+
+retrieval_index_text = (ROOT / "data" / "knowledge" / "retrieval_index.json").read_text(
+    encoding="utf-8"
+)
+retrieval_index = json.loads(retrieval_index_text)
+skill_retrieval_index = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "retrieval-index.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_retrieval_index != retrieval_index:
+    raise SystemExit("Skill retrieval index is out of sync with project data")
+if retrieval_index["source_updated_at"] != douyin_knowledge["updated_at"]:
+    raise SystemExit("Retrieval index is stale relative to the knowledge base")
+if retrieval_index["version"] != retrieval_rules["version"]:
+    raise SystemExit("Retrieval index version is out of sync with retrieval rules")
+if retrieval_index["indexable_video_count"] != ready_count:
+    raise SystemExit("Retrieval index count is out of sync with ready videos")
+if retrieval_index.get("full_transcript_text_included") is not False:
+    raise SystemExit("Retrieval index must not include full transcript text")
+if '"full_text"' in retrieval_index_text or '"transcript_text"' in retrieval_index_text:
+    raise SystemExit("Retrieval index unexpectedly contains transcript text fields")
+allowed_retrieval_video_fields = {
+    "video_id",
+    "topic_ids",
+    "lexicon_terms",
+    "transcript_ngrams",
+}
+if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index["videos"]):
+    raise SystemExit("Retrieval index video records contain unexpected fields")
+ready_video_ids = {
+    video["video_id"]
+    for video in douyin_knowledge["videos"]
+    if video["processing_status"] == "ready"
+}
+retrieval_video_ids = {video["video_id"] for video in retrieval_index["videos"]}
+if retrieval_video_ids != ready_video_ids:
+    raise SystemExit("Retrieval index video IDs do not match ready knowledge videos")
+
+retrieval_cases = json.loads(
+    (ROOT / "data" / "evaluation" / "retrieval_cases.json").read_text(encoding="utf-8")
+)
+for case in retrieval_cases["cases"]:
+    expected_ids = set(case["expected_video_ids"])
+    if case["primary_video_id"] not in expected_ids:
+        raise SystemExit("Retrieval evaluation primary video is not in expected videos")
+    if not expected_ids.issubset(ready_video_ids):
+        raise SystemExit("Retrieval evaluation references a non-ready or missing video")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
 latest_ready = next(
     video for video in douyin_knowledge["videos"]

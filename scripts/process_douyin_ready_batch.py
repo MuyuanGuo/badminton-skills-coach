@@ -167,6 +167,7 @@ def main():
         ])
     run(["python3", "scripts/build_douyin_knowledge.py"])
     run(["python3", "scripts/build_topic_index.py"])
+    run(["python3", "scripts/build_retrieval_index.py"])
     run(["python3", "scripts/build_visual_review_queue.py"])
     run(["python3", "scripts/generate_knowledge_graph.py"])
     shutil.copyfile(
@@ -177,8 +178,17 @@ def main():
         ROOT / "data" / "knowledge" / "knowledge_graph_summary.json",
         ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-map.json",
     )
+    shutil.copyfile(
+        ROOT / "data" / "knowledge" / "retrieval_index.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-index.json",
+    )
+    shutil.copyfile(
+        ROOT / "config" / "retrieval_rules.json",
+        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-rules.json",
+    )
     run(["python3", "scripts/update_readme_status.py"])
     ensure_no_raw_media_left(args.batch)
+    run(["python3", "scripts/evaluate_retrieval.py"])
     run(["python3", "scripts/validate_project.py"])
 
     commit_if_changed(
