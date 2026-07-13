@@ -26,9 +26,9 @@ This Skill does not impersonate Liu Hui and does not claim endorsement. It is a 
 
 - 抖音主页公开视频索引：`472` 条
 - 筛选出的教学候选视频：`406` 条
-- 已处理入库视频：`405 / 406`
-- 当前知识库视频数：`405`
-- 可直接用于检索回答：`358` 条
+- 已处理入库视频：`406 / 406`
+- 当前知识库视频数：`406`
+- 可直接用于检索回答：`359` 条
 - 已排除非教学/广告器材内容：`66` 条
 - 待视觉复核：`0` 条
 - Codex Skill：`skills/liuhui-badminton-coach/`
@@ -38,9 +38,9 @@ This Skill does not impersonate Liu Hui and does not claim endorsement. It is a 
 
 - Public Douyin profile videos indexed: `472`
 - Teaching candidates selected: `406`
-- Processed into the knowledge base: `405 / 406`
-- Current knowledge-base videos: `405`
-- Directly usable for retrieval-backed answers: `358`
+- Processed into the knowledge base: `406 / 406`
+- Current knowledge-base videos: `406`
+- Directly usable for retrieval-backed answers: `359`
 - Excluded as non-teaching, ads, or equipment-only content: `66`
 - Pending visual review: `0`
 - Codex Skill: `skills/liuhui-badminton-coach/`

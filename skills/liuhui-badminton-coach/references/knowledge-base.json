@@ -1,18 +1,59 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-10T22:40:02.125263+00:00",
+  "updated_at": "2026-07-13T16:59:39.002343+00:00",
   "queue_counts": {
-    "transcribed": 405
+    "transcribed": 406
   },
   "knowledge_counts": {
-    "videos": 405,
-    "ready": 358,
+    "videos": 406,
+    "ready": 359,
     "not_teaching": 47,
     "curated": 3,
     "visual_reviewed": 19
   },
   "videos": [
+    {
+      "video_id": "7661940775983482097",
+      "title": "网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬",
+      "url": "https://www.douyin.com/video/7661940775983482097",
+      "category": "网前技术",
+      "tags": [
+        "网前技术",
+        "握拍与基本动作",
+        "训练与纠错"
+      ],
+      "duration_seconds": 128.3,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "transcript_file": "data/transcripts/douyin/batch-048/7661940775983482097.json",
+      "teaching_note": {
+        "topic": "网前框架 这样做不但不会让新手组织框架失误",
+        "key_evidence": [
+          {
+            "timestamp": "00:27-00:32",
+            "text": "你会拿这个泡往下追这个球等能追着 能发力能打的时候"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "01:55-02:08",
+            "text": "肯定是斩错这不就不会有问题了吗"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:17-00:23",
+            "text": "好当这个球你先伸出来这球过来比你预想的要低怎么办"
+          },
+          {
+            "timestamp": "00:24-00:27",
+            "text": "结果这球过来这么平还可以往下落怎么办"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      }
+    },
     {
       "video_id": "7659991105622862457",
       "title": "重杀框架 可以和期一起看，不同的框架可以决定不同的杀球",

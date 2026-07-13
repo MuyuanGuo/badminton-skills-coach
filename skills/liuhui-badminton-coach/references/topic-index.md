@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `405`
-- Assigned videos: `343`
-- Multi-topic videos: `294`
+- Videos: `406`
+- Assigned videos: `344`
+- Multi-topic videos: `295`
 
 ## How To Use
 
@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `211`
+- Matched videos: `212`
 
 - **被动后场与高远**: `77` videos, `77` ready, `0` needs visual review.
   Keywords: 被动, 高远, 后高点, 底线, 摆脱, 反手后场
@@ -34,7 +34,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
   - 不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来 [ready] https://www.douyin.com/video/7567155406117533051
   - 发力第二集 大家不要错误的去伸胳膊，要学会利用身体去拿高点 [ready] https://www.douyin.com/video/7485692231404342586
-- **架拍与框架**: `61` videos, `61` ready, `0` needs visual review.
+- **架拍与框架**: `62` videos, `62` ready, `0` needs visual review.
   Keywords: 架拍, 框架, 抬拍, 举拍, 顶肘
   Representative videos:
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
@@ -94,15 +94,15 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松发力、旋转传导、腰腹、手腕与击球发力区间。
 
-- Matched videos: `224`
+- Matched videos: `225`
 
-- **放松与爆发**: `144` videos, `144` ready, `0` needs visual review.
+- **放松与爆发**: `145` videos, `145` ready, `0` needs visual review.
   Keywords: 放松, 爆发, 发力, 打透
   Representative videos:
   - 放松架拍 没有说对错，是很多人还不会自然传动力量就开始锁定身体，锁住力量是为了让会发力的人爆发力最大化，不会发力的只会更僵硬 [ready] https://www.douyin.com/video/7628342769941691121
   - 手指是末梢的发力，前面还需要很多带动，食指拇指都需要发力，只不过是支撑 [ready] https://www.douyin.com/video/7097047150479084835
   - 吹笛子的手势是描述大概，大家容易握的太松，注意松是要的缝隙，紧是要的稳定 [ready] https://www.douyin.com/video/7335277415456836898
-- **腰腹与身体旋转**: `78` videos, `78` ready, `0` needs visual review.
+- **腰腹与身体旋转**: `79` videos, `79` ready, `0` needs visual review.
   Keywords: 腰腹, 核心, 旋转, 转体, 身体
   Representative videos:
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready] https://www.douyin.com/video/7494729488699559225
@@ -131,7 +131,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 抽挡、接杀、防守、网前技术和中前场转换。
 
-- Matched videos: `105`
+- Matched videos: `106`
 
 - **平抽挡与高速对抗**: `9` videos, `9` ready, `0` needs visual review.
   Keywords: 抽挡, 平抽挡, 高速对抗, 快球
@@ -145,7 +145,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 双打防守思路 你总会遇到你挑不起来的进攻 [ready] https://www.douyin.com/video/7621243051541587889
   - 双打一般情况下的防守上集，手指破了，挥速慢，望谅解 [ready] https://www.douyin.com/video/7054025391601650948
   - 单打防守反击 [ready] https://www.douyin.com/video/7602766054809333617
-- **网前搓勾扑**: `50` videos, `50` ready, `0` needs visual review.
+- **网前搓勾扑**: `51` videos, `51` ready, `0` needs visual review.
   Keywords: 网前, 搓球, 勾球, 扑球, 滚网
   Representative videos:
   - 身前位勾球，和侧身位的勾球不一样，正手也存在变拍，只不过没反手那么需要 [ready] https://www.douyin.com/video/7064010057020673314
@@ -168,7 +168,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 双打轮转、防守站位、封网、进攻组织和发接发配合。
 
-- Matched videos: `59`
+- Matched videos: `60`
 
 - **双打发接发**: `11` videos, `11` ready, `0` needs visual review.
   Keywords: 双打发接发, 接发, 发接发, 抓球
@@ -194,7 +194,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 别练了今天，研究研究战术吧 [ready] https://www.douyin.com/video/7080735688819281193
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
   - 摇摆球对付抢网凶狠的对手，如果对方不抢网就没什么用啦😂 [ready] https://www.douyin.com/video/7095554075210550528
-- **进攻组织**: `34` videos, `34` ready, `0` needs visual review.
+- **进攻组织**: `35` videos, `35` ready, `0` needs visual review.
   Keywords: 进攻, 组织, 压制, 后杀前封
   Representative videos:
   - 一个小小的方向改变就可以让进攻衔接的更加流畅 [ready] https://www.douyin.com/video/7278130800220998946
@@ -230,7 +230,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 训练设计、常见错误、实战复盘和恢复对抗能力。
 
-- Matched videos: `149`
+- Matched videos: `150`
 
 - **训练方法**: `51` videos, `51` ready, `0` needs visual review.
   Keywords: 训练, 练习, 多球, 三步, 方法
@@ -238,7 +238,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 如何快速恢复对抗能力 觉得训练的时候实在不行了，就可以直接最后一个项目了 [ready] https://www.douyin.com/video/7432633273060314408
   - 1 白鞋白胶布2低重心步法回动3低重心步法训练，这是我自创训练 [ready] https://www.douyin.com/video/7085169366005714217
   - 今天本来想拍教学的，但是人手不够😂，内涵一下某地区比赛，大家知道是哪里嘛？ [ready] https://www.douyin.com/video/7094072057608047913
-- **常见错误纠正**: `97` videos, `97` ready, `0` needs visual review.
+- **常见错误纠正**: `98` videos, `98` ready, `0` needs visual review.
   Keywords: 错误, 不对, 纠正, 问题
   Representative videos:
   - 日常纠错抡大臂 没有演，一箱球都打完了，问题还有但是时间有限，不过t老师已经得救了算是 [ready] https://www.douyin.com/video/7397746202562956559
