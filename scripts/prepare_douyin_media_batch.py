@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import json
-from datetime import datetime, timezone
 from pathlib import Path
+
+from douyin_pipeline import PRE_MEDIA_STATUSES, compute_status_counts, now_iso, write_json
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,17 +12,8 @@ TMP_ROOT = ROOT / "data" / "tmp"
 RAW_ROOT = ROOT / "data" / "raw_videos" / "douyin"
 
 
-def now_iso():
-    return datetime.now(timezone.utc).isoformat()
-
-
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
-
-
-def write_json(path, payload):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def select_asset(snapshot, prefer):
@@ -55,13 +47,6 @@ def curl_config(url, output_path):
     )
 
 
-def queue_counts(queue):
-    counts = {}
-    for item in queue["items"]:
-        counts[item["status"]] = counts.get(item["status"], 0) + 1
-    return counts
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Convert a Douyin video media-asset snapshot into a curl config and mark the queue item media_ready."
@@ -86,7 +71,7 @@ def main():
     item = next((row for row in queue["items"] if str(row["video_id"]) == video_id), None)
     if not item:
         raise SystemExit(f"Video {video_id} is not in the processing queue")
-    if item.get("status") not in {"pending", "media_ready", "download_failed", "extraction_failed"} and not args.force:
+    if item.get("status") not in PRE_MEDIA_STATUSES and not args.force:
         raise SystemExit(f"Refusing to prepare media for {video_id} with status {item.get('status')}")
 
     suffix = ".m4a" if asset.get("kind") == "audio" else ".mp4"
@@ -104,7 +89,7 @@ def main():
     item["media_asset_kind"] = asset.get("kind")
     item["media_asset_source"] = str(input_path.relative_to(ROOT) if input_path.is_relative_to(ROOT) else input_path)
     item["error"] = None
-    queue["counts"] = queue_counts(queue)
+    queue["counts"] = compute_status_counts(queue["items"])
     queue["updated_at"] = now_iso()
     write_json(QUEUE_PATH, queue)
     print(

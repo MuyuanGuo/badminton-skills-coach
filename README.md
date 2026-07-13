@@ -73,7 +73,11 @@ output/
   liuhui-knowledge-map.html        Local HTML map
   visual_review_queue.md           Generated manual-review worksheet
 
+config/
+  douyin_classification_rules.json Teaching/non-teaching classification rules
+
 scripts/
+  douyin_pipeline.py               Shared classification and queue-status helpers
   douyin_profile_snapshot_dom.js   Browser-side Douyin profile snapshot helper
   douyin_video_media_assets_dom.js Browser-side video media asset helper
   check_douyin_updates.py          Compare a profile snapshot with known videos
@@ -154,7 +158,7 @@ python3 scripts/check_douyin_updates.py \
   --report output/douyin-update-report.json
 ```
 
-确认新增内容后，应用安全的教学候选新增项：
+确认新增内容后，应用安全的教学候选新增项。分类关键词、广告/器材排除词、人工排除 ID 都在 `config/douyin_classification_rules.json`，如果新视频误判，优先改配置再重跑：
 
 ```bash
 python3 scripts/check_douyin_updates.py \
@@ -162,6 +166,8 @@ python3 scripts/check_douyin_updates.py \
   --report output/douyin-update-report.json \
   --apply
 ```
+
+新入队的教学视频会使用 `classified_teaching` 状态，表示已经通过分类、等待提取媒体地址。旧数据中的 `pending` 仍被脚本兼容为同一阶段。
 
 ### 3. 下载并转写新增视频
 
@@ -238,7 +244,7 @@ python3 scripts/check_douyin_updates.py \
   --report output/douyin-update-report.json
 ```
 
-After reviewing the additions, apply safe teaching candidates:
+After reviewing the additions, apply safe teaching candidates. Classification keywords, ad/equipment exclusion terms, and manual exclusion IDs live in `config/douyin_classification_rules.json`. If a new post is misclassified, update the config first and rerun the check:
 
 ```bash
 python3 scripts/check_douyin_updates.py \
@@ -246,6 +252,8 @@ python3 scripts/check_douyin_updates.py \
   --report output/douyin-update-report.json \
   --apply
 ```
+
+New teaching queue items start as `classified_teaching`; legacy `pending` items are still accepted as the same stage.
 
 ### 3. Download and transcribe new videos
 
@@ -298,6 +306,36 @@ Then refresh the local Codex Skill:
 cp -R skills/liuhui-badminton-coach ~/.codex/skills/liuhui-badminton-coach
 ```
 
+## 队列状态 / Queue Statuses
+
+**中文**
+
+`data/processing/douyin_queue.json` 使用更细的状态来说明每条教学候选视频卡在哪一步：
+
+- `classified_teaching`：已判定为教学候选，等待提取媒体地址。
+- `pending`：旧状态，等同于 `classified_teaching`，保留兼容。
+- `media_ready`：已经从抖音视频页拿到媒体地址，并生成 curl 配置。
+- `downloaded`：临时媒体文件已下载，等待转写。
+- `transcribed`：转写文件已生成，可进入知识库构建。
+- `download_failed`：下载失败，需要刷新媒体地址或重试。
+- `extraction_failed`：媒体地址提取失败，需要重新打开视频页提取。
+- `transcription_failed`：本地转写失败，需要检查媒体文件或转写环境。
+- `skipped_non_teaching`：已确认非教学，仅用于状态语义和后续扩展；当前非教学主要记录在分类报告和计数中。
+
+**English**
+
+`data/processing/douyin_queue.json` uses explicit statuses to show where each teaching candidate is in the pipeline:
+
+- `classified_teaching`: accepted as a teaching candidate and waiting for media extraction.
+- `pending`: legacy alias for `classified_teaching`.
+- `media_ready`: media URL captured from the Douyin video page and curl config generated.
+- `downloaded`: temporary media downloaded and waiting for transcription.
+- `transcribed`: transcript files exist and can be built into the knowledge base.
+- `download_failed`: download failed; refresh the media asset or retry.
+- `extraction_failed`: media asset extraction failed; reopen the video page and extract again.
+- `transcription_failed`: local transcription failed; inspect the media file or transcription environment.
+- `skipped_non_teaching`: known non-teaching item retained for status semantics and future expansion; current non-teaching items are mainly tracked in classification reports and counts.
+
 ## 技术栈 / Technology Stack
 
 **中文**
@@ -328,6 +366,7 @@ python3 -m py_compile \
   scripts/build_topic_index.py \
   scripts/build_visual_review_queue.py \
   scripts/check_douyin_updates.py \
+  scripts/douyin_pipeline.py \
   scripts/generate_knowledge_graph.py \
   scripts/init_douyin_queue.py \
   scripts/monitor_douyin_updates.py \

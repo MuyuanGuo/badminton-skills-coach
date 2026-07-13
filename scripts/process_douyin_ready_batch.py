@@ -5,7 +5,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from datetime import datetime, timezone
+
+from douyin_pipeline import compute_status_counts, validate_queue_statuses, now_iso
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,15 +27,13 @@ def queue_counts():
 
 
 def compute_counts(queue):
-    counts = {}
-    for item in queue["items"]:
-        counts[item["status"]] = counts.get(item["status"], 0) + 1
-    return counts
+    validate_queue_statuses(queue["items"])
+    return compute_status_counts(queue["items"])
 
 
 def write_queue(queue):
     queue["counts"] = compute_counts(queue)
-    queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+    queue["updated_at"] = now_iso()
     QUEUE_PATH.write_text(
         json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

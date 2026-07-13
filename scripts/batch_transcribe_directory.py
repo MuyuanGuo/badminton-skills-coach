@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 import json
-from datetime import datetime, timezone
 from pathlib import Path
 
 from faster_whisper import WhisperModel
+
+from douyin_pipeline import compute_status_counts, now_iso, validate_queue_statuses
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,11 +58,9 @@ if args.queue:
         queue_items[media.stem]["duration_seconds"] = round(transcript.get("duration", 0), 3)
         queue_items[media.stem]["error"] = None
     if already_done_files:
-        counts = {}
-        for item in queue["items"]:
-            counts[item["status"]] = counts.get(item["status"], 0) + 1
-        queue["counts"] = counts
-        queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+        validate_queue_statuses(queue["items"])
+        queue["counts"] = compute_status_counts(queue["items"])
+        queue["updated_at"] = now_iso()
         args.queue.write_text(
             json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -133,11 +132,9 @@ for index, media in enumerate(pending, start=1):
             "error": str(error),
         }, ensure_ascii=False), flush=True)
     if queue is not None:
-        counts = {}
-        for item in queue["items"]:
-            counts[item["status"]] = counts.get(item["status"], 0) + 1
-        queue["counts"] = counts
-        queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+        validate_queue_statuses(queue["items"])
+        queue["counts"] = compute_status_counts(queue["items"])
+        queue["updated_at"] = now_iso()
         args.queue.write_text(
             json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",

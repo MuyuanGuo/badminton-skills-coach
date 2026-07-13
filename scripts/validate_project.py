@@ -4,10 +4,13 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
 json_paths = [
+    "config/douyin_classification_rules.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
     "data/knowledge/pilot_teaching_notes.json",
@@ -44,10 +47,20 @@ validate_skill_frontmatter("liuhui-badminton-coach")
 queue = json.loads(
     (ROOT / "data" / "processing" / "douyin_queue.json").read_text(encoding="utf-8")
 )
+validate_queue_statuses(queue["items"])
 if len(queue["items"]) < 405:
     raise SystemExit(f"Expected at least 405 teaching videos in queue, found {len(queue['items'])}")
 if sum(queue["counts"].values()) != len(queue["items"]):
     raise SystemExit("Douyin queue counts do not sum to the queue length")
+if not {"classified_teaching", "media_ready", "transcribed", "download_failed", "transcription_failed"}.issubset(QUEUE_STATUSES):
+    raise SystemExit("Queue status contract is missing expected pipeline states")
+
+rules = load_classification_rules()
+for required_signal in ["ad_strong", "equipment", "teaching", "non_teaching"]:
+    if required_signal not in rules["signals"]:
+        raise SystemExit(f"Classification rules missing signal: {required_signal}")
+if len(rules["taxonomy"]) < 8:
+    raise SystemExit("Classification taxonomy is missing expected top-level categories")
 
 video_index = json.loads(
     (ROOT / "data" / "douyin_video_index.json").read_text(encoding="utf-8")

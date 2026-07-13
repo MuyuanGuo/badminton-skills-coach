@@ -27,6 +27,7 @@ jobs:
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
+            scripts/douyin_pipeline.py \
             scripts/generate_knowledge_graph.py \
             scripts/init_douyin_queue.py \
             scripts/monitor_douyin_updates.py \
