@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from datetime import datetime, timezone
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,10 +22,23 @@ def run(command, *, check=True):
 
 def queue_counts():
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    return compute_counts(queue)
+
+
+def compute_counts(queue):
     counts = {}
     for item in queue["items"]:
         counts[item["status"]] = counts.get(item["status"], 0) + 1
     return counts
+
+
+def write_queue(queue):
+    queue["counts"] = compute_counts(queue)
+    queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+    QUEUE_PATH.write_text(
+        json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
 
 
 def ready_items(batch):
@@ -37,19 +51,39 @@ def ready_items(batch):
     ]
 
 
-def curl_configs(batch, items):
-    configs = []
+def download_ready_items(batch, items):
+    queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    queue_by_id = {item["video_id"]: item for item in queue["items"]}
+    downloaded = []
+    failed = []
     for item in items:
-        config = TMP_ROOT / batch / f"{item['video_id']}.curl"
+        video_id = item["video_id"]
+        config = TMP_ROOT / batch / f"{video_id}.curl"
+        queue_item = queue_by_id[video_id]
         if not config.exists():
-            raise FileNotFoundError(config)
-        configs.append(config)
-    return configs
-
-
-def download(configs):
-    for config in configs:
-        run(["curl", "-L", "--fail", "--retry", "2", "-K", str(config.relative_to(ROOT))])
+            queue_item["status"] = "download_failed"
+            queue_item["attempts"] = int(queue_item.get("attempts") or 0) + 1
+            queue_item["error"] = f"Missing curl config: {config.relative_to(ROOT)}"
+            failed.append(video_id)
+            write_queue(queue)
+            continue
+        completed = subprocess.run(
+            ["curl", "-L", "--fail", "--retry", "2", "-K", str(config.relative_to(ROOT))],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        if completed.returncode:
+            queue_item["status"] = "download_failed"
+            queue_item["attempts"] = int(queue_item.get("attempts") or 0) + 1
+            queue_item["error"] = (completed.stderr or completed.stdout or "").strip()[-1200:]
+            failed.append(video_id)
+        else:
+            queue_item["status"] = "downloaded"
+            queue_item["error"] = None
+            downloaded.append(video_id)
+        write_queue(queue)
+    return downloaded, failed
 
 
 def ensure_no_raw_media_left(batch):
@@ -116,16 +150,22 @@ def main():
         "free_gb": round(free_gb, 2),
     }, ensure_ascii=False), flush=True)
 
-    download(curl_configs(args.batch, items))
-    run([
-        ".venv/bin/python",
-        "scripts/batch_transcribe_directory.py",
-        str(media_dir.relative_to(ROOT)),
-        "--output-dir",
-        str(transcript_dir.relative_to(ROOT)),
-        "--queue",
-        str(QUEUE_PATH.relative_to(ROOT)),
-    ])
+    downloaded, failed = download_ready_items(args.batch, items)
+    print(json.dumps({
+        "downloaded": len(downloaded),
+        "download_failed": len(failed),
+        "failed_video_ids": failed,
+    }, ensure_ascii=False), flush=True)
+    if downloaded:
+        run([
+            ".venv/bin/python",
+            "scripts/batch_transcribe_directory.py",
+            str(media_dir.relative_to(ROOT)),
+            "--output-dir",
+            str(transcript_dir.relative_to(ROOT)),
+            "--queue",
+            str(QUEUE_PATH.relative_to(ROOT)),
+        ])
     run(["python3", "scripts/build_douyin_knowledge.py"])
     run(["python3", "scripts/build_topic_index.py"])
     run(["python3", "scripts/build_visual_review_queue.py"])

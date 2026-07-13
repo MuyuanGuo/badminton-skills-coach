@@ -71,7 +71,8 @@ def main():
         flags=re.DOTALL,
     )
     if updated == readme:
-        raise SystemExit("README current-contents section was not found or unchanged")
+        print(json.dumps({"updated": None, "reason": "already_current"}, ensure_ascii=False))
+        return
     README.write_text(updated, encoding="utf-8")
     print(json.dumps({"updated": str(README.relative_to(ROOT))}, ensure_ascii=False))
 

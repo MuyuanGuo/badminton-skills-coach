@@ -33,7 +33,11 @@ files = sorted(
     file for file in media_dir.iterdir()
     if file.suffix.lower() in {".mp4", ".m4a", ".mp3", ".wav"}
 )
-pending = [file for file in files if not (output_dir / f"{file.stem}.json").exists()]
+already_done_files = [
+    file for file in files
+    if (output_dir / f"{file.stem}.json").exists()
+]
+pending = [file for file in files if file not in already_done_files]
 print(json.dumps({
     "media_files": len(files),
     "already_done": len(files) - len(pending),
@@ -45,6 +49,23 @@ queue_items = {}
 if args.queue:
     queue = json.loads(args.queue.read_text(encoding="utf-8"))
     queue_items = {item["video_id"]: item for item in queue["items"]}
+    for media in already_done_files:
+        if media.stem not in queue_items:
+            continue
+        transcript = json.loads((output_dir / f"{media.stem}.json").read_text(encoding="utf-8"))
+        queue_items[media.stem]["status"] = "transcribed"
+        queue_items[media.stem]["duration_seconds"] = round(transcript.get("duration", 0), 3)
+        queue_items[media.stem]["error"] = None
+    if already_done_files:
+        counts = {}
+        for item in queue["items"]:
+            counts[item["status"]] = counts.get(item["status"], 0) + 1
+        queue["counts"] = counts
+        queue["updated_at"] = datetime.now(timezone.utc).isoformat()
+        args.queue.write_text(
+            json.dumps(queue, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
 model = WhisperModel(args.model, device="cpu", compute_type="int8")
 for index, media in enumerate(pending, start=1):

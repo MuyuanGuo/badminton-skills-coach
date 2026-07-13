@@ -30,7 +30,9 @@ jobs:
             scripts/generate_knowledge_graph.py \
             scripts/init_douyin_queue.py \
             scripts/monitor_douyin_updates.py \
+            scripts/prepare_douyin_media_batch.py \
             scripts/process_douyin_ready_batch.py \
+            scripts/run_full_update_pipeline.py \
             scripts/transcribe_video.py \
             scripts/update_readme_status.py \
             skills/liuhui-badminton-coach/scripts/navigate_topics.py \

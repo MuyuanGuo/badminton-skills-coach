@@ -75,10 +75,13 @@ output/
 
 scripts/
   douyin_profile_snapshot_dom.js   Browser-side Douyin profile snapshot helper
+  douyin_video_media_assets_dom.js Browser-side video media asset helper
   check_douyin_updates.py          Compare a profile snapshot with known videos
   monitor_douyin_updates.py        Wrapper for update checks and optional commit
+  prepare_douyin_media_batch.py    Create curl configs from media-asset snapshots
   init_douyin_queue.py             Build or refresh the processing queue
   process_douyin_ready_batch.py    Download, transcribe, rebuild, validate, commit
+  run_full_update_pipeline.py      One-command local update wrapper
   batch_transcribe_directory.py    Transcribe local media directories
   transcribe_video.py              Transcribe one video/audio file
   build_douyin_knowledge.py        Rebuild the full knowledge base
@@ -164,21 +167,44 @@ python3 scripts/check_douyin_updates.py \
 
 新增视频进入 `data/processing/douyin_queue.json` 后，需要为对应批次准备临时媒体下载配置，再运行：
 
+```text
+scripts/douyin_video_media_assets_dom.js
+```
+
+将视频页媒体资源快照保存到 `data/tmp/<video_id>-media-assets.json` 后，生成批次下载配置：
+
+```bash
+python3 scripts/prepare_douyin_media_batch.py \
+  --input data/tmp/<video_id>-media-assets.json \
+  --batch batch-048
+```
+
+然后运行批处理：
+
 ```bash
 python3 scripts/process_douyin_ready_batch.py batch-048
 ```
 
-这个脚本会下载临时媒体、转写、重建知识库、清理本地媒体、验证项目，并可提交变更。
+这个脚本会逐条下载临时媒体、记录下载失败项、转写、重建知识库、重建主题索引、重建思维图、刷新 README、清理本地媒体、验证项目，并可提交变更。
 
 ### 4. 重新生成 Skill 与思维图
 
-如果手动改了复核笔记或知识数据，按顺序运行：
+如果手动改了复核笔记或知识数据，推荐运行总入口：
+
+```bash
+python3 scripts/run_full_update_pipeline.py
+```
+
+它会重建知识库、主题索引、视觉复核队列、思维图、Skill 引用数据、README 状态，并运行验证。也可以按顺序手动运行：
 
 ```bash
 python3 scripts/build_douyin_knowledge.py
 python3 scripts/build_topic_index.py
 python3 scripts/build_visual_review_queue.py
 python3 scripts/generate_knowledge_graph.py
+cp data/knowledge/douyin_knowledge_base.json skills/liuhui-badminton-coach/references/knowledge-base.json
+cp data/knowledge/knowledge_graph_summary.json skills/liuhui-badminton-coach/references/topic-map.json
+python3 scripts/update_readme_status.py
 python3 scripts/validate_project.py
 ```
 
@@ -223,23 +249,46 @@ python3 scripts/check_douyin_updates.py \
 
 ### 3. Download and transcribe new videos
 
-After new videos enter `data/processing/douyin_queue.json`, prepare temporary media download configs for the batch and run:
+After new videos enter `data/processing/douyin_queue.json`, open the video page in an authenticated browser session and run:
+
+```text
+scripts/douyin_video_media_assets_dom.js
+```
+
+Save the media-asset snapshot as `data/tmp/<video_id>-media-assets.json`, then prepare the batch curl config:
+
+```bash
+python3 scripts/prepare_douyin_media_batch.py \
+  --input data/tmp/<video_id>-media-assets.json \
+  --batch batch-048
+```
+
+Then run the batch processor:
 
 ```bash
 python3 scripts/process_douyin_ready_batch.py batch-048
 ```
 
-This downloads temporary media, transcribes it, rebuilds the knowledge base, removes local media, validates the repository, and can commit the update.
+This downloads temporary media item by item, records download failures, transcribes the batch, rebuilds the knowledge base, rebuilds topic indexes and maps, refreshes README, removes local media, validates the repository, and can commit the update.
 
 ### 4. Regenerate the Skill and maps
 
-If review notes or knowledge data changed manually, run:
+If review notes or knowledge data changed manually, prefer the one-command wrapper:
+
+```bash
+python3 scripts/run_full_update_pipeline.py
+```
+
+It rebuilds the knowledge base, topic index, visual-review queue, maps, Skill reference files, README status, and validation. You can also run the steps manually:
 
 ```bash
 python3 scripts/build_douyin_knowledge.py
 python3 scripts/build_topic_index.py
 python3 scripts/build_visual_review_queue.py
 python3 scripts/generate_knowledge_graph.py
+cp data/knowledge/douyin_knowledge_base.json skills/liuhui-badminton-coach/references/knowledge-base.json
+cp data/knowledge/knowledge_graph_summary.json skills/liuhui-badminton-coach/references/topic-map.json
+python3 scripts/update_readme_status.py
 python3 scripts/validate_project.py
 ```
 
@@ -282,8 +331,11 @@ python3 -m py_compile \
   scripts/generate_knowledge_graph.py \
   scripts/init_douyin_queue.py \
   scripts/monitor_douyin_updates.py \
+  scripts/prepare_douyin_media_batch.py \
   scripts/process_douyin_ready_batch.py \
+  scripts/run_full_update_pipeline.py \
   scripts/transcribe_video.py \
+  scripts/update_readme_status.py \
   skills/liuhui-badminton-coach/scripts/navigate_topics.py \
   skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
