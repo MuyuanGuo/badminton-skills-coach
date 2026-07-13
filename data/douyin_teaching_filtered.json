@@ -1,15 +1,27 @@
 {
   "source_profile": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "generated_at": "2026-07-11T03:44:28.949075+00:00",
+  "generated_at": "2026-07-13T16:53:49.484278+00:00",
   "methodology": "基于主页作品区与标题文案的规则初筛；待复核项需查看视频画面或逐条作者页。",
   "counts": {
-    "total": 471,
-    "kept_teaching": 405,
+    "total": 472,
+    "kept_teaching": 406,
     "review": 0,
     "excluded_ads": 17,
     "excluded_non_teaching": 49
   },
   "videos": [
+    {
+      "video_id": "7661940775983482097",
+      "url": "https://www.douyin.com/video/7661940775983482097",
+      "title": "1.2万 网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "1.2万 网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "author_status": "主页最新作品区发现",
+      "decision": "保留：教学",
+      "decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "primary_category": "网前技术",
+      "tags": "网前技术；握拍与基本动作；训练与纠错"
+    },
     {
       "video_id": "7659991105622862457",
       "url": "https://www.douyin.com/video/7659991105622862457",

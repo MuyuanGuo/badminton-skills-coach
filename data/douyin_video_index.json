@@ -2,10 +2,17 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-07-11T03:44:28.940269+00:00",
-  "collected_unique_links": 471,
+  "collected_at": "2026-07-13T16:53:49.471459+00:00",
+  "collected_unique_links": 472,
   "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7661940775983482097",
+      "url": "https://www.douyin.com/video/7661940775983482097",
+      "title": "1.2万 网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "1.2万 网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练"
+    },
     {
       "video_id": "7661007346362449893",
       "url": "https://www.douyin.com/video/7661007346362449893",
