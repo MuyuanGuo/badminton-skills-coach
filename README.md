@@ -37,7 +37,8 @@
 把 Skill 安装或刷新到本机 Codex：
 
 ```bash
-cp -R skills/liuhui-badminton-coach ~/.codex/skills/liuhui-badminton-coach
+mkdir -p ~/.codex/skills/liuhui-badminton-coach
+cp -R skills/liuhui-badminton-coach/. ~/.codex/skills/liuhui-badminton-coach/
 ```
 
 在 Codex 中使用：
