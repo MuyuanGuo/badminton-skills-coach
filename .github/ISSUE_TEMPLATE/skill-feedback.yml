@@ -68,7 +68,7 @@ body:
     attributes:
       label: 版本信息
       description: 例如 v1.0.0 或 1.1.0-dev；不知道可填写 unknown。
-      placeholder: 1.1.0-dev.2
+      placeholder: 1.1.0-dev.3
     validations:
       required: true
 

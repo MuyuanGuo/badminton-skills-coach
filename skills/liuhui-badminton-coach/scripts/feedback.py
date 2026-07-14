@@ -4,7 +4,12 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import ssl
+import subprocess
 import tempfile
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -18,6 +23,10 @@ VIDEO_ID_PATTERN = re.compile(r"(?<!\d)(\d{18,20})(?!\d)")
 CLAUSE_SPLIT_PATTERN = re.compile(r"[，,；;。!！？?\n]+|[.](?=\s|$)")
 ISSUE_HEADING_PATTERN = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 GITHUB_ISSUE_URL = "https://github.com/MuyuanGuo/badminton-skills-coach/issues/new"
+GITHUB_REPOSITORY = "MuyuanGuo/badminton-skills-coach"
+GITHUB_ISSUE_PATTERN = re.compile(
+    r"^https://github\.com/MuyuanGuo/badminton-skills-coach/issues/([1-9]\d*)/?$"
+)
 
 
 def utc_now():
@@ -441,6 +450,114 @@ def github_video_lines(video_ids):
     )
 
 
+def body_sha256(body):
+    return hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
+def github_ssl_context():
+    try:
+        import certifi
+    except ImportError:
+        return ssl.create_default_context()
+    return ssl.create_default_context(cafile=certifi.where())
+
+
+def fetch_with_curl(api_url, headers):
+    if not shutil.which("curl"):
+        raise ValueError("GitHub TLS verification failed and curl is unavailable")
+
+    def escaped(value):
+        return str(value).replace("\\", "\\\\").replace('"', '\\"')
+
+    config_lines = [
+        f'url = "{escaped(api_url)}"',
+        "fail",
+        "silent",
+        "show-error",
+        "location",
+        "max-time = 20",
+    ]
+    config_lines.extend(
+        f'header = "{escaped(name)}: {escaped(value)}"'
+        for name, value in headers.items()
+    )
+    result = subprocess.run(
+        ["curl", "--config", "-"],
+        input="\n".join(config_lines) + "\n",
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode:
+        raise ValueError("GitHub issue lookup failed via curl: " + result.stderr.strip())
+    return result.stdout.encode("utf-8")
+
+
+def fetch_github_issue(issue_url, token=None, opener=None):
+    match = GITHUB_ISSUE_PATTERN.fullmatch(issue_url.strip())
+    if not match:
+        raise ValueError(
+            "GitHub feedback must use an issue from " + GITHUB_REPOSITORY
+        )
+    issue_number = int(match.group(1))
+    api_url = (
+        f"https://api.github.com/repos/{GITHUB_REPOSITORY}/issues/{issue_number}"
+    )
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "liuhui-badminton-coach-feedback",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    github_token = token or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if github_token:
+        headers["Authorization"] = f"Bearer {github_token}"
+    request = urllib.request.Request(api_url, headers=headers)
+    try:
+        if opener:
+            with opener(request, timeout=20) as response:
+                response_body = response.read()
+        else:
+            with urllib.request.urlopen(
+                request,
+                timeout=20,
+                context=github_ssl_context(),
+            ) as response:
+                response_body = response.read()
+    except urllib.error.HTTPError as error:
+        raise ValueError(
+            f"GitHub issue lookup failed with HTTP {error.code}"
+        ) from error
+    except urllib.error.URLError as error:
+        if not opener and isinstance(error.reason, ssl.SSLCertVerificationError):
+            response_body = fetch_with_curl(api_url, headers)
+        else:
+            raise ValueError(f"GitHub issue lookup failed: {error.reason}") from error
+    try:
+        issue = json.loads(response_body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("GitHub issue API returned invalid JSON") from error
+
+    canonical_url = issue_url.strip().rstrip("/")
+    if issue.get("html_url", "").rstrip("/") != canonical_url:
+        raise ValueError("GitHub API response does not match the requested issue")
+    if "pull_request" in issue:
+        raise ValueError("Pull requests cannot be imported as Skill feedback")
+    body = issue.get("body") or ""
+    if not body.strip():
+        raise ValueError("GitHub feedback issue body is empty")
+    verification = {
+        "method": "github_api",
+        "repository": GITHUB_REPOSITORY,
+        "issue_number": issue_number,
+        "node_id": issue.get("node_id"),
+        "state": issue.get("state"),
+        "source_updated_at": issue.get("updated_at"),
+        "body_sha256": body_sha256(body),
+        "verified_at": utc_now(),
+    }
+    return body, verification
+
+
 def export_github_feedback(
     feedback_id,
     public_question,
@@ -537,9 +654,21 @@ def normalize_issue_value(value):
     return "" if value in {"_No response_", "无", "没有", "N/A"} else value
 
 
-def import_github_issue(body, source_url, queue_dir=None):
+def import_github_issue(body, source_url, queue_dir=None, source_verification=None):
     target_dir = Path(queue_dir or default_queue_dir())
     knowledge, rules = load_resources()
+    if source_verification:
+        if source_verification.get("body_sha256") != body_sha256(body):
+            raise ValueError("GitHub verification hash does not match the imported body")
+        match = GITHUB_ISSUE_PATTERN.fullmatch(source_url.strip())
+        if not match:
+            raise ValueError("Verified feedback must use the canonical repository")
+        if source_verification.get("method") != "github_api":
+            raise ValueError("Verified feedback must come from the GitHub API")
+        if source_verification.get("repository") != GITHUB_REPOSITORY:
+            raise ValueError("Verified feedback repository does not match")
+        if source_verification.get("issue_number") != int(match.group(1)):
+            raise ValueError("Verified feedback issue number does not match")
     sections = {
         heading: normalize_issue_value(value)
         for heading, value in parse_issue_sections(body).items()
@@ -587,7 +716,15 @@ def import_github_issue(body, source_url, queue_dir=None):
         "status": "needs_clarification" if warnings else "pending_review",
         "created_at": utc_now(),
         "updated_at": None,
-        "source": {"type": "github_issue", "reference": source_url},
+        "source": {
+            "type": "github_issue",
+            "reference": source_url,
+            **(
+                {"verification": source_verification}
+                if source_verification
+                else {}
+            ),
+        },
         "answer_id": sections.get("回答编号") or None,
         "skill_version": sections.get("版本信息") or "unknown",
         "channel": "unknown",
@@ -613,6 +750,20 @@ def import_github_issue(body, source_url, queue_dir=None):
     }
     atomic_write_json(target_dir / "queue" / f"{feedback_id}.json", payload)
     return payload
+
+
+def fetch_and_import_github_issue(issue_url, queue_dir=None, token=None, opener=None):
+    body, verification = fetch_github_issue(
+        issue_url,
+        token=token,
+        opener=opener,
+    )
+    return import_github_issue(
+        body=body,
+        source_url=issue_url.strip().rstrip("/"),
+        queue_dir=queue_dir,
+        source_verification=verification,
+    )
 
 
 def print_json(payload):
@@ -676,10 +827,12 @@ def build_parser():
     review.add_argument("--queue-dir", type=Path)
 
     import_issue = subparsers.add_parser(
-        "import-github", help="Import an exported GitHub feedback issue body."
+        "import-github", help="Import or fetch a GitHub feedback issue."
     )
-    import_issue.add_argument("--body-file", type=Path, required=True)
-    import_issue.add_argument("--source-url", required=True)
+    import_source = import_issue.add_mutually_exclusive_group(required=True)
+    import_source.add_argument("--body-file", type=Path)
+    import_source.add_argument("--fetch-url")
+    import_issue.add_argument("--source-url")
     import_issue.add_argument("--queue-dir", type=Path)
 
     export_issue = subparsers.add_parser(
@@ -749,11 +902,19 @@ def main():
                 args.output.write_text(result["issue_body"], encoding="utf-8")
                 result["output"] = str(args.output)
         else:
-            result = import_github_issue(
-                body=args.body_file.read_text(encoding="utf-8"),
-                source_url=args.source_url,
-                queue_dir=args.queue_dir,
-            )
+            if args.fetch_url:
+                result = fetch_and_import_github_issue(
+                    issue_url=args.fetch_url,
+                    queue_dir=args.queue_dir,
+                )
+            else:
+                if not args.source_url:
+                    raise ValueError("--source-url is required with --body-file")
+                result = import_github_issue(
+                    body=args.body_file.read_text(encoding="utf-8"),
+                    source_url=args.source_url,
+                    queue_dir=args.queue_dir,
+                )
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
         raise SystemExit(str(error)) from error
     print_json(result)

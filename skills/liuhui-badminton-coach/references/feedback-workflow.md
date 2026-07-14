@@ -92,7 +92,7 @@ python3 scripts/search_knowledge.py "用户问题" --no-local-personalization
 
 ## GitHub feedback
 
-Use the repository's Skill feedback issue form. Ask users to paste video IDs or Douyin links, not only local `V` labels.
+Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Ask users to paste video IDs or Douyin links, not only local `V` labels.
 
 To share an accepted local record, first ask the user to provide or approve a sanitized public version of the question. After separate public-sharing consent, generate a GitHub Issue body:
 
@@ -106,13 +106,14 @@ python3 scripts/feedback.py export-github \
 
 The export contains only the sanitized question, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original question or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Do not mark it as uploaded until a real public Issue URL exists.
 
-After a public Issue exists, import its body into the same local review queue:
+After a public Issue exists in the canonical repository, fetch and import it through the GitHub API:
 
 ```bash
 python3 scripts/feedback.py import-github \
-  --body-file /path/to/issue-body.md \
-  --source-url https://github.com/OWNER/REPO/issues/NUMBER
+  --fetch-url https://github.com/MuyuanGuo/badminton-skills-coach/issues/NUMBER
 ```
+
+This records the canonical repository, issue number, node ID, source update time, and body hash. A manual `--body-file` import can still be reviewed locally, but it is unverified and cannot be promoted into public Skill data.
 
 Treat user preference as evidence about usefulness, not proof that a coaching claim is true. Verify the source video before promoting any global change.
 
@@ -127,7 +128,7 @@ python3 /path/to/repository/scripts/promote_feedback.py \
   --dry-run
 ```
 
-Remove `--dry-run` only after inspecting the preview. Promotion writes a minimal public signal to `config/feedback_signals.json`, syncs the Skill reference, and adds a regression case. It excludes the original question and raw feedback.
+Remove `--dry-run` only after inspecting the preview. Promotion uses an exclusive lock and an all-files write with rollback on ordinary write failures. It writes a minimal public signal to `config/feedback_signals.json`, syncs the Skill reference, and adds a regression case. It excludes the original question and raw feedback.
 
 Then run:
 
@@ -137,4 +138,4 @@ python3 scripts/evaluate_retrieval.py
 python3 scripts/validate_project.py
 ```
 
-Commit a promoted signal only when all evaluations pass. The source must be a public GitHub Issue; a local export or `share_upstream` flag is not sufficient by itself.
+Commit a promoted signal only when all evaluations pass. The source must be a GitHub-API-verified Issue in `MuyuanGuo/badminton-skills-coach`; a manual import, local export, or `share_upstream` flag is not sufficient by itself.

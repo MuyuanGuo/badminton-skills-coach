@@ -152,8 +152,8 @@ skill_feedback_rules = json.loads(
 )
 if skill_feedback_rules != feedback_rules:
     raise SystemExit("Skill feedback rules are out of sync with project config")
-if feedback_rules["skill_version"] != "1.1.0-dev.2":
-    raise SystemExit("Development feedback rules must identify version 1.1.0-dev.2")
+if feedback_rules["skill_version"] != "1.1.0-dev.3":
+    raise SystemExit("Development feedback rules must identify version 1.1.0-dev.3")
 if set(feedback_rules["queue_statuses"]) != {
     "pending_review",
     "needs_clarification",
@@ -264,6 +264,7 @@ allowed_signal_fields = {
     "source_feedback_id",
     "source_type",
     "source_reference",
+    "source_body_sha256",
     "public_query",
     "helpful_video_ids",
     "irrelevant_video_ids",
@@ -277,10 +278,13 @@ allowed_issue_types = set(feedback_rules["text_issue_cues"])
 for signal in feedback_signals["signals"]:
     if set(signal) != allowed_signal_fields:
         raise SystemExit("Promoted feedback signal contains unexpected fields")
-    if signal["source_type"] != "github_issue" or not signal["source_reference"].startswith(
-        "https://github.com/"
+    if signal["source_type"] != "github_issue" or not re.fullmatch(
+        r"https://github\.com/MuyuanGuo/badminton-skills-coach/issues/[1-9]\d*/?",
+        signal["source_reference"],
     ):
-        raise SystemExit("Promoted feedback must retain a public GitHub issue source")
+        raise SystemExit("Promoted feedback must retain a canonical public issue source")
+    if not re.fullmatch(r"[0-9a-f]{64}", signal["source_body_sha256"]):
+        raise SystemExit("Promoted feedback must retain its verified Issue body hash")
     positive_ids = set(signal["helpful_video_ids"]) | set(signal["missing_video_ids"])
     negative_ids = set(signal["irrelevant_video_ids"])
     if positive_ids & negative_ids:
@@ -347,7 +351,7 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
-if "1.1.0-dev.2" not in readme_text:
+if "1.1.0-dev.3" not in readme_text:
     raise SystemExit("README does not identify the current development version")
 latest_ready = next(
     video for video in douyin_knowledge["videos"]
@@ -461,6 +465,9 @@ if not feedback_script.exists() or not feedback_workflow.exists():
 feedback_script_text = feedback_script.read_text(encoding="utf-8")
 for required_export_contract in [
     "export-github",
+    "fetch_github_issue",
+    "GITHUB_ISSUE_PATTERN",
+    '"method": "github_api"',
     "--confirm-public",
     '"uploaded": False',
     '"original_question_included": False',
@@ -485,9 +492,24 @@ for project_feedback_script in [
     ROOT / "scripts" / "evaluate_feedback_signals.py",
     ROOT / "scripts" / "test_feedback_personalization.py",
     ROOT / "scripts" / "test_feedback_promotion.py",
+    ROOT / "scripts" / "test_public_feedback_e2e.py",
 ]:
     if not project_feedback_script.exists():
         raise SystemExit(f"Feedback pipeline script is missing: {project_feedback_script.name}")
+
+promotion_script_text = (ROOT / "scripts" / "promote_feedback.py").read_text(
+    encoding="utf-8"
+)
+for required_promotion_guard in [
+    "exclusive_promotion_lock",
+    "atomic_write_bundle",
+    "verified through the API",
+    "liuhui-feedback-promotion",
+]:
+    if required_promotion_guard not in promotion_script_text:
+        raise SystemExit(
+            f"Public feedback promotion guard is missing: {required_promotion_guard}"
+        )
 
 feedback_issue_form = ROOT / ".github" / "ISSUE_TEMPLATE" / "skill-feedback.yml"
 if not feedback_issue_form.exists():

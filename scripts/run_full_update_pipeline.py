@@ -90,6 +90,7 @@ def main():
         run(["python3", "scripts/test_feedback_pipeline.py"])
         run(["python3", "scripts/test_feedback_personalization.py"])
         run(["python3", "scripts/test_feedback_promotion.py"])
+        run(["python3", "scripts/test_public_feedback_e2e.py"])
         run(["python3", "scripts/validate_project.py"])
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))

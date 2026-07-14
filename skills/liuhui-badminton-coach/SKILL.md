@@ -106,7 +106,7 @@ Use this mode when the user explicitly evaluates a previous Skill answer, names 
 4. If the record is `needs_clarification`, ask only about unknown or contradictory labels. Otherwise ask whether the parsed record may be used for local personalization.
 5. Only after the user explicitly confirms, run `scripts/feedback.py review --decision accepted` with a note that the user confirmed the parsed local signals. Tell the user that future similar questions can now use it.
 6. If the user does not confirm, leave the record `pending_review`; it must not affect future answers.
-7. Explain that public behavior changes only after a separate GitHub Issue, promotion, and regression validation.
+7. Explain that public behavior changes only after a separate Issue in the canonical GitHub repository is verified through the GitHub API, promoted by a maintainer, regression-tested, and released.
 8. If the user explicitly wants to share the accepted record publicly, ask for a sanitized public version of the question and separate confirmation that it may be public. Then run `scripts/feedback.py export-github --confirm-public`. Show the generated Issue title, body, and submission URL, and state clearly that the command did not upload anything.
 9. Never treat a video the user did not select as irrelevant. Never upload local feedback without explicit consent. Do not claim a generated GitHub export was submitted until a real public Issue URL exists.
 

@@ -44,6 +44,7 @@ jobs:
             scripts/test_feedback_pipeline.py \
             scripts/test_feedback_personalization.py \
             scripts/test_feedback_promotion.py \
+            scripts/test_public_feedback_e2e.py \
             scripts/test_search_knowledge.py \
             scripts/transcribe_video.py \
             scripts/update_readme_status.py \
@@ -57,6 +58,7 @@ jobs:
           python scripts/test_feedback_pipeline.py
           python scripts/test_feedback_personalization.py
           python scripts/test_feedback_promotion.py
+          python scripts/test_public_feedback_e2e.py
           python scripts/test_search_knowledge.py
           python scripts/evaluate_answer_policy.py
           python scripts/evaluate_feedback_signals.py

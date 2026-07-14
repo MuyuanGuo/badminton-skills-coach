@@ -5,8 +5,14 @@ import json
 import os
 import re
 import tempfile
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - exercised on Windows only
+    fcntl = None
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +29,10 @@ DEFAULT_EVALUATION_PATH = (
     ROOT / "data" / "evaluation" / "feedback_relevance_cases.json"
 )
 DEFAULT_README_PATH = ROOT / "README.md"
+GITHUB_REPOSITORY = "MuyuanGuo/badminton-skills-coach"
+GITHUB_ISSUE_PATTERN = re.compile(
+    r"^https://github\.com/MuyuanGuo/badminton-skills-coach/issues/([1-9]\d*)/?$"
+)
 
 
 def utc_now():
@@ -59,6 +69,93 @@ def atomic_write_json(path, payload):
         except FileNotFoundError:
             pass
         raise
+
+
+def json_bytes(payload):
+    return (
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    ).encode("utf-8")
+
+
+def atomic_write_bytes(path, content):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    handle, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
+    try:
+        with os.fdopen(handle, "wb") as file:
+            file.write(content)
+            file.flush()
+            os.fsync(file.fileno())
+        os.replace(temporary_name, path)
+    except Exception:
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def atomic_write_bundle(writes, replace_func=None):
+    replace = replace_func or os.replace
+    originals = {}
+    staged = {}
+    replaced = []
+    try:
+        for raw_path, content in writes.items():
+            path = Path(raw_path)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            originals[path] = path.read_bytes() if path.exists() else None
+            handle, temporary_name = tempfile.mkstemp(
+                prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+            )
+            with os.fdopen(handle, "wb") as file:
+                file.write(content)
+                file.flush()
+                os.fsync(file.fileno())
+            staged[path] = Path(temporary_name)
+
+        for path, temporary_path in staged.items():
+            replace(str(temporary_path), str(path))
+            replaced.append(path)
+    except Exception:
+        for path in reversed(replaced):
+            original = originals[path]
+            if original is None:
+                path.unlink(missing_ok=True)
+            else:
+                atomic_write_bytes(path, original)
+        raise
+    finally:
+        for temporary_path in staged.values():
+            temporary_path.unlink(missing_ok=True)
+
+
+@contextmanager
+def exclusive_promotion_lock(lock_path):
+    lock_path = Path(lock_path)
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock_file:
+        if fcntl is not None:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        else:  # pragma: no cover - exercised on Windows only
+            import msvcrt
+
+            lock_file.seek(0, os.SEEK_END)
+            if lock_file.tell() == 0:
+                lock_file.write("0")
+                lock_file.flush()
+            lock_file.seek(0)
+            msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+        try:
+            yield
+        finally:
+            if fcntl is not None:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            else:  # pragma: no cover - exercised on Windows only
+                lock_file.seek(0)
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
 
 
 def unique(items):
@@ -103,8 +200,21 @@ def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_
     if feedback.get("source", {}).get("type") != "github_issue":
         raise ValueError("Only feedback imported from a public GitHub issue can be promoted")
     source_reference = feedback.get("source", {}).get("reference", "")
-    if not source_reference.startswith("https://github.com/"):
-        raise ValueError("Promoted feedback must retain its public GitHub issue URL")
+    issue_match = GITHUB_ISSUE_PATTERN.fullmatch(source_reference)
+    if not issue_match:
+        raise ValueError(
+            "Promoted feedback must use an issue from " + GITHUB_REPOSITORY
+        )
+    verification = feedback.get("source", {}).get("verification", {})
+    if (
+        verification.get("method") != "github_api"
+        or verification.get("repository") != GITHUB_REPOSITORY
+        or verification.get("issue_number") != int(issue_match.group(1))
+        or not verification.get("node_id")
+        or not verification.get("verified_at")
+        or not re.fullmatch(r"[0-9a-f]{64}", verification.get("body_sha256", ""))
+    ):
+        raise ValueError("GitHub issue source has not been verified through the API")
     if not public_query.strip():
         raise ValueError("A sanitized public query is required")
     if len(evidence_note.strip()) < 8:
@@ -167,97 +277,122 @@ def promote_feedback(
     feedback_path = queue_dir / "queue" / f"{feedback_id}.json"
     if not feedback_path.exists():
         raise ValueError(f"Feedback record not found: {feedback_id}")
-    feedback = load_json(feedback_path)
-    knowledge = load_json(KNOWLEDGE_PATH)
-    signals_payload = load_json(signals_path)
-    evaluation_payload = load_json(evaluation_path)
-
-    existing = next(
-        (
-            signal
-            for signal in signals_payload["signals"]
-            if signal["source_feedback_id"] == feedback_id
-        ),
-        None,
+    signals_path = Path(signals_path)
+    skill_signals_path = Path(skill_signals_path)
+    evaluation_path = Path(evaluation_path)
+    readme_path = Path(readme_path) if readme_path else None
+    lock_key = hashlib.sha256(
+        str(signals_path.resolve()).encode("utf-8")
+    ).hexdigest()[:20]
+    lock_path = (
+        Path(tempfile.gettempdir())
+        / "liuhui-feedback-promotion"
+        / f"{lock_key}.lock"
     )
-    if existing:
-        return {
-            "status": "already_promoted",
-            "signal": existing,
-            "feedback_id": feedback_id,
-        }
 
-    values = validate_feedback_for_promotion(
-        feedback,
-        knowledge,
-        public_query,
-        evidence_note,
-    )
-    promoted_at = utc_now()
-    signal_id = build_signal_id(feedback_id, public_query)
-    signal = {
-        "signal_id": signal_id,
-        "source_feedback_id": feedback_id,
-        "source_type": "github_issue",
-        "source_reference": feedback["source"]["reference"],
-        "public_query": public_query.strip(),
-        **values,
-        "evidence_note": evidence_note.strip(),
-        "promoted_by": promoted_by.strip() or "maintainer",
-        "promoted_at": promoted_at,
-    }
-    evaluation_case = {
-        "case_id": signal_id,
-        "query": signal["public_query"],
-        "expected_positive_video_ids": unique(
-            signal["helpful_video_ids"] + signal["missing_video_ids"]
-        ),
-        "expected_negative_video_ids": signal["irrelevant_video_ids"],
-        "expected_answer_reminders": signal["answer_issue_types"],
-    }
-    result = {
-        "status": "dry_run" if dry_run else "promoted",
-        "signal": signal,
-        "evaluation_case": evaluation_case,
-        "privacy": {
-            "raw_feedback_included": False,
-            "original_question_included": False,
-            "public_query_was_explicitly_provided": True,
-        },
-    }
-    if dry_run:
-        return result
-
-    signals_payload["signals"].append(signal)
-    signals_payload["signals"].sort(key=lambda item: item["signal_id"])
-    signals_payload["updated_at"] = promoted_at
-    evaluation_payload["cases"].append(evaluation_case)
-    evaluation_payload["cases"].sort(key=lambda item: item["case_id"])
-
-    readme_updated = None
-    if readme_path:
-        readme_path = Path(readme_path)
-        readme_updated = updated_readme_feedback_count(
-            readme_path.read_text(encoding="utf-8"),
-            len(signals_payload["signals"]),
+    with exclusive_promotion_lock(lock_path):
+        feedback = load_json(feedback_path)
+        knowledge = load_json(KNOWLEDGE_PATH)
+        signals_payload = load_json(signals_path)
+        evaluation_payload = load_json(evaluation_path)
+        existing = next(
+            (
+                signal
+                for signal in signals_payload["signals"]
+                if signal["source_feedback_id"] == feedback_id
+            ),
+            None,
         )
+        if existing:
+            if not dry_run and feedback.get("promotion_status") != "promoted":
+                feedback["promotion_status"] = "promoted"
+                feedback["promotion"] = {
+                    "signal_id": existing["signal_id"],
+                    "public_query": existing["public_query"],
+                    "promoted_by": existing["promoted_by"],
+                    "promoted_at": existing["promoted_at"],
+                }
+                feedback["updated_at"] = utc_now()
+                atomic_write_json(feedback_path, feedback)
+            return {
+                "status": "already_promoted",
+                "signal": existing,
+                "feedback_id": feedback_id,
+            }
 
-    atomic_write_json(signals_path, signals_payload)
-    atomic_write_json(skill_signals_path, signals_payload)
-    atomic_write_json(evaluation_path, evaluation_payload)
-    if readme_path:
-        readme_path.write_text(readme_updated, encoding="utf-8")
+        values = validate_feedback_for_promotion(
+            feedback,
+            knowledge,
+            public_query,
+            evidence_note,
+        )
+        promoted_at = utc_now()
+        signal_id = build_signal_id(feedback_id, public_query)
+        signal = {
+            "signal_id": signal_id,
+            "source_feedback_id": feedback_id,
+            "source_type": "github_issue",
+            "source_reference": feedback["source"]["reference"],
+            "source_body_sha256": feedback["source"]["verification"][
+                "body_sha256"
+            ],
+            "public_query": public_query.strip(),
+            **values,
+            "evidence_note": evidence_note.strip(),
+            "promoted_by": promoted_by.strip() or "maintainer",
+            "promoted_at": promoted_at,
+        }
+        evaluation_case = {
+            "case_id": signal_id,
+            "query": signal["public_query"],
+            "expected_positive_video_ids": unique(
+                signal["helpful_video_ids"] + signal["missing_video_ids"]
+            ),
+            "expected_negative_video_ids": signal["irrelevant_video_ids"],
+            "expected_answer_reminders": signal["answer_issue_types"],
+        }
+        result = {
+            "status": "dry_run" if dry_run else "promoted",
+            "signal": signal,
+            "evaluation_case": evaluation_case,
+            "privacy": {
+                "raw_feedback_included": False,
+                "original_question_included": False,
+                "public_query_was_explicitly_provided": True,
+            },
+        }
+        if dry_run:
+            return result
 
-    feedback["promotion_status"] = "promoted"
-    feedback["promotion"] = {
-        "signal_id": signal_id,
-        "public_query": signal["public_query"],
-        "promoted_by": signal["promoted_by"],
-        "promoted_at": promoted_at,
-    }
-    feedback["updated_at"] = promoted_at
-    atomic_write_json(feedback_path, feedback)
-    return result
+        signals_payload["signals"].append(signal)
+        signals_payload["signals"].sort(key=lambda item: item["signal_id"])
+        signals_payload["updated_at"] = promoted_at
+        evaluation_payload["cases"].append(evaluation_case)
+        evaluation_payload["cases"].sort(key=lambda item: item["case_id"])
+
+        writes = {
+            signals_path: json_bytes(signals_payload),
+            skill_signals_path: json_bytes(signals_payload),
+            evaluation_path: json_bytes(evaluation_payload),
+        }
+        if readme_path:
+            readme_updated = updated_readme_feedback_count(
+                readme_path.read_text(encoding="utf-8"),
+                len(signals_payload["signals"]),
+            )
+            writes[readme_path] = readme_updated.encode("utf-8")
+        atomic_write_bundle(writes)
+
+        feedback["promotion_status"] = "promoted"
+        feedback["promotion"] = {
+            "signal_id": signal_id,
+            "public_query": signal["public_query"],
+            "promoted_by": signal["promoted_by"],
+            "promoted_at": promoted_at,
+        }
+        feedback["updated_at"] = promoted_at
+        atomic_write_json(feedback_path, feedback)
+        return result
 
 
 def build_parser():

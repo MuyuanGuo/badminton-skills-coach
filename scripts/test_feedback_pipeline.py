@@ -55,7 +55,7 @@ class FeedbackPipelineTests(unittest.TestCase):
             ["V1", "V2", "V3"],
         )
         self.assertTrue(self.answer["videos"][0]["core"])
-        self.assertEqual(self.answer["skill_version"], "1.1.0-dev.2")
+        self.assertEqual(self.answer["skill_version"], "1.1.0-dev.3")
         self.assertEqual(
             set(self.feedback.extract_video_refs(self.answer["feedback_hint"])),
             {"V1", "V3"},
@@ -173,7 +173,7 @@ https://www.douyin.com/video/7614167503938610417
 漏了被动回球后的处理边界。
 
 ### 版本信息
-1.1.0-dev.2
+1.1.0-dev.3
 """
         imported = self.feedback.import_github_issue(
             body=body,
@@ -189,6 +189,76 @@ https://www.douyin.com/video/7614167503938610417
         self.assertEqual(
             imported["signals"]["text_issue_types"], ["missing_content"]
         )
+
+    def test_github_api_fetch_verifies_canonical_issue_before_import(self):
+        body = """### 用户问题
+双打轮转时什么时候补位？
+
+### 最有价值的视频
+7614167503938610417
+
+### 明确不相关的视频
+无
+
+### 遗漏的视频
+无
+
+### 文字回答问题
+没有明显问题
+
+### 补充说明
+公开金丝雀测试内容。
+
+### 版本信息
+1.1.0-dev.3
+"""
+        issue_url = (
+            "https://github.com/MuyuanGuo/badminton-skills-coach/issues/42"
+        )
+
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc_value, traceback):
+                return False
+
+            def read(self):
+                return json.dumps(
+                    {
+                        "html_url": issue_url,
+                        "node_id": "I_test_public_issue",
+                        "state": "open",
+                        "updated_at": "2026-07-14T00:00:00Z",
+                        "body": body,
+                    }
+                ).encode("utf-8")
+
+        def fake_opener(request, timeout):
+            self.assertEqual(timeout, 20)
+            self.assertEqual(
+                request.full_url,
+                "https://api.github.com/repos/MuyuanGuo/"
+                "badminton-skills-coach/issues/42",
+            )
+            return FakeResponse()
+
+        imported = self.feedback.fetch_and_import_github_issue(
+            issue_url=issue_url,
+            queue_dir=self.queue_dir,
+            opener=fake_opener,
+        )
+        verification = imported["source"]["verification"]
+        self.assertEqual(verification["method"], "github_api")
+        self.assertEqual(verification["issue_number"], 42)
+        self.assertEqual(verification["body_sha256"], self.feedback.body_sha256(body))
+        self.assertEqual(imported["status"], "pending_review")
+
+        with self.assertRaisesRegex(ValueError, "must use an issue"):
+            self.feedback.fetch_github_issue(
+                "https://github.com/example/repo/issues/42",
+                opener=fake_opener,
+            )
 
     def test_export_github_requires_accepted_local_feedback_and_public_consent(self):
         queued = self.feedback.record_feedback(

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -46,7 +49,13 @@ class FeedbackPromotionTests(unittest.TestCase):
     def tearDown(self):
         self.temporary_directory.cleanup()
 
-    def import_issue(self, source_url="https://github.com/example/repo/issues/17"):
+    def import_issue(
+        self,
+        source_url=(
+            "https://github.com/MuyuanGuo/badminton-skills-coach/issues/17"
+        ),
+        verified=True,
+    ):
         body = """### 用户问题
 这里是不会进入公共信号的原始私人措辞
 
@@ -69,12 +78,27 @@ https://www.douyin.com/video/7659991105622862457
 这里是不会进入公共信号的原始补充内容。
 
 ### 版本信息
-1.1.0-dev.2
+1.1.0-dev.3
 """
+        verification = (
+            {
+                "method": "github_api",
+                "repository": "MuyuanGuo/badminton-skills-coach",
+                "issue_number": 17,
+                "node_id": "I_test_feedback_source",
+                "state": "open",
+                "source_updated_at": "2026-07-14T00:00:00Z",
+                "body_sha256": self.feedback.body_sha256(body),
+                "verified_at": "2026-07-14T00:00:01Z",
+            }
+            if verified
+            else None
+        )
         return self.feedback.import_github_issue(
             body=body,
             source_url=source_url,
             queue_dir=self.queue_dir,
+            source_verification=verification,
         )
 
     def promote(self, feedback_id, **kwargs):
@@ -103,6 +127,10 @@ https://www.douyin.com/video/7659991105622862457
         self.assertEqual(result["status"], "promoted")
         self.assertFalse(result["privacy"]["raw_feedback_included"])
         self.assertFalse(result["privacy"]["original_question_included"])
+        self.assertEqual(
+            result["signal"]["source_body_sha256"],
+            imported["source"]["verification"]["body_sha256"],
+        )
 
         public_text = self.signals_path.read_text(encoding="utf-8")
         self.assertNotIn("原始私人措辞", public_text)
@@ -186,6 +214,18 @@ https://www.douyin.com/video/7659991105622862457
         with self.assertRaisesRegex(ValueError, "public GitHub issue"):
             self.promote(local["feedback_id"])
 
+    def test_unverified_github_issue_cannot_enter_public_signals(self):
+        imported = self.import_issue(verified=False)
+        self.feedback.review_feedback(
+            feedback_id=imported["feedback_id"],
+            decision="accepted",
+            note="内容已人工检查，但来源没有经过 GitHub API 校验",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        with self.assertRaisesRegex(ValueError, "verified through the API"):
+            self.promote(imported["feedback_id"])
+
     def test_promotion_is_idempotent(self):
         imported = self.import_issue()
         self.feedback.review_feedback(
@@ -203,6 +243,75 @@ https://www.douyin.com/video/7659991105622862457
             len(json.loads(self.signals_path.read_text(encoding="utf-8"))["signals"]),
             1,
         )
+
+    def test_atomic_bundle_restores_every_file_after_partial_failure(self):
+        first = self.root / "first.json"
+        second = self.root / "second.json"
+        first.write_bytes(b"old-first\n")
+        second.write_bytes(b"old-second\n")
+        replace_count = 0
+
+        def fail_second_replace(source, destination):
+            nonlocal replace_count
+            replace_count += 1
+            if replace_count == 2:
+                raise OSError("injected second-file failure")
+            os.replace(source, destination)
+
+        with self.assertRaisesRegex(OSError, "injected"):
+            self.promotion.atomic_write_bundle(
+                {first: b"new-first\n", second: b"new-second\n"},
+                replace_func=fail_second_replace,
+            )
+        self.assertEqual(first.read_bytes(), b"old-first\n")
+        self.assertEqual(second.read_bytes(), b"old-second\n")
+
+    def test_concurrent_promotions_create_exactly_one_signal(self):
+        imported = self.import_issue()
+        self.feedback.review_feedback(
+            feedback_id=imported["feedback_id"],
+            decision="accepted",
+            note="已核对问题场景和全部公开视频",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        command = [
+            sys.executable,
+            str(PROMOTION_PATH),
+            "--feedback-id",
+            imported["feedback_id"],
+            "--public-query",
+            "杀球不重没有威胁怎么办",
+            "--evidence-note",
+            "已逐条回看三条公开视频并确认相关性边界",
+            "--promoted-by",
+            "concurrency-test",
+            "--queue-dir",
+            str(self.queue_dir),
+            "--signals-path",
+            str(self.signals_path),
+            "--skill-signals-path",
+            str(self.skill_signals_path),
+            "--evaluation-path",
+            str(self.evaluation_path),
+        ]
+        processes = [
+            subprocess.Popen(
+                command,
+                cwd=ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            for _ in range(2)
+        ]
+        outputs = [process.communicate(timeout=20) for process in processes]
+        for process, (stdout, stderr) in zip(processes, outputs):
+            self.assertEqual(process.returncode, 0, msg=stdout + stderr)
+        statuses = {json.loads(stdout)["status"] for stdout, _ in outputs}
+        self.assertEqual(statuses, {"promoted", "already_promoted"})
+        signals = json.loads(self.signals_path.read_text(encoding="utf-8"))["signals"]
+        self.assertEqual(len(signals), 1)
 
     def test_readme_status_updates_current_template_without_rewriting_sections(self):
         template = """# Project

@@ -2,7 +2,7 @@
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
 
-这是 `Badminton Skills Coach` 的 **1.1.0-dev.2 开发分支**。GitHub `main` 分支和 [`v1.0.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.0.0) Release 是当前稳定版；`develop` 分支用于开发“通过用户反馈提升回答质量”的下一版本。
+这是 `Badminton Skills Coach` 的 **1.1.0-dev.3 开发分支**。GitHub `main` 分支和 [`v1.0.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.0.0) Release 是当前稳定版；`develop` 分支用于开发“通过用户反馈提升回答质量”的下一版本。
 
 项目把 `刘辉羽毛球` 的公开抖音教学内容整理成可检索、可引用、可维护的证据型羽毛球教练 Skill，并保留更新 Skill、教学思维图和反馈审核所需的最小流水线。
 
@@ -11,14 +11,14 @@
 ## 1.0 状态
 
 - 稳定版：`main` / `v1.0.0`
-- 开发版：`develop` / `1.1.0-dev.2`
+- 开发版：`develop` / `1.1.0-dev.3`
 
 - 获取到的抖音公开视频：`472` 条
 - 已排除非教学/广告器材内容：`113` 条
 - 已加入 Skill 知识库的教学视频：`359` 条
 - 最新入库教学视频：[网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097)（`7661940775983482097`）
 - 已晋升公共反馈信号：`0` 条（流水线已就绪，尚无真实 GitHub 反馈被晋升）
-- 当前开发内容：本地个性化层和 GitHub 反馈晋升流水线已经接入第一阶段反馈队列
+- 当前开发内容：本地个性化、GitHub API 来源核验、并发安全晋升和干净安装端到端测试已经接入反馈队列
 
 ## 这个 Skill 能做什么
 
@@ -134,6 +134,7 @@ scripts/
   test_feedback_pipeline.py        反馈解析、队列和审核回归测试
   test_feedback_personalization.py 本地个性化回归测试
   test_feedback_promotion.py       公共晋升和隐私回归测试
+  test_public_feedback_e2e.py      两个隔离安装环境的公共反馈端到端测试
   validate_project.py              项目一致性验证
 ```
 
@@ -234,13 +235,14 @@ python3 skills/liuhui-badminton-coach/scripts/feedback.py export-github \
   --output /path/to/issue-body.md
 ```
 
-该命令不上传任何内容；它只返回 Issue 标题、正文和提交地址，并把本地记录标记为“已导出、未上传”。用户检查正文后自行提交。项目维护者取得真实的公开 Issue URL 后，再把 Issue body 导入同一个本地审核队列：
+该命令不上传任何内容；它只返回 Issue 标题、正文和提交地址，并把本地记录标记为“已导出、未上传”。用户检查正文后自行提交。项目维护者取得本仓库真实的公开 Issue URL 后，通过 GitHub API 抓取并导入同一个本地审核队列：
 
 ```bash
 python3 skills/liuhui-badminton-coach/scripts/feedback.py import-github \
-  --body-file /path/to/issue-body.md \
-  --source-url https://github.com/OWNER/REPO/issues/NUMBER
+  --fetch-url https://github.com/MuyuanGuo/badminton-skills-coach/issues/NUMBER
 ```
+
+API 导入会保存仓库、Issue 编号、节点 ID、更新时间和正文哈希。手工 `--body-file` 导入仍可进入本地审核，但不能晋升为公共信号。晋升脚本使用独占锁，并在普通写入异常时回滚整组公共文件。
 
 9. 对已经接受的 GitHub 反馈，先用脱敏问题进行预演：
 
@@ -313,6 +315,7 @@ python3 -m py_compile \
   scripts/test_feedback_pipeline.py \
   scripts/test_feedback_personalization.py \
   scripts/test_feedback_promotion.py \
+  scripts/test_public_feedback_e2e.py \
   scripts/test_search_knowledge.py \
   scripts/transcribe_video.py \
   scripts/update_readme_status.py \
@@ -325,6 +328,7 @@ python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_feedback_pipeline.py
 python3 scripts/test_feedback_personalization.py
 python3 scripts/test_feedback_promotion.py
+python3 scripts/test_public_feedback_e2e.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
 python3 scripts/evaluate_feedback_signals.py
@@ -339,8 +343,9 @@ GitHub Actions 会执行同样的核心验证：
 - 分类规则回归测试。
 - 回答媒介分工测试：`16` 个问题均正确进入文字为主、文字视频并重或视频为主模式，并检查每种模式同时保留文字与视频义务。
 - 检索召回回归测试：当前人工已知相关集为 `10` 个问题、`28` 条视频，要求候选召回率为 `100%`，且每题主证据进入前 `12` 条。
-- 反馈回归测试：检查连续视频编号、中文自然语言解析、未选择不等于负面、GitHub Issue 导入和人工审核历史。
-- 个性化与晋升测试：检查仅 `accepted` 本地反馈生效、可关闭本地层、公共信号不含原问题/原反馈、未经 GitHub 和人工核证不能晋升。
+- 反馈回归测试：检查连续视频编号、中文自然语言解析、公开确认、GitHub API 来源校验、导入和人工审核历史。
+- 个性化与晋升测试：检查仅 `accepted` 本地反馈生效、可关闭本地层、公共信号不含原问题/原反馈、未经规范 GitHub Issue 和人工核证不能晋升，并验证并发锁与失败回滚。
+- 公共链路端到端测试：从一个隔离的本地反馈目录出发，经脱敏、导入、审核和晋升，把公共信号写入第二个全新 Skill 安装环境，再验证首次用户检索生效；真实平台金丝雀见 [Issue #1](https://github.com/MuyuanGuo/badminton-skills-coach/issues/1)。
 - 抖音主页快照过滤回归测试，防止把 footer / 热门推荐视频误当成作者作品。
 - JSON、Draw.io、Skill frontmatter、队列计数、知识库同步、主题索引、主题图谱和视觉复核队列一致性验证。
 
@@ -356,7 +361,7 @@ GitHub Actions 会执行同样的核心验证：
 
 ## 1.0 之后怎么演进
 
-`main` / `v1.0.0` 继续作为稳定版；反馈闭环只在 `develop` / `1.1.0-dev.2` 开发和验证，成熟后再单独发布：
+`main` / `v1.0.0` 继续作为稳定版；反馈闭环只在 `develop` / `1.1.0-dev.3` 开发和验证，成熟后再单独发布：
 
 - 刘辉发布新教学视频：走增量更新流程。
 - 分类误判：改 `config/douyin_classification_rules.json` 并补测试。
@@ -367,4 +372,4 @@ GitHub Actions 会执行同样的核心验证：
 
 ## License 和内容边界
 
-本仓库只保存结构化索引、教学笔记、主题图谱、已脱敏公共反馈信号和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL、模型缓存和用户本地反馈队列不提交。反馈默认只保存在用户自己的 Codex 目录；公共信号只保留脱敏问题、视频 ID、问题类型、核证说明和公开 Issue 来源，不保留原始问题或原始反馈。公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。
+本仓库只保存结构化索引、教学笔记、主题图谱、已脱敏公共反馈信号和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL、模型缓存和用户本地反馈队列不提交。反馈默认只保存在用户自己的 Codex 目录；公共信号只保留脱敏问题、视频 ID、问题类型、核证说明、公开 Issue 来源及已审核正文的 SHA-256，不保留原始问题或原始反馈。公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。
