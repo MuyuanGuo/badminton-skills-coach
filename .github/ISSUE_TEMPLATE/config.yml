@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全问题
+    url: https://github.com/MuyuanGuo/badminton-skills-coach/security/advisories/new
+    about: 请私下报告凭证、隐私、文件安全或反馈链路绕过问题。

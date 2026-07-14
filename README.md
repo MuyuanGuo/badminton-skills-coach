@@ -1,6 +1,10 @@
 # Badminton Skills Coach / 刘辉羽毛球教练 Skill
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
+[![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
+[![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
+
+![Badminton Skills Coach：359 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
 
 这是一个 **1.0 稳定版 Codex Skill 项目**。它把 `刘辉羽毛球` 的公开抖音教学内容整理成可检索、可引用、可维护的证据型羽毛球教练 Skill，并保留更新 Skill 与教学思维图所需的最小流水线。
 
@@ -34,7 +38,16 @@
 
 ## 快速使用
 
-把 Skill 安装或刷新到本机 Codex：
+直接安装 `v1.0.0` 稳定版 Skill：
+
+```bash
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.0.0/liuhui-badminton-coach-v1.0.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.0.0.zip
+mkdir -p ~/.codex/skills
+unzip -q -o /tmp/liuhui-badminton-coach-v1.0.0.zip -d ~/.codex/skills
+```
+
+Release 同时提供 `SHA256SUMS.txt` 用于校验下载文件。已经克隆仓库时，也可以安装或刷新当前检出的版本：
 
 ```bash
 mkdir -p ~/.codex/skills/liuhui-badminton-coach
@@ -104,6 +117,7 @@ scripts/
   build_retrieval_index.py         从完整转写生成无正文检索索引
   evaluate_answer_policy.py        评测文字/视频回答模式
   evaluate_retrieval.py            评测已知相关视频召回率
+  package_skill_release.py         生成可安装 Skill 压缩包和 SHA-256
   validate_project.py              项目一致性验证
 ```
 
@@ -265,4 +279,6 @@ GitHub Actions 会执行同样的核心验证：
 
 ## License 和内容边界
 
-本仓库只保存结构化索引、教学笔记、主题图谱和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL 和模型缓存不提交。公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。
+本项目原创软件代码和自动化脚本采用 [MIT License](LICENSE)。第三方视频、音频、创作者名称、视频标题、缩略图、转写和其他来源材料不包含在 MIT 授权中，详细边界见 [NOTICE](NOTICE)。
+
+本仓库只保存结构化索引、教学笔记、主题图谱和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL 和模型缓存不提交。项目未获得刘辉本人或抖音授权，公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。
