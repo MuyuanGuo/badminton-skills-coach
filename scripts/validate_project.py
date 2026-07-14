@@ -4,6 +4,7 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
 from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
 
 
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 json_paths = [
     "config/answer_modality_rules.json",
+    "config/answer_quality_rules.json",
     "config/douyin_classification_rules.json",
     "config/feedback_rules.json",
     "config/feedback_signals.json",
@@ -18,6 +20,7 @@ json_paths = [
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
+    "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
     "data/evaluation/retrieval_cases.json",
@@ -239,6 +242,36 @@ ready_video_ids = {
     for video in douyin_knowledge["videos"]
     if video["processing_status"] == "ready"
 }
+
+answer_quality_rules = json.loads(
+    (ROOT / "config" / "answer_quality_rules.json").read_text(encoding="utf-8")
+)
+answer_quality_cases = json.loads(
+    (ROOT / "data" / "evaluation" / "answer_quality_cases.json").read_text(
+        encoding="utf-8"
+    )
+)
+answer_quality_summary = validate_answer_quality_registry(
+    answer_quality_cases,
+    answer_quality_rules,
+    ready_video_ids,
+    minimum_cases=30,
+)
+if set(answer_quality_summary["status_counts"]) - set(
+    answer_quality_rules["review_statuses"]
+):
+    raise SystemExit("Answer quality registry contains an unknown review status")
+if {
+    case["case_type"] for case in answer_quality_cases["cases"]
+} != set(answer_quality_rules["case_types"]):
+    raise SystemExit("Answer quality registry does not cover every case type")
+if {
+    case["expected_mode"] for case in answer_quality_cases["cases"]
+} != set(answer_quality_rules["answer_modes"]):
+    raise SystemExit("Answer quality registry does not cover every answer mode")
+if answer_quality_summary["expert_review_required"] != 12:
+    raise SystemExit("Answer quality registry must keep a 12-case expert anchor set")
+
 retrieval_video_ids = {video["video_id"] for video in retrieval_index["videos"]}
 if retrieval_video_ids != ready_video_ids:
     raise SystemExit("Retrieval index video IDs do not match ready knowledge videos")
@@ -575,8 +608,26 @@ if not review_markdown.exists():
 if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Visual review queue markdown is missing top-priority items")
 
+answer_quality_review_markdown = ROOT / "output" / "answer_quality_review_queue.md"
+if not answer_quality_review_markdown.exists():
+    raise SystemExit("Answer quality review queue markdown is missing")
+answer_quality_review_text = answer_quality_review_markdown.read_text(encoding="utf-8")
+if answer_quality_review_text.count("## AQ") != len(answer_quality_cases["cases"]):
+    raise SystemExit("Answer quality review queue is out of sync with the case registry")
+for required_review_contract in [
+    "维护者结论",
+    "专家结论",
+    "必须写出的文字要点",
+    "禁止出现的断言",
+]:
+    if required_review_contract not in answer_quality_review_text:
+        raise SystemExit(
+            f"Answer quality review queue is missing: {required_review_contract}"
+        )
+
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, answer modality contract, local feedback personalization, public "
-    "feedback promotion, practice template, and visual review queue."
+    "topic index, answer modality contract, answer quality gold registry, local "
+    "feedback personalization, public feedback promotion, practice template, and "
+    "visual review queue."
 )

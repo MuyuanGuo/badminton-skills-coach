@@ -23,6 +23,7 @@ jobs:
           python -m py_compile \
             scripts/apply_visual_review_notes.py \
             scripts/batch_transcribe_directory.py \
+            scripts/build_answer_quality_review_queue.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_retrieval_index.py \
             scripts/build_topic_index.py \
@@ -30,6 +31,7 @@ jobs:
             scripts/check_douyin_updates.py \
             scripts/douyin_pipeline.py \
             scripts/evaluate_answer_policy.py \
+            scripts/evaluate_answer_quality.py \
             scripts/evaluate_feedback_signals.py \
             scripts/evaluate_retrieval.py \
             scripts/generate_knowledge_graph.py \
@@ -42,6 +44,7 @@ jobs:
             scripts/report_pipeline_status.py \
             scripts/run_full_update_pipeline.py \
             scripts/test_douyin_pipeline.py \
+            scripts/test_answer_quality.py \
             scripts/test_feedback_pipeline.py \
             scripts/test_feedback_personalization.py \
             scripts/test_feedback_promotion.py \
@@ -56,12 +59,14 @@ jobs:
       - name: Run regression tests
         run: |
           python scripts/test_douyin_pipeline.py
+          python scripts/test_answer_quality.py
           python scripts/test_feedback_pipeline.py
           python scripts/test_feedback_personalization.py
           python scripts/test_feedback_promotion.py
           python scripts/test_public_feedback_e2e.py
           python scripts/test_search_knowledge.py
           python scripts/evaluate_answer_policy.py
+          python scripts/evaluate_answer_quality.py
           python scripts/evaluate_feedback_signals.py
           python scripts/evaluate_retrieval.py
           node scripts/test_douyin_profile_snapshot_dom.mjs

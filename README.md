@@ -22,7 +22,8 @@
 - 已加入 Skill 知识库的教学视频：`359` 条
 - 最新入库教学视频：[网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097)（`7661940775983482097`）
 - 已晋升公共反馈信号：`0` 条（流水线已就绪，尚无真实 GitHub 反馈被晋升）
-- 当前开发内容：本地个性化、GitHub API 来源核验、并发安全晋升和干净安装端到端测试已经接入反馈队列
+- 回答质量黄金集候选：`30` 条，其中 `12` 条需要专家锚点审核；当前均为 `draft`，不会冒充已验证答案
+- 当前开发内容：本地个性化、公共反馈闭环和回答质量黄金集的分层审核与自动回归框架
 
 ## 这个 Skill 能做什么
 
@@ -111,6 +112,7 @@ data/
   processing/douyin_queue.json     入库处理队列
   evaluation/retrieval_cases.json  检索召回回归用例
   evaluation/answer_modality_cases.json
+  evaluation/answer_quality_cases.json  最终回答黄金集候选与审核状态
   evaluation/feedback_parser_cases.json
   evaluation/feedback_relevance_cases.json
   knowledge/douyin_knowledge_base.json
@@ -121,6 +123,7 @@ data/
   review/visual_review_queue.json
 
 output/
+  answer_quality_review_queue.md   维护者与专家审核工作表
   liuhui-full-knowledge-map.drawio Draw.io 全量思维图
   liuhui-knowledge-map.mmd         Mermaid 思维图
   liuhui-knowledge-map.html        本地 HTML 思维图
@@ -128,12 +131,15 @@ output/
 
 config/
   answer_modality_rules.json       文字/视频回答分工规则
+  answer_quality_rules.json        黄金集门槛、自动检查与人工评分维度
   douyin_classification_rules.json 教学/非教学分类规则
   feedback_rules.json              反馈解析与开发版本配置
   feedback_signals.json            可发布的脱敏公共反馈信号
   retrieval_rules.json             检索扩展词和阈值
 
 scripts/
+  build_answer_quality_review_queue.py 生成30题人工/专家审核队列
+  evaluate_answer_quality.py       验证黄金集并评测最终回答快照
   report_pipeline_status.py        当前状态、失败项和下一步建议
   check_douyin_updates.py          检查抖音主页是否有新视频
   prepare_douyin_media_batch.py    根据媒体快照生成下载配置
@@ -146,6 +152,7 @@ scripts/
   package_skill_release.py         生成可安装 Skill 压缩包和 SHA-256
   promote_feedback.py              晋升已审核 GitHub 反馈
   test_feedback_pipeline.py        反馈解析、队列和审核回归测试
+  test_answer_quality.py           黄金集门槛和答案检查器回归测试
   test_feedback_personalization.py 本地个性化回归测试
   test_feedback_promotion.py       公共晋升和隐私回归测试
   test_public_feedback_e2e.py      两个隔离安装环境的公共反馈端到端测试
@@ -277,6 +284,18 @@ python3 scripts/evaluate_retrieval.py
 python3 scripts/validate_project.py
 ```
 
+10. 生成或刷新回答质量审核工作表：
+
+```bash
+python3 scripts/build_answer_quality_review_queue.py
+```
+
+维护者先在 `output/answer_quality_review_queue.md` 核对来源忠实度；标记为需要专家审核的 12 条代表性案例，再由羽毛球教练或高水平球员确认技术正确性。审核结果写回 `data/evaluation/answer_quality_cases.json` 后，只有满足审核门槛的案例才会进入最终回答回归：
+
+```bash
+python3 scripts/evaluate_answer_quality.py
+```
+
 ## 队列状态
 
 `data/processing/douyin_queue.json` 使用这些状态描述每条教学候选视频的位置：
@@ -308,6 +327,7 @@ python3 scripts/validate_project.py
 python3 -m py_compile \
   scripts/apply_visual_review_notes.py \
   scripts/batch_transcribe_directory.py \
+  scripts/build_answer_quality_review_queue.py \
   scripts/build_douyin_knowledge.py \
   scripts/build_retrieval_index.py \
   scripts/build_topic_index.py \
@@ -315,6 +335,7 @@ python3 -m py_compile \
   scripts/check_douyin_updates.py \
   scripts/douyin_pipeline.py \
   scripts/evaluate_answer_policy.py \
+  scripts/evaluate_answer_quality.py \
   scripts/evaluate_feedback_signals.py \
   scripts/evaluate_retrieval.py \
   scripts/generate_knowledge_graph.py \
@@ -326,6 +347,7 @@ python3 -m py_compile \
   scripts/report_pipeline_status.py \
   scripts/run_full_update_pipeline.py \
   scripts/test_douyin_pipeline.py \
+  scripts/test_answer_quality.py \
   scripts/test_feedback_pipeline.py \
   scripts/test_feedback_personalization.py \
   scripts/test_feedback_promotion.py \
@@ -339,12 +361,14 @@ python3 -m py_compile \
   skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
 python3 scripts/test_douyin_pipeline.py
+python3 scripts/test_answer_quality.py
 python3 scripts/test_feedback_pipeline.py
 python3 scripts/test_feedback_personalization.py
 python3 scripts/test_feedback_promotion.py
 python3 scripts/test_public_feedback_e2e.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
+python3 scripts/evaluate_answer_quality.py
 python3 scripts/evaluate_feedback_signals.py
 python3 scripts/evaluate_retrieval.py
 node scripts/test_douyin_profile_snapshot_dom.mjs
@@ -356,6 +380,7 @@ GitHub Actions 会执行同样的核心验证：
 - Python 源码编译。
 - 分类规则回归测试。
 - 回答媒介分工测试：`16` 个问题均正确进入文字为主、文字视频并重或视频为主模式，并检查每种模式同时保留文字与视频义务。
+- 回答质量黄金集：`30` 个候选问题覆盖动作、诊断、战术、训练计划和证据边界；12 条专家锚点完成审核前保持 `draft`，不进入回答质量回归。
 - 检索召回回归测试：当前人工已知相关集为 `10` 个问题、`28` 条视频，要求候选召回率为 `100%`，且每题主证据进入前 `12` 条。
 - 反馈回归测试：检查连续视频编号、中文自然语言解析、公开确认、GitHub API 来源校验、导入和人工审核历史。
 - 个性化与晋升测试：检查仅 `accepted` 本地反馈生效、可关闭本地层、公共信号不含原问题/原反馈、未经规范 GitHub Issue 和人工核证不能晋升，并验证并发锁与失败回滚。
@@ -366,7 +391,7 @@ GitHub Actions 会执行同样的核心验证：
 ## 技术栈
 
 - Codex Skills：封装教练工作流和回答规范。
-- Python 3：队列处理、知识库构建、高召回检索、本地个性化、公共反馈晋升、回答媒介分工、主题索引、图谱生成和验证。
+- Python 3：队列处理、知识库构建、高召回检索、本地个性化、公共反馈晋升、回答媒介分工、黄金集评测、主题索引、图谱生成和验证。
 - `faster-whisper`：本地中文语音转写。
 - Browser-side JavaScript：从已登录抖音页面提取主页快照和视频媒体资源。
 - Draw.io / Mermaid / HTML：生成全量教学主题图谱。
@@ -379,7 +404,7 @@ GitHub Actions 会执行同样的核心验证：
 
 - 刘辉发布新教学视频：走增量更新流程。
 - 分类误判：改 `config/douyin_classification_rules.json` 并补测试。
-- 回答质量不足：优先检查检索结果和证据引用，再改 Skill 指令。
+- 回答质量不足：优先检查检索结果和证据引用；把真实问题加入黄金集并完成相应人工/专家审核后，再改 Skill 指令。
 - 用户反馈：本地 `accepted` 信号只服务使用同一反馈目录的环境；公共信号必须来自 GitHub Issue，并经过脱敏、人工核证、回归测试和版本发布。
 - 主题图谱不够清楚：调整 topic index / graph 生成逻辑。
 - 新增大量课程或直播切片：另起分支设计，不混入当前 1.0 稳定版。

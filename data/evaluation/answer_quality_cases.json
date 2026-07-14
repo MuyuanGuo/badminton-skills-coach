@@ -1,0 +1,376 @@
+{
+  "version": 1,
+  "description": "回答质量黄金集候选。draft 只表示待审核，不能作为正确答案；required_video_ids 中由 retrieval_cases 继承的标签也必须在最终黄金集审核时复核。",
+  "cases": [
+    {
+      "case_id": "AQ001",
+      "query": "后场被动来不及架拍怎么把球打到底线",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7558912953539071292"],
+        "required_video_ids": ["7558912953539071292", "7546109410041908538", "7153445193713290511"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ002",
+      "query": "杀球不重没有威胁怎么办",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7659348110628345210"],
+        "required_video_ids": ["7659348110628345210", "7567155406117533051", "7659991105622862457"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ003",
+      "query": "网前框架怎么做才不会身体僵硬",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7661940775983482097"],
+        "required_video_ids": ["7661940775983482097", "7384641787647872308"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ004",
+      "query": "双打接发怎么抢主动",
+      "case_type": "tactics",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "retrieval_cases+answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7501542236061420859"],
+        "required_video_ids": ["7501542236061420859", "7113001319694224655", "7072543702161296640"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ005",
+      "query": "平抽挡怎么提高连续速度",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7447084061371272507"],
+        "required_video_ids": ["7447084061371272507", "7506736569824726332", "7652440366436945017"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ006",
+      "query": "启动慢而且回动不及时怎么练",
+      "case_type": "training_plan",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7571574635323124145"],
+        "required_video_ids": ["7056244399390412064", "7643719807951615482", "7571574635323124145"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ007",
+      "query": "吊球怎么和杀球配合拉开对手",
+      "case_type": "tactics",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7115241358255803683"],
+        "required_video_ids": ["7115241358255803683", "7520190707093654844", "7306709804234444072"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ008",
+      "query": "接杀以后怎么防守反击",
+      "case_type": "tactics",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7602766054809333617"],
+        "required_video_ids": ["7621243051541587889", "7602766054809333617", "7127470220309957923"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ009",
+      "query": "发小球怎么增加隐蔽性并偷后场",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7483346020332522812"],
+        "required_video_ids": ["7483346020332522812", "7589590613499595185", "7113001319694224655"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ010",
+      "query": "握拍太紧挥拍僵硬怎么放松",
+      "case_type": "diagnosis",
+      "expected_mode": "video_primary",
+      "expert_review_required": true,
+      "provenance": "retrieval_cases",
+      "review": {"status": "draft"},
+      "gold": {
+        "primary_video_ids": ["7086276287681137961"],
+        "required_video_ids": ["7086276287681137961", "7213191190382972172"],
+        "irrelevant_video_ids": [],
+        "required_text_points": [],
+        "required_boundary_points": [],
+        "forbidden_claims": []
+      }
+    },
+    {
+      "case_id": "AQ011",
+      "query": "双打轮转时什么时候补位",
+      "case_type": "tactics",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ012",
+      "query": "杀球落点应该如何选择",
+      "case_type": "tactics",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ013",
+      "query": "单打被动后场应该打直线还是斜线",
+      "case_type": "tactics",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ014",
+      "query": "防守反击的战术思路是什么",
+      "case_type": "tactics",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ015",
+      "query": "正手握拍应该怎么握",
+      "case_type": "technical_action",
+      "expected_mode": "video_primary",
+      "expert_review_required": true,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ016",
+      "query": "拍面总是控制不住",
+      "case_type": "diagnosis",
+      "expected_mode": "video_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ017",
+      "query": "杀球时手肘应该放在哪里",
+      "case_type": "technical_action",
+      "expected_mode": "video_primary",
+      "expert_review_required": true,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ018",
+      "query": "正手高远球的击球姿势是什么样",
+      "case_type": "technical_action",
+      "expected_mode": "video_primary",
+      "expert_review_required": true,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ019",
+      "query": "网前搓球怎么控制拍面",
+      "case_type": "technical_action",
+      "expected_mode": "video_primary",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ020",
+      "query": "被动后场来不及架拍如何调整",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ021",
+      "query": "平抽挡怎样连续发力",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ022",
+      "query": "步法启动慢而且回动不及时",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ023",
+      "query": "杀球动作怎么发力",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ024",
+      "query": "如何练习吊球和杀球衔接",
+      "case_type": "training_plan",
+      "expected_mode": "balanced",
+      "expert_review_required": true,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ025",
+      "query": "双打接发战术和接发握拍应该怎么调整",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "answer_modality_cases",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ026",
+      "query": "我只描述杀球总下网，不给动作视频，能不能确定唯一原因",
+      "case_type": "evidence_boundary",
+      "expected_mode": "balanced",
+      "expert_review_required": false,
+      "provenance": "boundary_seed",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ027",
+      "query": "练杀球以后肩膀疼，还能不能继续练",
+      "case_type": "evidence_boundary",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "boundary_seed",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ028",
+      "query": "刘辉羽毛球最推荐我买哪一支球拍",
+      "case_type": "evidence_boundary",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "boundary_seed",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ029",
+      "query": "你给出的训练建议是不是刘辉本人认可的",
+      "case_type": "evidence_boundary",
+      "expected_mode": "text_primary",
+      "expert_review_required": false,
+      "provenance": "boundary_seed",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    },
+    {
+      "case_id": "AQ030",
+      "query": "只看文字说明，能不能确认我的正手握拍完全正确",
+      "case_type": "evidence_boundary",
+      "expected_mode": "video_primary",
+      "expert_review_required": false,
+      "provenance": "boundary_seed",
+      "review": {"status": "draft"},
+      "gold": {"primary_video_ids": [], "required_video_ids": [], "irrelevant_video_ids": [], "required_text_points": [], "required_boundary_points": [], "forbidden_claims": []}
+    }
+  ]
+}

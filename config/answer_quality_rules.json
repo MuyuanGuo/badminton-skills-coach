@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "description": "回答质量黄金集的审核门槛与自动检查规则。机器负责候选生成和客观检查，人工负责来源忠实度，必要时由专家确认技术正确性。",
+  "review_statuses": [
+    "draft",
+    "maintainer_reviewed",
+    "expert_reviewed"
+  ],
+  "case_types": [
+    "technical_action",
+    "diagnosis",
+    "tactics",
+    "training_plan",
+    "evidence_boundary"
+  ],
+  "answer_modes": [
+    "text_primary",
+    "balanced",
+    "video_primary"
+  ],
+  "mode_requirements": {
+    "text_primary": {
+      "min_text_characters": 140
+    },
+    "balanced": {
+      "min_text_characters": 110
+    },
+    "video_primary": {
+      "min_text_characters": 80
+    }
+  },
+  "video_note_requirements": {
+    "min_reason_characters": 8,
+    "min_watch_focus_characters": 8
+  },
+  "manual_score_scale": {
+    "minimum": 1,
+    "maximum": 5,
+    "passing": 4
+  },
+  "manual_dimensions": [
+    "source_fidelity",
+    "technical_correctness",
+    "coverage",
+    "text_video_allocation",
+    "clarity_and_boundaries"
+  ]
+}
