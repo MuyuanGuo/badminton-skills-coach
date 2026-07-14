@@ -1,6 +1,10 @@
 # Badminton Skills Coach / 刘辉羽毛球教练 Skill
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
+[![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
+[![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
+
+![Badminton Skills Coach：359 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
 
 这是 `Badminton Skills Coach` 的 **1.1.0-dev.3 开发分支**。GitHub `main` 分支和 [`v1.0.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.0.0) Release 是当前稳定版；`develop` 分支用于开发“通过用户反馈提升回答质量”的下一版本。
 
@@ -41,7 +45,16 @@
 
 ## 快速使用
 
-把 Skill 安装或刷新到本机 Codex：
+直接安装 `v1.0.0` 稳定版 Skill：
+
+```bash
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.0.0/liuhui-badminton-coach-v1.0.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.0.0.zip
+mkdir -p ~/.codex/skills
+unzip -q -o /tmp/liuhui-badminton-coach-v1.0.0.zip -d ~/.codex/skills
+```
+
+Release 同时提供 `SHA256SUMS.txt` 用于校验下载文件。已经克隆仓库时，也可以安装或刷新当前检出的版本：
 
 ```bash
 mkdir -p ~/.codex/skills/liuhui-badminton-coach
@@ -130,6 +143,7 @@ scripts/
   evaluate_answer_policy.py        评测文字/视频回答模式
   evaluate_feedback_signals.py     评测公共反馈晋升结果
   evaluate_retrieval.py            评测已知相关视频召回率
+  package_skill_release.py         生成可安装 Skill 压缩包和 SHA-256
   promote_feedback.py              晋升已审核 GitHub 反馈
   test_feedback_pipeline.py        反馈解析、队列和审核回归测试
   test_feedback_personalization.py 本地个性化回归测试
@@ -372,4 +386,6 @@ GitHub Actions 会执行同样的核心验证：
 
 ## License 和内容边界
 
-本仓库只保存结构化索引、教学笔记、主题图谱、已脱敏公共反馈信号和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL、模型缓存和用户本地反馈队列不提交。反馈默认只保存在用户自己的 Codex 目录；公共信号只保留脱敏问题、视频 ID、问题类型、核证说明、公开 Issue 来源及已审核正文的 SHA-256，不保留原始问题或原始反馈。公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。
+本项目原创软件代码和自动化脚本采用 [MIT License](LICENSE)。第三方视频、音频、创作者名称、视频标题、缩略图、转写和其他来源材料不包含在 MIT 授权中，详细边界见 [NOTICE](NOTICE)。
+
+本仓库只保存结构化索引、教学笔记、主题图谱、已脱敏公共反馈信号和维护脚本。检索索引会从本地完整转写生成术语命中、主题归属和不含正文的字符 n-gram 哈希，但不包含完整转写正文。原始视频、音频、完整转写目录、临时媒体 URL、模型缓存和用户本地反馈队列不提交。反馈默认只保存在用户自己的 Codex 目录；公共信号只保留脱敏问题、视频 ID、问题类型、核证说明、公开 Issue 来源及已审核正文的 SHA-256，不保留原始问题或原始反馈。项目未获得刘辉本人或抖音授权，公开视频链接仅作为来源引用；使用者应自行遵守平台规则和相关版权要求。

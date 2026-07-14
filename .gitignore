@@ -18,6 +18,7 @@ data/feedback/
 .feedback/
 
 # Generated heavyweight or temporary artifacts
+dist/
 output/*.xlsx
 output/*.inspect.ndjson
 output/*-preview.png

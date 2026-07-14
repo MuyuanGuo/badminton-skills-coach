@@ -35,6 +35,7 @@ jobs:
             scripts/generate_knowledge_graph.py \
             scripts/init_douyin_queue.py \
             scripts/monitor_douyin_updates.py \
+            scripts/package_skill_release.py \
             scripts/prepare_douyin_media_batch.py \
             scripts/promote_feedback.py \
             scripts/process_douyin_ready_batch.py \
