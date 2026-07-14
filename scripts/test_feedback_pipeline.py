@@ -55,7 +55,7 @@ class FeedbackPipelineTests(unittest.TestCase):
             ["V1", "V2", "V3"],
         )
         self.assertTrue(self.answer["videos"][0]["core"])
-        self.assertEqual(self.answer["skill_version"], "1.1.0-dev")
+        self.assertEqual(self.answer["skill_version"], "1.1.0-dev.2")
         self.assertEqual(
             set(self.feedback.extract_video_refs(self.answer["feedback_hint"])),
             {"V1", "V3"},
@@ -173,7 +173,7 @@ https://www.douyin.com/video/7614167503938610417
 漏了被动回球后的处理边界。
 
 ### 版本信息
-1.1.0-dev
+1.1.0-dev.2
 """
         imported = self.feedback.import_github_issue(
             body=body,
@@ -189,6 +189,92 @@ https://www.douyin.com/video/7614167503938610417
         self.assertEqual(
             imported["signals"]["text_issue_types"], ["missing_content"]
         )
+
+    def test_export_github_requires_accepted_local_feedback_and_public_consent(self):
+        queued = self.feedback.record_feedback(
+            question="我的私人问题：昨天在单位球馆被同事针对反手位怎么办？",
+            video_specs=["V1=7614167503938610417", "V2=7659991105622862457"],
+            feedback_text="这是私人反馈：V1 最有价值；V2 不相关；文字太笼统。",
+            core_refs=["V1"],
+            answer_mode="balanced",
+            queue_dir=self.queue_dir,
+        )
+        with self.assertRaisesRegex(ValueError, "accepted"):
+            self.feedback.export_github_feedback(
+                feedback_id=queued["feedback_id"],
+                public_question="双打中如何保护反手位？",
+                confirm_public=True,
+                queue_dir=self.queue_dir,
+            )
+
+        reviewed = self.feedback.review_feedback(
+            feedback_id=queued["feedback_id"],
+            decision="accepted",
+            note="用户确认解析结果用于本地个性化",
+            reviewer="local-user",
+            queue_dir=self.queue_dir,
+        )
+        with self.assertRaisesRegex(ValueError, "confirm-public"):
+            self.feedback.export_github_feedback(
+                feedback_id=reviewed["feedback_id"],
+                public_question="双打中如何保护反手位？",
+                queue_dir=self.queue_dir,
+            )
+
+    def test_export_github_is_sanitized_and_round_trips_through_import(self):
+        private_question = "我的私人问题：昨天在单位球馆被同事针对反手位怎么办？"
+        private_feedback = "这是私人反馈：V1 最有价值；V2 不相关；文字太笼统。"
+        queued = self.feedback.record_feedback(
+            question=private_question,
+            video_specs=["V1=7614167503938610417", "V2=7659991105622862457"],
+            feedback_text=private_feedback,
+            core_refs=["V1"],
+            answer_mode="balanced",
+            queue_dir=self.queue_dir,
+        )
+        reviewed = self.feedback.review_feedback(
+            feedback_id=queued["feedback_id"],
+            decision="accepted",
+            note="用户确认解析结果用于本地个性化",
+            reviewer="local-user",
+            queue_dir=self.queue_dir,
+        )
+        public_question = "双打中如何保护反手位？"
+        exported = self.feedback.export_github_feedback(
+            feedback_id=reviewed["feedback_id"],
+            public_question=public_question,
+            confirm_public=True,
+            queue_dir=self.queue_dir,
+        )
+
+        self.assertFalse(exported["uploaded"])
+        self.assertEqual(exported["privacy"]["raw_feedback_included"], False)
+        self.assertEqual(exported["privacy"]["original_question_included"], False)
+        self.assertIn(public_question, exported["issue_body"])
+        self.assertNotIn(private_question, exported["issue_body"])
+        self.assertNotIn(private_feedback, exported["issue_body"])
+        self.assertIn("7614167503938610417", exported["issue_body"])
+        self.assertIn("7659991105622862457", exported["issue_body"])
+
+        saved = self.feedback.show_feedback(reviewed["feedback_id"], self.queue_dir)
+        self.assertTrue(saved["share_upstream"])
+        self.assertFalse(saved["github_export"]["uploaded"])
+
+        imported_queue = self.queue_dir / "imported"
+        imported = self.feedback.import_github_issue(
+            body=exported["issue_body"],
+            source_url="https://github.com/example/repo/issues/2",
+            queue_dir=imported_queue,
+        )
+        self.assertEqual(imported["status"], "pending_review")
+        self.assertEqual(imported["question"], public_question)
+        self.assertEqual(
+            imported["signals"]["helpful_video_ids"], ["7614167503938610417"]
+        )
+        self.assertEqual(
+            imported["signals"]["irrelevant_video_ids"], ["7659991105622862457"]
+        )
+        self.assertEqual(imported["signals"]["text_issue_types"], ["too_vague"])
 
 
 if __name__ == "__main__":

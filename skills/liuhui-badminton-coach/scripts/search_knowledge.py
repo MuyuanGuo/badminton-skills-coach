@@ -2,8 +2,9 @@
 import argparse
 import hashlib
 import json
+import os
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -12,6 +13,8 @@ KNOWLEDGE_PATH = ROOT / "references" / "knowledge-base.json"
 RETRIEVAL_INDEX_PATH = ROOT / "references" / "retrieval-index.json"
 RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 ANSWER_RULES_PATH = ROOT / "references" / "answer-modality-rules.json"
+FEEDBACK_RULES_PATH = ROOT / "references" / "feedback-rules.json"
+FEEDBACK_SIGNALS_PATH = ROOT / "references" / "feedback-signals.json"
 
 FIELD_WEIGHTS = {
     "title": 4.0,
@@ -245,6 +248,447 @@ def expand_query(query, retrieval_index, rules):
     }
 
 
+def load_feedback_rules():
+    return json.loads(FEEDBACK_RULES_PATH.read_text(encoding="utf-8"))
+
+
+def default_feedback_dir():
+    override = os.environ.get("LIUHUI_FEEDBACK_DIR")
+    if override:
+        return Path(override).expanduser()
+    codex_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex"))
+    return codex_home / "feedback" / "liuhui-badminton-coach"
+
+
+def character_grams(text, size=2):
+    normalized = normalize(text)
+    if len(normalized) <= size:
+        return {normalized} if normalized else set()
+    return {
+        normalized[index : index + size]
+        for index in range(len(normalized) - size + 1)
+    }
+
+
+def jaccard(left, right):
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left | right)
+
+
+def feedback_signature(query, expansion):
+    terms = {
+        normalize(term)
+        for key in ["original_terms", "query_shards", "synonym_terms", "topic_terms"]
+        for term in expansion[key]
+        if normalize(term)
+    }
+    topics = {topic["topic_id"] for topic in expansion["matched_topics"]}
+    return {
+        "normalized": normalize(query),
+        "terms": terms,
+        "topics": topics,
+        "character_grams": character_grams(query),
+    }
+
+
+def feedback_query_similarity(
+    current_signature,
+    feedback_query,
+    retrieval_index,
+    retrieval_rules,
+):
+    feedback_expansion = expand_query(feedback_query, retrieval_index, retrieval_rules)
+    feedback_signature_value = feedback_signature(feedback_query, feedback_expansion)
+    if (
+        current_signature["normalized"]
+        and current_signature["normalized"] == feedback_signature_value["normalized"]
+    ):
+        return 1.0
+    term_score = jaccard(current_signature["terms"], feedback_signature_value["terms"])
+    topic_score = jaccard(current_signature["topics"], feedback_signature_value["topics"])
+    character_score = jaccard(
+        current_signature["character_grams"],
+        feedback_signature_value["character_grams"],
+    )
+    score = term_score * 0.55 + topic_score * 0.25 + character_score * 0.20
+    return round(min(1.0, score), 4)
+
+
+def load_global_feedback_records():
+    if not FEEDBACK_SIGNALS_PATH.exists():
+        return [], {"signal_count": 0, "updated_at": None}
+    payload = json.loads(FEEDBACK_SIGNALS_PATH.read_text(encoding="utf-8"))
+    return payload["signals"], {
+        "signal_count": len(payload["signals"]),
+        "updated_at": payload.get("updated_at"),
+    }
+
+
+def load_local_feedback_records(feedback_dir=None):
+    queue_dir = Path(feedback_dir or default_feedback_dir()) / "queue"
+    records = []
+    stats = {
+        "queue_file_count": 0,
+        "accepted_record_count": 0,
+        "usable_record_count": 0,
+        "skipped_record_count": 0,
+    }
+    for path in sorted(queue_dir.glob("*.json")):
+        stats["queue_file_count"] += 1
+        try:
+            record = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            stats["skipped_record_count"] += 1
+            continue
+        if record.get("status") != "accepted":
+            continue
+        if record.get("source", {}).get("type") != "local":
+            continue
+        stats["accepted_record_count"] += 1
+        if record.get("parser_warnings") or not record.get("question"):
+            stats["skipped_record_count"] += 1
+            continue
+        records.append(record)
+    stats["usable_record_count"] = len(records)
+    return records, stats
+
+
+def feedback_record_values(record, layer):
+    if layer == "global":
+        return {
+            "record_id": record["signal_id"],
+            "query": record["public_query"],
+            "helpful_video_ids": record.get("helpful_video_ids", []),
+            "irrelevant_video_ids": record.get("irrelevant_video_ids", []),
+            "missing_video_ids": record.get("missing_video_ids", []),
+            "text_issue_types": record.get("answer_issue_types", []),
+            "outcome": None,
+        }
+    signals = record.get("signals", {})
+    return {
+        "record_id": record["feedback_id"],
+        "query": record["question"],
+        "helpful_video_ids": signals.get("helpful_video_ids", []),
+        "irrelevant_video_ids": signals.get("irrelevant_video_ids", []),
+        "missing_video_ids": signals.get("missing_video_ids", []),
+        "text_issue_types": signals.get("text_issue_types", []),
+        "outcome": signals.get("outcome"),
+    }
+
+
+def build_feedback_adjustments(
+    layer,
+    records,
+    current_signature,
+    retrieval_index,
+    retrieval_rules,
+    feedback_rules,
+):
+    config = feedback_rules["personalization"]
+    weights = config["weights"]
+    threshold = config["query_similarity_threshold"]
+    adjustments = defaultdict(
+        lambda: {
+            "delta": 0.0,
+            "positive_strength": 0.0,
+            "negative_strength": 0.0,
+            "max_positive_similarity": 0.0,
+            "max_negative_similarity": 0.0,
+            "record_ids": set(),
+            "reasons": set(),
+        }
+    )
+    matched_ids = []
+    reminders = set()
+    for record in records:
+        values = feedback_record_values(record, layer)
+        similarity = feedback_query_similarity(
+            current_signature,
+            values["query"],
+            retrieval_index,
+            retrieval_rules,
+        )
+        if similarity < threshold:
+            continue
+        matched_ids.append(values["record_id"])
+        reminders.update(values["text_issue_types"])
+        if values["outcome"] == "unresolved":
+            reminders.add("hard_to_apply")
+        elif values["outcome"] == "misunderstood":
+            reminders.add("scenario_mismatch")
+
+        helpful_ids = set(values["helpful_video_ids"])
+        missing_ids = set(values["missing_video_ids"]) - helpful_ids
+        signal_groups = [
+            (helpful_ids, weights[f"{layer}_helpful"], "helpful"),
+            (missing_ids, weights[f"{layer}_missing"], "missing"),
+            (
+                set(values["irrelevant_video_ids"]),
+                weights[f"{layer}_irrelevant"],
+                "irrelevant",
+            ),
+        ]
+        for video_ids, weight, reason in signal_groups:
+            for video_id in video_ids:
+                adjustment = adjustments[video_id]
+                weighted_delta = similarity * weight
+                adjustment["delta"] += weighted_delta
+                adjustment["record_ids"].add(values["record_id"])
+                adjustment["reasons"].add(reason)
+                if weight > 0:
+                    adjustment["positive_strength"] += abs(weighted_delta)
+                    adjustment["max_positive_similarity"] = max(
+                        adjustment["max_positive_similarity"], similarity
+                    )
+                else:
+                    adjustment["negative_strength"] += abs(weighted_delta)
+                    adjustment["max_negative_similarity"] = max(
+                        adjustment["max_negative_similarity"], similarity
+                    )
+
+    max_delta = config["max_abs_delta_per_layer"]
+    for adjustment in adjustments.values():
+        adjustment["delta"] = max(-max_delta, min(max_delta, adjustment["delta"]))
+        adjustment["record_ids"] = sorted(adjustment["record_ids"])
+        adjustment["reasons"] = sorted(adjustment["reasons"])
+    return dict(adjustments), sorted(matched_ids), sorted(reminders)
+
+
+def local_answer_preferences(records, matched_reminders, public_reminders, feedback_rules):
+    issue_counts = Counter(
+        issue_type
+        for record in records
+        for issue_type in record.get("signals", {}).get("text_issue_types", [])
+    )
+    outcome_counts = Counter(
+        record.get("signals", {}).get("outcome")
+        for record in records
+        if record.get("signals", {}).get("outcome")
+    )
+    minimum = feedback_rules["personalization"]["local_preference_min_count"]
+    concise_count = issue_counts["too_verbose"]
+    detailed_count = sum(
+        issue_counts[issue_type]
+        for issue_type in ["missing_content", "too_vague", "hard_to_apply"]
+    )
+    if concise_count >= minimum and concise_count > detailed_count:
+        verbosity = "concise"
+    elif detailed_count >= minimum and detailed_count > concise_count:
+        verbosity = "detailed"
+    else:
+        verbosity = "default"
+    reminders = sorted(set(matched_reminders) | set(public_reminders))
+    return {
+        "preferred_verbosity": verbosity,
+        "query_reminders": reminders,
+        "needs_more_boundaries": (
+            "scenario_mismatch" in reminders
+            or issue_counts["scenario_mismatch"] >= minimum
+            or outcome_counts["misunderstood"] >= minimum
+        ),
+        "needs_more_action_steps": (
+            "hard_to_apply" in reminders
+            or issue_counts["hard_to_apply"] >= minimum
+            or outcome_counts["unresolved"] >= minimum
+        ),
+        "preference_evidence_counts": {
+            "too_verbose": concise_count,
+            "detail_needed": detailed_count,
+            "scenario_mismatch": issue_counts["scenario_mismatch"],
+            "unresolved": outcome_counts["unresolved"],
+        },
+    }
+
+
+def feedback_only_candidate(video):
+    return {
+        "score": 0.0,
+        "relevance_tier": "strong_related",
+        "retrieval_channels": [],
+        "matched_query_concepts": [],
+        "matched_original_terms": [],
+        "matched_terms": [],
+        "matched_fields": {},
+        "matched_topics": [],
+        "transcript_ngram_coverage": 0.0,
+        "video_id": video["video_id"],
+        "title": video["title"],
+        "category": video["category"],
+        "confidence": video["confidence"],
+        "processing_status": video["processing_status"],
+        "url": video["url"],
+    }
+
+
+def apply_feedback_layers(
+    query,
+    ranked,
+    expansion,
+    knowledge,
+    retrieval_index,
+    retrieval_rules,
+    local_personalization=True,
+    feedback_dir=None,
+):
+    feedback_rules = load_feedback_rules()
+    current_signature = feedback_signature(query, expansion)
+    global_records, global_stats = load_global_feedback_records()
+    global_adjustments, global_matches, public_reminders = build_feedback_adjustments(
+        "global",
+        global_records,
+        current_signature,
+        retrieval_index,
+        retrieval_rules,
+        feedback_rules,
+    )
+    if local_personalization:
+        local_records, local_stats = load_local_feedback_records(feedback_dir)
+        local_adjustments, local_matches, local_reminders = build_feedback_adjustments(
+            "local",
+            local_records,
+            current_signature,
+            retrieval_index,
+            retrieval_rules,
+            feedback_rules,
+        )
+    else:
+        local_records = []
+        local_adjustments = {}
+        local_matches = []
+        local_reminders = []
+        local_stats = {
+            "queue_file_count": 0,
+            "accepted_record_count": 0,
+            "usable_record_count": 0,
+            "skipped_record_count": 0,
+        }
+
+    videos = {
+        video["video_id"]: video
+        for video in knowledge["videos"]
+        if video["processing_status"] == "ready"
+    }
+    candidates = {item["video_id"]: dict(item) for item in ranked}
+    adjusted_video_ids = set(global_adjustments) | set(local_adjustments)
+    exact_threshold = feedback_rules["personalization"]["exact_query_threshold"]
+    applied = []
+    for video_id in adjusted_video_ids:
+        global_value = global_adjustments.get(video_id)
+        local_value = local_adjustments.get(video_id)
+        global_delta = global_value["delta"] if global_value else 0.0
+        local_delta = local_value["delta"] if local_value else 0.0
+        total_delta = global_delta + local_delta
+        candidate = candidates.get(video_id)
+        if candidate is None:
+            if total_delta <= 0 or video_id not in videos:
+                continue
+            candidate = feedback_only_candidate(videos[video_id])
+            candidates[video_id] = candidate
+
+        original_tier = candidate["relevance_tier"]
+        original_score = candidate["score"]
+        tier_decided = False
+        for value in [local_value, global_value]:
+            if not value:
+                continue
+            if (
+                value["negative_strength"] > value["positive_strength"]
+                and value["max_negative_similarity"] >= exact_threshold
+            ):
+                candidate["relevance_tier"] = "semantic_lead"
+                tier_decided = True
+                break
+            if (
+                value["positive_strength"] > value["negative_strength"]
+                and value["max_positive_similarity"] >= exact_threshold
+            ):
+                candidate["relevance_tier"] = "direct"
+                tier_decided = True
+                break
+        if (
+            not tier_decided
+            and total_delta > 0
+            and TIER_ORDER[candidate["relevance_tier"]] > TIER_ORDER["strong_related"]
+        ):
+            candidate["relevance_tier"] = "strong_related"
+
+        sources = []
+        signal_ids = []
+        reasons = []
+        if global_value:
+            sources.append("global_promoted_feedback")
+            signal_ids.extend(global_value["record_ids"])
+            reasons.extend(f"global_{reason}" for reason in global_value["reasons"])
+            candidate["retrieval_channels"] = sorted(
+                set(candidate["retrieval_channels"]) | {"global_promoted_feedback"}
+            )
+        if local_value:
+            sources.append("local_accepted_feedback")
+            signal_ids.extend(local_value["record_ids"])
+            reasons.extend(f"local_{reason}" for reason in local_value["reasons"])
+            candidate["retrieval_channels"] = sorted(
+                set(candidate["retrieval_channels"]) | {"local_accepted_feedback"}
+            )
+        candidate["score"] = round(original_score + total_delta, 4)
+        candidate["feedback_adjustment"] = {
+            "score_delta": round(total_delta, 4),
+            "global_delta": round(global_delta, 4),
+            "local_delta": round(local_delta, 4),
+            "sources": sources,
+            "signal_ids": sorted(set(signal_ids)),
+            "reasons": sorted(set(reasons)),
+            "original_tier": original_tier,
+            "adjusted_tier": candidate["relevance_tier"],
+        }
+        applied.append(
+            {
+                "video_id": video_id,
+                **candidate["feedback_adjustment"],
+            }
+        )
+
+    reranked = list(candidates.values())
+    reranked.sort(
+        key=lambda item: (
+            TIER_ORDER[item["relevance_tier"]],
+            -item["score"],
+            item["title"],
+        )
+    )
+    answer_preferences = local_answer_preferences(
+        local_records,
+        local_reminders,
+        public_reminders,
+        feedback_rules,
+    )
+    guidance = {
+        "global": {
+            **global_stats,
+            "matched_signal_count": len(global_matches),
+            "matched_signal_ids": global_matches,
+        },
+        "local": {
+            "enabled": bool(local_personalization),
+            **local_stats,
+            "matched_feedback_count": len(local_matches),
+            "matched_feedback_ids": local_matches,
+        },
+        "applied_video_adjustments": sorted(
+            applied,
+            key=lambda item: (-abs(item["score_delta"]), item["video_id"]),
+        ),
+        "answer_preferences": answer_preferences,
+        "guardrails": [
+            "feedback_changes_ranking_and_answer_presentation_only",
+            "feedback_never_overrides_source_evidence",
+            "negative_feedback_remains_in_exhaustive_manifest",
+            "only_accepted_local_and_promoted_global_feedback_is_used",
+        ],
+    }
+    return reranked, guidance
+
+
 def field_values(video):
     return {
         "title": video["title"],
@@ -449,7 +893,7 @@ def ranked_result(candidate, video):
 
 
 def compact_candidate(candidate):
-    return {
+    result = {
         "video_id": candidate["video_id"],
         "title": candidate["title"],
         "url": candidate["url"],
@@ -458,6 +902,9 @@ def compact_candidate(candidate):
         "matched_query_concepts": candidate["matched_query_concepts"],
         "matched_original_terms": candidate["matched_original_terms"],
     }
+    if candidate.get("feedback_adjustment"):
+        result["feedback_adjustment"] = candidate["feedback_adjustment"]
+    return result
 
 
 def search(
@@ -467,6 +914,8 @@ def search(
     recall_mode="exhaustive",
     manifest_offset=0,
     manifest_limit=None,
+    local_personalization=True,
+    feedback_dir=None,
 ):
     knowledge, retrieval_index, rules = load_resources()
     answer_guidance = classify_answer_mode(query)
@@ -476,6 +925,16 @@ def search(
         retrieval_index,
         rules,
         mode=mode,
+    )
+    ranked, feedback_guidance = apply_feedback_layers(
+        query,
+        ranked,
+        expansion,
+        knowledge,
+        retrieval_index,
+        rules,
+        local_personalization=local_personalization,
+        feedback_dir=feedback_dir,
     )
     videos = {video["video_id"]: video for video in knowledge["videos"]}
     if manifest_limit is None:
@@ -501,6 +960,15 @@ def search(
             else {
                 "pagination": True,
                 "mode": answer_guidance["mode"],
+                "see_manifest_offset": 0,
+            }
+        ),
+        "feedback_guidance": (
+            feedback_guidance
+            if manifest_offset == 0
+            else {
+                "pagination": True,
+                "local_personalization_enabled": bool(local_personalization),
                 "see_manifest_offset": 0,
             }
         ),
@@ -532,13 +1000,29 @@ def search(
     }
 
 
-def lookup_videos(video_ids, query=""):
+def lookup_videos(
+    video_ids,
+    query="",
+    local_personalization=True,
+    feedback_dir=None,
+):
     knowledge, retrieval_index, rules = load_resources()
     videos = {video["video_id"]: video for video in knowledge["videos"]}
     records = {item["video_id"]: item for item in retrieval_index["videos"]}
     candidates = {}
+    feedback_guidance = None
     if query:
-        ranked, _ = rank_candidates(query, knowledge, retrieval_index, rules)
+        ranked, expansion = rank_candidates(query, knowledge, retrieval_index, rules)
+        ranked, feedback_guidance = apply_feedback_layers(
+            query,
+            ranked,
+            expansion,
+            knowledge,
+            retrieval_index,
+            rules,
+            local_personalization=local_personalization,
+            feedback_dir=feedback_dir,
+        )
         candidates = {item["video_id"]: item for item in ranked}
     results = []
     missing = []
@@ -564,6 +1048,7 @@ def lookup_videos(video_ids, query=""):
     return {
         "query": query,
         "answer_guidance": classify_answer_mode(query) if query else None,
+        "feedback_guidance": feedback_guidance,
         "results": results,
         "missing_video_ids": missing,
     }
@@ -591,9 +1076,24 @@ def main():
     )
     parser.add_argument("--manifest-offset", type=int, default=0)
     parser.add_argument("--manifest-limit", type=int, default=20)
+    parser.add_argument(
+        "--no-local-personalization",
+        action="store_true",
+        help="Ignore accepted feedback in the current user's local feedback queue.",
+    )
+    parser.add_argument(
+        "--feedback-dir",
+        type=Path,
+        help="Override the local feedback directory for this search.",
+    )
     args = parser.parse_args()
     if args.video_id:
-        payload = lookup_videos(args.video_id, query=args.query)
+        payload = lookup_videos(
+            args.video_id,
+            query=args.query,
+            local_personalization=not args.no_local_personalization,
+            feedback_dir=args.feedback_dir,
+        )
     else:
         if not args.query.strip():
             parser.error("query is required unless --video-id is provided")
@@ -604,6 +1104,8 @@ def main():
             recall_mode=args.recall_mode,
             manifest_offset=args.manifest_offset,
             manifest_limit=args.manifest_limit,
+            local_personalization=not args.no_local_personalization,
+            feedback_dir=args.feedback_dir,
         )
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 

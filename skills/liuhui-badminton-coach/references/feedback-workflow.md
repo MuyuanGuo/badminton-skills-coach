@@ -33,7 +33,19 @@ python3 scripts/feedback.py record \
 
 For a previously persisted answer context, use `scripts/feedback.py submit --answer-id ANSWER_ID` instead.
 
-Tell the user what was recorded in plain language. If the result is `needs_clarification`, ask only about the unknown or contradictory reference. Never say that feedback has already changed retrieval or the knowledge base.
+Tell the user what was recorded in plain language. If the result is `needs_clarification`, ask only about the unknown or contradictory reference. Otherwise ask the user to reply `确认用于本地个性化` before accepting it. Never say that pending feedback has changed retrieval.
+
+After explicit confirmation, accept the local record:
+
+```bash
+python3 scripts/feedback.py review \
+  --feedback-id FEEDBACK_ID \
+  --decision accepted \
+  --reviewer local-user \
+  --note "用户已确认解析结果用于本地个性化"
+```
+
+If the user declines or does not confirm, leave it pending. Do not infer consent from silence.
 
 The default local queue is:
 
@@ -66,13 +78,35 @@ python3 scripts/feedback.py review \
   --note "已核对问题、视频和来源证据"
 ```
 
-Allowed decisions are `accepted`, `rejected`, and `needs_clarification`. Acceptance only marks a record as eligible for a future promotion step. It must not directly alter retrieval weights, evidence notes, or evaluation ground truth.
+Allowed decisions are `accepted`, `rejected`, and `needs_clarification`.
+
+- Accepted `local` feedback becomes available to future searches that use the same local feedback directory. It can adjust bounded video ranking and answer presentation, but never source evidence or coaching facts.
+- Accepted `github_issue` feedback is still not public Skill data. It must pass the promotion step below.
+- Rejected, pending, contradictory, or unparsed feedback never affects an answer.
+
+Disable local personalization for one search with:
+
+```bash
+python3 scripts/search_knowledge.py "用户问题" --no-local-personalization
+```
 
 ## GitHub feedback
 
 Use the repository's Skill feedback issue form. Ask users to paste video IDs or Douyin links, not only local `V` labels.
 
-Export an issue body, then import it into the same local review queue:
+To share an accepted local record, first ask the user to provide or approve a sanitized public version of the question. After separate public-sharing consent, generate a GitHub Issue body:
+
+```bash
+python3 scripts/feedback.py export-github \
+  --feedback-id FEEDBACK_ID \
+  --public-question "脱敏后的代表性问题" \
+  --confirm-public \
+  --output /path/to/issue-body.md
+```
+
+The export contains only the sanitized question, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original question or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Do not mark it as uploaded until a real public Issue URL exists.
+
+After a public Issue exists, import its body into the same local review queue:
 
 ```bash
 python3 scripts/feedback.py import-github \
@@ -81,3 +115,26 @@ python3 scripts/feedback.py import-github \
 ```
 
 Treat user preference as evidence about usefulness, not proof that a coaching claim is true. Verify the source video before promoting any global change.
+
+After accepting an imported GitHub record, perform a dry run with a sanitized public query and a human evidence note:
+
+```bash
+python3 /path/to/repository/scripts/promote_feedback.py \
+  --feedback-id FEEDBACK_ID \
+  --public-query "脱敏后的代表性问题" \
+  --evidence-note "已回看相关公开视频并核对适用边界" \
+  --promoted-by MAINTAINER \
+  --dry-run
+```
+
+Remove `--dry-run` only after inspecting the preview. Promotion writes a minimal public signal to `config/feedback_signals.json`, syncs the Skill reference, and adds a regression case. It excludes the original question and raw feedback.
+
+Then run:
+
+```bash
+python3 scripts/evaluate_feedback_signals.py
+python3 scripts/evaluate_retrieval.py
+python3 scripts/validate_project.py
+```
+
+Commit a promoted signal only when all evaluations pass. The source must be a public GitHub Issue; a local export or `share_upstream` flag is not sufficient by itself.

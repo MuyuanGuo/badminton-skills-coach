@@ -29,10 +29,16 @@ class SearchKnowledgeTests(unittest.TestCase):
     def test_exhaustive_manifest_paginates_without_overlap(self):
         query = "网前框架怎么做才不会身体僵硬"
         first = self.search_module.search(
-            query, manifest_offset=0, manifest_limit=5
+            query,
+            manifest_offset=0,
+            manifest_limit=5,
+            local_personalization=False,
         )
         second = self.search_module.search(
-            query, manifest_offset=5, manifest_limit=5
+            query,
+            manifest_offset=5,
+            manifest_limit=5,
+            local_personalization=False,
         )
         self.assertGreater(first["coverage"]["candidate_count"], 5)
         self.assertEqual(first["coverage"]["next_manifest_offset"], 5)
@@ -47,7 +53,9 @@ class SearchKnowledgeTests(unittest.TestCase):
     def test_video_lookup_returns_stored_evidence(self):
         video_id = "7661940775983482097"
         payload = self.search_module.lookup_videos(
-            [video_id], query="网前框架身体僵硬"
+            [video_id],
+            query="网前框架身体僵硬",
+            local_personalization=False,
         )
         self.assertEqual(payload["missing_video_ids"], [])
         self.assertEqual(payload["results"][0]["video_id"], video_id)
@@ -69,7 +77,11 @@ class SearchKnowledgeTests(unittest.TestCase):
                 self.assertGreaterEqual(len(guidance["video_obligations"]), 3)
 
     def test_search_never_returns_excluded_videos(self):
-        payload = self.search_module.search("训练 方法", manifest_limit=None)
+        payload = self.search_module.search(
+            "训练 方法",
+            manifest_limit=None,
+            local_personalization=False,
+        )
         knowledge, _, _ = self.search_module.load_resources()
         excluded_ids = {
             video["video_id"]

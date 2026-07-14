@@ -17,6 +17,7 @@ VIDEO_REF_PATTERN = re.compile(r"(?:[Vv]\s*0*(\d+)|视频\s*0*(\d+))")
 VIDEO_ID_PATTERN = re.compile(r"(?<!\d)(\d{18,20})(?!\d)")
 CLAUSE_SPLIT_PATTERN = re.compile(r"[，,；;。!！？?\n]+|[.](?=\s|$)")
 ISSUE_HEADING_PATTERN = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
+GITHUB_ISSUE_URL = "https://github.com/MuyuanGuo/badminton-skills-coach/issues/new"
 
 
 def utc_now():
@@ -431,6 +432,96 @@ def review_feedback(feedback_id, decision, note, reviewer, queue_dir=None):
     }
 
 
+def github_video_lines(video_ids):
+    if not video_ids:
+        return "无"
+    return "\n".join(
+        f"- https://www.douyin.com/video/{video_id} (`{video_id}`)"
+        for video_id in video_ids
+    )
+
+
+def export_github_feedback(
+    feedback_id,
+    public_question,
+    confirm_public=False,
+    queue_dir=None,
+):
+    if not confirm_public:
+        raise ValueError("Explicit --confirm-public consent is required")
+    if not public_question.strip():
+        raise ValueError("A sanitized public question is required")
+    target_dir = Path(queue_dir or default_queue_dir())
+    payload = show_feedback(feedback_id, target_dir)
+    if payload.get("status") != "accepted":
+        raise ValueError("Only accepted local feedback can be exported to GitHub")
+    if payload.get("source", {}).get("type") != "local":
+        raise ValueError("Only local feedback records can be exported")
+
+    issue_labels = {
+        "missing_content": "文字内容有遗漏",
+        "incorrect_claim": "存在错误结论",
+        "too_vague": "过于笼统",
+        "too_verbose": "过于冗长",
+        "hard_to_apply": "难以执行",
+        "scenario_mismatch": "不适合提问场景",
+    }
+    signals = payload["signals"]
+    issue_types = [
+        issue_labels[issue_type]
+        for issue_type in signals.get("text_issue_types", [])
+        if issue_type in issue_labels
+    ]
+    issue_body = f"""### 用户问题
+{public_question.strip()}
+
+### 回答编号
+{payload.get('answer_id') or '无'}
+
+### 最有价值的视频
+{github_video_lines(signals.get('helpful_video_ids', []))}
+
+### 明确不相关的视频
+{github_video_lines(signals.get('irrelevant_video_ids', []))}
+
+### 遗漏的视频
+{github_video_lines(signals.get('missing_video_ids', []))}
+
+### 文字回答问题
+{chr(10).join(f'- {label}' for label in issue_types) if issue_types else '没有明显问题'}
+
+### 补充说明
+本地反馈已脱敏导出；原始问题和原始反馈未包含在此正文中。
+
+### 版本信息
+{payload.get('skill_version', 'unknown')}
+
+### 隐私确认
+已确认此脱敏内容可以公开提交到 GitHub。
+"""
+    exported_at = utc_now()
+    payload["share_upstream"] = True
+    payload["updated_at"] = exported_at
+    payload["github_export"] = {
+        "exported_at": exported_at,
+        "public_question": public_question.strip(),
+        "uploaded": False,
+    }
+    atomic_write_json(target_dir / "queue" / f"{feedback_id}.json", payload)
+    return {
+        "feedback_id": feedback_id,
+        "issue_title": f"[Skill Feedback] {public_question.strip()[:60]}",
+        "issue_body": issue_body,
+        "submit_url": GITHUB_ISSUE_URL,
+        "uploaded": False,
+        "privacy": {
+            "raw_feedback_included": False,
+            "original_question_included": False,
+            "explicit_public_consent": True,
+        },
+    }
+
+
 def parse_issue_sections(body):
     matches = list(ISSUE_HEADING_PATTERN.finditer(body))
     sections = {}
@@ -591,6 +682,16 @@ def build_parser():
     import_issue.add_argument("--source-url", required=True)
     import_issue.add_argument("--queue-dir", type=Path)
 
+    export_issue = subparsers.add_parser(
+        "export-github",
+        help="Create a sanitized GitHub issue body from accepted local feedback.",
+    )
+    export_issue.add_argument("--feedback-id", required=True)
+    export_issue.add_argument("--public-question", required=True)
+    export_issue.add_argument("--confirm-public", action="store_true")
+    export_issue.add_argument("--output", type=Path)
+    export_issue.add_argument("--queue-dir", type=Path)
+
     return parser
 
 
@@ -636,6 +737,17 @@ def main():
                 reviewer=args.reviewer,
                 queue_dir=args.queue_dir,
             )
+        elif args.command == "export-github":
+            result = export_github_feedback(
+                feedback_id=args.feedback_id,
+                public_question=args.public_question,
+                confirm_public=args.confirm_public,
+                queue_dir=args.queue_dir,
+            )
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(result["issue_body"], encoding="utf-8")
+                result["output"] = str(args.output)
         else:
             result = import_github_issue(
                 body=args.body_file.read_text(encoding="utf-8"),

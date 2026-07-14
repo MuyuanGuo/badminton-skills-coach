@@ -13,11 +13,13 @@ json_paths = [
     "config/answer_modality_rules.json",
     "config/douyin_classification_rules.json",
     "config/feedback_rules.json",
+    "config/feedback_signals.json",
     "config/retrieval_rules.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
+    "data/evaluation/feedback_relevance_cases.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -29,6 +31,7 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/feedback-rules.json",
+    "skills/liuhui-badminton-coach/references/feedback-signals.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
@@ -149,8 +152,8 @@ skill_feedback_rules = json.loads(
 )
 if skill_feedback_rules != feedback_rules:
     raise SystemExit("Skill feedback rules are out of sync with project config")
-if feedback_rules["skill_version"] != "1.1.0-dev":
-    raise SystemExit("Development feedback rules must identify version 1.1.0-dev")
+if feedback_rules["skill_version"] != "1.1.0-dev.2":
+    raise SystemExit("Development feedback rules must identify version 1.1.0-dev.2")
 if set(feedback_rules["queue_statuses"]) != {
     "pending_review",
     "needs_clarification",
@@ -158,6 +161,24 @@ if set(feedback_rules["queue_statuses"]) != {
     "rejected",
 }:
     raise SystemExit("Feedback queue status contract is incomplete")
+personalization = feedback_rules.get("personalization", {})
+if not 0 < personalization.get("query_similarity_threshold", 0) < 1:
+    raise SystemExit("Feedback query similarity threshold is invalid")
+if personalization.get("local_preference_min_count", 0) < 2:
+    raise SystemExit("Local style preferences require repeated accepted feedback")
+feedback_weights = personalization.get("weights", {})
+if any(feedback_weights.get(key, 0) <= 0 for key in [
+    "global_helpful",
+    "global_missing",
+    "local_helpful",
+    "local_missing",
+]):
+    raise SystemExit("Positive feedback weights must be positive")
+if any(feedback_weights.get(key, 0) >= 0 for key in [
+    "global_irrelevant",
+    "local_irrelevant",
+]):
+    raise SystemExit("Irrelevant feedback weights must be negative")
 
 ready_count = sum(video["processing_status"] == "ready" for video in douyin_knowledge["videos"])
 review_excluded_count = sum(
@@ -222,6 +243,87 @@ retrieval_video_ids = {video["video_id"] for video in retrieval_index["videos"]}
 if retrieval_video_ids != ready_video_ids:
     raise SystemExit("Retrieval index video IDs do not match ready knowledge videos")
 
+feedback_signals = json.loads(
+    (ROOT / "config" / "feedback_signals.json").read_text(encoding="utf-8")
+)
+if feedback_signals.get("version") != 1:
+    raise SystemExit("Promoted feedback signal schema version is unsupported")
+skill_feedback_signals = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "feedback-signals.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_feedback_signals != feedback_signals:
+    raise SystemExit("Promoted feedback signals are out of sync with the Skill")
+allowed_signal_fields = {
+    "signal_id",
+    "source_feedback_id",
+    "source_type",
+    "source_reference",
+    "public_query",
+    "helpful_video_ids",
+    "irrelevant_video_ids",
+    "missing_video_ids",
+    "answer_issue_types",
+    "evidence_note",
+    "promoted_by",
+    "promoted_at",
+}
+allowed_issue_types = set(feedback_rules["text_issue_cues"])
+for signal in feedback_signals["signals"]:
+    if set(signal) != allowed_signal_fields:
+        raise SystemExit("Promoted feedback signal contains unexpected fields")
+    if signal["source_type"] != "github_issue" or not signal["source_reference"].startswith(
+        "https://github.com/"
+    ):
+        raise SystemExit("Promoted feedback must retain a public GitHub issue source")
+    positive_ids = set(signal["helpful_video_ids"]) | set(signal["missing_video_ids"])
+    negative_ids = set(signal["irrelevant_video_ids"])
+    if positive_ids & negative_ids:
+        raise SystemExit("Promoted feedback contains conflicting video relevance")
+    if not (positive_ids | negative_ids).issubset(ready_video_ids):
+        raise SystemExit("Promoted feedback references a non-ready video")
+    if not set(signal["answer_issue_types"]).issubset(allowed_issue_types):
+        raise SystemExit("Promoted feedback contains an unknown answer issue type")
+    if "raw_feedback" in signal or "question" in signal:
+        raise SystemExit("Promoted feedback leaked private raw fields")
+
+feedback_relevance_cases = json.loads(
+    (ROOT / "data" / "evaluation" / "feedback_relevance_cases.json").read_text(
+        encoding="utf-8"
+    )
+)
+if feedback_relevance_cases.get("version") != 1:
+    raise SystemExit("Feedback relevance evaluation schema version is unsupported")
+signals_by_id = {signal["signal_id"]: signal for signal in feedback_signals["signals"]}
+cases_by_id = {case["case_id"]: case for case in feedback_relevance_cases["cases"]}
+if len(signals_by_id) != len(feedback_signals["signals"]):
+    raise SystemExit("Promoted feedback signal IDs must be unique")
+if len(cases_by_id) != len(feedback_relevance_cases["cases"]):
+    raise SystemExit("Promoted feedback evaluation case IDs must be unique")
+if len({signal["source_feedback_id"] for signal in feedback_signals["signals"]}) != len(
+    feedback_signals["signals"]
+):
+    raise SystemExit("A feedback record cannot be promoted more than once")
+if set(signals_by_id) != set(cases_by_id):
+    raise SystemExit("Every promoted feedback signal must have exactly one regression case")
+for signal_id, signal in signals_by_id.items():
+    case = cases_by_id[signal_id]
+    if case["query"] != signal["public_query"]:
+        raise SystemExit("Promoted feedback query is out of sync with its regression case")
+    if set(case["expected_positive_video_ids"]) != (
+        set(signal["helpful_video_ids"]) | set(signal["missing_video_ids"])
+    ):
+        raise SystemExit("Promoted positive videos are out of sync with evaluation")
+    if set(case["expected_negative_video_ids"]) != set(signal["irrelevant_video_ids"]):
+        raise SystemExit("Promoted negative videos are out of sync with evaluation")
+    if set(case["expected_answer_reminders"]) != set(signal["answer_issue_types"]):
+        raise SystemExit("Promoted answer reminders are out of sync with evaluation")
+
 retrieval_cases = json.loads(
     (ROOT / "data" / "evaluation" / "retrieval_cases.json").read_text(encoding="utf-8")
 )
@@ -245,6 +347,8 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
+if "1.1.0-dev.2" not in readme_text:
+    raise SystemExit("README does not identify the current development version")
 latest_ready = next(
     video for video in douyin_knowledge["videos"]
     if video["processing_status"] == "ready"
@@ -329,6 +433,12 @@ for required_answer_contract in [
     "完整相关视频",
     "V1",
     "scripts/feedback.py record",
+    "feedback_guidance",
+    "global_promoted_feedback",
+    "local_accepted_feedback",
+    "--no-local-personalization",
+    "export-github --confirm-public",
+    "did not upload anything",
     "Never upload local feedback without explicit consent",
 ]:
     if required_answer_contract not in skill_text:
@@ -348,6 +458,36 @@ feedback_workflow = (
 )
 if not feedback_script.exists() or not feedback_workflow.exists():
     raise SystemExit("Skill feedback scripts or workflow are missing")
+feedback_script_text = feedback_script.read_text(encoding="utf-8")
+for required_export_contract in [
+    "export-github",
+    "--confirm-public",
+    '"uploaded": False',
+    '"original_question_included": False',
+    '"raw_feedback_included": False',
+]:
+    if required_export_contract not in feedback_script_text:
+        raise SystemExit(
+            f"Skill feedback export contract is missing: {required_export_contract}"
+        )
+feedback_workflow_text = feedback_workflow.read_text(encoding="utf-8")
+for required_workflow_contract in [
+    "sanitized public version",
+    "does not upload anything",
+    "real public Issue URL",
+]:
+    if required_workflow_contract not in feedback_workflow_text:
+        raise SystemExit(
+            f"Skill feedback workflow is missing: {required_workflow_contract}"
+        )
+for project_feedback_script in [
+    ROOT / "scripts" / "promote_feedback.py",
+    ROOT / "scripts" / "evaluate_feedback_signals.py",
+    ROOT / "scripts" / "test_feedback_personalization.py",
+    ROOT / "scripts" / "test_feedback_promotion.py",
+]:
+    if not project_feedback_script.exists():
+        raise SystemExit(f"Feedback pipeline script is missing: {project_feedback_script.name}")
 
 feedback_issue_form = ROOT / ".github" / "ISSUE_TEMPLATE" / "skill-feedback.yml"
 if not feedback_issue_form.exists():
@@ -415,6 +555,6 @@ if "## Top Priority Items" not in review_markdown.read_text(encoding="utf-8"):
 
 print(
     "Validated JSON, Draw.io, knowledge graph, Skill metadata, full skill sync, "
-    "topic index, answer modality contract, feedback workflow, practice template, "
-    "and visual review queue."
+    "topic index, answer modality contract, local feedback personalization, public "
+    "feedback promotion, practice template, and visual review queue."
 )

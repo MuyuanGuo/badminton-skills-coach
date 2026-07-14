@@ -36,6 +36,7 @@ def evaluate(top_k):
             limit=top_k,
             mode="hybrid",
             recall_mode="exhaustive",
+            local_personalization=False,
         )
         manifest_ids = [item["video_id"] for item in payload["candidate_manifest"]]
         top_ids = [item["video_id"] for item in payload["results"]]

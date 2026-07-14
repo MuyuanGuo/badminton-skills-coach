@@ -1,6 +1,6 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording explicit user feedback on a prior Skill answer. Give complete evidence-backed text where text works, cite all worthwhile related videos with stable V1...Vn labels, and queue feedback for human review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
@@ -11,7 +11,7 @@ Use `references/retrieval-index.json` for high-recall discovery across every rea
 
 Use `references/answer-modality-rules.json` to allocate explanatory work between text and video. Never treat text and video as alternatives: every answer needs useful text, and every confirmed worthwhile video needs to remain discoverable.
 
-Use `references/feedback-rules.json` and `references/feedback-workflow.md` to assign stable video labels, persist context only after explicit feedback, parse that feedback, and queue it for human review. Never let raw feedback change retrieval automatically.
+Use `references/feedback-rules.json`, `references/feedback-signals.json`, and `references/feedback-workflow.md` to assign stable video labels, apply promoted public feedback, personalize from accepted local feedback, parse new feedback, and queue it for human review. Never let feedback override source evidence.
 
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
@@ -34,7 +34,7 @@ python3 scripts/search_knowledge.py "用户问题或关键词" --recall-mode exh
 
 The default hybrid retrieval unions four channels: structured fields, full-transcript lexicon hits, complete topic memberships, and hashed transcript n-grams. For debugging, use `--mode keyword` or `--mode semantic`.
 
-4. Read `answer_guidance` first, then read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Use the guidance as the default text/video allocation. If the question contains multiple subproblems, apply the appropriate mode to each subproblem.
+4. Read `answer_guidance` and `feedback_guidance` first, then read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Use `answer_guidance` for text/video allocation. Use promoted public and accepted local feedback only for bounded ranking and presentation adjustments. If the question contains multiple subproblems, apply the appropriate mode to each subproblem.
 5. Do not stop after the top three results. If `coverage.next_manifest_offset` is not null, rerun with that offset until it becomes null:
 
 ```bash
@@ -53,6 +53,18 @@ python3 scripts/search_knowledge.py "用户问题" --video-id VIDEO_ID --video-i
 10. Keep the final question and `V` label mapping in task context. Do not write an answer context or feedback file until the user explicitly gives feedback.
 11. Answer using the allocation and answer contracts below.
 12. Ask for a short video or missing context only when it would materially change the diagnosis.
+
+## Feedback-Guided Answers
+
+Apply `feedback_guidance` without treating it as coaching evidence:
+
+- Use `global_promoted_feedback` for all users and `local_accepted_feedback` only for the current local feedback directory.
+- Use `preferred_verbosity: concise` to deduplicate and shorten presentation without omitting distinct evidence-backed conclusions. Use `detailed` to add concrete cues, boundaries, and self-checks.
+- For `missing_content`, cover all distinct supported conclusions. For `too_vague`, add specific decisions or observable cues. For `hard_to_apply`, add executable steps and self-checks.
+- For `scenario_mismatch`, state or ask for the scenario that changes the answer. For `incorrect_claim`, re-fetch and re-check source evidence; never accept the user's correction as fact by itself.
+- Keep every candidate in the exhaustive manifest even when accepted feedback lowers its rank. Do not cite feedback as proof of a technique claim.
+- If the user asks to disable personalization, rerun with `--no-local-personalization`. Public promoted signals remain part of the released Skill; local signals are then ignored.
+- If local feedback changes a core recommendation, briefly disclose that accepted local feedback influenced ordering. Never expose feedback IDs, queue paths, or raw feedback.
 
 ## Text And Video Allocation
 
@@ -91,9 +103,12 @@ Use this mode when the user explicitly evaluates a previous Skill answer, names 
 1. Read `references/feedback-workflow.md`.
 2. Record the user's original wording, prior question, and exact `V` mapping in one operation with `scripts/feedback.py record`. Use `create-answer` plus `submit` only when an answer context was explicitly persisted earlier.
 3. Confirm the parsed helpful, irrelevant, missing-video, and text-issue signals in plain language.
-4. If the record is `needs_clarification`, ask only about unknown or contradictory labels.
-5. State that the feedback is queued locally for review and has not automatically changed retrieval or the knowledge base.
-6. Never treat a video the user did not select as irrelevant. Never upload local feedback without explicit consent.
+4. If the record is `needs_clarification`, ask only about unknown or contradictory labels. Otherwise ask whether the parsed record may be used for local personalization.
+5. Only after the user explicitly confirms, run `scripts/feedback.py review --decision accepted` with a note that the user confirmed the parsed local signals. Tell the user that future similar questions can now use it.
+6. If the user does not confirm, leave the record `pending_review`; it must not affect future answers.
+7. Explain that public behavior changes only after a separate GitHub Issue, promotion, and regression validation.
+8. If the user explicitly wants to share the accepted record publicly, ask for a sanitized public version of the question and separate confirmation that it may be public. Then run `scripts/feedback.py export-github --confirm-public`. Show the generated Issue title, body, and submission URL, and state clearly that the command did not upload anything.
+9. Never treat a video the user did not select as irrelevant. Never upload local feedback without explicit consent. Do not claim a generated GitHub export was submitted until a real public Issue URL exists.
 
 ## Topic Navigation Mode
 

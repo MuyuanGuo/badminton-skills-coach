@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "skill_version": "1.1.0-dev",
+  "skill_version": "1.1.0-dev.2",
   "channel": "development",
   "stable_version": "1.0.0",
   "queue_statuses": [
@@ -14,6 +14,20 @@
     "rejected",
     "needs_clarification"
   ],
+  "personalization": {
+    "query_similarity_threshold": 0.38,
+    "exact_query_threshold": 0.82,
+    "max_abs_delta_per_layer": 12.0,
+    "local_preference_min_count": 2,
+    "weights": {
+      "global_helpful": 6.0,
+      "global_missing": 8.0,
+      "global_irrelevant": -10.0,
+      "local_helpful": 8.0,
+      "local_missing": 10.0,
+      "local_irrelevant": -12.0
+    }
+  },
   "positive_video_cues": [
     "最有价值",
     "最有用",
