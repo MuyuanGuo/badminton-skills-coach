@@ -38,8 +38,13 @@ const text = netscapeCookieText(cookies);
 assert.ok(text.startsWith("# Netscape HTTP Cookie File\n"));
 assert.ok(text.includes(".douyin.com\tTRUE\t/\tTRUE\t12345\tttwid\tanonymous-value"));
 assert.ok(text.includes("www.douyin.com\tFALSE\t/video\tFALSE\t0\ts_v_web_id\tsafevalue"));
-assert.ok(!text.includes("example.com"));
-assert.ok(!text.includes("must-not-be-exported"));
+const exportedRows = text.trimEnd().split("\n").slice(1).map((row) => row.split("\t"));
+assert.deepEqual(
+  exportedRows.map(([domain]) => domain),
+  [".douyin.com", "www.douyin.com"],
+);
+assert.equal(exportedRows.some((fields) => fields[5] === "unrelated"), false);
+assert.equal(exportedRows.some((fields) => fields[6] === "must-not-be-exported"), false);
 
 const requiredNames = [
   "UIFID",
