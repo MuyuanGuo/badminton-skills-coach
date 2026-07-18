@@ -4,7 +4,7 @@
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
-![Badminton Skills Coach：351 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
+![Badminton Skills Coach：352 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
 
 这是 `Badminton Skills Coach` 的 **1.1.0-dev.3 开发分支**。GitHub `main` 分支和 [`v1.0.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.0.0) Release 是当前稳定版；`develop` 分支用于开发“通过用户反馈提升回答质量”的下一版本。
 
@@ -19,10 +19,10 @@
 
 - 获取到的抖音公开视频：`473` 条
 - 已排除非教学/广告器材内容：`121` 条
-- 已加入 Skill 知识库的教学视频：`351` 条
-- 可理解证据覆盖：`351/351`（`332` 条转写证据，`19` 条视觉复核摘要兜底）
-- 等待人工复核：`1` 条
-- 最新入库教学视频：[网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097)（`7661940775983482097`）
+- 已加入 Skill 知识库的教学视频：`352` 条
+- 可理解证据覆盖：`352/352`（`333` 条转写证据，`19` 条视觉复核摘要兜底）
+- 等待人工复核：`0` 条
+- 最新入库教学视频：[4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中](https://www.douyin.com/video/7663523942439940453)（`7663523942439940453`）
 - 已晋升公共反馈信号：`0` 条（流水线已就绪，尚无真实 GitHub 反馈被晋升）
 - 问题理解回归：`34/34` 条通过（`30` 条来源契约问题 + `4` 条对抗问题），覆盖诊断、复合问题、否定条件、战术关系、动作示范与证据边界
 - 回答质量回归：`30` 条来源契约已核对，`13` 条完整回答快照自动检查通过；不设置真人专家审核门槛
@@ -182,7 +182,7 @@ scripts/
   evaluate_answer_quality.py       验证黄金集并评测最终回答快照
   evaluate_answer_context.py       评测编排器最终选择、主证据和负样本
   evaluate_query_understanding.py  评测问题意图、路由和子问题拆分
-  evaluate_video_comprehension.py  审计351条可移植证据及独立问题召回
+  evaluate_video_comprehension.py  审计352条可移植证据及独立问题召回
   report_pipeline_status.py        当前状态、失败项和下一步建议
   check_douyin_updates.py          检查抖音主页是否有新视频
   download_douyin_browser_batch.py 隔离匿名浏览器下载、作者校验和队列断点
@@ -390,7 +390,7 @@ python3 scripts/evaluate_video_comprehension.py --require-raw-transcripts
 - `transcription_failed`：本地转写失败，需要检查媒体文件或转写环境。
 - `skipped_non_teaching`：确认非教学，仅用于状态语义和后续扩展。
 
-1.0 当前队列为 `{"classified_teaching": 1, "transcribed": 406}`，没有失败项。
+1.0 当前队列为 `{"transcribed": 407}`，没有失败项。
 
 用户反馈使用独立的本地队列状态：
 
@@ -429,7 +429,7 @@ GitHub Actions 会执行同样的核心验证：
 - 分类规则回归测试。
 - 回答媒介分工测试：`16` 个问题均正确进入文字为主、文字视频并重或视频为主模式，并检查每种模式同时保留文字与视频义务。
 - 问题理解回归：`30` 个来源契约问题和 `4` 个对抗问题固定预期的动作、症状、否定条件、文字/视频分工、检索策略、子问题拆分和证据边界，当前要求 `34/34` 通过。
-- 视频理解审计：GitHub Actions 对 `351/351` 条 ready 视频检查仓库内可移植的转写证据或视觉复核摘要、运行时读取、索引与分段一致性，三项覆盖率都必须为 `100%`；当前构成为 `332 + 19`。另用 `30` 个独立用户问题、`83` 个已知相关视频和 `21` 个已知负样本检查检索，不再让视频用自己的证据反查自己。原始转写文件不进入 Git，维护者在本机另用 `--require-raw-transcripts` 验证 332 条证据都能回溯到原始转写。
+- 视频理解审计：GitHub Actions 对 `352/352` 条 ready 视频检查仓库内可移植的转写证据或视觉复核摘要、运行时读取、索引与分段一致性，三项覆盖率都必须为 `100%`；当前构成为 `333 + 19`。另用 `30` 个独立用户问题、`83` 个已知相关视频和 `21` 个已知负样本检查检索，不再让视频用自己的证据反查自己。原始转写文件不进入 Git，维护者在本机另用 `--require-raw-transcripts` 验证 333 条证据都能回溯到原始转写。
 - 回答质量回归：`30` 条来源契约覆盖动作、诊断、战术、训练计划和证据边界；`13` 条完整回答快照通过文字覆盖、视频引用与禁止断言检查，不把缺失快照伪造成已评测答案。
 - 检索与最终选择回归：`30` 个独立问题的 `83/83` 个已知相关视频进入高召回候选集，原始排序有 `25/27` 个问题在前 `12` 条命中主证据；最终编排器选入 `82/83` 个已知相关视频并在 `27/27` 个问题中选中主证据，`21` 个已知负样本入选数为 `0`。
 - 反馈回归测试：检查连续视频编号、中文自然语言解析、问题误解、转写错误、视频误解、引用不匹配、公开确认、GitHub API 来源校验和审核历史。

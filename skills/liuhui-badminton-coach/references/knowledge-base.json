@@ -1,24 +1,424 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-18T06:36:42.232025+00:00",
+  "updated_at": "2026-07-18T08:28:39.249248+00:00",
   "quality_rules_version": 2,
   "queue_counts": {
-    "classified_teaching": 1,
-    "transcribed": 406
+    "transcribed": 407
   },
   "knowledge_counts": {
-    "videos": 406,
-    "ready": 351,
+    "videos": 407,
+    "ready": 352,
     "not_teaching": 55,
     "curated": 3,
     "visual_reviewed": 19,
     "reviewed_transcript": 5,
-    "transcript_segment_videos": 332,
-    "transcript_segments": 17751
+    "transcript_segment_videos": 333,
+    "transcript_segments": 17801
   },
   "runtime_transcript_segments_bundled": true,
   "videos": [
+    {
+      "video_id": "7663523942439940453",
+      "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中",
+      "url": "https://www.douyin.com/video/7663523942439940453",
+      "category": "中前场与抽挡",
+      "tags": [
+        "中前场与抽挡"
+      ],
+      "duration_seconds": 104.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "quality": {
+        "transcript": {
+          "language": "zh",
+          "language_probability": 1.0,
+          "segment_count": 50,
+          "text_characters": 400,
+          "han_ratio": 0.995,
+          "passed": true,
+          "issues": []
+        },
+        "automatic_evidence": {
+          "topic_terms": [
+            "抽挡",
+            "抽擋"
+          ],
+          "key_evidence_count": 5,
+          "teaching_term_matches": 13,
+          "unique_teaching_terms": [
+            "击球",
+            "拍面",
+            "旋转",
+            "正手"
+          ],
+          "instruction_signal_matches": 15,
+          "evidence_text_characters": 400,
+          "passed": true,
+          "issues": []
+        }
+      },
+      "classification": {
+        "decision": "保留：教学",
+        "reason": "包含明确技术、训练、纠错或战术信号",
+        "rules_version": 2,
+        "rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1"
+      },
+      "teaching_note": {
+        "topic": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备",
+        "key_evidence": [
+          {
+            "timestamp": "00:01-00:05",
+            "text": "什么 用反派在正手区域击球你还不会一个视频教会你",
+            "raw_text": "什么 用反派在正手区域机球你还不会一个视频教会你"
+          },
+          {
+            "timestamp": "00:18-00:25",
+            "text": "倒拍明显旋转多了也就是说现在我的拍面是过剩的状态"
+          },
+          {
+            "timestamp": "00:27-00:34",
+            "text": "但是如果我这样准备把拍面转朝于地面拍头立起"
+          },
+          {
+            "timestamp": "00:37-00:41",
+            "text": "并没有变慢因为我伴随着一个旋转正好把拍面对向前河"
+          },
+          {
+            "timestamp": "00:42-00:47",
+            "text": "但是当我们把拍面转成这样准备的时候右边的速度会完全不一样"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:05-00:12",
+            "text": "其实不会做这种抽球呢就是因为我们的准备动作就出了问题很多人喜欢这样准备动作"
+          },
+          {
+            "timestamp": "01:17-01:28",
+            "text": "来我们先看一看错误的准备姿势当我们把拍面"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:33-00:38",
+            "text": "拍头立起这样的状态再接左边的球并没有变慢"
+          },
+          {
+            "timestamp": "01:00-01:08",
+            "text": "把拍面转朝于地面再看这个位置球会加快很多"
+          },
+          {
+            "timestamp": "01:17-01:28",
+            "text": "来我们先看一看错误的准备姿势当我们把拍面"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      },
+      "transcript_segments": [
+        {
+          "start": 1.49,
+          "end": 4.49,
+          "timestamp": "00:01-00:04",
+          "text": "什么 用反派在正手区域击球你还不会",
+          "raw_text": "什么 用反派在正手区域机球你还不会"
+        },
+        {
+          "start": 4.49,
+          "end": 5.99,
+          "timestamp": "00:04-00:05",
+          "text": "一个视频教会你"
+        },
+        {
+          "start": 5.99,
+          "end": 7.79,
+          "timestamp": "00:05-00:07",
+          "text": "其实不会做这种抽球呢"
+        },
+        {
+          "start": 7.79,
+          "end": 10.49,
+          "timestamp": "00:07-00:10",
+          "text": "就是因为我们的准备动作就出了问题"
+        },
+        {
+          "start": 10.49,
+          "end": 12.29,
+          "timestamp": "00:10-00:12",
+          "text": "很多人喜欢这样准备动作"
+        },
+        {
+          "start": 12.29,
+          "end": 13.49,
+          "timestamp": "00:12-00:13",
+          "text": "但是大家要知道"
+        },
+        {
+          "start": 13.49,
+          "end": 14.99,
+          "timestamp": "00:13-00:14",
+          "text": "任何我们一个倒拍动作"
+        },
+        {
+          "start": 14.99,
+          "end": 16.99,
+          "timestamp": "00:14-00:16",
+          "text": "都是要伴随着手臂的旋断的"
+        },
+        {
+          "start": 16.99,
+          "end": 18.79,
+          "timestamp": "00:16-00:18",
+          "text": "比如说我们接左边球"
+        },
+        {
+          "start": 18.79,
+          "end": 20.49,
+          "timestamp": "00:18-00:20",
+          "text": "倒拍"
+        },
+        {
+          "start": 20.49,
+          "end": 22.29,
+          "timestamp": "00:20-00:22",
+          "text": "明显旋转多了"
+        },
+        {
+          "start": 22.29,
+          "end": 25.49,
+          "timestamp": "00:22-00:25",
+          "text": "也就是说现在我的拍面是过剩的状态"
+        },
+        {
+          "start": 25.49,
+          "end": 26.49,
+          "timestamp": "00:25-00:26",
+          "text": "现在打"
+        },
+        {
+          "start": 26.49,
+          "end": 27.99,
+          "timestamp": "00:26-00:27",
+          "text": "OK 是这样的一个速度"
+        },
+        {
+          "start": 27.99,
+          "end": 30.99,
+          "timestamp": "00:27-00:30",
+          "text": "但是如果我这样准备"
+        },
+        {
+          "start": 31.19,
+          "end": 33.49,
+          "timestamp": "00:31-00:33",
+          "text": "把拍面转朝于地面"
+        },
+        {
+          "start": 33.49,
+          "end": 34.69,
+          "timestamp": "00:33-00:34",
+          "text": "拍头立起"
+        },
+        {
+          "start": 34.69,
+          "end": 37.29,
+          "timestamp": "00:34-00:37",
+          "text": "这样的状态再接左边的球"
+        },
+        {
+          "start": 37.29,
+          "end": 38.19,
+          "timestamp": "00:37-00:38",
+          "text": "并没有变慢"
+        },
+        {
+          "start": 38.19,
+          "end": 40.19,
+          "timestamp": "00:38-00:40",
+          "text": "因为我伴随着一个旋转正好"
+        },
+        {
+          "start": 40.19,
+          "end": 41.49,
+          "timestamp": "00:40-00:41",
+          "text": "把拍面对向前河"
+        },
+        {
+          "start": 41.49,
+          "end": 42.69,
+          "timestamp": "00:41-00:42",
+          "text": "向前出球了"
+        },
+        {
+          "start": 42.69,
+          "end": 43.29,
+          "timestamp": "00:42-00:43",
+          "text": "但是"
+        },
+        {
+          "start": 43.29,
+          "end": 45.69,
+          "timestamp": "00:43-00:45",
+          "text": "当我们把拍面转成这样准备的时候"
+        },
+        {
+          "start": 45.69,
+          "end": 47.99,
+          "timestamp": "00:45-00:47",
+          "text": "右边的速度会完全不一样"
+        },
+        {
+          "start": 47.99,
+          "end": 49.29,
+          "timestamp": "00:47-00:49",
+          "text": "来"
+        },
+        {
+          "start": 49.29,
+          "end": 50.79,
+          "timestamp": "00:49-00:50",
+          "text": "拍面对的前方"
+        },
+        {
+          "start": 50.79,
+          "end": 51.49,
+          "timestamp": "00:50-00:51",
+          "text": "准备"
+        },
+        {
+          "start": 51.49,
+          "end": 57.06,
+          "timestamp": "00:51-00:57",
+          "text": "当右边肩膀或叶下来球"
+        },
+        {
+          "start": 57.06,
+          "end": 58.56,
+          "timestamp": "00:57-00:58",
+          "text": "但是当我们做出了这样的调整"
+        },
+        {
+          "start": 58.56,
+          "end": 58.96,
+          "timestamp": "00:58-00:58",
+          "text": "第一"
+        },
+        {
+          "start": 58.96,
+          "end": 60.26,
+          "timestamp": "00:58-01:00",
+          "text": "把拍头立起来"
+        },
+        {
+          "start": 60.26,
+          "end": 60.56,
+          "timestamp": "01:00-01:00",
+          "text": "第二"
+        },
+        {
+          "start": 60.56,
+          "end": 62.96,
+          "timestamp": "01:00-01:02",
+          "text": "把拍面转朝于地面"
+        },
+        {
+          "start": 62.96,
+          "end": 66.96,
+          "timestamp": "01:02-01:06",
+          "text": "再看这个位置球"
+        },
+        {
+          "start": 66.96,
+          "end": 68.06,
+          "timestamp": "01:06-01:08",
+          "text": "会加快很多"
+        },
+        {
+          "start": 68.06,
+          "end": 71.06,
+          "timestamp": "01:08-01:11",
+          "text": "所以很多职业选手都是这样去准备的"
+        },
+        {
+          "start": 71.06,
+          "end": 73.96,
+          "timestamp": "01:11-01:13",
+          "text": "拍面都是斜朝下方"
+        },
+        {
+          "start": 73.96,
+          "end": 76.36,
+          "timestamp": "01:13-01:16",
+          "text": "那就能大大的提快我们"
+        },
+        {
+          "start": 76.36,
+          "end": 77.56,
+          "timestamp": "01:16-01:17",
+          "text": "这两个速度"
+        },
+        {
+          "start": 77.56,
+          "end": 77.86,
+          "timestamp": "01:17-01:17",
+          "text": "来"
+        },
+        {
+          "start": 77.86,
+          "end": 87.06,
+          "timestamp": "01:17-01:27",
+          "text": "我们先看一看错误的准备姿势"
+        },
+        {
+          "start": 87.06,
+          "end": 88.96,
+          "timestamp": "01:27-01:28",
+          "text": "当我们把拍面"
+        },
+        {
+          "start": 88.96,
+          "end": 89.86,
+          "timestamp": "01:28-01:29",
+          "text": "竖过来"
+        },
+        {
+          "start": 89.86,
+          "end": 93.85,
+          "timestamp": "01:29-01:33",
+          "text": "拍面朝斜下方准备"
+        },
+        {
+          "start": 93.85,
+          "end": 95.15,
+          "timestamp": "01:33-01:35",
+          "text": "所以最后总结"
+        },
+        {
+          "start": 95.15,
+          "end": 97.15,
+          "timestamp": "01:35-01:37",
+          "text": "使用正确的准备姿势"
+        },
+        {
+          "start": 97.15,
+          "end": 99.45,
+          "timestamp": "01:37-01:39",
+          "text": "左边抽球的速度不会被削弱"
+        },
+        {
+          "start": 99.45,
+          "end": 101.15,
+          "timestamp": "01:39-01:41",
+          "text": "但是右边抽球的速度"
+        },
+        {
+          "start": 101.15,
+          "end": 102.85,
+          "timestamp": "01:41-01:42",
+          "text": "将会大大加快"
+        }
+      ]
+    },
     {
       "video_id": "7661940775983482097",
       "title": "网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬",

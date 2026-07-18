@@ -1,9 +1,8 @@
 {
-  "updated_at": "2026-07-18T06:39:43.480960+00:00",
+  "updated_at": "2026-07-18T08:28:38.049869+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "classified_teaching": 1,
-    "transcribed": 406
+    "transcribed": 407
   },
   "items": [
     {
@@ -12,16 +11,24 @@
       "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡",
-      "status": "classified_teaching",
+      "status": "transcribed",
       "classification_decision": "保留：教学",
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
       "classified_at": "2026-07-18T06:39:43.480960+00:00",
       "media_path": null,
-      "duration_seconds": null,
-      "attempts": 0,
-      "error": null
+      "duration_seconds": 104.607,
+      "attempts": 3,
+      "error": null,
+      "download_attempts": 3,
+      "error_stage": null,
+      "last_attempt_at": "2026-07-18T08:28:37.799053+00:00",
+      "transcript_model": "small",
+      "transcript_language": "zh",
+      "transcript_source_sha256": "22266814a43b532c4600af06f66c00985baa7da59678e0cf38e76e928d420ed8",
+      "transcript_source_bytes": 8037396,
+      "transcript_text_characters": 400
     },
     {
       "video_id": "7661940775983482097",

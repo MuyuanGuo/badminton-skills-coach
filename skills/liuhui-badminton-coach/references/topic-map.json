@@ -2,11 +2,11 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-18T06:36:42.232025+00:00",
-  "video_count": 406,
-  "indexable_video_count": 351,
-  "assigned_video_count": 351,
-  "multi_topic_video_count": 135,
+  "source_updated_at": "2026-07-18T08:28:39.249248+00:00",
+  "video_count": 407,
+  "indexable_video_count": 352,
+  "assigned_video_count": 352,
+  "multi_topic_video_count": 136,
   "categories": [
     {
       "name": "后场技术",
@@ -513,7 +513,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 19,
+      "video_count": 20,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -524,8 +524,8 @@
             "快挡",
             "高速对抗"
           ],
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1150,7 +1150,7 @@
       "name": "握拍与拍面",
       "description": "正反手握拍、握拍转换、手指发力和拍面控制。",
       "discipline": "general",
-      "video_count": 29,
+      "video_count": 30,
       "subtopics": [
         {
           "name": "正手握拍",
@@ -1251,8 +1251,8 @@
             "拍型",
             "拍面角度"
           ],
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 14,
+          "ready_count": 14,
           "is_fallback": false,
           "representative_videos": [
             {

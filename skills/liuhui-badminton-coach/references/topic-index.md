@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `406`
-- Assigned videos: `351`
-- Multi-topic videos: `135`
+- Videos: `407`
+- Assigned videos: `352`
+- Multi-topic videos: `136`
 
 ## How To Use
 
@@ -106,9 +106,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 平抽挡、接杀、防反及中前场高速衔接。
 
-- Matched videos: `19`
+- Matched videos: `20`
 
-- **平抽挡与高速对抗**: `4` videos, `4` ready, `0` needs visual review.
+- **平抽挡与高速对抗**: `5` videos, `5` ready, `0` needs visual review.
   Keywords: 平抽挡, 抽挡, 压抽, 快挡, 高速对抗
   Representative videos:
   - 握拍微调 抽挡反手为主，尽量不做正反手转换 [ready] https://www.douyin.com/video/7447084061371272507
@@ -219,7 +219,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 正反手握拍、握拍转换、手指发力和拍面控制。
 
-- Matched videos: `29`
+- Matched videos: `30`
 
 - **正手握拍**: `8` videos, `8` ready, `0` needs visual review.
   Keywords: 正手握拍, 半拳式, 虎口
@@ -235,7 +235,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 握拍微调 抽挡反手为主，尽量不做正反手转换 [ready] https://www.douyin.com/video/7447084061371272507
   - 跳出束缚，灵活握拍 [ready] https://www.douyin.com/video/7150847019320429839
   - 反手负角度勾球，拇指食指捏住球拍两侧窄面，未来3期视频讲变拍 [ready] https://www.douyin.com/video/7052912740955999499
-- **拍面控制**: `13` videos, `13` ready, `0` needs visual review.
+- **拍面控制**: `14` videos, `14` ready, `0` needs visual review.
   Keywords: 拍面, 拍型, 拍面角度
   Representative videos:
   - 握拍从准备握拍，向右旋转直至虎口对着正拍面，或接近正拍面 [ready] https://www.douyin.com/video/7146762792438074665

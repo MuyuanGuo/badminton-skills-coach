@@ -4,13 +4,13 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-18T06:36:42.232025+00:00",
-  "video_count": 406,
-  "indexable_video_count": 351,
-  "assigned_video_count": 351,
+  "source_updated_at": "2026-07-18T08:28:39.249248+00:00",
+  "video_count": 407,
+  "indexable_video_count": 352,
+  "assigned_video_count": 352,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 96,
-  "multi_topic_video_count": 135,
+  "multi_topic_video_count": 136,
   "categories": [
     {
       "name": "后场技术",
@@ -1342,7 +1342,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 19,
+      "video_count": 20,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -1355,14 +1355,15 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7447084061371272507",
             "7652440366436945017",
             "7205399670959459623",
-            "7506736569824726332"
+            "7506736569824726332",
+            "7663523942439940453"
           ],
           "representative_videos": [
             {
@@ -1425,6 +1426,22 @@
               "match_basis": {
                 "title": 1,
                 "focus": 1,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7663523942439940453",
+              "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中",
+              "url": "https://www.douyin.com/video/7663523942439940453",
+              "category": "中前场与抽挡",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备",
+              "score": 6,
+              "match_basis": {
+                "title": 1,
+                "focus": 0,
                 "evidence": 0
               },
               "assignment_method": "rule_match"
@@ -2945,7 +2962,7 @@
       "name": "握拍与拍面",
       "description": "正反手握拍、握拍转换、手指发力和拍面控制。",
       "discipline": "general",
-      "video_count": 29,
+      "video_count": 30,
       "subtopics": [
         {
           "name": "正手握拍",
@@ -3178,13 +3195,14 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 14,
+          "ready_count": 14,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7146762792438074665",
             "7515625891511995706",
             "7064372942880148777",
+            "7663523942439940453",
             "7144168689510649128",
             "7526124617461173562",
             "7509355373729762619",
@@ -3246,6 +3264,22 @@
               "assignment_method": "rule_match"
             },
             {
+              "video_id": "7663523942439940453",
+              "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中",
+              "url": "https://www.douyin.com/video/7663523942439940453",
+              "category": "中前场与抽挡",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备",
+              "score": 7,
+              "match_basis": {
+                "title": 0,
+                "focus": 0,
+                "evidence": 7
+              },
+              "assignment_method": "rule_match"
+            },
+            {
               "video_id": "7144168689510649128",
               "title": "贴网球需要一定的抛物线，所以这样的高度不算高，有人守在网前就不要搓了",
               "url": "https://www.douyin.com/video/7144168689510649128",
@@ -3258,22 +3292,6 @@
                 "title": 0,
                 "focus": 0,
                 "evidence": 6
-              },
-              "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "7526124617461173562",
-              "title": "展搓 嗓子一直说不出话，如有吐字不清请配合字幕看，感谢谅解",
-              "url": "https://www.douyin.com/video/7526124617461173562",
-              "category": "网前技术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "展搓 嗓子一直说不出话",
-              "score": 5,
-              "match_basis": {
-                "title": 0,
-                "focus": 0,
-                "evidence": 5
               },
               "assignment_method": "rule_match"
             }
