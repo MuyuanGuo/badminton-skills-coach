@@ -62,7 +62,27 @@ class VideoComprehensionTests(unittest.TestCase):
                 indexed_video_ids={"7000000000000000001"},
             )
         self.assertEqual(audit["source_kind"], "transcript")
+        self.assertEqual(audit["raw_transcript_status"], "verified")
         self.assertEqual(audit["failures"], [])
+
+    def test_missing_raw_transcript_is_optional_only_for_portable_audit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            portable = self.module.audit_video_content(
+                self.transcript_video("transcript.json"),
+                root=root,
+                indexed_video_ids={"7000000000000000001"},
+            )
+            strict = self.module.audit_video_content(
+                self.transcript_video("transcript.json"),
+                root=root,
+                indexed_video_ids={"7000000000000000001"},
+                require_raw_transcript=True,
+            )
+        self.assertEqual(portable["raw_transcript_status"], "unavailable")
+        self.assertEqual(portable["failures"], [])
+        self.assertIn("missing_transcript_file", strict["failures"])
+        self.assertNotIn("empty_transcript", strict["failures"])
 
     def test_transcript_mismatch_is_reported(self):
         with tempfile.TemporaryDirectory() as directory:

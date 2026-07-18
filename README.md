@@ -171,7 +171,7 @@ scripts/
   build_answer_quality_review_queue.py 生成30题来源与意图核对队列
   evaluate_answer_quality.py       验证黄金集并评测最终回答快照
   evaluate_query_understanding.py  评测问题意图、路由和子问题拆分
-  evaluate_video_comprehension.py  审计350条视频证据和反向召回
+  evaluate_video_comprehension.py  审计350条可移植证据、本机转写和反向召回
   report_pipeline_status.py        当前状态、失败项和下一步建议
   check_douyin_updates.py          检查抖音主页是否有新视频
   prepare_douyin_media_batch.py    根据媒体快照生成下载配置
@@ -342,6 +342,7 @@ python3 scripts/apply_answer_quality_review_notes.py
 python3 scripts/evaluate_answer_quality.py
 python3 scripts/evaluate_query_understanding.py
 python3 scripts/evaluate_video_comprehension.py
+python3 scripts/evaluate_video_comprehension.py --require-raw-transcripts
 ```
 
 ## 队列状态
@@ -382,7 +383,7 @@ python3 scripts/evaluate_answer_quality.py
 python3 scripts/evaluate_feedback_signals.py
 python3 scripts/evaluate_query_understanding.py
 python3 scripts/evaluate_retrieval.py
-python3 scripts/evaluate_video_comprehension.py
+python3 scripts/evaluate_video_comprehension.py --require-raw-transcripts
 node scripts/test_douyin_profile_snapshot_dom.mjs
 python3 scripts/doctor.py --profile all
 python3 scripts/validate_project.py
@@ -394,7 +395,7 @@ GitHub Actions 会执行同样的核心验证：
 - 分类规则回归测试。
 - 回答媒介分工测试：`16` 个问题均正确进入文字为主、文字视频并重或视频为主模式，并检查每种模式同时保留文字与视频义务。
 - 问题理解回归：`30` 个问题固定预期的文字/视频分工、检索策略、子问题拆分和证据边界，当前要求 `30/30` 通过。
-- 视频理解审计：`350/350` 条 ready 视频必须具有可读取的转写证据或视觉复核摘要，运行时读取覆盖与自身证据候选召回率都必须为 `100%`；当前构成为 `331 + 19`。
+- 视频理解审计：GitHub Actions 对 `350/350` 条 ready 视频检查仓库内可移植的转写证据或视觉复核摘要、运行时读取和自身证据候选召回，三项覆盖率都必须为 `100%`；当前构成为 `331 + 19`。原始转写文件不进入 Git，维护者在本机另用 `--require-raw-transcripts` 验证 331 条证据都能回溯到原始转写。
 - 回答质量回归：`30` 条来源契约覆盖动作、诊断、战术、训练计划和证据边界；`13` 条完整回答快照通过文字覆盖、视频引用与禁止断言检查，不把缺失快照伪造成已评测答案。
 - 检索召回回归测试：当前人工已知相关集为 `10` 个问题、`28` 条视频，要求候选召回率为 `100%`，且每题主证据进入前 `12` 条。
 - 反馈回归测试：检查连续视频编号、中文自然语言解析、问题误解、转写错误、视频误解、引用不匹配、公开确认、GitHub API 来源校验和审核历史。

@@ -68,7 +68,12 @@ def transcript_text(payload):
     ).strip()
 
 
-def audit_video_content(video, root=ROOT, indexed_video_ids=None):
+def audit_video_content(
+    video,
+    root=ROOT,
+    indexed_video_ids=None,
+    require_raw_transcript=False,
+):
     video_id = video["video_id"]
     note = video.get("teaching_note") or {}
     failures = []
@@ -77,6 +82,7 @@ def audit_video_content(video, root=ROOT, indexed_video_ids=None):
         if video.get("confidence") == "visual_reviewed"
         else "transcript"
     )
+    raw_transcript_status = "not_applicable"
 
     if indexed_video_ids is not None and video_id not in indexed_video_ids:
         failures.append("missing_retrieval_index_record")
@@ -104,19 +110,26 @@ def audit_video_content(video, root=ROOT, indexed_video_ids=None):
         payload = None
         if not transcript_file:
             failures.append("missing_transcript_file_reference")
+            raw_transcript_status = "missing_reference"
         else:
             path = root / transcript_file
             if not path.exists():
-                failures.append("missing_transcript_file")
+                raw_transcript_status = "unavailable"
+                if require_raw_transcript:
+                    failures.append("missing_transcript_file")
             else:
                 try:
                     payload = load_json(path)
                 except (json.JSONDecodeError, OSError):
                     failures.append("invalid_transcript_file")
+                    raw_transcript_status = "invalid"
 
         full_transcript = transcript_text(payload or {})
-        if not full_transcript:
+        if payload is not None and not full_transcript:
             failures.append("empty_transcript")
+            raw_transcript_status = "empty"
+        elif full_transcript:
+            raw_transcript_status = "verified"
         evidence = note_evidence(note)
         if not evidence:
             failures.append("missing_teaching_evidence")
@@ -135,6 +148,7 @@ def audit_video_content(video, root=ROOT, indexed_video_ids=None):
     return {
         "video_id": video_id,
         "source_kind": source_kind,
+        "raw_transcript_status": raw_transcript_status,
         "probe": probe,
         "failures": failures,
     }
@@ -145,6 +159,7 @@ def evaluate(
     retrieval_index_path=RETRIEVAL_INDEX_PATH,
     root=ROOT,
     run_retrieval_roundtrip=True,
+    require_raw_transcripts=False,
 ):
     knowledge = load_json(knowledge_path)
     retrieval_index = load_json(retrieval_index_path)
@@ -155,7 +170,12 @@ def evaluate(
         record["video_id"] for record in retrieval_index.get("videos", [])
     }
     audits = [
-        audit_video_content(video, root=root, indexed_video_ids=indexed_video_ids)
+        audit_video_content(
+            video,
+            root=root,
+            indexed_video_ids=indexed_video_ids,
+            require_raw_transcript=require_raw_transcripts,
+        )
         for video in ready_videos
     ]
     audit_by_id = {audit["video_id"]: audit for audit in audits}
@@ -206,6 +226,11 @@ def evaluate(
                 audit["retrieval_rank"] = rank
 
     source_counts = Counter(audit["source_kind"] for audit in audits)
+    raw_transcript_counts = Counter(
+        audit["raw_transcript_status"]
+        for audit in audits
+        if audit["source_kind"] == "transcript"
+    )
     failure_items = [audit for audit in audits if audit["failures"]]
     understood = len(audits) - len(failure_items)
     denominator = max(1, len(audits))
@@ -215,6 +240,12 @@ def evaluate(
         "understanding_coverage": understood / denominator,
         "transcript_backed": source_counts["transcript"],
         "visual_review_fallback": source_counts["visual_review"],
+        "raw_transcript_requirement_enabled": require_raw_transcripts,
+        "raw_transcript_files_verified": raw_transcript_counts["verified"],
+        "raw_transcript_files_unavailable": raw_transcript_counts["unavailable"],
+        "raw_transcript_roundtrip_coverage": (
+            raw_transcript_counts["verified"] / max(1, source_counts["transcript"])
+        ),
         "runtime_lookup_coverage": (
             runtime_lookup_count / denominator if run_retrieval_roundtrip else None
         ),
@@ -244,12 +275,22 @@ def main():
     parser.add_argument("--min-runtime-lookup-coverage", type=float, default=1.0)
     parser.add_argument("--min-evidence-probe-recall", type=float, default=1.0)
     parser.add_argument("--skip-retrieval-roundtrip", action="store_true")
+    parser.add_argument(
+        "--require-raw-transcripts",
+        action="store_true",
+        help=(
+            "Fail when gitignored local transcript files are unavailable. "
+            "Use this maintainer-only check after ingestion; clean CI validates "
+            "the portable knowledge and retrieval artifacts instead."
+        ),
+    )
     args = parser.parse_args()
 
     result = evaluate(
         args.knowledge,
         args.retrieval_index,
         run_retrieval_roundtrip=not args.skip_retrieval_roundtrip,
+        require_raw_transcripts=args.require_raw_transcripts,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["ready_videos"] < args.require_ready:
