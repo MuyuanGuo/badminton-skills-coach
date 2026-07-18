@@ -6,16 +6,16 @@
 
 ![Badminton Skills Coach：352 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
 
-这是 `Badminton Skills Coach` 的 **1.1.0-dev.3 开发分支**。GitHub `main` 分支和 [`v1.0.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.0.0) Release 是当前稳定版；`develop` 分支用于开发“通过用户反馈提升回答质量”的下一版本。
+这是 `Badminton Skills Coach` 的 **1.1.0 稳定版**。GitHub `main` 分支和 [`v1.1.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.1.0) Release 提供当前正式版本；`develop` 分支用于后续增量维护。
 
 项目把 `刘辉羽毛球` 的公开抖音教学内容整理成可检索、可引用、可维护的证据型羽毛球教练 Skill，并保留更新 Skill、教学思维图和反馈审核所需的最小流水线。
 
 这个项目尚未得到刘辉本人授权，仅作为个人学习型知识工程项目：回答时尽量使用可追溯的视频链接、时间戳、主题索引和人工视觉复核记录。
 
-## 1.0 状态
+## 当前状态
 
-- 稳定版：`main` / `v1.0.0`
-- 开发版：`develop` / `1.1.0-dev.3`
+- 稳定版：`main` / `v1.1.0`
+- 开发分支：`develop`
 
 - 获取到的抖音公开视频：`473` 条
 - 已排除非教学/广告器材内容：`121` 条
@@ -49,18 +49,18 @@
 
 ## 快速使用
 
-Skill 日常问答只需要 Python 3.10 或更新版本，全部使用标准库，不需要 `OPENAI_API_KEY`，也不需要安装 `requirements-transcription.txt`。直接安装 `v1.0.0` 稳定版 Skill：
+Skill 日常问答只需要 Python 3.10 或更新版本，全部使用标准库，不需要 `OPENAI_API_KEY`，也不需要安装 `requirements-transcription.txt`。直接安装 `v1.1.0` 稳定版 Skill：
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.0.0/liuhui-badminton-coach-v1.0.0.zip \
-  -o /tmp/liuhui-badminton-coach-v1.0.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.1.0/liuhui-badminton-coach-v1.1.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.1.0.zip
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-v1.0.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-v1.1.0.zip -d "$install_dir"
 mkdir -p ~/.codex/skills
 cp -R "$install_dir/liuhui-badminton-coach" ~/.codex/skills/
 ```
 
-Release 同时提供 `SHA256SUMS.txt` 用于校验下载文件。上面的命令适用于当前 `v1.0.0` 稳定包；当前开发版及后续 Release 内置 doctor 和原子安装器。已经克隆仓库时，可用它安装或刷新当前检出的版本，且不会遗留新版已删除的旧文件：
+Release 同时提供 `SHA256SUMS.txt` 用于校验下载文件。当前 Release 内置 doctor 和原子安装器。已经克隆仓库时，可用它安装或刷新当前检出的版本，且不会遗留新版已删除的旧文件：
 
 ```bash
 python3 scripts/install_skill.py --dry-run
@@ -170,7 +170,7 @@ config/
   answer_quality_rules.json        回答契约与自动检查规则
   practice_plan_rules.json         个性化训练计划与暂停规则
   douyin_classification_rules.json 教学/非教学分类规则
-  feedback_rules.json              反馈解析与开发版本配置
+  feedback_rules.json              反馈解析与版本配置
   feedback_signals.json            可发布的脱敏公共反馈信号
   retrieval_rules.json             检索扩展词和阈值
   topic_taxonomy.json              主题层级和动作归属配置
@@ -390,7 +390,7 @@ python3 scripts/evaluate_video_comprehension.py --require-raw-transcripts
 - `transcription_failed`：本地转写失败，需要检查媒体文件或转写环境。
 - `skipped_non_teaching`：确认非教学，仅用于状态语义和后续扩展。
 
-1.0 当前队列为 `{"transcribed": 407}`，没有失败项。
+当前队列为 `{"transcribed": 407}`，没有失败项。
 
 用户反馈使用独立的本地队列状态：
 
@@ -451,16 +451,16 @@ GitHub Actions 会执行同样的核心验证：
 - GitHub Actions：持续验证 Skill 与知识库产物一致性。
 - GitHub Issue Forms：收集经过用户确认可公开的结构化回答反馈。
 
-## 1.0 之后怎么演进
+## 后续怎么演进
 
-`main` / `v1.0.0` 继续作为稳定版；反馈闭环只在 `develop` / `1.1.0-dev.3` 开发和验证，成熟后再单独发布：
+`main` / `v1.1.0` 是当前稳定版；后续内容和功能更新先在 `develop` 验证，成熟后再单独发布：
 
 - 刘辉发布新教学视频：走增量更新流程。
 - 分类误判：改 `config/douyin_classification_rules.json` 并补测试。
 - 回答质量不足：先判断是问题理解、视频转写/解释、检索召回还是答案组织错误；把真实问题加入对应自动回归集，再按用户纠错调整路由、证据或 Skill 指令。
 - 用户反馈：本地 `accepted` 信号只服务使用同一反馈目录的环境；公共信号必须来自 GitHub Issue，并经过脱敏、维护者安全与来源完整性检查、回归测试和版本发布，不要求羽毛球专家审核。
 - 主题图谱不够清楚：调整 topic index / graph 生成逻辑。
-- 新增大量课程或直播切片：另起分支设计，不混入当前 1.0 稳定版。
+- 新增大量课程或直播切片：另起分支设计，不直接混入当前稳定版。
 
 ## License 和内容边界
 

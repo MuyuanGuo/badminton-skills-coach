@@ -364,12 +364,21 @@ skill_feedback_rules = json.loads(
 )
 if skill_feedback_rules != feedback_rules:
     raise SystemExit("Skill feedback rules are out of sync with project config")
-development_version = feedback_rules.get("skill_version", "")
+skill_version = feedback_rules.get("skill_version", "")
+release_channel = feedback_rules.get("channel", "")
 stable_version = feedback_rules.get("stable_version", "")
-if not re.fullmatch(r"\d+\.\d+\.\d+-dev\.\d+", development_version):
-    raise SystemExit("Development Skill version has an invalid format")
 if not re.fullmatch(r"\d+\.\d+\.\d+", stable_version):
     raise SystemExit("Stable Skill version has an invalid format")
+if release_channel == "development":
+    if not re.fullmatch(r"\d+\.\d+\.\d+-dev\.\d+", skill_version):
+        raise SystemExit("Development Skill version has an invalid format")
+elif release_channel == "stable":
+    if not re.fullmatch(r"\d+\.\d+\.\d+", skill_version):
+        raise SystemExit("Stable-channel Skill version has an invalid format")
+    if skill_version != stable_version:
+        raise SystemExit("Stable-channel Skill version must equal stable_version")
+else:
+    raise SystemExit("Skill release channel must be development or stable")
 if set(feedback_rules["queue_statuses"]) != {
     "pending_review",
     "needs_clarification",
@@ -689,12 +698,20 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
-for version_contract in [
-    f"**{development_version} 开发分支**",
-    f"- 开发版：`develop` / `{development_version}`",
+version_contracts = [
     f"- 稳定版：`main` / `v{stable_version}`",
     f"releases/tag/v{stable_version}",
-]:
+]
+if release_channel == "development":
+    version_contracts.extend(
+        [
+            f"**{skill_version} 开发分支**",
+            f"- 开发版：`develop` / `{skill_version}`",
+        ]
+    )
+else:
+    version_contracts.append(f"**{skill_version} 稳定版**")
+for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")
 expected_readme_text = update_readme_text(
@@ -907,12 +924,12 @@ for required_issue_field in [
 ]:
     if required_issue_field not in feedback_issue_text:
         raise SystemExit(f"GitHub feedback form is missing: {required_issue_field}")
-if f"placeholder: {development_version}" not in feedback_issue_text:
+if f"placeholder: {skill_version}" not in feedback_issue_text:
     raise SystemExit("GitHub feedback form version placeholder is stale")
 bug_issue_text = (
     ROOT / ".github" / "ISSUE_TEMPLATE" / "bug-report.yml"
 ).read_text(encoding="utf-8")
-if f"v{development_version}" not in bug_issue_text:
+if f"v{skill_version}" not in bug_issue_text:
     raise SystemExit("GitHub bug report version placeholder is stale")
 
 feedback_cases = json.loads(

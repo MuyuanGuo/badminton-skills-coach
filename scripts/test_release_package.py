@@ -11,6 +11,13 @@ from pathlib import Path
 from package_skill_release import archive_name, package_skill, release_files
 
 
+ROOT = Path(__file__).resolve().parents[1]
+CURRENT_VERSION = json.loads(
+    (ROOT / "config" / "feedback_rules.json").read_text(encoding="utf-8")
+)["skill_version"]
+RELEASE_VERSION = f"v{CURRENT_VERSION}"
+
+
 class ReleasePackageTests(unittest.TestCase):
     def test_version_cannot_escape_output_directory(self):
         for version in ["", "../1.0.0", "1.0", "release-latest"]:
@@ -25,8 +32,8 @@ class ReleasePackageTests(unittest.TestCase):
 
     def test_archive_is_deterministic_complete_and_portable(self):
         with tempfile.TemporaryDirectory() as first_directory, tempfile.TemporaryDirectory() as second_directory:
-            first = package_skill("1.1.0-dev.3", first_directory)
-            second = package_skill("1.1.0-dev.3", second_directory)
+            first = package_skill(RELEASE_VERSION, first_directory)
+            second = package_skill(RELEASE_VERSION, second_directory)
             first_archive = Path(first["archive"])
             second_archive = Path(second["archive"])
             self.assertEqual(first_archive.read_bytes(), second_archive.read_bytes())

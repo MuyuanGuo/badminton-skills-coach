@@ -578,14 +578,18 @@ A-public-correction
             ]
         }
         skill = """---
-description: Archive including 350 ready teaching videos.
+description: Archive from the full 406-video processed knowledge base, including 350 ready teaching videos.
 ---
-Archive including 350 `ready` teaching entries, 9 entries awaiting visual review.
+Base coaching claims on `references/knowledge-base.json`: 406 processed videos, including 350 `ready` teaching entries, 9 entries awaiting visual review.
 Among the ready entries, 331 are transcript-backed and 19 use reviewed visual summaries.
 - `knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 350 ready teaching videos (331 transcript-backed and 19 visual-review fallbacks) and 9 entries awaiting visual review.
 """
         updated_skill = self.readme_status.update_skill_status_text(skill, knowledge)
+        self.assertIn("full 4-video processed knowledge base", updated_skill)
         self.assertIn("including 2 ready teaching videos.", updated_skill)
+        self.assertIn(
+            "`references/knowledge-base.json`: 4 processed videos", updated_skill
+        )
         self.assertIn(
             "including 2 `ready` teaching entries, 1 entries awaiting visual review",
             updated_skill,

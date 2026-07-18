@@ -1,13 +1,13 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 352 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 407-video processed knowledge base of Douyin creator 刘辉羽毛球, including 352 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
 
 ## Scope
 
-Base coaching claims on `references/knowledge-base.json`: 406 processed videos, including 352 `ready` teaching entries, 0 entries awaiting visual review, and excluded non-teaching records. Among the ready entries, 333 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `processing_status: ready` as answer evidence.
+Base coaching claims on `references/knowledge-base.json`: 407 processed videos, including 352 `ready` teaching entries, 0 entries awaiting visual review, and excluded non-teaching records. Among the ready entries, 333 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `processing_status: ready` as answer evidence.
 
 This Skill summarizes public teaching material. It is not 刘辉, does not speak for him, and cannot claim that a generated answer or training plan was reviewed, approved, or endorsed by him.
 

@@ -168,11 +168,11 @@ def update_readme_text(
     )
     readme = replace_optional(
         readme,
-        r'^1\.0 当前队列为 `\{.*\}`，(?:没有失败项|失败项 `\d+` 条)。$',
+        r'^(?:1\.0 )?当前队列为 `\{.*\}`，(?:没有失败项|失败项 `\d+` 条)。$',
         (
-            f"1.0 当前队列为 `{queue_counts}`，没有失败项。"
+            f"当前队列为 `{queue_counts}`，没有失败项。"
             if failed_queue_count == 0
-            else f"1.0 当前队列为 `{queue_counts}`，失败项 `{failed_queue_count}` 条。"
+            else f"当前队列为 `{queue_counts}`，失败项 `{failed_queue_count}` 条。"
         ),
         "README queue status",
     )
@@ -183,9 +183,21 @@ def update_skill_status_text(skill, knowledge):
     counts = evidence_counts(knowledge)
     skill = replace_one(
         skill,
+        r"full \d+-video processed knowledge base",
+        f"full {counts['processed']}-video processed knowledge base",
+        "Skill frontmatter processed count",
+    )
+    skill = replace_one(
+        skill,
         r"including \d+ ready teaching videos\.",
         f"including {counts['ready']} ready teaching videos.",
         "Skill frontmatter count",
+    )
+    skill = replace_one(
+        skill,
+        r"(Base coaching claims on `references/knowledge-base\.json`: )\d+( processed videos,)",
+        rf"\g<1>{counts['processed']}\g<2>",
+        "Skill scope processed count",
     )
     skill = replace_one(
         skill,
