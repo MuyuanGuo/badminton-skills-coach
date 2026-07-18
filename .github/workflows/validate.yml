@@ -127,6 +127,7 @@ jobs:
           python scripts/build_manifest.py --check
           python scripts/check_video_links.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
+          node scripts/test_douyin_video_media_assets_dom.mjs
 
       - name: Validate repository artifacts
         run: python scripts/validate_project.py

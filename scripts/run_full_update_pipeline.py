@@ -46,6 +46,7 @@ def validation_commands():
         [sys.executable, "scripts/build_manifest.py", "--check"],
         [sys.executable, "scripts/check_video_links.py"],
         ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
+        ["node", "scripts/test_douyin_video_media_assets_dom.mjs"],
         [sys.executable, "scripts/validate_project.py"],
     ]
 

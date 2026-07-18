@@ -15,6 +15,7 @@ from media_assets import (
     validate_media_snapshot,
     validate_page_url,
 )
+from prepare_douyin_media_batch import select_asset
 
 
 POLICY = {
@@ -52,6 +53,15 @@ class MediaAssetTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(MediaAssetError):
                 validate_asset_url(url, POLICY)
 
+    def test_asset_selection_skips_unapproved_candidates(self):
+        unsafe = {"kind": "video", "url": "https://example.com/video.mp4"}
+        safe = {"kind": "video", "url": ASSET_URL}
+        snapshot = {
+            "assets": [unsafe, safe],
+            "preferred_video": unsafe,
+        }
+        self.assertEqual(select_asset(snapshot, "video", POLICY), safe)
+
     def test_page_and_batch_paths_are_scoped(self):
         self.assertEqual(validate_batch_name("batch-049"), "batch-049")
         validate_page_url(
@@ -79,6 +89,18 @@ class MediaAssetTests(unittest.TestCase):
         snapshot["collected_at"] = (now - timedelta(minutes=21)).isoformat()
         with self.assertRaisesRegex(MediaAssetError, "stale"):
             validate_media_snapshot(snapshot, VIDEO_ID, POLICY, current_time=now)
+
+    def test_media_snapshot_explains_blob_only_player_failure(self):
+        snapshot = {
+            "video_id": VIDEO_ID,
+            "page_url": f"https://www.douyin.com/video/{VIDEO_ID}",
+            "collected_at": datetime.now(timezone.utc).isoformat(),
+            "collection_status": "no_downloadable_media",
+            "diagnostics": {"blob_stream_count": 1},
+            "assets": [],
+        }
+        with self.assertRaisesRegex(MediaAssetError, "blob/MediaSource"):
+            validate_media_snapshot(snapshot, VIDEO_ID, POLICY)
 
     def test_download_rejects_error_pages_and_tiny_files(self):
         with tempfile.TemporaryDirectory() as directory:

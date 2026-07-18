@@ -99,6 +99,13 @@ def validate_media_snapshot(snapshot, video_id, policy, current_time=None):
         )
     assets = snapshot.get("assets")
     if not isinstance(assets, list) or not assets:
+        if snapshot.get("collection_status") == "no_downloadable_media":
+            diagnostics = snapshot.get("diagnostics") or {}
+            if diagnostics.get("blob_stream_count"):
+                raise MediaAssetError(
+                    "The Douyin player only exposed a blob/MediaSource stream; "
+                    "run the media collector in the browser DevTools console after playback starts"
+                )
         raise MediaAssetError("Media snapshot does not contain any assets")
     return round(age_minutes, 2)
 

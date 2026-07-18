@@ -10,6 +10,7 @@ from media_assets import (
     render_download_config,
     validate_batch_name,
     validate_media_snapshot,
+    validate_asset_url,
     validate_video_id,
 )
 from project_artifacts import atomic_write_text
@@ -25,23 +26,31 @@ def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def select_asset(snapshot, prefer):
+def select_asset(snapshot, prefer, policy):
     assets = snapshot.get("assets") or []
     preferred_key = f"preferred_{prefer}"
     preferred = snapshot.get(preferred_key)
+    candidates = []
     if preferred and any(
         asset.get("url") == preferred.get("url")
         and asset.get("kind") == preferred.get("kind")
         for asset in assets
     ):
-        return preferred
-    for asset in assets:
-        if asset.get("kind") == prefer:
-            return asset
+        candidates.append(preferred)
+    candidates.extend(asset for asset in assets if asset.get("kind") == prefer)
     fallback = "video" if prefer == "audio" else "audio"
-    for asset in assets:
-        if asset.get("kind") == fallback:
-            return asset
+    candidates.extend(asset for asset in assets if asset.get("kind") == fallback)
+    seen_urls = set()
+    for asset in candidates:
+        url = asset.get("url")
+        if not url or url in seen_urls:
+            continue
+        seen_urls.add(url)
+        try:
+            validate_asset_url(url, policy)
+        except MediaAssetError:
+            continue
+        return asset
     return None
 
 
@@ -70,7 +79,7 @@ def main():
     except MediaAssetError as error:
         raise SystemExit(str(error)) from error
 
-    asset = select_asset(snapshot, args.prefer)
+    asset = select_asset(snapshot, args.prefer, media_policy)
     if not asset or not asset.get("url"):
         raise SystemExit(f"No usable media asset found for {video_id}")
     if asset.get("kind") not in {"audio", "video"}:

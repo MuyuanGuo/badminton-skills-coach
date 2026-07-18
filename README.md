@@ -257,13 +257,13 @@ config/douyin_classification_rules.json
 
 如果误判，优先改这个配置，再重跑检查。
 
-5. 对新增教学视频，打开视频页并运行：
+5. 对新增教学视频，打开视频页并开始播放；在普通浏览器的 DevTools Console 中运行：
 
 ```text
 scripts/douyin_video_media_assets_dom.js
 ```
 
-保存为 `data/tmp/<video_id>-media-assets.json`，然后准备批次：
+必须在页面自身的浏览器上下文中运行，不能使用看不到网络资源记录的只读 Agent 页面求值接口。保存为 `data/tmp/<video_id>-media-assets.json`；只有结果中的 `collection_status` 为 `ready` 且存在 `preferred_video` 或 `preferred_audio` 时，才准备批次：
 
 ```bash
 python3 scripts/prepare_douyin_media_batch.py \
