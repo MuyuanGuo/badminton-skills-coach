@@ -1,14 +1,24 @@
 {
   "version": "visual-review-annotations-v1",
   "source": "output/visual_review_queue.md",
-  "reviewed_count": 66,
+  "reviewed_count": 75,
   "status_counts": {
-    "approved": 19,
+    "approved": 21,
     "needs_correction": 0,
-    "not_teaching": 47,
+    "not_teaching": 54,
     "low_value": 0
   },
   "items": [
+    {
+      "rank": 1,
+      "video_id": "7132666254980074793",
+      "title": "唐老师 成功加入一拍流",
+      "url": "https://www.douyin.com/video/7132666254980074793",
+      "category": "后场技术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218277+00:00"
+    },
     {
       "rank": 1,
       "video_id": "7223584265072692518",
@@ -48,6 +58,26 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是反手滑拍的动作，击球点，握拍，步法",
       "reviewed_at": "2026-07-10T22:13:28.704730+00:00"
+    },
+    {
+      "rank": 2,
+      "video_id": "7488538000524119356",
+      "title": "与高政泽二战 早知道不用他的球拍了，不过这次给他造成了不小的麻烦，并且最后逼出了他的教学视频",
+      "url": "https://www.douyin.com/video/7488538000524119356",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218482+00:00"
+    },
+    {
+      "rank": 3,
+      "video_id": "7220630996293635385",
+      "title": "三个品牌代表搓球大比拼，看看谁能笑到最后？",
+      "url": "https://www.douyin.com/video/7220630996293635385",
+      "category": "网前技术",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218521+00:00"
     },
     {
       "rank": 3,
@@ -90,6 +120,26 @@
       "reviewed_at": "2026-07-10T22:39:41.513577+00:00"
     },
     {
+      "rank": 4,
+      "video_id": "7218386274690796832",
+      "title": "4u小破拍，测试完毕，无脑入就行了，第二批很快就位，先上5u的，我到时候再试试",
+      "url": "https://www.douyin.com/video/7218386274690796832",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218555+00:00"
+    },
+    {
+      "rank": 5,
+      "video_id": "7094813761894223139",
+      "title": "喜欢哪招评论区告诉我，不要怕失误，毕竟输就一球的事，帅是一辈子的事🧐",
+      "url": "https://www.douyin.com/video/7094813761894223139",
+      "category": "训练与纠错",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，假动作变线示范集锦",
+      "reviewed_at": "2026-07-18T01:29:20.218606+00:00"
+    },
+    {
       "rank": 5,
       "video_id": "7209108124924464387",
       "title": "我和大家一样，也彻夜的迷茫过动作，我希望你们因为认识我，而少走弯路，撅手腕是不可能的",
@@ -118,6 +168,16 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是单打后场战术，杀球和吊球要结合，从而拉扯对手防守的站位，更容易创造出致胜机会。而一味的强攻则很容易被对手反手反击，陷自己于被动。",
       "reviewed_at": "2026-07-10T22:13:28.704893+00:00"
+    },
+    {
+      "rank": 6,
+      "video_id": "7166433980986756384",
+      "title": "生活中很多事情都可以映射到动作中，可是反过来呢？一个行业那么多人，希望也能做到并存不悖，兼容并蓄，就算当一个愿望，也不能停止对这个愿望的追求，因为这样可以让热爱运动的人和孩子们受益，你们说呢？",
+      "url": "https://www.douyin.com/video/7166433980986756384",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218648+00:00"
     },
     {
       "rank": 6,
@@ -150,6 +210,26 @@
       "reviewed_at": "2026-07-10T22:13:28.704930+00:00"
     },
     {
+      "rank": 7,
+      "video_id": "7348271667711380770",
+      "title": "听说很多人喜欢这招，别说华而不实，有没有用，我只想让对手心里难受，他难受我心里就美滋滋的",
+      "url": "https://www.douyin.com/video/7348271667711380770",
+      "category": "训练与纠错",
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示接杀变线动作中的神龙摆尾，属于花活，不建议一般学习者使用。",
+      "reviewed_at": "2026-07-18T01:29:20.218686+00:00"
+    },
+    {
+      "rank": 8,
+      "video_id": "7082564138752281896",
+      "title": "既然朋友们都这么给我面子，想让我完成这个挑战，那我就献丑了👊🏻大家继续喊博主们挑战接力吧",
+      "url": "https://www.douyin.com/video/7082564138752281896",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218719+00:00"
+    },
+    {
       "rank": 8,
       "video_id": "7090377448017235234",
       "title": "打羽毛球最爽的就是杀球和接杀",
@@ -178,6 +258,16 @@
       "review_status": "approved",
       "review_notes": "纯动作示范，讲的是羽毛球击球动作中的一些发力方式和一些生活中常见动作的发力方式很像。",
       "reviewed_at": "2026-07-10T22:39:41.513771+00:00"
+    },
+    {
+      "rank": 9,
+      "video_id": "7115598014642736424",
+      "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者",
+      "url": "https://www.douyin.com/video/7115598014642736424",
+      "category": "训练与纠错",
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218749+00:00"
     },
     {
       "rank": 9,

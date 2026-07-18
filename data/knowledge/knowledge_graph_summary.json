@@ -2,16 +2,16 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-17T22:13:41.222014+00:00",
+  "source_updated_at": "2026-07-18T01:29:26.221998+00:00",
   "video_count": 406,
-  "indexable_video_count": 350,
-  "assigned_video_count": 342,
+  "indexable_video_count": 352,
+  "assigned_video_count": 344,
   "multi_topic_video_count": 304,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
-      "video_count": 216,
+      "video_count": 217,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -146,8 +146,8 @@
             "滑板",
             "假动作"
           ],
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 19,
+          "ready_count": 19,
           "representative_videos": [
             {
               "video_id": "7427416335900020008",
@@ -637,7 +637,7 @@
     {
       "name": "中前场与抽挡",
       "description": "抽挡、接杀、防守、网前技术和中前场转换。",
-      "video_count": 105,
+      "video_count": 106,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -687,8 +687,8 @@
             "防反",
             "挡杀"
           ],
-          "video_count": 38,
-          "ready_count": 38,
+          "video_count": 39,
+          "ready_count": 39,
           "representative_videos": [
             {
               "video_id": "7621243051541587889",

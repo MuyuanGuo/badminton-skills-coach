@@ -509,34 +509,104 @@ A-public-correction
 
     def test_readme_status_updates_current_template_without_rewriting_sections(self):
         template = """# Project
+![Badminton Skills Coach：0 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
 - 获取到的抖音公开视频：`0` 条
 - 已排除非教学/广告器材内容：`0` 条
 - 已加入 Skill 知识库的教学视频：`0` 条
+- 可理解证据覆盖：`0/0`（`0` 条转写证据，`0` 条视觉复核摘要兜底）
 - 等待人工复核：`0` 条
 - 最新入库教学视频：旧内容
 - 已晋升公共反馈信号：`0` 条（旧状态）
+  evaluate_video_comprehension.py  审计0条可移植证据、本机转写和反向召回
+- 视频理解审计：GitHub Actions 对 `0/0` 条 ready 视频检查仓库内可移植的转写证据或视觉复核摘要、运行时读取和自身证据候选召回，三项覆盖率都必须为 `100%`；当前构成为 `0 + 0`。原始转写文件不进入 Git，维护者在本机另用 `--require-raw-transcripts` 验证 0 条证据都能回溯到原始转写。
 ## 这个 Skill 能做什么
 保留正文
 """
+        video_index = json.loads(
+            (ROOT / "data" / "douyin_video_index.json").read_text(encoding="utf-8")
+        )
+        teaching_filter = json.loads(
+            (ROOT / "data" / "douyin_teaching_filtered.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        knowledge = json.loads(
+            (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(
+                encoding="utf-8"
+            )
+        )
         updated = self.readme_status.update_readme_text(
             template,
-            json.loads((ROOT / "data" / "douyin_video_index.json").read_text(encoding="utf-8")),
-            json.loads(
-                (ROOT / "data" / "douyin_teaching_filtered.json").read_text(
-                    encoding="utf-8"
-                )
-            ),
-            json.loads(
-                (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(
-                    encoding="utf-8"
-                )
-            ),
+            video_index,
+            teaching_filter,
+            knowledge,
             {"version": 1, "signals": [{"signal_id": "P-test"}]},
         )
+        status = self.readme_status.derive_project_status(
+            video_index, teaching_filter, knowledge
+        )
+        evidence = self.readme_status.evidence_counts(knowledge)
         self.assertIn("已晋升公共反馈信号：`1` 条", updated)
-        self.assertIn("已排除非教学/广告器材内容：`113` 条", updated)
-        self.assertIn("等待人工复核：`9` 条", updated)
+        self.assertIn(
+            "已排除非教学/广告器材内容："
+            f"`{status['excluded_non_teaching_ads_equipment']}` 条",
+            updated,
+        )
+        self.assertIn(
+            f"等待人工复核：`{status['pending_human_review_or_processing']}` 条",
+            updated,
+        )
+        self.assertIn(
+            f"可理解证据覆盖：`{evidence['ready']}/{evidence['ready']}`"
+            f"（`{evidence['transcript']}` 条转写证据，"
+            f"`{evidence['visual']}` 条视觉复核摘要兜底）",
+            updated,
+        )
+        self.assertIn(
+            f"当前构成为 `{evidence['transcript']} + {evidence['visual']}`",
+            updated,
+        )
         self.assertIn("## 这个 Skill 能做什么\n保留正文", updated)
+
+    def test_skill_and_agent_status_counts_follow_knowledge(self):
+        knowledge = {
+            "videos": [
+                {"processing_status": "ready", "confidence": "medium"},
+                {"processing_status": "ready", "confidence": "visual_reviewed"},
+                {"processing_status": "needs_visual_review", "confidence": "low"},
+                {"processing_status": "not_teaching", "confidence": "low"},
+            ]
+        }
+        skill = """---
+description: Archive including 350 ready teaching videos.
+---
+Archive including 350 `ready` teaching entries, 9 entries awaiting visual review.
+Among the ready entries, 331 are transcript-backed and 19 use reviewed visual summaries.
+- `knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 350 ready teaching videos (331 transcript-backed and 19 visual-review fallbacks) and 9 entries awaiting visual review.
+"""
+        updated_skill = self.readme_status.update_skill_status_text(skill, knowledge)
+        self.assertIn("including 2 ready teaching videos.", updated_skill)
+        self.assertIn(
+            "including 2 `ready` teaching entries, 1 entries awaiting visual review",
+            updated_skill,
+        )
+        self.assertIn(
+            "Among the ready entries, 1 are transcript-backed and 1 use reviewed visual summaries",
+            updated_skill,
+        )
+        self.assertIn(
+            "full structured knowledge entries for 4 processed videos, including 2 ready teaching videos (1 transcript-backed and 1 visual-review fallbacks) and 1 entries awaiting visual review.",
+            updated_skill,
+        )
+
+        metadata = (
+            'interface:\n'
+            '  short_description: "基于350条教学视频回答，并安全使用已审核的本地与公共反馈"\n'
+        )
+        updated_metadata = self.readme_status.update_agent_metadata_text(
+            metadata, knowledge
+        )
+        self.assertIn("基于2条教学视频回答", updated_metadata)
 
 
 if __name__ == "__main__":

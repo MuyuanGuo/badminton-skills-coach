@@ -13,7 +13,11 @@ from project_artifacts import (
     skill_reference_bytes,
     skill_reference_mismatches,
 )
-from update_readme_status import update_readme_text
+from update_readme_status import (
+    update_agent_metadata_text,
+    update_readme_text,
+    update_skill_status_text,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -579,6 +583,23 @@ expected_readme_text = update_readme_text(
 if expected_readme_text != readme_text:
     raise SystemExit(
         "README current status is stale; run scripts/update_readme_status.py"
+    )
+skill_status_path = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
+skill_status_text = skill_status_path.read_text(encoding="utf-8")
+if update_skill_status_text(skill_status_text, douyin_knowledge) != skill_status_text:
+    raise SystemExit(
+        "Skill current status is stale; run scripts/update_readme_status.py"
+    )
+agent_metadata_path = (
+    ROOT / "skills" / "liuhui-badminton-coach" / "agents" / "openai.yaml"
+)
+agent_metadata_text = agent_metadata_path.read_text(encoding="utf-8")
+if (
+    update_agent_metadata_text(agent_metadata_text, douyin_knowledge)
+    != agent_metadata_text
+):
+    raise SystemExit(
+        "Agent metadata status is stale; run scripts/update_readme_status.py"
     )
 
 topic_index = json.loads(

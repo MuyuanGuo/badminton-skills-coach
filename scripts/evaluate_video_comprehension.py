@@ -270,7 +270,7 @@ def main():
     )
     parser.add_argument("--knowledge", type=Path, default=KNOWLEDGE_PATH)
     parser.add_argument("--retrieval-index", type=Path, default=RETRIEVAL_INDEX_PATH)
-    parser.add_argument("--require-ready", type=int, default=350)
+    parser.add_argument("--require-ready", type=int, default=352)
     parser.add_argument("--min-understanding-coverage", type=float, default=1.0)
     parser.add_argument("--min-runtime-lookup-coverage", type=float, default=1.0)
     parser.add_argument("--min-evidence-probe-recall", type=float, default=1.0)

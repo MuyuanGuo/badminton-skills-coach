@@ -4,7 +4,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
 - Videos: `406`
-- Assigned videos: `342`
+- Assigned videos: `344`
 - Multi-topic videos: `304`
 
 ## How To Use
@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `216`
+- Matched videos: `217`
 
 - **被动后场与高远**: `74` videos, `74` ready, `0` needs visual review.
   Keywords: 被动, 高远, 后高点, 底线, 摆脱, 反手后场
@@ -40,7 +40,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
   - 快速架拍和力量架拍 在两者中间的架拍就是标准的普通架拍，既不会太慢，也不会没力，但是又都做不到极致的快和重，大家结合使用哦 [ready] https://www.douyin.com/video/7551459420703837498
   - 架拍的选择 在两个极端架拍的中间位置，就是最普通的架拍！没有绝对的对错，符合场景，符合自己的情况就是对！ [ready] https://www.douyin.com/video/7658231159860261361
-- **吊球与劈吊**: `18` videos, `18` ready, `0` needs visual review.
+- **吊球与劈吊**: `19` videos, `19` ready, `0` needs visual review.
   Keywords: 吊球, 劈吊, 滑板, 假动作
   Representative videos:
   - 华云纵 入门是实用假动作，熟练后可以发展成花活，去参加职业比赛的朋友不用看后面的 [ready] https://www.douyin.com/video/7427416335900020008
@@ -131,7 +131,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 抽挡、接杀、防守、网前技术和中前场转换。
 
-- Matched videos: `105`
+- Matched videos: `106`
 
 - **平抽挡与高速对抗**: `6` videos, `6` ready, `0` needs visual review.
   Keywords: 抽挡, 平抽挡, 高速对抗, 快球
@@ -139,7 +139,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 高速对抗步法 小姐姐是两省冠军🏆，这种情况属于高速对抗状态下，就是球都比较平，没有侧身的时间和意义 [ready] https://www.douyin.com/video/7652440366436945017
   - 握拍微调 抽挡反手为主，尽量不做正反手转换 [ready] https://www.douyin.com/video/7447084061371272507
   - 抽挡连贯 我知道有些兄弟很要强，受不了这种屈辱，就是不能承认被动，没关系，打羽毛球吧，它一定会教会你 [ready] https://www.douyin.com/video/7506736569824726332
-- **接杀与防守**: `38` videos, `38` ready, `0` needs visual review.
+- **接杀与防守**: `39` videos, `39` ready, `0` needs visual review.
   Keywords: 接杀, 防守, 防反, 挡杀
   Representative videos:
   - 双打防守思路 你总会遇到你挑不起来的进攻 [ready] https://www.douyin.com/video/7621243051541587889

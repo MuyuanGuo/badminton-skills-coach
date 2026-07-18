@@ -1,11 +1,11 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 350 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 352 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
 
-Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 350 `ready` teaching entries, 9 entries awaiting visual review, and `not_teaching` exclusions. Among the ready entries, 331 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `ready` entries as answer evidence. The per-video `quality` audit records transcript and automatic-evidence checks; never promote a review item merely because its title sounds relevant.
+Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 352 `ready` teaching entries, 0 entries awaiting visual review, and `not_teaching` exclusions. Among the ready entries, 331 are transcript-backed and 21 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `ready` entries as answer evidence. The per-video `quality` audit records transcript and automatic-evidence checks; never promote a review item merely because its title sounds relevant.
 
 The installed Skill deliberately omits raw transcript files and maintainer-local transcript paths. All retrieval features and answerable evidence needed at runtime are bundled in the structured knowledge and retrieval index, so normal search works offline. Public Douyin videos remain external demonstrations: cite the canonical title, video ID, and URL, and keep the evidence-backed text useful even if a video is later unavailable or blocked in the user's region.
 
@@ -223,7 +223,7 @@ When multiple videos support a point, cite no more than three strongest sources.
 
 ## Resources
 
-- `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 350 ready teaching videos (331 transcript-backed and 19 visual-review fallbacks) and 9 entries awaiting visual review.
+- `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 352 ready teaching videos (331 transcript-backed and 21 visual-review fallbacks) and 0 entries awaiting visual review.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
 - `references/retrieval-index.json`: full ready-video retrieval index with transcript-derived terms, complete topic memberships, and n-gram hashes that contain no transcript text.

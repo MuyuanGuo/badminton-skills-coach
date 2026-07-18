@@ -1,18 +1,17 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-17T22:13:41.222014+00:00",
+  "updated_at": "2026-07-18T01:29:26.221998+00:00",
   "quality_rules_version": 1,
   "queue_counts": {
     "transcribed": 406
   },
   "knowledge_counts": {
     "videos": 406,
-    "ready": 350,
-    "not_teaching": 47,
-    "needs_visual_review": 9,
+    "ready": 352,
+    "not_teaching": 54,
     "curated": 3,
-    "visual_reviewed": 19
+    "visual_reviewed": 21
   },
   "videos": [
     {
@@ -8726,8 +8725,8 @@
         "装备与参数"
       ],
       "duration_seconds": 265.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -8754,34 +8753,16 @@
         }
       },
       "teaching_note": {
-        "topic": "与高政泽二战 早知道不用他的球拍了",
+        "topic": "与高政泽二战 早知道不用他的球拍了，不过这次给他造成了不小的麻烦，并且最后逼出了他的教学视频",
+        "review_summary": "非教学视频",
         "key_evidence": [],
-        "error_evidence": [
-          {
-            "timestamp": "00:14-00:17",
-            "text": "你说这怎么可以呢对不对根本不行的嘛"
-          }
-        ],
-        "action_cues": [
-          {
-            "timestamp": "00:10-00:15",
-            "text": "你说说前前还跟我说练力量还要再过来收我你说这怎么可以呢"
-          },
-          {
-            "timestamp": "00:12-00:16",
-            "text": "练力量还要再过来收我你说这怎么可以呢对不对"
-          },
-          {
-            "timestamp": "03:56-03:59",
-            "text": "哎先安心的走吧可以了啊"
-          },
-          {
-            "timestamp": "04:10-04:15",
-            "text": "嗯我还可以说出教学视频我还有干货没有教给兄弟们呢"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "error_evidence": [],
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218482+00:00"
     },
     {
       "video_id": "7488280037955816762",
@@ -12612,8 +12593,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 38.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -12649,8 +12630,18 @@
             "text": "你以为闹着玩的但是重不一定难接你知道吗"
           }
         ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，演示接杀变线动作中的神龙摆尾，属于花活，不建议一般学习者使用。",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，演示接杀变线动作中的神龙摆尾，属于花活，不建议一般学习者使用。"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，演示接杀变线动作中的神龙摆尾，属于花活，不建议一般学习者使用。",
+      "reviewed_at": "2026-07-18T01:29:20.218686+00:00"
     },
     {
       "video_id": "7346781656461724963",
@@ -17702,8 +17693,8 @@
         "装备与参数"
       ],
       "duration_seconds": 120.4,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -17727,21 +17718,16 @@
         }
       },
       "teaching_note": {
-        "topic": "三个品牌代表搓球大比拼",
+        "topic": "三个品牌代表搓球大比拼，看看谁能笑到最后？",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
-        "action_cues": [
-          {
-            "timestamp": "00:40-00:44",
-            "text": "你说你考虑的话我们可以给你算便宜点就一个呀"
-          },
-          {
-            "timestamp": "01:34-01:38",
-            "text": "一千万我先拍个四一啊好了"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218521+00:00"
     },
     {
       "video_id": "7218386274690796832",
@@ -17752,8 +17738,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 212.0,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -17780,17 +17766,16 @@
         }
       },
       "teaching_note": {
-        "topic": "4u小破拍",
+        "topic": "4u小破拍，测试完毕，无脑入就行了，第二批很快就位，先上5u的，我到时候再试试",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
-        "action_cues": [
-          {
-            "timestamp": "00:01-00:22",
-            "text": "哦 我也可以看哇 烫"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218555+00:00"
     },
     {
       "video_id": "7215787369381858599",
@@ -20069,8 +20054,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 143.5,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -20097,17 +20082,16 @@
         }
       },
       "teaching_note": {
-        "topic": "生活中很多事情都可以映射到动作中",
+        "topic": "生活中很多事情都可以映射到动作中，可是反过来呢？一个行业那么多人，希望也能做到并存不悖，兼容并蓄，就算当一个愿望，也不能停止对这个愿望的追求，因为这样可以让热爱运动的人和孩子们受益，你们说呢？",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
-        "action_cues": [
-          {
-            "timestamp": "02:08-02:13",
-            "text": "试试试教练再见叫什么脸,都说了小卫生,小卫生"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218648+00:00"
     },
     {
       "video_id": "7164948889630493991",
@@ -22389,8 +22373,8 @@
         "后场技术"
       ],
       "duration_seconds": 82.2,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -22415,24 +22399,15 @@
       },
       "teaching_note": {
         "topic": "唐老师 成功加入一拍流",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
-        "action_cues": [
-          {
-            "timestamp": "00:31-00:34",
-            "text": "我都听见杆的声音了你再听一遍你再听一遍"
-          },
-          {
-            "timestamp": "00:32-00:35",
-            "text": "你再听一遍你再听一遍那是打杆的"
-          },
-          {
-            "timestamp": "00:38-00:40",
-            "text": "来来来再弄一下来来来"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218277+00:00"
     },
     {
       "video_id": "7131178146023427328",
@@ -23397,8 +23372,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 35.9,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -23425,17 +23400,16 @@
         }
       },
       "teaching_note": {
-        "topic": "此视频警醒伙伴们",
+        "topic": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者",
+        "review_summary": "非教学视频",
         "key_evidence": [],
         "error_evidence": [],
-        "action_cues": [
-          {
-            "timestamp": "00:10-00:17",
-            "text": "绝对就能回头那必须要投回头啊把帅记程到头"
-          }
-        ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "action_cues": [],
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218749+00:00"
     },
     {
       "video_id": "7115241358255803683",
@@ -25098,8 +25072,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 117.1,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "ready",
+      "confidence": "visual_reviewed",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -25143,8 +25117,18 @@
             "text": "第十二槍不時再搖起將軍大姓 戰無敵"
           }
         ],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "note": "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。",
+        "review_summary": "纯动作示范，假动作变线示范集锦",
+        "visual_review_evidence": [
+          {
+            "timestamp": "visual_review_no_timestamp",
+            "text": "纯动作示范，假动作变线示范集锦"
+          }
+        ]
+      },
+      "review_status": "approved",
+      "review_notes": "纯动作示范，假动作变线示范集锦",
+      "reviewed_at": "2026-07-18T01:29:20.218606+00:00"
     },
     {
       "video_id": "7094072057608047913",
@@ -26560,8 +26544,8 @@
         "训练与纠错"
       ],
       "duration_seconds": 35.3,
-      "processing_status": "needs_visual_review",
-      "confidence": "low",
+      "processing_status": "not_teaching",
+      "confidence": "reviewed_non_teaching",
       "quality": {
         "transcript": {
           "language": "zh",
@@ -26587,17 +26571,16 @@
         }
       },
       "teaching_note": {
-        "topic": "既然朋友们都这么给我面子",
-        "key_evidence": [
-          {
-            "timestamp": "00:02-00:10",
-            "text": "今天你就见到了其实羽毛球在合适机球打的就是个感觉"
-          }
-        ],
+        "topic": "既然朋友们都这么给我面子，想让我完成这个挑战，那我就献丑了👊🏻大家继续喊博主们挑战接力吧",
+        "review_summary": "非教学视频",
+        "key_evidence": [],
         "error_evidence": [],
         "action_cues": [],
-        "note": "自动证据未达到质量门槛，需复核后才能用于回答。"
-      }
+        "note": "人工视觉复核：非教学视频，不作为教练证据使用。"
+      },
+      "review_status": "not_teaching",
+      "review_notes": "非教学视频",
+      "reviewed_at": "2026-07-18T01:29:20.218719+00:00"
     },
     {
       "video_id": "7081831033515117865",
