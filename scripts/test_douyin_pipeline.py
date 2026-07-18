@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 import unittest
+from unittest.mock import patch
+
+import process_douyin_ready_batch as batch_processor
 
 from douyin_pipeline import (
     classify_video,
     load_classification_rules,
     normalize_transcribed_media_state,
 )
+from process_douyin_ready_batch import unexpected_dirty_paths
+from report_pipeline_status import next_action
+from run_full_update_pipeline import validation_commands
 
 
 class DouyinClassificationRulesTest(unittest.TestCase):
@@ -68,12 +74,63 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             "media_asset_kind": "audio",
             "media_asset_source": "data/tmp/snapshot.json",
             "duration_seconds": 12.3,
+            "transcript_source_sha256": "a" * 64,
         }
         self.assertTrue(normalize_transcribed_media_state(item))
         self.assertIsNone(item["media_path"])
         self.assertNotIn("media_asset_kind", item)
         self.assertNotIn("media_asset_source", item)
         self.assertEqual(item["duration_seconds"], 12.3)
+        self.assertEqual(item["transcript_source_sha256"], "a" * 64)
+
+    def test_batch_rejects_unrelated_preexisting_changes(self):
+        self.assertEqual(
+            unexpected_dirty_paths(
+                [
+                    "data/processing/douyin_queue.json",
+                    "README.md",
+                    "notes/private.txt",
+                ]
+            ),
+            ["README.md", "notes/private.txt"],
+        )
+
+    def test_successful_batch_cleans_temporary_state_before_full_validation(self):
+        events = []
+        with patch.object(
+            batch_processor,
+            "cleanup_transcribed_media",
+            side_effect=lambda *_args: events.append("cleanup") or {"removed": ["123"], "skipped": []},
+        ), patch.object(
+            batch_processor,
+            "rebuild_and_validate",
+            side_effect=lambda: events.append("validate"),
+        ):
+            batch_processor.finalize_transcribed_batch("batch-049", ["123"])
+        self.assertEqual(events, ["cleanup", "validate"])
+
+    def test_full_maintenance_gate_covers_answer_and_video_quality(self):
+        commands = [" ".join(map(str, command)) for command in validation_commands()]
+        for required in [
+            "evaluate_answer_context.py",
+            "evaluate_answer_quality.py",
+            "evaluate_query_understanding.py",
+            "evaluate_retrieval.py",
+            "evaluate_video_comprehension.py --require-raw-transcripts",
+            "build_manifest.py --check",
+            "validate_project.py",
+        ]:
+            self.assertTrue(
+                any(required in command for command in commands),
+                required,
+            )
+
+    def test_applied_update_report_advances_to_media_extraction(self):
+        action = next_action(
+            {"counts": {"classified_teaching": 1, "transcribed": 406}},
+            {"new": 1, "teaching": 1, "applied": {"queue_added": 1}},
+        )
+        self.assertIn("capture media assets", action)
 
 
 if __name__ == "__main__":

@@ -17,11 +17,11 @@
 - 稳定版：`main` / `v1.0.0`
 - 开发版：`develop` / `1.1.0-dev.3`
 
-- 获取到的抖音公开视频：`472` 条
+- 获取到的抖音公开视频：`473` 条
 - 已排除非教学/广告器材内容：`121` 条
 - 已加入 Skill 知识库的教学视频：`351` 条
 - 可理解证据覆盖：`351/351`（`332` 条转写证据，`19` 条视觉复核摘要兜底）
-- 等待人工复核：`0` 条
+- 等待人工复核：`1` 条
 - 最新入库教学视频：[网前框架 这样做不但不会让新手组织框架失误，还能减少身体僵硬](https://www.douyin.com/video/7661940775983482097)（`7661940775983482097`）
 - 已晋升公共反馈信号：`0` 条（流水线已就绪，尚无真实 GitHub 反馈被晋升）
 - 问题理解回归：`34/34` 条通过（`30` 条来源契约问题 + `4` 条对抗问题），覆盖诊断、复合问题、否定条件、战术关系、动作示范与证据边界
@@ -187,7 +187,7 @@ scripts/
   check_douyin_updates.py          检查抖音主页是否有新视频
   prepare_douyin_media_batch.py    根据媒体快照生成下载配置
   media_assets.py                  媒体 URL、批次路径与下载内容校验
-  process_douyin_ready_batch.py    下载、转写、重建、验证、提交
+  process_douyin_ready_batch.py    下载、转写、完整质量门禁、提交
   run_full_update_pipeline.py      重建知识库、图谱和 Skill 引用
   build_retrieval_index.py         从完整转写生成无正文检索索引
   build_manifest.py                生成确定性构建和安装产物哈希清单
@@ -271,13 +271,17 @@ python3 scripts/prepare_douyin_media_batch.py \
   --batch batch-049
 ```
 
-准备脚本只接受与页面视频 ID 一致的抖音页面、配置中允许的 HTTPS 媒体 CDN 和仓库内批次路径；下载后还会拒绝过小文件及 HTML/XML 过期响应。媒体地址是短期凭证，失效时重新打开视频页提取，不要提交或分享 `data/tmp/`。
+准备脚本只接受 20 分钟内、与页面视频 ID 一致的抖音页面快照、配置中允许的 HTTPS 媒体 CDN 和仓库内批次路径。默认优先选择当前页面主视频元素对应的视频轨，避免把页面预加载的其他音频误当成目标视频；下载后还会拒绝过小文件、HTML/XML 过期响应和无法识别的媒体文件。媒体地址是短期凭证，失效时重新打开视频页提取，不要提交或分享 `data/tmp/`。
 
 6. 下载、转写、重建和验证：
 
 ```bash
+python3 scripts/doctor.py --profile transcription
+python3 scripts/process_douyin_ready_batch.py batch-049 --preflight-only
 python3 scripts/process_douyin_ready_batch.py batch-049
 ```
+
+预检会确认工作区边界、磁盘、curl、`faster-whisper` 和本地 `small` 模型都可用，但不会下载媒体。正式处理会校验下载文件、把转写结果与源媒体 SHA-256 绑定，清理临时媒体状态，再运行完整回归、回答质量、问题理解、检索、视频理解、构建清单和链接门禁；全部通过后才提交并推送。脚本会拒绝把无关的既有工作区改动一起提交；需要只提交到本地时加 `--no-push`。
 
 7. 如果只是手动改了复核笔记、主题数据或知识库结构，运行：
 
@@ -374,7 +378,7 @@ python3 scripts/evaluate_video_comprehension.py --require-raw-transcripts
 - `transcription_failed`：本地转写失败，需要检查媒体文件或转写环境。
 - `skipped_non_teaching`：确认非教学，仅用于状态语义和后续扩展。
 
-1.0 当前队列为 `{"transcribed": 406}`，没有失败项。
+1.0 当前队列为 `{"classified_teaching": 1, "transcribed": 406}`，没有失败项。
 
 用户反馈使用独立的本地队列状态：
 

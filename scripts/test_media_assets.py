@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from media_assets import (
@@ -11,12 +12,14 @@ from media_assets import (
     render_download_config,
     validate_asset_url,
     validate_batch_name,
+    validate_media_snapshot,
     validate_page_url,
 )
 
 
 POLICY = {
     "allowed_https_host_suffixes": ["zjcdn.com", "douyinvod.com"],
+    "snapshot_max_age_minutes": 20,
     "maximum_asset_url_length": 8192,
     "minimum_download_bytes": 8,
 }
@@ -61,6 +64,22 @@ class MediaAssetTests(unittest.TestCase):
                 "https://www.douyin.com/video/999999999999999999", VIDEO_ID
             )
 
+    def test_media_snapshot_must_be_fresh_and_match_the_page(self):
+        now = datetime(2026, 7, 18, 12, 0, tzinfo=timezone.utc)
+        snapshot = {
+            "video_id": VIDEO_ID,
+            "page_url": f"https://www.douyin.com/video/{VIDEO_ID}",
+            "collected_at": (now - timedelta(minutes=5)).isoformat(),
+            "assets": [{"kind": "video", "url": ASSET_URL}],
+        }
+        self.assertEqual(
+            validate_media_snapshot(snapshot, VIDEO_ID, POLICY, current_time=now),
+            5.0,
+        )
+        snapshot["collected_at"] = (now - timedelta(minutes=21)).isoformat()
+        with self.assertRaisesRegex(MediaAssetError, "stale"):
+            validate_media_snapshot(snapshot, VIDEO_ID, POLICY, current_time=now)
+
     def test_download_rejects_error_pages_and_tiny_files(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "media.m4a"
@@ -70,6 +89,8 @@ class MediaAssetTests(unittest.TestCase):
             self.assertIn("not media", downloaded_media_error(path, 8))
             path.write_bytes(b"\x00\x00\x00\x18ftypM4A " + b"x" * 100)
             self.assertIsNone(downloaded_media_error(path, 8))
+            path.write_bytes(b"not a media file" + b"x" * 100)
+            self.assertIn("recognized media signature", downloaded_media_error(path, 8))
 
     def test_logs_redact_short_lived_media_urls(self):
         self.assertNotIn(

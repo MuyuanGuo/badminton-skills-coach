@@ -13,7 +13,8 @@
       "zjcdn.com",
       "douyinvod.com"
     ],
+    "snapshot_max_age_minutes": 20,
     "maximum_asset_url_length": 8192,
-    "minimum_download_bytes": 1024
+    "minimum_download_bytes": 4096
   }
 }

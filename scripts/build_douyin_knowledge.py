@@ -467,6 +467,8 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
     records = []
     missing_transcripts = []
     for item in queue["items"]:
+        if item.get("status") != "transcribed":
+            continue
         transcript_path = transcripts.get(item["video_id"])
         if not transcript_path:
             missing_transcripts.append(item["video_id"])

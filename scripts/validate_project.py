@@ -166,10 +166,35 @@ for item in queue["items"]:
         raise SystemExit(
             f"Transcribed queue item retains temporary media state: {item['video_id']}"
         )
+    if item.get("status") == "transcribed":
+        provenance_fields = [
+            "transcript_source_sha256",
+            "transcript_source_bytes",
+            "transcript_model",
+            "transcript_language",
+            "transcript_text_characters",
+        ]
+        present = [field in item and item.get(field) is not None for field in provenance_fields]
+        if any(present) and not all(present):
+            raise SystemExit(
+                f"Transcribed queue item has partial source provenance: {item['video_id']}"
+            )
+        if all(present) and (
+            not re.fullmatch(r"[0-9a-f]{64}", item["transcript_source_sha256"])
+            or not isinstance(item["transcript_source_bytes"], int)
+            or item["transcript_source_bytes"] <= 0
+            or not isinstance(item["transcript_text_characters"], int)
+            or item["transcript_text_characters"] < 0
+        ):
+            raise SystemExit(
+                f"Transcribed queue item has invalid source provenance: {item['video_id']}"
+            )
 
 media_policy = load_media_policy()
-if media_policy["minimum_download_bytes"] < 512:
+if media_policy["minimum_download_bytes"] < 4096:
     raise SystemExit("Media download size gate is too small to reject error responses")
+if not 1 <= media_policy["snapshot_max_age_minutes"] <= 60:
+    raise SystemExit("Media snapshot age gate must be between 1 and 60 minutes")
 
 rules = load_classification_rules()
 for required_signal in [

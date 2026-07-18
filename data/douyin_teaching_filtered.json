@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T05:19:28.824608+00:00",
+  "generated_at": "2026-07-18T06:39:43.480960+00:00",
   "source_profile": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
   "classification_rules": {
     "version": 2,
@@ -7,13 +7,41 @@
   },
   "methodology": "基于主页作品区与标题文案的规则初筛；待复核项需查看视频画面或逐条作者页。",
   "counts": {
-    "total": 472,
-    "kept_teaching": 351,
+    "total": 473,
+    "kept_teaching": 352,
     "review": 0,
     "excluded_ads": 17,
     "excluded_non_teaching": 104
   },
   "videos": [
+    {
+      "video_id": "7663523942439940453",
+      "url": "https://www.douyin.com/video/7663523942439940453",
+      "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "author_status": "主页最新作品区发现",
+      "decision": "保留：教学",
+      "decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "primary_category": "中前场与抽挡",
+      "tags": "中前场与抽挡",
+      "classification_rules_version": 2,
+      "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
+      "classification_signals": {
+        "ad_strong_content": false,
+        "ad_strong_hashtag_only": false,
+        "equipment": false,
+        "commerce": false,
+        "teaching": true,
+        "teaching_hashtag": true,
+        "explicit_non_teaching": false
+      },
+      "automatic_decision": "保留：教学",
+      "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "previous_decision": "保留：教学",
+      "migration_action": "accept_current_rules",
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
+    },
     {
       "video_id": "7661940775983482097",
       "url": "https://www.douyin.com/video/7661940775983482097",
@@ -40,7 +68,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7659991105622862457",
@@ -68,7 +96,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7659348110628345210",
@@ -96,7 +124,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7658231159860261361",
@@ -124,7 +152,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7656927370758796145",
@@ -152,7 +180,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7656560952972884730",
@@ -180,7 +208,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7652440366436945017",
@@ -208,7 +236,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7650602010613537265",
@@ -236,7 +264,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7647839024535507897",
@@ -264,7 +292,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_hashtag_only_transcript_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7643719807951615482",
@@ -292,7 +320,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7642648621985030138",
@@ -320,7 +348,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7641533740292048049",
@@ -348,7 +376,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7639306481355832689",
@@ -376,7 +404,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7634998306204492794",
@@ -404,7 +432,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7634016952800880570",
@@ -432,7 +460,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7631290187235164026",
@@ -460,7 +488,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7630800123594285305",
@@ -488,7 +516,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7628342769941691121",
@@ -516,7 +544,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7626127268884067249",
@@ -544,7 +572,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7622167629645727717",
@@ -572,7 +600,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7621243051541587889",
@@ -600,7 +628,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7619576226616745445",
@@ -628,7 +656,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7618301799796222833",
@@ -656,7 +684,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7616819993833503601",
@@ -684,7 +712,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7614167503938610417",
@@ -712,7 +740,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7611635851789771721",
@@ -740,7 +768,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7609429014616637050",
@@ -768,7 +796,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7607852875611759802",
@@ -796,7 +824,7 @@
       "automatic_decision_reason": "内容更接近日常、通知、招生或花絮",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7606412946096327978",
@@ -824,7 +852,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7606560547489149691",
@@ -852,7 +880,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7603148927714908273",
@@ -880,7 +908,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7602766054809333617",
@@ -908,7 +936,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7600107130034047973",
@@ -936,7 +964,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7598855095372185273",
@@ -964,7 +992,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7597528312752490929",
@@ -992,7 +1020,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7596955153073478011",
@@ -1020,7 +1048,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7595804581259641521",
@@ -1048,7 +1076,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7593661008519810289",
@@ -1076,7 +1104,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7592181557051310961",
@@ -1104,7 +1132,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7591112983016940977",
@@ -1132,7 +1160,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7589749293205363633",
@@ -1160,7 +1188,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7589590613499595185",
@@ -1188,7 +1216,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7588747058782683513",
@@ -1216,7 +1244,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7587362379455778097",
@@ -1244,7 +1272,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_hashtag_only_transcript_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7586613438625959217",
@@ -1272,7 +1300,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_hashtag_only_transcript_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7582017752145136945",
@@ -1300,7 +1328,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7577392474555210597",
@@ -1328,7 +1356,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7573211923485260537",
@@ -1356,7 +1384,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7571574635323124145",
@@ -1384,7 +1412,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7570301879545426171",
@@ -1412,7 +1440,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7567860375287303035",
@@ -1440,7 +1468,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7567155406117533051",
@@ -1468,7 +1496,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7563513758061114875",
@@ -1496,7 +1524,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7561558424342056250",
@@ -1524,7 +1552,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7560064232592493882",
@@ -1552,7 +1580,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7558912953539071292",
@@ -1580,7 +1608,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7552759261840952636",
@@ -1608,7 +1636,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7551459420703837498",
@@ -1636,7 +1664,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7550305145877155131",
@@ -1664,7 +1692,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7548394643144068411",
@@ -1692,7 +1720,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7546109410041908538",
@@ -1720,7 +1748,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7541623926234811705",
@@ -1748,7 +1776,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7540508309087358266",
@@ -1776,7 +1804,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7539394762560113978",
@@ -1804,7 +1832,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7538639302243323195",
@@ -1832,7 +1860,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7536519262631611707",
@@ -1860,7 +1888,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7535400692573211962",
@@ -1888,7 +1916,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7534955049426095419",
@@ -1916,7 +1944,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7531326870298873147",
@@ -1944,7 +1972,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7530102529830800699",
@@ -1972,7 +2000,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7526124617461173562",
@@ -2000,7 +2028,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7525379384673733945",
@@ -2028,7 +2056,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7524557392328461627",
@@ -2056,7 +2084,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7523163965838003514",
@@ -2084,7 +2112,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7522041413614816570",
@@ -2112,7 +2140,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7520190707093654844",
@@ -2140,7 +2168,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7518239001813339449",
@@ -2168,7 +2196,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7517867684509420857",
@@ -2196,7 +2224,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7515625891511995706",
@@ -2224,7 +2252,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7511934047901846841",
@@ -2252,7 +2280,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7511074095086243131",
@@ -2280,7 +2308,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7509355373729762619",
@@ -2308,7 +2336,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7508222669708463420",
@@ -2336,7 +2364,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7506736569824726332",
@@ -2364,7 +2392,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7506362888166083897",
@@ -2392,7 +2420,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7505345719160933692",
@@ -2420,7 +2448,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7504391919716273468",
@@ -2448,7 +2476,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7502895214820085049",
@@ -2476,7 +2504,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7501542236061420859",
@@ -2504,7 +2532,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7500519808157371711",
@@ -2532,7 +2560,7 @@
       "automatic_decision_reason": "未发现明确教学动作、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7499776424493075772",
@@ -2560,7 +2588,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7498830855188942137",
@@ -2588,7 +2616,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7498295344284093755",
@@ -2616,7 +2644,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7497098752897879355",
@@ -2644,7 +2672,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7494729488699559225",
@@ -2672,7 +2700,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7492357671853526329",
@@ -2700,7 +2728,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7491780200468843833",
@@ -2728,7 +2756,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7491244893893938492",
@@ -2756,7 +2784,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7489412105641168187",
@@ -2784,7 +2812,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7488280037955816762",
@@ -2812,7 +2840,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7486788550298471739",
@@ -2840,7 +2868,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7486058135547891004",
@@ -2868,7 +2896,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7485692231404342586",
@@ -2896,7 +2924,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7484563688096091449",
@@ -2924,7 +2952,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7483346020332522812",
@@ -2952,7 +2980,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7475440958130097466",
@@ -2980,7 +3008,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7459867608460840252",
@@ -3008,7 +3036,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7458505857844776250",
@@ -3036,7 +3064,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7453420876076240188",
@@ -3064,7 +3092,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7449702119076072764",
@@ -3092,7 +3120,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7447084061371272507",
@@ -3120,7 +3148,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7445495930280856892",
@@ -3148,7 +3176,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7441796812475747641",
@@ -3176,7 +3204,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7440406891664133428",
@@ -3204,7 +3232,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7432633273060314408",
@@ -3232,7 +3260,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7427416335900020008",
@@ -3260,7 +3288,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7422121561559272739",
@@ -3288,7 +3316,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7418417650264558848",
@@ -3316,7 +3344,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7414339897990843663",
@@ -3344,7 +3372,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7413335844594994447",
@@ -3372,7 +3400,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7411850466457292084",
@@ -3400,7 +3428,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7406541084219821312",
@@ -3428,7 +3456,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7397746202562956559",
@@ -3456,7 +3484,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7393550140465777960",
@@ -3484,7 +3512,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7387233755057949987",
@@ -3512,7 +3540,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7385749108843089187",
@@ -3540,7 +3568,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7384641787647872308",
@@ -3568,7 +3596,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7383154379915906319",
@@ -3596,7 +3624,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7380562375188974888",
@@ -3624,7 +3652,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7376838935164505384",
@@ -3652,7 +3680,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7369052560818195752",
@@ -3680,7 +3708,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7357171384377740544",
@@ -3708,7 +3736,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7356057989767269684",
@@ -3736,7 +3764,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7353467942706695458",
@@ -3764,7 +3792,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7351983713426705699",
@@ -3792,7 +3820,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7348271667711380770",
@@ -3820,7 +3848,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7346781656461724963",
@@ -3848,7 +3876,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7344186576013905187",
@@ -3876,7 +3904,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7343069490126540084",
@@ -3904,7 +3932,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7341595770195430690",
@@ -3932,7 +3960,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7335277415456836898",
@@ -3960,7 +3988,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7331201469292596520",
@@ -3988,7 +4016,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7327483273536474408",
@@ -4016,7 +4044,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7322291358931127592",
@@ -4044,7 +4072,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7319695192297180431",
@@ -4072,7 +4100,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7318207777246072098",
@@ -4100,7 +4128,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7315610620424883496",
@@ -4128,7 +4156,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7313012058021186866",
@@ -4156,7 +4184,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7311907273461320975",
@@ -4184,7 +4212,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7309303794733485327",
@@ -4212,7 +4240,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7307817481257766178",
@@ -4240,7 +4268,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7306709804234444072",
@@ -4268,7 +4296,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7305218669343264034",
@@ -4296,7 +4324,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7304104136306412835",
@@ -4324,7 +4352,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7302621786980486440",
@@ -4352,7 +4380,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7301508881325296931",
@@ -4380,7 +4408,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7300032085358660904",
@@ -4408,7 +4436,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7298921585358933283",
@@ -4436,7 +4464,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7296314453379910947",
@@ -4464,7 +4492,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7293716793221205283",
@@ -4492,7 +4520,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7291120515530493184",
@@ -4520,7 +4548,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7289635377009151247",
@@ -4548,7 +4576,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7288529711267859747",
@@ -4576,7 +4604,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7284439456776506658",
@@ -4604,7 +4632,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7280727710740139264",
@@ -4632,7 +4660,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7279243688423853347",
@@ -4660,7 +4688,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7278130800220998946",
@@ -4688,7 +4716,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7276646497377176872",
@@ -4716,7 +4744,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7275536378321014051",
@@ -4744,7 +4772,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7272944156618542336",
@@ -4772,7 +4800,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7271452082337598760",
@@ -4800,7 +4828,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7267754640270216483",
@@ -4828,7 +4856,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7265142606580026658",
@@ -4856,7 +4884,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7263668594196745487",
@@ -4884,7 +4912,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7262546080133401890",
@@ -4912,7 +4940,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7259946986114190626",
@@ -4940,7 +4968,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7258462271670586658",
@@ -4968,7 +4996,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7254755365995285812",
@@ -4996,7 +5024,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7252154554828033295",
@@ -5024,7 +5052,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7248074193118547240",
@@ -5052,7 +5080,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7246960976459730191",
@@ -5080,7 +5108,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7242877295336164642",
@@ -5108,7 +5136,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7241053732916596026",
@@ -5136,7 +5164,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7236568825607621922",
@@ -5164,7 +5192,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7235084849025912096",
@@ -5192,7 +5220,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7231384286954409271",
@@ -5220,7 +5248,7 @@
       "automatic_decision_reason": "未发现明确教学动作、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7231373527314631947",
@@ -5248,7 +5276,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7229889111706848544",
@@ -5276,7 +5304,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7229506261136526647",
@@ -5304,7 +5332,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7226178331408928038",
@@ -5332,7 +5360,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7220984919747497255",
@@ -5360,7 +5388,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7215787369381858599",
@@ -5388,7 +5416,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7214304020775652620",
@@ -5416,7 +5444,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7213191190382972172",
@@ -5444,7 +5472,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7211705676840602918",
@@ -5472,7 +5500,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7209108124924464387",
@@ -5500,7 +5528,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7206510177317702924",
@@ -5528,7 +5556,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7205399670959459623",
@@ -5556,7 +5584,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7203541969530883361",
@@ -5584,7 +5612,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7202800263588105510",
@@ -5612,7 +5640,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7200944470446050599",
@@ -5640,7 +5668,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7195014413932367116",
@@ -5668,7 +5696,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7193151905139395872",
@@ -5696,7 +5724,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7189812762409782539",
@@ -5724,7 +5752,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7185360811248864544",
@@ -5752,7 +5780,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7184618028619910433",
@@ -5780,7 +5808,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7182019728024538380",
@@ -5808,7 +5836,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7175339579392707878",
@@ -5836,7 +5864,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7174969770511551756",
@@ -5864,7 +5892,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7174229898238676228",
@@ -5892,7 +5920,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7172742523096517927",
@@ -5920,7 +5948,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7170144521781562662",
@@ -5948,7 +5976,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7169772952039345411",
@@ -5976,7 +6004,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7169038502280154380",
@@ -6004,7 +6032,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7167546787073477900",
@@ -6032,7 +6060,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7167176069978623236",
@@ -6060,7 +6088,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7163836275487804676",
@@ -6088,7 +6116,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7161980324409363712",
@@ -6116,7 +6144,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7158640349798255907",
@@ -6144,7 +6172,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7157156135538134307",
@@ -6172,7 +6200,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7156785188884778275",
@@ -6200,7 +6228,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7156043406962134306",
@@ -6228,7 +6256,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7154558892742151464",
@@ -6256,7 +6284,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7154187492487335203",
@@ -6284,7 +6312,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7153445193713290511",
@@ -6312,7 +6340,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7151961376448138531",
@@ -6340,7 +6368,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7151589626031901992",
@@ -6368,7 +6396,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7150847019320429839",
@@ -6396,7 +6424,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7148990784363138344",
@@ -6424,7 +6452,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7148267452877638944",
@@ -6452,7 +6480,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7146762792438074665",
@@ -6480,7 +6508,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7145708380047297833",
@@ -6508,7 +6536,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7144168689510649128",
@@ -6536,7 +6564,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7142313105324870950",
@@ -6564,7 +6592,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7141570854437063977",
@@ -6592,7 +6620,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7141200093922790688",
@@ -6620,7 +6648,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7140089034096839976",
@@ -6648,7 +6676,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7138604160051612969",
@@ -6676,7 +6704,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7137859788255284520",
@@ -6704,7 +6732,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7133406724035185920",
@@ -6732,7 +6760,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7131178146023427328",
@@ -6760,7 +6788,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7130069152592645411",
@@ -6788,7 +6816,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7129696487956647208",
@@ -6816,7 +6844,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7128211692743363880",
@@ -6844,7 +6872,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7127470220309957923",
@@ -6872,7 +6900,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7125615679402724623",
@@ -6900,7 +6928,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7124871920230632745",
@@ -6928,7 +6956,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7123390328643603752",
@@ -6956,7 +6984,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7122277769202896163",
@@ -6984,7 +7012,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7118192644957818127",
@@ -7012,7 +7040,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7117821949165718824",
@@ -7040,7 +7068,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7117079751398919465",
@@ -7068,7 +7096,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7115241358255803683",
@@ -7096,7 +7124,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7114483272972881193",
@@ -7124,7 +7152,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7113001319694224655",
@@ -7152,7 +7180,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7112628690395106560",
@@ -7180,7 +7208,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7111887264187190528",
@@ -7208,7 +7236,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7110431174811602191",
@@ -7236,7 +7264,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7110033991918554402",
@@ -7264,7 +7292,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7109288333884329231",
@@ -7292,7 +7320,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7106697344128748835",
@@ -7320,7 +7348,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7105205741954321699",
@@ -7348,7 +7376,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7103721178195397888",
@@ -7376,7 +7404,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7102635326803332393",
@@ -7404,7 +7432,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7101123673062378767",
@@ -7432,7 +7460,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7099644893269839144",
@@ -7460,7 +7488,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7098897570482670888",
@@ -7488,7 +7516,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7098156298415459599",
@@ -7516,7 +7544,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7097413480747191587",
@@ -7544,7 +7572,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7097047150479084835",
@@ -7572,7 +7600,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7096301894984846632",
@@ -7600,7 +7628,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7095554075210550528",
@@ -7628,7 +7656,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7094813761894223139",
@@ -7656,7 +7684,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7094072057608047913",
@@ -7684,7 +7712,7 @@
       "automatic_decision_reason": "未发现明确教学动作、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7093706918492917033",
@@ -7712,7 +7740,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7092959332047785250",
@@ -7740,7 +7768,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7092220370400365839",
@@ -7768,7 +7796,7 @@
       "automatic_decision_reason": "未发现明确教学动作、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7091844908973067561",
@@ -7796,7 +7824,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7091101085535915279",
@@ -7824,7 +7852,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7090377448017235234",
@@ -7852,7 +7880,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7089632297791671587",
@@ -7880,7 +7908,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7088510866093591808",
@@ -7908,7 +7936,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7088131899348028687",
@@ -7936,7 +7964,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7087759120761228578",
@@ -7964,7 +7992,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7086648517627858176",
@@ -7992,7 +8020,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7086276287681137961",
@@ -8020,7 +8048,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7085169366005714217",
@@ -8048,7 +8076,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7084422988291935523",
@@ -8076,7 +8104,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7083684012513840424",
@@ -8104,7 +8132,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7081831033515117865",
@@ -8132,7 +8160,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7081451189262355747",
@@ -8160,7 +8188,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7080735688819281193",
@@ -8188,7 +8216,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7080341135545126144",
@@ -8216,7 +8244,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7079966173307194639",
@@ -8244,7 +8272,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078852452442836224",
@@ -8272,7 +8300,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078487171803467042",
@@ -8300,7 +8328,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078117752275225891",
@@ -8328,7 +8356,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7077740726926298402",
@@ -8356,7 +8384,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076997927054495010",
@@ -8384,7 +8412,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076641227025763618",
@@ -8412,7 +8440,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076257912192060707",
@@ -8440,7 +8468,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7075515778073709824",
@@ -8468,7 +8496,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7075140710332239119",
@@ -8496,7 +8524,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7074399231259266344",
@@ -8524,7 +8552,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7073657979328826659",
@@ -8552,7 +8580,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7072915842605878528",
@@ -8580,7 +8608,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7072543702161296640",
@@ -8608,7 +8636,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7071800926553541922",
@@ -8636,7 +8664,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7071068959021255951",
@@ -8664,7 +8692,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7069948509838904591",
@@ -8692,7 +8720,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7069575740836023587",
@@ -8720,7 +8748,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068835198938516777",
@@ -8748,7 +8776,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068465954270792994",
@@ -8776,7 +8804,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068092085533953315",
@@ -8804,7 +8832,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7067722128413543680",
@@ -8832,7 +8860,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7066596981992394025",
@@ -8860,7 +8888,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065871561915485440",
@@ -8888,7 +8916,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065491791167999232",
@@ -8916,7 +8944,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065157571816000809",
@@ -8944,7 +8972,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064753436809514281",
@@ -8972,7 +9000,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064372942880148777",
@@ -9000,7 +9028,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064010057020673314",
@@ -9028,7 +9056,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7063638911301520680",
@@ -9056,7 +9084,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7063280271403060520",
@@ -9084,7 +9112,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7062570553936268559",
@@ -9112,7 +9140,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7062171437569805609",
@@ -9140,7 +9168,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7061422431386324264",
@@ -9168,7 +9196,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7060717442825309480",
@@ -9196,7 +9224,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059927286186822946",
@@ -9224,7 +9252,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059589039694957864",
@@ -9252,7 +9280,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059205903639121187",
@@ -9280,7 +9308,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7058464382786784547",
@@ -9308,7 +9336,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7057722299855801641",
@@ -9336,7 +9364,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056953556531809547",
@@ -9364,7 +9392,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056596925721726220",
@@ -9392,7 +9420,7 @@
       "automatic_decision_reason": "同时出现教学信号与品牌、发售或购买信号",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_reviewed_keep",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056244399390412064",
@@ -9420,7 +9448,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055859367005949187",
@@ -9448,7 +9476,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055491154288102667",
@@ -9476,7 +9504,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055130343476710667",
@@ -9504,7 +9532,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054786188086955276",
@@ -9532,7 +9560,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054395778814561575",
@@ -9560,7 +9588,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054025391601650948",
@@ -9588,7 +9616,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053654124042194215",
@@ -9616,7 +9644,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053637734749031691",
@@ -9644,7 +9672,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053234542290668811",
@@ -9672,7 +9700,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053016126262988064",
@@ -9700,7 +9728,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052912740955999499",
@@ -9728,7 +9756,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052600326116887812",
@@ -9756,7 +9784,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052519937125911846",
@@ -9784,7 +9812,7 @@
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
       "previous_decision": "保留：教学",
       "migration_action": "preserve_transcript_backed_teaching",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052252250189696267",
@@ -9812,7 +9840,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052148706681883907",
@@ -9840,7 +9868,7 @@
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
       "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     }
   ]
 }

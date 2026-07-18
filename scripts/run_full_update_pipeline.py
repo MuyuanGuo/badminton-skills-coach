@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -11,9 +12,80 @@ from project_artifacts import sync_skill_references
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(command):
-    print(f"$ {' '.join(command)}", flush=True)
-    return subprocess.run(command, cwd=ROOT, check=True)
+def run(command, *, env=None):
+    normalized = [str(part) for part in command]
+    print(f"$ {' '.join(normalized)}", flush=True)
+    return subprocess.run(normalized, cwd=ROOT, check=True, env=env)
+
+
+def build_commands():
+    return [
+        [sys.executable, "scripts/build_douyin_knowledge.py"],
+        [sys.executable, "scripts/build_topic_index.py"],
+        [sys.executable, "scripts/build_retrieval_index.py"],
+        [sys.executable, "scripts/build_visual_review_queue.py"],
+        [sys.executable, "scripts/generate_knowledge_graph.py"],
+        [sys.executable, "scripts/build_answer_quality_review_queue.py"],
+    ]
+
+
+def validation_commands():
+    return [
+        [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
+        [sys.executable, "scripts/evaluate_answer_policy.py"],
+        [sys.executable, "scripts/evaluate_answer_context.py"],
+        [sys.executable, "scripts/evaluate_answer_quality.py"],
+        [sys.executable, "scripts/evaluate_feedback_signals.py"],
+        [sys.executable, "scripts/evaluate_query_understanding.py"],
+        [sys.executable, "scripts/evaluate_retrieval.py"],
+        [
+            sys.executable,
+            "scripts/evaluate_video_comprehension.py",
+            "--require-raw-transcripts",
+        ],
+        [sys.executable, "scripts/build_manifest.py", "--check"],
+        [sys.executable, "scripts/check_video_links.py"],
+        ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
+        [sys.executable, "scripts/validate_project.py"],
+    ]
+
+
+def rebuild_and_validate():
+    for command in build_commands():
+        run(command)
+    changed_references = sync_skill_references()
+    print(
+        json.dumps(
+            {"synchronized_skill_references": changed_references},
+            ensure_ascii=False,
+        )
+    )
+    run([sys.executable, "scripts/update_readme_status.py"])
+    run([sys.executable, "scripts/build_manifest.py"])
+
+    test_environment = dict(os.environ)
+    existing_pythonpath = test_environment.get("PYTHONPATH")
+    test_environment["PYTHONPATH"] = os.pathsep.join(
+        value
+        for value in [str(ROOT / "scripts"), existing_pythonpath]
+        if value
+    )
+    run(
+        [
+            sys.executable,
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "scripts",
+            "-p",
+            "test_*.py",
+        ],
+        env=test_environment,
+    )
+    for command in validation_commands():
+        run(command)
+    return changed_references
 
 
 def main():
@@ -47,34 +119,7 @@ def main():
             command.append("--no-push")
         run(command)
     else:
-        for command in [
-            [sys.executable, "scripts/build_douyin_knowledge.py"],
-            [sys.executable, "scripts/build_topic_index.py"],
-            [sys.executable, "scripts/build_retrieval_index.py"],
-            [sys.executable, "scripts/build_visual_review_queue.py"],
-            [sys.executable, "scripts/generate_knowledge_graph.py"],
-            [sys.executable, "scripts/build_answer_quality_review_queue.py"],
-        ]:
-            run(command)
-        changed_references = sync_skill_references()
-        print(
-            json.dumps(
-                {"synchronized_skill_references": changed_references},
-                ensure_ascii=False,
-            )
-        )
-        run([sys.executable, "scripts/update_readme_status.py"])
-        run([sys.executable, "scripts/build_manifest.py"])
-        run([sys.executable, "scripts/evaluate_retrieval.py"])
-        run([sys.executable, "scripts/evaluate_answer_policy.py"])
-        run([sys.executable, "scripts/evaluate_feedback_signals.py"])
-        run([sys.executable, "scripts/test_feedback_pipeline.py"])
-        run([sys.executable, "scripts/test_feedback_personalization.py"])
-        run([sys.executable, "scripts/test_feedback_promotion.py"])
-        run([sys.executable, "scripts/test_public_feedback_e2e.py"])
-        run([sys.executable, "scripts/test_build_reproducibility.py"])
-        run([sys.executable, "scripts/check_video_links.py"])
-        run([sys.executable, "scripts/validate_project.py"])
+        rebuild_and_validate()
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))
 

@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from douyin_pipeline import classify_video, load_classification_rules
-from reclassify_douyin_catalog import effective_decision
+from reclassify_douyin_catalog import effective_decision, migrate_catalog
 
 
 class ClassificationMigrationTests(unittest.TestCase):
@@ -79,6 +79,42 @@ class ClassificationMigrationTests(unittest.TestCase):
         self.assertEqual(decision, "排除：非教学")
         self.assertEqual(action, "preserve_reviewed_exclusion")
 
+    def test_reclassification_is_idempotent_when_facts_do_not_change(self):
+        index = {
+            "videos": [
+                {
+                    "video_id": "123456789012345678",
+                    "url": "https://www.douyin.com/video/123456789012345678",
+                    "title": "春节放假通知",
+                    "raw_text": "春节放假通知",
+                }
+            ]
+        }
+        filtered = {
+            "generated_at": "2026-01-01T00:00:00+00:00",
+            "source_profile": "test",
+            "methodology": "test",
+            "videos": [],
+        }
+        queue = {"updated_at": None, "counts": {}, "items": []}
+        knowledge = {"videos": []}
+        reviews = {"items": []}
+        first = migrate_catalog(
+            index, filtered, queue, knowledge, reviews, self.rules
+        )
+        ledger, updated_filtered, updated_queue, report = first
+        second = migrate_catalog(
+            index,
+            updated_filtered,
+            updated_queue,
+            knowledge,
+            reviews,
+            self.rules,
+            previous_ledger=ledger,
+            previous_report={**report, "applied": True},
+        )
+        self.assertEqual(second, first)
+
     def test_full_catalog_ledger_and_queue_share_one_rule_identity(self):
         root = Path(__file__).resolve().parents[1]
         ledger = json.loads(
@@ -91,7 +127,16 @@ class ClassificationMigrationTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
-        self.assertEqual(len(ledger["videos"]), 472)
+        video_index = json.loads(
+            (root / "data" / "douyin_video_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(len(ledger["videos"]), len(video_index["videos"]))
+        self.assertEqual(
+            {item["video_id"] for item in ledger["videos"]},
+            {item["video_id"] for item in video_index["videos"]},
+        )
         identity = ledger["classification_rules"]
         self.assertEqual(
             {item["classification_rules_hash"] for item in ledger["videos"]},

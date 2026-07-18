@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import copy
 import json
 from collections import Counter
 from pathlib import Path
@@ -83,7 +84,29 @@ def effective_decision(automatic, was_kept, knowledge_record=None, review=None):
     return decision, reason, action
 
 
-def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
+def preserve_timestamp_if_unchanged(candidate, previous, field, ignored_fields=()):
+    if not previous or not previous.get(field):
+        return candidate
+    candidate_semantic = copy.deepcopy(candidate)
+    previous_semantic = copy.deepcopy(previous)
+    for key in (field, *ignored_fields):
+        candidate_semantic.pop(key, None)
+        previous_semantic.pop(key, None)
+    if candidate_semantic == previous_semantic:
+        candidate[field] = previous[field]
+    return candidate
+
+
+def migrate_catalog(
+    index,
+    previous_filtered,
+    queue,
+    knowledge,
+    reviews,
+    rules,
+    previous_ledger=None,
+    previous_report=None,
+):
     migrated_at = now_iso()
     previous_kept = {
         str(item["video_id"]): item for item in previous_filtered.get("videos", [])
@@ -95,6 +118,10 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
         str(item["video_id"]): item
         for item in reviews.get("items", [])
         if item.get("review_status") != "pending"
+    }
+    previous_ledger_by_id = {
+        str(item["video_id"]): item
+        for item in (previous_ledger or {}).get("videos", [])
     }
     ledger_items = []
     drift = []
@@ -122,6 +149,10 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
             "migration_action": action,
             "classified_at": migrated_at,
         }
+        previous_item = previous_ledger_by_id.get(video_id)
+        item = preserve_timestamp_if_unchanged(
+            item, previous_item, "classified_at"
+        )
         ledger_items.append(item)
         if previous_decision != decision:
             drift.append(
@@ -145,6 +176,9 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
         "counts": dict(sorted(decision_counts.items())),
         "videos": ledger_items,
     }
+    ledger = preserve_timestamp_if_unchanged(
+        ledger, previous_ledger, "generated_at"
+    )
     kept = [item for item in ledger_items if item["decision"] == "保留：教学"]
     filtered = {
         "generated_at": migrated_at,
@@ -160,6 +194,9 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
         },
         "videos": kept,
     }
+    filtered = preserve_timestamp_if_unchanged(
+        filtered, previous_filtered, "generated_at"
+    )
 
     ledger_by_id = {item["video_id"]: item for item in ledger_items}
     queue_items = []
@@ -173,7 +210,7 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
                     "classification_reason": classification["decision_reason"],
                     "classification_rules_version": rules_identity["version"],
                     "classification_rules_hash": rules_identity["sha256"],
-                    "classified_at": migrated_at,
+                    "classified_at": classification["classified_at"],
                 }
             )
             if classification.get("primary_category"):
@@ -188,6 +225,9 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
         "counts": compute_status_counts(queue_items),
         "items": queue_items,
     }
+    queue_payload = preserve_timestamp_if_unchanged(
+        queue_payload, queue, "updated_at"
+    )
     report = {
         "generated_at": migrated_at,
         "classification_rules": rules_identity,
@@ -197,6 +237,9 @@ def migrate_catalog(index, previous_filtered, queue, knowledge, reviews, rules):
         "drift_count": len(drift),
         "drift": drift,
     }
+    report = preserve_timestamp_if_unchanged(
+        report, previous_report, "generated_at", ignored_fields=("applied",)
+    )
     return ledger, filtered, queue_payload, report
 
 
@@ -220,6 +263,8 @@ def main():
         load_json(KNOWLEDGE_PATH),
         load_json(REVIEW_PATH),
         rules,
+        load_json(LEDGER_PATH) if LEDGER_PATH.exists() else None,
+        load_json(REPORT_PATH) if REPORT_PATH.exists() else None,
     )
     ledger, filtered, queue, report = payloads
     report_path = args.report if args.report.is_absolute() else ROOT / args.report

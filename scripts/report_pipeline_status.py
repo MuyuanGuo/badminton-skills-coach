@@ -41,7 +41,11 @@ def failed_queue_items(queue):
 
 
 def next_action(queue, update_report):
-    if update_report and update_report.get("new", 0):
+    if (
+        update_report
+        and update_report.get("new", 0)
+        and not update_report.get("applied")
+    ):
         if update_report.get("teaching", 0):
             return "Review output/douyin-update-report.json, then rerun check_douyin_updates.py with --apply if the teaching candidates are correct."
         return "Review output/douyin-update-report.json. Current new items are not classified as teaching candidates."
@@ -88,6 +92,7 @@ def main():
             "new": update_report.get("new") if update_report else None,
             "teaching": update_report.get("teaching") if update_report else None,
             "excluded": update_report.get("excluded") if update_report else None,
+            "applied": bool(update_report.get("applied")) if update_report else False,
         },
         "next_action": next_action(queue, update_report),
     }

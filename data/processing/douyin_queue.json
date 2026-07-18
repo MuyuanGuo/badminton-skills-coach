@@ -1,10 +1,28 @@
 {
-  "updated_at": "2026-07-18T05:19:28.824608+00:00",
+  "updated_at": "2026-07-18T06:39:43.480960+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
+    "classified_teaching": 1,
     "transcribed": 406
   },
   "items": [
+    {
+      "video_id": "7663523942439940453",
+      "url": "https://www.douyin.com/video/7663523942439940453",
+      "title": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备，可以有效的优化两边的出拍速度的合理性，一般对口抽挡中#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "category": "中前场与抽挡",
+      "tags": "中前场与抽挡",
+      "status": "classified_teaching",
+      "classification_decision": "保留：教学",
+      "classification_reason": "包含明确技术、训练、纠错或战术信号",
+      "classification_rules_version": 2,
+      "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
+      "classified_at": "2026-07-18T06:39:43.480960+00:00",
+      "media_path": null,
+      "duration_seconds": null,
+      "attempts": 0,
+      "error": null
+    },
     {
       "video_id": "7661940775983482097",
       "url": "https://www.douyin.com/video/7661940775983482097",
@@ -20,7 +38,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7659991105622862457",
@@ -37,7 +55,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7659348110628345210",
@@ -54,7 +72,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7658231159860261361",
@@ -71,7 +89,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7656927370758796145",
@@ -88,7 +106,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7656560952972884730",
@@ -105,7 +123,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7652440366436945017",
@@ -122,7 +140,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7650602010613537265",
@@ -139,7 +157,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7647839024535507897",
@@ -156,7 +174,7 @@
       "classification_reason": "品牌只出现在标签中，且历史转写已通过教学证据门槛",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7643719807951615482",
@@ -173,7 +191,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7642648621985030138",
@@ -190,7 +208,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7641533740292048049",
@@ -207,7 +225,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7639306481355832689",
@@ -224,7 +242,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7634998306204492794",
@@ -241,7 +259,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7634016952800880570",
@@ -258,7 +276,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7631290187235164026",
@@ -275,7 +293,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7630800123594285305",
@@ -292,7 +310,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7628342769941691121",
@@ -309,7 +327,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7627338837022917809",
@@ -326,7 +344,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7626127268884067249",
@@ -343,7 +361,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7622167629645727717",
@@ -360,7 +378,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7621243051541587889",
@@ -377,7 +395,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7619576226616745445",
@@ -394,7 +412,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7618301799796222833",
@@ -411,7 +429,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7616819993833503601",
@@ -428,7 +446,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7615737190207725937",
@@ -445,7 +463,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7614167503938610417",
@@ -462,7 +480,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7611635851789771721",
@@ -479,7 +497,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7609429014616637050",
@@ -496,7 +514,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7607852875611759802",
@@ -513,7 +531,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7606412946096327978",
@@ -530,7 +548,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7606560547489149691",
@@ -547,7 +565,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7603148927714908273",
@@ -564,7 +582,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7602766054809333617",
@@ -581,7 +599,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7600107130034047973",
@@ -598,7 +616,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7598855095372185273",
@@ -615,7 +633,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7597528312752490929",
@@ -632,7 +650,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7596955153073478011",
@@ -649,7 +667,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7595804581259641521",
@@ -666,7 +684,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7593661008519810289",
@@ -683,7 +701,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7592181557051310961",
@@ -700,7 +718,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7591112983016940977",
@@ -717,7 +735,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7589749293205363633",
@@ -734,7 +752,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7589590613499595185",
@@ -751,7 +769,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7588747058782683513",
@@ -768,7 +786,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7587362379455778097",
@@ -785,7 +803,7 @@
       "classification_reason": "品牌只出现在标签中，且历史转写已通过教学证据门槛",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7586613438625959217",
@@ -802,7 +820,7 @@
       "classification_reason": "品牌只出现在标签中，且历史转写已通过教学证据门槛",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7582017752145136945",
@@ -819,7 +837,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7577392474555210597",
@@ -836,7 +854,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7573211923485260537",
@@ -853,7 +871,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7571574635323124145",
@@ -870,7 +888,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7570301879545426171",
@@ -887,7 +905,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7567860375287303035",
@@ -904,7 +922,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7567155406117533051",
@@ -921,7 +939,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7563513758061114875",
@@ -938,7 +956,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7561558424342056250",
@@ -955,7 +973,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7560064232592493882",
@@ -972,7 +990,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7558912953539071292",
@@ -989,7 +1007,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7552759261840952636",
@@ -1006,7 +1024,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7551459420703837498",
@@ -1023,7 +1041,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7550305145877155131",
@@ -1040,7 +1058,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7548394643144068411",
@@ -1057,7 +1075,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7546109410041908538",
@@ -1074,7 +1092,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7541623926234811705",
@@ -1091,7 +1109,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7540508309087358266",
@@ -1108,7 +1126,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7539394762560113978",
@@ -1125,7 +1143,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7538639302243323195",
@@ -1142,7 +1160,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7536519262631611707",
@@ -1159,7 +1177,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7535400692573211962",
@@ -1176,7 +1194,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7534955049426095419",
@@ -1193,7 +1211,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7531326870298873147",
@@ -1210,7 +1228,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7530102529830800699",
@@ -1227,7 +1245,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7526124617461173562",
@@ -1244,7 +1262,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7525379384673733945",
@@ -1261,7 +1279,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7524557392328461627",
@@ -1278,7 +1296,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7523163965838003514",
@@ -1295,7 +1313,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7522041413614816570",
@@ -1312,7 +1330,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7520190707093654844",
@@ -1329,7 +1347,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7518239001813339449",
@@ -1346,7 +1364,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7517867684509420857",
@@ -1363,7 +1381,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7516012808523222329",
@@ -1380,7 +1398,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7515625891511995706",
@@ -1397,7 +1415,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7511934047901846841",
@@ -1414,7 +1432,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7511074095086243131",
@@ -1431,7 +1449,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7509355373729762619",
@@ -1448,7 +1466,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7508222669708463420",
@@ -1465,7 +1483,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7506736569824726332",
@@ -1482,7 +1500,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7506362888166083897",
@@ -1499,7 +1517,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7505345719160933692",
@@ -1516,7 +1534,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7504391919716273468",
@@ -1533,7 +1551,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7502895214820085049",
@@ -1550,7 +1568,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7501542236061420859",
@@ -1567,7 +1585,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7500519808157371711",
@@ -1584,7 +1602,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7499776424493075772",
@@ -1601,7 +1619,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7498830855188942137",
@@ -1618,7 +1636,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7498295344284093755",
@@ -1635,7 +1653,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7497098752897879355",
@@ -1652,7 +1670,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7496715538836704571",
@@ -1669,7 +1687,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7496238975796333881",
@@ -1686,7 +1704,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7494729488699559225",
@@ -1703,7 +1721,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7492357671853526329",
@@ -1720,7 +1738,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7491780200468843833",
@@ -1737,7 +1755,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7491244893893938492",
@@ -1754,7 +1772,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7489412105641168187",
@@ -1771,7 +1789,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7488538000524119356",
@@ -1788,7 +1806,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7488280037955816762",
@@ -1805,7 +1823,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7486788550298471739",
@@ -1822,7 +1840,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7486058135547891004",
@@ -1839,7 +1857,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7485692231404342586",
@@ -1856,7 +1874,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7484563688096091449",
@@ -1873,7 +1891,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7483346020332522812",
@@ -1890,7 +1908,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7480852601798511929",
@@ -1907,7 +1925,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7476768272864644409",
@@ -1924,7 +1942,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7475440958130097466",
@@ -1941,7 +1959,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7471361140719652154",
@@ -1958,7 +1976,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7459867608460840252",
@@ -1975,7 +1993,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7458505857844776250",
@@ -1992,7 +2010,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7453420876076240188",
@@ -2009,7 +2027,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7449702119076072764",
@@ -2026,7 +2044,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7447084061371272507",
@@ -2043,7 +2061,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7445495930280856892",
@@ -2060,7 +2078,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7441796812475747641",
@@ -2077,7 +2095,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7440406891664133428",
@@ -2094,7 +2112,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7432633273060314408",
@@ -2111,7 +2129,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7427416335900020008",
@@ -2128,7 +2146,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7423714121620737315",
@@ -2145,7 +2163,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7422121561559272739",
@@ -2162,7 +2180,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7418417650264558848",
@@ -2179,7 +2197,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7415820467606473999",
@@ -2196,7 +2214,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7414339897990843663",
@@ -2213,7 +2231,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7413335844594994447",
@@ -2230,7 +2248,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7411850466457292084",
@@ -2247,7 +2265,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7409137525006060840",
@@ -2264,7 +2282,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7408162190647217460",
@@ -2281,7 +2299,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7406541084219821312",
@@ -2298,7 +2316,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7405420818009722146",
@@ -2315,7 +2333,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7404091511773613347",
@@ -2332,7 +2350,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7400221745208167695",
@@ -2349,7 +2367,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7397746202562956559",
@@ -2366,7 +2384,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7393550140465777960",
@@ -2383,7 +2401,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7387250672263040267",
@@ -2400,7 +2418,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7387233755057949987",
@@ -2417,7 +2435,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7385749108843089187",
@@ -2434,7 +2452,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7384641787647872308",
@@ -2451,7 +2469,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7383154379915906319",
@@ -2468,7 +2486,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7382052454063492392",
@@ -2485,7 +2503,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7381785580268473635",
@@ -2502,7 +2520,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7380562375188974888",
@@ -2519,7 +2537,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7376838935164505384",
@@ -2536,7 +2554,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7370160247467494691",
@@ -2553,7 +2571,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7369052560818195752",
@@ -2570,7 +2588,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7367561803234069800",
@@ -2587,7 +2605,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7358661350945525007",
@@ -2604,7 +2622,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7357171384377740544",
@@ -2621,7 +2639,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7356057989767269684",
@@ -2638,7 +2656,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7354580584229866787",
@@ -2655,7 +2673,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7353467942706695458",
@@ -2672,7 +2690,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7351983713426705699",
@@ -2689,7 +2707,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7348271667711380770",
@@ -2706,7 +2724,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7346781656461724963",
@@ -2723,7 +2741,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7344186576013905187",
@@ -2740,7 +2758,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7343069490126540084",
@@ -2757,7 +2775,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7341595770195430690",
@@ -2774,7 +2792,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7340472371322686755",
@@ -2791,7 +2809,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7335277415456836898",
@@ -2808,7 +2826,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7331201469292596520",
@@ -2825,7 +2843,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7330090280055491874",
@@ -2842,7 +2860,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7327483273536474408",
@@ -2859,7 +2877,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7324887936980274432",
@@ -2876,7 +2894,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7322291358931127592",
@@ -2893,7 +2911,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7319695192297180431",
@@ -2910,7 +2928,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7318207777246072098",
@@ -2927,7 +2945,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7315610620424883496",
@@ -2944,7 +2962,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7313012058021186866",
@@ -2961,7 +2979,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7311907273461320975",
@@ -2978,7 +2996,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7309303794733485327",
@@ -2995,7 +3013,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7307817481257766178",
@@ -3012,7 +3030,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7306709804234444072",
@@ -3029,7 +3047,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7305218669343264034",
@@ -3046,7 +3064,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7304104136306412835",
@@ -3063,7 +3081,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7302621786980486440",
@@ -3080,7 +3098,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7301508881325296931",
@@ -3097,7 +3115,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7300032085358660904",
@@ -3114,7 +3132,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7298921585358933283",
@@ -3131,7 +3149,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7296314453379910947",
@@ -3148,7 +3166,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7293716793221205283",
@@ -3165,7 +3183,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7292235083715448104",
@@ -3182,7 +3200,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7291120515530493184",
@@ -3199,7 +3217,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7289635377009151247",
@@ -3216,7 +3234,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7288529711267859747",
@@ -3233,7 +3251,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7284439456776506658",
@@ -3250,7 +3268,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7280727710740139264",
@@ -3267,7 +3285,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7279243688423853347",
@@ -3284,7 +3302,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7278130800220998946",
@@ -3301,7 +3319,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7276646497377176872",
@@ -3318,7 +3336,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7275536378321014051",
@@ -3335,7 +3353,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7272944156618542336",
@@ -3352,7 +3370,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7271452082337598760",
@@ -3369,7 +3387,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7267754640270216483",
@@ -3386,7 +3404,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7265142606580026658",
@@ -3403,7 +3421,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7263668594196745487",
@@ -3420,7 +3438,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7262546080133401890",
@@ -3437,7 +3455,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7259946986114190626",
@@ -3454,7 +3472,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7258462271670586658",
@@ -3471,7 +3489,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7254755365995285812",
@@ -3488,7 +3506,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7252154554828033295",
@@ -3505,7 +3523,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7249558167288335656",
@@ -3522,7 +3540,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7248074193118547240",
@@ -3539,7 +3557,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7246960976459730191",
@@ -3556,7 +3574,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7245471347210554639",
@@ -3573,7 +3591,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7242877295336164642",
@@ -3590,7 +3608,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7241053732916596026",
@@ -3607,7 +3625,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7236568825607621922",
@@ -3624,7 +3642,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7235084849025912096",
@@ -3641,7 +3659,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7231384286954409271",
@@ -3658,7 +3676,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7231373527314631947",
@@ -3675,7 +3693,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7229889111706848544",
@@ -3692,7 +3710,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7229506261136526647",
@@ -3709,7 +3727,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7226178331408928038",
@@ -3726,7 +3744,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7223584265072692518",
@@ -3743,7 +3761,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7220984919747497255",
@@ -3760,7 +3778,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7220630996293635385",
@@ -3777,7 +3795,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7218386274690796832",
@@ -3794,7 +3812,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7215787369381858599",
@@ -3811,7 +3829,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7214304020775652620",
@@ -3828,7 +3846,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7213191190382972172",
@@ -3845,7 +3863,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7211705676840602918",
@@ -3862,7 +3880,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7210592889141775627",
@@ -3879,7 +3897,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7209108124924464387",
@@ -3896,7 +3914,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7206510177317702924",
@@ -3913,7 +3931,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7205399670959459623",
@@ -3930,7 +3948,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7203541969530883361",
@@ -3947,7 +3965,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7202800263588105510",
@@ -3964,7 +3982,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7200944470446050599",
@@ -3981,7 +3999,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7200204622852623628",
@@ -3998,7 +4016,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7197605327993310467",
@@ -4015,7 +4033,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7195014413932367116",
@@ -4032,7 +4050,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7193151905139395872",
@@ -4049,7 +4067,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7189812762409782539",
@@ -4066,7 +4084,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7185744630439333153",
@@ -4083,7 +4101,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7185360811248864544",
@@ -4100,7 +4118,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7184618028619910433",
@@ -4117,7 +4135,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7183132124801682726",
@@ -4134,7 +4152,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7182762294294744332",
@@ -4151,7 +4169,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7182019728024538380",
@@ -4168,7 +4186,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7175339579392707878",
@@ -4185,7 +4203,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7174969770511551756",
@@ -4202,7 +4220,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7174229898238676228",
@@ -4219,7 +4237,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7172742523096517927",
@@ -4236,7 +4254,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7170144521781562662",
@@ -4253,7 +4271,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7169772952039345411",
@@ -4270,7 +4288,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7169038502280154380",
@@ -4287,7 +4305,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7167546787073477900",
@@ -4304,7 +4322,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7167176069978623236",
@@ -4321,7 +4339,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7166433980986756384",
@@ -4338,7 +4356,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7164948889630493991",
@@ -4355,7 +4373,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7163836275487804676",
@@ -4372,7 +4390,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7161980324409363712",
@@ -4389,7 +4407,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7159754364297448715",
@@ -4406,7 +4424,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7159382785092783375",
@@ -4423,7 +4441,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7158640349798255907",
@@ -4440,7 +4458,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7157156135538134307",
@@ -4457,7 +4475,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7156785188884778275",
@@ -4474,7 +4492,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7156043406962134306",
@@ -4491,7 +4509,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7154558892742151464",
@@ -4508,7 +4526,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7154187492487335203",
@@ -4525,7 +4543,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7153445193713290511",
@@ -4542,7 +4560,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7151961376448138531",
@@ -4559,7 +4577,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7151589626031901992",
@@ -4576,7 +4594,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7150847019320429839",
@@ -4593,7 +4611,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7149363344649047311",
@@ -4610,7 +4628,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7148990784363138344",
@@ -4627,7 +4645,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7148267452877638944",
@@ -4644,7 +4662,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7146762792438074665",
@@ -4661,7 +4679,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7146394347586587919",
@@ -4678,7 +4696,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7145708380047297833",
@@ -4695,7 +4713,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7144168689510649128",
@@ -4712,7 +4730,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7143811094698528040",
@@ -4729,7 +4747,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7142313105324870950",
@@ -4746,7 +4764,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7141570854437063977",
@@ -4763,7 +4781,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7141200093922790688",
@@ -4780,7 +4798,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7140089034096839976",
@@ -4797,7 +4815,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7138604160051612969",
@@ -4814,7 +4832,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7137859788255284520",
@@ -4831,7 +4849,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7136376084920012032",
@@ -4848,7 +4866,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7133406724035185920",
@@ -4865,7 +4883,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7132666254980074793",
@@ -4882,7 +4900,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7131178146023427328",
@@ -4899,7 +4917,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7130069152592645411",
@@ -4916,7 +4934,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7129696487956647208",
@@ -4933,7 +4951,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7128211692743363880",
@@ -4950,7 +4968,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7127470220309957923",
@@ -4967,7 +4985,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7125615679402724623",
@@ -4984,7 +5002,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7124871920230632745",
@@ -5001,7 +5019,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7123390328643603752",
@@ -5018,7 +5036,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7122277769202896163",
@@ -5035,7 +5053,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7118192644957818127",
@@ -5052,7 +5070,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7117821949165718824",
@@ -5069,7 +5087,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7117079751398919465",
@@ -5086,7 +5104,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7115598014642736424",
@@ -5103,7 +5121,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7115241358255803683",
@@ -5120,7 +5138,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7114483272972881193",
@@ -5137,7 +5155,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7113001319694224655",
@@ -5154,7 +5172,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7112628690395106560",
@@ -5171,7 +5189,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7111887264187190528",
@@ -5188,7 +5206,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7110431174811602191",
@@ -5205,7 +5223,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7110033991918554402",
@@ -5222,7 +5240,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7109288333884329231",
@@ -5239,7 +5257,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7106697344128748835",
@@ -5256,7 +5274,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7105205741954321699",
@@ -5273,7 +5291,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7103721178195397888",
@@ -5290,7 +5308,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7102635326803332393",
@@ -5307,7 +5325,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7101123673062378767",
@@ -5324,7 +5342,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7099644893269839144",
@@ -5341,7 +5359,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7098897570482670888",
@@ -5358,7 +5376,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7098156298415459599",
@@ -5375,7 +5393,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7097413480747191587",
@@ -5392,7 +5410,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7097047150479084835",
@@ -5409,7 +5427,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7096301894984846632",
@@ -5426,7 +5444,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7095554075210550528",
@@ -5443,7 +5461,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7094813761894223139",
@@ -5460,7 +5478,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7094072057608047913",
@@ -5477,7 +5495,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7093706918492917033",
@@ -5494,7 +5512,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7092959332047785250",
@@ -5511,7 +5529,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7092220370400365839",
@@ -5528,7 +5546,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7091844908973067561",
@@ -5545,7 +5563,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7091101085535915279",
@@ -5562,7 +5580,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7090377448017235234",
@@ -5579,7 +5597,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7089632297791671587",
@@ -5596,7 +5614,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7088881901209013545",
@@ -5613,7 +5631,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7088510866093591808",
@@ -5630,7 +5648,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7088131899348028687",
@@ -5647,7 +5665,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7087759120761228578",
@@ -5664,7 +5682,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7087020706680048930",
@@ -5681,7 +5699,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7086648517627858176",
@@ -5698,7 +5716,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7086276287681137961",
@@ -5715,7 +5733,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7085903098853592335",
@@ -5732,7 +5750,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7085169366005714217",
@@ -5749,7 +5767,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7084422988291935523",
@@ -5766,7 +5784,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7083684012513840424",
@@ -5783,7 +5801,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7082564138752281896",
@@ -5800,7 +5818,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7081831033515117865",
@@ -5817,7 +5835,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7081451189262355747",
@@ -5834,7 +5852,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7080735688819281193",
@@ -5851,7 +5869,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7080341135545126144",
@@ -5868,7 +5886,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7079966173307194639",
@@ -5885,7 +5903,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078852452442836224",
@@ -5902,7 +5920,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078487171803467042",
@@ -5919,7 +5937,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7078117752275225891",
@@ -5936,7 +5954,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7077740726926298402",
@@ -5953,7 +5971,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076997927054495010",
@@ -5970,7 +5988,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076641227025763618",
@@ -5987,7 +6005,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7076257912192060707",
@@ -6004,7 +6022,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7075515778073709824",
@@ -6021,7 +6039,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7075140710332239119",
@@ -6038,7 +6056,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7074399231259266344",
@@ -6055,7 +6073,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7073657979328826659",
@@ -6072,7 +6090,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7072915842605878528",
@@ -6089,7 +6107,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7072543702161296640",
@@ -6106,7 +6124,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7071800926553541922",
@@ -6123,7 +6141,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7071430658584857891",
@@ -6140,7 +6158,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7071068959021255951",
@@ -6157,7 +6175,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7070320753916366095",
@@ -6174,7 +6192,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7069948509838904591",
@@ -6191,7 +6209,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7069575740836023587",
@@ -6208,7 +6226,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068835198938516777",
@@ -6225,7 +6243,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068465954270792994",
@@ -6242,7 +6260,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7068092085533953315",
@@ -6259,7 +6277,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7067722128413543680",
@@ -6276,7 +6294,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7066977429230718223",
@@ -6293,7 +6311,7 @@
       "classification_reason": "既有用户复核确认非教学",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7066596981992394025",
@@ -6310,7 +6328,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065871561915485440",
@@ -6327,7 +6345,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065491791167999232",
@@ -6344,7 +6362,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7065157571816000809",
@@ -6361,7 +6379,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064753436809514281",
@@ -6378,7 +6396,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064372942880148777",
@@ -6395,7 +6413,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7064010057020673314",
@@ -6412,7 +6430,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7063638911301520680",
@@ -6429,7 +6447,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7063280271403060520",
@@ -6446,7 +6464,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7062570553936268559",
@@ -6463,7 +6481,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7062171437569805609",
@@ -6480,7 +6498,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7061422431386324264",
@@ -6497,7 +6515,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7060717442825309480",
@@ -6514,7 +6532,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059927286186822946",
@@ -6531,7 +6549,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059589039694957864",
@@ -6548,7 +6566,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7059205903639121187",
@@ -6565,7 +6583,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7058464382786784547",
@@ -6582,7 +6600,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7057722299855801641",
@@ -6599,7 +6617,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056953556531809547",
@@ -6616,7 +6634,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056596925721726220",
@@ -6633,7 +6651,7 @@
       "classification_reason": "既有用户复核确认教学内容",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7056244399390412064",
@@ -6650,7 +6668,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055859367005949187",
@@ -6667,7 +6685,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055491154288102667",
@@ -6684,7 +6702,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7055130343476710667",
@@ -6701,7 +6719,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054786188086955276",
@@ -6718,7 +6736,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054395778814561575",
@@ -6735,7 +6753,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7054025391601650948",
@@ -6752,7 +6770,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053654124042194215",
@@ -6769,7 +6787,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053637734749031691",
@@ -6786,7 +6804,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053234542290668811",
@@ -6803,7 +6821,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7053016126262988064",
@@ -6820,7 +6838,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052912740955999499",
@@ -6837,7 +6855,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052600326116887812",
@@ -6854,7 +6872,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052519937125911846",
@@ -6871,7 +6889,7 @@
       "classification_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052252250189696267",
@@ -6888,7 +6906,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     },
     {
       "video_id": "7052148706681883907",
@@ -6905,7 +6923,7 @@
       "classification_reason": "包含明确技术、训练、纠错或战术信号",
       "classification_rules_version": 2,
       "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
-      "classified_at": "2026-07-18T05:19:28.824608+00:00"
+      "classified_at": "2026-07-18T06:39:43.480960+00:00"
     }
   ],
   "classification_rules": {

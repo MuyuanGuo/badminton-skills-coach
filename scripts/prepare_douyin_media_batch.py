@@ -9,7 +9,7 @@ from media_assets import (
     load_media_policy,
     render_download_config,
     validate_batch_name,
-    validate_page_url,
+    validate_media_snapshot,
     validate_video_id,
 )
 from project_artifacts import atomic_write_text
@@ -28,8 +28,13 @@ def load_json(path):
 def select_asset(snapshot, prefer):
     assets = snapshot.get("assets") or []
     preferred_key = f"preferred_{prefer}"
-    if snapshot.get(preferred_key):
-        return snapshot[preferred_key]
+    preferred = snapshot.get(preferred_key)
+    if preferred and any(
+        asset.get("url") == preferred.get("url")
+        and asset.get("kind") == preferred.get("kind")
+        for asset in assets
+    ):
+        return preferred
     for asset in assets:
         if asset.get("kind") == prefer:
             return asset
@@ -46,7 +51,7 @@ def main():
     )
     parser.add_argument("--input", type=Path, required=True, help="JSON from douyin_video_media_assets_dom.js")
     parser.add_argument("--batch", required=True, help="Batch name, for example batch-049")
-    parser.add_argument("--prefer", choices=["audio", "video"], default="audio")
+    parser.add_argument("--prefer", choices=["audio", "video"], default="video")
     parser.add_argument("--force", action="store_true", help="Overwrite an existing curl config and media_path")
     args = parser.parse_args()
 
@@ -59,7 +64,9 @@ def main():
     snapshot = load_json(input_path)
     try:
         video_id = validate_video_id(snapshot.get("video_id"))
-        validate_page_url(snapshot.get("page_url"), video_id)
+        snapshot_age_minutes = validate_media_snapshot(
+            snapshot, video_id, media_policy
+        )
     except MediaAssetError as error:
         raise SystemExit(str(error)) from error
 
@@ -112,6 +119,7 @@ def main():
                 "curl": str(curl_path.relative_to(ROOT)),
                 "media_path": str(relative_output),
                 "asset_kind": asset.get("kind"),
+                "snapshot_age_minutes": snapshot_age_minutes,
             },
             ensure_ascii=False,
         )

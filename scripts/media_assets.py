@@ -3,6 +3,7 @@
 
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -31,6 +32,8 @@ def load_media_policy(path=SOURCE_CONFIG_PATH):
         raise MediaAssetError("Douyin media URL length policy is invalid")
     if not isinstance(policy.get("minimum_download_bytes"), int):
         raise MediaAssetError("Douyin minimum media size policy is invalid")
+    if not isinstance(policy.get("snapshot_max_age_minutes"), int):
+        raise MediaAssetError("Douyin media snapshot age policy is invalid")
     return policy
 
 
@@ -67,6 +70,37 @@ def validate_page_url(url, video_id):
     ):
         raise MediaAssetError("Snapshot page URL does not match its Douyin video ID")
     return str(url)
+
+
+def validate_media_snapshot(snapshot, video_id, policy, current_time=None):
+    if not isinstance(snapshot, dict):
+        raise MediaAssetError("Media snapshot must be a JSON object")
+    validate_page_url(snapshot.get("page_url"), video_id)
+    value = snapshot.get("collected_at")
+    if not isinstance(value, str) or not value.strip():
+        raise MediaAssetError("Media snapshot is missing collected_at")
+    try:
+        collected_at = datetime.fromisoformat(value.strip().replace("Z", "+00:00"))
+    except ValueError as error:
+        raise MediaAssetError("Media snapshot collected_at is invalid") from error
+    if collected_at.tzinfo is None:
+        raise MediaAssetError("Media snapshot collected_at must include a timezone")
+    now = current_time or datetime.now(timezone.utc)
+    age_minutes = (
+        now.astimezone(timezone.utc) - collected_at.astimezone(timezone.utc)
+    ).total_seconds() / 60
+    if age_minutes < -1:
+        raise MediaAssetError("Media snapshot collected_at is unexpectedly in the future")
+    if age_minutes > policy["snapshot_max_age_minutes"]:
+        raise MediaAssetError(
+            "Media snapshot is stale: "
+            f"{age_minutes:.1f} minutes old; maximum is "
+            f"{policy['snapshot_max_age_minutes']}"
+        )
+    assets = snapshot.get("assets")
+    if not isinstance(assets, list) or not assets:
+        raise MediaAssetError("Media snapshot does not contain any assets")
+    return round(age_minutes, 2)
 
 
 def _host_allowed(hostname, suffixes):
@@ -153,15 +187,35 @@ def downloaded_media_error(path, minimum_bytes):
     size = path.stat().st_size
     if size < minimum_bytes:
         return f"downloaded media is too small ({size} bytes)"
-    head = path.read_bytes()[:512].lstrip().lower()
+    with path.open("rb") as file:
+        head = file.read(4096)
+    normalized_head = head.lstrip().lower()
     if (
-        head.startswith(b"<!doctype html")
-        or head.startswith(b"<html")
-        or head.startswith(b"<?xml")
-        or b"<html" in head
-        or b"accessdenied" in head
+        normalized_head.startswith(b"<!doctype html")
+        or normalized_head.startswith(b"<html")
+        or normalized_head.startswith(b"<?xml")
+        or b"<html" in normalized_head
+        or b"accessdenied" in normalized_head
     ):
         return "downloaded content is an HTML/XML error response, not media"
+    mp4_box = len(head) >= 12 and head[4:8] in {
+        b"ftyp",
+        b"styp",
+        b"moov",
+        b"moof",
+        b"mdat",
+    }
+    known_signature = (
+        mp4_box
+        or b"ftyp" in head[:128]
+        or (head.startswith(b"RIFF") and head[8:12] == b"WAVE")
+        or head.startswith(b"ID3")
+        or (len(head) >= 2 and head[0] == 0xFF and head[1] & 0xE0 == 0xE0)
+        or head.startswith(b"OggS")
+        or head.startswith(b"\x1aE\xdf\xa3")
+    )
+    if not known_signature:
+        return "downloaded file does not have a recognized media signature"
     return None
 
 

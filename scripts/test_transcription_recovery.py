@@ -5,7 +5,12 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from batch_transcribe_directory import transcribe_directory, write_transcript_outputs
+from batch_transcribe_directory import (
+    media_fingerprint,
+    transcribe_directory,
+    validate_transcript_payload,
+    write_transcript_outputs,
+)
 from process_douyin_ready_batch import cleanup_transcribed_media
 
 
@@ -47,6 +52,7 @@ class TranscriptionRecoveryTests(unittest.TestCase):
             payload = {
                 "video_id": "123",
                 "source_file": str(media),
+                **media_fingerprint(media),
                 "model": "small",
                 "language": "zh",
                 "language_probability": 1.0,
@@ -75,6 +81,10 @@ class TranscriptionRecoveryTests(unittest.TestCase):
             self.assertEqual(result["already_done"], 1)
             self.assertTrue((output_dir / "123.txt").exists())
             self.assertEqual(updated["items"][0]["status"], "transcribed")
+            self.assertEqual(
+                updated["items"][0]["transcript_source_sha256"],
+                payload["source_sha256"],
+            )
 
     def test_corrupt_completion_marker_is_removed_and_retried(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -128,6 +138,58 @@ class TranscriptionRecoveryTests(unittest.TestCase):
             self.assertEqual(item["transcription_attempts"], 1)
             self.assertEqual(item["error_stage"], "transcription")
             self.assertFalse((output_dir / "789.json").exists())
+
+    def test_changed_media_invalidates_a_completed_transcript(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            media = media_dir / "321.m4a"
+            media.write_bytes(b"first media")
+            payload = {
+                "video_id": "321",
+                "source_file": str(media),
+                **media_fingerprint(media),
+                "model": "small",
+                "language": "zh",
+                "language_probability": 1.0,
+                "duration": 2.0,
+                "segments": [{"start": 0.0, "end": 2.0, "text": "旧内容"}],
+                "full_text": "旧内容",
+            }
+            write_transcript_outputs(output_dir, payload)
+            media.write_bytes(b"replacement media")
+            queue_path = root / "queue.json"
+            queue_path.write_text(
+                json.dumps(queue_payload("321", str(media)), ensure_ascii=False),
+                encoding="utf-8",
+            )
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_factory=lambda _name: FakeModel(),
+            )
+            updated = json.loads((output_dir / "321.json").read_text(encoding="utf-8"))
+            self.assertEqual(result["invalid_outputs_removed"], ["321"])
+            self.assertEqual(result["transcribed"], 1)
+            self.assertEqual(updated["full_text"], "挥拍击球")
+            self.assertEqual(updated["source_sha256"], media_fingerprint(media)["source_sha256"])
+
+    def test_transcript_structure_rejects_invalid_duration_and_probability(self):
+        payload = {
+            "video_id": "654",
+            "source_file": "654.m4a",
+            "model": "small",
+            "language": "zh",
+            "language_probability": 1.5,
+            "duration": 0,
+            "segments": [],
+            "full_text": "",
+        }
+        with self.assertRaises(ValueError):
+            validate_transcript_payload(payload, "654")
 
     def test_cleanup_removes_only_successful_media(self):
         with tempfile.TemporaryDirectory() as directory:

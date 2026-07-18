@@ -30,13 +30,36 @@ Save the returned JSON to `data/tmp/<video_id>-media-assets.json`, then run:
 
   function collectFromDom() {
     const assets = [];
-    for (const video of Array.from(document.querySelectorAll("video"))) {
+    const videos = Array.from(document.querySelectorAll("video"))
+      .map((video, index) => ({
+        video,
+        index,
+        score:
+          (video.currentSrc ? 100 : 0) +
+          (video.readyState >= 2 ? 20 : 0) +
+          (!video.paused ? 10 : 0) +
+          Math.min(9, Math.round((video.clientWidth * video.clientHeight) / 100000)),
+      }))
+      .sort((left, right) => right.score - left.score || left.index - right.index);
+    for (const { video, index, score } of videos) {
       for (const url of [video.currentSrc, video.src]) {
-        if (url) assets.push({ kind: "video", source: "video", url: normalizeUrl(url) });
+        if (url) assets.push({
+          kind: "video",
+          source: "video",
+          url: normalizeUrl(url),
+          priority: score,
+          element_index: index,
+        });
       }
       for (const source of Array.from(video.querySelectorAll("source"))) {
         const url = source.src || source.getAttribute("src");
-        if (url) assets.push({ kind: "video", source: "source", url: normalizeUrl(url) });
+        if (url) assets.push({
+          kind: "video",
+          source: "source",
+          url: normalizeUrl(url),
+          priority: score - 1,
+          element_index: index,
+        });
       }
     }
     return assets;
@@ -53,6 +76,8 @@ Save the returned JSON to `data/tmp/<video_id>-media-assets.json`, then run:
           name,
           url,
           transferSize: entry.transferSize || 0,
+          startTime: entry.startTime || 0,
+          priority: 0,
         };
       })
       .filter((asset) => asset.kind !== "other");
@@ -71,7 +96,10 @@ Save the returned JSON to `data/tmp/<video_id>-media-assets.json`, then run:
       if (seen.has(asset.url)) return false;
       seen.add(asset.url);
       return true;
-    });
+    }).sort((left, right) =>
+      (right.priority || 0) - (left.priority || 0) ||
+      (right.startTime || 0) - (left.startTime || 0)
+    );
     return {
       video_id: videoId,
       page_url: pageUrl,

@@ -8,6 +8,7 @@ from pathlib import Path
 from build_douyin_knowledge import (
     assess_transcript,
     automatic_note,
+    build_knowledge,
     runtime_transcript_segments,
     reconcile_updated_at,
 )
@@ -34,6 +35,36 @@ def transcript(text, language="zh", probability=1.0, segment_count=5):
 
 
 class KnowledgeQualityTests(unittest.TestCase):
+    def test_unprocessed_queue_items_are_skipped_but_transcribed_items_are_required(self):
+        pending_queue = {
+            "counts": {"classified_teaching": 1},
+            "items": [
+                {
+                    "video_id": "123456789012345678",
+                    "status": "classified_teaching",
+                }
+            ],
+        }
+        knowledge = build_knowledge(
+            pending_queue,
+            {"videos": []},
+            {"items": []},
+            {},
+            RULES,
+        )
+        self.assertEqual(knowledge["knowledge_counts"]["videos"], 0)
+
+        pending_queue["items"][0]["status"] = "transcribed"
+        pending_queue["counts"] = {"transcribed": 1}
+        with self.assertRaisesRegex(SystemExit, "Missing transcripts"):
+            build_knowledge(
+                pending_queue,
+                {"videos": []},
+                {"items": []},
+                {},
+                RULES,
+            )
+
     def test_rebuild_preserves_version_when_corpus_is_unchanged(self):
         existing = {
             "version": 1,

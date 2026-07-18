@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
+import hashlib
 import json
+import math
 import os
 import tempfile
 from pathlib import Path
@@ -37,27 +39,78 @@ def atomic_write_text(path, value):
         raise
 
 
-def validate_transcript_payload(payload, expected_video_id):
+def media_fingerprint(path):
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return {
+        "source_bytes": Path(path).stat().st_size,
+        "source_sha256": digest.hexdigest(),
+    }
+
+
+def validate_transcript_payload(payload, expected_video_id, source_media=None):
     if str(payload.get("video_id") or "") != expected_video_id:
         raise ValueError("transcript video_id does not match the media filename")
     segments = payload.get("segments")
     if not isinstance(segments, list):
         raise ValueError("transcript segments must be a list")
+    duration = payload.get("duration")
+    if (
+        not isinstance(duration, (int, float))
+        or isinstance(duration, bool)
+        or not math.isfinite(duration)
+        or duration <= 0
+    ):
+        raise ValueError("transcript duration is invalid")
+    previous_start = -1.0
     for segment in segments:
         if set(segment) != {"start", "end", "text"}:
             raise ValueError("transcript segment has unexpected fields")
         if not isinstance(segment["text"], str):
             raise ValueError("transcript segment text must be a string")
-        if segment["start"] < 0 or segment["end"] < segment["start"]:
+        start = segment["start"]
+        end = segment["end"]
+        if (
+            not isinstance(start, (int, float))
+            or not isinstance(end, (int, float))
+            or isinstance(start, bool)
+            or isinstance(end, bool)
+            or not math.isfinite(start)
+            or not math.isfinite(end)
+            or start < 0
+            or end < start
+            or start < previous_start
+            or end > duration + max(1.0, duration * 0.02)
+        ):
             raise ValueError("transcript segment timestamps are invalid")
+        previous_start = start
     expected_text = "".join(segment["text"] for segment in segments)
     if payload.get("full_text") != expected_text:
         raise ValueError("transcript full_text does not match its segments")
-    if not isinstance(payload.get("duration"), (int, float)) or payload["duration"] < 0:
-        raise ValueError("transcript duration is invalid")
     for key in ["model", "language", "language_probability", "source_file"]:
         if key not in payload:
             raise ValueError(f"transcript is missing {key}")
+    probability = payload.get("language_probability")
+    if (
+        not isinstance(probability, (int, float))
+        or isinstance(probability, bool)
+        or not math.isfinite(probability)
+        or not 0 <= probability <= 1
+    ):
+        raise ValueError("transcript language_probability is invalid")
+    if not all(
+        isinstance(payload.get(key), str) and payload.get(key).strip()
+        for key in ["model", "language", "source_file"]
+    ):
+        raise ValueError("transcript model, language, and source_file must be non-empty strings")
+    if source_media is not None:
+        fingerprint = media_fingerprint(source_media)
+        if payload.get("source_bytes") != fingerprint["source_bytes"]:
+            raise ValueError("transcript source_bytes does not match the current media")
+        if payload.get("source_sha256") != fingerprint["source_sha256"]:
+            raise ValueError("transcript source_sha256 does not match the current media")
     return payload
 
 
@@ -84,9 +137,9 @@ def write_transcript_outputs(output_dir, payload):
     write_json(output_dir / f"{video_id}.json", payload)
 
 
-def load_valid_transcript(path, expected_video_id):
+def load_valid_transcript(path, expected_video_id, source_media=None):
     payload = json.loads(path.read_text(encoding="utf-8"))
-    return validate_transcript_payload(payload, expected_video_id)
+    return validate_transcript_payload(payload, expected_video_id, source_media)
 
 
 def remove_transcript_outputs(output_dir, video_id):
@@ -107,6 +160,11 @@ def mark_transcribed(item, payload):
     item["error"] = None
     item["error_stage"] = None
     item["last_attempt_at"] = now_iso()
+    item["transcript_model"] = payload["model"]
+    item["transcript_language"] = payload["language"]
+    item["transcript_source_sha256"] = payload.get("source_sha256")
+    item["transcript_source_bytes"] = payload.get("source_bytes")
+    item["transcript_text_characters"] = len(payload.get("full_text") or "")
 
 
 def mark_transcription_failed(item, error):
@@ -145,6 +203,7 @@ def payload_from_model(media, model_name, model):
     return {
         "video_id": media.stem,
         "source_file": relative_source(media),
+        **media_fingerprint(media),
         "model": model_name,
         "language": info.language,
         "language_probability": info.language_probability,
@@ -184,7 +243,7 @@ def transcribe_directory(
             pending.append(media)
             continue
         try:
-            payload = load_valid_transcript(output_path, media.stem)
+            payload = load_valid_transcript(output_path, media.stem, media)
             # Repair missing sidecars from the canonical JSON without rerunning Whisper.
             atomic_write_text(output_dir / f"{media.stem}.txt", transcript_text(payload))
             atomic_write_text(output_dir / f"{media.stem}.srt", transcript_srt(payload))
@@ -227,6 +286,7 @@ def transcribe_directory(
             return {
                 "media_files": len(files),
                 "already_done": len(completed),
+                "invalid_outputs_removed": invalid_outputs,
                 "attempted": 0,
                 "transcribed": 0,
                 "failed_video_ids": failed,
@@ -267,6 +327,7 @@ def transcribe_directory(
     return {
         "media_files": len(files),
         "already_done": len(completed),
+        "invalid_outputs_removed": invalid_outputs,
         "attempted": len(pending),
         "transcribed": len(transcribed),
         "failed_video_ids": failed,

@@ -1,9 +1,10 @@
 {
   "version": 1,
   "scope": "刘辉羽毛球抖音教学视频",
-  "updated_at": "2026-07-18T05:14:57.054490+00:00",
+  "updated_at": "2026-07-18T06:36:42.232025+00:00",
   "quality_rules_version": 2,
   "queue_counts": {
+    "classified_teaching": 1,
     "transcribed": 406
   },
   "knowledge_counts": {

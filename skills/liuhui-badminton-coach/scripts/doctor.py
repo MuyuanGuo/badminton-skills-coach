@@ -308,6 +308,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             "Create .venv and install requirements-transcription.txt, or set LIUHUI_TRANSCRIPTION_PYTHON.",
         )
     )
+    faster_whisper_ok = False
     if python_path:
         completed = subprocess.run(
             [
@@ -325,6 +326,36 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                 completed.returncode == 0,
                 completed.stdout.strip() or completed.stderr.strip()[-600:],
                 f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+            )
+        )
+        faster_whisper_ok = completed.returncode == 0
+    if python_path and faster_whisper_ok:
+        model_completed = subprocess.run(
+            [
+                str(python_path),
+                "-c",
+                (
+                    "import sys; from faster_whisper import WhisperModel; "
+                    "WhisperModel(sys.argv[1], device='cpu', compute_type='int8', "
+                    "local_files_only=True); print('model ready')"
+                ),
+                "small",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        checks.append(
+            check(
+                "faster_whisper_model",
+                model_completed.returncode == 0,
+                model_completed.stdout.strip()
+                or model_completed.stderr.strip()[-600:],
+                (
+                    f"Warm the model cache with {python_path} -c "
+                    '"from faster_whisper import WhisperModel; '
+                    "WhisperModel('small', device='cpu', compute_type='int8')\""
+                ),
             )
         )
     free_gb = shutil.disk_usage(repo_root).free / (1024**3)
@@ -400,7 +431,11 @@ def main(default_profile="skill"):
     args = parser.parse_args()
 
     repo_root = (args.repo_root or args.skill_root.resolve().parents[1]).resolve()
-    checks = skill_checks(args.skill_root, run_smoke=not args.no_smoke)
+    checks = (
+        []
+        if args.profile == "transcription"
+        else skill_checks(args.skill_root, run_smoke=not args.no_smoke)
+    )
     if args.profile in {"maintainer", "all"}:
         checks.extend(
             maintainer_checks(

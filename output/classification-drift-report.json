@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-07-18T05:19:28.824608+00:00",
+  "generated_at": "2026-07-18T06:39:43.480960+00:00",
   "classification_rules": {
     "version": 2,
     "sha256": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1"
   },
-  "catalog_videos": 472,
-  "previous_kept": 351,
+  "catalog_videos": 473,
+  "previous_kept": 352,
   "effective_counts": {
-    "保留：教学": 351,
+    "保留：教学": 352,
     "排除：广告/器材推广": 17,
     "排除：非教学": 104
   },

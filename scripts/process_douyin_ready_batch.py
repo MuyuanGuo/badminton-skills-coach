@@ -22,7 +22,7 @@ from media_assets import (
     redact_urls,
     validate_batch_name,
 )
-from project_artifacts import sync_skill_references
+from run_full_update_pipeline import rebuild_and_validate
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +30,14 @@ QUEUE_PATH = ROOT / "data" / "processing" / "douyin_queue.json"
 RAW_ROOT = ROOT / "data" / "raw_videos" / "douyin"
 TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "douyin"
 TMP_ROOT = ROOT / "data" / "tmp"
+ALLOWED_INITIAL_DIRTY_PATHS = {
+    "data/douyin_classification_ledger.json",
+    "data/douyin_teaching_filtered.json",
+    "data/douyin_video_index.json",
+    "data/processing/douyin_discovery_state.json",
+    "data/processing/douyin_queue.json",
+    "output/classification-drift-report.json",
+}
 
 
 def run(command, *, check=True):
@@ -52,6 +60,37 @@ def resolve_transcription_python(override=None, root=ROOT):
     candidates.append(Path(sys.executable))
     # Preserve a virtualenv launcher path; resolving its symlink bypasses venv site-packages.
     return next((path.absolute() for path in candidates if path.is_file()), None)
+
+
+def git_changed_paths(root=ROOT):
+    paths = set()
+    for command in (
+        ["git", "diff", "--name-only"],
+        ["git", "diff", "--cached", "--name-only"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
+    ):
+        output = subprocess.check_output(command, cwd=root, text=True)
+        paths.update(line.strip() for line in output.splitlines() if line.strip())
+    return sorted(paths)
+
+
+def unexpected_dirty_paths(paths):
+    return sorted(set(paths) - ALLOWED_INITIAL_DIRTY_PATHS)
+
+
+def run_transcription_preflight(transcription_python):
+    return run(
+        [
+            sys.executable,
+            "scripts/doctor.py",
+            "--profile",
+            "transcription",
+            "--transcription-python",
+            transcription_python,
+            "--no-smoke",
+        ],
+        check=False,
+    )
 
 
 def queue_counts():
@@ -196,6 +235,13 @@ def cleanup_transcribed_media(batch, video_ids, *, root=ROOT, queue_path=QUEUE_P
     return {"removed": removed, "skipped": skipped}
 
 
+def finalize_transcribed_batch(batch, video_ids):
+    cleanup = cleanup_transcribed_media(batch, video_ids)
+    print(json.dumps({"media_cleanup": cleanup}, ensure_ascii=False), flush=True)
+    rebuild_and_validate()
+    return cleanup
+
+
 def commit_if_changed(message, push):
     status = subprocess.check_output(
         ["git", "status", "--short"],
@@ -219,6 +265,16 @@ def main():
     parser.add_argument("batch", help="Batch name, for example batch-009")
     parser.add_argument("--no-push", action="store_true", help="Commit locally but skip git push")
     parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="Validate the worktree, disk, curl, Whisper package, and cached model without downloading",
+    )
+    parser.add_argument(
+        "--allow-dirty",
+        action="store_true",
+        help="Allow unrelated pre-existing worktree changes; unsafe for unattended commits",
+    )
+    parser.add_argument(
         "--min-free-gb",
         type=float,
         default=8.0,
@@ -229,11 +285,39 @@ def main():
         type=Path,
         help="Python with faster-whisper installed; overrides automatic .venv detection",
     )
+    parser.add_argument("--model", default="small", help="faster-whisper model name")
     args = parser.parse_args()
     try:
         args.batch = validate_batch_name(args.batch)
     except MediaAssetError as error:
         raise SystemExit(str(error)) from error
+
+    dirty_paths = git_changed_paths()
+    unexpected_paths = unexpected_dirty_paths(dirty_paths)
+    if unexpected_paths and not args.allow_dirty:
+        print(
+            json.dumps(
+                {
+                    "error": "unexpected_dirty_worktree",
+                    "paths": unexpected_paths,
+                    "remediation": (
+                        "Commit, stash, or remove unrelated changes before processing; "
+                        "use --allow-dirty only for an attended recovery"
+                    ),
+                },
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
+        return 2
+    if unexpected_paths:
+        print(
+            json.dumps(
+                {"warning": "allowing_unrelated_dirty_paths", "paths": unexpected_paths},
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
 
     usage = shutil.disk_usage(ROOT)
     free_gb = usage.free / (1024 ** 3)
@@ -244,10 +328,6 @@ def main():
         )
         return 2
 
-    items = batch_items(args.batch)
-    if not items:
-        print(json.dumps({"batch": args.batch, "actionable": 0}, ensure_ascii=False))
-        return 0
     if not shutil.which("curl"):
         print(
             json.dumps(
@@ -274,6 +354,35 @@ def main():
             file=sys.stderr,
         )
         return 2
+    if run_transcription_preflight(transcription_python).returncode:
+        print(
+            json.dumps(
+                {
+                    "error": "transcription_preflight_failed",
+                    "remediation": "Run python3 scripts/doctor.py --profile transcription",
+                },
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
+        return 2
+
+    items = batch_items(args.batch)
+    preflight = {
+        "batch": args.batch,
+        "actionable": len(items),
+        "statuses": compute_status_counts(items),
+        "free_gb": round(free_gb, 2),
+        "transcription_python": str(transcription_python),
+        "model": args.model,
+        "preexisting_dirty_paths": dirty_paths,
+    }
+    if args.preflight_only:
+        print(json.dumps({**preflight, "preflight": "passed"}, ensure_ascii=False))
+        return 0
+    if not items:
+        print(json.dumps(preflight, ensure_ascii=False))
+        return 0
 
     media_dir = RAW_ROOT / args.batch
     transcript_dir = TRANSCRIPT_ROOT / args.batch
@@ -310,6 +419,8 @@ def main():
             str(transcript_dir.relative_to(ROOT)),
             "--queue",
             str(QUEUE_PATH.relative_to(ROOT)),
+            "--model",
+            args.model,
         ], check=False)
         if completed.returncode:
             print(
@@ -343,28 +454,10 @@ def main():
             file=sys.stderr,
         )
         return 1
-    run([sys.executable, "scripts/build_douyin_knowledge.py"])
-    run([sys.executable, "scripts/build_topic_index.py"])
-    run([sys.executable, "scripts/build_retrieval_index.py"])
-    run([sys.executable, "scripts/build_visual_review_queue.py"])
-    run([sys.executable, "scripts/generate_knowledge_graph.py"])
-    run([sys.executable, "scripts/build_answer_quality_review_queue.py"])
-    print(
-        json.dumps(
-            {"synchronized_skill_references": sync_skill_references()},
-            ensure_ascii=False,
-        ),
-        flush=True,
-    )
-    run([sys.executable, "scripts/update_readme_status.py"])
-    run([sys.executable, "scripts/evaluate_retrieval.py"])
-    run([sys.executable, "scripts/evaluate_answer_policy.py"])
-    run([sys.executable, "scripts/validate_project.py"])
-    cleanup = cleanup_transcribed_media(
+    finalize_transcribed_batch(
         args.batch,
         [item["video_id"] for item in items],
     )
-    print(json.dumps({"media_cleanup": cleanup}, ensure_ascii=False), flush=True)
 
     commit_if_changed(
         f"Process Douyin teaching {args.batch}",
@@ -374,6 +467,7 @@ def main():
     print(json.dumps({
         "batch": args.batch,
         "after": queue_counts(),
+        "validated": True,
         "pushed": not args.no_push,
     }, ensure_ascii=False), flush=True)
     return 0

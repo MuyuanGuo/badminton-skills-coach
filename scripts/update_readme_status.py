@@ -17,6 +17,7 @@ TEACHING_FILTER = ROOT / "data" / "douyin_teaching_filtered.json"
 KNOWLEDGE = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 FEEDBACK_SIGNALS = ROOT / "config" / "feedback_signals.json"
 ANSWER_CASES = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
+QUEUE = ROOT / "data" / "processing" / "douyin_queue.json"
 
 
 def load_json(path):
@@ -64,6 +65,7 @@ def update_readme_text(
     knowledge,
     feedback_signals,
     answer_cases=None,
+    queue=None,
 ):
     status = derive_project_status(video_index, teaching_filter, knowledge)
     latest = status["latest_ready_video"]
@@ -87,6 +89,15 @@ def update_readme_text(
     hard_negative_count = sum(
         len(case.get("gold", {}).get("irrelevant_video_ids", []))
         for case in probe_cases
+    )
+    queue = queue or load_json(QUEUE)
+    queue_counts = json.dumps(
+        queue.get("counts", {}), ensure_ascii=False, sort_keys=True
+    )
+    failed_queue_count = sum(
+        count
+        for status, count in queue.get("counts", {}).items()
+        if status.endswith("_failed")
     )
 
     readme = replace_one(
@@ -155,6 +166,16 @@ def update_readme_text(
         f"- 视频理解审计：GitHub Actions 对 `{ready_count}/{ready_count}` 条 ready 视频检查仓库内可移植的转写证据或视觉复核摘要、运行时读取、索引与分段一致性，三项覆盖率都必须为 `100%`；当前构成为 `{evidence['transcript']} + {evidence['visual']}`。另用 `{len(probe_cases)}` 个独立用户问题、`{expected_video_count}` 个已知相关视频和 `{hard_negative_count}` 个已知负样本检查检索，不再让视频用自己的证据反查自己。原始转写文件不进入 Git，维护者在本机另用 `--require-raw-transcripts` 验证 {evidence['transcript']} 条证据都能回溯到原始转写。",
         "README video-comprehension audit",
     )
+    readme = replace_optional(
+        readme,
+        r'^1\.0 当前队列为 `\{.*\}`，(?:没有失败项|失败项 `\d+` 条)。$',
+        (
+            f"1.0 当前队列为 `{queue_counts}`，没有失败项。"
+            if failed_queue_count == 0
+            else f"1.0 当前队列为 `{queue_counts}`，失败项 `{failed_queue_count}` 条。"
+        ),
+        "README queue status",
+    )
     return readme
 
 
@@ -209,6 +230,7 @@ def main():
         knowledge,
         load_json(FEEDBACK_SIGNALS),
         load_json(ANSWER_CASES),
+        load_json(QUEUE),
     )
     updated_skill = update_skill_status_text(skill, knowledge)
     updated_agent_metadata = update_agent_metadata_text(agent_metadata, knowledge)
