@@ -1,5 +1,18 @@
 {
-  "version": 1,
+  "version": 2,
+  "asr_canonicalization": {
+    "架盘": "架拍",
+    "架攀": "架拍",
+    "挥帕": "挥拍",
+    "揮帕": "揮拍",
+    "机球": "击球",
+    "機球": "擊球",
+    "及球": "击球",
+    "激球": "击球",
+    "披掉": "劈吊",
+    "砂球": "杀球",
+    "与毛球": "羽毛球"
+  },
   "transcript": {
     "allowed_language_prefixes": ["zh"],
     "minimum_language_probability": 0.6,
@@ -11,6 +24,9 @@
     "minimum_key_evidence_items": 1,
     "minimum_teaching_term_matches": 1,
     "minimum_text_characters_for_single_match": 60,
+    "minimum_evidence_window_characters": 12,
+    "maximum_window_segment_overlap": 0.5,
+    "minimum_instruction_signal_matches_for_single_term": 1,
     "key_evidence_limit": 5,
     "error_evidence_limit": 3,
     "action_cue_limit": 4,
@@ -55,6 +71,11 @@
     "cue_terms": [
       "应该", "應該", "需要", "一定", "首先", "然后", "然後", "先", "再",
       "注意", "记住", "記住", "尽量", "盡量", "必须", "必須", "可以"
+    ],
+    "instruction_terms": [
+      "因为", "因為", "所以", "如果", "这样", "這樣", "应该", "應該",
+      "需要", "一定", "首先", "然后", "然後", "先", "再", "注意", "记住",
+      "記住", "尽量", "盡量", "必须", "必須", "可以", "不能", "不要", "练习", "訓練"
     ]
   }
 }

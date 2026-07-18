@@ -61,7 +61,10 @@ def validate_point(point, case_id, ready_ids, boundary=False):
         )
 
 
-def validate_registry(registry, rules, ready_ids, minimum_cases=0):
+def validate_registry(
+    registry, rules, ready_ids, minimum_cases=0, all_video_ids=None
+):
+    all_video_ids = set(all_video_ids or ready_ids)
     if registry.get("version") != 1:
         raise RegistryValidationError("Answer quality case schema version is unsupported")
     if rules.get("version") != 1:
@@ -132,8 +135,10 @@ def validate_registry(registry, rules, ready_ids, minimum_cases=0):
             raise RegistryValidationError(
                 f"{case_id} marks the same video required and irrelevant"
             )
-        if not (primary_ids | required_ids | irrelevant_ids).issubset(ready_ids):
-            raise RegistryValidationError(f"{case_id} references a non-ready video")
+        if not (primary_ids | required_ids).issubset(ready_ids):
+            raise RegistryValidationError(f"{case_id} references non-ready evidence")
+        if not irrelevant_ids.issubset(all_video_ids):
+            raise RegistryValidationError(f"{case_id} references an unknown hard negative")
 
         point_ids = []
         for point in gold["required_text_points"]:
@@ -406,8 +411,13 @@ def main():
     rules = load_json(args.rules)
     knowledge = load_json(KNOWLEDGE_PATH)
     ready_ids = ready_video_ids(knowledge)
+    all_video_ids = {video["video_id"] for video in knowledge["videos"]}
     registry_result = validate_registry(
-        registry, rules, ready_ids, minimum_cases=args.require_cases
+        registry,
+        rules,
+        ready_ids,
+        minimum_cases=args.require_cases,
+        all_video_ids=all_video_ids,
     )
     result = {"registry": registry_result}
     if registry_result["regression_ready"] < args.min_approved:

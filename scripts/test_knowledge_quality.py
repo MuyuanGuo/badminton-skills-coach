@@ -8,6 +8,7 @@ from pathlib import Path
 from build_douyin_knowledge import (
     assess_transcript,
     automatic_note,
+    runtime_transcript_segments,
     reconcile_updated_at,
 )
 from build_retrieval_index import build_index
@@ -87,6 +88,43 @@ class KnowledgeQualityTests(unittest.TestCase):
         self.assertFalse(note["quality"]["passed"])
         self.assertIn("insufficient_context_for_single_match", note["quality"]["issues"])
 
+    def test_repeated_topic_mention_without_instruction_is_not_evidence(self):
+        item = {
+            "title": "谁的杀球更重",
+            "category": "杀球",
+            "tags": "杀球",
+        }
+        source = transcript("今天大家比较谁的杀球更重，欢迎在评论区讨论。")
+        note = automatic_note(item, source["segments"], RULES)
+        self.assertFalse(note["quality"]["passed"])
+        self.assertIn(
+            "single_term_without_instruction_signal", note["quality"]["issues"]
+        )
+
+    def test_asr_terms_are_canonicalized_but_raw_text_is_retained(self):
+        segments = runtime_transcript_segments(
+            [
+                {
+                    "start": 1,
+                    "end": 2,
+                    "text": "先架盘，再向前挥帕完成机球。",
+                }
+            ],
+            RULES,
+        )
+        self.assertEqual(segments[0]["text"], "先架拍，再向前挥拍完成击球。")
+        self.assertEqual(segments[0]["raw_text"], "先架盘，再向前挥帕完成机球。")
+
+    def test_overlapping_evidence_windows_are_deduplicated(self):
+        item = {"title": "击球发力", "category": "发力", "tags": "发力"}
+        source = transcript("击球时先放松再发力。", segment_count=8)
+        note = automatic_note(item, source["segments"], RULES)
+        evidence = note["note"]["key_evidence"]
+        self.assertLess(len(evidence), RULES["evidence"]["key_evidence_limit"])
+        self.assertEqual(
+            len({item["timestamp"] for item in evidence}), len(evidence)
+        )
+
     def test_language_and_han_quality_are_both_enforced(self):
         source = transcript("bad audio transcript ", language="en", probability=0.3)
         quality = assess_transcript(source, RULES)
@@ -133,6 +171,9 @@ class KnowledgeQualityTests(unittest.TestCase):
                         "category": "基础",
                         "tags": [],
                         "teaching_note": {},
+                        "transcript_segments": [
+                            {"start": 0, "end": 1, "text": "握拍教学"}
+                        ],
                     },
                     {
                         "video_id": "review",
@@ -186,6 +227,9 @@ class KnowledgeQualityTests(unittest.TestCase):
                         "category": "基础",
                         "tags": ["握拍"],
                         "teaching_note": {"topic": "网前框架"},
+                        "transcript_segments": [
+                            {"start": 0, "end": 1, "text": "网前框架"}
+                        ],
                     }
                 ],
             }

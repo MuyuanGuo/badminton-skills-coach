@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "skill_version": "1.1.0-dev.3",
   "channel": "development",
   "stable_version": "1.0.0",
@@ -17,6 +17,7 @@
   ],
   "personalization": {
     "query_similarity_threshold": 0.38,
+    "strict_intent_similarity_threshold": 0.72,
     "exact_query_threshold": 0.82,
     "max_abs_delta_per_layer": 12.0,
     "local_preference_min_count": 2,
@@ -27,7 +28,22 @@
       "local_helpful": 8.0,
       "local_missing": 10.0,
       "local_irrelevant": -12.0
-    }
+    },
+    "strict_signal_types": [
+      "irrelevant_video",
+      "question_misunderstood",
+      "incorrect_claim",
+      "transcript_error",
+      "video_misinterpreted",
+      "citation_mismatch"
+    ],
+    "scenario_conflicts": [
+      ["网前", "后场"],
+      ["正手", "反手"],
+      ["单打", "双打"],
+      ["主动", "被动"],
+      ["接发", "发球"]
+    ]
   },
   "positive_video_cues": [
     "最有价值",

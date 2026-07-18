@@ -1,14 +1,91 @@
 {
-  "version": "visual-review-annotations-v1",
+  "version": "visual-review-annotations-v2",
   "source": "output/visual_review_queue.md",
-  "reviewed_count": 75,
+  "reviewed_count": 79,
   "status_counts": {
-    "approved": 21,
+    "approved": 24,
     "needs_correction": 0,
-    "not_teaching": 54,
+    "not_teaching": 55,
     "low_value": 0
   },
   "items": [
+    {
+      "rank": 1,
+      "video_id": "7656927370758796145",
+      "title": "双打抓回头 紫电青霜不要去掉低胶，如果一定要去掉低胶，或者已经去掉底胶，就要考虑结合自己的能力，也要换掉拍头的连钉，普通的线孔就在盒子里赠送了的",
+      "url": "https://www.douyin.com/video/7656927370758796145",
+      "category": "双打战术",
+      "review_status": "approved",
+      "review_notes": "完整转写约170秒，内容是双打抓回头的站位、轮转、握拍、锁腕和左右脚移动教学；标题中的器材文字未出现在口播教学中，按完整转写作为教学证据入库。",
+      "evidence_source": "reviewed_transcript",
+      "teaching_summary": "双打抓回头教学：前场队员出球后快速抬拍保护薄弱位置，由搭档处理中场和对角线路；根据左右场区调整后置站位、握拍、锁腕、重心和出脚方式。",
+      "retrieval_title": "双打抓回头：站位、轮转、握拍、锁腕和步法",
+      "category_override": "双打战术",
+      "tags_override": [
+        "双打战术",
+        "发球与接发",
+        "握拍与基本动作"
+      ],
+      "reviewed_at": "2026-07-18T05:06:42Z"
+    },
+    {
+      "rank": 2,
+      "video_id": "7577392474555210597",
+      "title": "反手发力 华羽新球拍预计12.6，谢谢大家的关注",
+      "url": "https://www.douyin.com/video/7577392474555210597",
+      "category": "发力与身体运用",
+      "review_status": "approved",
+      "review_notes": "完整转写约66秒，内容是反手发力中大臂带小臂、放松甩动、抬肘和有效顶肘的现场纠错；口播没有球拍推广内容，按完整转写作为教学证据入库。",
+      "evidence_source": "reviewed_transcript",
+      "teaching_summary": "反手发力现场纠错：大臂带动小臂并保持放松甩动；抬肘时让小臂和手腕短暂停留，通过固定手腕和小臂体会有效顶肘。",
+      "retrieval_title": "反手发力：大臂带小臂、放松甩动与有效顶肘",
+      "category_override": "发力与身体运用",
+      "tags_override": [
+        "发力与身体运用",
+        "后场技术"
+      ],
+      "reviewed_at": "2026-07-18T05:06:42Z"
+    },
+    {
+      "rank": 3,
+      "video_id": "7056596925721726220",
+      "title": "第二个抽球把箱子打穿了哦，推荐李宁最新n68线，兼顾声音，弹性耐打，爱了，即将上市了",
+      "url": "https://www.douyin.com/video/7056596925721726220",
+      "category": "中前场与抽挡",
+      "review_status": "approved",
+      "review_notes": "转写00:02.3-00:21.3明确讲正手抽球：向右迈出角度、拉开架拍，并由腰腹依次带动肩、肘、小臂和手腕旋转发力；之后是球线测试和产品评价，只保留前述教学时间段作为证据。",
+      "evidence_source": "reviewed_transcript",
+      "teaching_summary": "正手抽球教学：向右迈出角度并拉开架拍，由腰腹依次带动肩、肘、小臂和手腕完成旋转发力。",
+      "retrieval_title": "正手抽球：架拍与腰腹到手腕的旋转发力",
+      "category_override": "中前场与抽挡",
+      "tags_override": [
+        "中前场与抽挡",
+        "发力与身体运用"
+      ],
+      "allowed_time_ranges": [
+        {
+          "start": 2.3,
+          "end": 4.3
+        },
+        {
+          "start": 6.3,
+          "end": 21.3
+        }
+      ],
+      "excluded_content_note": "00:04.3-00:06.3提及测试新球线，00:21.3之后为球线威力测试及N68/N70产品评价；这些范围不得用于教学结论、装备推荐或刘辉偏好推断。",
+      "reviewed_at": "2026-07-18T05:06:42Z"
+    },
+    {
+      "rank": 4,
+      "video_id": "7387250672263040267",
+      "title": "你们觉得谁的杀球更重呢",
+      "url": "https://www.douyin.com/video/7387250672263040267",
+      "category": "后场技术",
+      "review_status": "not_teaching",
+      "review_notes": "完整转写只有三人比较谁的杀球更重并邀请网友评价，没有技术解释、动作要点或训练步骤，按转写判定为非教学。",
+      "evidence_source": "reviewed_transcript",
+      "reviewed_at": "2026-07-18T05:06:42Z"
+    },
     {
       "rank": 1,
       "video_id": "7132666254980074793",

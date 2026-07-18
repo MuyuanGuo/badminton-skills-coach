@@ -29,14 +29,29 @@ def clean_title(title):
     return re.sub(r"\s+", " ", title).strip()
 
 
-def evidence_window(segments, index):
+def canonicalize_asr_text(text, rules):
+    canonical = str(text or "")
+    replacements = rules.get("asr_canonicalization", {})
+    for source in sorted(replacements, key=len, reverse=True):
+        canonical = canonical.replace(source, replacements[source])
+    return canonical
+
+
+def evidence_window(segments, index, rules):
     start = max(0, index - 1)
     end = min(len(segments), index + 2)
     group = segments[start:end]
-    return {
+    raw_text = "".join(str(item.get("text", "")) for item in group)
+    text = canonicalize_asr_text(raw_text, rules)
+    item = {
         "timestamp": f"{timestamp(group[0]['start'])}-{timestamp(group[-1]['end'])}",
-        "text": "".join(item["text"] for item in group),
+        "text": text,
+        "_segment_indexes": set(range(start, end)),
+        "_start": float(group[0]["start"]),
     }
+    if text != raw_text:
+        item["raw_text"] = raw_text
+    return item
 
 
 def compile_terms(terms):
@@ -44,28 +59,49 @@ def compile_terms(terms):
     return re.compile("|".join(re.escape(term) for term in values)) if values else None
 
 
-def select_evidence(segments, patterns, limit):
+def select_evidence(segments, patterns, limit, rules):
     selected = []
-    seen = set()
     scored = []
+    evidence_rules = rules["evidence"]
     for index, segment in enumerate(segments):
+        canonical_text = canonicalize_asr_text(segment["text"], rules)
         score = sum(
-            weight * len(pattern.findall(segment["text"]))
+            weight * len(pattern.findall(canonical_text))
             for pattern, weight in patterns
             if pattern is not None
         )
         if score:
-            scored.append((score, len(segment["text"]), index))
-    for _, _, index in sorted(scored, reverse=True):
-        item = evidence_window(segments, index)
-        marker = item["text"][:18]
-        if marker in seen:
+            scored.append((score, len(canonical_text), index))
+    for _, _, index in sorted(scored, key=lambda item: (-item[0], item[2])):
+        item = evidence_window(segments, index, rules)
+        if len(re.sub(r"\s+", "", item["text"])) < evidence_rules.get(
+            "minimum_evidence_window_characters", 1
+        ):
             continue
-        seen.add(marker)
+        overlaps = []
+        for existing in selected:
+            shared = item["_segment_indexes"] & existing["_segment_indexes"]
+            denominator = min(
+                len(item["_segment_indexes"]), len(existing["_segment_indexes"])
+            )
+            overlaps.append(len(shared) / max(1, denominator))
+        if overlaps and max(overlaps) > evidence_rules.get(
+            "maximum_window_segment_overlap", 1.0
+        ):
+            continue
         selected.append(item)
         if len(selected) == limit:
             break
-    return sorted(selected, key=lambda item: item["timestamp"])
+    clean = []
+    for item in sorted(selected, key=lambda value: value["_start"]):
+        clean.append(
+            {
+                key: value
+                for key, value in item.items()
+                if not key.startswith("_")
+            }
+        )
+    return clean
 
 
 def han_ratio(text):
@@ -106,6 +142,58 @@ def assess_transcript(transcript, rules):
     return {**metrics, "passed": not issues, "issues": issues}
 
 
+def runtime_transcript_segments(segments, rules=None):
+    """Keep the complete timestamped transcript needed for query-time evidence lookup."""
+
+    compact = []
+    for segment in segments:
+        raw_text = re.sub(r"\s+", " ", str(segment.get("text") or "")).strip()
+        text = canonicalize_asr_text(raw_text, rules or {})
+        if not text:
+            continue
+        start = round(float(segment.get("start") or 0), 2)
+        end = round(float(segment.get("end") or start), 2)
+        item = {
+                "start": start,
+                "end": end,
+                "timestamp": f"{timestamp(start)}-{timestamp(end)}",
+                "text": text,
+            }
+        if text != raw_text:
+            item["raw_text"] = raw_text
+        compact.append(item)
+    return compact
+
+
+def normalize_time_ranges(ranges):
+    normalized = []
+    for item in ranges or []:
+        if not isinstance(item, dict):
+            raise ValueError("Transcript time ranges must be objects")
+        start = round(float(item.get("start", 0)), 2)
+        end = round(float(item.get("end", start)), 2)
+        if end <= start:
+            raise ValueError("Transcript time range end must be greater than start")
+        normalized.append({"start": start, "end": end})
+    return normalized
+
+
+def filter_segments_by_time_ranges(segments, ranges):
+    normalized = normalize_time_ranges(ranges)
+    if not normalized:
+        return list(segments)
+    return [
+        segment
+        for segment in segments
+        if any(
+            float(segment.get("start") or 0) >= item["start"] - 0.01
+            and float(segment.get("end") or segment.get("start") or 0)
+            <= item["end"] + 0.01
+            for item in normalized
+        )
+    ]
+
+
 def topic_terms(item, rules):
     metadata = " ".join(
         [clean_title(item.get("title", "")), item.get("category", ""), item.get("tags", "")]
@@ -126,21 +214,38 @@ def automatic_note(item, segments, rules):
         segments,
         [(topic_pattern, 3), (teaching_pattern, 1)],
         evidence_rules["key_evidence_limit"],
+        rules,
     )
     error_evidence = select_evidence(
         segments,
         [(compile_terms(evidence_rules["error_terms"]), 1)],
         evidence_rules["error_evidence_limit"],
+        rules,
     )
     action_cues = select_evidence(
         segments,
         [(compile_terms(evidence_rules["cue_terms"]), 1)],
         evidence_rules["action_cue_limit"],
+        rules,
     )
+    canonical_segments = [
+        canonicalize_asr_text(segment["text"], rules) for segment in segments
+    ]
     teaching_term_matches = sum(
-        len(teaching_pattern.findall(segment["text"])) for segment in segments
+        len(teaching_pattern.findall(text)) for text in canonical_segments
     )
-    evidence_text_characters = len("".join(segment["text"] for segment in segments))
+    unique_teaching_terms = sorted(
+        {
+            match
+            for text in canonical_segments
+            for match in teaching_pattern.findall(text)
+        }
+    )
+    instruction_pattern = compile_terms(evidence_rules.get("instruction_terms", []))
+    instruction_signal_matches = sum(
+        len(instruction_pattern.findall(text)) for text in canonical_segments
+    )
+    evidence_text_characters = len("".join(canonical_segments))
     issues = []
     if len(key_evidence) < evidence_rules["minimum_key_evidence_items"]:
         issues.append("missing_key_evidence")
@@ -152,6 +257,12 @@ def automatic_note(item, segments, rules):
         < evidence_rules["minimum_text_characters_for_single_match"]
     ):
         issues.append("insufficient_context_for_single_match")
+    if (
+        len(unique_teaching_terms) == 1
+        and instruction_signal_matches
+        < evidence_rules.get("minimum_instruction_signal_matches_for_single_term", 0)
+    ):
+        issues.append("single_term_without_instruction_signal")
     return {
         "note": {
             "topic": clean_title(item["title"]).split("，")[0][:100],
@@ -164,6 +275,8 @@ def automatic_note(item, segments, rules):
             "topic_terms": topic_values,
             "key_evidence_count": len(key_evidence),
             "teaching_term_matches": teaching_term_matches,
+            "unique_teaching_terms": unique_teaching_terms,
+            "instruction_signal_matches": instruction_signal_matches,
             "evidence_text_characters": evidence_text_characters,
             "passed": not issues,
             "issues": issues,
@@ -176,6 +289,15 @@ def apply_review_annotation(record, review_annotation):
     record["review_status"] = status
     record["review_notes"] = review_annotation["review_notes"]
     record["reviewed_at"] = review_annotation["reviewed_at"]
+    if review_annotation.get("retrieval_title"):
+        record["retrieval_title"] = review_annotation["retrieval_title"].strip()
+    if review_annotation.get("category_override"):
+        record["category"] = review_annotation["category_override"].strip()
+    if review_annotation.get("tags_override") is not None:
+        tags = review_annotation["tags_override"]
+        if not isinstance(tags, list) or not all(isinstance(tag, str) for tag in tags):
+            raise ValueError("Review tags_override must be a list of strings")
+        record["tags"] = [tag.strip() for tag in tags if tag.strip()]
 
     if status == "not_teaching":
         record["processing_status"] = "not_teaching"
@@ -204,17 +326,59 @@ def apply_review_annotation(record, review_annotation):
         record["teaching_note"] = note
     elif status == "approved":
         record["processing_status"] = "ready"
-        record["confidence"] = "visual_reviewed"
-        note = record.get("teaching_note") or {}
-        note["review_summary"] = review_annotation["review_notes"]
-        note["visual_review_evidence"] = [
-            {
-                "timestamp": "visual_review_no_timestamp",
-                "text": review_annotation["review_notes"],
+        notes = review_annotation["review_notes"]
+        evidence_source = review_annotation.get("evidence_source")
+        if not evidence_source:
+            normalized_notes = notes.lower()
+            evidence_source = (
+                "reviewed_transcript"
+                if "按转写的结果加进skill" in normalized_notes
+                or "按转写结果加进skill" in normalized_notes
+                else "visual_summary"
+            )
+        record["review_evidence_source"] = evidence_source
+        automatic_quality = record.get("quality", {}).get("automatic_evidence", {})
+        automatic_quality["searchable"] = False
+        automatic_quality["disposition"] = "replaced_by_approved_review"
+        if evidence_source == "reviewed_transcript":
+            record["confidence"] = "reviewed_transcript"
+            allowed_time_ranges = normalize_time_ranges(
+                review_annotation.get("allowed_time_ranges")
+            )
+            if allowed_time_ranges:
+                record["transcript_scope"] = {
+                    "allowed_time_ranges": allowed_time_ranges,
+                    "excluded_content_note": review_annotation.get(
+                        "excluded_content_note", ""
+                    ).strip(),
+                }
+            record["teaching_note"] = {
+                "topic": (
+                    record.get("retrieval_title") or record["title"]
+                )[:100],
+                "review_summary": review_annotation.get(
+                    "teaching_summary", notes
+                ).strip(),
+                "note": (
+                    "用户复核确认口播转写可用；回答时只引用查询命中的完整时间戳段落"
+                    "和允许的教学时间范围，不使用范围外内容作为结论。"
+                ),
             }
-        ]
-        note["note"] = "人工视觉复核：可作为视觉示范类教学线索；若无精确时间戳，引用时需说明来自人工视觉复核笔记。"
-        record["teaching_note"] = note
+        elif evidence_source == "visual_summary":
+            record["confidence"] = "visual_reviewed"
+            record["teaching_note"] = {
+                "topic": record["title"][:100],
+                "review_summary": notes,
+                "visual_review_evidence": [
+                    {
+                        "timestamp": "visual_review_no_timestamp",
+                        "text": notes,
+                    }
+                ],
+                "note": "用户视觉复核：仅以复核摘要作为可检索证据；失败或无关的自动转写已从运行时证据中移除。",
+            }
+        else:
+            raise ValueError(f"Unsupported review evidence source: {evidence_source}")
     else:
         raise ValueError(f"Unsupported visual review status: {status}")
     return record
@@ -226,6 +390,21 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
     automatic = automatic_note(item, segments, rules)
     is_curated = item["video_id"] in curated
     automatic_ready = transcript_quality["passed"] and automatic["quality"]["passed"]
+    classification_decision = item.get("classification_decision", "保留：教学")
+    classification_reason = item.get("classification_reason", "")
+    if classification_decision.startswith("排除"):
+        initial_status = "not_teaching"
+        initial_confidence = "classified_non_teaching"
+    elif classification_decision.startswith("待复核"):
+        initial_status = "needs_visual_review"
+        initial_confidence = "classification_review_required"
+    else:
+        initial_status = (
+            "ready" if is_curated or automatic_ready else "needs_visual_review"
+        )
+        initial_confidence = (
+            "curated" if is_curated else ("medium" if automatic_ready else "low")
+        )
     record = {
         "video_id": item["video_id"],
         "title": clean_title(item["title"]),
@@ -233,23 +412,48 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
         "category": item["category"],
         "tags": item["tags"].split("；") if item["tags"] else [],
         "duration_seconds": round(transcript.get("duration") or 0, 1),
-        "processing_status": "ready" if is_curated or automatic_ready else "needs_visual_review",
-        "confidence": "curated" if is_curated else ("medium" if automatic_ready else "low"),
+        "processing_status": initial_status,
+        "confidence": initial_confidence,
         "transcript_file": str(transcript_path.relative_to(ROOT)),
         "quality": {
             "transcript": transcript_quality,
             "automatic_evidence": automatic["quality"],
+        },
+        "classification": {
+            "decision": classification_decision,
+            "reason": classification_reason,
+            "rules_version": item.get("classification_rules_version"),
+            "rules_hash": item.get("classification_rules_hash"),
         },
     }
     if is_curated:
         record["teaching_note"] = curated[item["video_id"]]
     else:
         record["teaching_note"] = automatic["note"]
-        if not automatic_ready:
+        if classification_decision.startswith("排除"):
+            record["teaching_note"]["note"] = (
+                "版本化分类规则已排除此视频，不得作为回答证据。"
+            )
+        elif classification_decision.startswith("待复核"):
+            record["teaching_note"]["note"] = (
+                "版本化分类规则要求复核，复核完成前不得用于回答。"
+            )
+        elif not automatic_ready:
             record["teaching_note"]["note"] = "自动证据未达到质量门槛，需复核后才能用于回答。"
     review_annotation = review_annotations.get(item["video_id"])
     if review_annotation:
         apply_review_annotation(record, review_annotation)
+    transcript_backed = (
+        record["processing_status"] == "ready"
+        and record["confidence"] != "visual_reviewed"
+    )
+    scoped_segments = filter_segments_by_time_ranges(
+        segments,
+        (record.get("transcript_scope") or {}).get("allowed_time_ranges"),
+    )
+    record["transcript_segments"] = (
+        runtime_transcript_segments(scoped_segments, rules) if transcript_backed else []
+    )
     return record
 
 
@@ -288,7 +492,17 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
             **status_counts,
             "curated": sum(item["confidence"] == "curated" for item in records),
             "visual_reviewed": sum(item["confidence"] == "visual_reviewed" for item in records),
+            "reviewed_transcript": sum(
+                item["confidence"] == "reviewed_transcript" for item in records
+            ),
+            "transcript_segment_videos": sum(
+                bool(item["transcript_segments"]) for item in records
+            ),
+            "transcript_segments": sum(
+                len(item["transcript_segments"]) for item in records
+            ),
         },
+        "runtime_transcript_segments_bundled": True,
         "videos": records,
     }
 

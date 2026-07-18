@@ -50,7 +50,13 @@ def render_review_queue(
     registry, rules, knowledge, suggestion_limit, existing_review_blocks=None
 ):
     ready_ids = ready_video_ids(knowledge)
-    summary = validate_registry(registry, rules, ready_ids, minimum_cases=30)
+    summary = validate_registry(
+        registry,
+        rules,
+        ready_ids,
+        minimum_cases=30,
+        all_video_ids={video["video_id"] for video in knowledge["videos"]},
+    )
     search_module = load_search_module()
     videos_by_id = {video["video_id"]: video for video in knowledge["videos"]}
     type_counts = Counter(case["case_type"] for case in registry["cases"])

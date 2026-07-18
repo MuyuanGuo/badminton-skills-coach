@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -12,6 +13,7 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 MINIMUM_PYTHON = (3, 10)
 REQUIRED_SKILL_FILES = [
     "SKILL.md",
+    "scripts/prepare_answer_context.py",
     "scripts/search_knowledge.py",
     "scripts/navigate_topics.py",
     "scripts/feedback.py",
@@ -19,6 +21,9 @@ REQUIRED_SKILL_FILES = [
     "references/retrieval-index.json",
     "references/retrieval-rules.json",
     "references/answer-modality-rules.json",
+    "references/answer-selection-rules.json",
+    "references/answer-workflow.md",
+    "references/build-manifest.json",
     "references/practice-plan-rules.json",
     "references/feedback-rules.json",
     "references/feedback-signals.json",
@@ -108,6 +113,45 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
         )
     )
 
+    manifest = payloads.get("references/build-manifest.json", {})
+    artifact_errors = []
+    for artifact in manifest.get("skill_artifacts", []):
+        path = skill_root / artifact.get("path", "")
+        if not path.is_file():
+            artifact_errors.append(f"missing:{artifact.get('path')}")
+            continue
+        content = path.read_bytes()
+        if len(content) != artifact.get("bytes"):
+            artifact_errors.append(f"size:{artifact.get('path')}")
+        if hashlib.sha256(content).hexdigest() != artifact.get("sha256"):
+            artifact_errors.append(f"sha256:{artifact.get('path')}")
+    manifest_without_id = dict(manifest)
+    expected_build_id = manifest_without_id.pop("build_id", None)
+    canonical_manifest = (
+        json.dumps(
+            manifest_without_id,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        + "\n"
+    ).encode("utf-8")
+    actual_build_id = hashlib.sha256(canonical_manifest).hexdigest()
+    manifest_ok = bool(manifest) and not artifact_errors and (
+        expected_build_id == actual_build_id
+    )
+    checks.append(
+        check(
+            "build_manifest",
+            manifest_ok,
+            f"build_id={expected_build_id}, artifacts={len(manifest.get('skill_artifacts', []))}"
+            if manifest_ok
+            else "; ".join(artifact_errors)
+            or "manifest build_id mismatch",
+            "Reinstall a complete release or rebuild its deterministic manifest.",
+        )
+    )
+
     portable_knowledge = (
         knowledge.get("transcript_files_bundled") is False
         and not any("transcript_file" in video for video in knowledge.get("videos", []))
@@ -118,6 +162,25 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             portable_knowledge,
             "no unavailable maintainer transcript paths are bundled",
             "Reinstall the Skill from a package built by the current release pipeline.",
+        )
+    )
+    transcript_backed_ready = [
+        video
+        for video in knowledge.get("videos", [])
+        if video.get("processing_status") == "ready"
+        and video.get("confidence") != "visual_reviewed"
+    ]
+    runtime_segments_complete = (
+        knowledge.get("runtime_transcript_segments_bundled") is True
+        and transcript_backed_ready
+        and all(video.get("transcript_segments") for video in transcript_backed_ready)
+    )
+    checks.append(
+        check(
+            "runtime_transcript_evidence",
+            bool(runtime_segments_complete),
+            f"timestamped segments bundled for {len(transcript_backed_ready)} transcript-backed ready videos",
+            "Rebuild and reinstall the Skill so query-time transcript evidence is available.",
         )
     )
 
@@ -166,6 +229,40 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
                 smoke_ok,
                 "plan-only retrieval succeeded" if smoke_ok else (completed.stderr or completed.stdout)[-600:],
                 "Run search_knowledge.py directly to inspect the reported error.",
+            )
+        )
+        context_completed = subprocess.run(
+            [
+                sys.executable,
+                str(skill_root / "scripts" / "prepare_answer_context.py"),
+                "网前框架怎么做才不会身体僵硬",
+                "--max-videos",
+                "2",
+                "--no-local-personalization",
+            ],
+            cwd=skill_root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        context_ok = context_completed.returncode == 0
+        if context_ok:
+            try:
+                context_payload = json.loads(context_completed.stdout)
+                context_ok = bool(context_payload.get("selected_videos")) and all(
+                    item.get("label", "").startswith("V")
+                    for item in context_payload["selected_videos"]
+                )
+            except json.JSONDecodeError:
+                context_ok = False
+        checks.append(
+            check(
+                "answer_context_smoke_test",
+                context_ok,
+                "answer context and evidence lookup succeeded"
+                if context_ok
+                else (context_completed.stderr or context_completed.stdout)[-600:],
+                "Run prepare_answer_context.py directly to inspect the reported error.",
             )
         )
     return checks

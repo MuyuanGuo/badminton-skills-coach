@@ -88,19 +88,31 @@ def detect_intent(query):
 
 def match_topics(graph, query, limit):
     matches = []
+    query_norm = normalize(query)
+    discipline = infer_signal(query, DISCIPLINE_SIGNALS)
     for category in graph["categories"]:
-        category_values = [category["name"], category["description"]]
-        category_score = score_text(query, category_values)
+        category_discipline = category.get("discipline", "general")
+        if discipline == "singles" and category_discipline == "doubles":
+            continue
+        if discipline == "doubles" and category_discipline == "singles":
+            continue
+        category_score = (
+            18 if normalize(category["name"]) in query_norm else 0
+        )
         for subtopic in category["subtopics"]:
-            values = [
-                category["name"],
-                category["description"],
-                subtopic["name"],
-                *subtopic["keywords"],
-            ]
-            for video in subtopic["representative_videos"]:
-                values.append(video["title"])
-            score = category_score + score_text(query, values)
+            if subtopic.get("is_fallback"):
+                continue
+            reasons = []
+            score = category_score
+            if category_score:
+                reasons.append(category["name"])
+            if normalize(subtopic["name"]) in query_norm:
+                score += 14
+                reasons.append(subtopic["name"])
+            for keyword in subtopic["keywords"]:
+                if normalize(keyword) in query_norm:
+                    score += 8
+                    reasons.append(keyword)
             if score <= 0:
                 continue
             matches.append(
@@ -112,6 +124,7 @@ def match_topics(graph, query, limit):
                     "video_count": subtopic["video_count"],
                     "ready_count": subtopic["ready_count"],
                     "score": score,
+                    "match_reasons": sorted(set(reasons)),
                     "representative_videos": subtopic["representative_videos"][:3],
                 }
             )

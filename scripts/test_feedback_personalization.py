@@ -187,6 +187,62 @@ class FeedbackPersonalizationTests(unittest.TestCase):
         self.assertEqual(preferences["source_recheck_video_ids"], [video_id])
         self.assertIn("transcript_error", preferences["query_reminders"])
 
+    def test_negative_feedback_does_not_cross_literal_symptom_boundary(self):
+        video_id = "7659348110628345210"
+        self.record_and_accept(
+            question="杀球总下网怎么办",
+            video_specs=[f"V1={video_id}"],
+            feedback_text="V1 不相关。",
+            answer_mode="balanced",
+        )
+        payload = self.search_query("杀球落点应该怎么选择")
+        candidate = next(
+            item
+            for item in payload["candidate_manifest"]
+            if item["video_id"] == video_id
+        )
+        self.assertNotIn("feedback_adjustment", candidate)
+        self.assertEqual(
+            payload["feedback_guidance"]["local"][
+                "strict_intent_match_count"
+            ],
+            0,
+        )
+
+    def test_negative_feedback_does_not_cross_primary_action_boundary(self):
+        video_id = "7065491791167999232"
+        self.record_and_accept(
+            question="网前搓球怎么控制拍面",
+            video_specs=[f"V1={video_id}"],
+            feedback_text="V1 不相关。",
+            answer_mode="balanced",
+        )
+        payload = self.search_query("网前扑球怎么压下去")
+        candidate = next(
+            item
+            for item in payload["candidate_manifest"]
+            if item["video_id"] == video_id
+        )
+        self.assertNotIn("feedback_adjustment", candidate)
+
+    def test_positive_feedback_can_transfer_across_equivalent_phrasing(self):
+        video_id = "7659991105622862457"
+        self.record_and_accept(
+            question="杀球不重怎么办",
+            video_specs=[f"V1={video_id}"],
+            feedback_text="V1 最有价值。",
+            answer_mode="balanced",
+        )
+        payload = self.search_query("杀球没有威胁应该怎么调整")
+        candidate = next(
+            item
+            for item in payload["candidate_manifest"]
+            if item["video_id"] == video_id
+        )
+        self.assertGreater(
+            candidate["feedback_adjustment"]["local_delta"], 0
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

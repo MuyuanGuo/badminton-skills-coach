@@ -221,7 +221,7 @@ def normalized_points(value, field, case_id, ready_ids, boundary=False):
     return points
 
 
-def apply_review_data(case, data, rules, ready_ids):
+def apply_review_data(case, data, rules, ready_ids, all_video_ids=None):
     case_id = case["case_id"]
     if not isinstance(data, dict) or set(data) != REVIEW_FIELDS:
         raise ReviewApplicationError(f"{case_id} Review notes schema is invalid")
@@ -243,7 +243,10 @@ def apply_review_data(case, data, rules, ready_ids):
         data["required_video_ids"], "required_video_ids", case_id, ready_ids
     )
     irrelevant_ids = normalized_video_ids(
-        data["irrelevant_video_ids"], "irrelevant_video_ids", case_id, ready_ids
+        data["irrelevant_video_ids"],
+        "irrelevant_video_ids",
+        case_id,
+        all_video_ids or ready_ids,
     )
     if not set(primary_ids).issubset(required_ids):
         raise ReviewApplicationError(
@@ -318,7 +321,9 @@ def apply_review_data(case, data, rules, ready_ids):
     }
 
 
-def apply_review_markdown(markdown_text, registry, rules, ready_ids):
+def apply_review_markdown(
+    markdown_text, registry, rules, ready_ids, all_video_ids=None
+):
     blocks = extract_review_blocks(markdown_text)
     case_ids = [case["case_id"] for case in registry["cases"]]
     missing = sorted(set(case_ids) - set(blocks))
@@ -336,8 +341,16 @@ def apply_review_markdown(markdown_text, registry, rules, ready_ids):
             raise ReviewApplicationError(
                 f"{case['case_id']} Review notes contain invalid JSON: {error.msg}"
             ) from error
-        apply_review_data(case, data, rules, ready_ids)
-    validate_registry(updated, rules, ready_ids, minimum_cases=len(case_ids))
+        apply_review_data(
+            case, data, rules, ready_ids, all_video_ids=all_video_ids
+        )
+    validate_registry(
+        updated,
+        rules,
+        ready_ids,
+        minimum_cases=len(case_ids),
+        all_video_ids=all_video_ids,
+    )
     return updated
 
 
@@ -353,13 +366,16 @@ def main():
 
     registry = load_json(args.cases)
     rules = load_json(args.rules)
-    ready_ids = ready_video_ids(load_json(KNOWLEDGE_PATH))
+    knowledge = load_json(KNOWLEDGE_PATH)
+    ready_ids = ready_video_ids(knowledge)
+    all_video_ids = {video["video_id"] for video in knowledge["videos"]}
     try:
         updated = apply_review_markdown(
             args.markdown.read_text(encoding="utf-8"),
             registry,
             rules,
             ready_ids,
+            all_video_ids=all_video_ids,
         )
     except (OSError, KeyError, TypeError, ReviewApplicationError) as error:
         raise SystemExit(str(error)) from error

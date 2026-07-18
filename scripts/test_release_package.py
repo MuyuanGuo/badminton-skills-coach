@@ -48,6 +48,7 @@ class ReleasePackageTests(unittest.TestCase):
                     )
                 )
                 self.assertFalse(knowledge["transcript_files_bundled"])
+                self.assertTrue(knowledge["runtime_transcript_segments_bundled"])
                 self.assertFalse(
                     any("transcript_file" in video for video in knowledge["videos"])
                 )

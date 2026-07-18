@@ -121,6 +121,18 @@ class DouyinUpdateStateTests(unittest.TestCase):
                 self.assertEqual(teaching["counts"]["review"], 0)
                 self.assertEqual(teaching["counts"]["kept_teaching"], 2)
                 self.assertEqual(queue["counts"], {"classified_teaching": 2})
+                rules_identity = self.module.load_classification_rules()[
+                    "_rules_identity"
+                ]
+                for queue_item in queue["items"]:
+                    self.assertEqual(
+                        queue_item["classification_rules_version"],
+                        rules_identity["version"],
+                    )
+                    self.assertEqual(
+                        queue_item["classification_rules_hash"],
+                        rules_identity["sha256"],
+                    )
                 self.assertEqual(discovery["counts"]["classified_teaching"], 2)
                 self.assertNotIn("review_pending", discovery["counts"])
                 with self.assertRaises(ValueError):

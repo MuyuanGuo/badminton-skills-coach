@@ -28,6 +28,14 @@ class VideoComprehensionTests(unittest.TestCase):
             "processing_status": "ready",
             "confidence": "medium",
             "transcript_file": transcript_file,
+            "transcript_segments": [
+                {
+                    "start": 1.0,
+                    "end": 3.0,
+                    "timestamp": "00:01-00:03",
+                    "text": "先准备最快的回球线路",
+                }
+            ],
             "quality": {
                 "transcript": {"passed": True},
                 "automatic_evidence": {"passed": True},
@@ -61,7 +69,7 @@ class VideoComprehensionTests(unittest.TestCase):
                 root=root,
                 indexed_video_ids={"7000000000000000001"},
             )
-        self.assertEqual(audit["source_kind"], "transcript")
+        self.assertEqual(audit["source_kind"], "automatic_transcript")
         self.assertEqual(audit["raw_transcript_status"], "verified")
         self.assertEqual(audit["failures"], [])
 
@@ -126,6 +134,48 @@ class VideoComprehensionTests(unittest.TestCase):
             video, indexed_video_ids={"7000000000000000002"}
         )
         self.assertIn("missing_visual_review_evidence", audit["failures"])
+
+    def test_reviewed_transcript_uses_review_decision_instead_of_auto_gate(self):
+        video = self.transcript_video("")
+        video["confidence"] = "reviewed_transcript"
+        video["quality"]["transcript"]["passed"] = False
+        video["quality"]["automatic_evidence"]["passed"] = False
+        video["teaching_note"] = {
+            "topic": "接发准备",
+            "review_summary": "按转写结果确认这是接发准备教学。",
+        }
+        audit = self.module.audit_video_content(
+            video, indexed_video_ids={video["video_id"]}
+        )
+        self.assertNotIn("transcript_quality_not_passed", audit["failures"])
+        self.assertNotIn("automatic_evidence_quality_not_passed", audit["failures"])
+        self.assertNotIn("missing_teaching_evidence", audit["failures"])
+
+    def test_runtime_transcript_must_match_retrieval_index(self):
+        video = self.transcript_video("")
+        transcript = "先准备最快的回球线路"
+        sizes = [2, 3]
+        record = {
+            "transcript_ngrams": sorted(self.module.hashed_ngrams(transcript, sizes)),
+            "field_lengths": {
+                "transcript": len(self.module.normalize_index_text(transcript))
+            },
+        }
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=record,
+            transcript_ngram_sizes=sizes,
+        )
+        self.assertNotIn("runtime_transcript_index_mismatch", audit["failures"])
+        record["transcript_ngrams"] = []
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=record,
+            transcript_ngram_sizes=sizes,
+        )
+        self.assertIn("runtime_transcript_index_mismatch", audit["failures"])
 
 
 if __name__ == "__main__":

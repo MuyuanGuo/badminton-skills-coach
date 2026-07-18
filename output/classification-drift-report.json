@@ -1,0 +1,986 @@
+{
+  "generated_at": "2026-07-18T05:19:28.824608+00:00",
+  "classification_rules": {
+    "version": 2,
+    "sha256": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1"
+  },
+  "catalog_videos": 472,
+  "previous_kept": 351,
+  "effective_counts": {
+    "保留：教学": 351,
+    "排除：广告/器材推广": 17,
+    "排除：非教学": 104
+  },
+  "drift_count": 121,
+  "drift": [
+    {
+      "video_id": "7661007346362449893",
+      "title": "华羽球线 各位穿线师辛苦了！也是因为有你们这个行业才能这么好#羽毛球 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7655269569069649192",
+      "title": "紫电青霜不是网红拍 #华羽 #紫电青霜",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7651326104436122225",
+      "title": "紫电青霜 如果您不了解华羽，这把球拍会告诉您！6月20日，晚上7点羽您相见！正式首发#羽毛球 #刘辉羽毛球 #华羽 #华羽紫电青霜",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7649864572916217073",
+      "title": "华羽 从我到我们，感谢志同道合的同事们，感谢一直默默支持我们的朋友们，华羽因为你们而精彩#刘辉羽毛球 #羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7649859454980141553",
+      "title": "华羽奖励新王刘亮 #羽毛球#林丹杯羽毛球公开赛 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7649136345055662257",
+      "title": "紫电青霜 四个人用的都是紫电青霜，大家可以从进攻的力度，挥速，防守，甚至耐撞去感受这是一把多么全面的球拍！我真的很为这把拍子骄傲，6月20号晚7点紫电青霜，羽你相见#羽毛球 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7636985243803146331",
+      "title": "混双组合技 超实用的混双组合技带给大家#羽毛球 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7627338837022917809",
+      "title": "2.2万 萌辉组合 混双怎么比单打还累？还好我的女搭档足够强#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7615737190207725937",
+      "title": "与蔡晓源单打 本来定的是打一局，21-19 18-21 弃！但是打蔡龙虎就是得拐他！！！#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7612395467809424497",
+      "title": "年后恢复 复工啦，先自己恢复恢复#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7605147991963421971",
+      "title": "华羽新品手胶将于2.11号晚上22点首发，带来的是极致的性价比与体验感，我还准备了很多惊喜和礼物，届时直播间见！#羽毛球 #手胶 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7588003889807756593",
+      "title": "双打对抗 挺好玩的双打比赛，意外频出#羽毛球 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7585528594743495985",
+      "title": "回馈兄弟们 请期待华羽兄弟杯！报名抖音联系天津队主教练@冠军默大爷 他是我培训班负责的主教练#羽毛球 #刘辉羽毛球 #华羽",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7584027962087066937",
+      "title": "感谢信 我的运营告诉我，我的关注人群87%是男性，这个号废了！卖不了东西！我和他说我的兄弟多！让他闭嘴了！兄弟姐妹们太给力了！没有兄弟们我刘辉啥也不是！我一定不忘初心，服务好兄弟们#羽毛球#刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7583427483287326001",
+      "title": "华羽 新拍晚上直播间晚上9点首发，包括赠送的新网课也是首发，我还准备了很多惊喜和礼物，晚上九点见！#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7579365574523565553",
+      "title": "2.9万 星河赴远 虽然在相同的时间，我们在不同的地点遭遇到不同的困难，但是我们的心紧紧相连，在我们的世界里永远没有放弃！“问题不大，我们再来！”#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7574364584997112305",
+      "title": "保护膝盖 大家记住拉伸是在运动的最后，本期作品是先教的拉伸所以大家不要弄错顺序#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7555990252289428793",
+      "title": "五战 三视角，用的新品牌的球拍，涂装还要改动，所以先不发图了，我已经奋起反抗了，人家关键分随便几个滚网，故意不举手的意思是滚网属于常规操作，就折磨我，他很享受这种对我的折磨！！！他晚上高兴的吃了三碗大米饭#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7542822418538335545",
+      "title": "暑假对抗 最近确实没怎么发过对抗，主要没时间录，找到一个学员录的娱乐局#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7516012808523222329",
+      "title": "4.3万 与高政泽单打 南村群童欺我老无力，忍能对面为盗贼#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7504677485717015866",
+      "title": "紧张时刻 有时候输一分比输一局都难受#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7501263069143108921",
+      "title": "9103 神仙打架 四个人非要我点评一下#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7497457810633674043",
+      "title": "2.2万 与高政泽三战 状态很好，打对攻，但是男嘉宾遗憾离场#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7496715538836704571",
+      "title": "1.3万 双打复仇局 我喊人来报仇，前天津队主教练，全国锦标赛双打冠军，扬眉吐气#刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7496238975796333881",
+      "title": "省力进攻 最近和高政泽探讨sha球的省力技巧，感觉很适合进阶球友，大家可以后续去他的号看#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7493614482682432828",
+      "title": "技能介绍 我是为了给大家介绍一下这些招式的名字，其实你们应该也能感觉出来我并不快乐#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7490843160231398716",
+      "title": "虐辉 这几年被打的最惨的一次，我必报此仇#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7488538000524119356",
+      "title": "2.7万 与高政泽二战 早知道不用他的球拍了，不过这次给他造成了不小的麻烦，并且最后逼出了他的教学视频#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7484196529696197946",
+      "title": "马赛回旋？ 羽毛球人也有自己的马赛回旋#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7480852601798511929",
+      "title": "为小羊教练报仇 11分换的场地，报仇失败，说实话，体力没啥事，不怎么痛苦，赢不了，15分及格而已，我按照小羊教练对抗的时候对手的速度准备，我还做了余量，后来打起来才发现他还能更快，中计了兄弟们，下次在挑战#羽毛球 ##羽毛球单打 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7476768272864644409",
+      "title": "2.9万 与小🐑教练对抗 小🐑教练非常厉害，如果速度慢下来立刻就会被压制，进攻非常犀利，过完年回来体力严重不足，打三局肯定报废#羽毛球 #羽毛球单打 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7471361140719652154",
+      "title": "年后局 过年谁偷懒一眼就看出来了，因为有学员在，为了气氛有很多话是为了节目效果，大家不要介意#羽毛球 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7455989990900682042",
+      "title": "恢复局 对面两个国手，现场氛围拉满，打的爽#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7436590141298265344",
+      "title": "外籍对抗3.0 恢复了一个礼拜了，这种状态最起码能用3天，距离上一次感觉自己很轻盈应该是1年前了",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7435240260684074280",
+      "title": "被人砸场 我被人找到了软肋，我还真不太会#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7431866933538049332",
+      "title": "2.0万 到胃吗？ #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7431395548067794210",
+      "title": "新老对抗 就打了一局，就算1比2吧，搭档没劲儿了#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7426220574516530466",
+      "title": "被复仇局 对手是二级，我通常会把系鞋带当做对对手的认可，本来想不系刺激一下小伙子，但是我的球鞋有些旧了，鞋底磨平了有点，还是很危险的大家不要学我#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7424820473587879183",
+      "title": "球场新骗局 两分钟，两个球，两百#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7423714121620737315",
+      "title": "双打集锦 为什么对面那么凶，弹网不举手还瞪我？？#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7419526149279092020",
+      "title": "压迫感 #羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7415820467606473999",
+      "title": "走火入魔 最近看啥都像羽毛球#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7409137525006060840",
+      "title": "外籍单打2.0 @旺托 starboy 为了防止他放水，赛前我特意说了我会发抖音，你一定要把我打的特别惨大家才会认可你，我恢复的不错了，体力还是很难跟上，被翻盘了22-24#羽毛球 #羽毛球单打 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7408162190647217460",
+      "title": "外籍单打 上次补发的，只有11分之后的了家人们，最后18分，没什么办法，现役太能跑了#羽毛球 #羽毛球教学 #刘辉羽毛球 #羽毛球单打",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7405420818009722146",
+      "title": "面试新教练 还好前两天恢复了下，新教练是强一级，刚拿了全国大学生第六，又有新伙伴啦，单双打都很厉害，性格也开朗#羽毛球 #羽毛球教学 #羽毛球训练 #羽毛球单打 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7404091511773613347",
+      "title": "暑假末，恢复中 不管体力和状态差成什么样子，单打都是我心之所向#羽毛球 #羽毛球训练 #羽毛球单打 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7400221745208167695",
+      "title": "外籍对抗 新成员都很给力#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7389830539580132642",
+      "title": "谢谢兄弟们捧场#羽毛球 #刘辉羽毛球 @源式羽球 @脏教练羽毛球（速烁为爱发电） @小叶老师🏸️",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7387250672263040267",
+      "title": "1.8万 你们觉得谁的杀球更重呢@脏教练羽毛球（球场秀操作版） @刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7382052454063492392",
+      "title": "低配模仿 视频动作危险，需要很高的门槛，大家切勿模仿。#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7381785580268473635",
+      "title": "高端局 腿伤都快给我跑复发了 16比21 21比17#羽毛球 #羽毛球单打 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7377973400959978767",
+      "title": "新视角 大家帮忙看看这次的新视角怎么样？对面是我发小，前陕西队主教练@Ldj 我们两个玩着打的所以失误比较多#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7370160247467494691",
+      "title": "最近恢复了一些，大家帮我看看球速恢复到300了吗？#羽毛球 #羽毛球教学 #羽毛球训练#刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7367561803234069800",
+      "title": "恢复局 除了起跳的时候有点使不上劲儿，手感上面恢复差不多了，后面可以发教学啦#羽毛球教学 #羽毛球 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7358661350945525007",
+      "title": "手法挑战 小年轻挑战正反手各一组球，没有正手了，反手已经淘汰掉了对手。没有实战意义，只是一段这样的训练，实战请勿模仿#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7354580584229866787",
+      "title": "球在自己这边好好递球，握手时不要让对手伸过来握，这些球场礼仪大家要知道，净化环境，我的反应是为了表现出不对#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7340472371322686755",
+      "title": "全程无加速，需要教练员速度快变化多，主打心狠，折磨人#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7330090280055491874",
+      "title": "上期有人说我教不了我徒弟了，我表示不服，但是基础技术没威胁的话，假动作就是笑话啦#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7326007183156514082",
+      "title": "我帮孩子证明，这拍子是他的，永远都是#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7324887936980274432",
+      "title": "羽毛球发力入门级测试 #羽毛球训练 #羽毛球教学 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7317096664815144218",
+      "title": "不知道从什么时候开始，打局球成了奢侈品#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7294830192302853428",
+      "title": "我发现关系越好打球越坏，下手越狠，反而是刚认识的，互相表现的球品都很好哈哈，这两天没拍东西，用别人拍的视频摸鱼一下下#羽毛球 #刘辉羽毛球 #快乐羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7292235083715448104",
+      "title": "这些尴尬的瞬间各位经历过吗？各位是怎么下台的？谁能给个台阶？求教#羽毛球 #快乐羽毛球 #羽毛球教学 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7285935102666771727",
+      "title": "忙里偷闲#羽毛球 #刘辉羽毛球 #羽毛球比赛 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7281841831048924468",
+      "title": "瞎玩的，轻喷，喜欢文案#羽毛球 #刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7268853829746150671",
+      "title": "这是天津青少年锦标赛决赛，孩子是12年的，球拍用的是大破拍，由于两个孩子都属于后备人才基地注册，所以教练们都没有上场指导，对面的小朋友非常的厉害，对手的教练也是我非常佩服的一位教练员，这次三局21比19侥幸取胜#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7249558167288335656",
+      "title": "这次别再说对手弱了，很年轻的健将@源式羽球 比分一比一，黄教练那里也有他的视角可以看，期待下次分出胜负#羽毛球 #羽毛球教学 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7245471347210554639",
+      "title": "对面确实不强，不然也秀不动，喜欢的动作留言我出教学，今天成人集训班开营，暂停直播一次，大家见谅#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7244368607319280931",
+      "title": "1.3万 每周最开心的就是能打打球，虽然天天在球场，但是打球是奢饰品#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7241764822675754292",
+      "title": "祝高考学子高考顺利，拿出打球的精神，球不落地不放弃，铃声不响不停笔#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7240362453199097147",
+      "title": "1.1万 #羽毛球 假动作比赛我还没怕过谁，让大家看看谁是假动作之王。#羽毛球技术 #假动作",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7239168493294226740",
+      "title": "低价位中的悍匪，全网都在试的小钢炮，有3种参数，推荐45，晚上请李宁球拍之父，莅临直播间#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7233972650597502212",
+      "title": "好多天没打过球了#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7231756210494557500",
+      "title": "9597 #羽毛球 来检验检验刘辉教练学员的防守实力咋样#羽毛球培训 #一起打羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7224696700038941991",
+      "title": "慎重选择，新手雷区，必须4u。#羽毛球 #刘辉羽毛球 #羽毛球装备 #李宁雷霆100 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7223584265072692518",
+      "title": "晚上直播带雷霆100测评#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7221050654331096378",
+      "title": "4170 #羽毛球 为了推广羽毛球，大学老师都不当了！这样的魄力谁有？ #推广 #大学老师 @刘辉羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7220630996293635385",
+      "title": "2.5万 #羽毛球 三个品牌代表搓球大比拼，看看谁能笑到最后？#运动装备 #好物推荐 #PK",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7218386274690796832",
+      "title": "4u小破拍，测试完毕，无脑入就行了，第二批很快就位，先上5u的，我到时候再试试#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7210592889141775627",
+      "title": "1.4万 一个好搭档真是省劲儿#羽毛球 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7208031152509177100",
+      "title": "鞋子是刀锋的卯兔，兔年穿兔鞋，跳起来，白鞋贴胶布，不仔细看不出来#刘辉羽毛球 #羽毛球 @抖音小助手 @李宁羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7203915168244452640",
+      "title": "直播的时候，这次没人说蒙到一下而已了吧#羽毛球 #刘辉羽毛球 #如何用自己的专业耍酷 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7200204622852623628",
+      "title": "这次确实是恢复局了，晚上直播#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7197605327993310467",
+      "title": "弟弟脚伤初愈，帮他恢复一下，恢复到重新治疗了，重点远网搓球的成功率#羽毛球 #羽毛球训练 #羽毛球教学 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7193522990552780036",
+      "title": "我想意思一下算了，兄弟们不让啊，就要打，不打就是不当兄弟，现在大家都是这种需求了吗#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7185744630439333153",
+      "title": "🐏后第一场单打，大家想看我打对抗，可是对抗视频时间太长了，没人看的#羽毛球 #单打 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7183132124801682726",
+      "title": "这个配乐我也得跟啊，这周恢复一下，下周继续更新大家喜欢的系列#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7182762294294744332",
+      "title": "阳康后，兄弟们一个月先练技术，别上强度哦，我也先从手感恢复#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7180535203050343691",
+      "title": "🐏了，刚好，恢复直播",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7166433980986756384",
+      "title": "生活中很多事情都可以映射到动作中，可是反过来呢？一个行业那么多人，希望也能做到并存不悖，兼容并蓄，就算当一个愿望，也不能停止对这个愿望的追求，因为这样可以让热爱运动的人和孩子们受益，你们说呢？#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7164948889630493991",
+      "title": "第二集来啦，很多朋友动作都是对的，就是做不好，也许就差一点小细节，这个小细节改正很简单，可是发现很难#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7161238195764464930",
+      "title": "天凉了，这个热身膏真不错，养护还能增加热身效果#羽毛球 #刘辉羽毛球 #迈倍力 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7159754364297448715",
+      "title": "今天不发教学了，受不了你们对我的称呼了，瘦是瘦，筋骨肉！！！#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7159382785092783375",
+      "title": "视频中画线的地方是拍柄八边形最窄的两条棱，战戟8000真是狠，不亏是宝哥的拍#羽毛球 #战戟8000 #羽毛球教学 #刘辉羽毛球 @李宁羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7149363344649047311",
+      "title": "大家找找有没有违例#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7146394347586587919",
+      "title": "9976 羽毛球的防守其实打起来比进攻还爽😅#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7143811094698528040",
+      "title": "球来了先接球，不要管身体怎么停下。 事来了先解决，不要问为什么不公平。#羽毛球 #羽毛球训练 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7143055226063326499",
+      "title": "9.7万 两步一冲，纯享升级版，后面有彩蛋",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7136376084920012032",
+      "title": "最难模仿的，是球速，还有身高能打出的落点#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7135262696966065449",
+      "title": "8397 球王@郑健羽毛球 之帅就完了#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7133777700375792930",
+      "title": "4398 试试新功能，要是好用，我们哥儿几个就好玩了#羽毛球 #刘辉羽毛球 @郑健羽毛球 @唐威羽毛球 @啥时候开饭",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7132666254980074793",
+      "title": "唐老师@唐威羽毛球 成功加入一拍流#羽毛球 #刘辉羽毛球 #羽毛球杀球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7123016706779401507",
+      "title": "想看混双我就蔬给你们看，被吊打，就留了些好看的，不然会显得我很呆，施暴者视角@啥时候开饭 @皓憨憨 小姐姐打的很好，很勇敢@糖豆' #刘辉羽毛球 #羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7120420934355373347",
+      "title": "我们这么打，能赢一小局我已经知足了😂，以后我都有阴影了@皓憨憨 @啥时候开饭 #刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7119699501337545984",
+      "title": "最后我实在顶不动了，俩人一顿锤@啥时候开饭 @皓憨憨 #刘辉羽毛球 #羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7115598014642736424",
+      "title": "此视频警醒伙伴们，球不落地，拼搏到底，技能使用者@皓憨憨 #刘辉羽毛球 #羽毛球 #羽毛球教学 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7110774325875068195",
+      "title": "这个是应对平一些的推球，马来步用于高一些能过顶的抓推时使用#刘辉羽毛球 #羽毛球 #迈倍力 #鞋袜喷雾@抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7108916079866465577",
+      "title": "可千万别再说我的对手弱了，@皓憨憨 ，是我打球比较猥琐，可以去看看他打别人😱#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7107807736670276898",
+      "title": "岁数大了，老想耍花招，年轻人别学我😂#刘辉羽毛球 #羽毛球 #快乐羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7106320832892259619",
+      "title": "宽度选择7.5，松紧可以自己控制#刘辉羽毛球 #羽毛球 #远离伤病 #运动康复 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7104463450562170146",
+      "title": "发太到位了，鲨的不舒服😔，我就喜欢那种半场的高球😂看我钉不钉就完了#羽毛球 #刘辉羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7100011376696888616",
+      "title": "全员核酸没法录了😂发库存，听说有人想学我这招😉#羽毛球 #刘辉羽毛球 #快乐羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7088881901209013545",
+      "title": "我快挑战不过来了😂，麻烦请圈我发教学类的视频谢谢😂#羽毛球 #快乐羽毛球 #刘辉羽毛球 @抖音小助手 @唐威羽毛球",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7087020706680048930",
+      "title": "双拍流在民间已经消失很久了😂，大家@ 喜欢的博主来玩玩啊#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7085903098853592335",
+      "title": "交作业了😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7085529937012165903",
+      "title": "下次还是你们俩一波儿吧，气氛怪怪的，咱也不敢说话啊😂@打羽毛球的郑老师🏸️🏸️@💗王小仙儿💗 @主场星光路运动中心 #羽毛球 #快乐羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：非教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7084050934996815139",
+      "title": "锋影700中杆适中，3U平衡点292mm，4U平衡点296mm（本人测试的这支），5U平衡点302mm，3U偏专业一些，适合业余男士水平较好的选手，4U推荐业余男士，5U推荐业余女士#羽毛球 #羽毛球装备 #李宁羽毛球 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "排除：广告/器材推广",
+      "effective_decision": "排除：广告/器材推广",
+      "migration_action": "accept_current_rules"
+    },
+    {
+      "video_id": "7082564138752281896",
+      "title": "既然朋友们都这么给我面子，想让我完成这个挑战，那我就献丑了👊🏻大家继续喊博主们挑战接力吧#羽毛球 #羽毛球训练 #羽毛球教学",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7071430658584857891",
+      "title": "蹆打单打还是费劲，大家凑合凑合，15分钟的素材剪成两分钟，找的不一定精彩，但是有技术代表性😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手 对手@皓憨憨",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "保留：教学",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7070320753916366095",
+      "title": "腿伤二次复发后初愈，各位见笑，个人建议技术组合使用比较香😂#羽毛球 #羽毛球教学 #羽毛球训练 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    },
+    {
+      "video_id": "7066977429230718223",
+      "title": "花活儿第二集加A字霸王杀， 又浪又硬，羽毛球我是真的爱😂#羽毛球 #羽毛球训练 #羽毛球教学 @抖音小助手",
+      "previous_decision": "legacy_excluded_unknown",
+      "automatic_decision": "待复核：仅通用教学标签",
+      "effective_decision": "排除：非教学",
+      "migration_action": "preserve_reviewed_exclusion"
+    }
+  ],
+  "applied": true
+}

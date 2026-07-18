@@ -187,6 +187,19 @@ def load_discovery_state(index_count):
 
 def build_apply_payloads(new_videos, classified):
     applied_at = now_iso()
+    rules_identity = load_classification_rules()["_rules_identity"]
+    classified = [
+        {
+            **item,
+            "classification_rules_version": item.get(
+                "classification_rules_version", rules_identity["version"]
+            ),
+            "classification_rules_hash": item.get(
+                "classification_rules_hash", rules_identity["sha256"]
+            ),
+        }
+        for item in classified
+    ]
     index = load_json(INDEX_PATH)
     teaching = load_json(TEACHING_PATH)
     queue = load_json(QUEUE_PATH)
@@ -216,6 +229,9 @@ def build_apply_payloads(new_videos, classified):
             "tags": item["tags"],
             "status": "classified_teaching",
             "classification_decision": item["decision"],
+            "classification_reason": item["decision_reason"],
+            "classification_rules_version": item["classification_rules_version"],
+            "classification_rules_hash": item["classification_rules_hash"],
             "classified_at": applied_at,
             "media_path": None,
             "duration_seconds": None,
@@ -332,6 +348,13 @@ def resolve_review(video_id, resolution, note):
                     "tags": classification["tags"],
                     "status": "classified_teaching",
                     "classification_decision": decision,
+                    "classification_reason": classification["decision_reason"],
+                    "classification_rules_version": classification.get(
+                        "classification_rules_version"
+                    ),
+                    "classification_rules_hash": classification.get(
+                        "classification_rules_hash"
+                    ),
                     "classified_at": resolved_at,
                     "media_path": None,
                     "duration_seconds": None,
@@ -480,6 +503,7 @@ def main():
 
     report = {
         "generated_at": now_iso(),
+        "classification_rules": rules["_rules_identity"],
         "input": str(input_path.relative_to(ROOT) if input_path.is_relative_to(ROOT) else input_path),
         "snapshot_validation": snapshot_validation,
         "observed": len(observed),

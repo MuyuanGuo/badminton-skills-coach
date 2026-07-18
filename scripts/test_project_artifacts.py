@@ -106,6 +106,22 @@ class ProjectArtifactsTests(unittest.TestCase):
         ):
             self.module.derive_project_status(index, teaching, knowledge)
 
+    def test_audited_pre_filter_exclusion_is_not_counted_twice(self):
+        index, teaching, knowledge = self.fixture()
+        excluded = teaching["videos"].pop()
+        teaching["counts"]["kept_teaching"] -= 1
+        teaching["counts"]["excluded_non_teaching"] += 1
+        status = self.module.derive_project_status(index, teaching, knowledge)
+        self.assertEqual(status["ready_teaching_videos"], 1)
+        self.assertEqual(status["pending_human_review_or_processing"], 3)
+        self.assertEqual(status["excluded_non_teaching_ads_equipment"], 3)
+        self.assertEqual(
+            status["public_videos_collected"],
+            status["ready_teaching_videos"]
+            + status["pending_human_review_or_processing"]
+            + status["excluded_non_teaching_ads_equipment"],
+        )
+
     def test_noncanonical_public_video_link_is_rejected(self):
         index, teaching, knowledge = self.fixture()
         knowledge = copy.deepcopy(knowledge)
@@ -211,6 +227,7 @@ class ProjectArtifactsTests(unittest.TestCase):
             )
         )
         self.assertFalse(packaged["transcript_files_bundled"])
+        self.assertTrue(packaged["runtime_transcript_segments_bundled"])
         self.assertNotIn("transcript_file", packaged["videos"][0])
 
 

@@ -70,7 +70,7 @@ class TopicNavigationTests(unittest.TestCase):
             for category in index["categories"]
             if category["name"] == "发球与接发"
             for subtopic in category["subtopics"]
-            if subtopic["name"] == "接发"
+            if subtopic["name"] == "接发与抢发"
         )
         self.assertEqual(reception["video_ids"], ["100000000000000002"])
         self.assertEqual(
@@ -128,6 +128,62 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(context["discipline"], "doubles")
         self.assertEqual(context["practice_setup"], "solo")
+
+    def test_full_topic_index_assigns_every_ready_video(self):
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        knowledge = json.loads(
+            (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        ready_count = sum(
+            video["processing_status"] == "ready" for video in knowledge["videos"]
+        )
+        self.assertEqual(index["assigned_video_count"], ready_count)
+        self.assertEqual(index["unassigned_video_ids"], [])
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v3")
+        self.assertTrue(
+            any(category["name"] == "单打战术" for category in index["categories"])
+        )
+
+    def test_singles_systematic_navigation_never_returns_doubles_branch(self):
+        graph = json.loads(
+            (
+                ROOT
+                / "skills"
+                / "liuhui-badminton-coach"
+                / "references"
+                / "topic-map.json"
+            ).read_text(encoding="utf-8")
+        )
+        matches = self.navigator.match_topics(
+            graph, "我想从零开始系统学习单打战术", 5
+        )
+        self.assertTrue(matches)
+        self.assertEqual(matches[0]["category"], "单打战术")
+        self.assertTrue(all(match["category"] != "双打战术" for match in matches))
+
+    def test_doubles_rotation_navigation_has_relevant_representatives(self):
+        graph = json.loads(
+            (
+                ROOT
+                / "skills"
+                / "liuhui-badminton-coach"
+                / "references"
+                / "topic-map.json"
+            ).read_text(encoding="utf-8")
+        )
+        matches = self.navigator.match_topics(graph, "系统学习双打轮转", 5)
+        self.assertEqual(matches[0]["category"], "双打战术")
+        self.assertEqual(matches[0]["subtopic"], "轮转与补位")
+        titles = [
+            video["title"] for video in matches[0]["representative_videos"]
+        ]
+        self.assertTrue(all("正手区前后步法" not in title for title in titles))
 
 
 if __name__ == "__main__":

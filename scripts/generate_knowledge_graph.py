@@ -79,6 +79,7 @@ def load_graph():
                     "keywords": subtopic["keywords"],
                     "video_count": subtopic["video_count"],
                     "ready_count": subtopic["ready_count"],
+                    "is_fallback": subtopic.get("is_fallback", False),
                     "representative_videos": reps,
                 }
             )
@@ -86,6 +87,7 @@ def load_graph():
             {
                 "name": category["name"],
                 "description": category["description"],
+                "discipline": category.get("discipline", "general"),
                 "video_count": category["video_count"],
                 "subtopics": subtopics,
             }

@@ -62,6 +62,14 @@ def build_index(knowledge, topic_index, rules):
         for term in group
         if len(normalize(term)) >= 2
     }
+    for group in rules.get("equivalent_groups", []):
+        lexicon.update(term for term in group if len(normalize(term)) >= 2)
+    for expansion in rules.get("directed_expansions", []):
+        lexicon.update(expansion.get("query_terms", []))
+        lexicon.update(expansion.get("expanded_terms", {}))
+    intent_rules = rules.get("intent", {})
+    for key in ["literal_symptom_terms", "scenario_terms", "level_terms"]:
+        lexicon.update(intent_rules.get(key, []))
     for topic in topics:
         lexicon.update(topic["keywords"])
         lexicon.add(topic["subtopic"])
@@ -70,28 +78,37 @@ def build_index(knowledge, topic_index, rules):
     sizes = rules["retrieval"]["transcript_ngram_sizes"]
     records = []
     topic_counts = Counter()
-    missing_transcripts = []
+    term_document_frequency = Counter()
+    field_length_totals = Counter()
+    missing_runtime_segments = []
     for video in knowledge["videos"]:
         if video["processing_status"] != "ready":
             continue
-        transcript_path = ROOT / video["transcript_file"]
-        if not transcript_path.exists():
-            missing_transcripts.append(video["video_id"])
+        segments = video.get("transcript_segments") or []
+        transcript_backed = video.get("confidence") != "visual_reviewed"
+        if transcript_backed and not segments:
+            missing_runtime_segments.append(video["video_id"])
             continue
-        transcript = json.loads(transcript_path.read_text(encoding="utf-8"))
-        full_text = transcript.get("full_text", "")
-        evidence_searchable = normalize(
-            flatten(
-                {
-                    "title": video["title"],
-                    "teaching_note": video["teaching_note"],
-                    "transcript": full_text,
-                }
-            )
-        )
+        full_text = "".join(segment.get("text", "") for segment in segments)
+        field_text = {
+            "title": normalize(video.get("retrieval_title") or video["title"]),
+            "teaching_note": normalize(flatten(video["teaching_note"])),
+            "transcript": normalize(full_text),
+        }
+        evidence_searchable = "".join(field_text.values())
         matched_terms = sorted(
             term for term in lexicon if normalize(term) in evidence_searchable
         )
+        field_term_frequencies = {}
+        for field, text in field_text.items():
+            frequencies = {
+                term: text.count(normalize(term))
+                for term in matched_terms
+                if normalize(term) in text
+            }
+            field_term_frequencies[field] = frequencies
+            field_length_totals[field] += len(text)
+        term_document_frequency.update(matched_terms)
         matched_topics = []
         for topic in topics:
             if video["video_id"] in topic["video_ids"]:
@@ -102,13 +119,26 @@ def build_index(knowledge, topic_index, rules):
                 "video_id": video["video_id"],
                 "topic_ids": matched_topics,
                 "lexicon_terms": matched_terms,
+                "field_lengths": {
+                    field: len(text) for field, text in field_text.items()
+                },
+                "field_term_frequencies": field_term_frequencies,
+                "title_ngrams": sorted(
+                    hashed_ngrams(
+                        video.get("retrieval_title") or video["title"], sizes
+                    )
+                ),
+                "teaching_note_ngrams": sorted(
+                    hashed_ngrams(flatten(video["teaching_note"]), sizes)
+                ),
                 "transcript_ngrams": sorted(hashed_ngrams(full_text, sizes)),
             }
         )
 
-    if missing_transcripts:
+    if missing_runtime_segments:
         raise SystemExit(
-            "Missing transcripts for indexable videos: " + ", ".join(missing_transcripts)
+            "Missing runtime transcript segments for indexable videos: "
+            + ", ".join(missing_runtime_segments)
         )
 
     return {
@@ -117,6 +147,12 @@ def build_index(knowledge, topic_index, rules):
         "source_updated_at": knowledge["updated_at"],
         "indexable_video_count": len(records),
         "full_transcript_text_included": False,
+        "runtime_transcript_segments_in_knowledge": True,
+        "term_document_frequency": dict(sorted(term_document_frequency.items())),
+        "average_field_lengths": {
+            field: round(total / max(1, len(records)), 4)
+            for field, total in sorted(field_length_totals.items())
+        },
         "evidence_fields": ["title", "teaching_note", "transcript"],
         "screening_fields_excluded": ["category", "tags"],
         "transcript_ngram_sizes": sizes,

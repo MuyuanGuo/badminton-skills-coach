@@ -1,4 +1,134 @@
 {
-  "version": 1,
-  "cases": []
+  "version": 2,
+  "cases": [],
+  "adversarial_cases": [
+    {
+      "case_id": "FBR-A01",
+      "description": "正向反馈可以迁移到等价的杀球无力表达。",
+      "signal": {
+        "signal_id": "FBR-A01",
+        "public_query": "杀球不重怎么办",
+        "helpful_video_ids": ["7659991105622862457"],
+        "irrelevant_video_ids": [],
+        "missing_video_ids": [],
+        "answer_issue_types": [],
+        "intended_query": null,
+        "source_issue_video_ids": []
+      },
+      "checks": [
+        {
+          "query": "杀球没有威胁应该怎么调整",
+          "expected_signal_match": true,
+          "expected_positive_video_ids": ["7659991105622862457"],
+          "expected_negative_video_ids": [],
+          "forbidden_adjustment_video_ids": [],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": []
+        }
+      ]
+    },
+    {
+      "case_id": "FBR-A02",
+      "description": "杀球下网的负向反馈不能污染杀球落点问题。",
+      "signal": {
+        "signal_id": "FBR-A02",
+        "public_query": "杀球总下网怎么办",
+        "helpful_video_ids": [],
+        "irrelevant_video_ids": ["7659348110628345210"],
+        "missing_video_ids": [],
+        "answer_issue_types": [],
+        "intended_query": null,
+        "source_issue_video_ids": []
+      },
+      "checks": [
+        {
+          "query": "杀球总下网怎么办",
+          "expected_signal_match": true,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": ["7659348110628345210"],
+          "forbidden_adjustment_video_ids": [],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": []
+        },
+        {
+          "query": "杀球落点应该怎么选择",
+          "expected_signal_match": false,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": [],
+          "forbidden_adjustment_video_ids": ["7659348110628345210"],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": []
+        }
+      ]
+    },
+    {
+      "case_id": "FBR-A03",
+      "description": "搓球负向反馈不能跨到扑球。",
+      "signal": {
+        "signal_id": "FBR-A03",
+        "public_query": "网前搓球怎么控制拍面",
+        "helpful_video_ids": [],
+        "irrelevant_video_ids": ["7065491791167999232"],
+        "missing_video_ids": [],
+        "answer_issue_types": [],
+        "intended_query": null,
+        "source_issue_video_ids": []
+      },
+      "checks": [
+        {
+          "query": "网前搓球怎么控制拍面",
+          "expected_signal_match": true,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": ["7065491791167999232"],
+          "forbidden_adjustment_video_ids": [],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": []
+        },
+        {
+          "query": "网前扑球怎么压下去",
+          "expected_signal_match": false,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": [],
+          "forbidden_adjustment_video_ids": ["7065491791167999232"],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": []
+        }
+      ]
+    },
+    {
+      "case_id": "FBR-A04",
+      "description": "问题理解纠错只影响同一结构化意图。",
+      "signal": {
+        "signal_id": "FBR-A04",
+        "public_query": "双打接发应该怎么调整",
+        "helpful_video_ids": [],
+        "irrelevant_video_ids": [],
+        "missing_video_ids": [],
+        "answer_issue_types": ["question_misunderstood"],
+        "intended_query": "双打接发战术和接发握拍两个独立问题",
+        "source_issue_video_ids": []
+      },
+      "checks": [
+        {
+          "query": "双打接发应该怎么调整",
+          "expected_signal_match": true,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": [],
+          "forbidden_adjustment_video_ids": [],
+          "expected_answer_reminders": ["question_misunderstood"],
+          "forbidden_answer_reminders": [],
+          "expected_intended_query": "双打接发战术和接发握拍两个独立问题"
+        },
+        {
+          "query": "单打发球应该怎么调整",
+          "expected_signal_match": false,
+          "expected_positive_video_ids": [],
+          "expected_negative_video_ids": [],
+          "forbidden_adjustment_video_ids": [],
+          "expected_answer_reminders": [],
+          "forbidden_answer_reminders": ["question_misunderstood"]
+        }
+      ]
+    }
+  ]
 }

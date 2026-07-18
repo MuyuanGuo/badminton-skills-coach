@@ -32,6 +32,10 @@ SKILL_REFERENCE_PATHS = (
         Path("skills/liuhui-badminton-coach/references/answer-modality-rules.json"),
     ),
     (
+        Path("config/answer_selection_rules.json"),
+        Path("skills/liuhui-badminton-coach/references/answer-selection-rules.json"),
+    ),
+    (
         Path("config/practice_plan_rules.json"),
         Path("skills/liuhui-badminton-coach/references/practice-plan-rules.json"),
     ),
@@ -42,6 +46,10 @@ SKILL_REFERENCE_PATHS = (
     (
         Path("config/feedback_signals.json"),
         Path("skills/liuhui-badminton-coach/references/feedback-signals.json"),
+    ),
+    (
+        Path("data/knowledge/build_manifest.json"),
+        Path("skills/liuhui-badminton-coach/references/build-manifest.json"),
     ),
 )
 
@@ -121,9 +129,9 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         raise ArtifactConsistencyError(
             "Teaching-filter output references videos missing from the index"
         )
-    if not knowledge_id_set.issubset(teaching_id_set):
+    if not knowledge_id_set.issubset(index_id_set):
         raise ArtifactConsistencyError(
-            "Knowledge base references videos not retained by the teaching filter"
+            "Knowledge base references videos missing from the collected index"
         )
 
     status_counts = {status: 0 for status in sorted(ALLOWED_KNOWLEDGE_STATUSES)}
@@ -139,12 +147,27 @@ def derive_project_status(video_index, teaching_filter, knowledge):
             ready_by_id[str(video["video_id"])] = video
 
     ready = sum(status_counts[status] for status in READY_STATUSES)
-    knowledge_pending = sum(
-        status_counts[status] for status in PENDING_KNOWLEDGE_STATUSES
-    )
-    post_pipeline_excluded = sum(
-        status_counts[status] for status in EXCLUDED_KNOWLEDGE_STATUSES
-    )
+    ready_ids = {
+        str(video["video_id"])
+        for video in knowledge.get("videos", [])
+        if video.get("processing_status") in READY_STATUSES
+    }
+    if not ready_ids.issubset(teaching_id_set):
+        raise ArtifactConsistencyError(
+            "Ready knowledge videos must be retained teaching candidates"
+        )
+    knowledge_pending_ids = {
+        str(video["video_id"])
+        for video in knowledge.get("videos", [])
+        if video.get("processing_status") in PENDING_KNOWLEDGE_STATUSES
+    }
+    knowledge_excluded_ids = {
+        str(video["video_id"])
+        for video in knowledge.get("videos", [])
+        if video.get("processing_status") in EXCLUDED_KNOWLEDGE_STATUSES
+    }
+    knowledge_pending = len(knowledge_pending_ids & teaching_id_set)
+    post_pipeline_excluded = len(knowledge_excluded_ids & teaching_id_set)
     pipeline_pending = len(teaching_id_set - knowledge_id_set)
     pre_pipeline_excluded = excluded_ads + excluded_non_teaching
     excluded = pre_pipeline_excluded + post_pipeline_excluded
@@ -154,7 +177,7 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         raise ArtifactConsistencyError(
             "Collected videos do not equal ready plus pending plus excluded videos"
         )
-    if len(knowledge_ids) != ready + knowledge_pending + post_pipeline_excluded:
+    if len(knowledge_ids) != sum(status_counts.values()):
         raise ArtifactConsistencyError(
             "Knowledge statuses do not form a complete partition"
         )
@@ -248,6 +271,7 @@ def skill_reference_bytes(source_relative, source_bytes):
     for video in payload.get("videos", []):
         video.pop("transcript_file", None)
     payload["transcript_files_bundled"] = False
+    payload["runtime_transcript_segments_bundled"] = True
     return (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 

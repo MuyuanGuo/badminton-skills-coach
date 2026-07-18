@@ -52,6 +52,13 @@ def review_status(notes):
     return "approved"
 
 
+def review_evidence_source(notes):
+    normalized = notes.lower()
+    if "按转写的结果加进skill" in normalized or "按转写结果加进skill" in normalized:
+        return "reviewed_transcript"
+    return "visual_summary"
+
+
 def main():
     if ANNOTATIONS_PATH.exists():
         existing_data = json.loads(ANNOTATIONS_PATH.read_text(encoding="utf-8"))
@@ -81,6 +88,7 @@ def main():
         if not video_id:
             continue
         merged_by_id[video_id] = {
+            **merged_by_id.get(video_id, {}),
             "rank": int(match.group("rank")),
             "video_id": video_id,
             "title": match.group("title").strip(),
@@ -88,6 +96,7 @@ def main():
             "category": extract_field(body, "Category"),
             "review_status": status,
             "review_notes": notes,
+            "evidence_source": review_evidence_source(notes),
             "reviewed_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -97,7 +106,7 @@ def main():
     ANNOTATIONS_PATH.write_text(
         json.dumps(
             {
-                "version": "visual-review-annotations-v1",
+                "version": "visual-review-annotations-v2",
                 "source": str(MARKDOWN_PATH.relative_to(ROOT)),
                 "reviewed_count": len(items),
                 "status_counts": {

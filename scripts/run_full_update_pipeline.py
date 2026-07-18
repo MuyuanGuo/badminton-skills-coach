@@ -39,6 +39,8 @@ def main():
             command.append("--apply")
         run(command)
 
+    run([sys.executable, "scripts/reclassify_douyin_catalog.py", "--apply"])
+
     if args.batch:
         command = [sys.executable, "scripts/process_douyin_ready_batch.py", args.batch]
         if args.no_push:
@@ -62,6 +64,7 @@ def main():
             )
         )
         run([sys.executable, "scripts/update_readme_status.py"])
+        run([sys.executable, "scripts/build_manifest.py"])
         run([sys.executable, "scripts/evaluate_retrieval.py"])
         run([sys.executable, "scripts/evaluate_answer_policy.py"])
         run([sys.executable, "scripts/evaluate_feedback_signals.py"])
@@ -69,6 +72,8 @@ def main():
         run([sys.executable, "scripts/test_feedback_personalization.py"])
         run([sys.executable, "scripts/test_feedback_promotion.py"])
         run([sys.executable, "scripts/test_public_feedback_e2e.py"])
+        run([sys.executable, "scripts/test_build_reproducibility.py"])
+        run([sys.executable, "scripts/check_video_links.py"])
         run([sys.executable, "scripts/validate_project.py"])
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))

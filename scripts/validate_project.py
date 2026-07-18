@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
+from build_manifest import manifest_bytes
 from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
 from media_assets import load_media_policy
 from project_artifacts import (
@@ -39,6 +40,7 @@ for compiled_helper in [
 
 json_paths = [
     "config/answer_modality_rules.json",
+    "config/answer_selection_rules.json",
     "config/answer_quality_rules.json",
     "config/douyin_classification_rules.json",
     "config/douyin_source.json",
@@ -47,7 +49,9 @@ json_paths = [
     "config/knowledge_quality_rules.json",
     "config/practice_plan_rules.json",
     "config/retrieval_rules.json",
+    "data/knowledge/build_manifest.json",
     "data/douyin_teaching_filtered.json",
+    "data/douyin_classification_ledger.json",
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
@@ -66,6 +70,8 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
+    "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
+    "skills/liuhui-badminton-coach/references/build-manifest.json",
     "skills/liuhui-badminton-coach/references/practice-plan-rules.json",
     "skills/liuhui-badminton-coach/references/feedback-rules.json",
     "skills/liuhui-badminton-coach/references/feedback-signals.json",
@@ -86,11 +92,32 @@ for runtime_file in [
     ROOT / "scripts" / "install_skill.py",
     ROOT / "scripts" / "media_assets.py",
     ROOT / "scripts" / "package_skill_release.py",
+    ROOT / "scripts" / "build_manifest.py",
+    ROOT / "scripts" / "check_video_links.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "doctor.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "install.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "prepare_answer_context.py",
 ]:
     if not runtime_file.exists():
         raise SystemExit(f"Runtime setup file is missing: {runtime_file.relative_to(ROOT)}")
+
+expected_manifest = manifest_bytes()
+for manifest_path in [
+    ROOT / "data" / "knowledge" / "build_manifest.json",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "build-manifest.json",
+]:
+    if manifest_path.read_bytes() != expected_manifest:
+        raise SystemExit(
+            f"Build manifest is stale: {manifest_path.relative_to(ROOT)}"
+        )
 
 ET.parse(ROOT / "output" / "liuhui-full-knowledge-map.drawio")
 
@@ -164,6 +191,32 @@ video_index = json.loads(
 teaching_filter = json.loads(
     (ROOT / "data" / "douyin_teaching_filtered.json").read_text(encoding="utf-8")
 )
+classification_ledger = json.loads(
+    (ROOT / "data" / "douyin_classification_ledger.json").read_text(
+        encoding="utf-8"
+    )
+)
+rules_identity = rules["_rules_identity"]
+if classification_ledger.get("classification_rules") != rules_identity:
+    raise SystemExit("Classification ledger rules identity is stale")
+if teaching_filter.get("classification_rules") != rules_identity:
+    raise SystemExit("Teaching filter rules identity is stale")
+index_ids = {item["video_id"] for item in video_index["videos"]}
+ledger_ids = {item["video_id"] for item in classification_ledger["videos"]}
+if ledger_ids != index_ids:
+    raise SystemExit("Classification ledger does not cover the full video index")
+if any(
+    item.get("classification_rules_hash") != rules_identity["sha256"]
+    or item.get("classification_rules_version") != rules_identity["version"]
+    for item in classification_ledger["videos"]
+):
+    raise SystemExit("Classification ledger contains mixed rule identities")
+if any(
+    item.get("classification_rules_hash") != rules_identity["sha256"]
+    or item.get("classification_rules_version") != rules_identity["version"]
+    for item in queue["items"]
+):
+    raise SystemExit("Processing queue contains stale classification metadata")
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
 )
@@ -326,8 +379,12 @@ if any(feedback_weights.get(key, 0) >= 0 for key in [
 project_status = derive_project_status(video_index, teaching_filter, douyin_knowledge)
 ready_count = project_status["ready_teaching_videos"]
 all_collected_count = project_status["public_videos_collected"]
-if teaching_filter["counts"]["kept_teaching"] != len(queue["items"]):
-    raise SystemExit("Teaching filter kept count is out of sync with processing queue")
+queue_kept = sum(
+    item.get("classification_decision") == "保留：教学"
+    for item in queue["items"]
+)
+if teaching_filter["counts"]["kept_teaching"] != queue_kept:
+    raise SystemExit("Teaching filter kept count is out of sync with queue decisions")
 if ready_count != douyin_knowledge["knowledge_counts"].get("ready"):
     raise SystemExit("Knowledge ready count is out of sync with video statuses")
 knowledge_quality_rules = json.loads(
@@ -343,6 +400,15 @@ for video in douyin_knowledge["videos"]:
         or not video["quality"]["automatic_evidence"]["passed"]
     ):
         raise SystemExit(f"Automatic ready video failed quality gates: {video['video_id']}")
+    queue_item = next(
+        item for item in queue["items"] if item["video_id"] == video["video_id"]
+    )
+    if video.get("classification", {}).get("decision") != queue_item.get(
+        "classification_decision"
+    ):
+        raise SystemExit(
+            f"Knowledge classification is stale for {video['video_id']}"
+        )
 
 retrieval_index_text = (ROOT / "data" / "knowledge" / "retrieval_index.json").read_text(
     encoding="utf-8"
@@ -373,16 +439,20 @@ if retrieval_index.get("screening_fields_excluded") != ["category", "tags"]:
     raise SystemExit("Retrieval index does not declare excluded screening fields")
 if set(retrieval_rules.get("field_weights", {})) != {
     "title",
-    "category",
     "teaching_note",
+    "transcript",
 }:
-    raise SystemExit("Retrieval field weights must not include screening tags")
+    raise SystemExit("Retrieval field weights must contain evidence fields only")
 if '"full_text"' in retrieval_index_text or '"transcript_text"' in retrieval_index_text:
     raise SystemExit("Retrieval index unexpectedly contains transcript text fields")
 allowed_retrieval_video_fields = {
     "video_id",
     "topic_ids",
     "lexicon_terms",
+    "field_lengths",
+    "field_term_frequencies",
+    "title_ngrams",
+    "teaching_note_ngrams",
     "transcript_ngrams",
 }
 if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index["videos"]):
@@ -412,6 +482,7 @@ answer_quality_summary = validate_answer_quality_registry(
     answer_quality_rules,
     ready_video_ids,
     minimum_cases=30,
+    all_video_ids={video["video_id"] for video in douyin_knowledge["videos"]},
 )
 if set(answer_quality_summary["status_counts"]) - set(
     answer_quality_rules["review_statuses"]
@@ -509,7 +580,7 @@ feedback_relevance_cases = json.loads(
         encoding="utf-8"
     )
 )
-if feedback_relevance_cases.get("version") != 1:
+if feedback_relevance_cases.get("version") != 2:
     raise SystemExit("Feedback relevance evaluation schema version is unsupported")
 signals_by_id = {signal["signal_id"]: signal for signal in feedback_signals["signals"]}
 cases_by_id = {case["case_id"]: case for case in feedback_relevance_cases["cases"]}
@@ -541,6 +612,34 @@ for signal_id, signal in signals_by_id.items():
         signal["source_issue_video_ids"]
     ):
         raise SystemExit("Promoted source recheck targets are out of sync with evaluation")
+
+adversarial_feedback_cases = feedback_relevance_cases.get(
+    "adversarial_cases", []
+)
+adversarial_case_ids = [case["case_id"] for case in adversarial_feedback_cases]
+if len(adversarial_case_ids) != len(set(adversarial_case_ids)):
+    raise SystemExit("Adversarial feedback case IDs must be unique")
+adversarial_check_count = 0
+for case in adversarial_feedback_cases:
+    signal = case.get("signal", {})
+    if signal.get("signal_id") != case["case_id"]:
+        raise SystemExit("Adversarial feedback signal ID is out of sync")
+    if not signal.get("public_query") or not case.get("checks"):
+        raise SystemExit("Adversarial feedback case is incomplete")
+    referenced_ids = set(
+        signal.get("helpful_video_ids", [])
+        + signal.get("irrelevant_video_ids", [])
+        + signal.get("missing_video_ids", [])
+        + signal.get("source_issue_video_ids", [])
+    )
+    if not referenced_ids.issubset(ready_video_ids):
+        raise SystemExit("Adversarial feedback references a non-ready video")
+    for check in case["checks"]:
+        adversarial_check_count += 1
+        if not check.get("query"):
+            raise SystemExit("Adversarial feedback check has no query")
+if adversarial_check_count < 7:
+    raise SystemExit("Feedback relevance evaluation lacks adversarial checks")
 
 retrieval_cases = json.loads(
     (ROOT / "data" / "evaluation" / "retrieval_cases.json").read_text(encoding="utf-8")

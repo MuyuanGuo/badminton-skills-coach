@@ -25,14 +25,17 @@ jobs:
             scripts/apply_answer_quality_review_notes.py \
             scripts/batch_transcribe_directory.py \
             scripts/build_answer_quality_review_queue.py \
+            scripts/build_manifest.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_retrieval_index.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
+            scripts/check_video_links.py \
             scripts/douyin_pipeline.py \
             scripts/doctor.py \
             scripts/evaluate_answer_policy.py \
+            scripts/evaluate_answer_context.py \
             scripts/evaluate_answer_quality.py \
             scripts/evaluate_feedback_signals.py \
             scripts/evaluate_query_understanding.py \
@@ -46,6 +49,7 @@ jobs:
             scripts/package_skill_release.py \
             scripts/prepare_douyin_media_batch.py \
             scripts/project_artifacts.py \
+            scripts/reclassify_douyin_catalog.py \
             scripts/promote_feedback.py \
             scripts/process_douyin_ready_batch.py \
             scripts/report_pipeline_status.py \
@@ -55,6 +59,9 @@ jobs:
             scripts/test_douyin_transactions.py \
             scripts/test_douyin_update_state.py \
             scripts/test_doctor.py \
+            scripts/test_answer_context.py \
+            scripts/test_build_reproducibility.py \
+            scripts/test_classification_migration.py \
             scripts/test_answer_quality.py \
             scripts/test_feedback_pipeline.py \
             scripts/test_feedback_personalization.py \
@@ -79,6 +86,7 @@ jobs:
             skills/liuhui-badminton-coach/scripts/feedback.py \
             skills/liuhui-badminton-coach/scripts/doctor.py \
             skills/liuhui-badminton-coach/scripts/install.py \
+            skills/liuhui-badminton-coach/scripts/prepare_answer_context.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
       - name: Run regression tests
@@ -88,6 +96,9 @@ jobs:
           python scripts/test_douyin_transactions.py
           python scripts/test_douyin_update_state.py
           python scripts/test_doctor.py
+          python scripts/test_answer_context.py
+          python scripts/test_build_reproducibility.py
+          python scripts/test_classification_migration.py
           python scripts/test_answer_quality.py
           python scripts/test_feedback_pipeline.py
           python scripts/test_feedback_personalization.py
@@ -107,11 +118,14 @@ jobs:
           python scripts/test_visual_review_workflow.py
           python scripts/test_video_comprehension.py
           python scripts/evaluate_answer_policy.py
+          python scripts/evaluate_answer_context.py
           python scripts/evaluate_answer_quality.py
           python scripts/evaluate_feedback_signals.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_retrieval.py
           python scripts/evaluate_video_comprehension.py
+          python scripts/build_manifest.py --check
+          python scripts/check_video_links.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
 
       - name: Validate repository artifacts
@@ -122,6 +136,7 @@ jobs:
         run: |
           python scripts/evaluate_answer_policy.py \
             --cases data/evaluation/answer_quality_cases.json
+          python scripts/evaluate_answer_context.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_video_comprehension.py
           python scripts/evaluate_answer_quality.py \
@@ -129,3 +144,4 @@ jobs:
             --min-approved 30 \
             --min-answer-snapshots 10
           python scripts/evaluate_feedback_signals.py
+          python scripts/build_manifest.py --check

@@ -185,8 +185,17 @@ def commit_json_transaction(payloads, journal_path):
 def load_classification_rules(path=None):
     rules_path = path or DEFAULT_RULES_PATH
     rules = load_json(rules_path)
+    rules_hash = hashlib.sha256(
+        json.dumps(
+            rules, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
     compiled = {
         **rules,
+        "_rules_identity": {
+            "version": rules["version"],
+            "sha256": rules_hash,
+        },
         "taxonomy": [
             {"name": item["name"], "pattern": re.compile(item["pattern"])}
             for item in rules["taxonomy"]
@@ -204,7 +213,9 @@ def classify_video(video, rules):
     content_text = re.sub(r"#\S+", " ", text)
     signals = rules["signals"]
     reasons = rules["decision_reasons"]
-    ad = bool(signals["ad_strong"].search(text))
+    ad_strong_full = bool(signals["ad_strong"].search(text))
+    ad_strong_content = bool(signals["ad_strong"].search(content_text))
+    ad = ad_strong_full
     has_equipment = bool(signals["equipment"].search(content_text))
     has_commerce = bool(signals["commerce"].search(content_text))
     has_teaching = bool(signals["teaching"].search(content_text))
@@ -248,6 +259,17 @@ def classify_video(video, rules):
         "decision_reason": reason,
         "primary_category": primary_category,
         "tags": "；".join(matched),
+        "classification_rules_version": rules["_rules_identity"]["version"],
+        "classification_rules_hash": rules["_rules_identity"]["sha256"],
+        "classification_signals": {
+            "ad_strong_content": ad_strong_content,
+            "ad_strong_hashtag_only": ad_strong_full and not ad_strong_content,
+            "equipment": has_equipment,
+            "commerce": has_commerce,
+            "teaching": has_teaching,
+            "teaching_hashtag": has_teaching_hashtag,
+            "explicit_non_teaching": explicit_non_teaching,
+        },
     }
 
 

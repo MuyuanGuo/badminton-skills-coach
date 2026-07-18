@@ -11,93 +11,11 @@ JSON_OUTPUT = ROOT / "data" / "knowledge" / "topic_index.json"
 SKILL_MARKDOWN_OUTPUT = (
     ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-index.md"
 )
+TAXONOMY_PATH = ROOT / "config" / "topic_taxonomy.json"
 
 
-TAXONOMY = [
-    {
-        "name": "后场技术",
-        "description": "后场击球、被动处理、杀吊突击与架拍框架。",
-        "subtopics": {
-            "被动后场与高远": ["被动", "高远", "后高点", "底线", "摆脱", "反手后场"],
-            "杀球、突击与压球": ["杀球", "突击", "压球", "重杀", "点杀", "落点"],
-            "架拍与框架": ["架拍", "框架", "抬拍", "举拍", "顶肘"],
-            "吊球与劈吊": ["吊球", "劈吊", "滑板", "假动作"],
-            "反手后场": ["反手", "反拍", "反手高远"],
-        },
-    },
-    {
-        "name": "步法与移动",
-        "description": "启动、移动、回动、低重心和不同区域步法。",
-        "subtopics": {
-            "启动与预动": ["启动", "预动", "起动", "蹬地"],
-            "回动与连贯": ["回动", "连贯", "衔接", "下一拍"],
-            "交叉步与并步": ["交叉步", "并步", "垫步", "步伐"],
-            "低重心与被动救球": ["低重心", "被动步法", "救球", "重心"],
-            "正手区与网前步法": ["正手区", "网前步法", "上网", "前后步法"],
-        },
-    },
-    {
-        "name": "发力与身体运用",
-        "description": "放松发力、旋转传导、腰腹、手腕与击球发力区间。",
-        "subtopics": {
-            "放松与爆发": ["放松", "爆发", "发力", "打透"],
-            "腰腹与身体旋转": ["腰腹", "核心", "旋转", "转体", "身体"],
-            "手腕、内旋与拍面": ["手腕", "内旋", "拍面", "握拍"],
-            "贴球发力": ["贴球", "贴近", "发力空间"],
-            "挥拍路径": ["挥拍", "随挥", "半程", "全程", "大臂"],
-        },
-    },
-    {
-        "name": "中前场与抽挡",
-        "description": "抽挡、接杀、防守、网前技术和中前场转换。",
-        "subtopics": {
-            "平抽挡与高速对抗": ["抽挡", "平抽挡", "高速对抗", "快球"],
-            "接杀与防守": ["接杀", "防守", "防反", "挡杀"],
-            "网前搓勾扑": ["网前", "搓球", "勾球", "扑球", "滚网"],
-            "挡网与放网": ["挡网", "放网", "网前球"],
-            "中前场衔接": ["中前场", "衔接", "连贯", "封网"],
-        },
-    },
-    {
-        "name": "双打战术",
-        "description": "双打轮转、防守站位、封网、进攻组织和发接发配合。",
-        "subtopics": {
-            "双打发接发": ["双打发接发", "接发", "发接发", "抓球"],
-            "轮转与补位": ["轮转", "补位", "前后", "左右"],
-            "双打防守站位": ["双打防守", "防守站位", "平行", "护边"],
-            "封网与抢网": ["封网", "抢网", "前场"],
-            "进攻组织": ["进攻", "组织", "压制", "后杀前封"],
-        },
-    },
-    {
-        "name": "发球与接发",
-        "description": "单打与双打发球、接发、发接发目的性。",
-        "subtopics": {
-            "发球": ["发球", "发小球", "偷后场"],
-            "接发": ["接发", "接发球", "抢发"],
-            "发接发目的性": ["目的性", "抓球", "主动", "限制"],
-        },
-    },
-    {
-        "name": "训练与纠错",
-        "description": "训练设计、常见错误、实战复盘和恢复对抗能力。",
-        "subtopics": {
-            "训练方法": ["训练", "练习", "多球", "三步", "方法"],
-            "常见错误纠正": ["错误", "不对", "纠正", "问题"],
-            "实战复盘": ["实战", "战术", "复盘", "比赛"],
-            "恢复与体能": ["恢复", "体能", "对抗能力", "精疲力尽"],
-        },
-    },
-    {
-        "name": "握拍与基本动作",
-        "description": "握拍、基础挥拍、基础动作和拍面控制。",
-        "subtopics": {
-            "握拍": ["握拍", "正手握拍", "反手握拍"],
-            "基础挥拍": ["基础挥拍", "挥拍", "随摆"],
-            "拍面控制": ["拍面", "角度", "控制"],
-        },
-    },
-]
+def load_taxonomy(path=TAXONOMY_PATH):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def flatten(value):
@@ -121,7 +39,7 @@ def video_text_fields(video):
         if key not in {"title", "topic", "problem", "video_id", "url", "category"}
     }
     return {
-        "title": str(video["title"]).lower(),
+        "title": str(video.get("retrieval_title") or video["title"]).lower(),
         "focus": flatten(focus).lower(),
         "evidence": flatten(evidence).lower(),
     }
@@ -131,17 +49,36 @@ def keyword_hits(text, keywords):
     return sum(text.count(keyword.lower()) for keyword in keywords)
 
 
-def video_score(text_fields, keywords):
+def contains_any(text_fields, terms):
+    combined = " ".join(text_fields.values())
+    return any(term.lower() in combined for term in terms)
+
+
+def video_score(text_fields, rule, field_weights, default_minimum_score):
+    if rule.get("fallback"):
+        return 0, {"title": 0, "focus": 0, "evidence": 0}
+    if rule.get("context_any") and not contains_any(
+        text_fields, rule["context_any"]
+    ):
+        return 0, {"title": 0, "focus": 0, "evidence": 0}
+    if rule.get("excluded_any") and contains_any(
+        text_fields, rule["excluded_any"]
+    ):
+        return 0, {"title": 0, "focus": 0, "evidence": 0}
+    keywords = rule["keywords"]
     hits = {
         "title": keyword_hits(text_fields["title"], keywords),
         "focus": keyword_hits(text_fields["focus"], keywords),
         "evidence": keyword_hits(text_fields["evidence"], keywords),
     }
-    score = hits["title"] * 6 + hits["focus"] * 3 + hits["evidence"]
+    score = sum(hits[field] * field_weights[field] for field in hits)
+    minimum = rule.get("minimum_score", default_minimum_score)
+    if score < minimum:
+        return 0, hits
     return score, hits
 
 
-def compact_video(video, score, match_basis):
+def compact_video(video, score, match_basis, assignment_method="rule_match"):
     note = video.get("teaching_note") or {}
     return {
         "video_id": video["video_id"],
@@ -153,77 +90,125 @@ def compact_video(video, score, match_basis):
         "topic": note.get("topic") or note.get("title") or video["title"],
         "score": score,
         "match_basis": match_basis,
+        "assignment_method": assignment_method,
     }
 
 
-def build_index(data):
-    categories = []
+def confidence_order(confidence):
+    return {
+        "curated": 0,
+        "reviewed_transcript": 1,
+        "visual_reviewed": 2,
+        "medium": 3,
+    }.get(confidence, 4)
+
+
+def build_index(data, taxonomy=None):
+    taxonomy = taxonomy or load_taxonomy()
     coverage_counter = Counter()
-    assigned_video_ids = set()
     videos = [
         video
         for video in data["videos"]
         if video["processing_status"] == "ready"
     ]
+    videos_by_id = {video["video_id"]: video for video in videos}
     text_cache = {
         video["video_id"]: video_text_fields(video) for video in videos
     }
-
-    for category in TAXONOMY:
-        subtopics = []
-        category_video_ids = set()
-        for name, keywords in category["subtopics"].items():
-            matches = []
+    matches_by_topic = defaultdict(list)
+    topic_rules = {}
+    for category in taxonomy["categories"]:
+        for rule in category["subtopics"]:
+            topic_id = f"{category['name']}/{rule['name']}"
+            topic_rules[topic_id] = (category, rule)
+            if rule.get("fallback"):
+                continue
             for video in videos:
                 score, match_basis = video_score(
-                    text_cache[video["video_id"]], keywords
+                    text_cache[video["video_id"]],
+                    rule,
+                    taxonomy["field_weights"],
+                    taxonomy["default_minimum_score"],
                 )
                 if score > 0:
-                    matches.append(compact_video(video, score, match_basis))
+                    matches_by_topic[topic_id].append(
+                        compact_video(video, score, match_basis)
+                    )
+                    coverage_counter[video["video_id"]] += 1
+
+    fallback_count = 0
+    for video in videos:
+        if coverage_counter[video["video_id"]] > 0:
+            continue
+        topic_id = taxonomy["fallback_by_source_category"].get(video["category"])
+        if not topic_id or topic_id not in topic_rules:
+            raise ValueError(
+                f"No valid fallback topic for source category {video['category']!r}"
+            )
+        matches_by_topic[topic_id].append(
+            compact_video(
+                video,
+                0,
+                {"title": 0, "focus": 0, "evidence": 0},
+                assignment_method="category_fallback",
+            )
+        )
+        coverage_counter[video["video_id"]] += 1
+        fallback_count += 1
+
+    categories = []
+    for category in taxonomy["categories"]:
+        subtopics = []
+        category_video_ids = set()
+        for rule in category["subtopics"]:
+            topic_id = f"{category['name']}/{rule['name']}"
+            matches = matches_by_topic[topic_id]
             matches.sort(
                 key=lambda item: (
                     -item["score"],
-                    item["confidence"] != "curated",
-                    item["confidence"] != "visual_reviewed",
+                    item["assignment_method"] == "category_fallback",
+                    confidence_order(item["confidence"]),
                     item["title"],
                 )
             )
-            ready_count = sum(item["processing_status"] == "ready" for item in matches)
-            review_count = sum(
-                item["processing_status"] == "needs_visual_review" for item in matches
-            )
             category_video_ids.update(item["video_id"] for item in matches)
-            assigned_video_ids.update(item["video_id"] for item in matches)
             subtopics.append(
                 {
-                    "name": name,
-                    "keywords": keywords,
+                    "name": rule["name"],
+                    "keywords": rule["keywords"],
+                    "context_any": rule.get("context_any", []),
+                    "is_fallback": bool(rule.get("fallback")),
                     "video_count": len(matches),
-                    "ready_count": ready_count,
-                    "needs_visual_review_count": review_count,
+                    "ready_count": len(matches),
+                    "needs_visual_review_count": 0,
                     "video_ids": [item["video_id"] for item in matches],
                     "representative_videos": matches[:5],
                 }
             )
-        for video_id in category_video_ids:
-            coverage_counter[video_id] += 1
         categories.append(
             {
                 "name": category["name"],
                 "description": category["description"],
+                "discipline": category.get("discipline", "general"),
                 "video_count": len(category_video_ids),
                 "subtopics": subtopics,
             }
         )
 
+    assigned_video_ids = set(coverage_counter)
+    unassigned = sorted(set(videos_by_id) - assigned_video_ids)
     return {
-        "version": "topic-index-v1",
+        "version": "topic-index-v2",
+        "taxonomy_version": taxonomy["version"],
+        "taxonomy_source": str(TAXONOMY_PATH.relative_to(ROOT)),
         "source": str(SOURCE.relative_to(ROOT)),
         "scope": data.get("scope"),
         "source_updated_at": data.get("updated_at"),
         "video_count": len(data["videos"]),
         "indexable_video_count": len(videos),
         "assigned_video_count": len(assigned_video_ids),
+        "unassigned_video_ids": unassigned,
+        "fallback_assigned_video_count": fallback_count,
         "multi_topic_video_count": sum(count > 1 for count in coverage_counter.values()),
         "categories": categories,
     }
@@ -268,7 +253,8 @@ def markdown(index):
                 f"`{subtopic['ready_count']}` ready, "
                 f"`{subtopic['needs_visual_review_count']}` needs visual review."
             )
-            lines.append(f"  Keywords: {', '.join(subtopic['keywords'])}")
+            keywords = ", ".join(subtopic["keywords"]) or "none"
+            lines.append(f"  Keywords: {keywords}")
             reps = subtopic["representative_videos"][:3]
             if reps:
                 lines.append("  Representative videos:")

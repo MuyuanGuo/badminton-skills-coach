@@ -74,13 +74,59 @@ def validate_registry(registry, answer_registry):
             "query-understanding registry does not cover: "
             + ", ".join(sorted(missing_case_ids))
         )
-    return cases
+    adversarial_cases = registry.get("adversarial_cases", [])
+    adversarial_ids = set()
+    expected_intent_fields = {
+        "positive_query_contains",
+        "positive_query_excludes",
+        "excluded_terms_contains",
+        "literal_symptoms_contains",
+        "scenarios_contains",
+        "requested_output",
+    }
+    for case in adversarial_cases:
+        case_id = case.get("case_id", "")
+        if not case_id or case_id in seen or case_id in adversarial_ids:
+            raise ValueError(f"invalid or duplicate adversarial case: {case_id}")
+        adversarial_ids.add(case_id)
+        if not str(case.get("query", "")).strip():
+            raise ValueError(f"{case_id} has no query")
+        if not str(case.get("intent_summary", "")).strip():
+            raise ValueError(f"{case_id} has no intent summary")
+        if set(case.get("expected_intent", {})) != expected_intent_fields:
+            raise ValueError(f"{case_id} has an invalid intent contract")
+    return cases, adversarial_cases
+
+
+def evaluate_intent_contract(intent_frame, contract):
+    positive_query = intent_frame["positive_query"]
+    checks = {
+        "positive_query_contains": all(
+            term in positive_query for term in contract["positive_query_contains"]
+        ),
+        "positive_query_excludes": all(
+            term not in positive_query for term in contract["positive_query_excludes"]
+        ),
+        "excluded_terms_contains": set(contract["excluded_terms_contains"]).issubset(
+            intent_frame["excluded_terms"]
+        ),
+        "literal_symptoms_contains": set(
+            contract["literal_symptoms_contains"]
+        ).issubset(intent_frame["literal_symptoms"]),
+        "scenarios_contains": set(contract["scenarios_contains"]).issubset(
+            intent_frame["scenarios"]
+        ),
+        "requested_output": (
+            intent_frame["requested_output"] == contract["requested_output"]
+        ),
+    }
+    return checks
 
 
 def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
     registry = load_json(cases_path)
     answer_registry = load_json(answer_cases_path)
-    cases = validate_registry(registry, answer_registry)
+    cases, adversarial_cases = validate_registry(registry, answer_registry)
     search_module = load_search_module()
     results = []
 
@@ -117,9 +163,28 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             }
         )
 
+    for case in adversarial_cases:
+        plan = search_module.plan_query(case["query"])
+        intent_frame = plan["retrieval_guidance"]["intent_frame"]
+        checks = evaluate_intent_contract(intent_frame, case["expected_intent"])
+        mismatches = [field for field, matched in checks.items() if not matched]
+        results.append(
+            {
+                "case_id": case["case_id"],
+                "query": case["query"],
+                "intent_summary": case["intent_summary"],
+                "matched": not mismatches,
+                "mismatches": mismatches,
+                "expected": case["expected_intent"],
+                "actual": intent_frame,
+            }
+        )
+
     passed = sum(result["matched"] for result in results)
     return {
         "cases": len(results),
+        "reviewed_cases": len(cases),
+        "adversarial_cases": len(adversarial_cases),
         "passed": passed,
         "accuracy": passed / len(results),
         "results": results,
@@ -132,7 +197,7 @@ def main():
     )
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--answer-cases", type=Path, default=ANSWER_CASES_PATH)
-    parser.add_argument("--require-cases", type=int, default=30)
+    parser.add_argument("--require-cases", type=int, default=34)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
 

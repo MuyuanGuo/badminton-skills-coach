@@ -23,7 +23,9 @@ if QUEUE_PATH.exists():
     existing = {item["video_id"]: item for item in current["items"]}
 
 items = []
+source_ids = set()
 for video in source["videos"]:
+    source_ids.add(video["video_id"])
     transcript_exists = any(TRANSCRIPTS.glob(f"**/{video['video_id']}.json"))
     previous = existing.get(video["video_id"], {})
     status = "transcribed" if transcript_exists else previous.get("status", "classified_teaching")
@@ -40,10 +42,25 @@ for video in source["videos"]:
             "duration_seconds": previous.get("duration_seconds"),
             "attempts": previous.get("attempts", 0),
             "error": previous.get("error"),
+            "classification_decision": video.get("decision", "保留：教学"),
+            "classification_reason": video.get("decision_reason", ""),
+            "classification_rules_version": video.get("classification_rules_version"),
+            "classification_rules_hash": video.get("classification_rules_hash"),
+            "classified_at": video.get("classified_at", previous.get("classified_at")),
         }
     )
     normalize_transcribed_media_state(item)
     items.append(item)
+
+for video_id, previous in existing.items():
+    if video_id in source_ids:
+        continue
+    if previous.get("status") == "transcribed" or previous.get(
+        "classification_decision", ""
+    ).startswith(("排除", "待复核")):
+        item = dict(previous)
+        normalize_transcribed_media_state(item)
+        items.append(item)
 
 validate_queue_statuses(items)
 counts = compute_status_counts(items)
