@@ -1,0 +1,10 @@
+{
+  "source_collected_at": "2026-07-18T06:10:20.588716+00:00",
+  "indexed_video_count": 473,
+  "canonical_syntax_invalid_video_ids": [],
+  "network_check_requested": false,
+  "sample_size": 0,
+  "network_checks": [],
+  "network_failures": 0,
+  "interpretation": "Network failures are monitoring signals, not proof that corpus evidence is invalid."
+}

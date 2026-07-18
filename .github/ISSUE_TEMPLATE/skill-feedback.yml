@@ -23,6 +23,13 @@ body:
       description: 如果回答中提供或你保留了 answer_id，可以填写；没有可留空。
 
   - type: textarea
+    id: intended-query
+    attributes:
+      label: 用户真实意图
+      description: 如果 Skill 理解错了问题，请用一句话写出你真正想问什么；否则留空。
+      placeholder: 我真正想问的是接发战术和接发握拍两个独立问题。
+
+  - type: textarea
     id: helpful-videos
     attributes:
       label: 最有价值的视频
@@ -41,6 +48,12 @@ body:
       label: 遗漏的视频
       description: 如果你知道答案没有列出的相关视频，请填写链接或视频 ID。
 
+  - type: textarea
+    id: source-issue-videos
+    attributes:
+      label: 需重新核对的视频
+      description: 如果转写、视频含义解释或引用有误，请粘贴对应视频链接或视频 ID。
+
   - type: dropdown
     id: text-issue
     attributes:
@@ -54,6 +67,10 @@ body:
         - 过于冗长
         - 难以执行
         - 不适合提问场景
+        - 问题理解错误
+        - 视频转写错误
+        - 视频含义解释错误
+        - 引用与结论不匹配
     validations:
       required: true
 
@@ -67,8 +84,8 @@ body:
     id: version
     attributes:
       label: 版本信息
-      description: 例如 v1.0.0 或 1.1.0-dev；不知道可填写 unknown。
-      placeholder: v1.0.0
+      description: 例如 v1.0.0 或 v1.1.0；不知道可填写 unknown。
+      placeholder: 1.1.0
     validations:
       required: true
 

@@ -1,0 +1,4 @@
+# Optional: only needed when maintainers download or transcribe new videos.
+faster-whisper>=1.2,<2
+certifi>=2024.2
+yt-dlp>=2026.7.4,<2027

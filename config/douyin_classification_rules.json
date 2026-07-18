@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "notes": [
     "Rules are intentionally conservative: keep clear teaching content, exclude pure ads/equipment/non-teaching posts, and send mixed teaching-promotional posts to review.",
     "Patterns are Python regular expressions."
@@ -55,9 +55,11 @@
     }
   ],
   "signals": {
-    "ad_strong": "紫电青霜|华羽|首发|发售|上新|直播间|购买|下单|福利|抽奖|礼盒|新品|库存|价格|链接|同款|预售|品牌合作",
-    "equipment": "球拍|拍线|磅数|手胶|底胶|线孔|连钉|球鞋|装备",
-    "teaching": "羽毛球教学|羽毛球训练|教学|训练|发力|杀球|吊球|高远球|步法|搓球|勾球|扑球|放网|发球|接发|握拍|挥拍|架拍|击球|双打|单打|战术|落点|线路|拍面|框架|纠错|基本功",
+    "ad_strong": "紫电青霜|华羽|李宁|尤尼克斯|胜利|YONEX|VICTOR|首发|发售|上市|上新|购买|下单|福利|抽奖|礼盒|新品|价格|链接|同款|预售|品牌合作",
+    "equipment": "球拍|拍线|球线|线床|线材|磅数|手胶|底胶|线孔|连钉|球鞋|装备|N68|n68",
+    "commerce": "推荐购买|推荐入手|带走|上市|开售|到货|补货|现货|优惠|折扣|领券|加购",
+    "teaching": "发力|杀球|吊球|高远球|步法|搓球|勾球|扑球|放网|发球|发后场|接发|握拍|挥拍|架拍|击球|抽球|抽挡|平抽|正手|反手|动作比较|动作本质|双打|单打|战术|落点|线路|拍面|框架|纠错|基本功|训练方法|练习方法",
+    "teaching_hashtag": "#羽毛球教学|#羽毛球训练|#教学|#训练",
     "non_teaching": "生日|拜年|新年|春节|放假|通知|停播|开播|日常|花絮|合影|见面会|招生|招募|学员反馈|感谢大家|粉丝|吃饭|旅游|搞笑"
   },
   "manual_exclusions": {
@@ -69,6 +71,7 @@
     "mixed_ad_teaching": "同时出现教学信号与品牌、发售或购买信号",
     "ad_or_equipment": "出现品牌、发售、直播间、购买或纯器材信号",
     "teaching": "包含明确技术、训练、纠错或战术信号",
+    "hashtag_only_review": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
     "explicit_non_teaching": "内容更接近日常、通知、招生或花絮",
     "manual_exclusion": "用户指定去除"
   }

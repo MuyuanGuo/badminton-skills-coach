@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "description": "问题理解回归集。每条案例固定预期的文字/视频分工、检索策略、子问题拆分和证据边界；用户反馈确认问题被误解后，应先在这里新增或修正案例，再调整路由。",
+  "cases": [
+    {
+      "case_id": "AQ001",
+      "query": "后场被动来不及架拍怎么把球打到底线",
+      "intent_summary": "诊断后场真被动时的准备与回球深度问题",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["后场被动来不及架拍怎么把球打到底线"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ002",
+      "query": "杀球不重没有威胁怎么办",
+      "intent_summary": "诊断杀球缺少速度或质量的可能原因与改善方法",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["杀球不重没有威胁怎么办"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ003",
+      "query": "网前框架怎么做才不会身体僵硬",
+      "intent_summary": "诊断网前框架僵硬并说明动作与放松方法",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["网前框架怎么做才不会身体僵硬"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ004",
+      "query": "双打接发怎么抢主动",
+      "intent_summary": "解释双打接发抢主动的战术优先级",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打接发怎么抢主动"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ005",
+      "query": "平抽挡怎么提高连续速度",
+      "intent_summary": "说明平抽挡连续速度所需的动作与节奏",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["平抽挡怎么提高连续速度"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ006",
+      "query": "启动慢而且回动不及时怎么练",
+      "intent_summary": "分别解决启动慢和回动不及时并形成练习方案",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "split_multi_issue",
+      "expected_query_units": ["启动慢", "回动不及时怎么练"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ007",
+      "query": "吊球怎么和杀球配合拉开对手",
+      "intent_summary": "解释吊球与杀球之间的战术配合关系",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["吊球怎么和杀球配合拉开对手"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ008",
+      "query": "接杀以后怎么防守反击",
+      "intent_summary": "说明接杀后的防守反击衔接",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["接杀以后怎么防守反击"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ009",
+      "query": "发小球怎么增加隐蔽性并偷后场",
+      "intent_summary": "把发小球隐蔽性与偷后场视为同一发球变化问题",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["发小球怎么增加隐蔽性并偷后场"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ010",
+      "query": "握拍太紧挥拍僵硬怎么放松",
+      "intent_summary": "诊断握拍过紧导致的挥拍僵硬并指导放松",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["握拍太紧挥拍僵硬怎么放松"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ011",
+      "query": "双打轮转时什么时候补位",
+      "intent_summary": "解释双打轮转中的补位时机与判断条件",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打轮转时什么时候补位"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ012",
+      "query": "杀球落点应该如何选择",
+      "intent_summary": "解释杀球落点选择的战术逻辑",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["杀球落点应该如何选择"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ013",
+      "query": "单打被动后场应该打直线还是斜线",
+      "intent_summary": "比较单打被动后场直线与斜线的选择条件",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["单打被动后场应该打直线还是斜线"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ014",
+      "query": "防守反击的战术思路是什么",
+      "intent_summary": "总结防守反击的战术原则和条件",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["防守反击的战术思路是什么"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ015",
+      "query": "正手握拍应该怎么握",
+      "intent_summary": "说明正手握拍基础并以视频承担手型示范",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["正手握拍应该怎么握"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ016",
+      "query": "拍面总是控制不住",
+      "intent_summary": "诊断持续拍面控制不稳的动作问题",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["拍面总是控制不住"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ017",
+      "query": "杀球时手肘应该放在哪里",
+      "intent_summary": "说明杀球肘部相对位置并以视频展示",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["杀球时手肘应该放在哪里"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ018",
+      "query": "正手高远球的击球姿势是什么样",
+      "intent_summary": "说明正手高远球姿势并以视频承担主要示范",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["正手高远球的击球姿势是什么样"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ019",
+      "query": "网前搓球怎么控制拍面",
+      "intent_summary": "说明搓球拍面与触球控制并以视频展示",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["网前搓球怎么控制拍面"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ020",
+      "query": "被动后场来不及架拍如何调整",
+      "intent_summary": "诊断被动后场来不及架拍的调整方法",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["被动后场来不及架拍如何调整"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ021",
+      "query": "平抽挡怎样连续发力",
+      "intent_summary": "说明平抽挡连续发力的框架与节奏",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["平抽挡怎样连续发力"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ022",
+      "query": "步法启动慢而且回动不及时",
+      "intent_summary": "分别诊断步法启动慢和回动不及时",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "split_multi_issue",
+      "expected_query_units": ["步法启动慢", "回动不及时"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ023",
+      "query": "杀球动作怎么发力",
+      "intent_summary": "说明杀球动作的发力链条与练习重点",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["杀球动作怎么发力"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ024",
+      "query": "如何练习吊球和杀球衔接",
+      "intent_summary": "把吊球与杀球视为同一衔接训练问题",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["如何练习吊球和杀球衔接"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ025",
+      "query": "双打接发战术和接发握拍应该怎么调整",
+      "intent_summary": "分别回答接发战术与接发握拍两个子问题",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "split_multi_issue",
+      "expected_query_units": ["双打接发战术", "接发握拍应该怎么调整"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ026",
+      "query": "我只描述杀球总下网，不给动作视频，能不能确定唯一原因",
+      "intent_summary": "先按杀球下网症状检索，同时说明无动作视频不能确定唯一原因",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["我只描述杀球总下网，不给动作视频，能不能确定唯一原因"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ027",
+      "query": "练杀球以后肩膀疼，还能不能继续练",
+      "intent_summary": "先说明伤痛与训练安全边界，再提供有限证据",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "boundary_first",
+      "expected_query_units": ["练杀球以后肩膀疼，还能不能继续练"],
+      "expected_must_state_boundary_first": true
+    },
+    {
+      "case_id": "AQ028",
+      "query": "刘辉羽毛球最推荐我买哪一支球拍",
+      "intent_summary": "先说明知识库不能代替本人作购买背书",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "boundary_first",
+      "expected_query_units": ["刘辉羽毛球最推荐我买哪一支球拍"],
+      "expected_must_state_boundary_first": true
+    },
+    {
+      "case_id": "AQ029",
+      "query": "你给出的训练建议是不是刘辉本人认可的",
+      "intent_summary": "先说明 Skill 建议不等于刘辉本人认可或背书",
+      "expected_answer_mode": "text_primary",
+      "expected_strategy": "boundary_first",
+      "expected_query_units": ["你给出的训练建议是不是刘辉本人认可的"],
+      "expected_must_state_boundary_first": true
+    },
+    {
+      "case_id": "AQ030",
+      "query": "只看文字说明，能不能确认我的正手握拍完全正确",
+      "intent_summary": "先说明仅靠文字不能确认握拍形态，再给文字基础与视频证据",
+      "expected_answer_mode": "video_primary",
+      "expected_strategy": "boundary_first",
+      "expected_query_units": ["只看文字说明，能不能确认我的正手握拍完全正确"],
+      "expected_must_state_boundary_first": true
+    }
+  ],
+  "adversarial_cases": [
+    {
+      "case_id": "QUA001",
+      "query": "我不想学杀球，只想练吊球",
+      "intent_summary": "保留吊球练习意图，并把杀球当作明确排除项",
+      "expected_intent": {
+        "positive_query_contains": ["吊球"],
+        "positive_query_excludes": ["杀球"],
+        "excluded_terms_contains": ["杀球"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      }
+    },
+    {
+      "case_id": "QUA002",
+      "query": "双打轮转不要讲防守站位",
+      "intent_summary": "检索双打轮转，但不得把防守站位当作正向需求",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "轮转"],
+        "positive_query_excludes": ["防守", "站位"],
+        "excluded_terms_contains": ["防守", "站位"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打"],
+        "requested_output": "coaching_answer"
+      }
+    },
+    {
+      "case_id": "QUA003",
+      "query": "杀球总下网怎么办",
+      "intent_summary": "保留杀球下网这一原始失败症状并按诊断问题处理",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "下网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["下网"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      }
+    },
+    {
+      "case_id": "QUA004",
+      "query": "单打被动后场直线还是斜线更安全",
+      "intent_summary": "保留单打、被动后场以及直线和斜线的比较条件",
+      "expected_intent": {
+        "positive_query_contains": ["单打", "被动", "后场", "直线", "斜线"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["单打", "被动", "后场"],
+        "requested_output": "comparison"
+      }
+    }
+  ]
+}

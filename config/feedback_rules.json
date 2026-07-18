@@ -1,0 +1,185 @@
+{
+  "version": 2,
+  "skill_version": "1.1.0",
+  "channel": "stable",
+  "stable_version": "1.1.0",
+  "queue_statuses": [
+    "pending_review",
+    "needs_clarification",
+    "accepted",
+    "rejected",
+    "superseded"
+  ],
+  "review_decisions": [
+    "accepted",
+    "rejected",
+    "needs_clarification"
+  ],
+  "personalization": {
+    "query_similarity_threshold": 0.38,
+    "strict_intent_similarity_threshold": 0.72,
+    "exact_query_threshold": 0.82,
+    "max_abs_delta_per_layer": 12.0,
+    "local_preference_min_count": 2,
+    "weights": {
+      "global_helpful": 6.0,
+      "global_missing": 8.0,
+      "global_irrelevant": -10.0,
+      "local_helpful": 8.0,
+      "local_missing": 10.0,
+      "local_irrelevant": -12.0
+    },
+    "strict_signal_types": [
+      "irrelevant_video",
+      "question_misunderstood",
+      "incorrect_claim",
+      "transcript_error",
+      "video_misinterpreted",
+      "citation_mismatch"
+    ],
+    "scenario_conflicts": [
+      ["网前", "后场"],
+      ["正手", "反手"],
+      ["单打", "双打"],
+      ["主动", "被动"],
+      ["接发", "发球"]
+    ]
+  },
+  "positive_video_cues": [
+    "最有价值",
+    "最有用",
+    "很有价值",
+    "很有用",
+    "有帮助",
+    "值得看",
+    "最相关",
+    "helpful",
+    "valuable",
+    "most useful"
+  ],
+  "negative_video_cues": [
+    "不相关",
+    "关系不大",
+    "没有关系",
+    "没什么用",
+    "没有帮助",
+    "帮助不大",
+    "不值得看",
+    "irrelevant",
+    "not relevant",
+    "not helpful"
+  ],
+  "missing_video_cues": [
+    "漏了",
+    "遗漏",
+    "应该加入",
+    "应该补充",
+    "还应该有",
+    "missing",
+    "should include"
+  ],
+  "contrast_separators": [
+    "但是",
+    "不过",
+    "然而",
+    "但",
+    "but",
+    "however"
+  ],
+  "comparative_video_cues": [
+    "不如",
+    "比不上",
+    "不及",
+    "less useful than",
+    "not as useful as"
+  ],
+  "text_issue_cues": {
+    "missing_content": [
+      "文字漏了",
+      "回答漏了",
+      "没有讲",
+      "没说明",
+      "没有覆盖",
+      "解释不完整"
+    ],
+    "incorrect_claim": [
+      "文字不对",
+      "结论不对",
+      "解释错了",
+      "事实错误",
+      "incorrect",
+      "wrong claim"
+    ],
+    "too_vague": [
+      "太笼统",
+      "太模糊",
+      "不够具体",
+      "too vague"
+    ],
+    "too_verbose": [
+      "太长",
+      "太啰嗦",
+      "重复太多",
+      "too verbose"
+    ],
+    "hard_to_apply": [
+      "不知道怎么做",
+      "无法执行",
+      "不好操作",
+      "hard to apply"
+    ],
+    "scenario_mismatch": [
+      "不适合我的情况",
+      "场景不对",
+      "不符合我的水平",
+      "scenario mismatch"
+    ],
+    "question_misunderstood": [
+      "理解错了我的问题",
+      "答非所问",
+      "你理解成了",
+      "我问的是",
+      "misunderstood my question"
+    ],
+    "transcript_error": [
+      "转写错了",
+      "字幕识别错了",
+      "原视频说的是",
+      "听错了",
+      "transcript error"
+    ],
+    "video_misinterpreted": [
+      "理解错了这个视频",
+      "这个视频不是讲",
+      "视频含义理解错了",
+      "misinterpreted the video"
+    ],
+    "citation_mismatch": [
+      "引用不支持",
+      "视频不能证明",
+      "来源对不上",
+      "citation mismatch"
+    ]
+  },
+  "outcome_cues": {
+    "directly_applicable": [
+      "可以直接采用",
+      "已经解决",
+      "解决了我的问题"
+    ],
+    "understood_need_video": [
+      "理解了但还需要看视频",
+      "理解了，还需要看视频",
+      "还需要看视频"
+    ],
+    "unresolved": [
+      "仍然不知道怎么做",
+      "还是不知道怎么做",
+      "没有解决"
+    ],
+    "misunderstood": [
+      "理解错了我的问题",
+      "答非所问"
+    ]
+  }
+}

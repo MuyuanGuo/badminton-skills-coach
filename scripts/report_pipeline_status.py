@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from douyin_pipeline import QUEUE_STATUSES, validate_queue_statuses
+from project_artifacts import derive_project_status
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,13 +21,6 @@ def load_json(path):
 
 def relative(path):
     return str(path.relative_to(ROOT))
-
-
-def latest_ready_video(knowledge):
-    return next(
-        video for video in knowledge["videos"]
-        if video["processing_status"] == "ready"
-    )
 
 
 def failed_queue_items(queue):
@@ -47,20 +41,24 @@ def failed_queue_items(queue):
 
 
 def next_action(queue, update_report):
-    if update_report and update_report.get("new", 0):
+    if (
+        update_report
+        and update_report.get("new", 0)
+        and not update_report.get("applied")
+    ):
         if update_report.get("teaching", 0):
             return "Review output/douyin-update-report.json, then rerun check_douyin_updates.py with --apply if the teaching candidates are correct."
         return "Review output/douyin-update-report.json. Current new items are not classified as teaching candidates."
 
     counts = queue["counts"]
     if counts.get("download_failed") or counts.get("extraction_failed"):
-        return "Refresh media assets for failed items, then rerun prepare_douyin_media_batch.py and process_douyin_ready_batch.py."
+        return "Rerun process_douyin_ready_batch.py with --auto-download so failed or expired media extraction uses the isolated browser fallback."
     if counts.get("transcription_failed"):
         return "Inspect failed media files or transcription environment, then rerun batch_transcribe_directory.py or process_douyin_ready_batch.py."
     if counts.get("media_ready"):
         return "Run process_douyin_ready_batch.py for the prepared batch."
     if counts.get("classified_teaching") or counts.get("pending"):
-        return "Open each queued video page, capture media assets, then run prepare_douyin_media_batch.py."
+        return "Run process_douyin_ready_batch.py with --auto-download for each queued teaching video; use the manual media snapshot path only if needed."
     return "Capture a fresh Douyin profile snapshot and run check_douyin_updates.py."
 
 
@@ -76,23 +74,11 @@ def main():
     update_report = load_json(REPORT_PATH) if REPORT_PATH.exists() else None
 
     validate_queue_statuses(queue["items"])
-    ready_count = sum(video["processing_status"] == "ready" for video in knowledge["videos"])
-    review_excluded_count = sum(
-        video["processing_status"] in {"not_teaching", "low_value"}
-        for video in knowledge["videos"]
-    )
-    pre_pipeline_excluded_count = (
-        teaching["counts"].get("excluded_ads", 0)
-        + teaching["counts"].get("excluded_non_teaching", 0)
-        + teaching["counts"].get("review", 0)
-    )
-    latest = latest_ready_video(knowledge)
+    project_status = derive_project_status(video_index, teaching, knowledge)
+    latest = project_status["latest_ready_video"]
     failures = failed_queue_items(queue)
     report = {
-        "public_videos_collected": len(video_index["videos"]),
-        "excluded_non_teaching_ads_equipment": pre_pipeline_excluded_count + review_excluded_count,
-        "ready_teaching_videos": ready_count,
-        "processed_pipeline_videos": len(knowledge["videos"]),
+        **project_status,
         "queue_counts": queue["counts"],
         "failed_queue_items": failures,
         "latest_ready_video": {
@@ -106,6 +92,7 @@ def main():
             "new": update_report.get("new") if update_report else None,
             "teaching": update_report.get("teaching") if update_report else None,
             "excluded": update_report.get("excluded") if update_report else None,
+            "applied": bool(update_report.get("applied")) if update_report else False,
         },
         "next_action": next_action(queue, update_report),
     }
@@ -117,6 +104,7 @@ def main():
     print("Liu Hui Badminton Skill pipeline status")
     print(f"- Public videos collected: {report['public_videos_collected']}")
     print(f"- Excluded non-teaching/ads/equipment: {report['excluded_non_teaching_ads_equipment']}")
+    print(f"- Pending review or processing: {report['pending_human_review_or_processing']}")
     print(f"- Ready teaching videos: {report['ready_teaching_videos']}")
     print(f"- Processed pipeline videos: {report['processed_pipeline_videos']}")
     print(f"- Queue counts: {json.dumps(report['queue_counts'], ensure_ascii=False)}")

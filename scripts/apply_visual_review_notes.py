@@ -15,7 +15,9 @@ ITEM_RE = re.compile(
     r"(?P<body>.*?)(?=^###\s+\d+\.|\Z)",
     re.DOTALL | re.MULTILINE,
 )
-FIELD_RE = re.compile(r"^- (?P<key>Video ID|Category|URL): (?P<value>.*)$", re.MULTILINE)
+FIELD_RE = re.compile(
+    r"^- (?P<key>Status|Video ID|Category|URL): (?P<value>.*)$", re.MULTILINE
+)
 NOTES_RE = re.compile(r"Review notes:\s*(?P<notes>.*?)(?:\n-\s*$|\Z)", re.DOTALL | re.MULTILINE)
 
 
@@ -43,9 +45,18 @@ def review_status(notes):
         return "not_teaching"
     if "价值不高" in notes or "低价值" in notes:
         return "low_value"
-    if "按转写" in notes or "术语需要修正" in notes or "需要修正" in notes:
+    if "按转写的结果加进skill" in notes.lower() or "按转写结果加进skill" in notes.lower():
+        return "approved"
+    if "术语需要修正" in notes or "需要修正" in notes:
         return "needs_correction"
     return "approved"
+
+
+def review_evidence_source(notes):
+    normalized = notes.lower()
+    if "按转写的结果加进skill" in normalized or "按转写结果加进skill" in normalized:
+        return "reviewed_transcript"
+    return "visual_summary"
 
 
 def main():
@@ -65,11 +76,19 @@ def main():
         notes = clean_notes(notes_match.group("notes") if notes_match else "")
         if not notes:
             continue
-        status = review_status(notes)
+        explicit_status = extract_field(body, "Status")
+        status = (
+            explicit_status
+            if explicit_status and explicit_status != "pending"
+            else review_status(notes)
+        )
+        if status not in {"approved", "needs_correction", "not_teaching", "low_value"}:
+            raise ValueError(f"Unsupported review status in markdown: {status}")
         video_id = extract_field(body, "Video ID")
         if not video_id:
             continue
         merged_by_id[video_id] = {
+            **merged_by_id.get(video_id, {}),
             "rank": int(match.group("rank")),
             "video_id": video_id,
             "title": match.group("title").strip(),
@@ -77,6 +96,7 @@ def main():
             "category": extract_field(body, "Category"),
             "review_status": status,
             "review_notes": notes,
+            "evidence_source": review_evidence_source(notes),
             "reviewed_at": datetime.now(timezone.utc).isoformat(),
         }
 
@@ -86,7 +106,7 @@ def main():
     ANNOTATIONS_PATH.write_text(
         json.dumps(
             {
-                "version": "visual-review-annotations-v1",
+                "version": "visual-review-annotations-v2",
                 "source": str(MARKDOWN_PATH.relative_to(ROOT)),
                 "reviewed_count": len(items),
                 "status_counts": {

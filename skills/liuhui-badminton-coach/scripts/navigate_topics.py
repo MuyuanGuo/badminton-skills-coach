@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TOPIC_MAP = ROOT / "references" / "topic-map.json"
+PRACTICE_RULES = ROOT / "references" / "practice-plan-rules.json"
 
 LEARNING_TERMS = [
     "系统学",
@@ -33,6 +34,21 @@ NAVIGATION_TERMS = [
     "分类",
     "模块",
 ]
+LEVEL_SIGNALS = {
+    "beginner": ["零基础", "新手", "初学", "刚学", "入门"],
+    "intermediate": ["中级", "有基础", "业余中级", "打了几年"],
+    "advanced": ["高级", "高水平", "专业", "校队", "省队"],
+}
+DISCIPLINE_SIGNALS = {
+    "singles": ["单打"],
+    "doubles": ["双打", "混双", "男双", "女双", "搭档轮转"],
+}
+SETUP_SIGNALS = {
+    "solo": ["一个人练", "单人练", "独练", "没有陪练", "无陪练", "自己练"],
+    "coach": ["教练喂球", "有教练", "私教"],
+    "partner": ["有搭档", "搭档喂球", "有陪练", "朋友喂球"],
+}
+PAIN_SIGNALS = ["疼", "痛", "受伤", "扭伤", "拉伤", "不适"]
 
 
 def normalize(text):
@@ -72,19 +88,31 @@ def detect_intent(query):
 
 def match_topics(graph, query, limit):
     matches = []
+    query_norm = normalize(query)
+    discipline = infer_signal(query, DISCIPLINE_SIGNALS)
     for category in graph["categories"]:
-        category_values = [category["name"], category["description"]]
-        category_score = score_text(query, category_values)
+        category_discipline = category.get("discipline", "general")
+        if discipline == "singles" and category_discipline == "doubles":
+            continue
+        if discipline == "doubles" and category_discipline == "singles":
+            continue
+        category_score = (
+            18 if normalize(category["name"]) in query_norm else 0
+        )
         for subtopic in category["subtopics"]:
-            values = [
-                category["name"],
-                category["description"],
-                subtopic["name"],
-                *subtopic["keywords"],
-            ]
-            for video in subtopic["representative_videos"]:
-                values.extend([video["title"], video["category"], video["confidence"]])
-            score = category_score + score_text(query, values)
+            if subtopic.get("is_fallback"):
+                continue
+            reasons = []
+            score = category_score
+            if category_score:
+                reasons.append(category["name"])
+            if normalize(subtopic["name"]) in query_norm:
+                score += 14
+                reasons.append(subtopic["name"])
+            for keyword in subtopic["keywords"]:
+                if normalize(keyword) in query_norm:
+                    score += 8
+                    reasons.append(keyword)
             if score <= 0:
                 continue
             matches.append(
@@ -96,6 +124,7 @@ def match_topics(graph, query, limit):
                     "video_count": subtopic["video_count"],
                     "ready_count": subtopic["ready_count"],
                     "score": score,
+                    "match_reasons": sorted(set(reasons)),
                     "representative_videos": subtopic["representative_videos"][:3],
                 }
             )
@@ -111,11 +140,126 @@ def suggested_queries(query, matches):
     return queries
 
 
-def learning_path(matches):
+def infer_signal(query, signal_groups, default="unknown"):
+    text = normalize(query)
+    matched = [
+        name
+        for name, signals in signal_groups.items()
+        if any(normalize(signal) in text for signal in signals)
+    ]
+    if len(matched) == 1:
+        return matched[0]
+    if set(matched) == {"singles", "doubles"}:
+        return "both"
+    return default
+
+
+def infer_session_minutes(query, default):
+    text = normalize(query)
+    match = re.search(r"(\d{1,3})分钟", text)
+    if match:
+        return int(match.group(1)), "query"
+    if "半小时" in text:
+        return 30, "query"
+    if "一小时" in text or "1小时" in text:
+        return 60, "query"
+    return default, "default"
+
+
+def build_user_context(query, rules, level="auto", discipline="auto", setup="auto", session_minutes=None):
+    inferred_minutes, minutes_source = infer_session_minutes(
+        query, rules["default_session_minutes"]
+    )
+    context = {
+        "level": infer_signal(query, LEVEL_SIGNALS) if level == "auto" else level,
+        "discipline": (
+            infer_signal(query, DISCIPLINE_SIGNALS)
+            if discipline == "auto"
+            else discipline
+        ),
+        "practice_setup": (
+            infer_signal(query, SETUP_SIGNALS) if setup == "auto" else setup
+        ),
+        "session_minutes": (
+            inferred_minutes if session_minutes is None else session_minutes
+        ),
+        "handedness": (
+            "left" if any(term in normalize(query) for term in ["左手", "左拍"]) else
+            "right" if any(term in normalize(query) for term in ["右手", "右拍"]) else
+            "unknown"
+        ),
+        "pain_or_injury": any(
+            normalize(signal) in normalize(query) for signal in PAIN_SIGNALS
+        ),
+        "sources": {
+            "level": "query" if level == "auto" and infer_signal(query, LEVEL_SIGNALS) != "unknown" else "argument" if level != "auto" else "default",
+            "discipline": "query" if discipline == "auto" and infer_signal(query, DISCIPLINE_SIGNALS) != "unknown" else "argument" if discipline != "auto" else "default",
+            "practice_setup": "query" if setup == "auto" and infer_signal(query, SETUP_SIGNALS) != "unknown" else "argument" if setup != "auto" else "default",
+            "session_minutes": minutes_source if session_minutes is None else "argument",
+        },
+    }
+    minimum, maximum = rules["session_minutes_range"]
+    if not minimum <= context["session_minutes"] <= maximum:
+        raise ValueError(
+            f"session minutes must be between {minimum} and {maximum}"
+        )
+    return context
+
+
+def allocate_minutes(total):
+    labels = ["warm_up", "isolated_cue", "pressure_or_decision", "self_check"]
+    weights = [0.2, 0.4, 0.3, 0.1]
+    minutes = [1, 1, 1, 1]
+    remaining = total - sum(minutes)
+    raw = [remaining * weight for weight in weights]
+    additions = [int(value) for value in raw]
+    minutes = [base + addition for base, addition in zip(minutes, additions)]
+    for index in sorted(
+        range(len(raw)),
+        key=lambda item: raw[item] - additions[item],
+        reverse=True,
+    )[: total - sum(minutes)]:
+        minutes[index] += 1
+    return dict(zip(labels, minutes))
+
+
+def practice_adaptation(context, rules):
+    return {
+        "session_minutes": context["session_minutes"],
+        "minute_allocation": allocate_minutes(context["session_minutes"]),
+        "level_focus": rules["levels"][context["level"]],
+        "setup_adaptation": rules["practice_setups"][context["practice_setup"]],
+        "discipline_boundary": rules["discipline_boundaries"][context["discipline"]],
+        "quality_stop_rules": rules["quality_stop_rules"],
+        "pain_boundary": (
+            "问题包含疼痛或受伤信号：停止相关动作，先由合格医疗专业人士评估；本路径不作诊断。"
+            if context["pain_or_injury"]
+            else None
+        ),
+    }
+
+
+def clarification_questions(context):
+    questions = []
+    if context["pain_or_injury"]:
+        questions.append("疼痛或受伤是否已经由合格医疗专业人士评估，并允许继续训练？")
+    if context["discipline"] == "unknown":
+        questions.append("这套内容主要用于单打、双打，还是两者都要？")
+    if context["practice_setup"] == "unknown":
+        questions.append("练习时是独练，还是有搭档、陪练或教练稳定喂球？")
+    if context["level"] == "unknown":
+        questions.append("你目前是刚入门、有稳定基础，还是已经能在对抗中使用这个动作？")
+    return questions[:2]
+
+
+def learning_path(matches, context, rules):
     if not matches:
         return []
     primary = matches[0]
     reps = primary["representative_videos"]
+    level_rule = rules["levels"][context["level"]]
+    setup_rule = rules["practice_setups"][context["practice_setup"]]
+    discipline_rule = rules["discipline_boundaries"][context["discipline"]]
     return [
         {
             "stage": "基础定位",
@@ -124,17 +268,17 @@ def learning_path(matches):
         },
         {
             "stage": "动作原则",
-            "goal": "用最强的一到两个证据视频提炼动作原则，不急着叠加多个细节。",
+            "goal": f"用最强的一到两个证据视频提炼动作原则；当前水平重点：{level_rule['focus']}。",
             "evidence_leads": reps[:2],
         },
         {
             "stage": "单点练习",
-            "goal": "把原则拆成一个可观察 cue，并设计 10-15 分钟低压力练习。",
+            "goal": f"把原则拆成一个可观察 cue，按 {context['session_minutes']} 分钟单次练习分配执行。训练条件：{setup_rule}。",
             "evidence_leads": reps[:2],
         },
         {
             "stage": "对抗迁移",
-            "goal": "加入来球速度、线路或对手压力，只保留一个自测标准。",
+            "goal": f"按“{level_rule['pressure']}”增加压力，只保留一个自测标准。项目边界：{discipline_rule}。",
             "evidence_leads": reps[:3],
         },
     ]
@@ -144,17 +288,58 @@ def main():
     parser = argparse.ArgumentParser(description="Navigate the Liu Hui badminton topic map.")
     parser.add_argument("query")
     parser.add_argument("--limit", type=int, default=5)
+    parser.add_argument(
+        "--level",
+        choices=["auto", "beginner", "intermediate", "advanced", "unknown"],
+        default="auto",
+    )
+    parser.add_argument(
+        "--discipline",
+        choices=["auto", "singles", "doubles", "both", "unknown"],
+        default="auto",
+    )
+    parser.add_argument(
+        "--practice-setup",
+        choices=["auto", "solo", "partner", "coach", "unknown"],
+        default="auto",
+    )
+    parser.add_argument("--session-minutes", type=int)
     args = parser.parse_args()
 
+    if not args.query.strip():
+        raise SystemExit("query cannot be empty")
+    if not 1 <= args.limit <= 20:
+        raise SystemExit("--limit must be between 1 and 20")
+
     graph = json.loads(TOPIC_MAP.read_text(encoding="utf-8"))
+    practice_rules = json.loads(PRACTICE_RULES.read_text(encoding="utf-8"))
+    try:
+        context = build_user_context(
+            args.query,
+            practice_rules,
+            level=args.level,
+            discipline=args.discipline,
+            setup=args.practice_setup,
+            session_minutes=args.session_minutes,
+        )
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     matches = match_topics(graph, args.query, args.limit)
     payload = {
         "query": args.query,
         "intent": detect_intent(args.query),
+        "user_context": context,
+        "context_assumptions": [
+            field
+            for field, source in context["sources"].items()
+            if source == "default"
+        ],
+        "material_clarification_questions": clarification_questions(context),
         "source": str(TOPIC_MAP.relative_to(ROOT)),
         "matches": matches,
         "suggested_search_queries": suggested_queries(args.query, matches),
-        "learning_path": learning_path(matches),
+        "learning_path": learning_path(matches, context, practice_rules),
+        "practice_adaptation": practice_adaptation(context, practice_rules),
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
