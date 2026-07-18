@@ -3,8 +3,8 @@
   "source": "output/visual_review_queue.md",
   "reviewed_count": 66,
   "status_counts": {
-    "approved": 17,
-    "needs_correction": 2,
+    "approved": 19,
+    "needs_correction": 0,
     "not_teaching": 47,
     "low_value": 0
   },
@@ -75,7 +75,7 @@
       "title": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
       "url": "https://www.douyin.com/video/7059589039694957864",
       "category": "步法与移动",
-      "review_status": "needs_correction",
+      "review_status": "approved",
       "review_notes": "讲的是击球后回位的步伐，有口播，按转写的结果加进skill",
       "reviewed_at": "2026-07-10T22:13:28.704811+00:00"
     },
@@ -295,7 +295,7 @@
       "title": "反手动作不唯一，但是这种好上手，击球点在转过去的身前外侧",
       "url": "https://www.douyin.com/video/7060717442825309480",
       "category": "握拍与基本动作",
-      "review_status": "needs_correction",
+      "review_status": "approved",
       "review_notes": "讲的是反手过渡，有口播，按转写的结果加进skill",
       "reviewed_at": "2026-07-10T22:13:28.705196+00:00"
     },

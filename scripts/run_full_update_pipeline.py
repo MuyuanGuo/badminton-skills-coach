@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 import json
-import shutil
 import subprocess
+import sys
 from pathlib import Path
+
+from project_artifacts import sync_skill_references
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,37 +14,6 @@ ROOT = Path(__file__).resolve().parents[1]
 def run(command):
     print(f"$ {' '.join(command)}", flush=True)
     return subprocess.run(command, cwd=ROOT, check=True)
-
-
-def sync_skill_references():
-    shutil.copyfile(
-        ROOT / "data" / "knowledge" / "douyin_knowledge_base.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "knowledge-base.json",
-    )
-    shutil.copyfile(
-        ROOT / "data" / "knowledge" / "knowledge_graph_summary.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "topic-map.json",
-    )
-    shutil.copyfile(
-        ROOT / "data" / "knowledge" / "retrieval_index.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-index.json",
-    )
-    shutil.copyfile(
-        ROOT / "config" / "retrieval_rules.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "retrieval-rules.json",
-    )
-    shutil.copyfile(
-        ROOT / "config" / "answer_modality_rules.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "answer-modality-rules.json",
-    )
-    shutil.copyfile(
-        ROOT / "config" / "feedback_rules.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "feedback-rules.json",
-    )
-    shutil.copyfile(
-        ROOT / "config" / "feedback_signals.json",
-        ROOT / "skills" / "liuhui-badminton-coach" / "references" / "feedback-signals.json",
-    )
 
 
 def main():
@@ -57,7 +28,7 @@ def main():
 
     if args.snapshot:
         command = [
-            "python3",
+            sys.executable,
             "scripts/check_douyin_updates.py",
             "--input",
             str(args.snapshot),
@@ -69,29 +40,36 @@ def main():
         run(command)
 
     if args.batch:
-        command = ["python3", "scripts/process_douyin_ready_batch.py", args.batch]
+        command = [sys.executable, "scripts/process_douyin_ready_batch.py", args.batch]
         if args.no_push:
             command.append("--no-push")
         run(command)
     else:
         for command in [
-            ["python3", "scripts/build_douyin_knowledge.py"],
-            ["python3", "scripts/build_topic_index.py"],
-            ["python3", "scripts/build_retrieval_index.py"],
-            ["python3", "scripts/build_visual_review_queue.py"],
-            ["python3", "scripts/generate_knowledge_graph.py"],
+            [sys.executable, "scripts/build_douyin_knowledge.py"],
+            [sys.executable, "scripts/build_topic_index.py"],
+            [sys.executable, "scripts/build_retrieval_index.py"],
+            [sys.executable, "scripts/build_visual_review_queue.py"],
+            [sys.executable, "scripts/generate_knowledge_graph.py"],
+            [sys.executable, "scripts/build_answer_quality_review_queue.py"],
         ]:
             run(command)
-        sync_skill_references()
-        run(["python3", "scripts/update_readme_status.py"])
-        run(["python3", "scripts/evaluate_retrieval.py"])
-        run(["python3", "scripts/evaluate_answer_policy.py"])
-        run(["python3", "scripts/evaluate_feedback_signals.py"])
-        run(["python3", "scripts/test_feedback_pipeline.py"])
-        run(["python3", "scripts/test_feedback_personalization.py"])
-        run(["python3", "scripts/test_feedback_promotion.py"])
-        run(["python3", "scripts/test_public_feedback_e2e.py"])
-        run(["python3", "scripts/validate_project.py"])
+        changed_references = sync_skill_references()
+        print(
+            json.dumps(
+                {"synchronized_skill_references": changed_references},
+                ensure_ascii=False,
+            )
+        )
+        run([sys.executable, "scripts/update_readme_status.py"])
+        run([sys.executable, "scripts/evaluate_retrieval.py"])
+        run([sys.executable, "scripts/evaluate_answer_policy.py"])
+        run([sys.executable, "scripts/evaluate_feedback_signals.py"])
+        run([sys.executable, "scripts/test_feedback_pipeline.py"])
+        run([sys.executable, "scripts/test_feedback_personalization.py"])
+        run([sys.executable, "scripts/test_feedback_promotion.py"])
+        run([sys.executable, "scripts/test_public_feedback_e2e.py"])
+        run([sys.executable, "scripts/validate_project.py"])
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))
 

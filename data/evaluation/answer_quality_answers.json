@@ -1,0 +1,344 @@
+{
+  "version": 1,
+  "description": "Reviewed answer snapshots for regression-ready answer quality cases.",
+  "answers": [
+    {
+      "case_id": "AQ004",
+      "answer_mode": "text_primary",
+      "answer_text": "双打接发抢主动，核心不是预先赌死一个方向，而是先覆盖发球后对手最快的位置。正常出手时，持拍方向往往暴露最快线路；如果对方出现明显停顿或节奏变化，再把判断转向反方向。这样做是在压缩对手最容易连续进攻的选择，而不是盲目抢扑。\n\n准备动作要有目的性：重心降低，大小臂保持紧凑，球拍放在无需大幅升降就能出手的位置，同时保留防偷球的能力。触球较高时可以推或扑；中低手位可切腰或先控制，不能把所有接发都处理成抢网。具体优先级还要结合发球位置、发球者持拍手、自己的启动能力和偷后场概率。\n\n视频证据：\n- V1 [双打发接发：优先对手最快线路](https://www.douyin.com/video/7501542236061420859)：看正常出手方向与停顿假动作如何改变判断。\n- V2 [接发准备：动作必须有目的性](https://www.douyin.com/video/7639306481355832689)：看低重心、大小臂关系和球拍如何兼顾前后场。\n- V3 [中低手位切腰](https://www.douyin.com/video/7591112983016940977)：看接球高度不足时怎样用切腰保持主动。",
+      "video_notes": [
+        {
+          "video_id": "7501542236061420859",
+          "reason": "直接说明双打接发的线路优先级",
+          "watch_focus": "观察正常出手与停顿时判断方向怎样变化"
+        },
+        {
+          "video_id": "7639306481355832689",
+          "reason": "直接讲接发准备姿态及其目的",
+          "watch_focus": "观察重心、大小臂和球拍准备位置"
+        },
+        {
+          "video_id": "7591112983016940977",
+          "reason": "补充中低手位的主动处理选择",
+          "watch_focus": "观察切腰触球高度和出球线路"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ007",
+      "answer_mode": "balanced",
+      "answer_text": "吊球和杀球要相互配合，目的不是机械地一吊一杀，而是用速度、深浅和落点变化拉扯对手的防守站位。吊球把对手的重心带向前场或迫使其缩短防守距离，下一次后场到位时再用杀球攻击被打开的区域；如果连续重杀而没有位置优势，对手反而更容易借力防反。\n\n当自己的击球位置不好时，优先用软压、点杀或远网吊球维持下压，并为下一拍留时间；到位且对手站位被拉开时，再提高杀球强度。每次选择都要同时看落点、自己的回位和后续衔接。\n\nV1 [杀吊配合拉扯单打防守站位](https://www.douyin.com/video/7115241358255803683) 是主示范；重点看吊球与杀球如何改变对方站位。V2 [位置不好时用软压连接下一拍](https://www.douyin.com/video/7093706918492917033) 展示为什么勉强全力杀会造成脚下脱节。V3 [杀球落点与回位](https://www.douyin.com/video/7659348110628345210) 补充尖、边和下一拍保护。\n\n以上主证据是单打思路；双打还要加入搭档封网与轮转条件。",
+      "video_notes": [
+        {
+          "video_id": "7115241358255803683",
+          "reason": "直接演示杀吊配合拉扯单打站位",
+          "watch_focus": "观察两种球路如何迫使防守者前后移动"
+        },
+        {
+          "video_id": "7093706918492917033",
+          "reason": "说明位置不好时软压优于勉强重杀",
+          "watch_focus": "观察软压后的上网与下一拍衔接"
+        },
+        {
+          "video_id": "7659348110628345210",
+          "reason": "补充杀球落点和回位决策",
+          "watch_focus": "观察尖、边落点与直线保护"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ008",
+      "answer_mode": "balanced",
+      "answer_text": "接杀后的反击顺序应是“先控制，再观察，再提速”。来球质量很高时，先把球挡稳、回平或抬到对方难以连续重攻的位置；只有触球质量允许时，才把这一拍变成直接反击。\n\n单打要看进攻者的移动方向和暴露空当：对手仍在向一侧移动时，可用变线迫使其急停或反向启动。双打则不能只看球，还要同时读前场队员与搭档位置；如果无法高质量起球，可用平抽或变线绕开封网者。挡网后也不要立刻盲冲，应先观察对方下一拍，再突然加速上网。\n\nV1 [单打接杀防守反击](https://www.douyin.com/video/7602766054809333617)：看怎样利用进攻者位移选择线路。V2 [双打更被动时的防守处理](https://www.douyin.com/video/7621243051541587889)：看前场队员、搭档与出球线路的关系。V3 [挡斜线后突然加速上网](https://www.douyin.com/video/7127470220309957923)：看“先观察、后启动”的节奏。\n\n单双打、来球质量和接球高度都会改变选择，并非每个接杀都适合立即反攻。",
+      "video_notes": [
+        {
+          "video_id": "7602766054809333617",
+          "reason": "直接讲单打接杀后的线路利用",
+          "watch_focus": "观察进攻者移动方向与反击空当"
+        },
+        {
+          "video_id": "7621243051541587889",
+          "reason": "直接讲双打被动防守中的选择",
+          "watch_focus": "观察前场队员和搭档位置"
+        },
+        {
+          "video_id": "7127470220309957923",
+          "reason": "展示挡网后观察再加速的节奏",
+          "watch_focus": "观察对方击球前后启动速度变化"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ011",
+      "answer_mode": "text_primary",
+      "answer_text": "双打补位不是看到某一种球就执行固定口令，而是读三个信号：来球线路、搭档移动和场地空当。前场队员先移动时，实际上给出了轮转方向；后场队员应补进其让出的区域，并避免两个人同时抢同一点。\n\n中腰球经常会触发轮转，但不是自动触发。比如前场搭档处理直线中腰球后已经让开通道，后场队员才适合顺势向前补；如果搭档没有让开，就要根据其回球是直线、中路还是斜线重新分配覆盖。进攻阵型和防守阵型的补位逻辑也不同，沟通不足时应优先覆盖最明显的空当。\n\nV1 [双打后场如何读取前场轮转信号](https://www.douyin.com/video/7614167503938610417)：重点看前场队员移动后，后场如何填补暴露区域。V2 [中腰球后的轮转与不轮转](https://www.douyin.com/video/7106697344128748835)：重点看搭档是否让开及不同回球线路怎样改变站位。\n\n实战自查：补位前先问“搭档离开了哪里、球去了哪里、下一拍谁更容易覆盖”，比背固定站位更可靠。",
+      "video_notes": [
+        {
+          "video_id": "7614167503938610417",
+          "reason": "直接讲前场队员给出轮转方向",
+          "watch_focus": "观察后场队员如何补搭档让出的区域"
+        },
+        {
+          "video_id": "7106697344128748835",
+          "reason": "直接拆解中腰球后的轮转分支",
+          "watch_focus": "观察直线中路斜线与搭档位置"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ012",
+      "answer_mode": "text_primary",
+      "answer_text": "杀球没有脱离场景的唯一最佳落点。若绝对力量不占优，优先把球打得更尖、更靠边，让对手只能向上防起，从而给自己下一拍时间；落点太长、太平，反而容易被平挡反击。\n\n在头顶区或身体已经被拉开时，线路还要兼顾保护直线和回位距离，不能为了追求斜线而把下一拍场地完全暴露。双打中还要读取前场搭档和对手站位：搭档能封住一侧时，后场可攻击边线、中路或身体位来制造下一拍；搭档没有形成封网时，落点应更保守。\n\nV1 [杀球瞄准、落点与回位](https://www.douyin.com/video/7659348110628345210)：看尖、边落点为何比单纯追求力量更重要，以及头顶区怎样保护直线。V2 [双打进攻中的落点与搭档覆盖](https://www.douyin.com/video/7619576226616745445)：看前场搭档和对手位置如何改变后场落点。\n\n回答具体到一拍时，还需先区分单打或双打、快速突击或完整重杀，以及击球者自身位置。",
+      "video_notes": [
+        {
+          "video_id": "7659348110628345210",
+          "reason": "系统讲杀球落点和下一拍保护",
+          "watch_focus": "观察尖边落点及头顶区直线保护"
+        },
+        {
+          "video_id": "7619576226616745445",
+          "reason": "补充双打搭档覆盖下的落点选择",
+          "watch_focus": "观察搭档站位与边线中路选择"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ013",
+      "answer_mode": "text_primary",
+      "answer_text": "单打被动后场不能简单规定直线或斜线。击球点已经落后时，先选择与当前挥拍路径相容、成功率更高的安全直线或高质量过渡；此时勉强改斜线往往需要额外改变拍面和手位，容易同时丢掉长度与回位。\n\n只有在仍有触球控制、拍面调整时间，而且对手站位确实留下斜线空间时，才值得主动变斜线。无论选哪条线路，都要保留下一拍回位和防守连接，不能只看这一拍是否出其不意。\n\nV1 [被压到后场时直线与变斜线的动作条件](https://www.douyin.com/video/7491780200468843833)：重点看击球点落后后，改变线路为何更困难。V2 [被动高远的架拍与触球处理](https://www.douyin.com/video/7558912953539071292)：重点看被动程度如何限制动作空间和回位。\n\n证据边界：知识库没有一条直接比较完整单打情境下两条线路的专门视频，上述结论是基于挥拍路径和被动处理证据的有限综合；若要判断某个回合，仍需看触球位置和对手站位。",
+      "video_notes": [
+        {
+          "video_id": "7491780200468843833",
+          "reason": "直接涉及被动后场线路改变条件",
+          "watch_focus": "观察落后击球点下直线与斜线差异"
+        },
+        {
+          "video_id": "7558912953539071292",
+          "reason": "补充真正被动时的动作空间限制",
+          "watch_focus": "观察触球位置与收拍回位关系"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ014",
+      "answer_mode": "text_primary",
+      "answer_text": "防守反击的核心不是“防住后立刻进攻”，而是分四步：先中和对方攻击、提高回球质量；再观察进攻者的移动方向与前场空当；随后用变线或节奏变化让对方失去连续进攻位置；最后在确认机会后突然加速。\n\n单打更适合利用进攻者向一侧移动后的反向空当。双打还必须同时看前场队员和搭档位置：封网者压得很紧时，先把球回到其难连续处理的位置；无法高质量起球时，可用平抽或线路变化脱离。挡网后先观察对方下一拍，再启动上网，通常比接球后盲目前冲更稳。\n\nV1 [单打防守反击](https://www.douyin.com/video/7602766054809333617) 展示如何利用对手位移。V2 [双打被动防守处理](https://www.douyin.com/video/7621243051541587889) 展示如何读取前场队员与搭档。V3 [挡网后观察再加速](https://www.douyin.com/video/7127470220309957923) 展示时机转换。\n\n来球质量、接球高度和单双打阵型会限制反击强度，不能每球都强行提速。",
+      "video_notes": [
+        {
+          "video_id": "7602766054809333617",
+          "reason": "提供单打防守反击的完整思路",
+          "watch_focus": "观察对手位移与线路变化"
+        },
+        {
+          "video_id": "7621243051541587889",
+          "reason": "提供双打防守的人员位置判断",
+          "watch_focus": "观察前场队员和搭档覆盖"
+        },
+        {
+          "video_id": "7127470220309957923",
+          "reason": "展示从挡网到上网的启动时机",
+          "watch_focus": "观察先观察后突然加速"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ016",
+      "answer_mode": "video_primary",
+      "answer_text": "“拍面控制不住”要先拆场景：正反手、主动被动、击球位置，以及出球是偏左、偏右、下网还是出界。没有这些信息时，不能确认具体故障。\n\n通用排查顺序是：先看握拍角度和虎口朝向能否让拍面自然对准目标，再看触球位置是否迫使手腕补偿。正常击球与特殊位置允许握拍微调；若需要强扭手腕才能把拍面转正，优先检查握拍和击球空间。V1 [握拍调整与拍面方向](https://www.douyin.com/video/7146762792438074665) 要看虎口、拍面和手腕角度的关系；V2 [正常与特殊位置的握拍差异](https://www.douyin.com/video/7213191190382972172) 要看何时保持基础握拍、何时微调。\n\n请补一段正面或侧面用户视频，才能按上述排查顺序定位。",
+      "video_notes": [
+        {
+          "video_id": "7146762792438074665",
+          "reason": "直接讲握拍变化如何释放拍面角度",
+          "watch_focus": "观察虎口朝向和手腕是否被迫弯折"
+        },
+        {
+          "video_id": "7213191190382972172",
+          "reason": "说明正常与特殊位置的握拍边界",
+          "watch_focus": "观察基础握拍和微调出现的时机"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ026",
+      "answer_mode": "balanced",
+      "answer_text": "不能确定唯一原因。只知道“杀球下网”这一结果，击球点过低或过后、拍面过闭、挥拍路径过早向下、身体位置被动、来球位置以及击球空间不足，都只能算待验证假设，不能直接变成诊断。\n\n有效的下一步是提供正面和侧面动作视频，并说明触球位置、来球高低、正手区还是头顶区、是快速突击还是完整杀球。然后按“先看击球点与身体位置，再看拍面和挥拍路径，最后看发力空间”的顺序逐项排除。若只能提供文字，也应描述球从何处下网、落网距离以及失误是否稳定重复。\n\n知识库中的泛化杀球视频可以帮助形成排查方向，但无法证明某一个因素已经成立。因此这题的可靠答案是给出检查方法和证据需求，而不是猜一个动作原因。",
+      "video_notes": [],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 5,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ027",
+      "answer_mode": "text_primary",
+      "answer_text": "先停止会引发疼痛的杀球、挥拍和负重动作，不要用增加训练量去覆盖肩痛。Skill 无法仅凭“练杀球以后肩膀疼”诊断具体损伤，也没有足够医疗证据支持你继续训练。\n\n如果疼痛持续或加重，出现夜间痛、明显无力、活动受限、肿胀，或一次动作后突然剧痛，应由合格医生或物理治疗师评估。恢复训练应等疼痛原因得到专业判断、日常活动与基础活动度允许后，再从低强度逐级返回；任何再次诱发疼痛的动作都应暂停。\n\n这不是用技术视频可以替代的医疗评估，所以本题不推荐刘辉教学视频作为安全依据。等专业人员允许恢复后，才适合结合动作视频检查击球空间、发力顺序和训练负荷。",
+      "video_notes": [],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 5,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ028",
+      "answer_mode": "text_primary",
+      "answer_text": "现有知识库不能得出“刘辉最推荐某一支具体球拍”的结论，也不能替他给出个人购买背书。知识库没有具体型号的个人推荐。能确认的原则是根据能力选择：球拍重量会改变动作表现和身体需要承担的力量，但动作核心并不会因此变成另一套技术。\n\n给出选拍建议前，至少需要你的水平、单打或双打偏好、力量与既往伤病、预算、当前球拍以及使用感受。初学或力量一般时通常应优先考虑能稳定挥动和连续防守的重量与平衡，而不是追求纸面上最进攻的配置；最终还应以试打和无痛使用为准。\n\nV1 [根据能力选择球拍、比较不同重量的动作表现](https://www.douyin.com/video/7486058135547891004)：重点看不同身体能力怎样改变对球拍重量的适应，而不是寻找一个人人通用的型号。\n\n具体型号、价格和在售状态会变化；知识库没有对应的最新产品证据，因此不虚构购买结论。",
+      "video_notes": [
+        {
+          "video_id": "7486058135547891004",
+          "reason": "唯一直接支持按能力选择球拍的来源",
+          "watch_focus": "观察不同重量对动作表现和用力分配的影响"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 5,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ029",
+      "answer_mode": "text_primary",
+      "answer_text": "不是。Skill 的回答和训练计划，是基于刘辉公开教学视频、转写、人工复核笔记和项目规则生成的综合，不代表刘辉本人逐条审阅，也不构成授权或个人背书。\n\n回答中应明确区分三层内容：视频里可以直接核对的原始教学；由多条来源归纳出的共通结论；以及模型为了可执行性生成的练习安排或情境推断。第一层可以引用到具体视频，后两层必须标明是综合或推断，且不能覆盖来源中的限制条件。\n\n因此，使用者可以通过链接回到原视频核验刘辉实际讲了什么，但不应把 Skill 生成的措辞、诊断或训练处方当作他本人对个人情况的认可。Skill 也不得冒充刘辉；涉及伤病、个体动作纠错或高风险训练时，还需要合格教练或医疗专业人员独立确认。",
+      "video_notes": [],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 5,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    },
+    {
+      "case_id": "AQ030",
+      "answer_mode": "video_primary",
+      "answer_text": "仅看文字不能确认你的正手握拍完全正确。文字只能提供自查点：是否接近半拳、掌心是否留有空间、虎口定位是否合理、食指能否参与控制，以及准备到击球时是否能自然转换。\n\n还要区分正常击球与特殊位置的握拍微调；一张静态描述无法检查握拍压力、拍面方向、转换时机和实际出球。V1 [半拳式握拍与手指发力](https://www.douyin.com/video/7086276287681137961) 重点看半拳、掌心和食指；V2 [正常击球位置的握拍](https://www.douyin.com/video/7213191190382972172) 重点看虎口与拍框内侧及特殊位置微调；V3 [虎口具体位置](https://www.douyin.com/video/7242877295336164642) 用于校准解剖位置。\n\n要进一步判断，请提供手部与拍面清晰照片或正面、侧面视频，并说明是在准备、正手高远、杀球还是网前触球。即使外观接近，也要结合实际出球，不能作百分之百结论。",
+      "video_notes": [
+        {
+          "video_id": "7086276287681137961",
+          "reason": "直接展示半拳握拍与手指分工",
+          "watch_focus": "观察掌心空隙、食指和击球收紧"
+        },
+        {
+          "video_id": "7213191190382972172",
+          "reason": "说明正常握拍与特殊位置微调",
+          "watch_focus": "观察虎口拍框关系及变化时机"
+        },
+        {
+          "video_id": "7242877295336164642",
+          "reason": "专门澄清虎口的具体位置",
+          "watch_focus": "观察虎口定位而非只记文字名称"
+        }
+      ],
+      "manual_review": {
+        "reviewer": "Codex maintainer evidence review",
+        "scores": {
+          "source_fidelity": 5,
+          "technical_correctness": 4,
+          "coverage": 5,
+          "text_video_allocation": 5,
+          "clarity_and_boundaries": 5
+        }
+      }
+    }
+  ]
+}

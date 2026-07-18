@@ -1,24 +1,50 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 359 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 406-video processed knowledge base of Douyin creator 刘辉羽毛球, including 350 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
 
-Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 359 `ready` teaching entries and `not_teaching` exclusions.
+Base answers on `references/knowledge-base.json`. Treat it as the current full structured Douyin teaching archive for this project: 406 processed videos, including 350 `ready` teaching entries, 9 entries awaiting visual review, and `not_teaching` exclusions. Among the ready entries, 331 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `ready` entries as answer evidence. The per-video `quality` audit records transcript and automatic-evidence checks; never promote a review item merely because its title sounds relevant.
+
+The installed Skill deliberately omits raw transcript files and maintainer-local transcript paths. All retrieval features and answerable evidence needed at runtime are bundled in the structured knowledge and retrieval index, so normal search works offline. Public Douyin videos remain external demonstrations: cite the canonical title, video ID, and URL, and keep the evidence-backed text useful even if a video is later unavailable or blocked in the user's region.
 
 Use `references/retrieval-index.json` for high-recall discovery across every ready video's full transcript-derived term set, topic memberships, and hashed character features. It deliberately contains no full transcript text. Use `references/retrieval-rules.json` for bidirectional badminton terminology expansion.
 
+Treat `category` and `tags` as screening metadata, not proof that a video teaches those topics. Topic membership and transcript lexicon terms are built only from the title, teaching note, and transcript evidence.
+
 Use `references/answer-modality-rules.json` to allocate explanatory work between text and video. Never treat text and video as alternatives: every answer needs useful text, and every confirmed worthwhile video needs to remain discoverable.
 
-Use `references/feedback-rules.json`, `references/feedback-signals.json`, and `references/feedback-workflow.md` to assign stable video labels, apply promoted public feedback, personalize from accepted local feedback, parse new feedback, and queue it for human review. Never let feedback override source evidence.
+Use `references/practice-plan-rules.json` with `references/practice-plan-template.md` to adapt plans to level, singles/doubles use, available partner or coach, session time, handedness when relevant, and pain boundaries. Fifteen minutes is only the default when the user gives no duration.
+
+Use `references/feedback-rules.json`, `references/feedback-signals.json`, and `references/feedback-workflow.md` to assign stable video labels, apply promoted public feedback, personalize from user-confirmed local feedback, and parse new feedback. Public promotion has a maintainer safety and source-integrity gate, but no coaching-expert approval gate. Never let feedback override source evidence.
 
 Use `references/topic-index.md` and `references/topic-map.json` to orient the user's question in the teaching map before answering. The topic map is only a map; timestamped evidence must still come from retrieved knowledge entries.
 
+## Runtime Path Contract
+
+Before running any bundled command, resolve the Skill root as the directory that contains this `SKILL.md`. Run every command example below with the tool working directory set to that Skill root. Do not resolve `scripts/...` against the user's current project or workspace.
+
+If the execution tool cannot set a working directory, invoke the script by an absolute path derived from the loaded `SKILL.md` location. Never assume that the Skill is installed under a hard-coded home-directory path.
+
 ## Answer Workflow
 
-1. Identify the user's movement, situation, skill level, and desired outcome.
-2. If the user asks to "系统学", build a "学习路径", browse the "知识图谱", or understand a topic structure, run topic navigation first:
+1. Identify the user's movement, situation, skill level, and desired outcome, then plan the retrieval path before ranking videos:
+
+```bash
+python3 scripts/search_knowledge.py "用户问题或关键词" --plan-only
+```
+
+Read `retrieval_guidance` and `answer_guidance`. Follow the returned strategy:
+
+- `topic_first_systematic`: navigate the topic map, then turn the selected modules into focused evidence queries.
+- `split_multi_issue`: run every returned `query_unit` independently, then merge conclusions and deduplicate videos.
+- `literal_symptom_first`: preserve the user's exact failure wording for the first pass; clarify only when competing scenarios change the diagnosis.
+- `boundary_first`: state the medical, purchasing, authorization, or endorsement boundary before using any relevant coaching evidence.
+- `focused_evidence`: search the narrow concept directly.
+- `evidence_check`: make a bounded check and state that the archive has no grounded answer if nothing reliable is found.
+
+2. When `use_topic_navigation` is true, run:
 
 ```bash
 python3 scripts/navigate_topics.py "用户问题或关键词"
@@ -26,7 +52,7 @@ python3 scripts/navigate_topics.py "用户问题或关键词"
 
 Use the returned `intent`, top `matches`, `suggested_search_queries`, and `learning_path` to choose the nearest teaching module.
 
-3. Run exhaustive retrieval:
+3. Run retrieval for every focused query unit. Use exhaustive mode whenever `require_exhaustive_completion` is true:
 
 ```bash
 python3 scripts/search_knowledge.py "用户问题或关键词" --recall-mode exhaustive --limit 12
@@ -34,12 +60,16 @@ python3 scripts/search_knowledge.py "用户问题或关键词" --recall-mode exh
 
 The default hybrid retrieval unions four channels: structured fields, full-transcript lexicon hits, complete topic memberships, and hashed transcript n-grams. For debugging, use `--mode keyword` or `--mode semantic`.
 
-4. Read `answer_guidance` and `feedback_guidance` first, then read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Use `answer_guidance` for text/video allocation. Use promoted public and accepted local feedback only for bounded ranking and presentation adjustments. If the question contains multiple subproblems, apply the appropriate mode to each subproblem.
+4. Read `retrieval_guidance`, `answer_guidance`, and `feedback_guidance` first, then read `query_expansion`, `coverage`, the top ranked `results`, and the returned `candidate_manifest` page. Use `answer_guidance` for text/video allocation. Use promoted public and accepted local feedback only for bounded ranking and presentation adjustments. For split subproblems, preserve the answer mode and evidence set for each unit before merging.
+   - If `answer_preferences.needs_query_replan` is true, restate the interpreted intent, compare it with `query_replan_hints`, and rerun `--plan-only` plus exhaustive retrieval for the corrected intent. Preserve the original wording so the correction does not silently replace a materially different question.
+   - If `answer_preferences.needs_source_recheck` is true, fetch every `source_recheck_video_id` again. Treat its stored transcription or summary as disputed for that issue, prefer corroborating videos, and do not repeat the disputed claim as settled fact.
 5. Do not stop after the top three results. If `coverage.next_manifest_offset` is not null, rerun with that offset until it becomes null:
 
 ```bash
 python3 scripts/search_knowledge.py "用户问题" --manifest-offset NEXT_OFFSET
 ```
+
+`exhaustive` pages through the full candidate set. `balanced` intentionally exposes only the configured top candidate cap and reports `coverage.selection_truncated: true` when more candidates existed; do not use `balanced` when claiming that every plausible video was reviewed.
 
 6. Review every page, every `direct` candidate, and every plausible `strong_related` candidate. Treat `topic_related` and `semantic_lead` candidates as recall safeguards, not automatic proof of relevance.
 7. Fetch stored evidence for every finalist, including plausible candidates outside the top ranked results, repeating `--video-id` as needed:
@@ -48,7 +78,9 @@ python3 scripts/search_knowledge.py "用户问题" --manifest-offset NEXT_OFFSET
 python3 scripts/search_knowledge.py "用户问题" --video-id VIDEO_ID --video-id VIDEO_ID
 ```
 
-8. If retrieval is broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Never silently solve breadth by lowering the result limit.
+The default lookup is compact: it returns complete teaching evidence and provenance but replaces transcript n-gram hashes with a count. Use `--lookup-debug` only when diagnosing retrieval internals; never request debug hashes while composing a normal answer.
+
+8. If a focused or diagnostic pass remains broad or ambiguous, run `scripts/navigate_topics.py`, narrow the user's scenario, then rerun exhaustive retrieval. Ask one concise clarification only when the answer would materially differ; never silently solve breadth by lowering the result limit.
 9. Assign every confirmed worthwhile video one stable label from `V1` through `Vn`, ordered by usefulness to this answer. Reuse the same label if a core video appears again in the complete list; never assign two labels to one video.
 10. Keep the final question and `V` label mapping in task context. Do not write an answer context or feedback file until the user explicitly gives feedback.
 11. Answer using the allocation and answer contracts below.
@@ -62,6 +94,7 @@ Apply `feedback_guidance` without treating it as coaching evidence:
 - Use `preferred_verbosity: concise` to deduplicate and shorten presentation without omitting distinct evidence-backed conclusions. Use `detailed` to add concrete cues, boundaries, and self-checks.
 - For `missing_content`, cover all distinct supported conclusions. For `too_vague`, add specific decisions or observable cues. For `hard_to_apply`, add executable steps and self-checks.
 - For `scenario_mismatch`, state or ask for the scenario that changes the answer. For `incorrect_claim`, re-fetch and re-check source evidence; never accept the user's correction as fact by itself.
+- For `question_misunderstood`, restate the intended question, split all confirmed subproblems, and rerun planning and retrieval. For `transcript_error`, `video_misinterpreted`, or `citation_mismatch`, re-check the named video and its evidence role; user feedback is a quality signal, not replacement source text.
 - Keep every candidate in the exhaustive manifest even when accepted feedback lowers its rank. Do not cite feedback as proof of a technique claim.
 - If the user asks to disable personalization, rerun with `--no-local-personalization`. Public promoted signals remain part of the released Skill; local signals are then ignored.
 - If local feedback changes a core recommendation, briefly disclose that accepted local feedback influenced ordering. Never expose feedback IDs, queue paths, or raw feedback.
@@ -89,24 +122,24 @@ Answer in this order, adapting section depth to the selected mode:
 2. **文字解释**: synthesize all distinct relevant points that can be expressed reliably in text, including principles, decision logic, errors, cues, or practice as appropriate.
 3. **适用边界**: distinguish active/passive, singles/doubles, skill levels, and conditions where advice changes.
 4. **核心视频与观看重点**: cite the strongest one to three videos with their stable `V` labels. For each, give the relevance reason, what to observe, timestamp when available, and URL.
-5. **完整相关视频**: list every remaining confirmed directly relevant and worthwhile video with its stable `V` label, title, URL, and a concise relevance reason. Group long lists by subtopic. Do not promote broad topic-only leads as confirmed relevant.
+5. **完整相关视频**: list every remaining confirmed directly relevant and worthwhile video with its stable `V` label, title, video ID, canonical URL, and a concise relevance reason. Group long lists by subtopic. Do not promote broad topic-only leads as confirmed relevant. If an external link is unavailable, preserve the title and ID so the user can locate the source independently; never remove the textual answer merely because a link cannot be opened.
 6. **置信边界**: say what is certain, what is inferred, and what requires watching the source video or reviewing the user's own video.
 
 Keep the answer practical but do not omit useful text merely to stay short. Use only the strongest one to three videos to support each conclusion, while preserving the complete confirmed-related video list separately.
 
-End with one compact optional example using only labels that exist in this answer, such as `反馈示例：V1 最有价值；V2 不相关；文字漏了“……”`. Do not ask for a rating and do not imply that unselected videos are negative feedback.
+End with one compact optional example using only labels that exist in this answer, such as `反馈示例：V1 最有价值；V2 转写错了；你理解错了，我真正问的是“……”`. Do not ask for a rating and do not imply that unselected videos are negative feedback.
 
 ## Feedback Mode
 
 Use this mode when the user explicitly evaluates a previous Skill answer, names useful or irrelevant `V` labels, identifies a missing video, or reports a textual omission or error.
 
 1. Read `references/feedback-workflow.md`.
-2. Record the user's original wording, prior question, and exact `V` mapping in one operation with `scripts/feedback.py record`. Use `create-answer` plus `submit` only when an answer context was explicitly persisted earlier.
-3. Confirm the parsed helpful, irrelevant, missing-video, and text-issue signals in plain language.
-4. If the record is `needs_clarification`, ask only about unknown or contradictory labels. Otherwise ask whether the parsed record may be used for local personalization.
+2. Treat every answer's `V` mapping as scoped to that answer turn only. Never resolve a label against a newer or older answer. Record the user's original wording, prior question, and exact mapping in one operation with `scripts/feedback.py record`. Use `create-answer` plus `submit` only when that exact answer context was explicitly persisted earlier.
+3. Confirm the parsed helpful, irrelevant, missing-video, clause-level, and text-issue signals in plain language.
+4. If the record is `needs_clarification`, ask only about unknown, contradictory, comparative, or unresolved mixed-sentiment labels, the intended question after `question_misunderstood`, or the target video after a source-quality issue. Otherwise ask whether the parsed record may be used for local personalization.
 5. Only after the user explicitly confirms, run `scripts/feedback.py review --decision accepted` with a note that the user confirmed the parsed local signals. Tell the user that future similar questions can now use it.
 6. If the user does not confirm, leave the record `pending_review`; it must not affect future answers.
-7. Explain that public behavior changes only after a separate Issue in the canonical GitHub repository is verified through the GitHub API, promoted by a maintainer, regression-tested, and released.
+7. Explain that public behavior changes only after a separate Issue in the canonical GitHub repository is imported once per revision, checked by a maintainer for consent, abuse, schema, and source integrity, reverified through the GitHub API, deduplicated by Issue, regression-tested, and released. This is not coaching-expert approval.
 8. If the user explicitly wants to share the accepted record publicly, ask for a sanitized public version of the question and separate confirmation that it may be public. Then run `scripts/feedback.py export-github --confirm-public`. Show the generated Issue title, body, and submission URL, and state clearly that the command did not upload anything.
 9. Never treat a video the user did not select as irrelevant. Never upload local feedback without explicit consent. Do not claim a generated GitHub export was submitted until a real public Issue URL exists.
 
@@ -123,6 +156,14 @@ For topic-navigation answers, include:
 5. **下一步检索词**: give 2-3 queries the user can ask next.
 6. **边界**: say when the map is only a topic lead and when direct evidence is required.
 
+Pass known context into topic navigation instead of discarding it, for example:
+
+```bash
+python3 scripts/navigate_topics.py "零基础双打接发系统学习" --level beginner --discipline doubles --practice-setup partner --session-minutes 30
+```
+
+Read `user_context`, `context_assumptions`, `material_clarification_questions`, and `practice_adaptation`. Ask no more than one clarification in the answer, and only when safety or drill feasibility materially changes; otherwise state the assumption and provide an alternative.
+
 For a broad request such as "我想系统学杀球", do not give a giant encyclopedia. Start with the closest topic branch, then provide a compact route and invite the next diagnostic question if needed.
 
 ## Practice Plan Mode
@@ -131,7 +172,9 @@ Use `references/practice-plan-template.md` when the user asks how to practice, a
 
 In practice-plan answers, include:
 
-1. **今日 15 分钟**: warm-up, isolated cue, pressured drill, self-check.
+0. **训练上下文与假设**: level, singles/doubles use, solo/partner/coach setup, available minutes, and any safety boundary that changes the plan.
+
+1. **今日 N 分钟**: use the user's duration; otherwise default to 15 minutes. Segment minutes must add up to N and include warm-up, isolated cue, pressured or decision drill, and self-check.
 2. **3 天修正**: one focus per day.
 3. **2 周巩固**: controlled week plus game-like week.
 4. **自测标准**: observable success criteria.
@@ -145,7 +188,7 @@ Keep volume conservative. Do not promise fixed-date improvement.
 
 - Prefer `confidence: curated` entries.
 - Use `confidence: visual_reviewed` entries as reviewed visual teaching notes. If they have no precise timestamp, say they come from manual visual review rather than transcript evidence.
-- Use `confidence: medium` entries as leads; state that their wording comes from automatic transcription.
+- Use `confidence: medium` entries as transcript-backed leads; state that their wording comes from automatic transcription. The repository audit verifies that every stored automatic evidence snippet exists in its source transcript, but it cannot prove that ASR recognized every badminton term correctly.
 - Do not derive technique conclusions from `needs_visual_review` entries without reviewing the video.
 - Do not use `processing_status: not_teaching` or `processing_status: low_value` as coaching evidence.
 - If a source only appears in `references/topic-index.md`, use it as a search lead, not as final evidence.
@@ -174,16 +217,19 @@ End each evidence-backed point with:
 来源：视频标题（00:23-00:38） https://www.douyin.com/video/...
 ```
 
+Also include the 18-20 digit video ID in each core or complete-list item. Do not emit temporary CDN media URLs.
+
 When multiple videos support a point, cite no more than three strongest sources.
 
 ## Resources
 
-- `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 359 ready teaching videos.
+- `references/knowledge-base.json`: full structured knowledge entries for 406 processed videos, including 350 ready teaching videos (331 transcript-backed and 19 visual-review fallbacks) and 9 entries awaiting visual review.
 - `references/topic-index.md`: topic map for orienting questions, selecting keywords, and seeing representative videos.
 - `references/topic-map.json`: structured topic map for navigation and learning-path mode.
 - `references/retrieval-index.json`: full ready-video retrieval index with transcript-derived terms, complete topic memberships, and n-gram hashes that contain no transcript text.
 - `references/retrieval-rules.json`: bidirectional synonyms, stop phrases, and retrieval thresholds.
 - `references/answer-modality-rules.json`: text-primary, balanced, and video-primary allocation rules and obligations.
+- `references/practice-plan-rules.json`: context inference, duration, setup, format, level, and quality-stop rules for personalized plans.
 - `references/practice-plan-template.md`: structure and guardrails for training-plan answers.
 - `scripts/search_knowledge.py`: offline high-recall retrieval with exhaustive candidate manifests and per-video evidence lookup.
 - `scripts/navigate_topics.py`: offline topic navigation and learning-path scaffold over the structured topic map.

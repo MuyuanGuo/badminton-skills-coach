@@ -3,10 +3,13 @@ import json
 import re
 from pathlib import Path
 
+from project_artifacts import atomic_write_text, derive_project_status
+
 
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
 VIDEO_INDEX = ROOT / "data" / "douyin_video_index.json"
+TEACHING_FILTER = ROOT / "data" / "douyin_teaching_filtered.json"
 KNOWLEDGE = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 FEEDBACK_SIGNALS = ROOT / "config" / "feedback_signals.json"
 
@@ -22,18 +25,15 @@ def replace_one(text, pattern, replacement):
     return updated
 
 
-def update_readme_text(readme, video_index, knowledge, feedback_signals):
-    ready_videos = [
-        video
-        for video in knowledge["videos"]
-        if video["processing_status"] == "ready"
-    ]
-    if not ready_videos:
-        raise ValueError("No ready teaching videos found in knowledge base")
-    latest = ready_videos[0]
-    all_count = len(video_index["videos"])
-    ready_count = len(ready_videos)
-    excluded_count = all_count - ready_count
+def update_readme_text(
+    readme, video_index, teaching_filter, knowledge, feedback_signals
+):
+    status = derive_project_status(video_index, teaching_filter, knowledge)
+    latest = status["latest_ready_video"]
+    all_count = status["public_videos_collected"]
+    ready_count = status["ready_teaching_videos"]
+    excluded_count = status["excluded_non_teaching_ads_equipment"]
+    pending_count = status["pending_human_review_or_processing"]
     promoted_count = len(feedback_signals["signals"])
     promoted_note = (
         "流水线已就绪，尚无真实 GitHub 反馈被晋升"
@@ -58,6 +58,11 @@ def update_readme_text(readme, video_index, knowledge, feedback_signals):
     )
     readme = replace_one(
         readme,
+        r"^- 等待人工复核：`\d+` 条$",
+        f"- 等待人工复核：`{pending_count}` 条",
+    )
+    readme = replace_one(
+        readme,
         r"^- 最新入库教学视频:.*$|^- 最新入库教学视频：.*$",
         f'- 最新入库教学视频：[{latest["title"]}]({latest["url"]})（`{latest["video_id"]}`）',
     )
@@ -74,13 +79,14 @@ def main():
     updated = update_readme_text(
         readme,
         load_json(VIDEO_INDEX),
+        load_json(TEACHING_FILTER),
         load_json(KNOWLEDGE),
         load_json(FEEDBACK_SIGNALS),
     )
     if updated == readme:
         print(json.dumps({"updated": None, "reason": "already_current"}, ensure_ascii=False))
         return
-    README.write_text(updated, encoding="utf-8")
+    atomic_write_text(README, updated)
     print(json.dumps({"updated": str(README.relative_to(ROOT))}, ensure_ascii=False))
 
 

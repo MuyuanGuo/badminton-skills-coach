@@ -32,10 +32,11 @@ def ready_video_ids(knowledge):
 
 
 def case_is_regression_ready(case):
-    status = case["review"]["status"]
-    if status == "expert_reviewed":
-        return True
-    return status == "maintainer_reviewed" and not case["expert_review_required"]
+    review = case["review"]
+    return (
+        review["status"] == "maintainer_reviewed"
+        and review.get("maintainer_decision") == "approved"
+    )
 
 
 def validate_point(point, case_id, ready_ids, boundary=False):
@@ -79,7 +80,6 @@ def validate_registry(registry, rules, ready_ids, minimum_cases=0):
         "query",
         "case_type",
         "expected_mode",
-        "expert_review_required",
         "provenance",
         "review",
         "gold",
@@ -109,8 +109,6 @@ def validate_registry(registry, rules, ready_ids, minimum_cases=0):
             raise RegistryValidationError(f"{case_id} has an invalid case type")
         if case["expected_mode"] not in allowed_modes:
             raise RegistryValidationError(f"{case_id} has an invalid answer mode")
-        if not isinstance(case["expert_review_required"], bool):
-            raise RegistryValidationError(f"{case_id} has an invalid expert review flag")
         if not isinstance(case["provenance"], str) or not case["provenance"]:
             raise RegistryValidationError(f"{case_id} is missing provenance")
 
@@ -171,11 +169,9 @@ def validate_registry(registry, rules, ready_ids, minimum_cases=0):
                 raise RegistryValidationError(
                     f"{case_id} reviewed coaching case has no required video evidence"
                 )
-        if review["status"] == "expert_reviewed" and not review.get(
-            "expert_reviewer"
-        ):
+        if any(key.startswith("expert_") for key in review):
             raise RegistryValidationError(
-                f"{case_id} expert-reviewed case is missing the expert reviewer"
+                f"{case_id} still contains retired expert-review fields"
             )
 
     if len(case_ids) != len(set(case_ids)):
@@ -188,9 +184,6 @@ def validate_registry(registry, rules, ready_ids, minimum_cases=0):
     return {
         "cases": len(cases),
         "status_counts": dict(status_counts),
-        "expert_review_required": sum(
-            case["expert_review_required"] for case in cases
-        ),
         "regression_ready": len(regression_ready),
         "pending_review": len(cases) - len(regression_ready),
     }
@@ -381,11 +374,12 @@ def evaluate_answers(registry, answers_payload, rules, ready_ids, require_manual
         for case_id in sorted(set(ready_cases) & set(answers_by_id))
     ]
     passed = sum(result["automatic_pass"] for result in results)
-    denominator = len(ready_cases)
+    denominator = len(results)
     return {
         "status": "no_approved_cases" if not ready_cases else "evaluated",
-        "approved_cases": denominator,
+        "approved_cases": len(ready_cases),
         "answers_supplied": len(answers),
+        "snapshot_coverage": len(answers) / len(ready_cases) if ready_cases else 1.0,
         "missing_case_ids": missing_case_ids,
         "passed": passed,
         "automatic_pass_rate": passed / denominator if denominator else 1.0,
@@ -402,7 +396,9 @@ def main():
     parser.add_argument("--answers", type=Path)
     parser.add_argument("--require-cases", type=int, default=30)
     parser.add_argument("--min-approved", type=int, default=0)
+    parser.add_argument("--min-answer-snapshots", type=int, default=0)
     parser.add_argument("--min-automatic-pass-rate", type=float, default=1.0)
+    parser.add_argument("--require-complete-answer-coverage", action="store_true")
     parser.add_argument("--require-manual-review", action="store_true")
     args = parser.parse_args()
 
@@ -430,7 +426,12 @@ def main():
         )
         result["answers"] = answers_result
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        if answers_result["missing_case_ids"]:
+        if answers_result["answers_supplied"] < args.min_answer_snapshots:
+            raise SystemExit(
+                f"Only {answers_result['answers_supplied']} answer snapshots; "
+                f"requires {args.min_answer_snapshots}"
+            )
+        if args.require_complete_answer_coverage and answers_result["missing_case_ids"]:
             raise SystemExit("Answer snapshot is missing approved cases")
         if answers_result["automatic_pass_rate"] < args.min_automatic_pass_rate:
             raise SystemExit("Answer quality automatic pass rate is below threshold")

@@ -1,10 +1,14 @@
 {
   "version": 1,
-  "description": "回答质量黄金集的审核门槛与自动检查规则。机器负责候选生成和客观检查，人工负责来源忠实度，必要时由专家确认技术正确性。",
+  "description": "回答质量回归集的检查规则。机器验证问题理解、证据覆盖与回答结构，维护者只核对来源忠实度；真实用户反馈持续修正问题路由、证据解释和结果排序。",
   "review_statuses": [
     "draft",
-    "maintainer_reviewed",
-    "expert_reviewed"
+    "maintainer_reviewed"
+  ],
+  "maintainer_decisions": [
+    "pending",
+    "approved",
+    "rejected"
   ],
   "case_types": [
     "technical_action",

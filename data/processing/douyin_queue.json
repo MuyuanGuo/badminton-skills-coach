@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-13T16:59:32.562182+00:00",
+  "updated_at": "2026-07-17T21:57:38.874172+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
     "transcribed": 406
@@ -24,7 +24,7 @@
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7659991105622862457.m4a",
+      "media_path": null,
       "duration_seconds": 129.685,
       "attempts": 1,
       "error": null
@@ -48,7 +48,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003a/7658231159860261361.m4a",
+      "media_path": null,
       "duration_seconds": 108.787,
       "attempts": 6,
       "error": null
@@ -60,7 +60,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7656927370758796145.m4a",
+      "media_path": null,
       "duration_seconds": 169.809,
       "attempts": 1,
       "error": null
@@ -72,7 +72,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003a/7656560952972884730.m4a",
+      "media_path": null,
       "duration_seconds": 176.961,
       "attempts": 6,
       "error": null
@@ -96,7 +96,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7650602010613537265.m4a",
+      "media_path": null,
       "duration_seconds": 64.065,
       "attempts": 2,
       "error": null
@@ -108,7 +108,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7647839024535507897.m4a",
+      "media_path": null,
       "duration_seconds": 242.091,
       "attempts": 2,
       "error": null
@@ -120,7 +120,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7643719807951615482.m4a",
+      "media_path": null,
       "duration_seconds": 131.821,
       "attempts": 1,
       "error": null
@@ -132,7 +132,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7642648621985030138.m4a",
+      "media_path": null,
       "duration_seconds": 192.147,
       "attempts": 2,
       "error": null
@@ -144,7 +144,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7641533740292048049.m4a",
+      "media_path": null,
       "duration_seconds": 234.825,
       "attempts": 2,
       "error": null
@@ -156,7 +156,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7639306481355832689.m4a",
+      "media_path": null,
       "duration_seconds": 127.781,
       "attempts": 1,
       "error": null
@@ -168,7 +168,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7634998306204492794.m4a",
+      "media_path": null,
       "duration_seconds": 130.335,
       "attempts": 1,
       "error": null
@@ -180,7 +180,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7634016952800880570.m4a",
+      "media_path": null,
       "duration_seconds": 142.688,
       "attempts": 1,
       "error": null
@@ -192,7 +192,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7631290187235164026.m4a",
+      "media_path": null,
       "duration_seconds": 180.629,
       "attempts": 1,
       "error": null
@@ -204,7 +204,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7630800123594285305.m4a",
+      "media_path": null,
       "duration_seconds": 155.645,
       "attempts": 2,
       "error": null
@@ -216,7 +216,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7628342769941691121.m4a",
+      "media_path": null,
       "duration_seconds": 71.031,
       "attempts": 2,
       "error": null
@@ -228,7 +228,7 @@
       "category": "单打战术",
       "tags": "单打战术；双打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7627338837022917809.m4a",
+      "media_path": null,
       "duration_seconds": 129.128,
       "attempts": 2,
       "error": null
@@ -240,7 +240,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7626127268884067249.m4a",
+      "media_path": null,
       "duration_seconds": 345.559,
       "attempts": 2,
       "error": null
@@ -252,7 +252,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7622167629645727717.m4a",
+      "media_path": null,
       "duration_seconds": 127.038,
       "attempts": 2,
       "error": null
@@ -264,7 +264,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7621243051541587889.m4a",
+      "media_path": null,
       "duration_seconds": 113.895,
       "attempts": 1,
       "error": null
@@ -276,7 +276,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7619576226616745445.m4a",
+      "media_path": null,
       "duration_seconds": 111.62,
       "attempts": 2,
       "error": null
@@ -288,7 +288,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7618301799796222833.m4a",
+      "media_path": null,
       "duration_seconds": 77.254,
       "attempts": 2,
       "error": null
@@ -300,7 +300,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7616819993833503601.m4a",
+      "media_path": null,
       "duration_seconds": 111.573,
       "attempts": 1,
       "error": null
@@ -312,7 +312,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7615737190207725937.m4a",
+      "media_path": null,
       "duration_seconds": 181.698,
       "attempts": 1,
       "error": null
@@ -336,7 +336,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7611635851789771721.m4a",
+      "media_path": null,
       "duration_seconds": 331.07,
       "attempts": 1,
       "error": null
@@ -348,7 +348,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-001/7609429014616637050.m4a",
+      "media_path": null,
       "duration_seconds": 168.834,
       "attempts": 2,
       "error": null
@@ -360,7 +360,7 @@
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7607852875611759802.m4a",
+      "media_path": null,
       "duration_seconds": 88.725,
       "attempts": 2,
       "error": null
@@ -372,7 +372,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7606412946096327978.m4a",
+      "media_path": null,
       "duration_seconds": 438.439,
       "attempts": 2,
       "error": null
@@ -384,7 +384,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7606560547489149691.m4a",
+      "media_path": null,
       "duration_seconds": 171.713,
       "attempts": 2,
       "error": null
@@ -396,7 +396,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7603148927714908273.m4a",
+      "media_path": null,
       "duration_seconds": 93.322,
       "attempts": 1,
       "error": null
@@ -408,7 +408,7 @@
       "category": "单打战术",
       "tags": "单打战术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7602766054809333617.m4a",
+      "media_path": null,
       "duration_seconds": 154.623,
       "attempts": 2,
       "error": null
@@ -420,7 +420,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003a/7600107130034047973.m4a",
+      "media_path": null,
       "duration_seconds": 297.285,
       "attempts": 7,
       "error": null
@@ -432,7 +432,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7598855095372185273.m4a",
+      "media_path": null,
       "duration_seconds": 99.313,
       "attempts": 2,
       "error": null
@@ -444,7 +444,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7597528312752490929.m4a",
+      "media_path": null,
       "duration_seconds": 161.032,
       "attempts": 2,
       "error": null
@@ -456,7 +456,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7596955153073478011.mp4",
+      "media_path": null,
       "duration_seconds": 51.294,
       "attempts": 2,
       "error": null
@@ -468,7 +468,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003a/7595804581259641521.m4a",
+      "media_path": null,
       "duration_seconds": 161.821,
       "attempts": 8,
       "error": null
@@ -480,7 +480,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7593661008519810289.mp4",
+      "media_path": null,
       "duration_seconds": 43.957,
       "attempts": 1,
       "error": null
@@ -492,7 +492,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7592181557051310961.m4a",
+      "media_path": null,
       "duration_seconds": 182.719,
       "attempts": 1,
       "error": null
@@ -504,7 +504,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7591112983016940977.m4a",
+      "media_path": null,
       "duration_seconds": 70.195,
       "attempts": 2,
       "error": null
@@ -528,7 +528,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003a/7589590613499595185.mp4",
+      "media_path": null,
       "duration_seconds": 44.189,
       "attempts": 6,
       "error": null
@@ -540,7 +540,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003b/7588747058782683513.mp4",
+      "media_path": null,
       "duration_seconds": 53.152,
       "attempts": 5,
       "error": null
@@ -552,7 +552,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003b/7587362379455778097.m4a",
+      "media_path": null,
       "duration_seconds": 69.545,
       "attempts": 5,
       "error": null
@@ -564,7 +564,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003b/7586613438625959217.m4a",
+      "media_path": null,
       "duration_seconds": 153.787,
       "attempts": 5,
       "error": null
@@ -588,7 +588,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003b/7577392474555210597.m4a",
+      "media_path": null,
       "duration_seconds": 72.564,
       "attempts": 5,
       "error": null
@@ -600,7 +600,7 @@
       "category": "后场技术",
       "tags": "后场技术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003b/7573211923485260537.m4a",
+      "media_path": null,
       "duration_seconds": 171.667,
       "attempts": 5,
       "error": null
@@ -612,7 +612,7 @@
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；步法与移动；单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7571574635323124145.m4a",
+      "media_path": null,
       "duration_seconds": 144.499,
       "attempts": 2,
       "error": null
@@ -624,7 +624,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7570301879545426171.m4a",
+      "media_path": null,
       "duration_seconds": 202.456,
       "attempts": 1,
       "error": null
@@ -636,7 +636,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7567860375287303035.m4a",
+      "media_path": null,
       "duration_seconds": 351.689,
       "attempts": 1,
       "error": null
@@ -648,7 +648,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错；比赛分析；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7567155406117533051.m4a",
+      "media_path": null,
       "duration_seconds": 61.557,
       "attempts": 1,
       "error": null
@@ -660,7 +660,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7563513758061114875.m4a",
+      "media_path": null,
       "duration_seconds": 97.27,
       "attempts": 1,
       "error": null
@@ -672,7 +672,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-002/7561558424342056250.m4a",
+      "media_path": null,
       "duration_seconds": 183.555,
       "attempts": 1,
       "error": null
@@ -684,7 +684,7 @@
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7560064232592493882.m4a",
+      "media_path": null,
       "duration_seconds": 123.694,
       "attempts": 2,
       "error": null
@@ -708,7 +708,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003c/7552759261840952636.mp4",
+      "media_path": null,
       "duration_seconds": 12.424,
       "attempts": 5,
       "error": null
@@ -720,7 +720,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7551459420703837498.m4a",
+      "media_path": null,
       "duration_seconds": 146.264,
       "attempts": 2,
       "error": null
@@ -732,7 +732,7 @@
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003c/7550305145877155131.m4a",
+      "media_path": null,
       "duration_seconds": 157.502,
       "attempts": 5,
       "error": null
@@ -744,7 +744,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7548394643144068411.m4a",
+      "media_path": null,
       "duration_seconds": 133.029,
       "attempts": 2,
       "error": null
@@ -768,7 +768,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7541623926234811705.m4a",
+      "media_path": null,
       "duration_seconds": 136.512,
       "attempts": 2,
       "error": null
@@ -780,7 +780,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7540508309087358266.m4a",
+      "media_path": null,
       "duration_seconds": 68.523,
       "attempts": 1,
       "error": null
@@ -792,7 +792,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7539394762560113978.mp4",
+      "media_path": null,
       "duration_seconds": 109.391,
       "attempts": 1,
       "error": null
@@ -804,7 +804,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7538639302243323195.mp4",
+      "media_path": null,
       "duration_seconds": 38.152,
       "attempts": 2,
       "error": null
@@ -816,7 +816,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7536519262631611707.m4a",
+      "media_path": null,
       "duration_seconds": 100.985,
       "attempts": 2,
       "error": null
@@ -828,7 +828,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7535400692573211962.mp4",
+      "media_path": null,
       "duration_seconds": 86.589,
       "attempts": 1,
       "error": null
@@ -852,7 +852,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7531326870298873147.mp4",
+      "media_path": null,
       "duration_seconds": 229.391,
       "attempts": 1,
       "error": null
@@ -864,7 +864,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7530102529830800699.mp4",
+      "media_path": null,
       "duration_seconds": 137.347,
       "attempts": 1,
       "error": null
@@ -876,7 +876,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7526124617461173562.mp4",
+      "media_path": null,
       "duration_seconds": 153.416,
       "attempts": 1,
       "error": null
@@ -888,7 +888,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7525379384673733945.mp4",
+      "media_path": null,
       "duration_seconds": 198.369,
       "attempts": 2,
       "error": null
@@ -900,7 +900,7 @@
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7524557392328461627.mp4",
+      "media_path": null,
       "duration_seconds": 208.633,
       "attempts": 1,
       "error": null
@@ -912,7 +912,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7523163965838003514.mp4",
+      "media_path": null,
       "duration_seconds": 131.496,
       "attempts": 2,
       "error": null
@@ -924,7 +924,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7522041413614816570.m4a",
+      "media_path": null,
       "duration_seconds": 116.031,
       "attempts": 1,
       "error": null
@@ -936,7 +936,7 @@
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7520190707093654844.mp4",
+      "media_path": null,
       "duration_seconds": 179.376,
       "attempts": 2,
       "error": null
@@ -948,7 +948,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7518239001813339449.mp4",
+      "media_path": null,
       "duration_seconds": 101.403,
       "attempts": 1,
       "error": null
@@ -960,7 +960,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7517867684509420857.mp4",
+      "media_path": null,
       "duration_seconds": 164.19,
       "attempts": 1,
       "error": null
@@ -972,7 +972,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7516012808523222329.mp4",
+      "media_path": null,
       "duration_seconds": 270.212,
       "attempts": 2,
       "error": null
@@ -984,7 +984,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7515625891511995706.m4a",
+      "media_path": null,
       "duration_seconds": 95.737,
       "attempts": 1,
       "error": null
@@ -996,7 +996,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7511934047901846841.mp4",
+      "media_path": null,
       "duration_seconds": 118.539,
       "attempts": 2,
       "error": null
@@ -1008,7 +1008,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-003/7511074095086243131.mp4",
+      "media_path": null,
       "duration_seconds": 91.279,
       "attempts": 1,
       "error": null
@@ -1020,7 +1020,7 @@
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7509355373729762619.mp4",
+      "media_path": null,
       "duration_seconds": 77.254,
       "attempts": 1,
       "error": null
@@ -1032,7 +1032,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7508222669708463420.m4a",
+      "media_path": null,
       "duration_seconds": 86.589,
       "attempts": 1,
       "error": null
@@ -1056,7 +1056,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7506362888166083897.mp4",
+      "media_path": null,
       "duration_seconds": 226.512,
       "attempts": 1,
       "error": null
@@ -1080,7 +1080,7 @@
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7504391919716273468.mp4",
+      "media_path": null,
       "duration_seconds": 188.617,
       "attempts": 1,
       "error": null
@@ -1092,7 +1092,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7502895214820085049.mp4",
+      "media_path": null,
       "duration_seconds": 95.459,
       "attempts": 1,
       "error": null
@@ -1104,7 +1104,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7501542236061420859.mp4",
+      "media_path": null,
       "duration_seconds": 86.542,
       "attempts": 1,
       "error": null
@@ -1116,7 +1116,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7500519808157371711.mp4",
+      "media_path": null,
       "duration_seconds": 591.716,
       "attempts": 1,
       "error": null
@@ -1128,7 +1128,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7499776424493075772.mp4",
+      "media_path": null,
       "duration_seconds": 49.622,
       "attempts": 1,
       "error": null
@@ -1152,7 +1152,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7498295344284093755.mp4",
+      "media_path": null,
       "duration_seconds": 36.201,
       "attempts": 1,
       "error": null
@@ -1164,7 +1164,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7497098752897879355.m4a",
+      "media_path": null,
       "duration_seconds": 69.87,
       "attempts": 1,
       "error": null
@@ -1176,7 +1176,7 @@
       "category": "双打战术",
       "tags": "双打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7496715538836704571.mp4",
+      "media_path": null,
       "duration_seconds": 168.276,
       "attempts": 1,
       "error": null
@@ -1188,7 +1188,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7496238975796333881.mp4",
+      "media_path": null,
       "duration_seconds": 23.663,
       "attempts": 1,
       "error": null
@@ -1200,7 +1200,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7494729488699559225.mp4",
+      "media_path": null,
       "duration_seconds": 35.969,
       "attempts": 1,
       "error": null
@@ -1212,7 +1212,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7492357671853526329.mp4",
+      "media_path": null,
       "duration_seconds": 273.277,
       "attempts": 1,
       "error": null
@@ -1224,7 +1224,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7491780200468843833.mp4",
+      "media_path": null,
       "duration_seconds": 52.688,
       "attempts": 1,
       "error": null
@@ -1236,7 +1236,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7491244893893938492.mp4",
+      "media_path": null,
       "duration_seconds": 66.062,
       "attempts": 1,
       "error": null
@@ -1248,7 +1248,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；发力与身体运用；单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7489412105641168187.mp4",
+      "media_path": null,
       "duration_seconds": 91.233,
       "attempts": 1,
       "error": null
@@ -1260,7 +1260,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7488538000524119356.mp4",
+      "media_path": null,
       "duration_seconds": 265.243,
       "attempts": 1,
       "error": null
@@ -1272,7 +1272,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7488280037955816762.mp4",
+      "media_path": null,
       "duration_seconds": 111.573,
       "attempts": 1,
       "error": null
@@ -1284,7 +1284,7 @@
       "category": "后场技术",
       "tags": "后场技术；网前技术；中前场与抽挡；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7486788550298471739.mp4",
+      "media_path": null,
       "duration_seconds": 144.128,
       "attempts": 1,
       "error": null
@@ -1296,7 +1296,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7486058135547891004.mp4",
+      "media_path": null,
       "duration_seconds": 217.271,
       "attempts": 1,
       "error": null
@@ -1308,7 +1308,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7485692231404342586.mp4",
+      "media_path": null,
       "duration_seconds": 104.422,
       "attempts": 1,
       "error": null
@@ -1320,7 +1320,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7484563688096091449.mp4",
+      "media_path": null,
       "duration_seconds": 159.081,
       "attempts": 1,
       "error": null
@@ -1332,7 +1332,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7483346020332522812.mp4",
+      "media_path": null,
       "duration_seconds": 27.703,
       "attempts": 1,
       "error": null
@@ -1344,7 +1344,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-004/7480852601798511929.mp4",
+      "media_path": null,
       "duration_seconds": 140.877,
       "attempts": 1,
       "error": null
@@ -1356,7 +1356,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7476768272864644409.mp4",
+      "media_path": null,
       "duration_seconds": 212.58,
       "attempts": 1,
       "error": null
@@ -1380,7 +1380,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7471361140719652154.mp4",
+      "media_path": null,
       "duration_seconds": 113.57,
       "attempts": 1,
       "error": null
@@ -1392,7 +1392,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7459867608460840252.mp4",
+      "media_path": null,
       "duration_seconds": 105.304,
       "attempts": 1,
       "error": null
@@ -1404,7 +1404,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7458505857844776250.mp4",
+      "media_path": null,
       "duration_seconds": 99.36,
       "attempts": 1,
       "error": null
@@ -1416,7 +1416,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7453420876076240188.mp4",
+      "media_path": null,
       "duration_seconds": 1226.921,
       "attempts": 1,
       "error": null
@@ -1428,7 +1428,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7449702119076072764.mp4",
+      "media_path": null,
       "duration_seconds": 134.422,
       "attempts": 1,
       "error": null
@@ -1440,7 +1440,7 @@
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7447084061371272507.mp4",
+      "media_path": null,
       "duration_seconds": 34.529,
       "attempts": 1,
       "error": null
@@ -1452,7 +1452,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7445495930280856892.mp4",
+      "media_path": null,
       "duration_seconds": 165.072,
       "attempts": 1,
       "error": null
@@ -1464,7 +1464,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7441796812475747641.mp4",
+      "media_path": null,
       "duration_seconds": 33.415,
       "attempts": 1,
       "error": null
@@ -1476,7 +1476,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7440406891664133428.mp4",
+      "media_path": null,
       "duration_seconds": 72.517,
       "attempts": 1,
       "error": null
@@ -1488,7 +1488,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7432633273060314408.mp4",
+      "media_path": null,
       "duration_seconds": 184.02,
       "attempts": 1,
       "error": null
@@ -1500,7 +1500,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7427416335900020008.mp4",
+      "media_path": null,
       "duration_seconds": 87.378,
       "attempts": 1,
       "error": null
@@ -1512,7 +1512,7 @@
       "category": "双打战术",
       "tags": "双打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7423714121620737315.mp4",
+      "media_path": null,
       "duration_seconds": 46.372,
       "attempts": 1,
       "error": null
@@ -1524,7 +1524,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-005/7422121561559272739.m4a",
+      "media_path": null,
       "duration_seconds": 124.994,
       "attempts": 1,
       "error": null
@@ -1536,7 +1536,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7418417650264558848.mp4",
+      "media_path": null,
       "duration_seconds": 50.505,
       "attempts": 1,
       "error": null
@@ -1548,7 +1548,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7415820467606473999.mp4",
+      "media_path": null,
       "duration_seconds": 28.539,
       "attempts": 1,
       "error": null
@@ -1560,7 +1560,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7414339897990843663.mp4",
+      "media_path": null,
       "duration_seconds": 121.79,
       "attempts": 1,
       "error": null
@@ -1572,7 +1572,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7413335844594994447.mp4",
+      "media_path": null,
       "duration_seconds": 191.775,
       "attempts": 1,
       "error": null
@@ -1584,7 +1584,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7411850466457292084.mp4",
+      "media_path": null,
       "duration_seconds": 90.675,
       "attempts": 1,
       "error": null
@@ -1596,7 +1596,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7409137525006060840.mp4",
+      "media_path": null,
       "duration_seconds": 315.305,
       "attempts": 1,
       "error": null
@@ -1608,7 +1608,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-006/7408162190647217460.mp4",
+      "media_path": null,
       "duration_seconds": 139.159,
       "attempts": 1,
       "error": null
@@ -1644,7 +1644,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7404091511773613347.mp4",
+      "media_path": null,
       "duration_seconds": 27.285,
       "attempts": 1,
       "error": null
@@ -1656,7 +1656,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7400221745208167695.mp4",
+      "media_path": null,
       "duration_seconds": 279.036,
       "attempts": 1,
       "error": null
@@ -1668,7 +1668,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7397746202562956559.mp4",
+      "media_path": null,
       "duration_seconds": 260.553,
       "attempts": 1,
       "error": null
@@ -1680,7 +1680,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7393550140465777960.mp4",
+      "media_path": null,
       "duration_seconds": 125.691,
       "attempts": 1,
       "error": null
@@ -1692,7 +1692,7 @@
       "category": "后场技术",
       "tags": "后场技术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7387250672263040267.mp4",
+      "media_path": null,
       "duration_seconds": 29.142,
       "attempts": 1,
       "error": null
@@ -1704,7 +1704,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7387233755057949987.mp4",
+      "media_path": null,
       "duration_seconds": 55.938,
       "attempts": 1,
       "error": null
@@ -1716,7 +1716,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-007/7385749108843089187.mp4",
+      "media_path": null,
       "duration_seconds": 375.213,
       "attempts": 1,
       "error": null
@@ -1728,7 +1728,7 @@
       "category": "后场技术",
       "tags": "后场技术；步法与移动；发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7384641787647872308.mp4",
+      "media_path": null,
       "duration_seconds": 74.839,
       "attempts": 1,
       "error": null
@@ -1740,7 +1740,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7383154379915906319.m4a",
+      "media_path": null,
       "duration_seconds": 200.738,
       "attempts": 1,
       "error": null
@@ -1752,7 +1752,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7382052454063492392.mp4",
+      "media_path": null,
       "duration_seconds": 55.752,
       "attempts": 1,
       "error": null
@@ -1764,7 +1764,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7381785580268473635.mp4",
+      "media_path": null,
       "duration_seconds": 348.37,
       "attempts": 1,
       "error": null
@@ -1776,7 +1776,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7380562375188974888.mp4",
+      "media_path": null,
       "duration_seconds": 159.128,
       "attempts": 1,
       "error": null
@@ -1800,7 +1800,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7370160247467494691.mp4",
+      "media_path": null,
       "duration_seconds": 14.328,
       "attempts": 1,
       "error": null
@@ -1812,7 +1812,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-008/7369052560818195752.mp4",
+      "media_path": null,
       "duration_seconds": 160.66,
       "attempts": 1,
       "error": null
@@ -1824,7 +1824,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7367561803234069800.mp4",
+      "media_path": null,
       "duration_seconds": 68.338,
       "attempts": 1,
       "error": null
@@ -1836,7 +1836,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7358661350945525007.mp4",
+      "media_path": null,
       "duration_seconds": 72.192,
       "attempts": 1,
       "error": null
@@ -1848,7 +1848,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7357171384377740544.mp4",
+      "media_path": null,
       "duration_seconds": 95.412,
       "attempts": 1,
       "error": null
@@ -1860,7 +1860,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7356057989767269684.mp4",
+      "media_path": null,
       "duration_seconds": 51.991,
       "attempts": 1,
       "error": null
@@ -1872,7 +1872,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7354580584229866787.mp4",
+      "media_path": null,
       "duration_seconds": 38.384,
       "attempts": 1,
       "error": null
@@ -1884,7 +1884,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7353467942706695458.mp4",
+      "media_path": null,
       "duration_seconds": 84.87,
       "attempts": 1,
       "error": null
@@ -1896,7 +1896,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-009/7351983713426705699.mp4",
+      "media_path": null,
       "duration_seconds": 138.601,
       "attempts": 1,
       "error": null
@@ -1908,7 +1908,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7348271667711380770.mp4",
+      "media_path": null,
       "duration_seconds": 37.966,
       "attempts": 1,
       "error": null
@@ -1920,7 +1920,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7346781656461724963.mp4",
+      "media_path": null,
       "duration_seconds": 98.895,
       "attempts": 1,
       "error": null
@@ -1932,7 +1932,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7344186576013905187.mp4",
+      "media_path": null,
       "duration_seconds": 25.567,
       "attempts": 1,
       "error": null
@@ -1944,7 +1944,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7343069490126540084.mp4",
+      "media_path": null,
       "duration_seconds": 180.537,
       "attempts": 1,
       "error": null
@@ -1956,7 +1956,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7341595770195430690.mp4",
+      "media_path": null,
       "duration_seconds": 49.019,
       "attempts": 1,
       "error": null
@@ -1968,7 +1968,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7340472371322686755.mp4",
+      "media_path": null,
       "duration_seconds": 29.375,
       "attempts": 1,
       "error": null
@@ -1980,7 +1980,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-010/7335277415456836898.mp4",
+      "media_path": null,
       "duration_seconds": 144.313,
       "attempts": 1,
       "error": null
@@ -1992,7 +1992,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7331201469292596520.mp4",
+      "media_path": null,
       "duration_seconds": 149.422,
       "attempts": 1,
       "error": null
@@ -2004,7 +2004,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7330090280055491874.mp4",
+      "media_path": null,
       "duration_seconds": 55.335,
       "attempts": 1,
       "error": null
@@ -2016,7 +2016,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7327483273536474408.mp4",
+      "media_path": null,
       "duration_seconds": 129.546,
       "attempts": 1,
       "error": null
@@ -2028,7 +2028,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7324887936980274432.mp4",
+      "media_path": null,
       "duration_seconds": 6.062,
       "attempts": 1,
       "error": null
@@ -2040,7 +2040,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7322291358931127592.mp4",
+      "media_path": null,
       "duration_seconds": 162.286,
       "attempts": 1,
       "error": null
@@ -2052,7 +2052,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7319695192297180431.mp4",
+      "media_path": null,
       "duration_seconds": 113.245,
       "attempts": 1,
       "error": null
@@ -2064,7 +2064,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-011/7318207777246072098.mp4",
+      "media_path": null,
       "duration_seconds": 88.539,
       "attempts": 1,
       "error": null
@@ -2076,7 +2076,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7315610620424883496.mp4",
+      "media_path": null,
       "duration_seconds": 77.208,
       "attempts": 1,
       "error": null
@@ -2088,7 +2088,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7313012058021186866.mp4",
+      "media_path": null,
       "duration_seconds": 53.849,
       "attempts": 1,
       "error": null
@@ -2100,7 +2100,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7311907273461320975.mp4",
+      "media_path": null,
       "duration_seconds": 115.103,
       "attempts": 1,
       "error": null
@@ -2112,7 +2112,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7309303794733485327.mp4",
+      "media_path": null,
       "duration_seconds": 43.121,
       "attempts": 1,
       "error": null
@@ -2124,7 +2124,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7307817481257766178.mp4",
+      "media_path": null,
       "duration_seconds": 64.53,
       "attempts": 1,
       "error": null
@@ -2136,7 +2136,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7306709804234444072.mp4",
+      "media_path": null,
       "duration_seconds": 72.099,
       "attempts": 1,
       "error": null
@@ -2148,7 +2148,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-012/7305218669343264034.mp4",
+      "media_path": null,
       "duration_seconds": 49.808,
       "attempts": 1,
       "error": null
@@ -2160,7 +2160,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7304104136306412835.mp4",
+      "media_path": null,
       "duration_seconds": 151.744,
       "attempts": 1,
       "error": null
@@ -2172,7 +2172,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7302621786980486440.mp4",
+      "media_path": null,
       "duration_seconds": 130.614,
       "attempts": 1,
       "error": null
@@ -2184,7 +2184,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7301508881325296931.mp4",
+      "media_path": null,
       "duration_seconds": 149.282,
       "attempts": 1,
       "error": null
@@ -2196,7 +2196,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7300032085358660904.mp4",
+      "media_path": null,
       "duration_seconds": 184.391,
       "attempts": 1,
       "error": null
@@ -2208,7 +2208,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7298921585358933283.mp4",
+      "media_path": null,
       "duration_seconds": 79.158,
       "attempts": 1,
       "error": null
@@ -2220,7 +2220,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7296314453379910947.mp4",
+      "media_path": null,
       "duration_seconds": 64.483,
       "attempts": 1,
       "error": null
@@ -2244,7 +2244,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-013/7292235083715448104.mp4",
+      "media_path": null,
       "duration_seconds": 49.622,
       "attempts": 1,
       "error": null
@@ -2256,7 +2256,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7291120515530493184.mp4",
+      "media_path": null,
       "duration_seconds": 90.304,
       "attempts": 1,
       "error": null
@@ -2268,7 +2268,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7289635377009151247.mp4",
+      "media_path": null,
       "duration_seconds": 63.88,
       "attempts": 1,
       "error": null
@@ -2280,7 +2280,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7288529711267859747.mp4",
+      "media_path": null,
       "duration_seconds": 202.642,
       "attempts": 1,
       "error": null
@@ -2292,7 +2292,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7284439456776506658.mp4",
+      "media_path": null,
       "duration_seconds": 148.865,
       "attempts": 1,
       "error": null
@@ -2316,7 +2316,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7279243688423853347.mp4",
+      "media_path": null,
       "duration_seconds": 125.505,
       "attempts": 1,
       "error": null
@@ -2328,7 +2328,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7278130800220998946.mp4",
+      "media_path": null,
       "duration_seconds": 89.421,
       "attempts": 1,
       "error": null
@@ -2340,7 +2340,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-014/7276646497377176872.mp4",
+      "media_path": null,
       "duration_seconds": 120.258,
       "attempts": 1,
       "error": null
@@ -2352,7 +2352,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7275536378321014051.mp4",
+      "media_path": null,
       "duration_seconds": 150.908,
       "attempts": 1,
       "error": null
@@ -2364,7 +2364,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7272944156618542336.mp4",
+      "media_path": null,
       "duration_seconds": 180.026,
       "attempts": 1,
       "error": null
@@ -2376,7 +2376,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7271452082337598760.mp4",
+      "media_path": null,
       "duration_seconds": 168.462,
       "attempts": 1,
       "error": null
@@ -2388,7 +2388,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7267754640270216483.mp4",
+      "media_path": null,
       "duration_seconds": 104.793,
       "attempts": 1,
       "error": null
@@ -2400,7 +2400,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7265142606580026658.mp4",
+      "media_path": null,
       "duration_seconds": 225.351,
       "attempts": 1,
       "error": null
@@ -2424,7 +2424,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7262546080133401890.mp4",
+      "media_path": null,
       "duration_seconds": 198.369,
       "attempts": 1,
       "error": null
@@ -2436,7 +2436,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-015/7259946986114190626.mp4",
+      "media_path": null,
       "duration_seconds": 121.837,
       "attempts": 1,
       "error": null
@@ -2448,7 +2448,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7258462271670586658.mp4",
+      "media_path": null,
       "duration_seconds": 105.025,
       "attempts": 1,
       "error": null
@@ -2460,7 +2460,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7254755365995285812.mp4",
+      "media_path": null,
       "duration_seconds": 114.824,
       "attempts": 1,
       "error": null
@@ -2472,7 +2472,7 @@
       "category": "单打战术",
       "tags": "单打战术；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7252154554828033295.mp4",
+      "media_path": null,
       "duration_seconds": 603.511,
       "attempts": 1,
       "error": null
@@ -2484,7 +2484,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7249558167288335656.mp4",
+      "media_path": null,
       "duration_seconds": 405.817,
       "attempts": 1,
       "error": null
@@ -2496,7 +2496,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7248074193118547240.mp4",
+      "media_path": null,
       "duration_seconds": 202.781,
       "attempts": 1,
       "error": null
@@ -2520,7 +2520,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7245471347210554639.mp4",
+      "media_path": null,
       "duration_seconds": 200.041,
       "attempts": 1,
       "error": null
@@ -2532,7 +2532,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-016/7242877295336164642.mp4",
+      "media_path": null,
       "duration_seconds": 163.725,
       "attempts": 1,
       "error": null
@@ -2544,7 +2544,7 @@
       "category": "双打战术",
       "tags": "双打战术；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7241053732916596026.mp4",
+      "media_path": null,
       "duration_seconds": 83.245,
       "attempts": 1,
       "error": null
@@ -2556,7 +2556,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7236568825607621922.mp4",
+      "media_path": null,
       "duration_seconds": 98.524,
       "attempts": 1,
       "error": null
@@ -2568,7 +2568,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7235084849025912096.mp4",
+      "media_path": null,
       "duration_seconds": 84.685,
       "attempts": 1,
       "error": null
@@ -2580,7 +2580,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7231384286954409271.mp4",
+      "media_path": null,
       "duration_seconds": 128.199,
       "attempts": 1,
       "error": null
@@ -2592,7 +2592,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；网前技术；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7231373527314631947.mp4",
+      "media_path": null,
       "duration_seconds": 123.415,
       "attempts": 1,
       "error": null
@@ -2604,7 +2604,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7229889111706848544.mp4",
+      "media_path": null,
       "duration_seconds": 137.115,
       "attempts": 1,
       "error": null
@@ -2616,7 +2616,7 @@
       "category": "后场技术",
       "tags": "后场技术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-017/7229506261136526647.mp4",
+      "media_path": null,
       "duration_seconds": 67.13,
       "attempts": 1,
       "error": null
@@ -2628,7 +2628,7 @@
       "category": "中前场与抽挡",
       "tags": "中前场与抽挡；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7226178331408928038.mp4",
+      "media_path": null,
       "duration_seconds": 46.79,
       "attempts": 1,
       "error": null
@@ -2640,7 +2640,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7223584265072692518.mp4",
+      "media_path": null,
       "duration_seconds": 128.199,
       "attempts": 1,
       "error": null
@@ -2652,7 +2652,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7220984919747497255.mp4",
+      "media_path": null,
       "duration_seconds": 131.357,
       "attempts": 1,
       "error": null
@@ -2664,7 +2664,7 @@
       "category": "网前技术",
       "tags": "网前技术；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7220630996293635385.mp4",
+      "media_path": null,
       "duration_seconds": 120.443,
       "attempts": 1,
       "error": null
@@ -2676,7 +2676,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7218386274690796832.mp4",
+      "media_path": null,
       "duration_seconds": 211.976,
       "attempts": 1,
       "error": null
@@ -2688,7 +2688,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7215787369381858599.mp4",
+      "media_path": null,
       "duration_seconds": 197.301,
       "attempts": 1,
       "error": null
@@ -2712,7 +2712,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-018/7213191190382972172.mp4",
+      "media_path": null,
       "duration_seconds": 153.137,
       "attempts": 1,
       "error": null
@@ -2724,7 +2724,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-019/7211705676840602918.mp4",
+      "media_path": null,
       "duration_seconds": 78.09,
       "attempts": 1,
       "error": null
@@ -2736,7 +2736,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003c/7210592889141775627.mp4",
+      "media_path": null,
       "duration_seconds": 163.422,
       "attempts": 5,
       "error": null
@@ -2748,7 +2748,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003c/7209108124924464387.mp4",
+      "media_path": null,
       "duration_seconds": 142.408,
       "attempts": 5,
       "error": null
@@ -2760,7 +2760,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003c/7206510177317702924.mp4",
+      "media_path": null,
       "duration_seconds": 143.36,
       "attempts": 5,
       "error": null
@@ -2772,7 +2772,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-021/7205399670959459623.mp4",
+      "media_path": null,
       "duration_seconds": 120.604,
       "attempts": 2,
       "error": null
@@ -2784,7 +2784,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-020/7203541969530883361.mp4",
+      "media_path": null,
       "duration_seconds": 76.997,
       "attempts": 1,
       "error": null
@@ -2796,7 +2796,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-020/7202800263588105510.mp4",
+      "media_path": null,
       "duration_seconds": 123.437,
       "attempts": 1,
       "error": null
@@ -2808,7 +2808,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003d/7200944470446050599.mp4",
+      "media_path": null,
       "duration_seconds": 71.494,
       "attempts": 5,
       "error": null
@@ -2820,7 +2820,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-020/7200204622852623628.mp4",
+      "media_path": null,
       "duration_seconds": 187.687,
       "attempts": 1,
       "error": null
@@ -2832,7 +2832,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-021/7197605327993310467.mp4",
+      "media_path": null,
       "duration_seconds": 217.966,
       "attempts": 2,
       "error": null
@@ -2844,7 +2844,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003d/7195014413932367116.mp4",
+      "media_path": null,
       "duration_seconds": 99.614,
       "attempts": 5,
       "error": null
@@ -2856,7 +2856,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003d/7193151905139395872.mp4",
+      "media_path": null,
       "duration_seconds": 127.036,
       "attempts": 5,
       "error": null
@@ -2868,7 +2868,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-022/7189812762409782539.mp4",
+      "media_path": null,
       "duration_seconds": 96.827,
       "attempts": 2,
       "error": null
@@ -2880,7 +2880,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003d/7185744630439333153.mp4",
+      "media_path": null,
       "duration_seconds": 327.612,
       "attempts": 5,
       "error": null
@@ -2892,7 +2892,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003d/7185360811248864544.mp4",
+      "media_path": null,
       "duration_seconds": 75.418,
       "attempts": 4,
       "error": null
@@ -2904,7 +2904,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003e/7184618028619910433.mp4",
+      "media_path": null,
       "duration_seconds": 130.984,
       "attempts": 4,
       "error": null
@@ -2916,7 +2916,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003e/7183132124801682726.mp4",
+      "media_path": null,
       "duration_seconds": 19.412,
       "attempts": 4,
       "error": null
@@ -2928,7 +2928,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-023/7182762294294744332.mp4",
+      "media_path": null,
       "duration_seconds": 35.898,
       "attempts": 2,
       "error": null
@@ -2940,7 +2940,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-023/7182019728024538380.mp4",
+      "media_path": null,
       "duration_seconds": 168.554,
       "attempts": 1,
       "error": null
@@ -2952,7 +2952,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003e/7175339579392707878.mp4",
+      "media_path": null,
       "duration_seconds": 82.942,
       "attempts": 4,
       "error": null
@@ -2964,7 +2964,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003e/7174969770511551756.mp4",
+      "media_path": null,
       "duration_seconds": 88.538,
       "attempts": 4,
       "error": null
@@ -2976,7 +2976,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7174229898238676228.mp4",
+      "media_path": null,
       "duration_seconds": 138.577,
       "attempts": 2,
       "error": null
@@ -2988,7 +2988,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7172742523096517927.mp4",
+      "media_path": null,
       "duration_seconds": 92.648,
       "attempts": 2,
       "error": null
@@ -3000,7 +3000,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7170144521781562662.mp4",
+      "media_path": null,
       "duration_seconds": 91.185,
       "attempts": 2,
       "error": null
@@ -3012,7 +3012,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003e/7169772952039345411.mp4",
+      "media_path": null,
       "duration_seconds": 89.884,
       "attempts": 4,
       "error": null
@@ -3024,7 +3024,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7169038502280154380.mp4",
+      "media_path": null,
       "duration_seconds": 136.324,
       "attempts": 2,
       "error": null
@@ -3036,7 +3036,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7167546787073477900.mp4",
+      "media_path": null,
       "duration_seconds": 35.805,
       "attempts": 1,
       "error": null
@@ -3048,7 +3048,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-025/7167176069978623236.mp4",
+      "media_path": null,
       "duration_seconds": 124.529,
       "attempts": 1,
       "error": null
@@ -3072,7 +3072,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003f/7164948889630493991.mp4",
+      "media_path": null,
       "duration_seconds": 77.183,
       "attempts": 4,
       "error": null
@@ -3084,7 +3084,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003f/7163836275487804676.mp4",
+      "media_path": null,
       "duration_seconds": 61.324,
       "attempts": 4,
       "error": null
@@ -3096,7 +3096,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-026/7161980324409363712.mp4",
+      "media_path": null,
       "duration_seconds": 156.41,
       "attempts": 1,
       "error": null
@@ -3108,7 +3108,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-027/7159754364297448715.mp4",
+      "media_path": null,
       "duration_seconds": 30.906,
       "attempts": 2,
       "error": null
@@ -3120,7 +3120,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-026/7159382785092783375.mp4",
+      "media_path": null,
       "duration_seconds": 95.086,
       "attempts": 1,
       "error": null
@@ -3132,7 +3132,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-026/7158640349798255907.mp4",
+      "media_path": null,
       "duration_seconds": 82.64,
       "attempts": 1,
       "error": null
@@ -3144,7 +3144,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-026/7157156135538134307.mp4",
+      "media_path": null,
       "duration_seconds": 93.507,
       "attempts": 1,
       "error": null
@@ -3156,7 +3156,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-027/7156785188884778275.mp4",
+      "media_path": null,
       "duration_seconds": 125.202,
       "attempts": 1,
       "error": null
@@ -3168,7 +3168,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003f/7156043406962134306.mp4",
+      "media_path": null,
       "duration_seconds": 65.132,
       "attempts": 4,
       "error": null
@@ -3180,7 +3180,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003f/7154558892742151464.mp4",
+      "media_path": null,
       "duration_seconds": 71.1,
       "attempts": 4,
       "error": null
@@ -3192,7 +3192,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-027/7154187492487335203.mp4",
+      "media_path": null,
       "duration_seconds": 77.926,
       "attempts": 1,
       "error": null
@@ -3204,7 +3204,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003f/7153445193713290511.mp4",
+      "media_path": null,
       "duration_seconds": 120.465,
       "attempts": 4,
       "error": null
@@ -3216,7 +3216,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003g/7151961376448138531.mp4",
+      "media_path": null,
       "duration_seconds": 41.61,
       "attempts": 4,
       "error": null
@@ -3228,7 +3228,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-028/7151589626031901992.mp4",
+      "media_path": null,
       "duration_seconds": 50.573,
       "attempts": 1,
       "error": null
@@ -3240,7 +3240,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003g/7150847019320429839.mp4",
+      "media_path": null,
       "duration_seconds": 19.992,
       "attempts": 4,
       "error": null
@@ -3252,7 +3252,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-029/7149363344649047311.mp4",
+      "media_path": null,
       "duration_seconds": 41.215,
       "attempts": 2,
       "error": null
@@ -3264,7 +3264,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003g/7148990784363138344.mp4",
+      "media_path": null,
       "duration_seconds": 99.776,
       "attempts": 4,
       "error": null
@@ -3276,7 +3276,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003g/7148267452877638944.mp4",
+      "media_path": null,
       "duration_seconds": 73.654,
       "attempts": 4,
       "error": null
@@ -3288,7 +3288,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-029/7146762792438074665.mp4",
+      "media_path": null,
       "duration_seconds": 33.251,
       "attempts": 1,
       "error": null
@@ -3300,7 +3300,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7146394347586587919.mp4",
+      "media_path": null,
       "duration_seconds": 83.569,
       "attempts": 2,
       "error": null
@@ -3312,7 +3312,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7145708380047297833.mp4",
+      "media_path": null,
       "duration_seconds": 75.674,
       "attempts": 2,
       "error": null
@@ -3324,7 +3324,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7144168689510649128.mp4",
+      "media_path": null,
       "duration_seconds": 123.809,
       "attempts": 2,
       "error": null
@@ -3336,7 +3336,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7143811094698528040.mp4",
+      "media_path": null,
       "duration_seconds": 27.051,
       "attempts": 2,
       "error": null
@@ -3348,7 +3348,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7142313105324870950.mp4",
+      "media_path": null,
       "duration_seconds": 129.451,
       "attempts": 2,
       "error": null
@@ -3360,7 +3360,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7141570854437063977.mp4",
+      "media_path": null,
       "duration_seconds": 91.254,
       "attempts": 1,
       "error": null
@@ -3372,7 +3372,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-031/7141200093922790688.mp4",
+      "media_path": null,
       "duration_seconds": 144.544,
       "attempts": 1,
       "error": null
@@ -3384,7 +3384,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7140089034096839976.mp4",
+      "media_path": null,
       "duration_seconds": 77.415,
       "attempts": 1,
       "error": null
@@ -3396,7 +3396,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7138604160051612969.mp4",
+      "media_path": null,
       "duration_seconds": 120.651,
       "attempts": 1,
       "error": null
@@ -3408,7 +3408,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7137859788255284520.mp4",
+      "media_path": null,
       "duration_seconds": 125.875,
       "attempts": 1,
       "error": null
@@ -3420,7 +3420,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7136376084920012032.mp4",
+      "media_path": null,
       "duration_seconds": 18.901,
       "attempts": 1,
       "error": null
@@ -3432,7 +3432,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7133406724035185920.mp4",
+      "media_path": null,
       "duration_seconds": 34.667,
       "attempts": 1,
       "error": null
@@ -3444,7 +3444,7 @@
       "category": "后场技术",
       "tags": "后场技术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7132666254980074793.mp4",
+      "media_path": null,
       "duration_seconds": 82.199,
       "attempts": 1,
       "error": null
@@ -3456,7 +3456,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-032/7131178146023427328.mp4",
+      "media_path": null,
       "duration_seconds": 96.177,
       "attempts": 1,
       "error": null
@@ -3468,7 +3468,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7130069152592645411.mp4",
+      "media_path": null,
       "duration_seconds": 130.171,
       "attempts": 1,
       "error": null
@@ -3480,7 +3480,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7129696487956647208.mp4",
+      "media_path": null,
       "duration_seconds": 60.604,
       "attempts": 1,
       "error": null
@@ -3492,7 +3492,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7128211692743363880.mp4",
+      "media_path": null,
       "duration_seconds": 67.036,
       "attempts": 1,
       "error": null
@@ -3504,7 +3504,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7127470220309957923.mp4",
+      "media_path": null,
       "duration_seconds": 55.008,
       "attempts": 1,
       "error": null
@@ -3516,7 +3516,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7125615679402724623.mp4",
+      "media_path": null,
       "duration_seconds": 162.911,
       "attempts": 1,
       "error": null
@@ -3528,7 +3528,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7124871920230632745.mp4",
+      "media_path": null,
       "duration_seconds": 127.733,
       "attempts": 1,
       "error": null
@@ -3540,7 +3540,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-033/7123390328643603752.mp4",
+      "media_path": null,
       "duration_seconds": 62.531,
       "attempts": 1,
       "error": null
@@ -3552,7 +3552,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7122277769202896163.mp4",
+      "media_path": null,
       "duration_seconds": 67.408,
       "attempts": 2,
       "error": null
@@ -3564,7 +3564,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7118192644957818127.mp4",
+      "media_path": null,
       "duration_seconds": 70.774,
       "attempts": 1,
       "error": null
@@ -3576,7 +3576,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7117821949165718824.mp4",
+      "media_path": null,
       "duration_seconds": 60.302,
       "attempts": 1,
       "error": null
@@ -3588,7 +3588,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7117079751398919465.mp4",
+      "media_path": null,
       "duration_seconds": 70.147,
       "attempts": 2,
       "error": null
@@ -3600,7 +3600,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/failed-retry-003g/7115598014642736424.mp4",
+      "media_path": null,
       "duration_seconds": 35.944,
       "attempts": 4,
       "error": null
@@ -3612,7 +3612,7 @@
       "category": "后场技术",
       "tags": "后场技术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7115241358255803683.mp4",
+      "media_path": null,
       "duration_seconds": 33.506,
       "attempts": 1,
       "error": null
@@ -3624,7 +3624,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7114483272972881193.mp4",
+      "media_path": null,
       "duration_seconds": 76.394,
       "attempts": 2,
       "error": null
@@ -3636,7 +3636,7 @@
       "category": "发球与接发",
       "tags": "发球与接发；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7113001319694224655.mp4",
+      "media_path": null,
       "duration_seconds": 135.953,
       "attempts": 2,
       "error": null
@@ -3648,7 +3648,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7112628690395106560.mp4",
+      "media_path": null,
       "duration_seconds": 120.256,
       "attempts": 1,
       "error": null
@@ -3660,7 +3660,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-034/7111887264187190528.mp4",
+      "media_path": null,
       "duration_seconds": 146.68,
       "attempts": 1,
       "error": null
@@ -3672,7 +3672,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7110431174811602191.mp4",
+      "media_path": null,
       "duration_seconds": 84.242,
       "attempts": 1,
       "error": null
@@ -3684,7 +3684,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7110033991918554402.mp4",
+      "media_path": null,
       "duration_seconds": 227.695,
       "attempts": 1,
       "error": null
@@ -3696,7 +3696,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7109288333884329231.mp4",
+      "media_path": null,
       "duration_seconds": 125.945,
       "attempts": 1,
       "error": null
@@ -3708,7 +3708,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7106697344128748835.mp4",
+      "media_path": null,
       "duration_seconds": 91.742,
       "attempts": 1,
       "error": null
@@ -3720,7 +3720,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7105205741954321699.mp4",
+      "media_path": null,
       "duration_seconds": 88.422,
       "attempts": 1,
       "error": null
@@ -3732,7 +3732,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-035/7103721178195397888.mp4",
+      "media_path": null,
       "duration_seconds": 86.123,
       "attempts": 1,
       "error": null
@@ -3744,7 +3744,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7102635326803332393.mp4",
+      "media_path": null,
       "duration_seconds": 73.793,
       "attempts": 1,
       "error": null
@@ -3756,7 +3756,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7101123673062378767.mp4",
+      "media_path": null,
       "duration_seconds": 108.785,
       "attempts": 1,
       "error": null
@@ -3768,7 +3768,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7099644893269839144.mp4",
+      "media_path": null,
       "duration_seconds": 91.696,
       "attempts": 1,
       "error": null
@@ -3780,7 +3780,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7098897570482670888.mp4",
+      "media_path": null,
       "duration_seconds": 120.349,
       "attempts": 1,
       "error": null
@@ -3792,7 +3792,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7098156298415459599.mp4",
+      "media_path": null,
       "duration_seconds": 86.866,
       "attempts": 1,
       "error": null
@@ -3804,7 +3804,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7097413480747191587.mp4",
+      "media_path": null,
       "duration_seconds": 72.725,
       "attempts": 1,
       "error": null
@@ -3816,7 +3816,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-036/7097047150479084835.mp4",
+      "media_path": null,
       "duration_seconds": 147.795,
       "attempts": 1,
       "error": null
@@ -3828,7 +3828,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7096301894984846632.mp4",
+      "media_path": null,
       "duration_seconds": 150.256,
       "attempts": 1,
       "error": null
@@ -3840,7 +3840,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7095554075210550528.mp4",
+      "media_path": null,
       "duration_seconds": 63.553,
       "attempts": 2,
       "error": null
@@ -3852,7 +3852,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7094813761894223139.mp4",
+      "media_path": null,
       "duration_seconds": 117.121,
       "attempts": 2,
       "error": null
@@ -3864,7 +3864,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7094072057608047913.mp4",
+      "media_path": null,
       "duration_seconds": 74.072,
       "attempts": 1,
       "error": null
@@ -3876,7 +3876,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7093706918492917033.mp4",
+      "media_path": null,
       "duration_seconds": 84.567,
       "attempts": 1,
       "error": null
@@ -3888,7 +3888,7 @@
       "category": "网前技术",
       "tags": "网前技术；中前场与抽挡；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7092959332047785250.mp4",
+      "media_path": null,
       "duration_seconds": 93.576,
       "attempts": 1,
       "error": null
@@ -3900,7 +3900,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7092220370400365839.mp4",
+      "media_path": null,
       "duration_seconds": 63.344,
       "attempts": 1,
       "error": null
@@ -3912,7 +3912,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7091844908973067561.mp4",
+      "media_path": null,
       "duration_seconds": 108.948,
       "attempts": 1,
       "error": null
@@ -3924,7 +3924,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7091101085535915279.mp4",
+      "media_path": null,
       "duration_seconds": 70.031,
       "attempts": 1,
       "error": null
@@ -3936,7 +3936,7 @@
       "category": "后场技术",
       "tags": "后场技术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7090377448017235234.mp4",
+      "media_path": null,
       "duration_seconds": 61.603,
       "attempts": 1,
       "error": null
@@ -3948,7 +3948,7 @@
       "category": "单打战术",
       "tags": "单打战术",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7089632297791671587.mp4",
+      "media_path": null,
       "duration_seconds": 543.602,
       "attempts": 1,
       "error": null
@@ -3960,7 +3960,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-037/7088881901209013545.mp4",
+      "media_path": null,
       "duration_seconds": 19.783,
       "attempts": 1,
       "error": null
@@ -3972,7 +3972,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7088510866093591808.mp4",
+      "media_path": null,
       "duration_seconds": 76.44,
       "attempts": 1,
       "error": null
@@ -3984,7 +3984,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7088131899348028687.mp4",
+      "media_path": null,
       "duration_seconds": 43.955,
       "attempts": 1,
       "error": null
@@ -3996,7 +3996,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7087759120761228578.mp4",
+      "media_path": null,
       "duration_seconds": 123.437,
       "attempts": 1,
       "error": null
@@ -4008,7 +4008,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7087020706680048930.mp4",
+      "media_path": null,
       "duration_seconds": 27.191,
       "attempts": 1,
       "error": null
@@ -4020,7 +4020,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7086648517627858176.mp4",
+      "media_path": null,
       "duration_seconds": 103.166,
       "attempts": 2,
       "error": null
@@ -4032,7 +4032,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7086276287681137961.mp4",
+      "media_path": null,
       "duration_seconds": 71.634,
       "attempts": 1,
       "error": null
@@ -4044,7 +4044,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7085903098853592335.mp4",
+      "media_path": null,
       "duration_seconds": 17.392,
       "attempts": 1,
       "error": null
@@ -4056,7 +4056,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7085169366005714217.mp4",
+      "media_path": null,
       "duration_seconds": 158.035,
       "attempts": 1,
       "error": null
@@ -4068,7 +4068,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7084422988291935523.mp4",
+      "media_path": null,
       "duration_seconds": 99.823,
       "attempts": 1,
       "error": null
@@ -4080,7 +4080,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7083684012513840424.mp4",
+      "media_path": null,
       "duration_seconds": 79.853,
       "attempts": 1,
       "error": null
@@ -4092,7 +4092,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7082564138752281896.mp4",
+      "media_path": null,
       "duration_seconds": 35.318,
       "attempts": 1,
       "error": null
@@ -4104,7 +4104,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-038/7081831033515117865.mp4",
+      "media_path": null,
       "duration_seconds": 74.791,
       "attempts": 1,
       "error": null
@@ -4116,7 +4116,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7081451189262355747.mp4",
+      "media_path": null,
       "duration_seconds": 75.302,
       "attempts": 2,
       "error": null
@@ -4128,7 +4128,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7080735688819281193.mp4",
+      "media_path": null,
       "duration_seconds": 66.409,
       "attempts": 1,
       "error": null
@@ -4140,7 +4140,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7080341135545126144.mp4",
+      "media_path": null,
       "duration_seconds": 46.835,
       "attempts": 1,
       "error": null
@@ -4152,7 +4152,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7079966173307194639.mp4",
+      "media_path": null,
       "duration_seconds": 69.265,
       "attempts": 1,
       "error": null
@@ -4164,7 +4164,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7078852452442836224.mp4",
+      "media_path": null,
       "duration_seconds": 27.283,
       "attempts": 1,
       "error": null
@@ -4176,7 +4176,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7078487171803467042.mp4",
+      "media_path": null,
       "duration_seconds": 26.796,
       "attempts": 1,
       "error": null
@@ -4188,7 +4188,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-039/7078117752275225891.mp4",
+      "media_path": null,
       "duration_seconds": 48.971,
       "attempts": 1,
       "error": null
@@ -4200,7 +4200,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7077740726926298402.mp4",
+      "media_path": null,
       "duration_seconds": 76.138,
       "attempts": 1,
       "error": null
@@ -4212,7 +4212,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7076997927054495010.mp4",
+      "media_path": null,
       "duration_seconds": 48.715,
       "attempts": 1,
       "error": null
@@ -4224,7 +4224,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7076641227025763618.mp4",
+      "media_path": null,
       "duration_seconds": 77.555,
       "attempts": 1,
       "error": null
@@ -4236,7 +4236,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7076257912192060707.mp4",
+      "media_path": null,
       "duration_seconds": 118.12,
       "attempts": 1,
       "error": null
@@ -4248,7 +4248,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7075515778073709824.mp4",
+      "media_path": null,
       "duration_seconds": 84.335,
       "attempts": 1,
       "error": null
@@ -4260,7 +4260,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7075140710332239119.mp4",
+      "media_path": null,
       "duration_seconds": 95.829,
       "attempts": 1,
       "error": null
@@ -4272,7 +4272,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-040/7074399231259266344.mp4",
+      "media_path": null,
       "duration_seconds": 85.914,
       "attempts": 1,
       "error": null
@@ -4284,7 +4284,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7073657979328826659.mp4",
+      "media_path": null,
       "duration_seconds": 121.069,
       "attempts": 1,
       "error": null
@@ -4296,7 +4296,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7072915842605878528.mp4",
+      "media_path": null,
       "duration_seconds": 156.944,
       "attempts": 1,
       "error": null
@@ -4320,7 +4320,7 @@
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7071800926553541922.mp4",
+      "media_path": null,
       "duration_seconds": 21.153,
       "attempts": 1,
       "error": null
@@ -4332,7 +4332,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7071430658584857891.mp4",
+      "media_path": null,
       "duration_seconds": 167.323,
       "attempts": 1,
       "error": null
@@ -4344,7 +4344,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7071068959021255951.mp4",
+      "media_path": null,
       "duration_seconds": 55.612,
       "attempts": 1,
       "error": null
@@ -4356,7 +4356,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7070320753916366095.mp4",
+      "media_path": null,
       "duration_seconds": 129.614,
       "attempts": 1,
       "error": null
@@ -4368,7 +4368,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-041/7069948509838904591.mp4",
+      "media_path": null,
       "duration_seconds": 144.475,
       "attempts": 1,
       "error": null
@@ -4380,7 +4380,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；双打战术；训练与纠错；比赛分析",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7069575740836023587.mp4",
+      "media_path": null,
       "duration_seconds": 168.484,
       "attempts": 1,
       "error": null
@@ -4392,7 +4392,7 @@
       "category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7068835198938516777.mp4",
+      "media_path": null,
       "duration_seconds": 81.2,
       "attempts": 1,
       "error": null
@@ -4404,7 +4404,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7068465954270792994.mp4",
+      "media_path": null,
       "duration_seconds": 491.45,
       "attempts": 1,
       "error": null
@@ -4416,7 +4416,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7068092085533953315.mp4",
+      "media_path": null,
       "duration_seconds": 171.154,
       "attempts": 1,
       "error": null
@@ -4440,7 +4440,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7066977429230718223.mp4",
+      "media_path": null,
       "duration_seconds": 31.602,
       "attempts": 1,
       "error": null
@@ -4452,7 +4452,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7066596981992394025.mp4",
+      "media_path": null,
       "duration_seconds": 48.715,
       "attempts": 1,
       "error": null
@@ -4464,7 +4464,7 @@
       "category": "双打战术",
       "tags": "双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-042/7065871561915485440.mp4",
+      "media_path": null,
       "duration_seconds": 43.654,
       "attempts": 1,
       "error": null
@@ -4476,7 +4476,7 @@
       "category": "后场技术",
       "tags": "后场技术；网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7065491791167999232.mp4",
+      "media_path": null,
       "duration_seconds": 32.229,
       "attempts": 1,
       "error": null
@@ -4488,7 +4488,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7065157571816000809.mp4",
+      "media_path": null,
       "duration_seconds": 19.574,
       "attempts": 1,
       "error": null
@@ -4500,7 +4500,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7064753436809514281.mp4",
+      "media_path": null,
       "duration_seconds": 37.547,
       "attempts": 1,
       "error": null
@@ -4524,7 +4524,7 @@
       "category": "网前技术",
       "tags": "网前技术；步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7064010057020673314.mp4",
+      "media_path": null,
       "duration_seconds": 88.607,
       "attempts": 1,
       "error": null
@@ -4536,7 +4536,7 @@
       "category": "网前技术",
       "tags": "网前技术；双打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7063638911301520680.mp4",
+      "media_path": null,
       "duration_seconds": 50.596,
       "attempts": 1,
       "error": null
@@ -4548,7 +4548,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7063280271403060520.mp4",
+      "media_path": null,
       "duration_seconds": 83.801,
       "attempts": 1,
       "error": null
@@ -4560,7 +4560,7 @@
       "category": "发力与身体运用",
       "tags": "发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-043/7062570553936268559.mp4",
+      "media_path": null,
       "duration_seconds": 35.596,
       "attempts": 1,
       "error": null
@@ -4572,7 +4572,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7062171437569805609.mp4",
+      "media_path": null,
       "duration_seconds": 63.391,
       "attempts": 1,
       "error": null
@@ -4584,7 +4584,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7061422431386324264.mp4",
+      "media_path": null,
       "duration_seconds": 25.426,
       "attempts": 1,
       "error": null
@@ -4596,7 +4596,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7060717442825309480.mp4",
+      "media_path": null,
       "duration_seconds": 92.996,
       "attempts": 1,
       "error": null
@@ -4608,7 +4608,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7059927286186822946.mp4",
+      "media_path": null,
       "duration_seconds": 64.226,
       "attempts": 1,
       "error": null
@@ -4620,7 +4620,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7059589039694957864.mp4",
+      "media_path": null,
       "duration_seconds": 72.586,
       "attempts": 1,
       "error": null
@@ -4632,7 +4632,7 @@
       "category": "后场技术",
       "tags": "后场技术；步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7059205903639121187.mp4",
+      "media_path": null,
       "duration_seconds": 87.98,
       "attempts": 1,
       "error": null
@@ -4644,7 +4644,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-044/7058464382786784547.mp4",
+      "media_path": null,
       "duration_seconds": 63.739,
       "attempts": 1,
       "error": null
@@ -4656,7 +4656,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7057722299855801641.mp4",
+      "media_path": null,
       "duration_seconds": 63.507,
       "attempts": 1,
       "error": null
@@ -4668,7 +4668,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7056953556531809547.mp4",
+      "media_path": null,
       "duration_seconds": 40.449,
       "attempts": 1,
       "error": null
@@ -4680,7 +4680,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7056596925721726220.mp4",
+      "media_path": null,
       "duration_seconds": 76.069,
       "attempts": 1,
       "error": null
@@ -4692,7 +4692,7 @@
       "category": "步法与移动",
       "tags": "步法与移动；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7056244399390412064.mp4",
+      "media_path": null,
       "duration_seconds": 123.135,
       "attempts": 1,
       "error": null
@@ -4704,7 +4704,7 @@
       "category": "单打战术",
       "tags": "单打战术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7055859367005949187.mp4",
+      "media_path": null,
       "duration_seconds": 66.525,
       "attempts": 1,
       "error": null
@@ -4716,7 +4716,7 @@
       "category": "后场技术",
       "tags": "后场技术；握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7055491154288102667.mp4",
+      "media_path": null,
       "duration_seconds": 47.647,
       "attempts": 1,
       "error": null
@@ -4728,7 +4728,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-045/7055130343476710667.mp4",
+      "media_path": null,
       "duration_seconds": 66.92,
       "attempts": 1,
       "error": null
@@ -4740,7 +4740,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7054786188086955276.mp4",
+      "media_path": null,
       "duration_seconds": 55.542,
       "attempts": 1,
       "error": null
@@ -4752,7 +4752,7 @@
       "category": "后场技术",
       "tags": "后场技术；网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7054395778814561575.mp4",
+      "media_path": null,
       "duration_seconds": 52.245,
       "attempts": 1,
       "error": null
@@ -4776,7 +4776,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7053654124042194215.mp4",
+      "media_path": null,
       "duration_seconds": 45.209,
       "attempts": 1,
       "error": null
@@ -4788,7 +4788,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7053637734749031691.mp4",
+      "media_path": null,
       "duration_seconds": 47.299,
       "attempts": 1,
       "error": null
@@ -4800,7 +4800,7 @@
       "category": "握拍与基本动作",
       "tags": "握拍与基本动作；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7053234542290668811.mp4",
+      "media_path": null,
       "duration_seconds": 69.474,
       "attempts": 1,
       "error": null
@@ -4812,7 +4812,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7053016126262988064.mp4",
+      "media_path": null,
       "duration_seconds": 129.892,
       "attempts": 1,
       "error": null
@@ -4824,7 +4824,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错；装备与参数",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-046/7052912740955999499.mp4",
+      "media_path": null,
       "duration_seconds": 40.589,
       "attempts": 1,
       "error": null
@@ -4836,7 +4836,7 @@
       "category": "后场技术",
       "tags": "后场技术；发力与身体运用；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-047/7052600326116887812.mp4",
+      "media_path": null,
       "duration_seconds": 47.438,
       "attempts": 1,
       "error": null
@@ -4848,7 +4848,7 @@
       "category": "训练与纠错",
       "tags": "训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-047/7052519937125911846.mp4",
+      "media_path": null,
       "duration_seconds": 21.687,
       "attempts": 1,
       "error": null
@@ -4860,7 +4860,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-047/7052252250189696267.mp4",
+      "media_path": null,
       "duration_seconds": 45.186,
       "attempts": 1,
       "error": null
@@ -4872,7 +4872,7 @@
       "category": "网前技术",
       "tags": "网前技术；训练与纠错",
       "status": "transcribed",
-      "media_path": "data/raw_videos/douyin/batch-047/7052148706681883907.mp4",
+      "media_path": null,
       "duration_seconds": 64.412,
       "attempts": 1,
       "error": null

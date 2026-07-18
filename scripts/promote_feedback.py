@@ -195,6 +195,8 @@ def blocking_parser_warnings(feedback, ready_video_ids):
 
 
 def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_note):
+    if feedback.get("status") == "superseded" or feedback.get("superseded_by"):
+        raise ValueError("Superseded feedback revisions cannot be promoted")
     if feedback.get("status") != "accepted":
         raise ValueError("Feedback must be accepted before promotion")
     if feedback.get("source", {}).get("type") != "github_issue":
@@ -215,13 +217,42 @@ def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_
         or not re.fullmatch(r"[0-9a-f]{64}", verification.get("body_sha256", ""))
     ):
         raise ValueError("GitHub issue source has not been verified through the API")
+    promotion_verification = feedback.get("source", {}).get(
+        "promotion_verification", {}
+    )
+    if (
+        promotion_verification.get("method") != "github_api"
+        or promotion_verification.get("repository") != GITHUB_REPOSITORY
+        or promotion_verification.get("issue_number") != int(issue_match.group(1))
+        or promotion_verification.get("node_id") != verification.get("node_id")
+        or promotion_verification.get("body_sha256")
+        != verification.get("body_sha256")
+        or not promotion_verification.get("matches_imported_body")
+        or not promotion_verification.get("verified_at")
+    ):
+        raise ValueError(
+            "GitHub issue must be reverified through the API after maintainer review"
+        )
     if not public_query.strip():
         raise ValueError("A sanitized public query is required")
     if len(evidence_note.strip()) < 8:
         raise ValueError("Evidence note is too short to document human verification")
     review_history = feedback.get("review_history", [])
     if not review_history or review_history[-1].get("decision") != "accepted":
-        raise ValueError("The latest human review decision must be accepted")
+        raise ValueError("The latest maintainer review decision must be accepted")
+    try:
+        reviewed_at = datetime.fromisoformat(
+            review_history[-1]["reviewed_at"].replace("Z", "+00:00")
+        )
+        reverified_at = datetime.fromisoformat(
+            promotion_verification["verified_at"].replace("Z", "+00:00")
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("Feedback review or reverification timestamp is invalid") from error
+    if reverified_at < reviewed_at:
+        raise ValueError(
+            "GitHub issue must be reverified through the API after maintainer review"
+        )
 
     ready_video_ids = {
         video["video_id"]
@@ -237,6 +268,17 @@ def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_
     irrelevant_ids = unique(signals.get("irrelevant_video_ids", []))
     missing_ids = unique(signals.get("missing_video_ids", []))
     answer_issue_types = unique(signals.get("text_issue_types", []))
+    intended_query = str(signals.get("intended_query") or "").strip() or None
+    source_issue_video_ids = unique(signals.get("source_issue_video_ids", []))
+    source_issue_types = {
+        "transcript_error",
+        "video_misinterpreted",
+        "citation_mismatch",
+    }
+    if "question_misunderstood" in answer_issue_types and not intended_query:
+        raise ValueError("Question-misunderstanding feedback needs an intended query")
+    if source_issue_types.intersection(answer_issue_types) and not source_issue_video_ids:
+        raise ValueError("Source-quality feedback needs at least one source video ID")
     positive_ids = set(helpful_ids) | set(missing_ids)
     conflicts = positive_ids & set(irrelevant_ids)
     if conflicts:
@@ -244,7 +286,7 @@ def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_
             "The same video cannot be promoted as both positive and irrelevant: "
             + ", ".join(sorted(conflicts))
         )
-    referenced_ids = positive_ids | set(irrelevant_ids)
+    referenced_ids = positive_ids | set(irrelevant_ids) | set(source_issue_video_ids)
     unavailable = sorted(referenced_ids - ready_video_ids)
     if unavailable:
         raise ValueError(
@@ -258,6 +300,11 @@ def validate_feedback_for_promotion(feedback, knowledge, public_query, evidence_
         "irrelevant_video_ids": irrelevant_ids,
         "missing_video_ids": missing_ids,
         "answer_issue_types": answer_issue_types,
+        "intended_query": intended_query,
+        "source_issue_video_ids": source_issue_video_ids,
+        "source_issue_node_id": promotion_verification["node_id"],
+        "source_updated_at": promotion_verification.get("source_updated_at"),
+        "source_reverified_at": promotion_verification["verified_at"],
     }
 
 
@@ -272,6 +319,7 @@ def promote_feedback(
     evaluation_path=DEFAULT_EVALUATION_PATH,
     readme_path=None,
     dry_run=False,
+    replace_existing=False,
 ):
     queue_dir = Path(queue_dir or default_feedback_dir())
     feedback_path = queue_dir / "queue" / f"{feedback_id}.json"
@@ -295,7 +343,13 @@ def promote_feedback(
         knowledge = load_json(KNOWLEDGE_PATH)
         signals_payload = load_json(signals_path)
         evaluation_payload = load_json(evaluation_path)
-        existing = next(
+        values = validate_feedback_for_promotion(
+            feedback,
+            knowledge,
+            public_query,
+            evidence_note,
+        )
+        existing_by_feedback = next(
             (
                 signal
                 for signal in signals_payload["signals"]
@@ -303,7 +357,21 @@ def promote_feedback(
             ),
             None,
         )
-        if existing:
+        source_reference = feedback["source"]["reference"].rstrip("/")
+        existing_by_source = [
+            signal
+            for signal in signals_payload["signals"]
+            if signal.get("source_reference", "").rstrip("/") == source_reference
+        ]
+        if len(existing_by_source) > 1:
+            raise ValueError("Public feedback signals contain duplicate GitHub sources")
+        existing_source = existing_by_source[0] if existing_by_source else None
+        existing = existing_by_feedback or existing_source
+        same_revision = existing and (
+            existing.get("source_body_sha256")
+            == feedback["source"]["verification"]["body_sha256"]
+        )
+        if existing and same_revision:
             if not dry_run and feedback.get("promotion_status") != "promoted":
                 feedback["promotion_status"] = "promoted"
                 feedback["promotion"] = {
@@ -319,15 +387,17 @@ def promote_feedback(
                 "signal": existing,
                 "feedback_id": feedback_id,
             }
-
-        values = validate_feedback_for_promotion(
-            feedback,
-            knowledge,
-            public_query,
-            evidence_note,
-        )
+        if existing_source and not same_revision and not replace_existing:
+            raise ValueError(
+                "This GitHub issue already has a promoted older revision; "
+                "use --replace-existing after reviewing the new revision"
+            )
         promoted_at = utc_now()
-        signal_id = build_signal_id(feedback_id, public_query)
+        signal_id = (
+            existing_source["signal_id"]
+            if existing_source and replace_existing
+            else build_signal_id(feedback_id, public_query)
+        )
         signal = {
             "signal_id": signal_id,
             "source_feedback_id": feedback_id,
@@ -350,9 +420,17 @@ def promote_feedback(
             ),
             "expected_negative_video_ids": signal["irrelevant_video_ids"],
             "expected_answer_reminders": signal["answer_issue_types"],
+            "expected_intended_query": signal["intended_query"],
+            "expected_source_issue_video_ids": signal["source_issue_video_ids"],
         }
         result = {
-            "status": "dry_run" if dry_run else "promoted",
+            "status": (
+                "dry_run"
+                if dry_run
+                else "replaced"
+                if existing_source and replace_existing
+                else "promoted"
+            ),
             "signal": signal,
             "evaluation_case": evaluation_case,
             "privacy": {
@@ -364,6 +442,17 @@ def promote_feedback(
         if dry_run:
             return result
 
+        if existing_source and replace_existing:
+            signals_payload["signals"] = [
+                item
+                for item in signals_payload["signals"]
+                if item["signal_id"] != existing_source["signal_id"]
+            ]
+            evaluation_payload["cases"] = [
+                item
+                for item in evaluation_payload["cases"]
+                if item["case_id"] != existing_source["signal_id"]
+            ]
         signals_payload["signals"].append(signal)
         signals_payload["signals"].sort(key=lambda item: item["signal_id"])
         signals_payload["updated_at"] = promoted_at
@@ -412,6 +501,11 @@ def build_parser():
         "--evaluation-path", type=Path, default=DEFAULT_EVALUATION_PATH
     )
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--replace-existing",
+        action="store_true",
+        help="Replace the older promoted revision from the same GitHub issue.",
+    )
     return parser
 
 
@@ -441,6 +535,7 @@ def main():
                 else None
             ),
             dry_run=args.dry_run,
+            replace_existing=args.replace_existing,
         )
     except (OSError, ValueError, KeyError, json.JSONDecodeError) as error:
         raise SystemExit(str(error)) from error

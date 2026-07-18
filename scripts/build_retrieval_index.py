@@ -48,6 +48,7 @@ def topic_definitions(topic_index):
                     "category": category["name"],
                     "subtopic": subtopic["name"],
                     "keywords": subtopic["keywords"],
+                    "video_ids": set(subtopic["video_ids"]),
                 }
             )
     return topics
@@ -71,7 +72,7 @@ def build_index(knowledge, topic_index, rules):
     topic_counts = Counter()
     missing_transcripts = []
     for video in knowledge["videos"]:
-        if video["processing_status"] in {"not_teaching", "low_value"}:
+        if video["processing_status"] != "ready":
             continue
         transcript_path = ROOT / video["transcript_file"]
         if not transcript_path.exists():
@@ -79,23 +80,21 @@ def build_index(knowledge, topic_index, rules):
             continue
         transcript = json.loads(transcript_path.read_text(encoding="utf-8"))
         full_text = transcript.get("full_text", "")
-        searchable = normalize(
+        evidence_searchable = normalize(
             flatten(
                 {
                     "title": video["title"],
-                    "category": video["category"],
-                    "tags": video["tags"],
                     "teaching_note": video["teaching_note"],
                     "transcript": full_text,
                 }
             )
         )
         matched_terms = sorted(
-            term for term in lexicon if normalize(term) in searchable
+            term for term in lexicon if normalize(term) in evidence_searchable
         )
         matched_topics = []
         for topic in topics:
-            if any(normalize(keyword) in searchable for keyword in topic["keywords"]):
+            if video["video_id"] in topic["video_ids"]:
                 matched_topics.append(topic["topic_id"])
                 topic_counts[topic["topic_id"]] += 1
         records.append(
@@ -118,10 +117,12 @@ def build_index(knowledge, topic_index, rules):
         "source_updated_at": knowledge["updated_at"],
         "indexable_video_count": len(records),
         "full_transcript_text_included": False,
+        "evidence_fields": ["title", "teaching_note", "transcript"],
+        "screening_fields_excluded": ["category", "tags"],
         "transcript_ngram_sizes": sizes,
         "topics": [
             {
-                **topic,
+                **{key: value for key, value in topic.items() if key != "video_ids"},
                 "video_count": topic_counts[topic["topic_id"]],
             }
             for topic in topics

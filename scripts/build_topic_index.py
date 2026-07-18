@@ -108,29 +108,40 @@ def flatten(value):
     return str(value)
 
 
-def video_text(video):
-    return flatten(
-        {
-            "title": video["title"],
-            "teaching_note": video["teaching_note"],
-        }
-    ).lower()
+def video_text_fields(video):
+    note = video.get("teaching_note") or {}
+    focus = {
+        key: note[key]
+        for key in ["title", "topic", "problem"]
+        if note.get(key)
+    }
+    evidence = {
+        key: value
+        for key, value in note.items()
+        if key not in {"title", "topic", "problem", "video_id", "url", "category"}
+    }
+    return {
+        "title": str(video["title"]).lower(),
+        "focus": flatten(focus).lower(),
+        "evidence": flatten(evidence).lower(),
+    }
 
 
-def keyword_score(text, keywords):
+def keyword_hits(text, keywords):
     return sum(text.count(keyword.lower()) for keyword in keywords)
 
 
-def video_score(video, text, keywords):
-    score = keyword_score(text, keywords)
-    if video["confidence"] == "curated":
-        score += 3
-    if video["processing_status"] == "needs_visual_review":
-        score -= 2
-    return score
+def video_score(text_fields, keywords):
+    hits = {
+        "title": keyword_hits(text_fields["title"], keywords),
+        "focus": keyword_hits(text_fields["focus"], keywords),
+        "evidence": keyword_hits(text_fields["evidence"], keywords),
+    }
+    score = hits["title"] * 6 + hits["focus"] * 3 + hits["evidence"]
+    return score, hits
 
 
-def compact_video(video, score):
+def compact_video(video, score, match_basis):
     note = video.get("teaching_note") or {}
     return {
         "video_id": video["video_id"],
@@ -141,6 +152,7 @@ def compact_video(video, score):
         "processing_status": video["processing_status"],
         "topic": note.get("topic") or note.get("title") or video["title"],
         "score": score,
+        "match_basis": match_basis,
     }
 
 
@@ -151,9 +163,11 @@ def build_index(data):
     videos = [
         video
         for video in data["videos"]
-        if video["processing_status"] not in {"not_teaching", "low_value"}
+        if video["processing_status"] == "ready"
     ]
-    text_cache = {video["video_id"]: video_text(video) for video in videos}
+    text_cache = {
+        video["video_id"]: video_text_fields(video) for video in videos
+    }
 
     for category in TAXONOMY:
         subtopics = []
@@ -161,13 +175,16 @@ def build_index(data):
         for name, keywords in category["subtopics"].items():
             matches = []
             for video in videos:
-                score = video_score(video, text_cache[video["video_id"]], keywords)
+                score, match_basis = video_score(
+                    text_cache[video["video_id"]], keywords
+                )
                 if score > 0:
-                    matches.append(compact_video(video, score))
+                    matches.append(compact_video(video, score, match_basis))
             matches.sort(
                 key=lambda item: (
                     -item["score"],
-                    item["processing_status"] == "needs_visual_review",
+                    item["confidence"] != "curated",
+                    item["confidence"] != "visual_reviewed",
                     item["title"],
                 )
             )
@@ -184,6 +201,7 @@ def build_index(data):
                     "video_count": len(matches),
                     "ready_count": ready_count,
                     "needs_visual_review_count": review_count,
+                    "video_ids": [item["video_id"] for item in matches],
                     "representative_videos": matches[:5],
                 }
             )
@@ -227,7 +245,7 @@ def markdown(index):
         "1. Locate the user's issue in the topic map.",
         "2. Run `scripts/search_knowledge.py` with the user's actual words and the closest topic keywords.",
         "3. Use representative videos only as leads; cite timestamped evidence from retrieved entries.",
-        "4. If a representative video is marked `needs_visual_review`, treat it as a lead until reviewed.",
+        "4. Only `ready` videos are included; review-queue items cannot become answer evidence early.",
         "",
         "## Topic Map",
         "",

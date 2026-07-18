@@ -16,12 +16,6 @@ ANSWER_RULES_PATH = ROOT / "references" / "answer-modality-rules.json"
 FEEDBACK_RULES_PATH = ROOT / "references" / "feedback-rules.json"
 FEEDBACK_SIGNALS_PATH = ROOT / "references" / "feedback-signals.json"
 
-FIELD_WEIGHTS = {
-    "title": 4.0,
-    "category": 2.0,
-    "tags": 2.5,
-    "teaching_note": 1.5,
-}
 TIER_ORDER = {
     "direct": 0,
     "strong_related": 1,
@@ -71,7 +65,23 @@ def classify_answer_mode(query, rules=None):
         for term in rules["decision"]["decisive_video_terms"]
         if normalize(term) in query_normalized
     ]
-    if decisive_text and decisive_video:
+    decisive_balanced = [
+        term
+        for term in rules["decision"].get("decisive_balanced_terms", [])
+        if normalize(term) in query_normalized
+    ]
+    decisive_text_boundary = [
+        term
+        for term in rules["decision"].get("decisive_text_boundary_terms", [])
+        if normalize(term) in query_normalized
+    ]
+    if decisive_text_boundary:
+        mode = "text_primary"
+        reason = "query_requires_a_safety_or_source_boundary_answer"
+    elif decisive_balanced:
+        mode = "balanced"
+        reason = "query_requires_textual_explanation_and_visual_evidence_boundary"
+    elif decisive_text and decisive_video:
         mode = "balanced"
         reason = "query_contains_both_textual_decision_and_visual_form_signals"
     elif decisive_video:
@@ -106,6 +116,8 @@ def classify_answer_mode(query, rules=None):
         "matched_signals": matched_signals,
         "decisive_text_terms": decisive_text,
         "decisive_video_terms": decisive_video,
+        "decisive_balanced_terms": decisive_balanced,
+        "decisive_text_boundary_terms": decisive_text_boundary,
         "text_obligations": config["text_obligations"],
         "video_obligations": config["video_obligations"],
         "global_obligations": rules["global_obligations"],
@@ -237,6 +249,23 @@ def expand_query(query, retrieval_index, rules):
     for term in original_terms:
         term_weights[term] = max(term_weights.get(term, 0), 3.0)
 
+    matched_required_intents = []
+    for group in rules.get("required_intent_groups", []):
+        matched_terms = [
+            term for term in group["terms"] if normalize(term) in query_normalized
+        ]
+        if not matched_terms:
+            continue
+        matched_required_intents.append(
+            {
+                "name": group["name"],
+                "query_terms": matched_terms,
+                "terms": group["terms"],
+            }
+        )
+        for term in group["terms"]:
+            term_weights[term] = max(term_weights.get(term, 0), 3.5)
+
     return {
         "original_terms": sorted(original_terms),
         "query_shards": sorted(query_shards),
@@ -244,7 +273,144 @@ def expand_query(query, retrieval_index, rules):
         "topic_terms": sorted(topic_terms),
         "term_weights": term_weights,
         "matched_synonym_groups": matched_groups,
+        "matched_required_intents": matched_required_intents,
         "matched_topics": topic_matches,
+    }
+
+
+def split_query_units(query, workflow_rules):
+    separators = sorted(workflow_rules["multi_issue_separators"], key=len, reverse=True)
+    pattern = "|".join(re.escape(separator) for separator in separators)
+    units = [
+        unit.strip(" ，,？?！!")
+        for unit in re.split(pattern, query)
+        if unit.strip(" ，,？?！!")
+    ]
+    if len(units) == 1:
+        normalized_query = normalize(query)
+        relational = any(
+            normalize(signal) in normalized_query
+            for signal in workflow_rules["relational_signals"]
+        )
+        if not relational:
+            connectors = sorted(
+                workflow_rules["multi_issue_connectors"], key=len, reverse=True
+            )
+            connector_pattern = "|".join(
+                re.escape(connector) for connector in connectors
+            )
+            connector_units = [
+                unit.strip(" ，,？?！!")
+                for unit in re.split(connector_pattern, query)
+                if unit.strip(" ，,？?！!")
+            ]
+            if len(connector_units) >= 2:
+                units = connector_units
+    return units or [query.strip()]
+
+
+def build_query_plan(query, expansion, answer_rules=None):
+    answer_rules = answer_rules or load_answer_rules()
+    workflow_rules = answer_rules["workflow"]
+    normalized_query = normalize(query)
+    systematic_signals = [
+        signal
+        for signal in workflow_rules["systematic_signals"]
+        if normalize(signal) in normalized_query
+    ]
+    diagnostic_signals = [
+        signal
+        for signal in workflow_rules["diagnostic_signals"]
+        if normalize(signal) in normalized_query
+    ]
+    boundary_signals = [
+        signal
+        for signal in workflow_rules["boundary_signals"]
+        if normalize(signal) in normalized_query
+    ]
+    units = split_query_units(query, workflow_rules)
+    concept_count = len(expansion["matched_synonym_groups"])
+    multi_issue = (
+        len(units) >= 2
+        and concept_count >= workflow_rules["minimum_multi_issue_concepts"]
+    )
+
+    if boundary_signals:
+        strategy = "boundary_first"
+        use_topic_navigation = False
+        query_units = units if multi_issue else [query]
+        require_exhaustive = concept_count > 0
+        clarification_policy = (
+            "state the applicable safety, purchase, attribution, or evidence boundary before coaching evidence; ask for professional help when risk is material"
+        )
+    elif systematic_signals:
+        strategy = "topic_first_systematic"
+        use_topic_navigation = True
+        query_units = []
+        require_exhaustive = True
+        clarification_policy = (
+            "use topic navigation to create focused module queries; do not send one broad corpus-wide query as the final evidence pass"
+        )
+    elif multi_issue:
+        strategy = "split_multi_issue"
+        use_topic_navigation = False
+        query_units = units
+        require_exhaustive = True
+        clarification_policy = (
+            "search every query unit independently, then merge and deduplicate videos while preserving conclusions by subproblem"
+        )
+    elif diagnostic_signals:
+        strategy = "literal_symptom_first"
+        use_topic_navigation = False
+        query_units = [query]
+        require_exhaustive = True
+        clarification_policy = (
+            "start with the user's exact failure wording; ask one scenario question only if competing causes would change the answer"
+        )
+    elif concept_count:
+        strategy = "focused_evidence"
+        use_topic_navigation = False
+        query_units = [query]
+        require_exhaustive = True
+        clarification_policy = (
+            "retrieve the focused concept directly and clarify only when the playing situation changes the recommendation"
+        )
+    else:
+        strategy = "evidence_check"
+        use_topic_navigation = False
+        query_units = [query]
+        require_exhaustive = False
+        clarification_policy = (
+            "run a bounded evidence check and say clearly when the Skill has no grounded answer; do not fill gaps with generic coaching"
+        )
+
+    return {
+        "strategy": strategy,
+        "use_topic_navigation": use_topic_navigation,
+        "query_units": query_units,
+        "first_recall_mode": "exhaustive" if require_exhaustive else "balanced",
+        "require_exhaustive_completion": require_exhaustive,
+        "must_state_boundary_first": bool(boundary_signals),
+        "matched_workflow_signals": {
+            "systematic": systematic_signals,
+            "diagnostic": diagnostic_signals,
+            "boundary": boundary_signals,
+        },
+        "clarification_policy": clarification_policy,
+    }
+
+
+def plan_query(query):
+    _, retrieval_index, retrieval_rules = load_resources()
+    answer_rules = load_answer_rules()
+    expansion = expand_query(query, retrieval_index, retrieval_rules)
+    return {
+        "query": query,
+        "answer_guidance": classify_answer_mode(query, answer_rules),
+        "retrieval_guidance": build_query_plan(query, expansion, answer_rules),
+        "query_expansion": {
+            key: value for key, value in expansion.items() if key != "term_weights"
+        },
     }
 
 
@@ -363,6 +529,8 @@ def feedback_record_values(record, layer):
             "irrelevant_video_ids": record.get("irrelevant_video_ids", []),
             "missing_video_ids": record.get("missing_video_ids", []),
             "text_issue_types": record.get("answer_issue_types", []),
+            "intended_query": record.get("intended_query"),
+            "source_issue_video_ids": record.get("source_issue_video_ids", []),
             "outcome": None,
         }
     signals = record.get("signals", {})
@@ -373,6 +541,8 @@ def feedback_record_values(record, layer):
         "irrelevant_video_ids": signals.get("irrelevant_video_ids", []),
         "missing_video_ids": signals.get("missing_video_ids", []),
         "text_issue_types": signals.get("text_issue_types", []),
+        "intended_query": signals.get("intended_query"),
+        "source_issue_video_ids": signals.get("source_issue_video_ids", []),
         "outcome": signals.get("outcome"),
     }
 
@@ -416,7 +586,7 @@ def build_feedback_adjustments(
         if values["outcome"] == "unresolved":
             reminders.add("hard_to_apply")
         elif values["outcome"] == "misunderstood":
-            reminders.add("scenario_mismatch")
+            reminders.add("question_misunderstood")
 
         helpful_ids = set(values["helpful_video_ids"])
         missing_ids = set(values["missing_video_ids"]) - helpful_ids
@@ -455,7 +625,31 @@ def build_feedback_adjustments(
     return dict(adjustments), sorted(matched_ids), sorted(reminders)
 
 
-def local_answer_preferences(records, matched_reminders, public_reminders, feedback_rules):
+def matched_feedback_corrections(records, layer, matched_record_ids):
+    matched = set(matched_record_ids)
+    corrections = []
+    for record in records:
+        values = feedback_record_values(record, layer)
+        if values["record_id"] not in matched:
+            continue
+        if values["intended_query"] or values["source_issue_video_ids"]:
+            corrections.append(
+                {
+                    "record_id": values["record_id"],
+                    "intended_query": values["intended_query"],
+                    "source_issue_video_ids": values["source_issue_video_ids"],
+                }
+            )
+    return corrections
+
+
+def local_answer_preferences(
+    records,
+    matched_reminders,
+    public_reminders,
+    feedback_rules,
+    matched_corrections=None,
+):
     issue_counts = Counter(
         issue_type
         for record in records
@@ -479,11 +673,36 @@ def local_answer_preferences(records, matched_reminders, public_reminders, feedb
     else:
         verbosity = "default"
     reminders = sorted(set(matched_reminders) | set(public_reminders))
+    matched_corrections = matched_corrections or []
+    query_replan_hints = list(
+        dict.fromkeys(
+            item["intended_query"]
+            for item in matched_corrections
+            if item.get("intended_query")
+        )
+    )
+    source_recheck_video_ids = list(
+        dict.fromkeys(
+            video_id
+            for item in matched_corrections
+            for video_id in item.get("source_issue_video_ids", [])
+        )
+    )
+    source_issue_types = {
+        "transcript_error",
+        "video_misinterpreted",
+        "citation_mismatch",
+    }
     return {
         "preferred_verbosity": verbosity,
         "query_reminders": reminders,
+        "needs_query_replan": "question_misunderstood" in reminders,
+        "query_replan_hints": query_replan_hints,
+        "needs_source_recheck": bool(source_issue_types.intersection(reminders)),
+        "source_recheck_video_ids": source_recheck_video_ids,
         "needs_more_boundaries": (
             "scenario_mismatch" in reminders
+            or "question_misunderstood" in reminders
             or issue_counts["scenario_mismatch"] >= minimum
             or outcome_counts["misunderstood"] >= minimum
         ),
@@ -496,6 +715,7 @@ def local_answer_preferences(records, matched_reminders, public_reminders, feedb
             "too_verbose": concise_count,
             "detail_needed": detailed_count,
             "scenario_mismatch": issue_counts["scenario_mismatch"],
+            "question_misunderstood": issue_counts["question_misunderstood"],
             "unresolved": outcome_counts["unresolved"],
         },
     }
@@ -511,6 +731,8 @@ def feedback_only_candidate(video):
         "matched_terms": [],
         "matched_fields": {},
         "matched_topics": [],
+        "matched_required_intents": [],
+        "required_intent_miss_count": 0,
         "transcript_ngram_coverage": 0.0,
         "video_id": video["video_id"],
         "title": video["title"],
@@ -542,6 +764,9 @@ def apply_feedback_layers(
         retrieval_rules,
         feedback_rules,
     )
+    global_corrections = matched_feedback_corrections(
+        global_records, "global", global_matches
+    )
     if local_personalization:
         local_records, local_stats = load_local_feedback_records(feedback_dir)
         local_adjustments, local_matches, local_reminders = build_feedback_adjustments(
@@ -552,11 +777,15 @@ def apply_feedback_layers(
             retrieval_rules,
             feedback_rules,
         )
+        local_corrections = matched_feedback_corrections(
+            local_records, "local", local_matches
+        )
     else:
         local_records = []
         local_adjustments = {}
         local_matches = []
         local_reminders = []
+        local_corrections = []
         local_stats = {
             "queue_file_count": 0,
             "accepted_record_count": 0,
@@ -649,18 +878,13 @@ def apply_feedback_layers(
         )
 
     reranked = list(candidates.values())
-    reranked.sort(
-        key=lambda item: (
-            TIER_ORDER[item["relevance_tier"]],
-            -item["score"],
-            item["title"],
-        )
-    )
+    reranked.sort(key=lambda item: candidate_sort_key(item, retrieval_rules))
     answer_preferences = local_answer_preferences(
         local_records,
         local_reminders,
         public_reminders,
         feedback_rules,
+        matched_corrections=global_corrections + local_corrections,
     )
     guidance = {
         "global": {
@@ -693,12 +917,11 @@ def field_values(video):
     return {
         "title": video["title"],
         "category": video["category"],
-        "tags": flatten(video["tags"]),
         "teaching_note": flatten(video["teaching_note"]),
     }
 
 
-def match_fields(video, term_weights):
+def match_fields(video, term_weights, field_weights):
     matched_fields = {}
     matched_terms = set()
     score = 0.0
@@ -709,7 +932,7 @@ def match_fields(video, term_weights):
             normalized_term = normalize(term)
             if normalized_term and normalized_term in normalized_value:
                 occurrences = min(normalized_value.count(normalized_term), 3)
-                score += weight * FIELD_WEIGHTS[field] * occurrences
+                score += weight * field_weights[field] * occurrences
                 matched_terms.add(term)
                 field_terms.append(term)
         if field_terms:
@@ -724,24 +947,64 @@ def choose_tier(
     expanded_matches,
     matched_topics,
     ngram_match,
+    title_concept_count,
+    title_matches,
+    required_intent_count,
+    matched_required_intent_count,
 ):
-    if query_concept_count and len(matched_concepts) >= min(2, query_concept_count):
+    if required_intent_count > matched_required_intent_count:
+        return "semantic_lead" if ngram_match else "topic_related"
+
+    required_concepts = min(2, query_concept_count) if query_concept_count else 0
+    if query_concept_count and title_concept_count >= required_concepts:
         return "direct"
-    if not query_concept_count and original_matches:
+    if not query_concept_count and set(title_matches) & set(original_matches):
         return "direct"
-    if matched_concepts and matched_topics:
+    if query_concept_count and len(matched_concepts) >= required_concepts:
         return "strong_related"
-    if matched_concepts:
+    if title_matches:
+        return "strong_related"
+    if len(original_matches) >= max(1, required_concepts):
         return "strong_related"
     if expanded_matches and matched_topics:
-        return "strong_related"
+        return "topic_related"
     if expanded_matches:
-        return "strong_related"
+        return "topic_related"
     if matched_topics:
         return "topic_related"
     if ngram_match:
         return "semantic_lead"
     return None
+
+
+def candidate_sort_key(candidate, rules):
+    tier_bonus = rules["retrieval"]["tier_score_bonus"]
+    intent_penalty = (
+        candidate.get("required_intent_miss_count", 0)
+        * rules["retrieval"]["required_intent_miss_penalty"]
+    )
+    ranking_score = (
+        candidate["score"]
+        + tier_bonus[candidate["relevance_tier"]]
+        - intent_penalty
+    )
+    return (-ranking_score, TIER_ORDER[candidate["relevance_tier"]], candidate["title"])
+
+
+def enforce_review_budget(ranked, query_concept_count, rules):
+    retrieval = rules["retrieval"]
+    limit = (
+        retrieval["single_concept_review_limit"]
+        if query_concept_count <= 1
+        else retrieval["multi_concept_review_limit"]
+    )
+    reviewable = [
+        candidate
+        for candidate in ranked
+        if candidate["relevance_tier"] in {"direct", "strong_related"}
+    ]
+    for candidate in reviewable[limit:]:
+        candidate["relevance_tier"] = "topic_related"
 
 
 def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
@@ -751,6 +1014,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     original_terms = set(expansion["original_terms"])
     expanded_terms = set(expansion["term_weights"])
     matched_groups = expansion["matched_synonym_groups"]
+    required_intents = expansion["matched_required_intents"]
 
     cleaned_query = query
     for phrase in rules["stop_phrases"]:
@@ -770,7 +1034,9 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         if not record:
             continue
         field_score, field_terms, matched_fields = match_fields(
-            video, expansion["term_weights"]
+            video,
+            expansion["term_weights"],
+            rules["field_weights"],
         )
         transcript_terms = set(record["lexicon_terms"]) & expanded_terms
         transcript_score = sum(
@@ -811,6 +1077,17 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
                 if any(term in candidate_lexicon_terms for term in group)
             }
         )
+        title_terms = set(matched_fields.get("title", []))
+        title_concepts = {
+            group[0]
+            for group in matched_groups
+            if any(term in title_terms for term in group)
+        }
+        matched_required_intents = sorted(
+            intent["name"]
+            for intent in required_intents
+            if any(term in expanded_matches for term in intent["terms"])
+        )
         if (
             topic_ids
             and not matched_topic_ids
@@ -825,6 +1102,10 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             expanded_matches,
             matched_topic_ids,
             ngram_match,
+            len(title_concepts),
+            sorted(title_terms),
+            len(required_intents),
+            len(matched_required_intents),
         )
         if not tier:
             continue
@@ -860,6 +1141,10 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
                 "matched_terms": expanded_matches,
                 "matched_fields": matched_fields,
                 "matched_topics": matched_topic_ids,
+                "matched_required_intents": matched_required_intents,
+                "required_intent_miss_count": (
+                    len(required_intents) - len(matched_required_intents)
+                ),
                 "transcript_ngram_coverage": round(ngram_coverage, 4),
                 "video_id": video["video_id"],
                 "title": video["title"],
@@ -870,13 +1155,9 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             }
         )
 
-    ranked.sort(
-        key=lambda item: (
-            TIER_ORDER[item["relevance_tier"]],
-            -item["score"],
-            item["title"],
-        )
-    )
+    ranked.sort(key=lambda item: candidate_sort_key(item, rules))
+    enforce_review_budget(ranked, len(matched_groups), rules)
+    ranked.sort(key=lambda item: candidate_sort_key(item, rules))
     return ranked, expansion
 
 
@@ -901,10 +1182,87 @@ def compact_candidate(candidate):
         "relevance_tier": candidate["relevance_tier"],
         "matched_query_concepts": candidate["matched_query_concepts"],
         "matched_original_terms": candidate["matched_original_terms"],
+        "matched_required_intents": candidate.get("matched_required_intents", []),
     }
     if candidate.get("feedback_adjustment"):
         result["feedback_adjustment"] = candidate["feedback_adjustment"]
     return result
+
+
+def compact_quality(quality):
+    if not quality:
+        return None
+    transcript = quality.get("transcript", {})
+    automatic = quality.get("automatic_evidence", {})
+    return {
+        "transcript": {
+            "passed": transcript.get("passed"),
+            "issues": transcript.get("issues", []),
+            "language_probability": transcript.get("language_probability"),
+            "segment_count": transcript.get("segment_count"),
+            "text_characters": transcript.get("text_characters"),
+        },
+        "automatic_evidence": {
+            "passed": automatic.get("passed"),
+            "issues": automatic.get("issues", []),
+            "key_evidence_count": automatic.get("key_evidence_count"),
+            "teaching_term_matches": automatic.get("teaching_term_matches"),
+        },
+    }
+
+
+def compact_teaching_note(note):
+    evidence_fields = {
+        "key_evidence",
+        "error_evidence",
+        "action_cues",
+        "principles",
+        "visual_review_evidence",
+    }
+    summary = {key: value for key, value in note.items() if key not in evidence_fields}
+    evidence_by_content = {}
+    for role in evidence_fields:
+        values = note.get(role)
+        if not isinstance(values, list):
+            continue
+        for value in values:
+            if not isinstance(value, dict) or not value.get("text"):
+                continue
+            marker = (str(value.get("timestamp") or ""), str(value["text"]))
+            if marker not in evidence_by_content:
+                evidence_by_content[marker] = {
+                    "timestamp": marker[0],
+                    "text": marker[1],
+                    "roles": [],
+                }
+            evidence_by_content[marker]["roles"].append(role)
+    evidence = sorted(
+        evidence_by_content.values(),
+        key=lambda item: (item["timestamp"], item["text"]),
+    )
+    for item in evidence:
+        item["roles"].sort()
+    return {"summary": summary, "evidence": evidence}
+
+
+def compact_lookup_feedback(feedback_guidance, video_ids):
+    if not feedback_guidance:
+        return None
+    requested = set(video_ids)
+    return {
+        "matched_global_signal_count": feedback_guidance["global"][
+            "matched_signal_count"
+        ],
+        "matched_local_feedback_count": feedback_guidance["local"][
+            "matched_feedback_count"
+        ],
+        "applied_video_adjustments": [
+            adjustment
+            for adjustment in feedback_guidance["applied_video_adjustments"]
+            if adjustment["video_id"] in requested
+        ],
+        "answer_preferences": feedback_guidance["answer_preferences"],
+    }
 
 
 def search(
@@ -917,8 +1275,15 @@ def search(
     local_personalization=True,
     feedback_dir=None,
 ):
+    if recall_mode not in {"exhaustive", "balanced"}:
+        raise ValueError(f"Unsupported recall mode: {recall_mode}")
+    if manifest_offset < 0:
+        raise ValueError("manifest_offset must be non-negative")
+    if manifest_limit is not None and manifest_limit <= 0:
+        raise ValueError("manifest_limit must be positive")
     knowledge, retrieval_index, rules = load_resources()
-    answer_guidance = classify_answer_mode(query)
+    answer_rules = load_answer_rules()
+    answer_guidance = classify_answer_mode(query, answer_rules)
     ranked, expansion = rank_candidates(
         query,
         knowledge,
@@ -926,6 +1291,7 @@ def search(
         rules,
         mode=mode,
     )
+    retrieval_guidance = build_query_plan(query, expansion, answer_rules)
     ranked, feedback_guidance = apply_feedback_layers(
         query,
         ranked,
@@ -937,15 +1303,24 @@ def search(
         feedback_dir=feedback_dir,
     )
     videos = {video["video_id"]: video for video in knowledge["videos"]}
-    if manifest_limit is None:
-        manifest_limit = (
-            len(ranked)
-            if recall_mode == "exhaustive"
-            else max(limit, rules["retrieval"]["balanced_manifest_limit"])
+    accessible_candidate_count = (
+        len(ranked)
+        if recall_mode == "exhaustive"
+        else min(
+            len(ranked),
+            max(limit, rules["retrieval"]["balanced_manifest_limit"]),
         )
-    manifest_end = min(len(ranked), manifest_offset + manifest_limit)
+    )
+    if manifest_limit is None:
+        manifest_limit = accessible_candidate_count
+    manifest_end = min(
+        accessible_candidate_count,
+        manifest_offset + manifest_limit,
+    )
     manifest = ranked[manifest_offset:manifest_end]
-    next_manifest_offset = manifest_end if manifest_end < len(ranked) else None
+    next_manifest_offset = (
+        manifest_end if manifest_end < accessible_candidate_count else None
+    )
     tier_counts = Counter(item["relevance_tier"] for item in ranked)
     channel_counts = Counter(
         channel for item in ranked for channel in item["retrieval_channels"]
@@ -960,6 +1335,15 @@ def search(
             else {
                 "pagination": True,
                 "mode": answer_guidance["mode"],
+                "see_manifest_offset": 0,
+            }
+        ),
+        "retrieval_guidance": (
+            retrieval_guidance
+            if manifest_offset == 0
+            else {
+                "pagination": True,
+                "strategy": retrieval_guidance["strategy"],
                 "see_manifest_offset": 0,
             }
         ),
@@ -984,13 +1368,26 @@ def search(
         "coverage": {
             "indexable_videos": retrieval_index["indexable_video_count"],
             "candidate_count": len(ranked),
+            "accessible_candidate_count": accessible_candidate_count,
             "candidate_manifest_count": len(manifest),
             "manifest_offset": manifest_offset,
-            "manifest_truncated": manifest_offset > 0 or manifest_end < len(ranked),
+            "manifest_truncated": (
+                manifest_offset > 0
+                or manifest_end < accessible_candidate_count
+                or accessible_candidate_count < len(ranked)
+            ),
+            "selection_truncated": accessible_candidate_count < len(ranked),
             "next_manifest_offset": next_manifest_offset,
             "tier_counts": dict(tier_counts),
+            "review_candidate_count": sum(
+                tier_counts[tier] for tier in ["direct", "strong_related"]
+            ),
             "channel_counts": dict(channel_counts),
-            "coverage_claim": "high_recall_candidate_set_not_proof_of_semantic_completeness",
+            "coverage_claim": (
+                "high_recall_candidate_set_not_proof_of_semantic_completeness"
+                if recall_mode == "exhaustive"
+                else "bounded_top_candidate_set_intentionally_not_exhaustive"
+            ),
         },
         "results": [
             ranked_result(item, videos[item["video_id"]])
@@ -1005,6 +1402,7 @@ def lookup_videos(
     query="",
     local_personalization=True,
     feedback_dir=None,
+    debug=False,
 ):
     knowledge, retrieval_index, rules = load_resources()
     videos = {video["video_id"]: video for video in knowledge["videos"]}
@@ -1031,6 +1429,7 @@ def lookup_videos(
         if not video:
             missing.append(video_id)
             continue
+        record = records.get(video_id) or {}
         result = {
             "video_id": video_id,
             "title": video["title"],
@@ -1039,16 +1438,42 @@ def lookup_videos(
             "processing_status": video["processing_status"],
             "url": video["url"],
             "duration_seconds": video["duration_seconds"],
-            "teaching_note": video["teaching_note"],
-            "retrieval_index": records.get(video_id),
+            "quality": compact_quality(video.get("quality")),
+            "teaching_note": compact_teaching_note(video["teaching_note"]),
+            "retrieval_summary": {
+                "topic_ids": record.get("topic_ids", []),
+                "lexicon_terms": record.get("lexicon_terms", []),
+                "transcript_ngram_count": len(record.get("transcript_ngrams", [])),
+            },
         }
         if video_id in candidates:
-            result["query_match"] = candidates[video_id]
+            candidate = candidates[video_id]
+            result["query_match"] = {
+                "score": candidate["score"],
+                "relevance_tier": candidate["relevance_tier"],
+                "retrieval_channels": candidate["retrieval_channels"],
+                "matched_query_concepts": candidate["matched_query_concepts"],
+                "matched_original_terms": candidate["matched_original_terms"],
+                "matched_terms": candidate["matched_terms"],
+                "matched_fields": candidate["matched_fields"],
+                "matched_topics": candidate["matched_topics"],
+                "matched_required_intents": candidate.get(
+                    "matched_required_intents", []
+                ),
+            }
+            if candidate.get("feedback_adjustment"):
+                result["query_match"]["feedback_adjustment"] = candidate[
+                    "feedback_adjustment"
+                ]
+        if debug:
+            result["debug_stored_teaching_note"] = video["teaching_note"]
+            result["debug_retrieval_index"] = record
+            result["debug_ranked_candidate"] = candidates.get(video_id)
         results.append(result)
     return {
         "query": query,
         "answer_guidance": classify_answer_mode(query) if query else None,
-        "feedback_guidance": feedback_guidance,
+        "feedback_guidance": compact_lookup_feedback(feedback_guidance, video_ids),
         "results": results,
         "missing_video_ids": missing,
     }
@@ -1072,7 +1497,17 @@ def main():
         "--video-id",
         action="append",
         default=[],
-        help="Return full stored evidence for a candidate video ID; repeat as needed.",
+        help="Return compact stored evidence for a candidate video ID; repeat as needed.",
+    )
+    parser.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="Return answer allocation and retrieval workflow without ranking videos.",
+    )
+    parser.add_argument(
+        "--lookup-debug",
+        action="store_true",
+        help="Include full retrieval hashes and ranking internals with --video-id; output can be very large.",
     )
     parser.add_argument("--manifest-offset", type=int, default=0)
     parser.add_argument("--manifest-limit", type=int, default=20)
@@ -1087,12 +1522,28 @@ def main():
         help="Override the local feedback directory for this search.",
     )
     args = parser.parse_args()
+    if args.limit <= 0:
+        parser.error("--limit must be positive")
+    if args.manifest_offset < 0:
+        parser.error("--manifest-offset must be non-negative")
+    if args.manifest_limit <= 0:
+        parser.error("--manifest-limit must be positive")
+    if args.lookup_debug and not args.video_id:
+        parser.error("--lookup-debug requires at least one --video-id")
+    if args.plan_only:
+        if args.video_id:
+            parser.error("--plan-only cannot be combined with --video-id")
+        if not args.query.strip():
+            parser.error("query is required with --plan-only")
+        print(json.dumps(plan_query(args.query), ensure_ascii=False, indent=2))
+        return
     if args.video_id:
         payload = lookup_videos(
             args.video_id,
             query=args.query,
             local_personalization=not args.no_local_personalization,
             feedback_dir=args.feedback_dir,
+            debug=args.lookup_debug,
         )
     else:
         if not args.query.strip():

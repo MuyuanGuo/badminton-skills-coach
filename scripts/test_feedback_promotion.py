@@ -102,6 +102,17 @@ https://www.douyin.com/video/7659991105622862457
         )
 
     def promote(self, feedback_id, **kwargs):
+        feedback = self.feedback.show_feedback(feedback_id, self.queue_dir)
+        verification = feedback.get("source", {}).get("verification")
+        if verification:
+            feedback["source"]["promotion_verification"] = {
+                **verification,
+                "verified_at": self.feedback.utc_now(),
+                "matches_imported_body": True,
+            }
+            self.feedback.atomic_write_json(
+                self.queue_dir / "queue" / f"{feedback_id}.json", feedback
+            )
         return self.promotion.promote_feedback(
             feedback_id=feedback_id,
             public_query="杀球不重没有威胁怎么办",
@@ -113,6 +124,27 @@ https://www.douyin.com/video/7659991105622862457
             evaluation_path=self.evaluation_path,
             **kwargs,
         )
+
+    def test_promotion_requires_post_review_source_reverification(self):
+        imported = self.import_issue()
+        self.feedback.review_feedback(
+            feedback_id=imported["feedback_id"],
+            decision="accepted",
+            note="已核对问题场景和全部公开视频",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        with self.assertRaisesRegex(ValueError, "reverified"):
+            self.promotion.promote_feedback(
+                feedback_id=imported["feedback_id"],
+                public_query="杀球不重没有威胁怎么办",
+                evidence_note="已逐条回看三条公开视频并确认相关性边界",
+                promoted_by="test-maintainer",
+                queue_dir=self.queue_dir,
+                signals_path=self.signals_path,
+                skill_signals_path=self.skill_signals_path,
+                evaluation_path=self.evaluation_path,
+            )
 
     def test_accepted_github_feedback_promotes_sanitized_signal_and_evaluation(self):
         imported = self.import_issue()
@@ -192,6 +224,89 @@ https://www.douyin.com/video/7659991105622862457
             payload["feedback_guidance"]["answer_preferences"]["query_reminders"],
         )
 
+    def test_public_correction_reaches_query_replan_and_source_recheck(self):
+        body = """### 用户问题
+杀球不重没有威胁怎么办
+
+### 用户真实意图
+分别判断发力链和落点选择
+
+### 回答编号
+A-public-correction
+
+### 最有价值的视频
+无
+
+### 明确不相关的视频
+无
+
+### 遗漏的视频
+无
+
+### 需重新核对的视频
+7659991105622862457
+
+### 文字回答问题
+- 问题理解错误
+- 视频转写错误
+
+### 补充说明
+公开纠错测试。
+
+### 版本信息
+1.1.0-dev.3
+"""
+        issue_url = "https://github.com/MuyuanGuo/badminton-skills-coach/issues/18"
+        imported = self.feedback.import_github_issue(
+            body=body,
+            source_url=issue_url,
+            queue_dir=self.queue_dir,
+            source_verification={
+                "method": "github_api",
+                "repository": "MuyuanGuo/badminton-skills-coach",
+                "issue_number": 18,
+                "node_id": "I_test_feedback_correction",
+                "state": "open",
+                "source_updated_at": "2026-07-14T00:00:00Z",
+                "body_sha256": self.feedback.body_sha256(body),
+                "verified_at": "2026-07-14T00:00:01Z",
+            },
+        )
+        self.feedback.review_feedback(
+            feedback_id=imported["feedback_id"],
+            decision="accepted",
+            note="已核对公开纠错字段和目标视频",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        promoted = self.promote(imported["feedback_id"])
+        self.assertEqual(promoted["signal"]["intended_query"], "分别判断发力链和落点选择")
+        self.assertEqual(
+            promoted["signal"]["source_issue_video_ids"],
+            ["7659991105622862457"],
+        )
+
+        original_signals_path = self.search.FEEDBACK_SIGNALS_PATH
+        self.search.FEEDBACK_SIGNALS_PATH = self.signals_path
+        try:
+            payload = self.search.search(
+                "杀球不重没有威胁怎么办",
+                manifest_limit=None,
+                local_personalization=False,
+                feedback_dir=self.root / "unused-local-queue",
+            )
+        finally:
+            self.search.FEEDBACK_SIGNALS_PATH = original_signals_path
+        preferences = payload["feedback_guidance"]["answer_preferences"]
+        self.assertTrue(preferences["needs_query_replan"])
+        self.assertEqual(
+            preferences["query_replan_hints"], ["分别判断发力链和落点选择"]
+        )
+        self.assertTrue(preferences["needs_source_recheck"])
+        self.assertEqual(
+            preferences["source_recheck_video_ids"], ["7659991105622862457"]
+        )
+
     def test_unaccepted_or_local_feedback_cannot_enter_public_signals(self):
         imported = self.import_issue()
         with self.assertRaisesRegex(ValueError, "accepted"):
@@ -244,6 +359,76 @@ https://www.douyin.com/video/7659991105622862457
             1,
         )
 
+    def test_changed_issue_revision_requires_explicit_single_signal_replacement(self):
+        original = self.import_issue()
+        self.feedback.review_feedback(
+            feedback_id=original["feedback_id"],
+            decision="accepted",
+            note="已核对首个 Issue 修订",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        first = self.promote(original["feedback_id"])
+
+        changed_body = """### 用户问题
+公开问题的新修订
+
+### 最有价值的视频
+7656560952972884730
+
+### 明确不相关的视频
+7659348110628345210
+
+### 遗漏的视频
+无
+
+### 文字回答问题
+难以执行
+
+### 补充说明
+公开内容已经修改。
+
+### 版本信息
+1.1.0-dev.3
+"""
+        verification = {
+            "method": "github_api",
+            "repository": "MuyuanGuo/badminton-skills-coach",
+            "issue_number": 17,
+            "node_id": "I_test_feedback_source",
+            "state": "open",
+            "source_updated_at": "2026-07-14T01:00:00Z",
+            "body_sha256": self.feedback.body_sha256(changed_body),
+            "verified_at": "2026-07-14T01:00:01Z",
+        }
+        replacement = self.feedback.import_github_issue(
+            body=changed_body,
+            source_url="https://github.com/MuyuanGuo/badminton-skills-coach/issues/17",
+            queue_dir=self.queue_dir,
+            source_verification=verification,
+        )
+        self.feedback.review_feedback(
+            feedback_id=replacement["feedback_id"],
+            decision="accepted",
+            note="已核对修改后的 Issue 修订",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        with self.assertRaisesRegex(ValueError, "older revision"):
+            self.promote(replacement["feedback_id"])
+
+        replaced = self.promote(
+            replacement["feedback_id"], replace_existing=True
+        )
+        self.assertEqual(replaced["status"], "replaced")
+        self.assertEqual(replaced["signal"]["signal_id"], first["signal"]["signal_id"])
+        signals = json.loads(self.signals_path.read_text(encoding="utf-8"))["signals"]
+        cases = json.loads(self.evaluation_path.read_text(encoding="utf-8"))["cases"]
+        self.assertEqual(len(signals), 1)
+        self.assertEqual(len(cases), 1)
+        self.assertEqual(signals[0]["source_feedback_id"], replacement["feedback_id"])
+        self.assertEqual(cases[0]["expected_answer_reminders"], ["hard_to_apply"])
+
     def test_atomic_bundle_restores_every_file_after_partial_failure(self):
         first = self.root / "first.json"
         second = self.root / "second.json"
@@ -274,6 +459,15 @@ https://www.douyin.com/video/7659991105622862457
             note="已核对问题场景和全部公开视频",
             reviewer="test-maintainer",
             queue_dir=self.queue_dir,
+        )
+        feedback = self.feedback.show_feedback(imported["feedback_id"], self.queue_dir)
+        feedback["source"]["promotion_verification"] = {
+            **feedback["source"]["verification"],
+            "verified_at": self.feedback.utc_now(),
+            "matches_imported_body": True,
+        }
+        self.feedback.atomic_write_json(
+            self.queue_dir / "queue" / f"{imported['feedback_id']}.json", feedback
         )
         command = [
             sys.executable,
@@ -318,6 +512,7 @@ https://www.douyin.com/video/7659991105622862457
 - 获取到的抖音公开视频：`0` 条
 - 已排除非教学/广告器材内容：`0` 条
 - 已加入 Skill 知识库的教学视频：`0` 条
+- 等待人工复核：`0` 条
 - 最新入库教学视频：旧内容
 - 已晋升公共反馈信号：`0` 条（旧状态）
 ## 这个 Skill 能做什么
@@ -327,6 +522,11 @@ https://www.douyin.com/video/7659991105622862457
             template,
             json.loads((ROOT / "data" / "douyin_video_index.json").read_text(encoding="utf-8")),
             json.loads(
+                (ROOT / "data" / "douyin_teaching_filtered.json").read_text(
+                    encoding="utf-8"
+                )
+            ),
+            json.loads(
                 (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(
                     encoding="utf-8"
                 )
@@ -334,6 +534,8 @@ https://www.douyin.com/video/7659991105622862457
             {"version": 1, "signals": [{"signal_id": "P-test"}]},
         )
         self.assertIn("已晋升公共反馈信号：`1` 条", updated)
+        self.assertIn("已排除非教学/广告器材内容：`113` 条", updated)
+        self.assertIn("等待人工复核：`9` 条", updated)
         self.assertIn("## 这个 Skill 能做什么\n保留正文", updated)
 
 

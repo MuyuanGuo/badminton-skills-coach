@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import importlib.util
 import json
 from pathlib import Path
@@ -57,11 +58,23 @@ def evaluate():
         missing_reminders = sorted(
             set(case["expected_answer_reminders"]) - reminders
         )
+        preferences = payload["feedback_guidance"]["answer_preferences"]
+        expected_intended_query = case.get("expected_intended_query")
+        intended_query_missing = bool(
+            expected_intended_query
+            and expected_intended_query not in preferences["query_replan_hints"]
+        )
+        missing_source_recheck_ids = sorted(
+            set(case.get("expected_source_issue_video_ids", []))
+            - set(preferences["source_recheck_video_ids"])
+        )
         matched = (
             case["case_id"] in matched_signal_ids
             and not missing_positive_ids
             and not negative_without_penalty
             and not missing_reminders
+            and not intended_query_missing
+            and not missing_source_recheck_ids
         )
         passed += int(matched)
         results.append(
@@ -72,21 +85,33 @@ def evaluate():
                 "missing_positive_video_ids": missing_positive_ids,
                 "negative_without_penalty": negative_without_penalty,
                 "missing_answer_reminders": missing_reminders,
+                "intended_query_missing": intended_query_missing,
+                "missing_source_recheck_video_ids": missing_source_recheck_ids,
             }
         )
     return {
         "cases": len(cases),
         "passed": passed,
-        "accuracy": passed / len(cases) if cases else 1.0,
+        "accuracy": passed / len(cases) if cases else None,
         "status": "no_promoted_feedback_yet" if not cases else "evaluated",
         "results": results,
     }
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Evaluate promoted public feedback signals against regression cases."
+    )
+    parser.add_argument("--require-cases", type=int, default=0)
+    args = parser.parse_args()
     result = evaluate()
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    if result["accuracy"] < 1.0:
+    if result["cases"] < args.require_cases:
+        raise SystemExit(
+            f"Only {result['cases']} promoted feedback cases exist; "
+            f"expected at least {args.require_cases}"
+        )
+    if result["accuracy"] is not None and result["accuracy"] < 1.0:
         raise SystemExit("Promoted feedback regression evaluation failed")
 
 

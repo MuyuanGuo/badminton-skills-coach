@@ -72,6 +72,83 @@
       "helpful_refs": ["V1"],
       "irrelevant_refs": ["V2"],
       "text_issue_types": []
+    },
+    {
+      "name": "contrast conjunction separates opposite video sentiment",
+      "feedback": "V1 最有用但 V2 不相关。",
+      "expected_status": "pending_review",
+      "helpful_refs": ["V1"],
+      "irrelevant_refs": ["V2"],
+      "text_issue_types": [],
+      "parser_warnings": []
+    },
+    {
+      "name": "unresolved mixed sentiment asks for clarification",
+      "feedback": "V1 和 V2 一个最有用一个不相关。",
+      "expected_status": "needs_clarification",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": [],
+      "warning_prefix": "mixed_video_sentiment_clause:"
+    },
+    {
+      "name": "comparative feedback asks for clarification",
+      "feedback": "V1 不如 V2 有用。",
+      "expected_status": "needs_clarification",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": [],
+      "warning_prefix": "comparative_video_clause:"
+    },
+    {
+      "name": "misunderstood question carries corrected intent",
+      "feedback": "你理解错了我的问题，我问的是双打接发战术和接发握拍两个独立问题。",
+      "expected_status": "pending_review",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": ["question_misunderstood"],
+      "outcome": "misunderstood",
+      "intended_query": "双打接发战术和接发握拍两个独立问题"
+    },
+    {
+      "name": "misunderstood question without correction needs clarification",
+      "feedback": "这个回答答非所问。",
+      "expected_status": "needs_clarification",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": ["question_misunderstood"],
+      "outcome": "misunderstood",
+      "warning_prefix": "missing_intended_query"
+    },
+    {
+      "name": "transcript error points to a specific video",
+      "feedback": "V2 转写错了，原视频说的是拍头不是拍低。",
+      "expected_status": "pending_review",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": ["transcript_error"],
+      "source_issue_video_refs": ["V2"],
+      "source_issue_video_ids": ["7659991105622862457"]
+    },
+    {
+      "name": "video interpretation error points to a specific video",
+      "feedback": "V3 这个视频不是讲杀球力量，理解错了这个视频。",
+      "expected_status": "pending_review",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": ["video_misinterpreted"],
+      "source_issue_video_refs": ["V3"],
+      "source_issue_video_ids": ["7659348110628345210"]
+    },
+    {
+      "name": "citation mismatch points to a specific video",
+      "feedback": "V1 视频不能证明这个结论，来源对不上。",
+      "expected_status": "pending_review",
+      "helpful_refs": [],
+      "irrelevant_refs": [],
+      "text_issue_types": ["citation_mismatch"],
+      "source_issue_video_refs": ["V1"],
+      "source_issue_video_ids": ["7661940775983482097"]
     }
   ]
 }

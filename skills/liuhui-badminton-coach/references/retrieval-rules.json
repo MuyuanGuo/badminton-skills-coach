@@ -1,12 +1,18 @@
 {
-  "version": "retrieval-v2",
+  "version": "retrieval-v3",
+  "field_weights": {
+    "title": 4.0,
+    "category": 0.75,
+    "teaching_note": 1.5
+  },
   "description": "刘辉羽毛球 Skill 的高召回检索扩展词与阈值。每个同义词组按双向关系使用。",
   "synonym_groups": [
     ["被动", "来不及", "赶不上", "后高点", "晚点", "摆脱", "压到底线"],
     ["杀球", "重杀", "扣杀", "突击", "压球", "下压"],
     ["无力", "不重", "没威胁", "力量小", "打不动"],
     ["架拍", "框架", "组织框架", "举拍", "抬拍", "准备动作", "引拍"],
-    ["步法", "移动", "脚步", "跑位", "节奏"],
+    ["步法", "移动", "脚步", "跑位"],
+    ["节奏", "变速", "着急", "太快", "太慢", "慢"],
     ["启动", "预动", "起动", "第一步", "反应慢"],
     ["回动", "回位", "还原", "衔接", "连贯", "下一拍"],
     ["抽挡", "平抽挡", "抽球", "快挡", "高速对抗"],
@@ -43,6 +49,12 @@
     "提高",
     "羽毛球"
   ],
+  "required_intent_groups": [
+    {
+      "name": "pain_or_injury",
+      "terms": ["疼", "疼痛", "痛", "受伤", "拉伤", "扭伤", "不舒服"]
+    }
+  ],
   "retrieval": {
     "max_topics": 6,
     "topic_min_score": 8,
@@ -50,6 +62,15 @@
     "transcript_ngram_sizes": [2, 3],
     "transcript_ngram_min_shared": 2,
     "transcript_ngram_min_query_coverage": 0.12,
-    "balanced_manifest_limit": 60
+    "balanced_manifest_limit": 60,
+    "single_concept_review_limit": 24,
+    "multi_concept_review_limit": 40,
+    "required_intent_miss_penalty": 100,
+    "tier_score_bonus": {
+      "direct": 12,
+      "strong_related": 6,
+      "topic_related": 1,
+      "semantic_lead": 0
+    }
   }
 }

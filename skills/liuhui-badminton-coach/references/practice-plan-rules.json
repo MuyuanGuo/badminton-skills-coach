@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "default_session_minutes": 15,
+  "session_minutes_range": [
+    5,
+    120
+  ],
+  "context_fields": [
+    "level",
+    "discipline",
+    "practice_setup",
+    "session_minutes",
+    "handedness",
+    "pain_or_injury"
+  ],
+  "levels": {
+    "beginner": {
+      "focus": "低速、单一动作线索和稳定触球",
+      "pressure": "先固定来球，再逐步加入移动"
+    },
+    "intermediate": {
+      "focus": "动作选择、移动衔接和落点稳定",
+      "pressure": "在可控多球后加入二选一判断"
+    },
+    "advanced": {
+      "focus": "时间压缩、伪装和对抗中的选择质量",
+      "pressure": "使用随机来球和计分约束检验迁移"
+    },
+    "unknown": {
+      "focus": "从低速可控练习开始，并根据成功率调整",
+      "pressure": "质量稳定后再增加速度或线路变化"
+    }
+  },
+  "practice_setups": {
+    "solo": "使用影子动作、悬挂球或自抛球；不要把需要稳定喂球的练习写成可独自完成",
+    "partner": "让搭档先固定喂球，再增加一个线路或节奏变量",
+    "coach": "由教练控制喂球并在质量下降时即时降级难度",
+    "unknown": "给出独练替代方案，并标明有稳定喂球者时如何升级"
+  },
+  "discipline_boundaries": {
+    "singles": "自测应包含回位、连续覆盖和单人线路选择",
+    "doubles": "自测应包含搭档位置、前后或左右职责以及下一拍衔接",
+    "both": "分别说明单打覆盖与双打协作条件，不把同一站位规则通用化",
+    "unknown": "遇到站位、回位或轮转建议时分别说明单双打边界"
+  },
+  "clarification_priority": [
+    "pain_or_injury",
+    "discipline",
+    "practice_setup",
+    "level",
+    "session_minutes"
+  ],
+  "quality_stop_rules": [
+    "连续动作变形或失去平衡时停止当前组",
+    "出现疼痛时停止相关动作，不用训练量覆盖疼痛",
+    "无法维持当前自测标准时降低速度、移动范围或来球变量"
+  ]
+}

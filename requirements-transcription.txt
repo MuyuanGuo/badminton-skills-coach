@@ -1,0 +1,3 @@
+# Optional: only needed when maintainers transcribe newly downloaded videos.
+faster-whisper>=1.2,<2
+certifi>=2024.2

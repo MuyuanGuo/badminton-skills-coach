@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 import unittest
 
-from douyin_pipeline import classify_video, load_classification_rules
+from douyin_pipeline import (
+    classify_video,
+    load_classification_rules,
+    normalize_transcribed_media_state,
+)
 
 
 class DouyinClassificationRulesTest(unittest.TestCase):
@@ -41,6 +45,35 @@ class DouyinClassificationRulesTest(unittest.TestCase):
         )
         self.assertEqual(item["decision"], "排除：广告/器材推广")
         self.assertEqual(item["decision_reason"], "用户指定去除")
+
+    def test_non_teaching_content_is_not_rescued_by_teaching_hashtags(self):
+        item = self.classify_title("春节放假通知 #羽毛球教学 #羽毛球训练")
+        self.assertEqual(item["decision"], "排除：非教学")
+        self.assertEqual(item["tags"], "")
+
+    def test_equipment_commerce_is_not_rescued_by_teaching_hashtag(self):
+        item = self.classify_title("新球拍推荐入手，今晚带走 #羽毛球教学")
+        self.assertEqual(item["decision"], "排除：广告/器材推广")
+
+    def test_hashtag_only_content_requires_review(self):
+        item = self.classify_title("今天和大家聊一聊 #羽毛球教学")
+        self.assertEqual(item["decision"], "待复核：仅通用教学标签")
+        self.assertEqual(item["primary_category"], "")
+
+    def test_transcribed_state_drops_only_temporary_media_fields(self):
+        item = {
+            "video_id": "123456789012345678",
+            "status": "transcribed",
+            "media_path": "data/raw_videos/douyin/batch-001/video.m4a",
+            "media_asset_kind": "audio",
+            "media_asset_source": "data/tmp/snapshot.json",
+            "duration_seconds": 12.3,
+        }
+        self.assertTrue(normalize_transcribed_media_state(item))
+        self.assertIsNone(item["media_path"])
+        self.assertNotIn("media_asset_kind", item)
+        self.assertNotIn("media_asset_source", item)
+        self.assertEqual(item["duration_seconds"], 12.3)
 
 
 if __name__ == "__main__":

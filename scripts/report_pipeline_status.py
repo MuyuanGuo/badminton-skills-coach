@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from douyin_pipeline import QUEUE_STATUSES, validate_queue_statuses
+from project_artifacts import derive_project_status
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,13 +21,6 @@ def load_json(path):
 
 def relative(path):
     return str(path.relative_to(ROOT))
-
-
-def latest_ready_video(knowledge):
-    return next(
-        video for video in knowledge["videos"]
-        if video["processing_status"] == "ready"
-    )
 
 
 def failed_queue_items(queue):
@@ -76,23 +70,11 @@ def main():
     update_report = load_json(REPORT_PATH) if REPORT_PATH.exists() else None
 
     validate_queue_statuses(queue["items"])
-    ready_count = sum(video["processing_status"] == "ready" for video in knowledge["videos"])
-    review_excluded_count = sum(
-        video["processing_status"] in {"not_teaching", "low_value"}
-        for video in knowledge["videos"]
-    )
-    pre_pipeline_excluded_count = (
-        teaching["counts"].get("excluded_ads", 0)
-        + teaching["counts"].get("excluded_non_teaching", 0)
-        + teaching["counts"].get("review", 0)
-    )
-    latest = latest_ready_video(knowledge)
+    project_status = derive_project_status(video_index, teaching, knowledge)
+    latest = project_status["latest_ready_video"]
     failures = failed_queue_items(queue)
     report = {
-        "public_videos_collected": len(video_index["videos"]),
-        "excluded_non_teaching_ads_equipment": pre_pipeline_excluded_count + review_excluded_count,
-        "ready_teaching_videos": ready_count,
-        "processed_pipeline_videos": len(knowledge["videos"]),
+        **project_status,
         "queue_counts": queue["counts"],
         "failed_queue_items": failures,
         "latest_ready_video": {
@@ -117,6 +99,7 @@ def main():
     print("Liu Hui Badminton Skill pipeline status")
     print(f"- Public videos collected: {report['public_videos_collected']}")
     print(f"- Excluded non-teaching/ads/equipment: {report['excluded_non_teaching_ads_equipment']}")
+    print(f"- Pending review or processing: {report['pending_human_review_or_processing']}")
     print(f"- Ready teaching videos: {report['ready_teaching_videos']}")
     print(f"- Processed pipeline videos: {report['processed_pipeline_videos']}")
     print(f"- Queue counts: {json.dumps(report['queue_counts'], ensure_ascii=False)}")

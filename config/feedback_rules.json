@@ -7,7 +7,8 @@
     "pending_review",
     "needs_clarification",
     "accepted",
-    "rejected"
+    "rejected",
+    "superseded"
   ],
   "review_decisions": [
     "accepted",
@@ -61,6 +62,21 @@
     "missing",
     "should include"
   ],
+  "contrast_separators": [
+    "但是",
+    "不过",
+    "然而",
+    "但",
+    "but",
+    "however"
+  ],
+  "comparative_video_cues": [
+    "不如",
+    "比不上",
+    "不及",
+    "less useful than",
+    "not as useful as"
+  ],
   "text_issue_cues": {
     "missing_content": [
       "文字漏了",
@@ -99,10 +115,34 @@
     "scenario_mismatch": [
       "不适合我的情况",
       "场景不对",
-      "理解错了我的问题",
       "不符合我的水平",
-      "scenario mismatch",
+      "scenario mismatch"
+    ],
+    "question_misunderstood": [
+      "理解错了我的问题",
+      "答非所问",
+      "你理解成了",
+      "我问的是",
       "misunderstood my question"
+    ],
+    "transcript_error": [
+      "转写错了",
+      "字幕识别错了",
+      "原视频说的是",
+      "听错了",
+      "transcript error"
+    ],
+    "video_misinterpreted": [
+      "理解错了这个视频",
+      "这个视频不是讲",
+      "视频含义理解错了",
+      "misinterpreted the video"
+    ],
+    "citation_mismatch": [
+      "引用不支持",
+      "视频不能证明",
+      "来源对不上",
+      "citation mismatch"
     ]
   },
   "outcome_cues": {

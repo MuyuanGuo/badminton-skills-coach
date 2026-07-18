@@ -3,6 +3,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from project_artifacts import atomic_write_bundle
+
 
 ROOT = Path(__file__).resolve().parents[1]
 KNOWLEDGE_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
@@ -143,13 +145,13 @@ def build_queue():
 
     items = []
     for video in knowledge["videos"]:
-        if video["processing_status"] != "needs_visual_review":
+        if video["processing_status"] not in {"needs_visual_review", "needs_correction"}:
             continue
         score, reasons, matched_terms = score_video(video, topic_hits, representative_hits)
         items.append(
             {
                 "rank": 0,
-                "review_status": "pending",
+                "review_status": video.get("review_status", "pending"),
                 "priority_score": score,
                 "priority_reasons": reasons,
                 "matched_terms": matched_terms,
@@ -168,7 +170,7 @@ def build_queue():
                     "capture_1_to_3_timestamped_cues",
                     "mark_approved_needs_correction_not_teaching_or_low_value",
                 ],
-                "review_notes": "",
+                "review_notes": video.get("review_notes", ""),
                 "teaching_note_preview": compact_note(video),
             }
         )
@@ -180,6 +182,7 @@ def build_queue():
     return {
         "version": "visual-review-queue-v1",
         "source": str(KNOWLEDGE_PATH.relative_to(ROOT)),
+        "source_updated_at": knowledge["updated_at"],
         "topic_index": str(TOPIC_INDEX_PATH.relative_to(ROOT)),
         "total_pending": len(items),
         "status_counts": {"pending": len(items)},
@@ -230,7 +233,7 @@ def render_markdown(queue):
                 "",
                 "Review notes:",
                 "",
-                "- ",
+                f"- {item['review_notes']}" if item["review_notes"] else "-",
                 "",
             ]
         )
@@ -241,8 +244,14 @@ def main():
     queue = build_queue()
     JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     MARKDOWN_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    JSON_OUTPUT.write_text(json.dumps(queue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    MARKDOWN_OUTPUT.write_text(render_markdown(queue), encoding="utf-8")
+    atomic_write_bundle(
+        {
+            JSON_OUTPUT: (
+                json.dumps(queue, ensure_ascii=False, indent=2) + "\n"
+            ).encode("utf-8"),
+            MARKDOWN_OUTPUT: render_markdown(queue).encode("utf-8"),
+        }
+    )
     print(json.dumps({"total_pending": queue["total_pending"], "top_video_id": queue["items"][0]["video_id"] if queue["items"] else None}, ensure_ascii=False, indent=2))
 
 

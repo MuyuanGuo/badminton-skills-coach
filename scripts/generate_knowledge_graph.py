@@ -14,6 +14,9 @@ DRAWIO_OUTPUT = OUTPUT_DIR / "liuhui-full-knowledge-map.drawio"
 MERMAID_OUTPUT = OUTPUT_DIR / "liuhui-knowledge-map.mmd"
 HTML_OUTPUT = OUTPUT_DIR / "liuhui-knowledge-map.html"
 SUMMARY_OUTPUT = ROOT / "data" / "knowledge" / "knowledge_graph_summary.json"
+DOUYIN_VIDEO_URL_PATTERN = re.compile(
+    r"https://www\.douyin\.com/video/(?P<video_id>\d{18,20})"
+)
 
 
 def shorten(text, length=48):
@@ -26,6 +29,26 @@ def node_id(prefix, value):
     if not slug:
         slug = str(abs(hash(value)))
     return f"{prefix}-{slug[:40]}"
+
+
+def validate_video_url(url, video_id=None):
+    match = DOUYIN_VIDEO_URL_PATTERN.fullmatch(str(url))
+    if not match:
+        raise ValueError(f"Unsafe or non-canonical Douyin video URL: {url}")
+    if video_id and match.group("video_id") != str(video_id):
+        raise ValueError(f"Douyin URL does not match video ID {video_id}: {url}")
+    return str(url)
+
+
+def json_for_inline_script(payload):
+    serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    return (
+        serialized.replace("&", "\\u0026")
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
 
 def load_graph():
@@ -43,7 +66,7 @@ def load_graph():
                     {
                         "video_id": video["video_id"],
                         "title": shorten(video["title"], 54),
-                        "url": video["url"],
+                        "url": validate_video_url(video["url"], video["video_id"]),
                         "confidence": video["confidence"],
                         "category": video["category"],
                         "duration_seconds": source_video.get("duration_seconds"),
@@ -275,13 +298,15 @@ def build_mermaid(graph):
     MERMAID_OUTPUT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def build_html(graph):
-    payload = json.dumps(graph, ensure_ascii=False)
-    html_text = f"""<!doctype html>
+def render_html(graph):
+    payload = json_for_inline_script(graph)
+    return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; object-src 'none'">
   <title>刘辉羽毛球教学知识图谱</title>
   <style>
     :root {{
@@ -418,13 +443,88 @@ def build_html(graph):
     document.getElementById("metric-assigned").textContent = graph.assigned_video_count;
     document.getElementById("metric-multi").textContent = graph.multi_topic_video_count;
 
-    categoryFilter.innerHTML = ["全部主题", ...graph.categories.map(c => c.name)]
-      .map(name => `<option value="${{name}}">${{name}}</option>`)
-      .join("");
+    for (const name of ["全部主题", ...graph.categories.map(category => category.name)]) {{
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = name;
+      categoryFilter.append(option);
+    }}
 
     function matches(item, query) {{
       if (!query) return true;
       return JSON.stringify(item).toLowerCase().includes(query.toLowerCase());
+    }}
+
+    function appendCount(parent, value) {{
+      parent.append(" ");
+      const count = document.createElement("span");
+      count.className = "count";
+      count.textContent = String(value);
+      parent.append(count);
+    }}
+
+    function safeVideoUrl(value) {{
+      try {{
+        const url = new URL(value);
+        if (
+          url.origin !== "https://www.douyin.com" ||
+          !new RegExp("^/video/\\\\d{{18,20}}$").test(url.pathname) ||
+          url.search ||
+          url.hash
+        ) return null;
+        return url.href;
+      }} catch (_error) {{
+        return null;
+      }}
+    }}
+
+    function makeVideo(video) {{
+      const safeUrl = safeVideoUrl(video.url);
+      const element = document.createElement(safeUrl ? "a" : "div");
+      element.className = "video";
+      if (safeUrl) {{
+        element.href = safeUrl;
+        element.target = "_blank";
+        element.rel = "noopener noreferrer";
+      }}
+      const title = document.createElement("span");
+      title.textContent = String(video.title);
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = `${{video.confidence}} · score ${{video.score}}`;
+      element.append(title, document.createElement("br"), badge);
+      return element;
+    }}
+
+    function makeSubtopic(subtopic) {{
+      const details = document.createElement("details");
+      details.open = true;
+      const summary = document.createElement("summary");
+      summary.append(document.createTextNode(String(subtopic.name)));
+      appendCount(summary, subtopic.video_count);
+      const metadata = document.createElement("div");
+      metadata.className = "submeta";
+      metadata.textContent = `关键词：${{subtopic.keywords.slice(0, 5).join("、")}}`;
+      const videos = document.createElement("div");
+      videos.className = "videos";
+      for (const video of subtopic.representative_videos) {{
+        videos.append(makeVideo(video));
+      }}
+      details.append(summary, metadata, videos);
+      return details;
+    }}
+
+    function makeCategory(category, subtopics) {{
+      const article = document.createElement("article");
+      article.className = "category";
+      const heading = document.createElement("h2");
+      heading.append(document.createTextNode(String(category.name)));
+      appendCount(heading, category.video_count);
+      const description = document.createElement("p");
+      description.textContent = String(category.description);
+      article.append(heading, description);
+      for (const subtopic of subtopics) article.append(makeSubtopic(subtopic));
+      return article;
     }}
 
     function render() {{
@@ -435,29 +535,17 @@ def build_html(graph):
         if (selected !== "全部主题" && category.name !== selected) continue;
         const subtopics = category.subtopics.filter(subtopic => matches({{category: category.name, subtopic}}, query));
         if (!subtopics.length && query) continue;
-        const details = subtopics.map(subtopic => `
-          <details open>
-            <summary>${{subtopic.name}} <span class="count">${{subtopic.video_count}}</span></summary>
-            <div class="submeta">关键词：${{subtopic.keywords.slice(0, 5).join("、")}}</div>
-            <div class="videos">
-              ${{subtopic.representative_videos.map(video => `
-                <a class="video" href="${{video.url}}" target="_blank" rel="noreferrer">
-                  ${{video.title}}
-                  <span class="badge">${{video.confidence}} · score ${{video.score}}</span>
-                </a>
-              `).join("")}}
-            </div>
-          </details>
-        `).join("");
-        cards.push(`
-          <article class="category">
-            <h2>${{category.name}} <span class="count">${{category.video_count}}</span></h2>
-            <p>${{category.description}}</p>
-            ${{details}}
-          </article>
-        `);
+        cards.push(makeCategory(category, subtopics));
       }}
-      graphEl.innerHTML = cards.length ? cards.join("") : '<div class="empty">没有匹配的主题</div>';
+      graphEl.replaceChildren();
+      if (cards.length) {{
+        graphEl.append(...cards);
+      }} else {{
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "没有匹配的主题";
+        graphEl.append(empty);
+      }}
     }}
 
     search.addEventListener("input", render);
@@ -467,6 +555,10 @@ def build_html(graph):
 </body>
 </html>
 """
+
+
+def build_html(graph):
+    html_text = render_html(graph)
     HTML_OUTPUT.write_text(html_text, encoding="utf-8")
 
 

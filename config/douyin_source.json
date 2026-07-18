@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "creator_name": "刘辉羽毛球",
+  "profile_id": "MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA",
+  "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA",
+  "snapshot": {
+    "max_age_hours": 24,
+    "min_observed_links": 24,
+    "min_known_coverage_ratio": 0.05
+  },
+  "media": {
+    "allowed_https_host_suffixes": [
+      "zjcdn.com",
+      "douyinvod.com"
+    ],
+    "maximum_asset_url_length": 8192,
+    "minimum_download_bytes": 1024
+  }
+}

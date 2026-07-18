@@ -24,8 +24,8 @@ def load_search_module():
     return module
 
 
-def evaluate():
-    cases = json.loads(CASES_PATH.read_text(encoding="utf-8"))["cases"]
+def evaluate(cases_path=CASES_PATH):
+    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
     search_module = load_search_module()
     rules = search_module.load_answer_rules()
     results = []
@@ -70,9 +70,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Evaluate text/video answer allocation for the Skill."
     )
+    parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
-    result = evaluate()
+    result = evaluate(args.cases)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["accuracy"] < args.min_accuracy:
         raise SystemExit(

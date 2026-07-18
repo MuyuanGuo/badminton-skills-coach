@@ -13,6 +13,12 @@ from evaluate_answer_quality import (
     ready_video_ids,
     validate_registry,
 )
+from apply_answer_quality_review_notes import (
+    ReviewApplicationError,
+    extract_review_blocks,
+    render_review_block,
+    render_review_payload,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,7 +46,9 @@ def video_line(video_id, videos_by_id, label):
     return f"- {label}: [{video['title']}]({video['url']}) (`{video_id}`)"
 
 
-def render_review_queue(registry, rules, knowledge, suggestion_limit):
+def render_review_queue(
+    registry, rules, knowledge, suggestion_limit, existing_review_blocks=None
+):
     ready_ids = ready_video_ids(knowledge)
     summary = validate_registry(registry, rules, ready_ids, minimum_cases=30)
     search_module = load_search_module()
@@ -53,17 +61,17 @@ def render_review_queue(registry, rules, knowledge, suggestion_limit):
         f"候选问题：`{summary['cases']}`",
         f"可进入自动回归：`{summary['regression_ready']}`",
         f"仍待审核：`{summary['pending_review']}`",
-        f"需要专家审核：`{summary['expert_review_required']}`",
         "",
         "问题类型："
         + "、".join(f"`{name}` {count} 条" for name, count in sorted(type_counts.items())),
         "",
         "## 审核方法",
         "",
-        "1. 维护者先核对推荐视频、转写和 Review notes，写出必须覆盖的文字要点、证据视频、适用边界和禁止断言。",
-        "2. 标有“需要”的案例再由羽毛球教练或高水平球员确认技术正确性；专家不必审核纯来源边界题。",
-        "3. 在每题的 `Review notes` 下直接填写审核意见。处理意见时，再把确认结果写回 `data/evaluation/answer_quality_cases.json`。",
-        "4. 机器候选只是减轻找视频的工作量，不是黄金答案；`draft` 案例不会进入自动回答回归。",
+        "1. 维护者核对问题理解、推荐视频、转写和 Review notes，写出必须覆盖的文字要点、证据视频、适用边界和禁止断言。",
+        "2. 审核关注来源忠实度和用户问题是否被正确理解；回答质量通过自动回归与后续用户反馈持续改进。",
+        "3. 在每题的 `Review notes` JSON 块中填写审核意见；不要改字段名或删除案例。",
+        "4. 先运行 `python3 scripts/apply_answer_quality_review_notes.py --dry-run` 校验，再去掉 `--dry-run` 原子写回黄金集。",
+        "5. 机器候选只是减轻找视频的工作量，不是黄金答案；`draft` 案例不会进入自动回答回归。",
         "",
     ]
 
@@ -89,7 +97,6 @@ def render_review_queue(registry, rules, knowledge, suggestion_limit):
                 f"- 预期模式：`{case['expected_mode']}`",
                 f"- 来源：`{case['provenance']}`",
                 f"- 当前状态：`{case['review']['status']}`",
-                f"- 专家审核：{'需要' if case['expert_review_required'] else '不强制'}",
                 f"- 自动回归资格：{'已有' if case_is_regression_ready(case) else '暂无'}",
                 "",
                 "### 已有视频标签",
@@ -116,14 +123,12 @@ def render_review_queue(registry, rules, knowledge, suggestion_limit):
                 "",
                 "### Review notes",
                 "",
-                "- 维护者结论：`pending`",
-                "- 专家结论：`pending` / `not_required`",
-                "- 应保留的视频：",
-                "- 应排除的视频：",
-                "- 必须写出的文字要点：",
-                "- 必须说明的适用边界：",
-                "- 禁止出现的断言：",
-                "- 其他说明：",
+                (
+                    render_review_payload(existing_review_blocks[case["case_id"]])
+                    if existing_review_blocks
+                    and case["case_id"] in existing_review_blocks
+                    else render_review_block(case)
+                ),
                 "",
             ]
         )
@@ -132,7 +137,7 @@ def render_review_queue(registry, rules, knowledge, suggestion_limit):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Build a human/expert review queue for answer quality gold cases."
+        description="Build a source-review queue for answer quality regression cases."
     )
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES_PATH)
     parser.add_argument("--rules", type=Path, default=DEFAULT_RULES_PATH)
@@ -142,11 +147,25 @@ def main():
     if args.suggestion_limit < 1:
         raise SystemExit("--suggestion-limit must be positive")
 
+    existing_review_blocks = {}
+    if args.output.exists():
+        existing_text = args.output.read_text(encoding="utf-8")
+        try:
+            existing_review_blocks = extract_review_blocks(
+                existing_text
+            )
+        except ReviewApplicationError as error:
+            if '"maintainer_decision"' in existing_text or "```json" in existing_text:
+                raise SystemExit(
+                    "Existing structured review notes are invalid; refusing to overwrite: "
+                    + str(error)
+                ) from error
     text = render_review_queue(
         load_json(args.cases),
         load_json(args.rules),
         load_json(KNOWLEDGE_PATH),
         args.suggestion_limit,
+        existing_review_blocks=existing_review_blocks,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(text, encoding="utf-8")

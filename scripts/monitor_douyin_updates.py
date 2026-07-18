@@ -58,7 +58,7 @@ def run_snapshot_command(command):
 
 def run_update_check(snapshot, report, apply):
     command = [
-        "python3",
+        sys.executable,
         "scripts/check_douyin_updates.py",
         "--input",
         str(snapshot.relative_to(ROOT) if snapshot.is_relative_to(ROOT) else snapshot),
@@ -129,7 +129,7 @@ def main():
         report_payload = run_update_check(snapshot, report, args.apply)
         validation = None
         if args.validate:
-            run(["python3", "scripts/validate_project.py"])
+            run([sys.executable, "scripts/validate_project.py"])
             validation = {"validate_project": "passed"}
 
         git_result = None

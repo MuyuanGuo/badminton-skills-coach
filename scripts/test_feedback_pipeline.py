@@ -55,7 +55,12 @@ class FeedbackPipelineTests(unittest.TestCase):
             ["V1", "V2", "V3"],
         )
         self.assertTrue(self.answer["videos"][0]["core"])
-        self.assertEqual(self.answer["skill_version"], "1.1.0-dev.3")
+        self.assertEqual(
+            self.answer["skill_version"],
+            self.feedback.load_resources()[1]["skill_version"],
+        )
+        self.assertEqual(self.answer["turn_id"], self.answer["answer_id"])
+        self.assertEqual(len(self.answer["context_sha256"]), 64)
         self.assertEqual(
             set(self.feedback.extract_video_refs(self.answer["feedback_hint"])),
             {"V1", "V3"},
@@ -112,6 +117,67 @@ class FeedbackPipelineTests(unittest.TestCase):
                     )
                 if "outcome" in case:
                     self.assertEqual(signals["outcome"], case["outcome"])
+                if "intended_query" in case:
+                    self.assertEqual(
+                        signals["intended_query"], case["intended_query"]
+                    )
+                if "source_issue_video_refs" in case:
+                    self.assertEqual(
+                        signals["source_issue_video_refs"],
+                        case["source_issue_video_refs"],
+                    )
+                if "source_issue_video_ids" in case:
+                    self.assertEqual(
+                        signals["source_issue_video_ids"],
+                        case["source_issue_video_ids"],
+                    )
+                if "parser_warnings" in case:
+                    self.assertEqual(
+                        parsed["parser_warnings"], case["parser_warnings"]
+                    )
+                if "warning_prefix" in case:
+                    self.assertTrue(
+                        any(
+                            warning.startswith(case["warning_prefix"])
+                            for warning in parsed["parser_warnings"]
+                        )
+                    )
+
+    def test_video_labels_remain_scoped_to_their_answer_turn(self):
+        later_answer = self.feedback.create_answer_context(
+            question="另一轮问题",
+            video_specs=["V1=7659991105622862457"],
+            queue_dir=self.queue_dir,
+        )
+        queued = self.feedback.submit_feedback(
+            answer_id=self.answer["answer_id"],
+            feedback_text="V1 最有价值。",
+            queue_dir=self.queue_dir,
+        )
+        self.assertNotEqual(queued["turn_id"], later_answer["turn_id"])
+        self.assertEqual(
+            queued["signals"]["helpful_video_ids"], ["7661940775983482097"]
+        )
+        self.assertEqual(
+            queued["answer_context_sha256"], self.answer["context_sha256"]
+        )
+
+    def test_tampered_answer_mapping_is_rejected(self):
+        answer_path = (
+            self.queue_dir / "answers" / f"{self.answer['answer_id']}.json"
+        )
+        stored = json.loads(answer_path.read_text(encoding="utf-8"))
+        stored["videos"][0]["video_id"] = "7659991105622862457"
+        answer_path.write_text(
+            json.dumps(stored, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        with self.assertRaisesRegex(ValueError, "integrity"):
+            self.feedback.submit_feedback(
+                answer_id=self.answer["answer_id"],
+                feedback_text="V1 最有价值。",
+                queue_dir=self.queue_dir,
+            )
 
     def test_submit_and_human_review_preserve_audit_history(self):
         queued = self.feedback.submit_feedback(
@@ -254,10 +320,100 @@ https://www.douyin.com/video/7614167503938610417
         self.assertEqual(verification["body_sha256"], self.feedback.body_sha256(body))
         self.assertEqual(imported["status"], "pending_review")
 
+        self.feedback.review_feedback(
+            feedback_id=imported["feedback_id"],
+            decision="accepted",
+            note="已核对当前公开 Issue 正文",
+            reviewer="test-maintainer",
+            queue_dir=self.queue_dir,
+        )
+        reverified = self.feedback.reverify_github_feedback(
+            feedback_id=imported["feedback_id"],
+            queue_dir=self.queue_dir,
+            opener=fake_opener,
+        )
+        self.assertEqual(reverified["source_reverification_status"], "unchanged")
+        self.assertTrue(
+            reverified["source"]["promotion_verification"][
+                "matches_imported_body"
+            ]
+        )
+
         with self.assertRaisesRegex(ValueError, "must use an issue"):
             self.feedback.fetch_github_issue(
                 "https://github.com/example/repo/issues/42",
                 opener=fake_opener,
+            )
+
+    def test_github_import_deduplicates_revisions_and_supersedes_changed_body(self):
+        issue_url = (
+            "https://github.com/MuyuanGuo/badminton-skills-coach/issues/77"
+        )
+        original_body = """### 用户问题
+杀球不重怎么办？
+
+### 最有价值的视频
+7659991105622862457
+
+### 明确不相关的视频
+无
+
+### 遗漏的视频
+无
+
+### 文字回答问题
+没有明显问题
+"""
+
+        def verification(body, updated_at):
+            return {
+                "method": "github_api",
+                "repository": "MuyuanGuo/badminton-skills-coach",
+                "issue_number": 77,
+                "node_id": "I_revision_test",
+                "state": "open",
+                "source_updated_at": updated_at,
+                "body_sha256": self.feedback.body_sha256(body),
+                "verified_at": updated_at,
+            }
+
+        first = self.feedback.import_github_issue(
+            original_body,
+            issue_url,
+            self.queue_dir,
+            verification(original_body, "2026-07-14T00:00:00+00:00"),
+        )
+        duplicate = self.feedback.import_github_issue(
+            original_body,
+            issue_url,
+            self.queue_dir,
+            verification(original_body, "2026-07-14T00:01:00+00:00"),
+        )
+        self.assertEqual(duplicate["feedback_id"], first["feedback_id"])
+        self.assertEqual(duplicate["import_status"], "already_imported")
+        self.assertEqual(len(list((self.queue_dir / "queue").glob("*.json"))), 1)
+
+        changed_body = original_body.replace("没有明显问题", "过于笼统")
+        replacement = self.feedback.import_github_issue(
+            changed_body,
+            issue_url,
+            self.queue_dir,
+            verification(changed_body, "2026-07-14T00:02:00+00:00"),
+        )
+        superseded = self.feedback.show_feedback(
+            first["feedback_id"], self.queue_dir
+        )
+        self.assertNotEqual(replacement["feedback_id"], first["feedback_id"])
+        self.assertEqual(replacement["source"]["revision_number"], 2)
+        self.assertEqual(superseded["status"], "superseded")
+        self.assertEqual(superseded["superseded_by"], replacement["feedback_id"])
+        with self.assertRaisesRegex(ValueError, "Superseded"):
+            self.feedback.review_feedback(
+                feedback_id=first["feedback_id"],
+                decision="accepted",
+                note="不应允许复核旧修订",
+                reviewer="test-maintainer",
+                queue_dir=self.queue_dir,
             )
 
     def test_export_github_requires_accepted_local_feedback_and_public_consent(self):

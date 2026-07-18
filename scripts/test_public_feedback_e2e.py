@@ -104,6 +104,30 @@ class PublicFeedbackEndToEndTests(unittest.TestCase):
                 queue_dir=maintainer_queue,
             )
 
+            class FakeResponse:
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, exc_type, exc_value, traceback):
+                    return False
+
+                def read(self):
+                    return json.dumps(
+                        {
+                            "html_url": issue_url,
+                            "node_id": "I_offline_e2e_fixture",
+                            "state": "open",
+                            "updated_at": "2026-07-14T00:00:00Z",
+                            "body": exported["issue_body"],
+                        }
+                    ).encode("utf-8")
+
+            self.feedback.reverify_github_feedback(
+                feedback_id=imported["feedback_id"],
+                queue_dir=maintainer_queue,
+                opener=lambda request, timeout: FakeResponse(),
+            )
+
             signals_path = root / "release" / "feedback-signals.json"
             evaluation_path = root / "release" / "feedback-cases.json"
             signals_path.parent.mkdir(parents=True)

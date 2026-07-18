@@ -151,6 +151,42 @@ class FeedbackPersonalizationTests(unittest.TestCase):
         self.assertEqual(preferences["preferred_verbosity"], "concise")
         self.assertEqual(preferences["preference_evidence_counts"]["too_verbose"], 2)
 
+    def test_question_correction_triggers_query_replan_for_similar_question(self):
+        query = "双打接发应该怎么调整"
+        self.record_and_accept(
+            question=query,
+            video_specs=[],
+            feedback_text=(
+                "你理解错了我的问题，我问的是双打接发战术和接发握拍两个独立问题。"
+            ),
+            answer_mode="balanced",
+        )
+        preferences = self.search_query(query)["feedback_guidance"][
+            "answer_preferences"
+        ]
+        self.assertTrue(preferences["needs_query_replan"])
+        self.assertEqual(
+            preferences["query_replan_hints"],
+            ["双打接发战术和接发握拍两个独立问题"],
+        )
+        self.assertIn("question_misunderstood", preferences["query_reminders"])
+
+    def test_source_error_triggers_targeted_evidence_recheck(self):
+        query = "重杀框架怎么做"
+        video_id = "7659991105622862457"
+        self.record_and_accept(
+            question=query,
+            video_specs=[f"V1={video_id}"],
+            feedback_text="V1 转写错了，原视频说的是拍头不是拍低。",
+            answer_mode="balanced",
+        )
+        preferences = self.search_query(query)["feedback_guidance"][
+            "answer_preferences"
+        ]
+        self.assertTrue(preferences["needs_source_recheck"])
+        self.assertEqual(preferences["source_recheck_video_ids"], [video_id])
+        self.assertIn("transcript_error", preferences["query_reminders"])
+
 
 if __name__ == "__main__":
     unittest.main()
