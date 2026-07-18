@@ -329,6 +329,30 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             )
         )
         faster_whisper_ok = completed.returncode == 0
+        browser_completed = subprocess.run(
+            [
+                str(python_path),
+                "scripts/download_douyin_browser_batch.py",
+                "batch-doctor",
+                "--preflight-only",
+            ],
+            cwd=repo_root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        checks.append(
+            check(
+                "douyin_browser_download",
+                browser_completed.returncode == 0,
+                browser_completed.stdout.strip()
+                or browser_completed.stderr.strip()[-600:],
+                (
+                    "Install requirements-transcription.txt and Node.js 22+, "
+                    "then install Chrome/Edge or set LIUHUI_CHROME."
+                ),
+            )
+        )
     if python_path and faster_whisper_ok:
         model_completed = subprocess.run(
             [

@@ -73,6 +73,7 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             "media_path": "data/raw_videos/douyin/batch-001/video.m4a",
             "media_asset_kind": "audio",
             "media_asset_source": "data/tmp/snapshot.json",
+            "media_download_method": "anonymous_chrome_cdp_yt_dlp",
             "duration_seconds": 12.3,
             "transcript_source_sha256": "a" * 64,
         }
@@ -80,6 +81,7 @@ class DouyinClassificationRulesTest(unittest.TestCase):
         self.assertIsNone(item["media_path"])
         self.assertNotIn("media_asset_kind", item)
         self.assertNotIn("media_asset_source", item)
+        self.assertNotIn("media_download_method", item)
         self.assertEqual(item["duration_seconds"], 12.3)
         self.assertEqual(item["transcript_source_sha256"], "a" * 64)
 
@@ -119,6 +121,7 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             "evaluate_video_comprehension.py --require-raw-transcripts",
             "build_manifest.py --check",
             "validate_project.py",
+            "test_export_douyin_cookies_cdp.mjs",
         ]:
             self.assertTrue(
                 any(required in command for command in commands),
@@ -130,7 +133,7 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             {"counts": {"classified_teaching": 1, "transcribed": 406}},
             {"new": 1, "teaching": 1, "applied": {"queue_added": 1}},
         )
-        self.assertIn("capture media assets", action)
+        self.assertIn("--auto-download", action)
 
 
 if __name__ == "__main__":

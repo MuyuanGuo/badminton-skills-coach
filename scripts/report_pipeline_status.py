@@ -52,13 +52,13 @@ def next_action(queue, update_report):
 
     counts = queue["counts"]
     if counts.get("download_failed") or counts.get("extraction_failed"):
-        return "Refresh media assets for failed items, then rerun prepare_douyin_media_batch.py and process_douyin_ready_batch.py."
+        return "Rerun process_douyin_ready_batch.py with --auto-download so failed or expired media extraction uses the isolated browser fallback."
     if counts.get("transcription_failed"):
         return "Inspect failed media files or transcription environment, then rerun batch_transcribe_directory.py or process_douyin_ready_batch.py."
     if counts.get("media_ready"):
         return "Run process_douyin_ready_batch.py for the prepared batch."
     if counts.get("classified_teaching") or counts.get("pending"):
-        return "Open each queued video page, capture media assets, then run prepare_douyin_media_batch.py."
+        return "Run process_douyin_ready_batch.py with --auto-download for each queued teaching video; use the manual media snapshot path only if needed."
     return "Capture a fresh Douyin profile snapshot and run check_douyin_updates.py."
 
 

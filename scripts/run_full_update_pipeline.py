@@ -47,6 +47,7 @@ def validation_commands():
         [sys.executable, "scripts/check_video_links.py"],
         ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
         ["node", "scripts/test_douyin_video_media_assets_dom.mjs"],
+        ["node", "scripts/test_export_douyin_cookies_cdp.mjs"],
         [sys.executable, "scripts/validate_project.py"],
     ]
 
@@ -96,8 +97,21 @@ def main():
     parser.add_argument("--snapshot", type=Path, help="Optional Douyin profile snapshot JSON")
     parser.add_argument("--apply-snapshot", action="store_true", help="Apply new teaching candidates from --snapshot")
     parser.add_argument("--batch", help="Optional prepared media batch to download and transcribe")
+    parser.add_argument(
+        "--auto-download",
+        action="store_true",
+        help="Let the batch processor download classified/failed videos through isolated anonymous Chrome",
+    )
+    parser.add_argument(
+        "--video-id",
+        action="append",
+        default=[],
+        help="Limit --auto-download to one queued video ID; repeatable",
+    )
     parser.add_argument("--no-push", action="store_true", help="Pass through to process_douyin_ready_batch.py")
     args = parser.parse_args()
+    if args.video_id and not args.auto_download:
+        parser.error("--video-id requires --auto-download")
 
     if args.snapshot:
         command = [
@@ -116,6 +130,10 @@ def main():
 
     if args.batch:
         command = [sys.executable, "scripts/process_douyin_ready_batch.py", args.batch]
+        if args.auto_download:
+            command.append("--auto-download")
+        for video_id in args.video_id:
+            command.extend(["--video-id", video_id])
         if args.no_push:
             command.append("--no-push")
         run(command)

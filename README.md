@@ -73,7 +73,7 @@ python3 scripts/install_skill.py
 python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 ```
 
-维护仓库先运行 `python3 scripts/doctor.py`。只有下载和转写新增视频时才需要额外环境：
+维护仓库先运行 `python3 scripts/doctor.py`。只有下载和转写新增视频时才需要额外环境；自动下载还需要 Chrome 或 Edge，以及带内置 WebSocket 的 Node.js 22 或更新版本：
 
 ```bash
 python3 -m venv .venv
@@ -81,7 +81,7 @@ python3 -m venv .venv
 python3 scripts/doctor.py --profile all
 ```
 
-Windows 可使用 `.venv\\Scripts\\python.exe`；也可通过 `LIUHUI_TRANSCRIPTION_PYTHON` 指定已有环境。
+Windows 可使用 `.venv\\Scripts\\python.exe`；也可通过 `LIUHUI_TRANSCRIPTION_PYTHON` 指定已有环境，通过 `LIUHUI_CHROME` 指定 Chrome/Edge 可执行文件。
 
 在 Codex 中使用：
 
@@ -185,6 +185,8 @@ scripts/
   evaluate_video_comprehension.py  审计351条可移植证据及独立问题召回
   report_pipeline_status.py        当前状态、失败项和下一步建议
   check_douyin_updates.py          检查抖音主页是否有新视频
+  download_douyin_browser_batch.py 隔离匿名浏览器下载、作者校验和队列断点
+  export_douyin_cookies_cdp.mjs    通过 CDP 临时导出匿名抖音 Cookie
   prepare_douyin_media_batch.py    根据媒体快照生成下载配置
   media_assets.py                  媒体 URL、批次路径与下载内容校验
   process_douyin_ready_batch.py    下载、转写、完整质量门禁、提交
@@ -257,7 +259,16 @@ config/douyin_classification_rules.json
 
 如果误判，优先改这个配置，再重跑检查。
 
-5. 对新增教学视频，打开视频页并开始播放；在普通浏览器的 DevTools Console 中运行：
+5. 下载新增教学视频时，推荐让批处理脚本自动创建隔离的匿名 Chrome 会话。它通过 CDP 取得本次会话的匿名抖音 Cookie，交给 `yt-dlp` 识别视频，再核对视频 ID、刘辉主页 ID、时长和媒体格式。Cookie 和临时浏览器资料只存在于系统临时目录，处理结束即删除，不读取个人 Chrome 登录资料，也不写入仓库。先预检：
+
+```bash
+python3 scripts/process_douyin_ready_batch.py batch-049 \
+  --auto-download \
+  --video-id <video_id> \
+  --preflight-only
+```
+
+原有的页面直链方案仍然保留。视频开始播放后，可在普通浏览器的 DevTools Console 中运行：
 
 ```text
 scripts/douyin_video_media_assets_dom.js
@@ -271,17 +282,18 @@ python3 scripts/prepare_douyin_media_batch.py \
   --batch batch-049
 ```
 
-准备脚本只接受 20 分钟内、与页面视频 ID 一致的抖音页面快照、配置中允许的 HTTPS 媒体 CDN 和仓库内批次路径。默认优先选择当前页面主视频元素对应的视频轨，避免把页面预加载的其他音频误当成目标视频；下载后还会拒绝过小文件、HTML/XML 过期响应和无法识别的媒体文件。媒体地址是短期凭证，失效时重新打开视频页提取，不要提交或分享 `data/tmp/`。
+准备脚本只接受 20 分钟内、与页面视频 ID 一致的抖音页面快照、配置中允许的 HTTPS 媒体 CDN 和仓库内批次路径。默认优先选择当前页面主视频元素对应的视频轨，避免把页面预加载的其他音频误当成目标视频；下载后还会拒绝过小文件、HTML/XML 过期响应和无法识别的媒体文件。媒体地址是短期凭证，不要提交或分享 `data/tmp/`。如果采集结果是 `no_downloadable_media`，或者只看到 `blob:`/MediaSource 播放地址，直接使用上面的 `--auto-download` 路径；不要反复刷新已经无法暴露直链的页面。
 
 6. 下载、转写、重建和验证：
 
 ```bash
 python3 scripts/doctor.py --profile transcription
-python3 scripts/process_douyin_ready_batch.py batch-049 --preflight-only
-python3 scripts/process_douyin_ready_batch.py batch-049
+python3 scripts/process_douyin_ready_batch.py batch-049 \
+  --auto-download \
+  --video-id <video_id>
 ```
 
-预检会确认工作区边界、磁盘、curl、`faster-whisper` 和本地 `small` 模型都可用，但不会下载媒体。正式处理会校验下载文件、把转写结果与源媒体 SHA-256 绑定，清理临时媒体状态，再运行完整回归、回答质量、问题理解、检索、视频理解、构建清单和链接门禁；全部通过后才提交并推送。脚本会拒绝把无关的既有工作区改动一起提交；需要只提交到本地时加 `--no-push`。
+预检会确认工作区边界、磁盘、curl、Chrome/Edge、Node.js、`yt-dlp`、`faster-whisper` 和本地 `small` 模型都可用，但不会联网或下载媒体。正式处理优先处理已经准备好的原直链下载；直链过期或页面只有 `blob:` 播放流时，`--auto-download` 会自动切换到隔离匿名浏览器路径。下载完成后，流程会校验媒体签名，把转写结果与源媒体 SHA-256 绑定，清理临时媒体状态，再运行完整回归、回答质量、问题理解、检索、视频理解、构建清单和链接门禁；全部通过后才提交并推送。脚本会拒绝把无关的既有工作区改动一起提交；需要只提交到本地时加 `--no-push`。
 
 7. 如果只是手动改了复核笔记、主题数据或知识库结构，运行：
 

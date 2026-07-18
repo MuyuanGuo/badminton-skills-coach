@@ -32,6 +32,7 @@ jobs:
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
             scripts/check_video_links.py \
+            scripts/download_douyin_browser_batch.py \
             scripts/douyin_pipeline.py \
             scripts/doctor.py \
             scripts/evaluate_answer_policy.py \
@@ -55,6 +56,7 @@ jobs:
             scripts/report_pipeline_status.py \
             scripts/run_full_update_pipeline.py \
             scripts/test_douyin_pipeline.py \
+            scripts/test_douyin_browser_download.py \
             scripts/test_douyin_snapshot_validation.py \
             scripts/test_douyin_transactions.py \
             scripts/test_douyin_update_state.py \
@@ -92,6 +94,7 @@ jobs:
       - name: Run regression tests
         run: |
           python scripts/test_douyin_pipeline.py
+          python scripts/test_douyin_browser_download.py
           python scripts/test_douyin_snapshot_validation.py
           python scripts/test_douyin_transactions.py
           python scripts/test_douyin_update_state.py
@@ -128,6 +131,7 @@ jobs:
           python scripts/check_video_links.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
           node scripts/test_douyin_video_media_assets_dom.mjs
+          node scripts/test_export_douyin_cookies_cdp.mjs
 
       - name: Validate repository artifacts
         run: python scripts/validate_project.py

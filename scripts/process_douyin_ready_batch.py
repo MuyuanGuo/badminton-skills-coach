@@ -93,6 +93,49 @@ def run_transcription_preflight(transcription_python):
     )
 
 
+def run_browser_download(
+    transcription_python,
+    batch,
+    *,
+    video_ids=None,
+    chrome=None,
+    node=None,
+    preflight_only=False,
+):
+    command = [
+        transcription_python,
+        "scripts/download_douyin_browser_batch.py",
+        batch,
+    ]
+    if preflight_only:
+        command.append("--preflight-only")
+    for video_id in video_ids or []:
+        command.extend(["--video-id", video_id])
+    if chrome:
+        command.extend(["--chrome", chrome])
+    if node:
+        command.extend(["--node", node])
+    return run(command, check=False)
+
+
+def browser_download_candidate_ids(requested_video_ids=None):
+    allowed = {
+        "classified_teaching",
+        "pending",
+        "download_failed",
+        "extraction_failed",
+    }
+    queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    requested = set(requested_video_ids or [])
+    return [
+        str(item["video_id"])
+        for item in queue["items"]
+        if item.get("status") in allowed
+        and item.get("classification_decision") == "保留：教学"
+        and (not requested or str(item["video_id"]) in requested)
+    ]
+
+
 def queue_counts():
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     return compute_counts(queue)
@@ -286,7 +329,33 @@ def main():
         help="Python with faster-whisper installed; overrides automatic .venv detection",
     )
     parser.add_argument("--model", default="small", help="faster-whisper model name")
+    parser.add_argument(
+        "--auto-download",
+        action="store_true",
+        help=(
+            "Download classified or failed items through isolated anonymous Chrome; "
+            "also retry expired direct curl downloads through that path"
+        ),
+    )
+    parser.add_argument(
+        "--video-id",
+        action="append",
+        default=[],
+        help="Limit --auto-download to one queued video ID; repeatable",
+    )
+    parser.add_argument(
+        "--chrome",
+        type=Path,
+        help="Chrome/Edge executable passed to the anonymous browser downloader",
+    )
+    parser.add_argument(
+        "--node",
+        type=Path,
+        help="Node.js executable passed to the anonymous browser downloader",
+    )
     args = parser.parse_args()
+    if args.video_id and not args.auto_download:
+        parser.error("--video-id requires --auto-download")
     try:
         args.batch = validate_batch_name(args.batch)
     except MediaAssetError as error:
@@ -367,6 +436,33 @@ def main():
         )
         return 2
 
+    browser_candidates = (
+        browser_download_candidate_ids(args.video_id) if args.auto_download else []
+    )
+    if args.auto_download:
+        browser_preflight = run_browser_download(
+            transcription_python,
+            args.batch,
+            chrome=args.chrome,
+            node=args.node,
+            preflight_only=True,
+        )
+        if browser_preflight.returncode:
+            print(
+                json.dumps(
+                    {
+                        "error": "browser_download_preflight_failed",
+                        "remediation": (
+                            "Install requirements-transcription.txt and Node.js 22+, "
+                            "and make Chrome/Edge available or pass --chrome"
+                        ),
+                    },
+                    ensure_ascii=False,
+                ),
+                file=sys.stderr,
+            )
+            return 2
+
     items = batch_items(args.batch)
     preflight = {
         "batch": args.batch,
@@ -375,11 +471,34 @@ def main():
         "free_gb": round(free_gb, 2),
         "transcription_python": str(transcription_python),
         "model": args.model,
+        "browser_download_candidates": browser_candidates,
         "preexisting_dirty_paths": dirty_paths,
     }
     if args.preflight_only:
         print(json.dumps({**preflight, "preflight": "passed"}, ensure_ascii=False))
         return 0
+    if args.auto_download and browser_candidates:
+        browser_completed = run_browser_download(
+            transcription_python,
+            args.batch,
+            video_ids=browser_candidates,
+            chrome=args.chrome,
+            node=args.node,
+        )
+        if browser_completed.returncode:
+            print(
+                json.dumps(
+                    {
+                        "batch": args.batch,
+                        "error": "browser_download_failed",
+                        "queue": queue_counts(),
+                    },
+                    ensure_ascii=False,
+                ),
+                file=sys.stderr,
+            )
+            return browser_completed.returncode
+        items = batch_items(args.batch)
     if not items:
         print(json.dumps(preflight, ensure_ascii=False))
         return 0
@@ -398,6 +517,23 @@ def main():
 
     media_ready = [item for item in items if item.get("status") == "media_ready"]
     downloaded, failed = download_ready_items(args.batch, media_ready)
+    if failed and args.auto_download:
+        fallback_completed = run_browser_download(
+            transcription_python,
+            args.batch,
+            video_ids=failed,
+            chrome=args.chrome,
+            node=args.node,
+        )
+        if fallback_completed.returncode == 0:
+            queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+            recovered = {
+                str(item["video_id"])
+                for item in queue["items"]
+                if item.get("status") == "downloaded"
+            }
+            downloaded.extend(video_id for video_id in failed if video_id in recovered)
+            failed = [video_id for video_id in failed if video_id not in recovered]
     print(json.dumps({
         "downloaded": len(downloaded),
         "download_failed": len(failed),
