@@ -1442,6 +1442,19 @@ def entry_is_core(entry):
     )
 
 
+def entry_claim_scope_policy(entry):
+    if (
+        entry.get("unrequested_constraint_scope")
+        or entry.get("unrequested_ranking_scope")
+    ):
+        return "additional_specific_scope_only_not_unrestricted_full_question_proof"
+    if entry_is_core(entry) and entry["concept_match"] == "exact_question":
+        return "exact_question_scope"
+    if entry_is_core(entry) and entry["concept_match"] == "exact_query_unit":
+        return "exact_query_unit_scope_only"
+    return "component_or_generic_support_only_not_full_question_proof"
+
+
 def question_concept_anchors(search_module, plan):
     positive_query = plan["retrieval_guidance"]["intent_frame"].get(
         "positive_query", plan.get("query", "")
@@ -1637,6 +1650,10 @@ def prepare_answer_context(
             record["selection_reasons"].append(
                 "unrequested_specific_scenario_support_only"
             )
+        if keep and ranking_scope:
+            record["selection_reasons"].append(
+                "unrequested_additional_scope_requires_conditioning"
+            )
         record["concept_match"] = concept_decision(
             search_module, plan, entry, video, rules
         )
@@ -1732,16 +1749,10 @@ def prepare_answer_context(
                 "reviewed_evidence_rank": entry["reviewed_evidence_rank"],
                 "focus_match": entry["focus_match"],
                 "symptom_match": entry["symptom_match"],
-                "claim_scope_policy": (
-                    "exact_question_scope"
-                    if entry_is_core(entry)
-                    and entry["concept_match"] == "exact_question"
-                    else (
-                        "exact_query_unit_scope_only"
-                        if entry_is_core(entry)
-                        and entry["concept_match"] == "exact_query_unit"
-                        else "component_or_generic_support_only_not_full_question_proof"
-                    )
+                "claim_scope_policy": entry_claim_scope_policy(entry),
+                "additional_scope_requires_conditioning": bool(
+                    entry.get("unrequested_constraint_scope")
+                    or entry.get("unrequested_ranking_scope")
                 ),
                 "matched_query_units": sorted(
                     {item["query"] for item in entry["matches"]}
@@ -1798,7 +1809,9 @@ def prepare_answer_context(
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
-                "concept_match 为 exact_question 时可支持完整问题；exact_query_unit 只支持对应子问题；其余视频只能支持局部机制或通用原则。",
+                "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
+                "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
+                "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
             ],

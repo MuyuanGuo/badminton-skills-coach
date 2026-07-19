@@ -490,6 +490,67 @@ class AnswerContextTests(unittest.TestCase):
             drop_rejected["7054395778814561575"],
         )
 
+    def test_generic_questions_condition_additional_specific_scope(self):
+        backhand = self.context_module.prepare_answer_context(
+            "反手怎么练？",
+            local_personalization=False,
+        )
+        backhand_by_id = {
+            item["video_id"]: item for item in backhand["selected_videos"]
+        }
+        self.assertEqual(
+            backhand_by_id["7060717442825309480"]["claim_scope_policy"],
+            "exact_question_scope",
+        )
+        for video_id in [
+            "7499776424493075772",
+            "7098897570482670888",
+            "7535400692573211962",
+        ]:
+            self.assertEqual(
+                backhand_by_id[video_id]["claim_scope_policy"],
+                "additional_specific_scope_only_not_unrestricted_full_question_proof",
+            )
+            self.assertTrue(
+                backhand_by_id[video_id][
+                    "additional_scope_requires_conditioning"
+                ]
+            )
+
+        footwork = self.context_module.prepare_answer_context(
+            "步法怎么练？",
+            local_personalization=False,
+        )
+        footwork_by_id = {
+            item["video_id"]: item for item in footwork["selected_videos"]
+        }
+        self.assertEqual(
+            footwork_by_id["7214304020775652620"]["claim_scope_policy"],
+            "additional_specific_scope_only_not_unrestricted_full_question_proof",
+        )
+        self.assertEqual(
+            footwork_by_id["7656927370758796145"]["claim_scope_policy"],
+            "additional_specific_scope_only_not_unrestricted_full_question_proof",
+        )
+
+        jump_smash = self.context_module.prepare_answer_context(
+            "反手跳杀怎么练？",
+            local_personalization=False,
+        )
+        jump_smash_by_id = {
+            item["video_id"]: item
+            for item in jump_smash["selected_videos"]
+        }
+        self.assertEqual(
+            jump_smash_by_id["7499776424493075772"]["role"], "core"
+        )
+        self.assertEqual(
+            jump_smash_by_id["7499776424493075772"][
+                "claim_scope_policy"
+            ],
+            "exact_question_scope",
+        )
+
     def test_direct_instruction_survives_broad_canonical_concepts(self):
         short_serve = self.context_module.prepare_answer_context(
             "发小球怎么练？",
