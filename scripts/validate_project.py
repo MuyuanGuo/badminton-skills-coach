@@ -323,13 +323,16 @@ skill_answer_selection_rules = json.loads(
 if skill_answer_selection_rules != answer_selection_rules:
     raise SystemExit("Skill answer selection rules are out of sync")
 actor_markers = answer_selection_rules.get("query_actor_markers", {})
-if set(actor_markers) != {"player", "opponent"} or any(
+if set(actor_markers) != {"player", "opponent", "partner"} or any(
     not actor_markers[actor] for actor in actor_markers
 ):
     raise SystemExit("Query actor markers are incomplete")
-if set(actor_markers["player"]) & set(actor_markers["opponent"]):
+flattened_actor_markers = [
+    marker for markers in actor_markers.values() for marker in markers
+]
+if len(flattened_actor_markers) != len(set(flattened_actor_markers)):
     raise SystemExit("Query actor markers cannot identify both actors")
-all_actor_markers = set(actor_markers["player"]) | set(actor_markers["opponent"])
+all_actor_markers = set(flattened_actor_markers)
 for marker, suppressions in answer_selection_rules.get(
     "query_actor_marker_suppressions", {}
 ).items():
@@ -339,6 +342,17 @@ for marker, suppressions in answer_selection_rules.get(
         raise SystemExit("Query actor marker suppression must contain its marker")
 if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
+if not answer_selection_rules.get("query_target_actor_terms"):
+    raise SystemExit("Query target actor terms are missing")
+if not answer_selection_rules.get("partner_condition_support_terms"):
+    raise SystemExit("Partner condition support terms are missing")
+for implication in answer_selection_rules.get(
+    "partner_retrieval_implications", []
+):
+    if set(implication) != {"trigger_terms", "search_terms"}:
+        raise SystemExit("Partner retrieval implication contract is incomplete")
+    if not implication["trigger_terms"] or not implication["search_terms"]:
+        raise SystemExit("Partner retrieval implication cannot be empty")
 constraint_axes = {
     axis["name"]: axis
     for axis in answer_selection_rules.get("constraint_axes", [])

@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -23,6 +23,7 @@
   ],
   "query_actor_markers": {
     "opponent": ["对手", "对方", "对面", "人家", "其他人", "别人", "他", "她"],
+    "partner": ["搭档", "队友", "同伴", "搭子"],
     "player": [
       "我应该",
       "我该",
@@ -46,6 +47,7 @@
   "query_actor_marker_suppressions": {
     "他": ["其他", "吉他"]
   },
+  "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
   "opponent_response_implications": [
     {
@@ -82,6 +84,34 @@
     "接杀",
     "站位",
     "回球概率"
+  ],
+  "partner_condition_support_terms": [
+    "搭档",
+    "队友",
+    "同伴",
+    "搭子",
+    "配合",
+    "轮转",
+    "补位",
+    "保护",
+    "协防",
+    "站位",
+    "两个人",
+    "双打"
+  ],
+  "partner_retrieval_implications": [
+    {
+      "trigger_terms": ["补位", "保护", "协防", "软肋"],
+      "search_terms": ["双打 补位", "双打 轮转保护"]
+    },
+    {
+      "trigger_terms": ["轮转", "配合"],
+      "search_terms": ["双打 轮转", "双打 配合"]
+    },
+    {
+      "trigger_terms": ["站位"],
+      "search_terms": ["双打 站位", "双打 发球后站位"]
+    }
   ],
   "constraint_axes": [
     {

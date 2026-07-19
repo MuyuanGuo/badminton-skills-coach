@@ -326,6 +326,42 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(other_backhand["opponent_constraints"], {})
 
+        partner_weakness = self.context_module.query_actor_context(
+            self.search_module,
+            "搭档反手弱，我应该怎么补位",
+            self.selection_rules,
+        )
+        self.assertEqual(partner_weakness["target_actor"], "player")
+        self.assertEqual(partner_weakness["target_constraints"], {})
+        self.assertEqual(
+            partner_weakness["partner_constraints"],
+            {"stroke_side": ["backhand"]},
+        )
+
+        partner_serve = self.context_module.query_actor_context(
+            self.search_module,
+            "队友发球总被扑，我怎么站位",
+            self.selection_rules,
+        )
+        self.assertEqual(partner_serve["target_actor"], "player")
+        self.assertEqual(partner_serve["player_constraints"], {})
+        self.assertEqual(
+            partner_serve["partner_constraints"],
+            {"serve_role": ["serve"]},
+        )
+
+        partner_target = self.context_module.query_actor_context(
+            self.search_module,
+            "我的反手弱，搭档应该怎么补位",
+            self.selection_rules,
+        )
+        self.assertEqual(partner_target["target_actor"], "partner")
+        self.assertEqual(partner_target["target_constraints"], {})
+        self.assertEqual(
+            partner_target["player_constraints"],
+            {"stroke_side": ["backhand"]},
+        )
+
         own_serve = self.context_module.query_actor_context(
             self.search_module,
             "我发高远球，对手总抢攻，怎么改",
@@ -420,6 +456,52 @@ class AnswerContextTests(unittest.TestCase):
             "derived_player_constraint_not_supported:tactical_phase",
             pronoun_smash_rejected["7499776424493075772"],
         )
+
+        partner_weakness = self.context_module.prepare_answer_context(
+            "搭档反手弱，我应该怎么补位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        partner_weakness_ids = {
+            item["video_id"] for item in partner_weakness["selected_videos"]
+        }
+        self.assertIn("7074399231259266344", partner_weakness_ids)
+        self.assertNotIn("7499776424493075772", partner_weakness_ids)
+        partner_weakness_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in partner_weakness["rejected_candidates"]
+        }
+        self.assertIn(
+            "partner_context_not_supported",
+            partner_weakness_rejected["7499776424493075772"],
+        )
+
+        partner_serve = self.context_module.prepare_answer_context(
+            "队友发球总被扑，我怎么站位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        partner_serve_ids = {
+            item["video_id"] for item in partner_serve["selected_videos"]
+        }
+        self.assertIn("7656927370758796145", partner_serve_ids)
+        self.assertNotIn("7489412105641168187", partner_serve_ids)
+
+        partner_target = self.context_module.prepare_answer_context(
+            "我的反手弱，搭档应该怎么补位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            partner_target["question_interpretation"]["actor_context"][
+                "target_actor"
+            ],
+            "partner",
+        )
+        partner_target_ids = {
+            item["video_id"] for item in partner_target["selected_videos"]
+        }
+        self.assertNotIn("7499776424493075772", partner_target_ids)
 
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(

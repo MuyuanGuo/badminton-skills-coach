@@ -71,7 +71,7 @@ Read `references/answer-workflow.md` before composing a systematic learning path
 - A title, category, tag, topic membership, retrieval score, or n-gram match is a lead, not proof of a detailed claim.
 - A specific claim needs a teaching-note item or timestamped transcript window that directly supports it.
 - Preserve active/passive, singles/doubles, forehand/backhand, level, and court-position distinctions.
-- Treat `actor_context.opponent_constraints` as incoming or opponent conditions, never as actions performed by the user; apply hard evidence constraints only from `question_interpretation.constraints`.
+- Use `actor_context.target_actor` to identify whether advice targets the user or partner. Treat `opponent_constraints`, `partner_constraints`, and other non-target actor constraints as conditions, never as actions performed by the target; apply hard evidence constraints only from `question_interpretation.constraints`.
 - When sources differ, explain the conditions rather than inventing one universal rule.
 - The exhaustive candidate set does not mathematically prove semantic completeness; quality claims must use the evaluated corpus and known-case metrics.
 

@@ -114,6 +114,12 @@ def validate_registry(registry, answer_registry):
             raise ValueError(f"{case_id} has no constraint contract")
         if not isinstance(case.get("expected_opponent_constraints", {}), dict):
             raise ValueError(f"{case_id} has an invalid opponent constraint contract")
+        if not isinstance(case.get("expected_partner_constraints", {}), dict):
+            raise ValueError(f"{case_id} has an invalid partner constraint contract")
+        if not isinstance(case.get("expected_player_constraints", {}), dict):
+            raise ValueError(f"{case_id} has an invalid player constraint contract")
+        if case.get("expected_target_actor", "player") not in {"player", "partner"}:
+            raise ValueError(f"{case_id} has an invalid target actor contract")
     return cases, adversarial_cases
 
 
@@ -206,6 +212,27 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             actor_context["opponent_constraints"]
             == expected_opponent_constraints
         )
+        expected_target_actor = case.get("expected_target_actor", "player")
+        checks["target_actor"] = (
+            actor_context["target_actor"] == expected_target_actor
+        )
+        expected_player_constraints = case.get(
+            "expected_player_constraints",
+            case["expected_constraints"]
+            if expected_target_actor == "player"
+            else {},
+        )
+        checks["player_constraints"] = (
+            actor_context["player_constraints"]
+            == expected_player_constraints
+        )
+        expected_partner_constraints = case.get(
+            "expected_partner_constraints", {}
+        )
+        checks["partner_constraints"] = (
+            actor_context["partner_constraints"]
+            == expected_partner_constraints
+        )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -218,6 +245,9 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     "intent": case["expected_intent"],
                     "constraints": case["expected_constraints"],
                     "opponent_constraints": expected_opponent_constraints,
+                    "partner_constraints": expected_partner_constraints,
+                    "player_constraints": expected_player_constraints,
+                    "target_actor": expected_target_actor,
                 },
                 "actual": {
                     "intent": intent_frame,
@@ -225,6 +255,13 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     "opponent_constraints": actor_context[
                         "opponent_constraints"
                     ],
+                    "partner_constraints": actor_context[
+                        "partner_constraints"
+                    ],
+                    "player_constraints": actor_context[
+                        "player_constraints"
+                    ],
+                    "target_actor": actor_context["target_actor"],
                 },
             }
         )
@@ -246,7 +283,7 @@ def main():
     )
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--answer-cases", type=Path, default=ANSWER_CASES_PATH)
-    parser.add_argument("--require-cases", type=int, default=56)
+    parser.add_argument("--require-cases", type=int, default=60)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
 

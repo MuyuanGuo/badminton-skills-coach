@@ -695,6 +695,71 @@
       },
       "expected_constraints": {"stroke_side": ["backhand"]},
       "expected_opponent_constraints": {}
+    },
+    {
+      "case_id": "QUA027",
+      "query": "搭档反手弱，我应该怎么补位",
+      "intent_summary": "把搭档反手保留为队友条件，只把补位建议指向用户",
+      "expected_intent": {
+        "positive_query_contains": ["搭档", "反手", "我应该怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA028",
+      "query": "队友发球总被扑，我怎么站位",
+      "intent_summary": "把发球识别为队友动作，不误作用户自己发球",
+      "expected_intent": {
+        "positive_query_contains": ["队友", "发球", "我怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_partner_constraints": {"serve_role": ["serve"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA029",
+      "query": "对手总压我队友反手，我们怎么轮转保护",
+      "intent_summary": "同时保留对手、队友和团队响应三个主体，不把队友反手变成用户技术",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "队友", "反手", "我们怎么轮转保护"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA030",
+      "query": "我的反手弱，搭档应该怎么补位",
+      "intent_summary": "把用户反手保留为条件，并把建议目标切换到搭档",
+      "expected_intent": {
+        "positive_query_contains": ["我的", "反手", "搭档应该怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {"stroke_side": ["backhand"]},
+      "expected_partner_constraints": {},
+      "expected_target_actor": "partner"
     }
   ]
 }
