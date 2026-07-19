@@ -421,12 +421,16 @@ for axis in constraint_axes.values():
     for field in [
         "opponent_query_value_additions",
         "query_value_suppressions",
+        "source_value_additions",
+        "source_value_suppressions",
     ]:
         configured_values = set(axis.get(field, {}))
         if not configured_values.issubset(allowed_values):
             raise SystemExit(f"{field} contains an unknown constraint value")
         if any(not terms for terms in axis.get(field, {}).values()):
             raise SystemExit(f"{field} contains an empty term list")
+    if axis.get("category_evidence_policy", "allow") not in {"allow", "ignore"}:
+        raise SystemExit("Unknown category evidence policy")
 required_implication_fields = {
     "opponent_axis",
     "opponent_values",

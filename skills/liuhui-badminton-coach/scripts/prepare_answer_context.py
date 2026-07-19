@@ -326,6 +326,25 @@ def structured_video_text(search_module, video):
     )
 
 
+def structured_constraint_text(search_module, video):
+    """Return teaching evidence without repeating metadata or broad taxonomy."""
+    note = {
+        key: value
+        for key, value in (video.get("teaching_note") or {}).items()
+        if key
+        not in {
+            "note",
+            "video_id",
+            "title",
+            "url",
+            "topic",
+            "review_summary",
+            "problem",
+        }
+    }
+    return search_module.normalize(search_module.flatten(note))
+
+
 def axis_values(search_module, text, axis):
     normalized = search_module.normalize(text)
     if not normalized:
@@ -845,7 +864,7 @@ def video_constraint_scope(search_module, video, rules):
         str(value or "")
         for value in [note.get("review_summary", ""), note.get("problem", "")]
     )
-    structured_text = structured_video_text(search_module, video)
+    structured_text = structured_constraint_text(search_module, video)
     scope = {}
     for axis in rules.get("constraint_axes", []):
         name = axis["name"]
@@ -862,9 +881,12 @@ def video_constraint_scope(search_module, video, rules):
         reviewed, reviewed_suppressed = source_axis_values(
             search_module, reviewed_context, axis
         )
-        category, category_suppressed = source_axis_values(
-            search_module, category_text, axis
-        )
+        if axis.get("category_evidence_policy") == "ignore":
+            category, category_suppressed = set(), set()
+        else:
+            category, category_suppressed = source_axis_values(
+                search_module, category_text, axis
+            )
         structured, structured_suppressed = source_axis_values(
             search_module, structured_text, axis
         )
@@ -996,6 +1018,8 @@ def constraint_decision(
     requested_shot_families = set(requested.get("shot_family", []))
     requested_serve_roles = set(requested.get("serve_role", []))
     requested_court_zones = set(requested.get("court_zone", []))
+    shot_scope = scope.get("shot_family", {})
+    video_shot_families = set(shot_scope.get("values", []))
     serve_scope = scope.get("serve_role", {})
     video_serve_roles = set(serve_scope.get("values", []))
     if (
@@ -1017,6 +1041,19 @@ def constraint_decision(
     ):
         failures.append(
             "explicit_cross_axis_conflict:court_zone_vs_serve_role"
+        )
+    non_serve_video_shots = video_shot_families - {
+        "short_serve",
+        "deep_serve",
+    }
+    if (
+        requested_serve_roles
+        and not video_serve_roles
+        and non_serve_video_shots
+        and not requested_shot_families & non_serve_video_shots
+    ):
+        failures.append(
+            "explicit_cross_axis_conflict:serve_role_vs_shot_family"
         )
     return not failures, failures, requested, scope, matches
 
@@ -1698,6 +1735,13 @@ def selection_decision(
         and constraint_matches.get("technique_variant") != "exact"
     ):
         return False, ["specific_technique_role_not_supported"]
+    serve_scope = constraint_result[3].get("serve_role", {})
+    if (
+        requested_constraints.get("serve_role")
+        and constraint_matches.get("serve_role") == "unspecified_support"
+        and serve_scope.get("suppressed_values")
+    ):
+        return False, ["specific_serve_role_source_suppressed"]
 
     concept_match = concept_decision(search_module, plan, entry, video, rules)
     if concept_match == "none":

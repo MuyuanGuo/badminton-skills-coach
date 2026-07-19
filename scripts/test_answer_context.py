@@ -751,6 +751,117 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("explicit_constraint_conflict:discipline", failures)
         self.assertEqual(matches["discipline"], "conflict")
 
+    def test_source_actor_mentions_do_not_prove_player_serving_role(self):
+        synthetic_cases = [
+            "发球机连续送球练防守",
+            "对着墙发球发高一点练网前控球",
+            "你给我发球，我打你任意两个点",
+            "陪练发球以后我练接发",
+        ]
+        for evidence in synthetic_cases:
+            with self.subTest(evidence=evidence):
+                video = {
+                    "video_id": "7000000000000000004",
+                    "title": "训练示范",
+                    "category": "发球与接发",
+                    "tags": [],
+                    "teaching_note": {
+                        "topic": "训练示范",
+                        "key_evidence": [{"text": evidence}],
+                    },
+                }
+                plan = self.search_module.plan_query("发球怎么练")
+                allowed, failures, _, scope, matches = (
+                    self.context_module.constraint_decision(
+                        self.search_module,
+                        "发球怎么练",
+                        plan,
+                        video,
+                        self.selection_rules,
+                    )
+                )
+                self.assertFalse(allowed)
+                self.assertIn(
+                    "explicit_constraint_conflict:serve_role", failures
+                )
+                self.assertEqual(matches["serve_role"], "conflict")
+                self.assertNotIn("serve", scope["serve_role"]["values"])
+                self.assertIn(
+                    "serve", scope["serve_role"]["suppressed_values"]
+                )
+
+    def test_real_feeder_and_machine_videos_do_not_enter_serve_answers(self):
+        invalid_ids = {
+            "7078487171803467042",
+            "7275536378321014051",
+            "7276646497377176872",
+            "7491244893893938492",
+        }
+        retained_direct_ids = {
+            "7072543702161296640",
+            "7522041413614816570",
+        }
+        for query in [
+            "发球怎么发得更稳定",
+            "反手发球怎么练",
+            "发小球怎么发",
+        ]:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                    include_rejected=True,
+                )
+                selected_ids = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertTrue(invalid_ids.isdisjoint(selected_ids))
+                self.assertTrue(retained_direct_ids & selected_ids)
+
+                if query == "反手发球怎么练":
+                    self.assertNotIn("7499776424493075772", selected_ids)
+
+        generic = self.context_module.prepare_answer_context(
+            "发球怎么发得更稳定",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        rejected = {
+            item["video_id"]: item["reasons"]
+            for item in generic["rejected_candidates"]
+        }
+        for video_id in invalid_ids:
+            self.assertIn(
+                "explicit_constraint_conflict:serve_role",
+                rejected[video_id],
+            )
+
+        backhand = self.context_module.prepare_answer_context(
+            "反手发球怎么练",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        backhand_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in backhand["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_cross_axis_conflict:serve_role_vs_shot_family",
+            backhand_rejected["7499776424493075772"],
+        )
+
+        receive = self.context_module.prepare_answer_context(
+            "接发球怎么准备",
+            local_personalization=False,
+        )
+        receive_ids = {
+            item["video_id"] for item in receive["selected_videos"]
+        }
+        self.assertIn("7501542236061420859", receive_ids)
+        self.assertIn("7124871920230632745", receive_ids)
+        self.assertNotIn("7275536378321014051", receive_ids)
+        self.assertNotIn("7276646497377176872", receive_ids)
+
     def test_backhand_passive_clear_excludes_confirmed_forehand_sources(self):
         payload = self.context_module.prepare_answer_context(
             "如何打反手被动高远球？",
