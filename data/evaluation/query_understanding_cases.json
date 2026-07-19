@@ -708,8 +708,10 @@
         "scenarios_contains": ["反手"],
         "requested_output": "coaching_answer"
       },
-      "expected_constraints": {},
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
       "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "player"
     },
     {
@@ -724,8 +726,10 @@
         "scenarios_contains": [],
         "requested_output": "coaching_answer"
       },
-      "expected_constraints": {},
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
       "expected_partner_constraints": {"serve_role": ["serve"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "player"
     },
     {
@@ -740,8 +744,10 @@
         "scenarios_contains": ["反手"],
         "requested_output": "coaching_answer"
       },
-      "expected_constraints": {},
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
       "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "player"
     },
     {
@@ -756,10 +762,93 @@
         "scenarios_contains": ["反手"],
         "requested_output": "coaching_answer"
       },
-      "expected_constraints": {},
+      "expected_constraints": {"discipline": ["doubles"]},
       "expected_player_constraints": {"stroke_side": ["backhand"]},
       "expected_partner_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA031",
+      "query": "队友反手弱，他应该怎么站位",
+      "intent_summary": "把他回指到最近明确出现的队友，并把站位协作推导为双打场景",
+      "expected_intent": {
+        "positive_query_contains": ["队友", "反手", "他应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "discipline": ["doubles"]
+      },
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA032",
+      "query": "我的搭档发球总被扑，他应该怎么调整站位",
+      "intent_summary": "把他回指到搭档，保留搭档发球条件并把调整站位限定为双打",
+      "expected_intent": {
+        "positive_query_contains": ["我的搭档", "发球", "他应该怎么调整站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "serve_role": ["serve"],
+        "discipline": ["doubles"]
+      },
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"serve_role": ["serve"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA033",
+      "query": "陪练给我发高远球，我怎么接",
+      "intent_summary": "把陪练识别为来球方，把给我中的我识别为受事，并把用户动作推导为接发",
+      "expected_intent": {
+        "positive_query_contains": ["陪练", "给我发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA034",
+      "query": "发球机给我发高远球，我怎么接",
+      "intent_summary": "把发球机识别为训练来球方而不是用户本人，并只约束用户接发角色",
+      "expected_intent": {
+        "positive_query_contains": ["发球机", "给我发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      },
+      "expected_target_actor": "player"
     }
   ]
 }

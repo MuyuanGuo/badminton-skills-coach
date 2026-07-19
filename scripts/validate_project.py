@@ -344,14 +344,29 @@ if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
 if not answer_selection_rules.get("query_target_actor_terms"):
     raise SystemExit("Query target actor terms are missing")
+pronoun_markers = set(
+    answer_selection_rules.get("query_actor_pronoun_markers", [])
+)
+if not pronoun_markers or not pronoun_markers.issubset(
+    set(actor_markers["opponent"])
+):
+    raise SystemExit("Query actor pronoun markers are incomplete")
 if not answer_selection_rules.get("partner_condition_support_terms"):
     raise SystemExit("Partner condition support terms are missing")
 for implication in answer_selection_rules.get(
     "partner_retrieval_implications", []
 ):
-    if set(implication) != {"trigger_terms", "search_terms"}:
+    if set(implication) != {
+        "trigger_terms",
+        "search_terms",
+        "derived_constraints",
+    }:
         raise SystemExit("Partner retrieval implication contract is incomplete")
-    if not implication["trigger_terms"] or not implication["search_terms"]:
+    if (
+        not implication["trigger_terms"]
+        or not implication["search_terms"]
+        or not implication["derived_constraints"]
+    ):
         raise SystemExit("Partner retrieval implication cannot be empty")
 constraint_axes = {
     axis["name"]: axis
@@ -364,6 +379,15 @@ required_derived_axes = set(
 )
 if not required_derived_axes or not required_derived_axes.issubset(constraint_axes):
     raise SystemExit("Derived player constraint match axes are incomplete")
+for implication in answer_selection_rules.get(
+    "partner_retrieval_implications", []
+):
+    for axis_name, values in implication["derived_constraints"].items():
+        if axis_name not in constraint_axes:
+            raise SystemExit("Partner retrieval implication uses an unknown axis")
+        allowed_values = set(constraint_axes[axis_name]["values"])
+        if not values or not set(values).issubset(allowed_values):
+            raise SystemExit("Partner retrieval implication uses an unknown value")
 for axis in constraint_axes.values():
     allowed_values = set(axis.get("values", {}))
     for field in [

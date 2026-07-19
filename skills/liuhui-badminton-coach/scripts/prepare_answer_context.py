@@ -466,32 +466,61 @@ def _query_actor_parser_parts(query, rules):
     return markers, separators, pattern
 
 
-def query_actor_text(query, rules):
+def _query_actor_segments(query, rules):
     markers, separators, pattern = _query_actor_parser_parts(query, rules)
     if pattern is None:
-        return {"player": query}
+        return [{"actor": "player", "text": query}]
+    pronouns = set(rules.get("query_actor_pronoun_markers", []))
+    referent_actors = {"opponent", "partner"}
+    segments = []
+    current_actor = "player"
+    last_explicit_referent = None
+    cursor = 0
+
+    def append_text(text):
+        if not text:
+            return
+        if segments and segments[-1]["actor"] == current_actor:
+            segments[-1]["text"] += text
+        else:
+            segments.append({"actor": current_actor, "text": text})
+
+    for match in pattern.finditer(query):
+        token = match.group(0)
+        append_text(query[cursor : match.start()])
+        if _query_actor_marker_suppressed(query, match, rules):
+            append_text(token)
+            cursor = match.end()
+            continue
+        if token in separators:
+            current_actor = "player"
+            append_text(" ")
+        else:
+            configured_actor = markers[token]
+            if token in pronouns and last_explicit_referent in referent_actors:
+                current_actor = last_explicit_referent
+            else:
+                current_actor = configured_actor
+            append_text(token)
+            if token not in pronouns and configured_actor in referent_actors:
+                last_explicit_referent = configured_actor
+        cursor = match.end()
+    append_text(query[cursor:])
+    return [
+        {"actor": segment["actor"], "text": segment["text"]}
+        for segment in segments
+        if segment["text"]
+    ]
+
+
+def query_actor_text(query, rules):
     buffers = {
         actor: []
         for actor in rules.get("query_actor_markers", {})
     }
     buffers.setdefault("player", [])
-    current_actor = "player"
-    cursor = 0
-    for match in pattern.finditer(query):
-        token = match.group(0)
-        if _query_actor_marker_suppressed(query, match, rules):
-            buffers[current_actor].append(query[cursor : match.end()])
-            cursor = match.end()
-            continue
-        buffers[current_actor].append(query[cursor : match.start()])
-        if token in separators:
-            current_actor = "player"
-            buffers[current_actor].append(" ")
-        else:
-            current_actor = markers[token]
-            buffers[current_actor].append(token)
-        cursor = match.end()
-    buffers[current_actor].append(query[cursor:])
+    for segment in _query_actor_segments(query, rules):
+        buffers[segment["actor"]].append(segment["text"])
     return {
         actor: re.sub(r"\s+", " ", "".join(parts)).strip()
         for actor, parts in buffers.items()
@@ -499,40 +528,20 @@ def query_actor_text(query, rules):
 
 
 def query_target_actor(query, actor_text, rules):
-    markers, separators, pattern = _query_actor_parser_parts(query, rules)
-    if pattern is None:
-        return "player"
     target_terms = [
         str(term)
         for term in rules.get("query_target_actor_terms", [])
         if str(term)
     ]
-    current_actor = "player"
     target_actor = None
-    cursor = 0
 
     def segment_requests_answer(segment):
         normalized = re.sub(r"\s+", "", segment)
         return any(re.sub(r"\s+", "", term) in normalized for term in target_terms)
 
-    for match in pattern.finditer(query):
-        if segment_requests_answer(query[cursor : match.start()]):
-            target_actor = current_actor
-        token = match.group(0)
-        if _query_actor_marker_suppressed(query, match, rules):
-            if segment_requests_answer(token):
-                target_actor = current_actor
-            cursor = match.end()
-            continue
-        if token in separators:
-            current_actor = "player"
-        else:
-            current_actor = markers[token]
-            if segment_requests_answer(token):
-                target_actor = current_actor
-        cursor = match.end()
-    if segment_requests_answer(query[cursor:]):
-        target_actor = current_actor
+    for segment in _query_actor_segments(query, rules):
+        if segment_requests_answer(segment["text"]):
+            target_actor = segment["actor"]
     if target_actor in {"player", "partner"}:
         return target_actor
     if actor_text.get("partner") and not actor_text.get("player"):
@@ -607,6 +616,7 @@ def query_actor_context(search_module, query, rules):
     target_actor = query_target_actor(query, actor_text, rules)
     normalized_query = search_module.normalize(query)
     derived_player_constraints = {}
+    derived_target_constraints = {}
     derived_search_terms = []
     for implication in (
         rules.get("opponent_response_implications", [])
@@ -639,8 +649,22 @@ def query_actor_context(search_module, query, rules):
                 for term in implication["trigger_terms"]
             ):
                 derived_search_terms.extend(implication["search_terms"])
+                for axis_name, values in implication.get(
+                    "derived_constraints", {}
+                ).items():
+                    derived_target_constraints.setdefault(axis_name, []).extend(
+                        values
+                    )
     actor_constraints["player"] = player_constraints
-    target_constraints = actor_constraints.get(target_actor, {})
+    target_constraints = {
+        axis_name: list(values)
+        for axis_name, values in actor_constraints.get(target_actor, {}).items()
+    }
+    for axis_name, values in derived_target_constraints.items():
+        target_constraints[axis_name] = sorted(
+            set(target_constraints.get(axis_name, [])) | set(values)
+        )
+        derived_target_constraints[axis_name] = sorted(set(values))
     return {
         "player_query": actor_text["player"],
         "opponent_query": actor_text["opponent"],
@@ -653,6 +677,7 @@ def query_actor_context(search_module, query, rules):
         "target_query": actor_text[target_actor],
         "target_constraints": target_constraints,
         "derived_player_constraints": derived_player_constraints,
+        "derived_target_constraints": derived_target_constraints,
         "derived_search_terms": list(dict.fromkeys(derived_search_terms)),
     }
 
@@ -953,6 +978,11 @@ def non_target_actor_condition_failures(
     )
     failures = []
     target_actor = actor_context["target_actor"]
+    if actor_context.get("partner_query") and not any(
+        search_module.normalize(term) in support_text
+        for term in rules.get("partner_condition_support_terms", [])
+    ):
+        failures.append("partner_context_not_supported")
     for actor, actor_constraints in actor_context["actor_constraints"].items():
         if actor == target_actor or not actor_constraints:
             continue
@@ -965,12 +995,9 @@ def non_target_actor_condition_failures(
             search_module.normalize(term) in support_text
             for term in rules.get(support_terms_key, [])
         )
-        partner_relationship = (
-            actor == "partner"
-            or target_actor == "partner"
-        )
-        if partner_relationship and not has_actor_support:
-            failures.append("partner_context_not_supported")
+        if actor == "partner" and not has_actor_support:
+            if "partner_context_not_supported" not in failures:
+                failures.append("partner_context_not_supported")
             continue
         if has_actor_support:
             continue
@@ -2164,7 +2191,7 @@ def prepare_answer_context(
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
-                "actor_context.opponent_constraints 与 partner_constraints 只描述非回答目标的动作或条件，不得当成目标球员执行动作；target_actor 指明建议对象，硬证据约束只使用 question_interpretation.constraints。",
+                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景，不得写成目标球员的击球动作。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",

@@ -118,6 +118,12 @@ def validate_registry(registry, answer_registry):
             raise ValueError(f"{case_id} has an invalid partner constraint contract")
         if not isinstance(case.get("expected_player_constraints", {}), dict):
             raise ValueError(f"{case_id} has an invalid player constraint contract")
+        if not isinstance(
+            case.get("expected_derived_target_constraints", {}), dict
+        ):
+            raise ValueError(
+                f"{case_id} has an invalid derived target constraint contract"
+            )
         if case.get("expected_target_actor", "player") not in {"player", "partner"}:
             raise ValueError(f"{case_id} has an invalid target actor contract")
     return cases, adversarial_cases
@@ -233,6 +239,13 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             actor_context["partner_constraints"]
             == expected_partner_constraints
         )
+        expected_derived_target_constraints = case.get(
+            "expected_derived_target_constraints", {}
+        )
+        checks["derived_target_constraints"] = (
+            actor_context["derived_target_constraints"]
+            == expected_derived_target_constraints
+        )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -247,6 +260,9 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     "opponent_constraints": expected_opponent_constraints,
                     "partner_constraints": expected_partner_constraints,
                     "player_constraints": expected_player_constraints,
+                    "derived_target_constraints": (
+                        expected_derived_target_constraints
+                    ),
                     "target_actor": expected_target_actor,
                 },
                 "actual": {
@@ -260,6 +276,9 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     ],
                     "player_constraints": actor_context[
                         "player_constraints"
+                    ],
+                    "derived_target_constraints": actor_context[
+                        "derived_target_constraints"
                     ],
                     "target_actor": actor_context["target_actor"],
                 },

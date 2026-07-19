@@ -332,7 +332,14 @@ class AnswerContextTests(unittest.TestCase):
             self.selection_rules,
         )
         self.assertEqual(partner_weakness["target_actor"], "player")
-        self.assertEqual(partner_weakness["target_constraints"], {})
+        self.assertEqual(
+            partner_weakness["target_constraints"],
+            {"discipline": ["doubles"]},
+        )
+        self.assertEqual(
+            partner_weakness["derived_target_constraints"],
+            {"discipline": ["doubles"]},
+        )
         self.assertEqual(
             partner_weakness["partner_constraints"],
             {"stroke_side": ["backhand"]},
@@ -346,6 +353,10 @@ class AnswerContextTests(unittest.TestCase):
         self.assertEqual(partner_serve["target_actor"], "player")
         self.assertEqual(partner_serve["player_constraints"], {})
         self.assertEqual(
+            partner_serve["target_constraints"],
+            {"discipline": ["doubles"]},
+        )
+        self.assertEqual(
             partner_serve["partner_constraints"],
             {"serve_role": ["serve"]},
         )
@@ -356,10 +367,45 @@ class AnswerContextTests(unittest.TestCase):
             self.selection_rules,
         )
         self.assertEqual(partner_target["target_actor"], "partner")
-        self.assertEqual(partner_target["target_constraints"], {})
+        self.assertEqual(
+            partner_target["target_constraints"],
+            {"discipline": ["doubles"]},
+        )
         self.assertEqual(
             partner_target["player_constraints"],
             {"stroke_side": ["backhand"]},
+        )
+
+        partner_pronoun = self.context_module.query_actor_context(
+            self.search_module,
+            "队友反手弱，他应该怎么站位",
+            self.selection_rules,
+        )
+        self.assertEqual(partner_pronoun["target_actor"], "partner")
+        self.assertEqual(partner_pronoun["opponent_query"], "")
+        self.assertIn("他应该怎么站位", partner_pronoun["partner_query"])
+        self.assertEqual(
+            partner_pronoun["target_constraints"],
+            {
+                "stroke_side": ["backhand"],
+                "discipline": ["doubles"],
+            },
+        )
+
+        feeder = self.context_module.query_actor_context(
+            self.search_module,
+            "陪练给我发高远球，我怎么接",
+            self.selection_rules,
+        )
+        self.assertEqual(feeder["target_actor"], "player")
+        self.assertEqual(feeder["player_constraints"], {"serve_role": ["receive"]})
+        self.assertEqual(
+            feeder["opponent_constraints"],
+            {
+                "shot_family": ["deep_serve"],
+                "serve_role": ["serve"],
+                "serve_trajectory": ["deep_serve"],
+            },
         )
 
         own_serve = self.context_module.query_actor_context(
@@ -475,6 +521,15 @@ class AnswerContextTests(unittest.TestCase):
             "partner_context_not_supported",
             partner_weakness_rejected["7499776424493075772"],
         )
+        self.assertIn(
+            "explicit_constraint_conflict:discipline",
+            partner_weakness_rejected["7115241358255803683"],
+        )
+        for item in partner_weakness["selected_videos"]:
+            self.assertNotEqual(
+                item["constraint_scope"]["discipline"]["values"],
+                ["singles"],
+            )
 
         partner_serve = self.context_module.prepare_answer_context(
             "队友发球总被扑，我怎么站位",
@@ -502,6 +557,46 @@ class AnswerContextTests(unittest.TestCase):
             item["video_id"] for item in partner_target["selected_videos"]
         }
         self.assertNotIn("7499776424493075772", partner_target_ids)
+
+        partner_pronoun = self.context_module.prepare_answer_context(
+            "队友反手弱，他应该怎么站位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            partner_pronoun["question_interpretation"]["actor_context"][
+                "target_actor"
+            ],
+            "partner",
+        )
+        partner_pronoun_ids = {
+            item["video_id"] for item in partner_pronoun["selected_videos"]
+        }
+        self.assertIn("7656927370758796145", partner_pronoun_ids)
+        self.assertNotIn("7115241358255803683", partner_pronoun_ids)
+        self.assertNotIn("7475440958130097466", partner_pronoun_ids)
+
+        for query in [
+            "陪练给我发高远球，我怎么接",
+            "发球机给我发高远球，我怎么接",
+        ]:
+            with self.subTest(query=query):
+                feeder = self.context_module.prepare_answer_context(
+                    query,
+                    max_videos=6,
+                    local_personalization=False,
+                )
+                feeder_ids = {
+                    item["video_id"] for item in feeder["selected_videos"]
+                }
+                self.assertIn("7639306481355832689", feeder_ids)
+                self.assertNotIn("7517867684509420857", feeder_ids)
+                self.assertNotIn("7508222669708463420", feeder_ids)
+                for item in feeder["selected_videos"]:
+                    self.assertIn(
+                        "receive",
+                        item["constraint_scope"]["serve_role"]["values"],
+                    )
 
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(
