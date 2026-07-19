@@ -2076,16 +2076,13 @@ def apply_retrieval_policy(
             if not allowed:
                 reasons.extend(failures)
             else:
-                for axis_name, failure_reason in selection_rules.get(
-                    "required_single_value_constraint_support_axes", {}
-                ).items():
-                    if (
-                        len(policy_requested_constraints.get(axis_name, []))
-                        == 1
-                        and constraint_matches.get(axis_name)
-                        == "unspecified_support"
-                    ):
-                        reasons.append(failure_reason)
+                reasons.extend(
+                    selection_module.required_constraint_support_failures(
+                        policy_requested_constraints,
+                        constraint_matches,
+                        selection_rules,
+                    )
+                )
 
         title_normalized = normalize(video.get("title", ""))
         if not reasons and any(

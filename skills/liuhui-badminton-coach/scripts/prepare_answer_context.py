@@ -1089,6 +1089,31 @@ def constraint_decision(
     return not failures, failures, requested, scope, matches
 
 
+def required_constraint_support_failures(requested, matches, rules):
+    failures = []
+    for axis_name, failure_reason in rules.get(
+        "required_single_value_constraint_support_axes", {}
+    ).items():
+        if (
+            len(requested.get(axis_name, [])) == 1
+            and matches.get(axis_name) == "unspecified_support"
+        ):
+            failures.append(failure_reason)
+    for condition in rules.get(
+        "required_constraint_support_conditions", []
+    ):
+        if not all(
+            set(required_values).issubset(requested.get(axis_name, []))
+            for axis_name, required_values in condition.get(
+                "when_requested", {}
+            ).items()
+        ):
+            continue
+        if matches.get(condition["axis"]) == "unspecified_support":
+            failures.append(condition["failure_reason"])
+    return list(dict.fromkeys(failures))
+
+
 def unrequested_specific_scope(requested, scope, rules):
     allowed_sources = set(
         rules.get("unrequested_scope_support_only_sources", [])
@@ -1754,14 +1779,11 @@ def selection_decision(
     ) = constraint_result
     if not constraints_match:
         return False, constraint_failures
-    for axis_name, failure_reason in rules.get(
-        "required_single_value_constraint_support_axes", {}
-    ).items():
-        if (
-            len(requested_constraints.get(axis_name, [])) == 1
-            and constraint_matches.get(axis_name) == "unspecified_support"
-        ):
-            return False, [failure_reason]
+    support_failures = required_constraint_support_failures(
+        requested_constraints, constraint_matches, rules
+    )
+    if support_failures:
+        return False, support_failures
     if (
         requested_constraints.get("serve_role")
         and requested_constraints.get("technique_variant")

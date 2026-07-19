@@ -701,6 +701,42 @@ class SearchKnowledgeTests(unittest.TestCase):
             rejected["7445495930280856892"]["within_review_budget"]
         )
 
+        forecourt = self.search_module.search(
+            "双打网前怎么下压",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        forecourt_ids = {item["video_id"] for item in forecourt["results"]}
+        self.assertTrue(
+            {"7077740726926298402", "7607852875611759802"}.issubset(
+                forecourt_ids
+            )
+        )
+        forecourt_rejected = {
+            item["video_id"]: item
+            for item in forecourt["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        for video_id in [
+            "7205399670959459623",
+            "7322291358931127592",
+        ]:
+            self.assertNotIn(video_id, forecourt_ids)
+        self.assertIn("7205399670959459623", forecourt_rejected)
+        self.assertIn(
+            "specific_pressure_court_zone_not_supported",
+            forecourt_rejected["7205399670959459623"][
+                "retrieval_policy_reasons"
+            ],
+        )
+        if "7322291358931127592" in forecourt_rejected:
+            self.assertIn(
+                "specific_pressure_court_zone_not_supported",
+                forecourt_rejected["7322291358931127592"][
+                    "retrieval_policy_reasons"
+                ],
+            )
+
     def test_screening_tags_are_not_ranked_as_evidence_fields(self):
         video = {
             "title": "网前框架",

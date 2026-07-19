@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 31)
+        self.assertEqual(result["cases"], 32)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -287,9 +287,40 @@ class AnswerContextTests(unittest.TestCase):
             "中前场怎么把球压下去",
             local_personalization=False,
         )
-        self.assertIn(
-            "7607852875611759802",
+        self.assertEqual(
             {item["video_id"] for item in midcourt["selected_videos"]},
+            {"7193151905139395872", "7607852875611759802"},
+        )
+
+        forecourt = self.context_module.prepare_answer_context(
+            "双打网前怎么下压",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            {item["video_id"] for item in forecourt["selected_videos"]},
+            {"7077740726926298402", "7607852875611759802"},
+        )
+        forecourt_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in forecourt["rejected_candidates"]
+        }
+        for video_id in [
+            "7205399670959459623",
+            "7322291358931127592",
+        ]:
+            self.assertIn(
+                "specific_pressure_court_zone_not_supported",
+                forecourt_rejected[video_id],
+            )
+
+        rearcourt = self.context_module.prepare_answer_context(
+            "后场怎么下压",
+            local_personalization=False,
+        )
+        self.assertNotIn(
+            "7205399670959459623",
+            {item["video_id"] for item in rearcourt["selected_videos"]},
         )
 
     def test_query_actor_context_separates_opponent_and_player_actions(self):

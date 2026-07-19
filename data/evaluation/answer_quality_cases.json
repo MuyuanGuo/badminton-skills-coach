@@ -2610,6 +2610,62 @@
           "所有压球都使用同一种杀球框架"
         ]
       }
+    },
+    {
+      "case_id": "AQ032",
+      "query": "双打网前怎么下压",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_court_scope_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "明确网前场区时只保留直接支持前场或中前场封网下压的来源；后场杀球训练和没有场区证据的双打压抽不得证明网前动作。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-19"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7077740726926298402",
+          "7607852875611759802"
+        ],
+        "required_video_ids": [
+          "7077740726926298402",
+          "7607852875611759802"
+        ],
+        "irrelevant_video_ids": [
+          "7093706918492917033",
+          "7205399670959459623",
+          "7322291358931127592",
+          "7570301879545426171"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ032-P1",
+            "description": "网前封球进入正身位后要从只适合身前主动球的苍蝇拍握法切换到传统握拍，并用前臂、手腕和手指旋转发力。",
+            "acceptable_terms": ["正身位", "传统握拍", "旋转发力"],
+            "evidence_video_ids": ["7077740726926298402"]
+          },
+          {
+            "point_id": "AQ032-P2",
+            "description": "来球很冲且失去前点时，可后撤大臂改变有效下压点，避免原拍臂关系把球送高或送远。",
+            "acceptable_terms": ["来球很冲", "大臂向后撤", "改变压球点"],
+            "evidence_video_ids": ["7607852875611759802"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ032-B1",
+            "description": "用户已明确网前，因此没有前场或中前场范围证据的通用下压、压抽及后场杀球来源不能作为动作证据。",
+            "acceptable_terms": ["明确网前", "场区证据", "不能用后场杀球"]
+          }
+        ],
+        "forbidden_claims": [
+          "后场杀球辅助练习可以直接证明网前下压动作",
+          "只要讲下压就不需要区分场区",
+          "双打压抽默认发生在网前"
+        ]
+      }
     }
   ]
 }

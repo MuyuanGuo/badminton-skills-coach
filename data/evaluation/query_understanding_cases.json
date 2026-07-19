@@ -280,6 +280,15 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["双打封网怎么压球"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ032",
+      "query": "双打网前怎么下压",
+      "intent_summary": "把网前视为下压动作的明确场区，拒绝没有前场范围的通用压抽和后场杀球来源",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打网前怎么下压"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [

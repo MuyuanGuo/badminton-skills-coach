@@ -1,5 +1,5 @@
 {
-  "version": 17,
+  "version": 18,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -334,6 +334,15 @@
     "technique_variant": "specific_technique_not_supported",
     "stroke_intent": "specific_stroke_intent_not_supported"
   },
+  "required_constraint_support_conditions": [
+    {
+      "axis": "court_zone",
+      "when_requested": {
+        "stroke_intent": ["downward_pressure"]
+      },
+      "failure_reason": "specific_pressure_court_zone_not_supported"
+    }
+  ],
   "focus_term_source_suppressions": {
     "握拍": ["对方握拍", "对手握拍", "对方是正手握拍", "对方是反手握拍", "对手是正手握拍", "对手是反手握拍"]
   },
@@ -413,6 +422,11 @@
     "7130069152592645411": {
       "tactical_phase": ["defense"],
       "basis": "00:27-00:45 是教练模拟进攻方杀球后，指导另一侧球员降低重心并调整防守站位；不得作为本方杀球后的进攻站位证据。"
+    },
+    "7193151905139395872": {
+      "stroke_intent": ["downward_pressure"],
+      "court_zone": ["midcourt"],
+      "basis": "01:20-01:26 明确说明该后点击球形成点杀式效果，但出球属于中前场处理。"
     }
   },
   "incomplete_fragment_terms": [
