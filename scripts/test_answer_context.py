@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 32)
+        self.assertEqual(result["cases"], 33)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -246,6 +246,49 @@ class AnswerContextTests(unittest.TestCase):
         self.assertEqual(
             smash["question_interpretation"]["constraints"]["shot_family"],
             ["smash"],
+        )
+
+    def test_lift_is_a_distinct_action_with_direct_evidence(self):
+        constraints = self.context_module.query_constraints(
+            self.search_module,
+            "反手挑球怎么打",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            constraints,
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["lift"],
+            },
+        )
+        context = self.context_module.prepare_answer_context(
+            "反手挑球怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            [item["video_id"] for item in context["selected_videos"]],
+            [
+                "7523163965838003514",
+                "7511934047901846841",
+                "7151961376448138531",
+            ],
+        )
+        self.assertFalse(
+            {
+                "7499776424493075772",
+                "7541623926234811705",
+                "7447084061371272507",
+                "7226178331408928038",
+            }
+            & {item["video_id"] for item in context["selected_videos"]}
+        )
+        self.assertEqual(
+            self.context_module.required_constraint_support_failures(
+                {"shot_family": ["lift"]},
+                {"shot_family": "incidental_support"},
+                self.selection_rules,
+            ),
+            ["specific_lift_shot_family_not_supported"],
         )
 
     def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):

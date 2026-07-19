@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -160,6 +160,7 @@
         "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
+        "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
         "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
         "deep_serve": ["发高远", "发后场", "偷后场", "高远发球"]
       },
@@ -181,7 +182,8 @@
         "net_shot": ["网前步法", "网前站位"]
       },
       "source_value_suppressions": {
-        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"],
+        "lift": ["对方挑球", "对手挑球", "对面挑球", "别人挑球", "逼迫对手进行挑球", "迫使对手挑球", "让对手挑球", "被迫挑球"]
       },
       "source_value_additions": {
         "net_shot": ["网前"]
@@ -341,6 +343,14 @@
         "stroke_intent": ["downward_pressure"]
       },
       "failure_reason": "specific_pressure_court_zone_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["lift"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_lift_shot_family_not_supported"
     }
   ],
   "focus_term_source_suppressions": {
@@ -427,6 +437,22 @@
       "stroke_intent": ["downward_pressure"],
       "court_zone": ["midcourt"],
       "basis": "01:20-01:26 明确说明该后点击球形成点杀式效果，但出球属于中前场处理。"
+    },
+    "7511934047901846841": {
+      "shot_family": ["clear", "drop", "lift"],
+      "basis": "00:08-00:38 分别讲反手高远、过渡和劈吊，01:18-01:31 明确讲从下往上完成反手挑球；该综合视频可按具体分段支持这些反手技术。"
+    },
+    "7226178331408928038": {
+      "shot_family": ["drive"],
+      "tactical_phase": ["defense"],
+      "basis": "可引用证据 00:09-00:25 讲接杀时先打直线、引动前场球员后再变线，没有直接的挑球动作证据；标题中的挑球不得证明挑球技术。"
+    },
+    "7151961376448138531": {
+      "stroke_side": ["forehand", "backhand"],
+      "shot_family": ["lift", "net_shot"],
+      "court_zone": ["forecourt"],
+      "technique_variant": ["net_drop"],
+      "basis": "00:00-00:32 明确讲正反手假挑真放的区分，以及做挑球时锁腕、向上处理和切削球头；可作为挑球与放网变化的进阶分段证据。"
     }
   },
   "incomplete_fragment_terms": [

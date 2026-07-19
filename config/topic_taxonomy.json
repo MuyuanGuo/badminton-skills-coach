@@ -1,5 +1,5 @@
 {
-  "version": "topic-taxonomy-v4",
+  "version": "topic-taxonomy-v5",
   "field_weights": {"title": 6, "focus": 3, "evidence": 1},
   "default_minimum_score": 3,
   "categories": [
@@ -18,13 +18,14 @@
     },
     {
       "name": "网前技术",
-      "description": "搓、勾、推、扑、放网及网前持拍框架。",
+      "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
       "subtopics": [
         {"name": "搓球与滚网", "keywords": ["搓球", "滚网", "平搓"]},
         {"name": "勾球与变线", "keywords": ["勾球", "勾对角", "网前变线"]},
         {"name": "扑球与推球", "keywords": ["扑球", "推球", "抢网"]},
         {"name": "放网与挡网", "keywords": ["放网", "挡网", "网前球"]},
+        {"name": "挑球与挑后场", "keywords": ["挑球", "挑后场", "挑底线", "弹挑"]},
         {"name": "网前框架与步法", "keywords": ["网前框架", "网前步法", "上网", "持拍"], "context_any": ["网前", "上网"]},
         {"name": "网前综合待细分", "keywords": [], "fallback": true}
       ]

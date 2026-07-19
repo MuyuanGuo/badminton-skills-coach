@@ -2666,6 +2666,74 @@
           "双打压抽默认发生在网前"
         ]
       }
+    },
+    {
+      "case_id": "AQ033",
+      "query": "反手挑球怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_missing_action_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把反手挑球建成独立动作范围；只保留直接讲反手挑球的专项或明确分段来源，排除同为反手但实际讲杀球、高远、抽挡，以及标题提到挑球但证据不支持动作的视频。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-19"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7523163965838003514"
+        ],
+        "required_video_ids": [
+          "7523163965838003514",
+          "7511934047901846841",
+          "7151961376448138531"
+        ],
+        "irrelevant_video_ids": [
+          "7499776424493075772",
+          "7541623926234811705",
+          "7447084061371272507",
+          "7226178331408928038"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ033-P1",
+            "description": "反手挑球是来球落到下手位置后的向上处理，通常用于被动把球挑高、挑深，而不是上手位的反手高远或杀球。",
+            "acceptable_terms": ["下手技术", "被动", "向上处理"],
+            "evidence_video_ids": ["7523163965838003514"]
+          },
+          {
+            "point_id": "AQ033-P2",
+            "description": "握拍拇指不要僵顶在宽面，应微调到斜面，让手腕角度能帮助拍头向上；随后由大臂带动小臂外旋完成向上发力。",
+            "acceptable_terms": ["拇指斜面", "拍头向上", "小臂外旋"],
+            "evidence_video_ids": ["7523163965838003514"]
+          },
+          {
+            "point_id": "AQ033-P3",
+            "description": "动作方向是手腕从下往上配合小臂转动；手腕横着动对应其他反手处理，不能代替挑球的向上动作。",
+            "acceptable_terms": ["从下往上", "小臂转动", "不要横着动"],
+            "evidence_video_ids": ["7511934047901846841"]
+          },
+          {
+            "point_id": "AQ033-P4",
+            "description": "掌握基础挑球后再练假挑真放变化：正反手都要区分向上挑球与切削放网的拍面处理，并保持手腕稳定。",
+            "acceptable_terms": ["假挑真放", "切削", "锁住手腕"],
+            "evidence_video_ids": ["7151961376448138531"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ033-B1",
+            "description": "反手挑球必须与反手高远、反手杀球和反手抽挡分开；只有反手标签而没有挑球证据的来源不能证明该动作。",
+            "acceptable_terms": ["反手挑球", "不同动作", "直接挑球证据"]
+          }
+        ],
+        "forbidden_claims": [
+          "反手技术都能直接证明反手挑球",
+          "反手挑球就是反手高远球",
+          "只靠横向撅腕完成挑球"
+        ]
+      }
     }
   ]
 }

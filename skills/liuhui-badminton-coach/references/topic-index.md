@@ -5,7 +5,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 - Source: `data/knowledge/douyin_knowledge_base.json`
 - Videos: `407`
 - Assigned videos: `352`
-- Multi-topic videos: `136`
+- Multi-topic videos: `139`
 
 ## How To Use
 
@@ -61,9 +61,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 ### 网前技术
 
-搓、勾、推、扑、放网及网前持拍框架。
+搓、勾、推、扑、挑、放网及网前持拍框架。
 
-- Matched videos: `49`
+- Matched videos: `52`
 
 - **搓球与滚网**: `10` videos, `10` ready, `0` needs visual review.
   Keywords: 搓球, 滚网, 平搓
@@ -89,6 +89,12 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 挡网 我最近发的东西都是大家认为简单，但是一点不简单的东西 [ready] https://www.douyin.com/video/7524557392328461627
   - 用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂 [ready] https://www.douyin.com/video/7071800926553541922
   - 也不要问为什么不放网，对方远网球这个不可能去钓鱼失误率太高，也不能挡远网，惯性大没办法抓推 [ready] https://www.douyin.com/video/7092959332047785250
+- **挑球与挑后场**: `4` videos, `4` ready, `0` needs visual review.
+  Keywords: 挑球, 挑后场, 挑底线, 弹挑
+  Representative videos:
+  - 正手挑球 他的变化在于手的放松，和整个人的状态，包括击球的声音，挑球想进步也是很难的，都是黄金技术 [ready] https://www.douyin.com/video/7518239001813339449
+  - 反手挑球 嗓子哑了，轻声细语发不出声，只能使点劲儿说话 [ready] https://www.douyin.com/video/7523163965838003514
+  - 对面挡网直接挑球就行了，对面如果站直线可以直接变线 [ready] https://www.douyin.com/video/7226178331408928038
 - **网前框架与步法**: `8` videos, `8` ready, `0` needs visual review.
   Keywords: 网前框架, 网前步法, 上网, 持拍
   Representative videos:

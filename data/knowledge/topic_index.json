@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v4",
+  "taxonomy_version": "topic-taxonomy-v5",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -10,7 +10,7 @@
   "assigned_video_count": 352,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 96,
-  "multi_topic_video_count": 136,
+  "multi_topic_video_count": 139,
   "categories": [
     {
       "name": "后场技术",
@@ -694,9 +694,9 @@
     },
     {
       "name": "网前技术",
-      "description": "搓、勾、推、扑、放网及网前持拍框架。",
+      "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 49,
+      "video_count": 52,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -1122,6 +1122,92 @@
                 "title": 1,
                 "focus": 1,
                 "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            }
+          ]
+        },
+        {
+          "name": "挑球与挑后场",
+          "keywords": [
+            "挑球",
+            "挑后场",
+            "挑底线",
+            "弹挑"
+          ],
+          "context_any": [],
+          "is_fallback": false,
+          "video_count": 4,
+          "ready_count": 4,
+          "needs_visual_review_count": 0,
+          "video_ids": [
+            "7518239001813339449",
+            "7523163965838003514",
+            "7226178331408928038",
+            "7497098752897879355"
+          ],
+          "representative_videos": [
+            {
+              "video_id": "7518239001813339449",
+              "title": "正手挑球 他的变化在于手的放松，和整个人的状态，包括击球的声音，挑球想进步也是很难的，都是黄金技术",
+              "url": "https://www.douyin.com/video/7518239001813339449",
+              "category": "发力与身体运用",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "正手挑球 他的变化在于手的放松",
+              "score": 18,
+              "match_basis": {
+                "title": 2,
+                "focus": 1,
+                "evidence": 3
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7523163965838003514",
+              "title": "反手挑球 嗓子哑了，轻声细语发不出声，只能使点劲儿说话",
+              "url": "https://www.douyin.com/video/7523163965838003514",
+              "category": "训练与纠错",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "反手挑球 嗓子哑了",
+              "score": 11,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 2
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7226178331408928038",
+              "title": "对面挡网直接挑球就行了，对面如果站直线可以直接变线",
+              "url": "https://www.douyin.com/video/7226178331408928038",
+              "category": "中前场与抽挡",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "对面挡网直接挑球就行了",
+              "score": 9,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7497098752897879355",
+              "title": "正手挑，弹挑 正手挑最难的就是肘，大家分享给不会的伙伴吧",
+              "url": "https://www.douyin.com/video/7497098752897879355",
+              "category": "发力与身体运用",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "正手挑",
+              "score": 7,
+              "match_basis": {
+                "title": 1,
+                "focus": 0,
+                "evidence": 1
               },
               "assignment_method": "rule_match"
             }

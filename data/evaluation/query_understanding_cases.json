@@ -289,6 +289,15 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["双打网前怎么下压"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ033",
+      "query": "反手挑球怎么打",
+      "intent_summary": "把反手挑球识别为独立的下手挑高动作，不退化为泛反手技术",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手挑球怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -987,6 +996,24 @@
       "expected_target_action_constraints": {},
       "expected_target_condition_constraints": {},
       "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA041",
+      "query": "反手挑球怎么打",
+      "intent_summary": "同时保留反手侧与挑球动作类型，不能只解析为泛反手",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "挑球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["lift"]
+      },
+      "expected_target_actor": "player"
     }
   ]
 }

@@ -1109,7 +1109,12 @@ def required_constraint_support_failures(requested, matches, rules):
             ).items()
         ):
             continue
-        if matches.get(condition["axis"]) == "unspecified_support":
+        unsupported_matches = set(
+            condition.get(
+                "unsupported_matches", ["unspecified_support"]
+            )
+        )
+        if matches.get(condition["axis"]) in unsupported_matches:
             failures.append(condition["failure_reason"])
     return list(dict.fromkeys(failures))
 

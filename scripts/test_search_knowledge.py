@@ -753,6 +753,42 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(terms, [])
         self.assertEqual(fields, {})
 
+    def test_backhand_lift_requires_direct_lift_evidence(self):
+        payload = self.search_module.search(
+            "反手挑球怎么打",
+            manifest_limit=400,
+            local_personalization=False,
+        )
+        result_ids = [item["video_id"] for item in payload["results"]]
+        self.assertEqual(result_ids[0], "7523163965838003514")
+        self.assertEqual(
+            set(result_ids),
+            {
+                "7523163965838003514",
+                "7511934047901846841",
+                "7151961376448138531",
+            },
+        )
+        manifest = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+        }
+        self.assertIn("7226178331408928038", manifest)
+        self.assertIn("7541623926234811705", manifest)
+        for video_id in [
+            "7499776424493075772",
+            "7541623926234811705",
+            "7447084061371272507",
+            "7226178331408928038",
+        ]:
+            if video_id not in manifest:
+                continue
+            self.assertFalse(manifest[video_id]["retrieval_policy_eligible"])
+            self.assertIn(
+                "explicit_constraint_conflict:shot_family",
+                manifest[video_id]["retrieval_policy_reasons"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
