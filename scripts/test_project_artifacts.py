@@ -10,10 +10,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "scripts" / "project_artifacts.py"
+SIGNAL_BUILDER_PATH = ROOT / "scripts" / "build_reviewed_evidence_signals.py"
 
 
-def load_module():
-    spec = importlib.util.spec_from_file_location("project_artifacts_tested", MODULE_PATH)
+def load_module(name="project_artifacts_tested", path=MODULE_PATH):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -23,6 +24,9 @@ class ProjectArtifactsTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.module = load_module()
+        cls.signal_builder = load_module(
+            "reviewed_evidence_signal_builder_tested", SIGNAL_BUILDER_PATH
+        )
 
     def fixture(self):
         ids = {
@@ -229,6 +233,16 @@ class ProjectArtifactsTests(unittest.TestCase):
         self.assertFalse(packaged["transcript_files_bundled"])
         self.assertTrue(packaged["runtime_transcript_segments_bundled"])
         self.assertNotIn("transcript_file", packaged["videos"][0])
+
+    def test_reviewed_evidence_signals_match_reviewed_registry(self):
+        expected = self.signal_builder.build_payload()
+        actual = json.loads(
+            (ROOT / "config/reviewed_evidence_signals.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(actual, expected)
+        self.assertEqual(len(actual["signals"]), 30)
 
 
 if __name__ == "__main__":

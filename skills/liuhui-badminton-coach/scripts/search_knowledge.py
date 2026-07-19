@@ -228,7 +228,13 @@ def extract_negative_scopes(query, rules):
     contrasts = sorted(intent_rules.get("contrast_markers", []), key=len, reverse=True)
     if not markers:
         return query, []
-    marker_pattern = "|".join(re.escape(marker) for marker in markers)
+    marker_patterns = []
+    for marker in markers:
+        escaped = re.escape(marker)
+        if marker.startswith("不") and len(marker) > 1:
+            escaped = rf"(?<!{re.escape(marker[1])}){escaped}"
+        marker_patterns.append(escaped)
+    marker_pattern = "|".join(marker_patterns)
     stop_parts = contrasts + ["，", ",", "。", "；", ";", "！", "!", "？", "?"]
     stop_pattern = "|".join(re.escape(part) for part in stop_parts)
     pattern = re.compile(
@@ -277,7 +283,7 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
         )
         excluded_seed_terms.update(fallback_shards(scope["text"], rules))
     excluded_terms = set(excluded_seed_terms)
-    for group in rules.get("synonym_groups", []):
+    for group in rules.get("equivalent_groups", []):
         if any(
             normalize(term) in {normalize(seed) for seed in excluded_seed_terms}
             for term in group

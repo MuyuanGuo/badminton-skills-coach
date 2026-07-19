@@ -36,6 +36,10 @@ SKILL_REFERENCE_PATHS = (
         Path("skills/liuhui-badminton-coach/references/answer-selection-rules.json"),
     ),
     (
+        Path("config/reviewed_evidence_signals.json"),
+        Path("skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json"),
+    ),
+    (
         Path("config/practice_plan_rules.json"),
         Path("skills/liuhui-badminton-coach/references/practice-plan-rules.json"),
     ),

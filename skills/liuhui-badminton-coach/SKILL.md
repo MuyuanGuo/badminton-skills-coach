@@ -103,6 +103,7 @@ End normal coaching answers with one compact optional example using labels that 
 - `references/knowledge-base.json`: full structured knowledge entries for 407 processed videos, including 352 ready teaching videos (333 transcript-backed and 19 visual-review fallbacks) and 0 entries awaiting visual review.
 - `references/retrieval-index.json` and `references/retrieval-rules.json`: ready-video high-recall index and terminology rules.
 - `references/answer-selection-rules.json`: deterministic boundary and finalist rules.
+- `references/reviewed-evidence-signals.json`: generated query-scoped ranking signals from the reviewed answer-quality registry; never an override for source or scenario conflicts.
 - `references/build-manifest.json`: corpus counts, latest ready video, rule versions, link integrity, and release-file hashes.
 - `references/answer-modality-rules.json`: text/video allocation.
 - `references/topic-map.json` and `references/topic-index.md`: navigation leads, not final evidence.

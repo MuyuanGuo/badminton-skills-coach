@@ -112,6 +112,9 @@ class AnswerContextTests(unittest.TestCase):
             ("防守站位怎么组织", "进攻站位教学", "tactical_phase"),
             ("直线高远怎么打", "斜线高远教学", "shot_direction"),
             ("斜线高远怎么打", "直线高远教学", "shot_direction"),
+            ("正手高远怎么打", "正手发小球教学", "shot_family"),
+            ("杀球怎么打", "吊球教学", "shot_family"),
+            ("搓球怎么控制", "勾球教学", "technique_variant"),
         ]
         for query, title, axis in cases:
             with self.subTest(query=query, title=title):
@@ -139,6 +142,9 @@ class AnswerContextTests(unittest.TestCase):
         self.assertNotIn("court_zone", serve_target)
         self.assertEqual(
             serve_target["serve_trajectory"], ["deep_serve", "short_serve"]
+        )
+        self.assertEqual(
+            serve_target["shot_family"], ["deep_serve", "short_serve"]
         )
 
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
@@ -217,13 +223,18 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertTrue(
             any(
-                reasons == ["generic_constraint_support_limit_exceeded"]
+                reasons == ["supporting_video_limit_exceeded"]
                 for reasons in rejected.values()
             )
         )
         retrieval_queries = payload["question_interpretation"]["retrieval_queries"]
         self.assertIn("反手 被动 高远球", retrieval_queries)
-        self.assertIn("反手 被动 挥拍", retrieval_queries)
+        self.assertTrue(
+            any(
+                all(term in retrieval_query for term in ["反手", "被动", "挥拍"])
+                for retrieval_query in retrieval_queries
+            )
+        )
         self.assertIn("高远球", retrieval_queries)
         self.assertIn("挥拍", retrieval_queries)
 
@@ -249,6 +260,105 @@ class AnswerContextTests(unittest.TestCase):
                     item["video_id"] for item in payload["selected_videos"]
                 }
                 self.assertFalse(selected & forbidden_ids)
+
+    def test_negated_conditions_drive_final_constraint_parser(self):
+        cases = [
+            (
+                "不要讲正手，只讲反手被动高远",
+                {
+                    "stroke_side": ["backhand"],
+                    "shot_family": ["clear"],
+                    "pressure_state": ["passive"],
+                },
+            ),
+            (
+                "单打防守站位，不要讲双打",
+                {"discipline": ["singles"], "tactical_phase": ["defense"]},
+            ),
+            ("只讲接发，不讲发球", {"serve_role": ["receive"]}),
+            (
+                "发小球，不要偷后场",
+                {
+                    "shot_family": ["short_serve"],
+                    "serve_role": ["serve"],
+                    "serve_trajectory": ["short_serve"],
+                },
+            ),
+            ("被动处理，不是主动球", {"pressure_state": ["passive"]}),
+            ("防守站位，不讲进攻", {"tactical_phase": ["defense"]}),
+            ("只打直线，不打斜线", {"shot_direction": ["straight"]}),
+        ]
+        for query, expected in cases:
+            with self.subTest(query=query):
+                plan = self.search_module.plan_query(query)
+                positive_query = plan["retrieval_guidance"]["intent_frame"][
+                    "positive_query"
+                ]
+                actual = self.context_module.query_constraints(
+                    self.search_module,
+                    positive_query,
+                    self.selection_rules,
+                )
+                self.assertEqual(actual, expected)
+
+    def test_shot_family_and_reviewed_signals_do_not_leak_across_questions(self):
+        clear = self.context_module.prepare_answer_context(
+            "正手高远球的击球姿势是什么样",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        clear_ids = {item["video_id"] for item in clear["selected_videos"]}
+        self.assertNotIn("7254755365995285812", clear_ids)
+        rejected = {
+            item["video_id"]: item["reasons"]
+            for item in clear["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_constraint_conflict:shot_family",
+            rejected["7254755365995285812"],
+        )
+
+        smash = self.context_module.prepare_answer_context(
+            "杀球动作怎么发力",
+            local_personalization=False,
+        )
+        smash_ids = {item["video_id"] for item in smash["selected_videos"]}
+        self.assertEqual(
+            smash_ids,
+            {
+                "7052600326116887812",
+                "7440406891664133428",
+                "7484563688096091449",
+                "7567155406117533051",
+            },
+        )
+        self.assertNotIn("7115241358255803683", smash_ids)
+
+    def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
+        relationship = self.context_module.prepare_answer_context(
+            "吊球与杀球配合",
+            local_personalization=False,
+        )
+        by_id = {
+            item["video_id"]: item for item in relationship["selected_videos"]
+        }
+        self.assertEqual(by_id["7115241358255803683"]["role"], "core")
+        if "7093706918492917033" in by_id:
+            self.assertEqual(
+                by_id["7093706918492917033"]["role"], "supporting"
+            )
+
+        receive = self.context_module.prepare_answer_context(
+            "双打接发战术和接发握拍应该怎么调整",
+            local_personalization=False,
+        )
+        receive_ids = {item["video_id"] for item in receive["selected_videos"]}
+        self.assertIn("7053654124042194215", receive_ids)
+        self.assertIn("7639306481355832689", receive_ids)
+        self.assertLessEqual(
+            sum(item["role"] == "supporting" for item in receive["selected_videos"]),
+            self.selection_rules["max_supporting_videos"],
+        )
 
 
 if __name__ == "__main__":

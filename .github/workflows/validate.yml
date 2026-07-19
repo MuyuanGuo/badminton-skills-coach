@@ -28,6 +28,7 @@ jobs:
             scripts/build_manifest.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_retrieval_index.py \
+            scripts/build_reviewed_evidence_signals.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \

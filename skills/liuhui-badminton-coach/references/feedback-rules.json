@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "skill_version": "1.1.0",
-  "channel": "stable",
+  "skill_version": "1.1.1-dev.1",
+  "channel": "development",
   "stable_version": "1.1.0",
   "queue_statuses": [
     "pending_review",

@@ -26,6 +26,7 @@ def build_commands():
         [sys.executable, "scripts/build_visual_review_queue.py"],
         [sys.executable, "scripts/generate_knowledge_graph.py"],
         [sys.executable, "scripts/build_answer_quality_review_queue.py"],
+        [sys.executable, "scripts/build_reviewed_evidence_signals.py"],
     ]
 
 

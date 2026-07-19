@@ -15,17 +15,32 @@ SEARCH_PATH = (
     / "scripts"
     / "search_knowledge.py"
 )
+CONTEXT_PATH = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "prepare_answer_context.py"
+)
 
 
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_search_module():
-    spec = importlib.util.spec_from_file_location("liuhui_query_understanding", SEARCH_PATH)
+def load_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_search_module():
+    return load_module("liuhui_query_understanding", SEARCH_PATH)
+
+
+def load_context_module():
+    return load_module("liuhui_query_constraints", CONTEXT_PATH)
 
 
 def validate_registry(registry, answer_registry):
@@ -95,6 +110,8 @@ def validate_registry(registry, answer_registry):
             raise ValueError(f"{case_id} has no intent summary")
         if set(case.get("expected_intent", {})) != expected_intent_fields:
             raise ValueError(f"{case_id} has an invalid intent contract")
+        if not isinstance(case.get("expected_constraints"), dict):
+            raise ValueError(f"{case_id} has no constraint contract")
     return cases, adversarial_cases
 
 
@@ -128,6 +145,8 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
     answer_registry = load_json(answer_cases_path)
     cases, adversarial_cases = validate_registry(registry, answer_registry)
     search_module = load_search_module()
+    context_module = load_context_module()
+    selection_rules = context_module.load_selection_rules()
     results = []
 
     for case in cases:
@@ -167,6 +186,12 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
         plan = search_module.plan_query(case["query"])
         intent_frame = plan["retrieval_guidance"]["intent_frame"]
         checks = evaluate_intent_contract(intent_frame, case["expected_intent"])
+        constraints = context_module.query_constraints(
+            search_module,
+            intent_frame["positive_query"],
+            selection_rules,
+        )
+        checks["constraints"] = constraints == case["expected_constraints"]
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -175,8 +200,14 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                 "intent_summary": case["intent_summary"],
                 "matched": not mismatches,
                 "mismatches": mismatches,
-                "expected": case["expected_intent"],
-                "actual": intent_frame,
+                "expected": {
+                    "intent": case["expected_intent"],
+                    "constraints": case["expected_constraints"],
+                },
+                "actual": {
+                    "intent": intent_frame,
+                    "constraints": constraints,
+                },
             }
         )
 
@@ -197,7 +228,7 @@ def main():
     )
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--answer-cases", type=Path, default=ANSWER_CASES_PATH)
-    parser.add_argument("--require-cases", type=int, default=34)
+    parser.add_argument("--require-cases", type=int, default=43)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
 

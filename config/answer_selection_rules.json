@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "default_max_selected_videos": 24,
-  "max_generic_constraint_support_videos": 4,
+  "default_max_selected_videos": 16,
+  "max_exact_videos": 12,
+  "max_supporting_videos": 4,
   "default_segment_limit": 4,
   "top_rank_acceptance": 12,
   "single_concept_top_rank_acceptance": 6,
   "direct_review_rank_acceptance": 24,
+  "reviewed_evidence_min_strict_similarity": 0.35,
   "allowed_relevance_tiers": [
     "direct",
     "strong_related"
@@ -27,6 +29,34 @@
       "mixed_terms": ["正反手", "正手和反手", "正手与反手"]
     },
     {
+      "name": "shot_family",
+      "label": "击球类型",
+      "values": {
+        "clear": ["高远球", "高远", "抽高远"],
+        "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "压球", "霸王杀", "鲨球"],
+        "drop": ["吊球", "劈吊", "滑板吊", "远网吊"],
+        "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
+        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "扑球", "放网", "挡网", "滚网"],
+        "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
+        "deep_serve": ["发高远", "发后场", "偷后场", "高远发球"]
+      },
+      "mixed_value_sets": {
+        "吊杀": ["drop", "smash"],
+        "吊球和杀球": ["drop", "smash"],
+        "吊球与杀球": ["drop", "smash"],
+        "杀吊结合": ["drop", "smash"],
+        "发球变化": ["deep_serve", "short_serve"],
+        "小球和后场": ["deep_serve", "short_serve"],
+        "小球与后场": ["deep_serve", "short_serve"]
+      },
+      "query_value_suppressions": {
+        "clear": ["发高远", "高远发球"],
+        "net_shot": ["网前步法", "网前站位"]
+      },
+      "combine_primary_and_reviewed": true,
+      "structured_evidence_policy": "support_only"
+    },
+    {
       "name": "court_zone",
       "label": "场区",
       "values": {
@@ -39,6 +69,20 @@
       "query_value_suppressions": {
         "rearcourt": ["发后场", "偷后场", "发高远"]
       }
+    },
+    {
+      "name": "technique_variant",
+      "label": "细分技术",
+      "values": {
+        "net_spin": ["搓球", "展搓", "滚搓", "滚网", "搓"],
+        "net_hook": ["勾球"],
+        "net_pounce": ["扑球"],
+        "net_drop": ["放网", "挡网"]
+      },
+      "mixed_value_sets": {
+        "网前技术": ["net_drop", "net_hook", "net_pounce", "net_spin"]
+      },
+      "structured_evidence_policy": "support_only"
     },
     {
       "name": "discipline",
@@ -98,6 +142,34 @@
       "mixed_terms": ["直线还是斜线", "直线和斜线", "直线与斜线", "线路选择"]
     }
   ],
+  "relationship_equivalent_groups": [
+    ["配合", "衔接", "结合", "搭配", "串联"]
+  ],
+  "required_focus_equivalent_groups": [
+    ["姿势", "动作", "框架", "挥拍"],
+    ["击球点", "击球位置", "点位"],
+    ["落点", "瞄准", "线路"],
+    ["站位", "保护位置"],
+    ["握拍", "虎口", "拍柄", "手型"],
+    ["拍面", "拍型", "角度"],
+    ["手肘", "肘"],
+    ["节奏", "变速", "快慢"]
+  ],
+  "literal_symptom_support_terms": {
+    "下网": ["拍面", "击球点", "下压", "挥拍", "发力空间"],
+    "出界": ["拍面", "击球点", "落点", "线路", "发力"],
+    "不到位": ["发力", "击球点", "底线", "挥拍", "力量传导"],
+    "不稳定": ["拍面", "握拍", "框架", "节奏", "控制"],
+    "来不及": ["架拍", "准备", "挥拍速度", "动作幅度", "节奏", "启动", "回动"],
+    "没力量": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "不重": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "没威胁": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "没有威胁": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "僵硬": ["放松", "框架", "挥拍", "发力", "握拍"],
+    "太慢": ["节奏", "速度", "启动", "预动", "回动"],
+    "疼": [],
+    "受伤": []
+  },
   "video_constraint_overrides": {
     "7558912953539071292": {
       "stroke_side": ["forehand"],

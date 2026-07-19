@@ -8,11 +8,11 @@
 
 `Badminton Skills Coach` 把“刘辉羽毛球”的公开抖音教学内容整理成可检索、可引用、可维护的 Codex Skill。它适合用来咨询羽毛球技术、战术、训练和纠错问题，并尽量给出对应视频、时间戳与证据边界。
 
-你正在查看 `develop` 分支，其中包含下一版本的未发布修改，不代表稳定版本。普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
+你正在查看 **1.1.1-dev.1 开发分支**，其中包含下一版本的未发布修改，不代表稳定版本。普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
 
 ## 当前状态
 
-- 当前分支：`develop`（未发布开发版）
+- 开发版：`develop` / `1.1.1-dev.1`（未发布）
 - 最新稳定版：以 `main` 和 [GitHub Releases](https://github.com/MuyuanGuo/badminton-skills-coach/releases) 为准
 - 获取到的抖音公开视频：`473` 条
 - 已排除非教学/广告器材内容：`121` 条
@@ -38,18 +38,18 @@
 
 日常使用只需要 Python 3.10 或更新版本，不需要 `OPENAI_API_KEY`，也不需要安装转写依赖。
 
-### 安装稳定版
+### 安装当前开发版
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.1.0/liuhui-badminton-coach-v1.1.0.zip \
-  -o /tmp/liuhui-badminton-coach-v1.1.0.zip
-install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-v1.1.0.zip -d "$install_dir"
-mkdir -p ~/.codex/skills
-cp -R "$install_dir/liuhui-badminton-coach" ~/.codex/skills/
+git clone --branch develop https://github.com/MuyuanGuo/badminton-skills-coach.git
+cd badminton-skills-coach
+python3 scripts/install_skill.py --dry-run
+python3 scripts/install_skill.py
 ```
 
-Release 同时提供 `SHA256SUMS.txt`。安装后运行 doctor：
+这会安装当前 `develop` 分支的未发布内容。需要稳定版时，请使用 [`main` 分支](https://github.com/MuyuanGuo/badminton-skills-coach/tree/main)或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)，并按对应版本 README 安装。
+
+安装后运行 doctor：
 
 ```bash
 python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
@@ -116,6 +116,7 @@ output/                          Draw.io、Mermaid、HTML 图谱及审核报告
 - `scripts/report_pipeline_status.py`：查看队列和知识库状态。
 - `scripts/process_douyin_ready_batch.py`：下载、转写和处理新增视频。
 - `scripts/run_full_update_pipeline.py`：重建知识库、索引、图谱和 Skill 产物。
+- `scripts/build_reviewed_evidence_signals.py`：把已审核问答用例生成查询范围内的证据排序信号。
 - `scripts/validate_project.py`：验证仓库一致性。
 - `scripts/package_skill_release.py`：生成发布 ZIP 和 SHA-256。
 

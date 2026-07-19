@@ -31,13 +31,16 @@ Still give purpose, a small set of reliable observation points, common errors, a
 
 `selected_videos` is the citation allowlist. Each item already contains a stable label, role, canonical URL, selection reasons, matched query units, teaching note, and query-matched transcript evidence.
 
-- `core` supports the original question directly.
-- `supporting` covers a focused subproblem or mechanism.
-- `constraint_match` records how every explicit condition in the question matches the source. `exact` may support a conclusion under the requested conditions; `mixed_support` and `unspecified_support` may support only a shared principle or comparison, never a condition-specific action claim.
-- Follow `claim_scope_policy` literally. A source marked `mixed_or_generic_support_only_not_condition_specific_proof` cannot prove a backhand-only, forehand-only, singles-only, doubles-only, active-only, passive-only, attack-only, defense-only, court-zone-only, serve-role-only, serve-trajectory-only, or shot-direction-only instruction.
-- `selection_truncated: false` means every candidate that passed the configured finalist rules is present; it does not prove that the retrieval system found every semantically relevant video.
+- `core` directly supports the complete question or one complete split query unit under exact requested conditions.
+- `supporting` covers a component, generic mechanism, reviewed evidence lead, or retrieval expansion. It cannot silently inherit conditions absent from the source.
+- `concept_match: exact_question` may support the complete question. `exact_query_unit` supports only its matched split unit. `component_support`, `reviewed_support`, and `expanded_support` support only their evidenced component or mechanism.
+- `constraint_match` records every explicit condition. `exact` matches the requested scope. `partial_support`, `mixed_support`, `incidental_support`, and `unspecified_support` are auxiliary only; `conflict` is rejected.
+- Follow `claim_scope_policy` literally: `exact_question_scope`, `exact_query_unit_scope_only`, or `component_or_generic_support_only_not_full_question_proof`.
+- The selector distinguishes stroke side, shot family, net-shot variant, court zone, singles/doubles, serve role and trajectory, active/passive state, attack/defense phase, and shot direction.
+- Reviewed evidence signals are generated from the maintained answer-quality registry. They may rank an already compatible candidate or admit it as limited support; they never override a scenario conflict, exclusion, safety boundary, or source-readiness check.
+- The default policy admits at most 12 exact sources plus 4 supporting sources. `selection_truncated: false` means every source remaining after these policy quotas is present; it does not prove semantic completeness.
 - `selection_truncated: true` means rerun with a larger `--max-videos` only for a genuinely exhaustive survey. Do not silently claim completeness.
-- `rejected_candidates` from debug mode records deterministic exclusion reasons. Never cite it.
+- `rejected_candidates` records deterministic conflicts, evidence failures, and quota exclusions in debug mode. Never cite it.
 
 ## Answer Construction
 

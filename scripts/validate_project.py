@@ -49,6 +49,7 @@ json_paths = [
     "config/knowledge_quality_rules.json",
     "config/practice_plan_rules.json",
     "config/retrieval_rules.json",
+    "config/reviewed_evidence_signals.json",
     "data/knowledge/build_manifest.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
@@ -78,6 +79,7 @@ json_paths = [
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
+    "skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
 for relative_path in json_paths:
@@ -698,10 +700,7 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
-version_contracts = [
-    f"- 稳定版：`main` / `v{stable_version}`",
-    f"releases/tag/v{stable_version}",
-]
+version_contracts = ["releases/latest"]
 if release_channel == "development":
     version_contracts.extend(
         [
@@ -710,7 +709,13 @@ if release_channel == "development":
         ]
     )
 else:
-    version_contracts.append(f"**{skill_version} 稳定版**")
+    version_contracts.extend(
+        [
+            f"**{skill_version} 稳定版**",
+            f"- 稳定版：`main` / `v{stable_version}`",
+            f"releases/tag/v{stable_version}",
+        ]
+    )
 for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")

@@ -285,7 +285,8 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": [],
         "requested_output": "practice"
-      }
+      },
+      "expected_constraints": {"shot_family": ["drop"]}
     },
     {
       "case_id": "QUA002",
@@ -298,7 +299,8 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": ["双打"],
         "requested_output": "coaching_answer"
-      }
+      },
+      "expected_constraints": {"discipline": ["doubles"]}
     },
     {
       "case_id": "QUA003",
@@ -311,6 +313,10 @@
         "literal_symptoms_contains": ["下网"],
         "scenarios_contains": [],
         "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
       }
     },
     {
@@ -324,7 +330,150 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": ["单打", "被动", "后场"],
         "requested_output": "comparison"
+      },
+      "expected_constraints": {
+        "court_zone": ["rearcourt"],
+        "discipline": ["singles"],
+        "pressure_state": ["passive"],
+        "shot_direction": ["crosscourt", "straight"]
       }
+    },
+    {
+      "case_id": "QUA005",
+      "query": "不要讲正手，只讲反手被动高远",
+      "intent_summary": "排除正手后只保留反手被动高远条件",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "被动", "高远"],
+        "positive_query_excludes": ["正手"],
+        "excluded_terms_contains": ["正手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手", "被动"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "pressure_state": ["passive"],
+        "shot_family": ["clear"],
+        "stroke_side": ["backhand"]
+      }
+    },
+    {
+      "case_id": "QUA006",
+      "query": "单打防守站位，不要讲双打",
+      "intent_summary": "保留单打防守站位并排除双打",
+      "expected_intent": {
+        "positive_query_contains": ["单打", "防守", "站位"],
+        "positive_query_excludes": ["双打"],
+        "excluded_terms_contains": ["双打"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["单打", "防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "discipline": ["singles"],
+        "tactical_phase": ["defense"]
+      }
+    },
+    {
+      "case_id": "QUA007",
+      "query": "只讲接发，不讲发球",
+      "intent_summary": "只保留接发角色并排除发球角色",
+      "expected_intent": {
+        "positive_query_contains": ["接发"],
+        "positive_query_excludes": ["发球"],
+        "excluded_terms_contains": ["发球"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["接发"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]}
+    },
+    {
+      "case_id": "QUA008",
+      "query": "发小球，不要偷后场",
+      "intent_summary": "保留短发球并排除偷后场变化",
+      "expected_intent": {
+        "positive_query_contains": ["发小球"],
+        "positive_query_excludes": ["偷后场"],
+        "excluded_terms_contains": ["后场"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "serve_role": ["serve"],
+        "serve_trajectory": ["short_serve"],
+        "shot_family": ["short_serve"]
+      }
+    },
+    {
+      "case_id": "QUA009",
+      "query": "被动处理，不是主动球",
+      "intent_summary": "保留被动处理并排除主动球",
+      "expected_intent": {
+        "positive_query_contains": ["被动"],
+        "positive_query_excludes": ["主动"],
+        "excluded_terms_contains": ["主动"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["被动"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"pressure_state": ["passive"]}
+    },
+    {
+      "case_id": "QUA010",
+      "query": "防守站位，不讲进攻",
+      "intent_summary": "保留防守站位并排除进攻",
+      "expected_intent": {
+        "positive_query_contains": ["防守", "站位"],
+        "positive_query_excludes": ["进攻"],
+        "excluded_terms_contains": ["进攻"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]}
+    },
+    {
+      "case_id": "QUA011",
+      "query": "只打直线，不打斜线",
+      "intent_summary": "保留直线并排除斜线，不能扩散排除整个线路概念组",
+      "expected_intent": {
+        "positive_query_contains": ["直线"],
+        "positive_query_excludes": ["斜线"],
+        "excluded_terms_contains": ["斜线"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["直线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_direction": ["straight"]}
+    },
+    {
+      "case_id": "QUA012",
+      "query": "是不是刘辉本人认可",
+      "intent_summary": "疑问词是不是不能被误判为否定标记",
+      "expected_intent": {
+        "positive_query_contains": ["是不是", "本人认可"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {}
+    },
+    {
+      "case_id": "QUA013",
+      "query": "到底打不打斜线",
+      "intent_summary": "正反问句打不打不能被误判为排除斜线",
+      "expected_intent": {
+        "positive_query_contains": ["打不打", "斜线"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["斜线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_direction": ["crosscourt"]}
     }
   ]
 }
