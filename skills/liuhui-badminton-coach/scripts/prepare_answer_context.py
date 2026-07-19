@@ -628,7 +628,57 @@ def constraint_decision(
             matches[axis_name] = "mixed_support"
             continue
         matches[axis_name] = "exact"
+    requested_shot_families = set(requested.get("shot_family", []))
+    requested_serve_roles = set(requested.get("serve_role", []))
+    requested_court_zones = set(requested.get("court_zone", []))
+    serve_scope = scope.get("serve_role", {})
+    video_serve_roles = set(serve_scope.get("values", []))
+    if (
+        requested_shot_families - {"short_serve", "deep_serve"}
+        and "serve" not in requested_serve_roles
+        and video_serve_roles == {"serve"}
+        and serve_scope.get("source")
+        in {"primary_metadata", "reviewed_override"}
+    ):
+        failures.append(
+            "explicit_cross_axis_conflict:shot_family_vs_serve_role"
+        )
+    if (
+        requested_court_zones
+        and "serve" not in requested_serve_roles
+        and video_serve_roles == {"serve"}
+        and serve_scope.get("source")
+        in {"primary_metadata", "reviewed_override"}
+    ):
+        failures.append(
+            "explicit_cross_axis_conflict:court_zone_vs_serve_role"
+        )
     return not failures, failures, requested, scope, matches
+
+
+def unrequested_specific_scope(requested, scope, rules):
+    allowed_sources = set(
+        rules.get("unrequested_scope_support_only_sources", [])
+    )
+    return {
+        axis_name: scope[axis_name]
+        for axis_name in rules.get("unrequested_scope_support_only_axes", [])
+        if not requested.get(axis_name)
+        and scope.get(axis_name, {}).get("values")
+        and (
+            not allowed_sources
+            or scope[axis_name].get("source") in allowed_sources
+        )
+    }
+
+
+def unrequested_ranking_scope(requested, scope, rules):
+    return {
+        axis_name: scope[axis_name]
+        for axis_name in rules.get("unrequested_scope_ranking_axes", [])
+        if not requested.get(axis_name)
+        and scope.get(axis_name, {}).get("values")
+    }
 
 
 def is_direct_question_match(search_module, plan, match):
@@ -734,18 +784,32 @@ def primary_reviewed_focus_text(search_module, video):
     )
 
 
-def entry_focus_match(search_module, entry, video, rules):
+def entry_focus_requirements(search_module, plan, entry, rules):
+    if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
+        positive_query = plan["retrieval_guidance"]["intent_frame"].get(
+            "positive_query", plan.get("query", "")
+        )
+        groups = required_focus_groups(search_module, positive_query, rules)
+        return [[group] for group in groups]
+    return [
+        groups
+        for match in entry.get("matches", [])
+        if (
+            groups := required_focus_groups(
+                search_module, match.get("query", ""), rules
+            )
+        )
+    ]
+
+
+def entry_focus_match(search_module, plan, entry, video, rules):
     primary_reviewed = primary_reviewed_focus_text(search_module, video)
     structured = structured_video_text(search_module, video)
-    found_requirement = False
     best_rank = 3
-    for match in entry.get("matches", []):
-        groups = required_focus_groups(
-            search_module, match.get("query", ""), rules
-        )
-        if not groups:
-            continue
-        found_requirement = True
+    requirements = entry_focus_requirements(
+        search_module, plan, entry, rules
+    )
+    for groups in requirements:
         if all(
             text_supports_focus_group(
                 search_module, primary_reviewed, group, rules
@@ -758,7 +822,7 @@ def entry_focus_match(search_module, entry, video, rules):
             for group in groups
         ):
             best_rank = min(best_rank, 1)
-    if not found_requirement:
+    if not requirements:
         return "not_required"
     return {0: "primary", 1: "structured", 3: "none"}[best_rank]
 
@@ -954,6 +1018,7 @@ def selection_decision(
     entry,
     video,
     rules,
+    constraint_result=None,
 ):
     candidate = entry["candidate"]
     reasons = []
@@ -976,13 +1041,17 @@ def selection_decision(
     ):
         return False, ["purchase_query_requires_equipment_evidence"]
 
+    if constraint_result is None:
+        constraint_result = constraint_decision(
+            search_module, query, plan, video, rules
+        )
     (
         constraints_match,
         constraint_failures,
         requested_constraints,
         _,
         constraint_matches,
-    ) = constraint_decision(search_module, query, plan, video, rules)
+    ) = constraint_result
     if not constraints_match:
         return False, constraint_failures
     if (
@@ -1011,7 +1080,9 @@ def selection_decision(
     symptom_match = symptom_decision(search_module, plan, video, rules)
     if symptom_match == "none":
         return False, ["literal_symptom_or_mechanism_not_supported"]
-    focus_match = entry_focus_match(search_module, entry, video, rules)
+    focus_match = entry_focus_match(
+        search_module, plan, entry, video, rules
+    )
     if (
         plan["retrieval_guidance"].get("strategy") != "split_multi_issue"
         and required_focus_groups(search_module, positive_query, rules)
@@ -1019,7 +1090,8 @@ def selection_decision(
     ):
         return False, ["required_focus_not_supported"]
     for term in rules["incomplete_fragment_terms"]:
-        if search_module.normalize(term) in title_normalized:
+        normalized_term = search_module.normalize(term)
+        if normalized_term in title_normalized or normalized_term in structured:
             return False, ["incomplete_series_fragment"]
 
     requested_output = plan["retrieval_guidance"]["intent_frame"].get(
@@ -1141,7 +1213,7 @@ def selected_sort_key(entry, rules=None):
             "incidental_support",
         }
         for match in entry.get("constraint_match", {}).values()
-    )
+    ) or bool(entry.get("unrequested_constraint_scope"))
     exact_constraint_count = sum(
         match == "exact" for match in entry.get("constraint_match", {}).values()
     )
@@ -1213,10 +1285,11 @@ def selected_sort_key(entry, rules=None):
         symptom_match_rank,
         reviewed_evidence_rank,
         -exact_constraint_count,
-        -mixed_constraint_count,
+        mixed_constraint_count,
         focus_match_rank,
         concept_support_rank,
         direct_field_rank,
+        len(entry.get("unrequested_ranking_scope", {})),
         0 if candidate["relevance_tier"] == "direct" else 1,
         entry["best_rank"],
         0 if original_core else 1,
@@ -1224,6 +1297,17 @@ def selected_sort_key(entry, rules=None):
         -original_terms,
         -len({item["query"] for item in entry["matches"]}),
         candidate["title"],
+    )
+
+
+def entry_is_core(entry):
+    return bool(
+        not entry.get("unrequested_constraint_scope")
+        and all(
+            match == "exact"
+            for match in entry["constraint_match"].values()
+        )
+        and entry["concept_match"] in {"exact_question", "exact_query_unit"}
     )
 
 
@@ -1369,6 +1453,9 @@ def prepare_answer_context(
     positive_query = plan["retrieval_guidance"]["intent_frame"].get(
         "positive_query", query
     )
+    requested_constraints = query_constraints(
+        search_module, positive_query, rules
+    )
     boundary = classify_boundary(positive_query, rules)
     accepted = []
     rejected = []
@@ -1380,6 +1467,16 @@ def prepare_answer_context(
                 {"video_id": video_id, "reasons": ["video_missing_from_knowledge"]}
             )
             continue
+        constraint_scope = video_constraint_scope(search_module, video, rules)
+        constraint_result = constraint_decision(
+            search_module,
+            query,
+            plan,
+            video,
+            rules,
+            requested=requested_constraints,
+            scope=constraint_scope,
+        )
         keep, reasons = selection_decision(
             search_module,
             query,
@@ -1388,23 +1485,32 @@ def prepare_answer_context(
             entry,
             video,
             rules,
+            constraint_result=constraint_result,
+        )
+        unrequested_scope = unrequested_specific_scope(
+            constraint_result[2], constraint_scope, rules
+        )
+        ranking_scope = unrequested_ranking_scope(
+            constraint_result[2], constraint_scope, rules
         )
         record = {
             **entry,
             "video_id": video_id,
-            "selection_reasons": reasons,
-            "constraint_scope": video_constraint_scope(
-                search_module, video, rules
-            ),
+            "selection_reasons": list(reasons),
+            "constraint_scope": constraint_scope,
+            "unrequested_constraint_scope": unrequested_scope,
+            "unrequested_ranking_scope": ranking_scope,
         }
-        record["constraint_match"] = constraint_decision(
-            search_module, query, plan, video, rules
-        )[4]
+        record["constraint_match"] = constraint_result[4]
+        if keep and unrequested_scope:
+            record["selection_reasons"].append(
+                "unrequested_specific_scenario_support_only"
+            )
         record["concept_match"] = concept_decision(
             search_module, plan, entry, video, rules
         )
         record["focus_match"] = entry_focus_match(
-            search_module, entry, video, rules
+            search_module, plan, entry, video, rules
         )
         record["symptom_match"] = symptom_decision(
             search_module, plan, video, rules
@@ -1415,10 +1521,7 @@ def prepare_answer_context(
     exact_entries = [
         entry
         for entry in accepted
-        if all(
-            match == "exact" for match in entry["constraint_match"].values()
-        )
-        and entry["concept_match"] in {"exact_question", "exact_query_unit"}
+        if entry_is_core(entry)
     ]
     support_entries = [entry for entry in accepted if entry not in exact_entries]
     support_limit = min(rules.get("max_supporting_videos", 4), max_videos)
@@ -1478,14 +1581,7 @@ def prepare_answer_context(
             {
                 "label": f"V{index}",
                 "role": (
-                    "core"
-                    if all(
-                        match == "exact"
-                        for match in entry["constraint_match"].values()
-                    )
-                    and entry["concept_match"]
-                    in {"exact_question", "exact_query_unit"}
-                    else "supporting"
+                    "core" if entry_is_core(entry) else "supporting"
                 ),
                 "video_id": entry["video_id"],
                 "title": display_title,
@@ -1494,6 +1590,12 @@ def prepare_answer_context(
                 "confidence": candidate["confidence"],
                 "selection_reasons": entry["selection_reasons"],
                 "constraint_scope": entry["constraint_scope"],
+                "unrequested_constraint_scope": entry[
+                    "unrequested_constraint_scope"
+                ],
+                "unrequested_ranking_scope": entry[
+                    "unrequested_ranking_scope"
+                ],
                 "constraint_match": entry["constraint_match"],
                 "concept_match": entry["concept_match"],
                 "reviewed_evidence_rank": entry["reviewed_evidence_rank"],
@@ -1501,17 +1603,11 @@ def prepare_answer_context(
                 "symptom_match": entry["symptom_match"],
                 "claim_scope_policy": (
                     "exact_question_scope"
-                    if all(
-                        match == "exact"
-                        for match in entry["constraint_match"].values()
-                    )
+                    if entry_is_core(entry)
                     and entry["concept_match"] == "exact_question"
                     else (
                         "exact_query_unit_scope_only"
-                        if all(
-                            match == "exact"
-                            for match in entry["constraint_match"].values()
-                        )
+                        if entry_is_core(entry)
                         and entry["concept_match"] == "exact_query_unit"
                         else "component_or_generic_support_only_not_full_question_proof"
                     )

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -52,6 +52,9 @@
       "query_value_suppressions": {
         "clear": ["发高远", "高远发球"],
         "net_shot": ["网前步法", "网前站位"]
+      },
+      "source_value_suppressions": {
+        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
       },
       "combine_primary_and_reviewed": true,
       "structured_evidence_policy": "support_only",
@@ -106,7 +109,10 @@
         "serve": ["发球", "发小球", "发高远", "发后场", "偷后场"],
         "receive": ["接发", "接发球", "抢接发", "抢发"]
       },
-      "mixed_terms": ["发接发", "发球和接发", "发球与接发"]
+      "mixed_terms": ["发接发", "发球和接发", "发球与接发"],
+      "source_value_suppressions": {
+        "serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发球", "对手发球", "人家发球", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+      }
     },
     {
       "name": "serve_trajectory",
@@ -115,7 +121,10 @@
         "short_serve": ["发小球", "发短球", "短发球"],
         "deep_serve": ["发高远", "发后场", "偷后场"]
       },
-      "mixed_terms": ["发球变化", "小球和后场", "小球与后场"]
+      "mixed_terms": ["发球变化", "小球和后场", "小球与后场"],
+      "source_value_suppressions": {
+        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+      }
     },
     {
       "name": "pressure_state",
@@ -159,6 +168,7 @@
     ["击球点", "击球位置", "点位"],
     ["落点", "瞄准", "线路"],
     ["站位", "保护位置"],
+    ["步法", "脚步", "交叉步", "并步", "垫步", "启动", "回动", "移动"],
     ["握拍", "虎口", "拍柄", "手型"],
     ["拍面", "拍型", "角度"],
     ["手肘", "肘"],
@@ -233,9 +243,30 @@
   },
   "incomplete_fragment_terms": [
     "先看上集",
+    "看过上集",
+    "看完上集",
+    "看上集再看下集",
     "接上集",
+    "接上期",
+    "先把前三集",
+    "看完再去练",
     "下集再讲",
     "未完待续"
+  ],
+  "unrequested_scope_support_only_axes": [
+    "pressure_state"
+  ],
+  "unrequested_scope_support_only_sources": [
+    "primary_metadata",
+    "reviewed_override"
+  ],
+  "unrequested_scope_ranking_axes": [
+    "stroke_side",
+    "technique_variant",
+    "discipline",
+    "serve_trajectory",
+    "pressure_state",
+    "shot_direction"
   ],
   "boundary_terms": {
     "pain_or_injury": [

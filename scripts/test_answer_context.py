@@ -289,6 +289,158 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("explicit_constraint_conflict:shot_family", failures)
         self.assertEqual(matches["shot_family"], "conflict")
 
+    def test_generic_questions_reject_or_demote_narrow_evidence(self):
+        backhand_clear = self.context_module.prepare_answer_context(
+            "反手高远球怎么发力？",
+            local_personalization=False,
+        )
+        self.assertTrue(backhand_clear["selected_videos"])
+        for video in backhand_clear["selected_videos"]:
+            if video["role"] == "core":
+                self.assertEqual(video["unrequested_constraint_scope"], {})
+        passive = next(
+            (
+                video
+                for video in backhand_clear["selected_videos"]
+                if video["video_id"] == "7546109410041908538"
+            ),
+            None,
+        )
+        if passive is not None:
+            self.assertEqual(passive["role"], "supporting")
+            self.assertIn(
+                "pressure_state", passive["unrequested_constraint_scope"]
+            )
+
+        clear = self.context_module.prepare_answer_context(
+            "高远球怎么打？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7291120515530493184",
+            {video["video_id"] for video in clear["selected_videos"]},
+        )
+        clear_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in clear["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_cross_axis_conflict:shot_family_vs_serve_role",
+            clear_rejected["7291120515530493184"],
+        )
+        drive = self.context_module.prepare_answer_context(
+            "平抽挡怎么提高连续速度",
+            local_personalization=False,
+        )
+        self.assertIn(
+            "7652440366436945017",
+            {video["video_id"] for video in drive["selected_videos"]},
+        )
+
+        footwork = self.context_module.prepare_answer_context(
+            "后场步法怎么练？",
+            local_personalization=False,
+        )
+        self.assertTrue(footwork["selected_videos"])
+        self.assertTrue(
+            all(
+                video["focus_match"] in {"primary", "structured"}
+                for video in footwork["selected_videos"]
+            )
+        )
+        self.assertNotIn(
+            "7508222669708463420",
+            {video["video_id"] for video in footwork["selected_videos"]},
+        )
+
+        drop = self.context_module.prepare_answer_context(
+            "吊球怎么打？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7055130343476710667",
+            {video["video_id"] for video in drop["selected_videos"]},
+        )
+        drop_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in drop["rejected_candidates"]
+        }
+        self.assertIn(
+            "incomplete_series_fragment",
+            drop_rejected["7055130343476710667"],
+        )
+
+        spin = self.context_module.prepare_answer_context(
+            "搓球怎么打？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7052252250189696267",
+            {video["video_id"] for video in spin["selected_videos"]},
+        )
+        spin_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in spin["rejected_candidates"]
+        }
+        self.assertIn(
+            "incomplete_series_fragment",
+            spin_rejected["7052252250189696267"],
+        )
+
+    def test_generic_training_keeps_roles_and_locations_distinct(self):
+        rearcourt = self.context_module.prepare_answer_context(
+            "后场怎么练？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        rearcourt_ids = {
+            video["video_id"] for video in rearcourt["selected_videos"]
+        }
+        self.assertIn("7124871920230632745", rearcourt_ids)
+        self.assertNotIn("7508222669708463420", rearcourt_ids)
+        rearcourt_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in rearcourt["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_cross_axis_conflict:court_zone_vs_serve_role",
+            rearcourt_rejected["7508222669708463420"],
+        )
+
+        serve = self.context_module.prepare_answer_context(
+            "发球怎么练？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7118192644957818127",
+            {video["video_id"] for video in serve["selected_videos"]},
+        )
+        serve_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in serve["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_constraint_conflict:serve_role",
+            serve_rejected["7118192644957818127"],
+        )
+
+        smash = self.context_module.prepare_answer_context(
+            "杀球怎么练？",
+            local_personalization=False,
+        )
+        smash_by_id = {
+            video["video_id"]: video for video in smash["selected_videos"]
+        }
+        self.assertIn("7567155406117533051", smash_by_id)
+        self.assertEqual(
+            smash_by_id["7567155406117533051"]["role"], "supporting"
+        )
+        self.assertNotIn("7067722128413543680", smash_by_id)
+
     def test_known_cross_dimension_leaks_are_not_selected(self):
         cases = [
             ("后场步法怎么练", {"7406541084219821312"}),
