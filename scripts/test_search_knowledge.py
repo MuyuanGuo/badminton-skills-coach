@@ -673,6 +673,34 @@ class SearchKnowledgeTests(unittest.TestCase):
             self.assertIn(video_id, rejected)
             self.assertFalse(rejected[video_id]["within_review_budget"])
 
+    def test_net_pressure_policy_surfaces_direct_sources_not_smash_mentions(self):
+        payload = self.search_module.search(
+            "双打封网怎么压球",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        self.assertTrue(
+            {"7077740726926298402", "7607852875611759802"}.issubset(
+                surfaced
+            )
+        )
+        self.assertNotIn("7445495930280856892", surfaced)
+
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        self.assertIn("7445495930280856892", rejected)
+        self.assertIn(
+            "specific_stroke_intent_not_supported",
+            rejected["7445495930280856892"]["retrieval_policy_reasons"],
+        )
+        self.assertFalse(
+            rejected["7445495930280856892"]["within_review_budget"]
+        )
+
     def test_screening_tags_are_not_ranked_as_evidence_fields(self):
         video = {
             "title": "网前框架",

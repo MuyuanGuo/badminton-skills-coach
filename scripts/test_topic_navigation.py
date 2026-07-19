@@ -171,7 +171,7 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(index["assigned_video_count"], ready_count)
         self.assertEqual(index["unassigned_video_ids"], [])
-        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v3")
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v4")
         self.assertTrue(
             any(category["name"] == "单打战术" for category in index["categories"])
         )

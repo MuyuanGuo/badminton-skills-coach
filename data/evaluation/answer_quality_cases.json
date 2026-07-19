@@ -1919,7 +1919,8 @@
           "7052600326116887812",
           "7567155406117533051",
           "7484563688096091449",
-          "7440406891664133428"
+          "7440406891664133428",
+          "7659991105622862457"
         ],
         "irrelevant_video_ids": [],
         "required_text_points": [
@@ -1970,6 +1971,18 @@
             ],
             "evidence_video_ids": [
               "7567155406117533051"
+            ]
+          },
+          {
+            "point_id": "AQ023-P5",
+            "description": "快速突击和重杀使用的框架与目标不同，不能用一种固定动作覆盖所有杀球。",
+            "acceptable_terms": [
+              "快速突击",
+              "重杀框架",
+              "不同框架"
+            ],
+            "evidence_video_ids": [
+              "7659991105622862457"
             ]
           }
         ],
@@ -2540,6 +2553,61 @@
           "只看文字就能确认你的握拍完全正确",
           "一种静态握拍适合所有击球",
           "没有照片视频也可以百分之百判断"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ031",
+      "query": "双打封网怎么压球",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_ambiguity_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把中前场封网下压与后场杀球分开；保留两条直接讲封网握拍切换和受压击球点调整的来源，把纯重杀、跳杀来源列为硬负例。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-19"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7077740726926298402",
+          "7607852875611759802"
+        ],
+        "required_video_ids": [
+          "7077740726926298402",
+          "7607852875611759802"
+        ],
+        "irrelevant_video_ids": [
+          "7445495930280856892",
+          "7506362888166083897",
+          "7659991105622862457"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ031-P1",
+            "description": "封网来球已从身前进入正身位时，不应继续使用只适合身前主动球的苍蝇拍握法，应切换传统握拍并用前臂、手腕和手指旋转发力。",
+            "acceptable_terms": ["正身位", "传统握拍", "旋转发力"],
+            "evidence_video_ids": ["7077740726926298402"]
+          },
+          {
+            "point_id": "AQ031-P2",
+            "description": "对手来球很冲、已经失去前点击球时，可以后撤大臂改变有效下压点，避免按原拍臂关系把球向上或向远处打。",
+            "acceptable_terms": ["来球很冲", "大臂向后撤", "改变压球点"],
+            "evidence_video_ids": ["7607852875611759802"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ031-B1",
+            "description": "这里的压球是双打中前场或封网处理，不得自动解释成后场重杀、跳杀或遁地炮。",
+            "acceptable_terms": ["中前场", "封网", "不是后场重杀"]
+          }
+        ],
+        "forbidden_claims": [
+          "封网压球就是后场重杀",
+          "来球进入正身位后仍应保持苍蝇拍握法",
+          "所有压球都使用同一种杀球框架"
         ]
       }
     }

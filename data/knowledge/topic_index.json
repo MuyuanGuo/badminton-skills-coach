@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v3",
+  "taxonomy_version": "topic-taxonomy-v4",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -16,7 +16,7 @@
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 87,
+      "video_count": 86,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -141,33 +141,30 @@
           ]
         },
         {
-          "name": "杀球、突击与压球",
+          "name": "杀球与突击",
           "keywords": [
             "杀球",
             "重杀",
             "点杀",
             "突击",
-            "压球",
             "扣杀"
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 26,
-          "ready_count": 26,
+          "video_count": 25,
+          "ready_count": 25,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7659348110628345210",
             "7567155406117533051",
             "7659991105622862457",
             "7506362888166083897",
-            "7440406891664133428",
             "7550305145877155131",
             "7090377448017235234",
             "7068835198938516777",
             "7093706918492917033",
             "7229506261136526647",
             "7055491154288102667",
-            "7607852875611759802",
             "7105205741954321699",
             "7606412946096327978",
             "7498295344284093755",
@@ -175,6 +172,7 @@
             "7202800263588105510",
             "7445495930280856892",
             "7611635851789771721",
+            "7440406891664133428",
             "7414339897990843663",
             "7052519937125911846",
             "7288529711267859747",
@@ -192,11 +190,11 @@
               "confidence": "curated",
               "processing_status": "ready",
               "topic": "快速突击中的杀球落点与身体姿态",
-              "score": 44,
+              "score": 42,
               "match_basis": {
                 "title": 3,
                 "focus": 5,
-                "evidence": 11
+                "evidence": 9
               },
               "assignment_method": "rule_match"
             },
@@ -249,13 +247,13 @@
               "assignment_method": "rule_match"
             },
             {
-              "video_id": "7440406891664133428",
-              "title": "压球新讲 就算追求贴球发力，也得是建立在能把动作做完的基础上贴，怕打不到球也会本能的把球拍接近球而失去发力空间，这都是不对的",
-              "url": "https://www.douyin.com/video/7440406891664133428",
-              "category": "发力与身体运用",
+              "video_id": "7550305145877155131",
+              "title": "反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果",
+              "url": "https://www.douyin.com/video/7550305145877155131",
+              "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
-              "topic": "压球新讲 就算追求贴球发力",
+              "topic": "反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果",
               "score": 12,
               "match_basis": {
                 "title": 1,

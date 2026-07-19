@@ -400,6 +400,12 @@ def axis_values(search_module, text, axis):
 
 def query_axis_values(search_module, query, axis):
     values = axis_values(search_module, query, axis)
+    normalized = search_module.normalize(query)
+    if any(
+        search_module.normalize(phrase) in normalized
+        for phrase in axis.get("mixed_value_sets", {})
+    ):
+        return values
     target_prefixes = [
         search_module.normalize(prefix)
         for prefix in axis.get("query_target_prefixes", [])
@@ -408,7 +414,6 @@ def query_axis_values(search_module, query, axis):
     if not values or not target_prefixes:
         return values
 
-    normalized = search_module.normalize(query)
     max_prefix_length = max(map(len, target_prefixes))
     retained = set()
     for value in values:
@@ -811,6 +816,32 @@ def query_constraints(search_module, query, rules):
     return query_actor_context(search_module, query, rules)[
         "target_constraints"
     ]
+
+
+def query_ambiguities(search_module, query, rules):
+    normalized = search_module.normalize(query)
+    ambiguities = []
+    for rule in rules.get("query_ambiguities", []):
+        matched_terms = [
+            term
+            for term in rule.get("query_terms", [])
+            if search_module.normalize(term) in normalized
+        ]
+        if not matched_terms:
+            continue
+        if any(
+            search_module.normalize(term) in normalized
+            for term in rule.get("resolved_by_terms", [])
+        ):
+            continue
+        ambiguities.append(
+            {
+                "name": rule["name"],
+                "matched_terms": matched_terms,
+                "required_statement": rule["required_statement"],
+            }
+        )
+    return ambiguities
 
 
 def explicit_constraint_terms(search_module, query, rules):
@@ -1723,11 +1754,14 @@ def selection_decision(
     ) = constraint_result
     if not constraints_match:
         return False, constraint_failures
-    if (
-        len(requested_constraints.get("technique_variant", [])) == 1
-        and constraint_matches.get("technique_variant") == "unspecified_support"
-    ):
-        return False, ["specific_technique_not_supported"]
+    for axis_name, failure_reason in rules.get(
+        "required_single_value_constraint_support_axes", {}
+    ).items():
+        if (
+            len(requested_constraints.get(axis_name, [])) == 1
+            and constraint_matches.get(axis_name) == "unspecified_support"
+        ):
+            return False, [failure_reason]
     if (
         requested_constraints.get("serve_role")
         and requested_constraints.get("technique_variant")
@@ -2399,6 +2433,13 @@ def prepare_answer_context(
             "intent_frame": plan["retrieval_guidance"]["intent_frame"],
             "constraints": requested_constraints,
             "actor_context": actor_context,
+            "ambiguities": query_ambiguities(
+                search_module,
+                plan["retrieval_guidance"]["intent_frame"].get(
+                    "positive_query", query
+                ),
+                rules,
+            ),
             "strategy": plan["retrieval_guidance"]["strategy"],
             "query_units": plan["retrieval_guidance"].get("query_units", []),
             "retrieval_queries": retrieval_queries,
@@ -2439,6 +2480,7 @@ def prepare_answer_context(
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
+                "question_interpretation.ambiguities 非空时，先逐条说明 required_statement；不得把有多种场区含义的术语静默收窄成一种技术。",
                 "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的站位或轮转动作。requested_action_scopes 要求来源直接支持站位或团队补位，并排除只讨论对手站位的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",

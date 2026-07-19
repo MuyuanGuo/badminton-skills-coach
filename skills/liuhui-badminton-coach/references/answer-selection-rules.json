@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -156,7 +156,7 @@
       "label": "击球类型",
       "values": {
         "clear": ["高远球", "高远", "抽高远"],
-        "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "跳sha", "压球", "霸王杀", "鲨球"],
+        "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "跳sha", "霸王杀", "鲨球"],
         "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
@@ -191,6 +191,15 @@
       "structured_mismatch_policy": "conflict"
     },
     {
+      "name": "stroke_intent",
+      "label": "击球意图",
+      "values": {
+        "downward_pressure": ["压球", "压下去", "压住", "压不住", "下压"]
+      },
+      "structured_evidence_policy": "support_only",
+      "structured_mismatch_policy": "conflict"
+    },
+    {
       "name": "court_zone",
       "label": "场区",
       "values": {
@@ -200,6 +209,9 @@
         "fullcourt": ["全场", "四方球", "六点步法"]
       },
       "mixed_terms": ["前后场", "全场", "四方球", "六点步法"],
+      "mixed_value_sets": {
+        "封网": ["forecourt", "midcourt"]
+      },
       "query_value_suppressions": {
         "rearcourt": ["发后场", "偷后场", "发高远"]
       },
@@ -298,6 +310,14 @@
   "relationship_equivalent_groups": [
     ["配合", "衔接", "结合", "搭配", "串联"]
   ],
+  "query_ambiguities": [
+    {
+      "name": "downward_pressure_context",
+      "query_terms": ["压球", "压下去", "压住", "压不住", "下压"],
+      "resolved_by_terms": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "后场", "封网", "网前", "前场", "中场", "中前场", "抽挡", "平抽挡", "接杀"],
+      "required_statement": "“压球”可能指后场杀球下压，也可能指中前场或封网时把来球压住；未说明场区时，必须分场景说明，不得默认成后场杀球。"
+    }
+  ],
   "required_focus_equivalent_groups": [
     ["姿势", "动作", "框架", "挥拍"],
     ["击球点", "击球位置", "点位"],
@@ -307,8 +327,13 @@
     ["握拍", "虎口", "拍柄", "手型"],
     ["拍面", "拍型", "角度"],
     ["手肘", "肘"],
-    ["节奏", "变速", "快慢"]
+    ["节奏", "变速", "快慢"],
+    ["封网", "抢网", "后杀前封", "前封后杀"]
   ],
+  "required_single_value_constraint_support_axes": {
+    "technique_variant": "specific_technique_not_supported",
+    "stroke_intent": "specific_stroke_intent_not_supported"
+  },
   "focus_term_source_suppressions": {
     "握拍": ["对方握拍", "对手握拍", "对方是正手握拍", "对方是反手握拍", "对手是正手握拍", "对手是反手握拍"]
   },

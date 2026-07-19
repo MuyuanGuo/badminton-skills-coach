@@ -242,7 +242,7 @@ class ProjectArtifactsTests(unittest.TestCase):
             )
         )
         self.assertEqual(actual, expected)
-        self.assertEqual(len(actual["signals"]), 30)
+        self.assertEqual(len(actual["signals"]), 31)
 
 
 if __name__ == "__main__":

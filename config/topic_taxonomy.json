@@ -1,5 +1,5 @@
 {
-  "version": "topic-taxonomy-v3",
+  "version": "topic-taxonomy-v4",
   "field_weights": {"title": 6, "focus": 3, "evidence": 1},
   "default_minimum_score": 3,
   "categories": [
@@ -9,7 +9,7 @@
       "discipline": "general",
       "subtopics": [
         {"name": "被动后场与高远", "keywords": ["被动后场", "反手高远", "后高点", "摆脱", "高远", "底线"]},
-        {"name": "杀球、突击与压球", "keywords": ["杀球", "重杀", "点杀", "突击", "压球", "扣杀"]},
+        {"name": "杀球与突击", "keywords": ["杀球", "重杀", "点杀", "突击", "扣杀"]},
         {"name": "架拍与后场框架", "keywords": ["架拍", "顶肘", "引拍", "抬拍", "举拍", "框架"], "context_any": ["后场", "杀球", "高远", "挥拍", "发力"]},
         {"name": "吊球与劈吊", "keywords": ["吊球", "劈吊", "滑板", "软压"]},
         {"name": "反手后场", "keywords": ["反手高远", "反手后场", "反手过渡", "反手杀球", "反拍"], "context_any": ["反手", "反拍"]},

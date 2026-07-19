@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 30)
+        self.assertEqual(result["cases"], 31)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -206,6 +206,90 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(
             serve_target["shot_family"], ["deep_serve", "short_serve"]
+        )
+
+    def test_downward_pressure_is_not_silently_parsed_as_smash(self):
+        net_pressure = self.context_module.query_constraints(
+            self.search_module,
+            "双打封网怎么压球",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            net_pressure,
+            {
+                "stroke_intent": ["downward_pressure"],
+                "court_zone": ["forecourt", "midcourt"],
+                "discipline": ["doubles"],
+            },
+        )
+        self.assertNotIn("shot_family", net_pressure)
+        self.assertNotIn("tactical_phase", net_pressure)
+
+        ambiguous = self.context_module.prepare_answer_context(
+            "压球怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            [
+                item["name"]
+                for item in ambiguous["question_interpretation"][
+                    "ambiguities"
+                ]
+            ],
+            ["downward_pressure_context"],
+        )
+        smash = self.context_module.prepare_answer_context(
+            "杀球怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(smash["question_interpretation"]["ambiguities"], [])
+        self.assertEqual(
+            smash["question_interpretation"]["constraints"]["shot_family"],
+            ["smash"],
+        )
+
+    def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):
+        context = self.context_module.prepare_answer_context(
+            "双打封网怎么压球",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        selected = {
+            item["video_id"] for item in context["selected_videos"]
+        }
+        self.assertEqual(
+            selected,
+            {"7077740726926298402", "7607852875611759802"},
+        )
+        hard_negatives = [
+            "7445495930280856892",
+            "7506362888166083897",
+            "7659991105622862457",
+        ]
+        for video_id in hard_negatives:
+            self.assertNotIn(video_id, selected)
+
+        rejected = {
+            item["video_id"]: item["reasons"]
+            for item in context["rejected_candidates"]
+        }
+        for video_id in hard_negatives:
+            self.assertTrue(
+                any(
+                    reason.startswith("explicit_constraint_conflict:")
+                    or reason == "specific_stroke_intent_not_supported"
+                    or reason == "recall_safeguard_only"
+                    for reason in rejected[video_id]
+                )
+            )
+
+        midcourt = self.context_module.prepare_answer_context(
+            "中前场怎么把球压下去",
+            local_personalization=False,
+        )
+        self.assertIn(
+            "7607852875611759802",
+            {item["video_id"] for item in midcourt["selected_videos"]},
         )
 
     def test_query_actor_context_separates_opponent_and_player_actions(self):
@@ -1471,17 +1555,14 @@ class AnswerContextTests(unittest.TestCase):
                 "7052600326116887812",
                 "7440406891664133428",
                 "7484563688096091449",
-                "7550305145877155131",
                 "7567155406117533051",
                 "7659991105622862457",
             },
         )
         self.assertEqual(
-            smash_by_id["7550305145877155131"]["role"], "supporting"
-        )
-        self.assertEqual(
             smash_by_id["7659991105622862457"]["role"], "supporting"
         )
+        self.assertNotIn("7550305145877155131", smash_ids)
         self.assertNotIn("7115241358255803683", smash_ids)
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):

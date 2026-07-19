@@ -271,6 +271,15 @@
       "expected_strategy": "boundary_first",
       "expected_query_units": ["只看文字说明，能不能确认我的正手握拍完全正确"],
       "expected_must_state_boundary_first": true
+    },
+    {
+      "case_id": "AQ031",
+      "query": "双打封网怎么压球",
+      "intent_summary": "解释双打中前场封网的下压处理，不把压球默认解释成后场杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打封网怎么压球"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [

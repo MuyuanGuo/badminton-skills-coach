@@ -2058,7 +2058,13 @@ def apply_retrieval_policy(
                 _VIDEO_CONSTRAINT_SCOPE_CACHE[candidate["video_id"]] = (
                     constraint_scope
                 )
-            allowed, failures, _, _, _ = selection_module.constraint_decision(
+            (
+                allowed,
+                failures,
+                policy_requested_constraints,
+                _,
+                constraint_matches,
+            ) = selection_module.constraint_decision(
                 policy_api,
                 query,
                 plan,
@@ -2069,6 +2075,17 @@ def apply_retrieval_policy(
             )
             if not allowed:
                 reasons.extend(failures)
+            else:
+                for axis_name, failure_reason in selection_rules.get(
+                    "required_single_value_constraint_support_axes", {}
+                ).items():
+                    if (
+                        len(policy_requested_constraints.get(axis_name, []))
+                        == 1
+                        and constraint_matches.get(axis_name)
+                        == "unspecified_support"
+                    ):
+                        reasons.append(failure_reason)
 
         title_normalized = normalize(video.get("title", ""))
         if not reasons and any(

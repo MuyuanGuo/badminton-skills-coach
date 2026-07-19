@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v8",
+  "version": "retrieval-v9",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -8,7 +8,8 @@
   "description": "刘辉羽毛球 Skill 的高召回检索规则。概念组用于识别主题；只有 equivalent_groups 双向扩展，directed_expansions 按查询方向低权重扩展相邻概念。",
   "synonym_groups": [
     ["被动", "来不及", "赶不上", "后高点", "晚点", "摆脱", "压到底线"],
-    ["杀球", "重杀", "扣杀", "突击", "压球", "下压"],
+    ["杀球", "重杀", "扣杀", "突击"],
+    ["压球", "压下去", "压住", "压不住", "下压"],
     ["无力", "不重", "没威胁", "力量小", "打不动"],
     ["架拍", "框架", "组织框架", "举拍", "抬拍", "准备动作", "引拍"],
     ["步法", "移动", "脚步", "跑位"],
@@ -73,7 +74,7 @@
     {"query_terms": ["发接发"], "expanded_terms": {"接发": 0.7, "发球": 0.5, "抓球": 0.5}},
     {"query_terms": ["吊球"], "expanded_terms": {"劈吊": 0.75, "滑板": 0.45, "软压": 0.4}},
     {"query_terms": ["劈吊"], "expanded_terms": {"吊球": 0.65, "滑板": 0.45}},
-    {"query_terms": ["杀球"], "expanded_terms": {"重杀": 0.65, "突击": 0.45, "压球": 0.4}},
+    {"query_terms": ["杀球"], "expanded_terms": {"重杀": 0.65, "突击": 0.45}},
     {"query_terms": ["重杀"], "expanded_terms": {"杀球": 0.65, "发力": 0.35}},
     {"query_terms": ["内旋"], "expanded_terms": {"小臂旋转": 0.7, "手腕": 0.25}},
     {"query_terms": ["手腕"], "expanded_terms": {"内旋": 0.25, "小臂旋转": 0.25}},
@@ -124,6 +125,10 @@
     "comparison_request_terms": ["区别", "比较", "对比", "还是"]
   },
   "required_intent_groups": [
+    {
+      "name": "net_interception",
+      "terms": ["封网", "抢网", "后杀前封", "前封后杀"]
+    },
     {
       "name": "pain_or_injury",
       "terms": ["疼", "疼痛", "痛", "受伤", "拉伤", "扭伤", "不舒服"]
