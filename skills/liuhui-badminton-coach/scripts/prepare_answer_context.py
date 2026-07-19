@@ -2222,10 +2222,8 @@ def prepare_answer_context(
         ):
             keep = False
             reasons = action_failures
-        condition_axes = set(
-            actor_context.get("target_condition_constraints", {})
-        )
-        condition_scope_supported = all(
+        action_fallback_axes = set(requested_constraints)
+        action_fallback_scope_supported = all(
             constraint_result[4].get(axis_name)
             in {"exact", "mixed_support", "incidental_support"}
             and constraint_scope.get(axis_name, {}).get("source")
@@ -2236,7 +2234,7 @@ def prepare_answer_context(
                 "reviewed_override",
                 "category",
             }
-            for axis_name in condition_axes
+            for axis_name in action_fallback_axes
         )
         if (
             actor_context.get("requested_action_scopes")
@@ -2251,7 +2249,7 @@ def prepare_answer_context(
                 }
             )
             and constraint_result[0]
-            and condition_scope_supported
+            and action_fallback_scope_supported
             and has_instructional_evidence(video)
         ):
             keep = True

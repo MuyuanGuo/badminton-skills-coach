@@ -708,6 +708,30 @@ class AnswerContextTests(unittest.TestCase):
         self.assertNotIn("7072543702161296640", rotation_ids)
         self.assertNotIn("7501542236061420859", rotation_ids)
 
+    def test_action_scope_fallback_requires_every_explicit_constraint(self):
+        defense = self.context_module.prepare_answer_context(
+            "双打防守站位怎么调整",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        defense_ids = {
+            item["video_id"] for item in defense["selected_videos"]
+        }
+        self.assertIn("7656927370758796145", defense_ids)
+        self.assertIn("7220984919747497255", defense_ids)
+        self.assertNotIn("7246960976459730191", defense_ids)
+        self.assertNotIn("7498830855188942137", defense_ids)
+
+        generic = self.context_module.prepare_answer_context(
+            "双打站位怎么调整",
+            local_personalization=False,
+        )
+        generic_ids = {
+            item["video_id"] for item in generic["selected_videos"]
+        }
+        self.assertIn("7246960976459730191", generic_ids)
+        self.assertIn("7498830855188942137", generic_ids)
+
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(
             "反手高远怎么打", "正反手高远的区别"
