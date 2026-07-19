@@ -293,6 +293,8 @@ required_retrieval_intent_fields = {
     "practice_request_terms",
     "practice_schedule_terms",
     "practice_context_terms",
+    "practice_plan_nouns",
+    "practice_plan_request_terms",
     "diagnosis_request_terms",
     "comparison_request_terms",
 }
@@ -303,6 +305,41 @@ if any(
     for field in required_retrieval_intent_fields
 ):
     raise SystemExit("Retrieval intent routing rules cannot be empty")
+
+answer_selection_rules = json.loads(
+    (ROOT / "config" / "answer_selection_rules.json").read_text(
+        encoding="utf-8"
+    )
+)
+skill_answer_selection_rules = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "answer-selection-rules.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_answer_selection_rules != answer_selection_rules:
+    raise SystemExit("Skill answer selection rules are out of sync")
+boundary_terms = answer_selection_rules.get("boundary_terms", {})
+expected_boundary_groups = {
+    "pain_or_injury",
+    "endorsement_or_authorship",
+    "purchase_advice",
+    "visual_confirmation",
+    "insufficient_observation",
+}
+if set(boundary_terms) != expected_boundary_groups:
+    raise SystemExit("Answer selection boundary groups are incomplete")
+flattened_boundary_terms = [
+    term for terms in boundary_terms.values() for term in terms
+]
+if len(flattened_boundary_terms) != len(set(flattened_boundary_terms)):
+    raise SystemExit("Answer selection boundary terms must be unambiguous")
+pain_terms = set(boundary_terms["pain_or_injury"])
+if not pain_terms.issubset(retrieval_intent["literal_symptom_terms"]):
+    raise SystemExit("Pain boundaries are missing from literal symptoms")
 
 answer_modality_rules = json.loads(
     (ROOT / "config" / "answer_modality_rules.json").read_text(encoding="utf-8")
@@ -342,6 +379,27 @@ if set(
 ) != {"coaching_answer", "comparison", "practice"}:
     raise SystemExit(
         "Scenario-focused workflow outputs are incomplete"
+    )
+if set(answer_modality_rules["workflow"]["boundary_signals"]) != set(
+    flattened_boundary_terms
+):
+    raise SystemExit(
+        "Answer workflow boundary signals differ from final boundary rules"
+    )
+if not pain_terms.issubset(
+    answer_modality_rules["workflow"]["diagnostic_signals"]
+):
+    raise SystemExit("Pain boundaries are missing from diagnostic signals")
+text_primary_boundary_terms = set().union(
+    boundary_terms["pain_or_injury"],
+    boundary_terms["endorsement_or_authorship"],
+    boundary_terms["purchase_advice"],
+)
+if set(
+    answer_modality_rules["decision"]["decisive_text_boundary_terms"]
+) != text_primary_boundary_terms:
+    raise SystemExit(
+        "Text-primary boundary signals differ from boundary categories"
     )
 
 practice_plan_rules = json.loads(

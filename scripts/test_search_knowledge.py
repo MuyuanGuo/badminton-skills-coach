@@ -275,6 +275,56 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(guidance["strategy"], "boundary_first")
         self.assertTrue(guidance["must_state_boundary_first"])
 
+    def test_query_plan_uses_the_final_boundary_contract(self):
+        text_primary_queries = [
+            "练杀球肩膀痛怎么办",
+            "打高远球手腕不适怎么处理",
+            "练步法把脚踝扭伤了还能练吗",
+            "杀球拉伤了该怎么恢复训练",
+            "这个Skill是刘辉本人授权的吗",
+            "刘辉同意这个训练计划吗",
+            "哪款球拍适合我",
+        ]
+        for query in text_primary_queries:
+            with self.subTest(query=query):
+                plan = self.search_module.plan_query(query)
+                guidance = plan["retrieval_guidance"]
+                self.assertEqual(guidance["strategy"], "boundary_first")
+                self.assertTrue(guidance["must_state_boundary_first"])
+                self.assertEqual(plan["answer_guidance"]["mode"], "text_primary")
+
+        visual = self.search_module.plan_query("我的反手握拍完全正确吗")
+        self.assertEqual(
+            visual["retrieval_guidance"]["strategy"], "boundary_first"
+        )
+        self.assertEqual(visual["answer_guidance"]["mode"], "video_primary")
+
+        insufficient = self.search_module.plan_query(
+            "只描述杀球下网，唯一原因是什么"
+        )
+        self.assertEqual(
+            insufficient["retrieval_guidance"]["strategy"], "boundary_first"
+        )
+        self.assertEqual(insufficient["answer_guidance"]["mode"], "balanced")
+
+        normal_training = self.search_module.plan_query("杀球还能不能继续练")
+        self.assertEqual(
+            normal_training["retrieval_guidance"]["strategy"],
+            "focused_evidence",
+        )
+        self.assertFalse(
+            normal_training["retrieval_guidance"]["must_state_boundary_first"]
+        )
+
+    def test_pain_variants_are_preserved_as_literal_symptoms(self):
+        for symptom in ["痛", "扭伤", "拉伤", "不适", "不舒服"]:
+            query = f"练杀球肩膀{symptom}怎么办"
+            with self.subTest(symptom=symptom):
+                frame = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]["intent_frame"]
+                self.assertIn(symptom, frame["literal_symptoms"])
+
     def test_query_plan_puts_text_only_action_claim_behind_evidence_boundary(self):
         plan = self.search_module.plan_query(
             "只看文字说明，能不能确认我的正手握拍完全正确"
@@ -320,6 +370,7 @@ class SearchKnowledgeTests(unittest.TestCase):
             "双打新手一个人练接发，每次20分钟怎么安排",
             "有搭档喂球，30分钟如何分配网前搓球训练",
             "帮我做一个15分钟的杀球练习计划",
+            "给我一个双打接发训练计划",
         ]:
             with self.subTest(query=query):
                 frame = self.search_module.plan_query(query)[
@@ -331,6 +382,13 @@ class SearchKnowledgeTests(unittest.TestCase):
             "retrieval_guidance"
         ]["intent_frame"]
         self.assertEqual(tactical["requested_output"], "coaching_answer")
+
+        referenced_plan = self.search_module.plan_query(
+            "刘辉同意这个训练计划吗"
+        )["retrieval_guidance"]["intent_frame"]
+        self.assertEqual(
+            referenced_plan["requested_output"], "coaching_answer"
+        )
 
     def test_query_plan_preserves_literal_symptom_after_known_concept(self):
         plan = self.search_module.plan_query("杀球总下网怎么办")

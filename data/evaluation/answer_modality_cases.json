@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "description": "验证 Skill 是否把文字解释与视频演示分配到合适模式。模式只改变侧重，不允许省略文字答案或相关视频。",
   "cases": [
     {
@@ -64,6 +64,26 @@
     },
     {
       "query": "双打接发战术和接发握拍应该怎么调整",
+      "expected_mode": "balanced"
+    },
+    {
+      "query": "打高远球手腕不适怎么处理",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "这个Skill是刘辉本人授权的吗",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "哪款球拍适合我",
+      "expected_mode": "text_primary"
+    },
+    {
+      "query": "我的反手握拍完全正确吗",
+      "expected_mode": "video_primary"
+    },
+    {
+      "query": "只描述杀球下网，唯一原因是什么",
       "expected_mode": "balanced"
     }
   ]

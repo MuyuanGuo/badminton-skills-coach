@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -304,12 +304,14 @@
       "受伤",
       "扭伤",
       "拉伤",
-      "不适"
+      "不适",
+      "不舒服"
     ],
     "endorsement_or_authorship": [
       "本人认可",
       "本人同意",
       "本人背书",
+      "本人授权",
       "刘辉认可",
       "刘辉同意",
       "是不是刘辉",
@@ -325,6 +327,7 @@
     ],
     "visual_confirmation": [
       "只看文字",
+      "仅看文字",
       "完全正确",
       "确认我的动作",
       "确认我的握拍"

@@ -1564,6 +1564,10 @@ def prepare_answer_context(
         raise ValueError("segment_limit must be between 1 and 12")
 
     plan = search_module.plan_query(query)
+    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
+        "positive_query", query
+    )
+    boundary = classify_boundary(positive_query, rules)
     knowledge, retrieval_index, retrieval_rules = search_module.load_resources()
     reviewed_priorities = reviewed_evidence_priorities(
         search_module,
@@ -1581,6 +1585,12 @@ def prepare_answer_context(
     needs_practice_context = (
         plan["retrieval_guidance"]["intent_frame"].get("requested_output")
         == "practice"
+        and boundary["type"]
+        not in {
+            "pain_or_injury",
+            "endorsement_or_authorship",
+            "purchase_advice",
+        }
     )
     if use_topic_navigation or needs_practice_context:
         navigation = topic_navigation(navigation_module, query)
@@ -1602,13 +1612,9 @@ def prepare_answer_context(
     ]
     merged = merge_candidates(payloads, retrieval_queries)
     videos = {video["video_id"]: video for video in knowledge["videos"]}
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", query
-    )
     requested_constraints = query_constraints(
         search_module, positive_query, rules
     )
-    boundary = classify_boundary(positive_query, rules)
     accepted = []
     rejected = []
     for video_id, entry in merged.items():

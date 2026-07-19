@@ -230,11 +230,11 @@
     {
       "case_id": "AQ026",
       "query": "我只描述杀球总下网，不给动作视频，能不能确定唯一原因",
-      "intent_summary": "先按杀球下网症状检索，同时说明无动作视频不能确定唯一原因",
+      "intent_summary": "先说明无动作视频不能确定唯一原因，再按杀球下网症状保留证据边界",
       "expected_answer_mode": "balanced",
-      "expected_strategy": "literal_symptom_first",
+      "expected_strategy": "boundary_first",
       "expected_query_units": ["我只描述杀球总下网，不给动作视频，能不能确定唯一原因"],
-      "expected_must_state_boundary_first": false
+      "expected_must_state_boundary_first": true
     },
     {
       "case_id": "AQ027",

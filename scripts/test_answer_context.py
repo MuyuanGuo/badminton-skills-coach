@@ -87,6 +87,57 @@ class AnswerContextTests(unittest.TestCase):
         self.assertEqual(endorsement["selected_ids"], [])
         self.assertEqual(insufficient["selected_ids"], [])
 
+    def test_boundary_planning_and_final_classification_are_consistent(self):
+        cases = {
+            "练杀球肩膀痛怎么办": "pain_or_injury",
+            "打高远球手腕不舒服怎么处理": "pain_or_injury",
+            "这个Skill是刘辉本人授权的吗": "endorsement_or_authorship",
+            "刘辉同意这个训练计划吗": "endorsement_or_authorship",
+            "哪款球拍适合我": "purchase_advice",
+            "我的反手握拍完全正确吗": "visual_confirmation",
+            "只描述杀球下网，唯一原因是什么": "insufficient_observation",
+        }
+        for query, expected_boundary in cases.items():
+            with self.subTest(query=query):
+                context = self.context_module.prepare_answer_context(
+                    query,
+                    max_videos=1,
+                    local_personalization=False,
+                )
+                self.assertEqual(
+                    context["question_interpretation"]["strategy"],
+                    "boundary_first",
+                )
+                self.assertEqual(context["boundary"]["type"], expected_boundary)
+                self.assertIsNotNone(context["boundary"]["required_statement"])
+
+        endorsement = self.context_module.prepare_answer_context(
+            "刘辉同意这个训练计划吗",
+            max_videos=1,
+            local_personalization=False,
+        )
+        self.assertEqual(
+            endorsement["question_interpretation"]["intent_frame"][
+                "requested_output"
+            ],
+            "coaching_answer",
+        )
+        self.assertIsNone(endorsement["topic_navigation"])
+
+        pain_practice = self.context_module.prepare_answer_context(
+            "肩膀痛，现在怎么练杀球",
+            max_videos=1,
+            local_personalization=False,
+        )
+        self.assertEqual(
+            pain_practice["question_interpretation"]["intent_frame"][
+                "requested_output"
+            ],
+            "practice",
+        )
+        self.assertEqual(pain_practice["boundary"]["type"], "pain_or_injury")
+        self.assertIsNone(pain_practice["topic_navigation"])
+
     def test_selected_videos_have_stable_contiguous_labels(self):
         context = self.module.prepare_case_context(
             self.search_module,

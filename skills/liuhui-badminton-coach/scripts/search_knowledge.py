@@ -305,7 +305,21 @@ def requested_output(query, rules):
             for term in intent_rules.get("practice_context_terms", [])
         )
     )
-    if direct_practice_request or scheduled_practice_request:
+    explicit_practice_plan_request = (
+        any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_plan_nouns", [])
+        )
+        and any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_plan_request_terms", [])
+        )
+    )
+    if (
+        direct_practice_request
+        or scheduled_practice_request
+        or explicit_practice_plan_request
+    ):
         return "practice"
     for label, key in [
         ("diagnosis", "diagnosis_request_terms"),

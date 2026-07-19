@@ -66,7 +66,7 @@ SETUP_SIGNALS = {
         "给我喂球",
     ],
 }
-PAIN_SIGNALS = ["疼", "痛", "受伤", "扭伤", "拉伤", "不适"]
+PAIN_SIGNALS = ["疼", "痛", "受伤", "扭伤", "拉伤", "不适", "不舒服"]
 
 
 def normalize(text):
