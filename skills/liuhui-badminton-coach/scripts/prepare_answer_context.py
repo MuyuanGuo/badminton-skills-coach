@@ -451,8 +451,25 @@ def query_actor_text(query, rules):
     current_actor = "player"
     cursor = 0
     for match in pattern.finditer(query):
-        buffers[current_actor].append(query[cursor : match.start()])
         token = match.group(0)
+        marker_suppressed = False
+        for phrase in rules.get("query_actor_marker_suppressions", {}).get(
+            token, []
+        ):
+            window_start = max(0, match.start() - len(phrase) + 1)
+            phrase_start = query.find(phrase, window_start, match.start() + 1)
+            if (
+                phrase_start >= 0
+                and phrase_start <= match.start()
+                and match.end() <= phrase_start + len(phrase)
+            ):
+                marker_suppressed = True
+                break
+        if marker_suppressed:
+            buffers[current_actor].append(query[cursor : match.end()])
+            cursor = match.end()
+            continue
+        buffers[current_actor].append(query[cursor : match.start()])
         if token in separators:
             current_actor = "player"
             buffers[current_actor].append(" ")
@@ -467,11 +484,27 @@ def query_actor_text(query, rules):
     }
 
 
-def _query_constraints_from_text(search_module, query, rules):
+def _query_constraints_from_text(
+    search_module,
+    query,
+    rules,
+    value_additions_field=None,
+):
     constraints = {}
     normalized_query = search_module.normalize(query)
     for axis in rules.get("constraint_axes", []):
         values = query_axis_values(search_module, query, axis)
+        if value_additions_field:
+            values.update(
+                value
+                for value, phrases in axis.get(
+                    value_additions_field, {}
+                ).items()
+                if any(
+                    search_module.normalize(phrase) in normalized_query
+                    for phrase in phrases
+                )
+            )
         for value, phrases in axis.get("query_value_suppressions", {}).items():
             if any(
                 search_module.normalize(phrase) in normalized_query
@@ -491,7 +524,7 @@ def _query_constraints_from_text(search_module, query, rules):
         and "tactical_phase" not in constraints
         and any(
             search_module.normalize(term) in normalized_query
-            for term in ["杀球", "扣杀", "重杀", "点杀", "跳杀", "压球"]
+            for term in ["杀球", "扣杀", "重杀", "点杀", "跳杀", "压球", "杀"]
         )
     ):
         constraints["tactical_phase"] = ["attack"]
@@ -504,7 +537,10 @@ def query_actor_context(search_module, query, rules):
         search_module, actor_text["player"], rules
     )
     opponent_constraints = _query_constraints_from_text(
-        search_module, actor_text["opponent"], rules
+        search_module,
+        actor_text["opponent"],
+        rules,
+        value_additions_field="opponent_query_value_additions",
     )
     normalized_query = search_module.normalize(query)
     derived_player_constraints = {}
@@ -848,6 +884,26 @@ def opponent_condition_failures(
         if set(scope_details.get("values", [])) & set(opponent_values):
             failures.append(
                 f"opponent_condition_misread_as_player_action:{axis_name}"
+            )
+    return failures
+
+
+def derived_player_constraint_failures(
+    derived_player_constraints,
+    scope,
+    rules,
+):
+    required_axes = set(
+        rules.get("derived_player_constraint_required_match_axes", [])
+    )
+    failures = []
+    for axis_name, requested_values in derived_player_constraints.items():
+        if axis_name not in required_axes:
+            continue
+        source_values = set(scope.get(axis_name, {}).get("values", []))
+        if not source_values & set(requested_values):
+            failures.append(
+                f"derived_player_constraint_not_supported:{axis_name}"
             )
     return failures
 
@@ -1781,6 +1837,14 @@ def prepare_answer_context(
         if actor_failures:
             keep = False
             reasons = actor_failures
+        derived_failures = derived_player_constraint_failures(
+            actor_context["derived_player_constraints"],
+            constraint_scope,
+            rules,
+        )
+        if derived_failures:
+            keep = False
+            reasons = derived_failures
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )

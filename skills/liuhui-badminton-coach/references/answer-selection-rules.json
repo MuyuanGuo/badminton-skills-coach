@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -22,7 +22,7 @@
     ["接发", "发球"]
   ],
   "query_actor_markers": {
-    "opponent": ["对手", "对方", "对面", "人家"],
+    "opponent": ["对手", "对方", "对面", "人家", "其他人", "别人", "他", "她"],
     "player": [
       "我应该",
       "我该",
@@ -43,6 +43,9 @@
       "我"
     ]
   },
+  "query_actor_marker_suppressions": {
+    "他": ["其他", "吉他"]
+  },
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
   "opponent_response_implications": [
     {
@@ -62,6 +65,7 @@
       "search_terms": ["防守"]
     }
   ],
+  "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
   "opponent_condition_player_action_rejected_sources": [
     "primary_metadata",
     "reviewed_override"
@@ -109,6 +113,10 @@
         "发球变化": ["deep_serve", "short_serve"],
         "小球和后场": ["deep_serve", "short_serve"],
         "小球与后场": ["deep_serve", "short_serve"]
+      },
+      "opponent_query_value_additions": {
+        "smash": ["杀"],
+        "drop": ["吊"]
       },
       "query_value_suppressions": {
         "clear": ["发高远", "高远发球"],

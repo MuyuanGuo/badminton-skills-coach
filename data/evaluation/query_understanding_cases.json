@@ -646,6 +646,55 @@
         "shot_family": ["drop"],
         "shot_direction": ["straight"]
       }
+    },
+    {
+      "case_id": "QUA024",
+      "query": "他的反手弱，怎么针对",
+      "intent_summary": "把他的识别为对手代词，不误作用户要执行的反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["他的", "反手", "怎么针对"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"stroke_side": ["backhand"]}
+    },
+    {
+      "case_id": "QUA025",
+      "query": "他总发高远球，我怎么接",
+      "intent_summary": "把他识别为发球方，并把用户角色推导为接发而不是发球",
+      "expected_intent": {
+        "positive_query_contains": ["他总发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      }
+    },
+    {
+      "case_id": "QUA026",
+      "query": "其他反手问题怎么处理",
+      "intent_summary": "其他一词中的他不是对手代词，反手仍应保留为用户动作条件",
+      "expected_intent": {
+        "positive_query_contains": ["其他", "反手", "怎么处理"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_opponent_constraints": {}
     }
   ]
 }

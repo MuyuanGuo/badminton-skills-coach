@@ -246,7 +246,7 @@ def main():
     )
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--answer-cases", type=Path, default=ANSWER_CASES_PATH)
-    parser.add_argument("--require-cases", type=int, default=53)
+    parser.add_argument("--require-cases", type=int, default=56)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
 

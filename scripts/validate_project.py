@@ -329,12 +329,38 @@ if set(actor_markers) != {"player", "opponent"} or any(
     raise SystemExit("Query actor markers are incomplete")
 if set(actor_markers["player"]) & set(actor_markers["opponent"]):
     raise SystemExit("Query actor markers cannot identify both actors")
+all_actor_markers = set(actor_markers["player"]) | set(actor_markers["opponent"])
+for marker, suppressions in answer_selection_rules.get(
+    "query_actor_marker_suppressions", {}
+).items():
+    if marker not in all_actor_markers or not suppressions:
+        raise SystemExit("Query actor marker suppression references an unknown marker")
+    if any(marker not in phrase for phrase in suppressions):
+        raise SystemExit("Query actor marker suppression must contain its marker")
 if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
 constraint_axes = {
     axis["name"]: axis
     for axis in answer_selection_rules.get("constraint_axes", [])
 }
+required_derived_axes = set(
+    answer_selection_rules.get(
+        "derived_player_constraint_required_match_axes", []
+    )
+)
+if not required_derived_axes or not required_derived_axes.issubset(constraint_axes):
+    raise SystemExit("Derived player constraint match axes are incomplete")
+for axis in constraint_axes.values():
+    allowed_values = set(axis.get("values", {}))
+    for field in [
+        "opponent_query_value_additions",
+        "query_value_suppressions",
+    ]:
+        configured_values = set(axis.get(field, {}))
+        if not configured_values.issubset(allowed_values):
+            raise SystemExit(f"{field} contains an unknown constraint value")
+        if any(not terms for terms in axis.get(field, {}).values()):
+            raise SystemExit(f"{field} contains an empty term list")
 required_implication_fields = {
     "opponent_axis",
     "opponent_values",

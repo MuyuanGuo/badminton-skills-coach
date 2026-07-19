@@ -271,6 +271,61 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(straight_drop["derived_search_terms"], ["防守"])
 
+        pronoun_serve = self.context_module.query_actor_context(
+            self.search_module,
+            "他总发高远球，我怎么接",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            pronoun_serve["player_constraints"], {"serve_role": ["receive"]}
+        )
+        self.assertEqual(
+            pronoun_serve["opponent_constraints"],
+            {
+                "shot_family": ["deep_serve"],
+                "serve_role": ["serve"],
+                "serve_trajectory": ["deep_serve"],
+            },
+        )
+
+        pronoun_smash = self.context_module.query_actor_context(
+            self.search_module,
+            "他总杀我反手位，我怎么防",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            pronoun_smash["player_constraints"],
+            {"stroke_side": ["backhand"], "tactical_phase": ["defense"]},
+        )
+        self.assertEqual(
+            pronoun_smash["opponent_constraints"],
+            {"shot_family": ["smash"], "tactical_phase": ["attack"]},
+        )
+
+        pronoun_drop = self.context_module.query_actor_context(
+            self.search_module,
+            "她总吊我正手位，我怎么防",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            pronoun_drop["player_constraints"],
+            {"stroke_side": ["forehand"], "tactical_phase": ["defense"]},
+        )
+        self.assertEqual(
+            pronoun_drop["opponent_constraints"],
+            {"shot_family": ["drop"]},
+        )
+
+        other_backhand = self.context_module.query_actor_context(
+            self.search_module,
+            "其他反手问题怎么处理",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            other_backhand["player_constraints"], {"stroke_side": ["backhand"]}
+        )
+        self.assertEqual(other_backhand["opponent_constraints"], {})
+
         own_serve = self.context_module.query_actor_context(
             self.search_module,
             "我发高远球，对手总抢攻，怎么改",
@@ -328,6 +383,43 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("7449702119076072764", straight_drop_ids)
         self.assertNotIn("7593661008519810289", straight_drop_ids)
         self.assertNotIn("7065871561915485440", straight_drop_ids)
+
+        pronoun_serve = self.context_module.prepare_answer_context(
+            "他总发高远球，我怎么接",
+            max_videos=4,
+            local_personalization=False,
+        )
+        pronoun_serve_ids = {
+            item["video_id"] for item in pronoun_serve["selected_videos"]
+        }
+        self.assertIn("7639306481355832689", pronoun_serve_ids)
+        self.assertNotIn("7517867684509420857", pronoun_serve_ids)
+        self.assertNotIn("7508222669708463420", pronoun_serve_ids)
+        for item in pronoun_serve["selected_videos"]:
+            self.assertIn(
+                "receive",
+                item["constraint_scope"]["serve_role"]["values"],
+            )
+
+        pronoun_smash = self.context_module.prepare_answer_context(
+            "他总杀我反手位，我怎么防",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertTrue(pronoun_smash["selected_videos"])
+        for item in pronoun_smash["selected_videos"]:
+            self.assertIn(
+                "defense",
+                item["constraint_scope"]["tactical_phase"]["values"],
+            )
+        pronoun_smash_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in pronoun_smash["rejected_candidates"]
+        }
+        self.assertIn(
+            "derived_player_constraint_not_supported:tactical_phase",
+            pronoun_smash_rejected["7499776424493075772"],
+        )
 
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(
