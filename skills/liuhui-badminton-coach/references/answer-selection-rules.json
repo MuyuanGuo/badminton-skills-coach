@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -218,6 +218,7 @@
       "mixed_value_sets": {
         "网前技术": ["net_drop", "net_hook", "net_pounce", "net_push", "net_spin"]
       },
+      "category_evidence_policy": "ignore",
       "source_value_suppressions": {
         "net_push": ["对手推球", "对方推球", "抓推"]
       },

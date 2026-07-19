@@ -790,6 +790,50 @@ class AnswerContextTests(unittest.TestCase):
                     "serve", scope["serve_role"]["suppressed_values"]
                 )
 
+    def test_broad_net_category_does_not_prove_every_specific_technique(self):
+        video = {
+            "video_id": "7000000000000000005",
+            "title": "网前框架练习",
+            "category": "网前技术",
+            "tags": [],
+            "teaching_note": {
+                "topic": "网前框架练习",
+                "key_evidence": [{"text": "保持身体放松并提前伸拍"}],
+            },
+        }
+        scope = self.context_module.video_constraint_scope(
+            self.search_module,
+            video,
+            self.selection_rules,
+        )
+        self.assertEqual(scope["technique_variant"]["values"], [])
+        self.assertEqual(
+            scope["technique_variant"]["source"], "unspecified"
+        )
+
+        push = self.context_module.prepare_answer_context(
+            "推球怎么打",
+            local_personalization=False,
+        )
+        push_by_id = {
+            item["video_id"]: item for item in push["selected_videos"]
+        }
+        self.assertIn("7054786188086955276", push_by_id)
+        direct = push_by_id["7054786188086955276"]
+        self.assertEqual(
+            direct["constraint_scope"]["technique_variant"]["values"],
+            ["net_push"],
+        )
+        self.assertEqual(
+            direct["constraint_scope"]["technique_variant"]["source"],
+            "structured_evidence",
+        )
+        self.assertEqual(
+            direct["constraint_match"]["technique_variant"],
+            "incidental_support",
+        )
+        self.assertNotIn("7661940775983482097", push_by_id)
+
     def test_real_feeder_and_machine_videos_do_not_enter_serve_answers(self):
         invalid_ids = {
             "7078487171803467042",
