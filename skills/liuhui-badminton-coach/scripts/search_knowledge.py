@@ -280,12 +280,14 @@ def extract_negative_scopes(query, rules):
             continue
         scopes.append({"marker": match.group("marker"), "text": scope})
         spans.append(match.span())
-    positive_query = query
+    actor_query = query
     for start, end in reversed(spans):
-        positive_query = positive_query[:start] + " " + positive_query[end:]
+        actor_query = actor_query[:start] + " " + actor_query[end:]
+    actor_query = re.sub(r"\s+", " ", actor_query).strip()
+    positive_query = actor_query
     positive_query = re.sub(r"[，,。；;！？!?]+", " ", positive_query)
     positive_query = re.sub(r"\s+", " ", positive_query).strip()
-    return positive_query or query, scopes
+    return positive_query or query, actor_query or query, scopes
 
 
 def requested_output(query, rules):
@@ -333,7 +335,14 @@ def requested_output(query, rules):
     return "coaching_answer"
 
 
-def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
+def build_intent_frame(
+    query,
+    positive_query,
+    actor_query,
+    negative_scopes,
+    lexicon,
+    rules,
+):
     positive_normalized = normalize(positive_query)
     intent_rules = rules.get("intent", {})
     excluded_seed_terms = set()
@@ -365,6 +374,7 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
     ]
     return {
         "positive_query": positive_query,
+        "actor_query": actor_query,
         "negative_scopes": negative_scopes,
         "excluded_seed_terms": sorted(excluded_seed_terms),
         "excluded_terms": sorted(excluded_terms),
@@ -377,9 +387,16 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
 
 def expand_query(query, retrieval_index, rules):
     lexicon = build_lexicon(retrieval_index, rules)
-    positive_query, negative_scopes = extract_negative_scopes(query, rules)
+    positive_query, actor_query, negative_scopes = extract_negative_scopes(
+        query, rules
+    )
     intent_frame = build_intent_frame(
-        query, positive_query, negative_scopes, lexicon, rules
+        query,
+        positive_query,
+        actor_query,
+        negative_scopes,
+        lexicon,
+        rules,
     )
     query_normalized = normalize(positive_query)
     original_terms = {

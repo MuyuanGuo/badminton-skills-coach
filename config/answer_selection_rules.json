@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -21,6 +21,64 @@
     ["单打", "双打"],
     ["接发", "发球"]
   ],
+  "query_actor_markers": {
+    "opponent": ["对手", "对方", "对面", "人家"],
+    "player": [
+      "我应该",
+      "我该",
+      "我怎么",
+      "我如何",
+      "我们",
+      "自己",
+      "怎么应对",
+      "如何应对",
+      "怎么防",
+      "如何防",
+      "怎么接",
+      "如何接",
+      "怎么针对",
+      "如何针对",
+      "应该怎么打",
+      "该怎么打",
+      "我"
+    ]
+  },
+  "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
+  "opponent_response_implications": [
+    {
+      "opponent_axis": "serve_role",
+      "opponent_values": ["serve"],
+      "player_axis": "serve_role",
+      "player_values": ["receive"],
+      "response_terms": ["怎么接", "如何接", "接发", "抢接发", "抢发", "怎么应对", "如何应对", "怎么处理", "如何处理"],
+      "search_terms": ["接发"]
+    },
+    {
+      "opponent_axis": "shot_family",
+      "opponent_values": ["clear", "smash", "drop", "drive", "net_shot"],
+      "player_axis": "tactical_phase",
+      "player_values": ["defense"],
+      "response_terms": ["防守", "接杀", "怎么防", "如何防", "怎么接", "如何接", "怎么应对", "如何应对", "站哪里", "怎么处理", "如何处理"],
+      "search_terms": ["防守"]
+    }
+  ],
+  "opponent_condition_player_action_rejected_sources": [
+    "primary_metadata",
+    "reviewed_override"
+  ],
+  "opponent_condition_support_terms": [
+    "对手",
+    "对方",
+    "对面",
+    "人家",
+    "针对",
+    "应对",
+    "对付",
+    "防守",
+    "接杀",
+    "站位",
+    "回球概率"
+  ],
   "constraint_axes": [
     {
       "name": "stroke_side",
@@ -37,7 +95,7 @@
       "values": {
         "clear": ["高远球", "高远", "抽高远"],
         "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "跳sha", "压球", "霸王杀", "鲨球"],
-        "drop": ["吊球", "吊网前", "吊网", "劈吊", "滑板吊", "远网吊"],
+        "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
         "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],

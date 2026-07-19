@@ -25,9 +25,9 @@ class QueryUnderstandingTests(unittest.TestCase):
     def test_reviewed_registry_routes_all_cases_correctly(self):
         result = self.module.evaluate()
         self.assertEqual(result["reviewed_cases"], 30)
-        self.assertEqual(result["adversarial_cases"], 19)
-        self.assertEqual(result["cases"], 49)
-        self.assertEqual(result["passed"], 49)
+        self.assertEqual(result["adversarial_cases"], 23)
+        self.assertEqual(result["cases"], 53)
+        self.assertEqual(result["passed"], 53)
         self.assertEqual(result["accuracy"], 1.0)
 
     def test_negated_positive_topic_is_checked_separately_from_excluded_topic(self):

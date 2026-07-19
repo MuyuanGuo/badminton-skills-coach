@@ -208,6 +208,127 @@ class AnswerContextTests(unittest.TestCase):
             serve_target["shot_family"], ["deep_serve", "short_serve"]
         )
 
+    def test_query_actor_context_separates_opponent_and_player_actions(self):
+        backhand = self.context_module.query_actor_context(
+            self.search_module,
+            "对手反手弱，应该怎么针对",
+            self.selection_rules,
+        )
+        self.assertEqual(backhand["player_constraints"], {})
+        self.assertEqual(
+            backhand["opponent_constraints"],
+            {"stroke_side": ["backhand"]},
+        )
+
+        deep_serve = self.context_module.query_actor_context(
+            self.search_module,
+            "对手发高远球，我怎么接",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            deep_serve["player_constraints"], {"serve_role": ["receive"]}
+        )
+        self.assertEqual(
+            deep_serve["opponent_constraints"],
+            {
+                "shot_family": ["deep_serve"],
+                "serve_role": ["serve"],
+                "serve_trajectory": ["deep_serve"],
+            },
+        )
+        self.assertEqual(deep_serve["derived_search_terms"], ["接发"])
+
+        smash = self.context_module.query_actor_context(
+            self.search_module,
+            "对方正手杀球很重，我怎么防守",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            smash["player_constraints"],
+            {"tactical_phase": ["defense"]},
+        )
+        self.assertEqual(
+            smash["opponent_constraints"],
+            {
+                "stroke_side": ["forehand"],
+                "shot_family": ["smash"],
+                "tactical_phase": ["attack"],
+            },
+        )
+
+        straight_drop = self.context_module.query_actor_context(
+            self.search_module,
+            "对手吊直线，我怎么防",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            straight_drop["player_constraints"],
+            {"tactical_phase": ["defense"]},
+        )
+        self.assertEqual(
+            straight_drop["opponent_constraints"],
+            {"shot_family": ["drop"], "shot_direction": ["straight"]},
+        )
+        self.assertEqual(straight_drop["derived_search_terms"], ["防守"])
+
+        own_serve = self.context_module.query_actor_context(
+            self.search_module,
+            "我发高远球，对手总抢攻，怎么改",
+            self.selection_rules,
+        )
+        self.assertIn("怎么改", own_serve["player_query"])
+        self.assertNotIn("怎么改", own_serve["opponent_query"])
+        self.assertEqual(own_serve["player_constraints"]["serve_role"], ["serve"])
+
+    def test_opponent_conditions_select_response_not_player_action_evidence(self):
+        context = self.context_module.prepare_answer_context(
+            "对手发高远球，我怎么接",
+            max_videos=4,
+            local_personalization=False,
+        )
+        interpretation = context["question_interpretation"]
+        self.assertEqual(interpretation["constraints"], {"serve_role": ["receive"]})
+        self.assertIn("接发", interpretation["retrieval_queries"])
+        selected = {item["video_id"] for item in context["selected_videos"]}
+        self.assertIn("7639306481355832689", selected)
+        self.assertNotIn("7517867684509420857", selected)
+        self.assertNotIn("7508222669708463420", selected)
+
+        targeting = self.context_module.prepare_answer_context(
+            "对手反手弱，应该怎么针对",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        targeting_ids = {
+            item["video_id"] for item in targeting["selected_videos"]
+        }
+        for video_id in [
+            "7151961376448138531",
+            "7081831033515117865",
+            "7499776424493075772",
+        ]:
+            self.assertNotIn(video_id, targeting_ids)
+        rejected = {
+            item["video_id"]: item["reasons"]
+            for item in targeting["rejected_candidates"]
+        }
+        self.assertIn(
+            "opponent_condition_misread_as_player_action:stroke_side",
+            rejected["7499776424493075772"],
+        )
+
+        straight_drop = self.context_module.prepare_answer_context(
+            "对手吊直线，我怎么防",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        straight_drop_ids = {
+            item["video_id"] for item in straight_drop["selected_videos"]
+        }
+        self.assertIn("7449702119076072764", straight_drop_ids)
+        self.assertNotIn("7593661008519810289", straight_drop_ids)
+        self.assertNotIn("7065871561915485440", straight_drop_ids)
+
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(
             "反手高远怎么打", "正反手高远的区别"

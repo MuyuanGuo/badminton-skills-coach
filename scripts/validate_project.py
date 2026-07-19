@@ -322,6 +322,41 @@ skill_answer_selection_rules = json.loads(
 )
 if skill_answer_selection_rules != answer_selection_rules:
     raise SystemExit("Skill answer selection rules are out of sync")
+actor_markers = answer_selection_rules.get("query_actor_markers", {})
+if set(actor_markers) != {"player", "opponent"} or any(
+    not actor_markers[actor] for actor in actor_markers
+):
+    raise SystemExit("Query actor markers are incomplete")
+if set(actor_markers["player"]) & set(actor_markers["opponent"]):
+    raise SystemExit("Query actor markers cannot identify both actors")
+if not answer_selection_rules.get("query_actor_clause_separators"):
+    raise SystemExit("Query actor clause separators are missing")
+constraint_axes = {
+    axis["name"]: axis
+    for axis in answer_selection_rules.get("constraint_axes", [])
+}
+required_implication_fields = {
+    "opponent_axis",
+    "opponent_values",
+    "player_axis",
+    "player_values",
+    "response_terms",
+    "search_terms",
+}
+for implication in answer_selection_rules.get(
+    "opponent_response_implications", []
+):
+    if set(implication) != required_implication_fields:
+        raise SystemExit("Opponent response implication contract is incomplete")
+    for prefix in ["opponent", "player"]:
+        axis_name = implication[f"{prefix}_axis"]
+        if axis_name not in constraint_axes:
+            raise SystemExit("Opponent response implication uses an unknown axis")
+        allowed_values = set(constraint_axes[axis_name]["values"])
+        if not set(implication[f"{prefix}_values"]).issubset(allowed_values):
+            raise SystemExit("Opponent response implication uses an unknown value")
+    if not implication["response_terms"] or not implication["search_terms"]:
+        raise SystemExit("Opponent response implication has no retrieval trigger")
 boundary_terms = answer_selection_rules.get("boundary_terms", {})
 expected_boundary_groups = {
     "pain_or_injury",

@@ -4,6 +4,7 @@
 import argparse
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 
@@ -145,9 +146,12 @@ def planned_queries(search_module, plan, original_query, rules=None):
     queries = list(dict.fromkeys(query.strip() for query in queries if query.strip()))
     if not rules:
         return queries
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
+    intent_frame = plan["retrieval_guidance"]["intent_frame"]
+    positive_query = intent_frame.get(
         "positive_query", original_query
     )
+    actor_query = intent_frame.get("actor_query", positive_query)
+    actor_context = query_actor_context(search_module, actor_query, rules)
     constraints = explicit_constraint_terms(search_module, positive_query, rules)
     constrained_queries = []
     for query in queries:
@@ -164,6 +168,7 @@ def planned_queries(search_module, plan, original_query, rules=None):
     constrained_queries.extend(
         query for query in queries[1:] if query not in constrained_queries
     )
+    constrained_queries.extend(actor_context["derived_search_terms"])
     return list(dict.fromkeys(constrained_queries))
 
 
@@ -429,7 +434,40 @@ def source_axis_values(search_module, text, axis):
     return values - suppressed, suppressed
 
 
-def query_constraints(search_module, query, rules):
+def query_actor_text(query, rules):
+    markers = {
+        marker: actor
+        for actor, actor_markers in rules.get(
+            "query_actor_markers", {}
+        ).items()
+        for marker in actor_markers
+    }
+    separators = set(rules.get("query_actor_clause_separators", []))
+    tokens = sorted([*markers, *separators], key=len, reverse=True)
+    if not tokens:
+        return {"player": query, "opponent": ""}
+    pattern = re.compile("|".join(re.escape(token) for token in tokens))
+    buffers = {"player": [], "opponent": []}
+    current_actor = "player"
+    cursor = 0
+    for match in pattern.finditer(query):
+        buffers[current_actor].append(query[cursor : match.start()])
+        token = match.group(0)
+        if token in separators:
+            current_actor = "player"
+            buffers[current_actor].append(" ")
+        else:
+            current_actor = markers[token]
+            buffers[current_actor].append(token)
+        cursor = match.end()
+    buffers[current_actor].append(query[cursor:])
+    return {
+        actor: re.sub(r"\s+", " ", "".join(parts)).strip()
+        for actor, parts in buffers.items()
+    }
+
+
+def _query_constraints_from_text(search_module, query, rules):
     constraints = {}
     normalized_query = search_module.normalize(query)
     for axis in rules.get("constraint_axes", []):
@@ -460,10 +498,58 @@ def query_constraints(search_module, query, rules):
     return constraints
 
 
+def query_actor_context(search_module, query, rules):
+    actor_text = query_actor_text(query, rules)
+    player_constraints = _query_constraints_from_text(
+        search_module, actor_text["player"], rules
+    )
+    opponent_constraints = _query_constraints_from_text(
+        search_module, actor_text["opponent"], rules
+    )
+    normalized_query = search_module.normalize(query)
+    derived_player_constraints = {}
+    derived_search_terms = []
+    for implication in rules.get("opponent_response_implications", []):
+        opponent_values = set(
+            opponent_constraints.get(implication["opponent_axis"], [])
+        )
+        if not opponent_values & set(implication["opponent_values"]):
+            continue
+        if not any(
+            search_module.normalize(term) in normalized_query
+            for term in implication["response_terms"]
+        ):
+            continue
+        player_axis = implication["player_axis"]
+        if player_axis not in player_constraints:
+            player_constraints[player_axis] = sorted(
+                set(implication["player_values"])
+            )
+            derived_player_constraints[player_axis] = player_constraints[
+                player_axis
+            ]
+        derived_search_terms.extend(implication.get("search_terms", []))
+    return {
+        "player_query": actor_text["player"],
+        "opponent_query": actor_text["opponent"],
+        "player_constraints": player_constraints,
+        "opponent_constraints": opponent_constraints,
+        "derived_player_constraints": derived_player_constraints,
+        "derived_search_terms": list(dict.fromkeys(derived_search_terms)),
+    }
+
+
+def query_constraints(search_module, query, rules):
+    return query_actor_context(search_module, query, rules)[
+        "player_constraints"
+    ]
+
+
 def explicit_constraint_terms(search_module, query, rules):
-    normalized = search_module.normalize(query)
-    requested = query_constraints(search_module, query, rules)
-    terms = []
+    actor_context = query_actor_context(search_module, query, rules)
+    normalized = search_module.normalize(actor_context["player_query"])
+    requested = actor_context["player_constraints"]
+    terms = list(actor_context["derived_search_terms"])
     for axis in rules.get("constraint_axes", []):
         requested_values = set(requested.get(axis["name"], []))
         if not requested_values:
@@ -724,6 +810,46 @@ def unrequested_ranking_scope(requested, scope, rules):
         if not requested.get(axis_name)
         and scope.get(axis_name, {}).get("values")
     }
+
+
+def opponent_condition_failures(
+    search_module,
+    requested,
+    opponent_constraints,
+    scope,
+    video,
+    rules,
+):
+    rejected_sources = set(
+        rules.get("opponent_condition_player_action_rejected_sources", [])
+    )
+    support_text = search_module.normalize(
+        " ".join(
+            [
+                primary_video_constraint_text(search_module, video),
+                str((video.get("teaching_note") or {}).get("review_summary", "")),
+                str((video.get("teaching_note") or {}).get("problem", "")),
+            ]
+        )
+    )
+    has_opponent_support = any(
+        search_module.normalize(term) in support_text
+        for term in rules.get("opponent_condition_support_terms", [])
+    )
+    if has_opponent_support:
+        return []
+    failures = []
+    for axis_name, opponent_values in opponent_constraints.items():
+        if requested.get(axis_name):
+            continue
+        scope_details = scope.get(axis_name, {})
+        if scope_details.get("source") not in rejected_sources:
+            continue
+        if set(scope_details.get("values", [])) & set(opponent_values):
+            failures.append(
+                f"opponent_condition_misread_as_player_action:{axis_name}"
+            )
+    return failures
 
 
 def is_direct_question_match(search_module, plan, match):
@@ -1564,9 +1690,9 @@ def prepare_answer_context(
         raise ValueError("segment_limit must be between 1 and 12")
 
     plan = search_module.plan_query(query)
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", query
-    )
+    intent_frame = plan["retrieval_guidance"]["intent_frame"]
+    positive_query = intent_frame.get("positive_query", query)
+    actor_query = intent_frame.get("actor_query", positive_query)
     boundary = classify_boundary(positive_query, rules)
     knowledge, retrieval_index, retrieval_rules = search_module.load_resources()
     reviewed_priorities = reviewed_evidence_priorities(
@@ -1612,9 +1738,8 @@ def prepare_answer_context(
     ]
     merged = merge_candidates(payloads, retrieval_queries)
     videos = {video["video_id"]: video for video in knowledge["videos"]}
-    requested_constraints = query_constraints(
-        search_module, positive_query, rules
-    )
+    actor_context = query_actor_context(search_module, actor_query, rules)
+    requested_constraints = actor_context["player_constraints"]
     accepted = []
     rejected = []
     for video_id, entry in merged.items():
@@ -1645,6 +1770,17 @@ def prepare_answer_context(
             rules,
             constraint_result=constraint_result,
         )
+        actor_failures = opponent_condition_failures(
+            search_module,
+            requested_constraints,
+            actor_context["opponent_constraints"],
+            constraint_scope,
+            video,
+            rules,
+        )
+        if actor_failures:
+            keep = False
+            reasons = actor_failures
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )
@@ -1782,7 +1918,8 @@ def prepare_answer_context(
         "query": query,
         "question_interpretation": {
             "intent_frame": plan["retrieval_guidance"]["intent_frame"],
-            "constraints": query_constraints(search_module, positive_query, rules),
+            "constraints": requested_constraints,
+            "actor_context": actor_context,
             "strategy": plan["retrieval_guidance"]["strategy"],
             "query_units": plan["retrieval_guidance"].get("query_units", []),
             "retrieval_queries": retrieval_queries,
@@ -1823,6 +1960,7 @@ def prepare_answer_context(
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
+                "actor_context.opponent_constraints 只描述对手动作或来球条件，不得当成用户执行动作；硬证据约束只使用 question_interpretation.constraints。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",

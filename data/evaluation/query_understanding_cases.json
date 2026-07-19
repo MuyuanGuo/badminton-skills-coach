@@ -575,6 +575,77 @@
         "requested_output": "coaching_answer"
       },
       "expected_constraints": {"discipline": ["doubles"]}
+    },
+    {
+      "case_id": "QUA020",
+      "query": "对手反手弱，应该怎么针对",
+      "intent_summary": "把反手保留为对手弱点条件，不误作用户要执行的反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "反手", "怎么针对"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"stroke_side": ["backhand"]}
+    },
+    {
+      "case_id": "QUA021",
+      "query": "对手发高远球，我怎么接",
+      "intent_summary": "把高远发球识别为对手来球，并把用户角色推导为接发而不是发球",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      }
+    },
+    {
+      "case_id": "QUA022",
+      "query": "对方正手杀球很重，我怎么防守",
+      "intent_summary": "把正手杀球保留为对手进攻条件，只把防守作为用户动作约束",
+      "expected_intent": {
+        "positive_query_contains": ["对方", "正手", "杀球", "我怎么防守"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["正手", "防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]},
+      "expected_opponent_constraints": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      }
+    },
+    {
+      "case_id": "QUA023",
+      "query": "对手吊直线，我怎么防",
+      "intent_summary": "识别省略球字的吊球线路，把吊直线保留为对手来球，并把怎么防推导为用户防守",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "吊直线", "我怎么防"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["直线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["drop"],
+        "shot_direction": ["straight"]
+      }
     }
   ]
 }
