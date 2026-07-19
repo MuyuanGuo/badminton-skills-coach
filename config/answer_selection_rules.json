@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -54,7 +54,8 @@
         "net_shot": ["网前步法", "网前站位"]
       },
       "combine_primary_and_reviewed": true,
-      "structured_evidence_policy": "support_only"
+      "structured_evidence_policy": "support_only",
+      "structured_mismatch_policy": "conflict"
     },
     {
       "name": "court_zone",

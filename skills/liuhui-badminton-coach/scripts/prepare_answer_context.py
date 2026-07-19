@@ -605,11 +605,13 @@ def constraint_decision(
             scope_details["source"] == "structured_evidence"
             and axis.get("structured_evidence_policy") == "support_only"
         ):
-            matches[axis_name] = (
-                "incidental_support"
-                if requested_values & video_values
-                else "unspecified_support"
-            )
+            if requested_values & video_values:
+                matches[axis_name] = "incidental_support"
+            elif axis.get("structured_mismatch_policy") == "conflict":
+                failures.append(f"explicit_constraint_conflict:{axis_name}")
+                matches[axis_name] = "conflict"
+            else:
+                matches[axis_name] = "unspecified_support"
             continue
         if not requested_values & video_values:
             failures.append(f"explicit_constraint_conflict:{axis_name}")

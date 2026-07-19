@@ -214,6 +214,7 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("7546109410041908538", selected)
         self.assertNotIn("7558912953539071292", selected)
         self.assertNotIn("7153445193713290511", selected)
+        self.assertNotIn("7117821949165718824", selected)
         self.assertIn(
             "explicit_constraint_conflict:stroke_side",
             rejected["7558912953539071292"],
@@ -221,6 +222,10 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn(
             "explicit_constraint_conflict:stroke_side",
             rejected["7153445193713290511"],
+        )
+        self.assertIn(
+            "explicit_constraint_conflict:shot_family",
+            rejected["7117821949165718824"],
         )
         self.assertEqual(
             payload["question_interpretation"]["constraints"]["stroke_side"],
@@ -247,6 +252,42 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertIn("高远球", retrieval_queries)
         self.assertIn("挥拍", retrieval_queries)
+
+        receive = self.context_module.prepare_answer_context(
+            "反手接杀应该怎么处理？",
+            local_personalization=False,
+        )
+        self.assertIn(
+            "7117821949165718824",
+            {item["video_id"] for item in receive["selected_videos"]},
+        )
+
+    def test_structured_shot_family_mismatch_is_a_conflict(self):
+        video = {
+            "video_id": "7000000000000000003",
+            "title": "反手区接被动球",
+            "category": "训练与纠错",
+            "tags": [],
+            "teaching_note": {
+                "topic": "反手区接被动球",
+                "evidence": [
+                    {"text": "反手区接杀步法，用于处理对方杀球"}
+                ],
+            },
+        }
+        plan = self.search_module.plan_query("反手被动高远怎么打")
+        allowed, failures, _, _, matches = (
+            self.context_module.constraint_decision(
+                self.search_module,
+                "反手被动高远怎么打",
+                plan,
+                video,
+                self.selection_rules,
+            )
+        )
+        self.assertFalse(allowed)
+        self.assertIn("explicit_constraint_conflict:shot_family", failures)
+        self.assertEqual(matches["shot_family"], "conflict")
 
     def test_known_cross_dimension_leaks_are_not_selected(self):
         cases = [
