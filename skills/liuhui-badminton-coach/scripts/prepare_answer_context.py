@@ -222,7 +222,11 @@ def classify_boundary(query, rules):
         required_statement = "文字和示范视频可以提供检查点，但不能确认用户自己的动作完全正确。"
     elif matched["insufficient_observation"]:
         boundary_type = "insufficient_observation"
-        citation_policy = "literal_problem_evidence_only"
+        citation_policy = (
+            "no_video_needed_for_unique_cause_boundary"
+            if "唯一原因" in matched["insufficient_observation"]
+            else "literal_problem_evidence_only"
+        )
         required_statement = "仅凭文字症状不能确定唯一原因；只能列出证据直接覆盖的可能性和需要补充的观察。"
     else:
         boundary_type = "none"
@@ -553,12 +557,28 @@ def video_constraint_scope(search_module, video, rules):
     return scope
 
 
-def constraint_decision(search_module, query, plan, video, rules):
+def constraint_decision(
+    search_module,
+    query,
+    plan,
+    video,
+    rules,
+    requested=None,
+    scope=None,
+):
     positive_query = plan["retrieval_guidance"]["intent_frame"].get(
         "positive_query", query
     )
-    requested = query_constraints(search_module, positive_query, rules)
-    scope = video_constraint_scope(search_module, video, rules)
+    requested = (
+        query_constraints(search_module, positive_query, rules)
+        if requested is None
+        else requested
+    )
+    scope = (
+        video_constraint_scope(search_module, video, rules)
+        if scope is None
+        else scope
+    )
     requested_output = plan["retrieval_guidance"]["intent_frame"].get(
         "requested_output"
     )
@@ -943,6 +963,11 @@ def selection_decision(
         return False, ["medical_boundary_has_no_direct_safety_evidence"]
     if boundary["type"] == "endorsement_or_authorship":
         return False, ["identity_boundary_does_not_need_teaching_video"]
+    if (
+        boundary["type"] == "insufficient_observation"
+        and "唯一原因" in boundary.get("matched_terms", [])
+    ):
+        return False, ["unique_cause_cannot_be_established_without_observation"]
     if (
         boundary["type"] == "purchase_advice"
         and video.get("category") not in rules["purchase_allowed_categories"]

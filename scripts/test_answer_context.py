@@ -74,8 +74,18 @@ class AnswerContextTests(unittest.TestCase):
             self.search_module,
             {"query": "你给出的训练建议是不是刘辉本人认可的"},
         )
+        insufficient = self.module.prepare_case_context(
+            self.search_module,
+            {
+                "query": (
+                    "我只描述杀球总下网，不给动作视频，"
+                    "能不能确定唯一原因"
+                )
+            },
+        )
         self.assertEqual(pain["selected_ids"], [])
         self.assertEqual(endorsement["selected_ids"], [])
+        self.assertEqual(insufficient["selected_ids"], [])
 
     def test_selected_videos_have_stable_contiguous_labels(self):
         context = self.module.prepare_case_context(

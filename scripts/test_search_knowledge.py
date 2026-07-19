@@ -527,21 +527,52 @@ class SearchKnowledgeTests(unittest.TestCase):
             manifest_limit=None,
             local_personalization=False,
         )
-        self.assertLessEqual(payload["coverage"]["review_candidate_count"], 8)
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["coverage"]["review_candidate_count"], 0)
         self.assertEqual(payload["coverage"]["tier_counts"].get("direct", 0), 0)
         reviewable = [
             item
             for item in payload["candidate_manifest"]
-            if item["relevance_tier"] in {"direct", "strong_related"}
+            if item["within_review_budget"]
         ]
-        self.assertTrue(reviewable)
+        self.assertEqual(reviewable, [])
         self.assertTrue(
-            all("pain_or_injury" in item["matched_required_intents"] for item in reviewable)
+            payload["retrieval_policy"]["exhaustive_candidates_preserved"]
         )
-        self.assertIn(
-            "pain_or_injury",
-            payload["results"][0]["matched_required_intents"],
+
+    def test_boundary_only_query_does_not_surface_generic_training_videos(self):
+        payload = self.search_module.search(
+            "你给出的训练建议是不是刘辉本人认可的",
+            manifest_limit=None,
+            local_personalization=False,
         )
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["query_expansion"]["focus_shards"], [])
+        self.assertGreater(payload["coverage"]["candidate_count"], 0)
+        self.assertEqual(payload["coverage"]["eligible_candidate_count"], 0)
+
+    def test_retrieval_policy_preserves_rejected_scenario_candidates_for_audit(
+        self,
+    ):
+        payload = self.search_module.search(
+            "正手高远球的击球姿势是什么样",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        for video_id in {
+            "7541623926234811705",
+            "7546109410041908538",
+            "7558912953539071292",
+        }:
+            self.assertNotIn(video_id, surfaced)
+            self.assertIn(video_id, rejected)
+            self.assertFalse(rejected[video_id]["within_review_budget"])
 
     def test_screening_tags_are_not_ranked_as_evidence_fields(self):
         video = {
