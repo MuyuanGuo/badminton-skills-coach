@@ -31,7 +31,7 @@ def load_selection_rules():
     return json.loads(SELECTION_RULES_PATH.read_text(encoding="utf-8"))
 
 
-def planned_queries(search_module, plan, original_query):
+def planned_queries(search_module, plan, original_query, rules=None):
     """Expand a question into focused retrieval units without losing the original."""
 
     guidance = plan["retrieval_guidance"]
@@ -58,7 +58,26 @@ def planned_queries(search_module, plan, original_query):
                 present = [term for term in group if term in unit]
                 if present:
                     queries.append(max(present, key=len))
-    return list(dict.fromkeys(query.strip() for query in queries if query.strip()))
+    queries = list(dict.fromkeys(query.strip() for query in queries if query.strip()))
+    if not rules:
+        return queries
+    constraints = explicit_constraint_terms(search_module, original_query, rules)
+    constrained_queries = []
+    for query in queries:
+        if query == original_query:
+            constrained_queries.append(query)
+            continue
+        normalized_query = search_module.normalize(query)
+        missing = [
+            term
+            for term in constraints
+            if search_module.normalize(term) not in normalized_query
+        ]
+        constrained_queries.append(" ".join([*missing, query]).strip())
+    constrained_queries.extend(
+        query for query in queries[1:] if query not in constrained_queries
+    )
+    return list(dict.fromkeys(constrained_queries))
 
 
 def topic_navigation(navigation_module, query, limit=5):
@@ -206,6 +225,175 @@ def structured_video_text(search_module, video):
     )
 
 
+def axis_values(search_module, text, axis):
+    normalized = search_module.normalize(text)
+    if not normalized:
+        return set()
+    value_names = set(axis["values"])
+    if any(
+        search_module.normalize(term) in normalized
+        for term in axis.get("mixed_terms", [])
+    ):
+        return value_names
+
+    matches = []
+    for value, terms in axis["values"].items():
+        for term in terms:
+            normalized_term = search_module.normalize(term)
+            if not normalized_term:
+                continue
+            start = 0
+            while True:
+                index = normalized.find(normalized_term, start)
+                if index < 0:
+                    break
+                matches.append(
+                    {
+                        "value": value,
+                        "start": index,
+                        "end": index + len(normalized_term),
+                        "length": len(normalized_term),
+                    }
+                )
+                start = index + 1
+    retained = []
+    for match in matches:
+        shadowed = any(
+            other["value"] != match["value"]
+            and other["length"] > match["length"]
+            and other["start"] <= match["start"]
+            and other["end"] >= match["end"]
+            for other in matches
+        )
+        if not shadowed:
+            retained.append(match)
+    return {match["value"] for match in retained}
+
+
+def query_constraints(search_module, query, rules):
+    constraints = {}
+    normalized_query = search_module.normalize(query)
+    for axis in rules.get("constraint_axes", []):
+        values = axis_values(search_module, query, axis)
+        for value, phrases in axis.get("query_value_suppressions", {}).items():
+            if any(
+                search_module.normalize(phrase) in normalized_query
+                for phrase in phrases
+            ):
+                values.discard(value)
+        if values:
+            constraints[axis["name"]] = sorted(values)
+    return constraints
+
+
+def explicit_constraint_terms(search_module, query, rules):
+    normalized = search_module.normalize(query)
+    requested = query_constraints(search_module, query, rules)
+    terms = []
+    for axis in rules.get("constraint_axes", []):
+        requested_values = set(requested.get(axis["name"], []))
+        if not requested_values:
+            continue
+        matched_mixed = [
+            term
+            for term in axis.get("mixed_terms", [])
+            if search_module.normalize(term) in normalized
+        ]
+        if matched_mixed and len(requested_values) > 1:
+            terms.append(max(matched_mixed, key=len))
+            continue
+        for value, value_terms in axis["values"].items():
+            if value not in requested_values:
+                continue
+            matched = [
+                term
+                for term in value_terms
+                if search_module.normalize(term) in normalized
+            ]
+            if matched:
+                terms.append(max(matched, key=len))
+    return list(dict.fromkeys(terms))
+
+
+def primary_video_constraint_text(search_module, video):
+    note = video.get("teaching_note") or {}
+    values = [
+        video.get("title", ""),
+        video.get("retrieval_title", ""),
+        note.get("topic", ""),
+    ]
+    return " ".join(str(value or "") for value in values)
+
+
+def video_constraint_scope(search_module, video, rules):
+    override = rules.get("video_constraint_overrides", {}).get(
+        video.get("video_id"), {}
+    )
+    primary_text = primary_video_constraint_text(search_module, video)
+    category_text = video.get("category", "")
+    note = video.get("teaching_note") or {}
+    reviewed_context = " ".join(
+        str(value or "")
+        for value in [note.get("review_summary", ""), note.get("problem", "")]
+    )
+    structured_text = structured_video_text(search_module, video)
+    scope = {}
+    for axis in rules.get("constraint_axes", []):
+        name = axis["name"]
+        if name in override:
+            scope[name] = {
+                "values": sorted(set(override[name])),
+                "source": "reviewed_override",
+                "basis": override.get("basis", ""),
+            }
+            continue
+        primary = axis_values(search_module, primary_text, axis)
+        reviewed = axis_values(search_module, reviewed_context, axis)
+        category = axis_values(search_module, category_text, axis)
+        structured = axis_values(search_module, structured_text, axis)
+        values = primary or reviewed or category or structured
+        scope[name] = {
+            "values": sorted(values),
+            "source": "primary_metadata" if primary else (
+                "reviewed_context" if reviewed else (
+                    "category" if category else (
+                        "structured_evidence" if structured else "unspecified"
+                    )
+                )
+            ),
+        }
+    return scope
+
+
+def constraint_decision(search_module, query, plan, video, rules):
+    requested = query_constraints(search_module, query, rules)
+    scope = video_constraint_scope(search_module, video, rules)
+    requested_output = plan["retrieval_guidance"]["intent_frame"].get(
+        "requested_output"
+    )
+    failures = []
+    matches = {}
+    for axis_name, requested_values in requested.items():
+        video_values = set(scope[axis_name]["values"])
+        requested_values = set(requested_values)
+        if not video_values:
+            matches[axis_name] = "unspecified_support"
+            continue
+        if not requested_values & video_values:
+            failures.append(f"explicit_constraint_conflict:{axis_name}")
+            matches[axis_name] = "conflict"
+            continue
+        if (
+            len(requested_values) == 1
+            and len(video_values) > 1
+            and requested_output != "comparison"
+        ):
+            matches[axis_name] = "mixed_support"
+            continue
+        matches[axis_name] = "exact"
+    return not failures, failures, requested, scope, matches
+
+
 def selection_decision(
     search_module,
     query,
@@ -231,28 +419,18 @@ def selection_decision(
     ):
         return False, ["purchase_query_requires_equipment_evidence"]
 
+    constraints_match, constraint_failures, _, _, constraint_matches = constraint_decision(
+        search_module, query, plan, video, rules
+    )
+    if not constraints_match:
+        return False, constraint_failures
+
     title_normalized = search_module.normalize(video.get("title", ""))
     structured = structured_video_text(search_module, video)
     query_normalized = search_module.normalize(query)
     for term in rules["incomplete_fragment_terms"]:
         if search_module.normalize(term) in title_normalized:
             return False, ["incomplete_series_fragment"]
-
-    for requested, opposite in rules["scenario_conflicts"]:
-        requested_normalized = search_module.normalize(requested)
-        opposite_normalized = search_module.normalize(opposite)
-        if requested_normalized not in query_normalized:
-            continue
-        title_and_category = search_module.normalize(
-            video.get("title", "") + " " + video.get("category", "")
-        )
-        conflict_text = (
-            title_normalized if requested == "接发" else title_and_category
-        )
-        if opposite_normalized not in conflict_text:
-            continue
-        if requested_normalized not in conflict_text:
-            return False, [f"explicit_scenario_conflict:{requested}:{opposite}"]
 
     requested_output = plan["retrieval_guidance"]["intent_frame"].get(
         "requested_output"
@@ -308,6 +486,16 @@ def selection_decision(
         (item for item in entry["matches"] if item["query_index"] == 0),
         None,
     )
+    constraint_is_support = any(
+        match in {"unspecified_support", "mixed_support"}
+        for match in constraint_matches.values()
+    )
+    if constraint_is_support and not (
+        original_match
+        and original_match["rank"] <= rules["top_rank_acceptance"]
+        and original_match["matched_structured_query_concepts"]
+    ):
+        return False, ["generic_constraint_support_requires_original_match"]
     query_concept_count = len(
         plan["query_expansion"].get("matched_synonym_groups", [])
     )
@@ -362,6 +550,12 @@ def selection_decision(
         reasons.append("matched_equivalent_terms")
     if candidate.get("matched_topics"):
         reasons.append("matched_topic")
+    reasons.append("matched_required_constraints")
+    if any(
+        match in {"unspecified_support", "mixed_support"}
+        for match in constraint_matches.values()
+    ):
+        reasons.append("generic_constraint_support_only")
     if entry["best_query_index"] == 0:
         reasons.append("ranked_for_original_question")
     else:
@@ -391,7 +585,21 @@ def selected_sort_key(entry):
             + (original_match or {}).get("matched_equivalent_terms", [])
         )
     )
+    constraint_support = any(
+        match in {"unspecified_support", "mixed_support"}
+        for match in entry.get("constraint_match", {}).values()
+    )
+    exact_constraint_count = sum(
+        match == "exact" for match in entry.get("constraint_match", {}).values()
+    )
+    mixed_constraint_count = sum(
+        match == "mixed_support"
+        for match in entry.get("constraint_match", {}).values()
+    )
     return (
+        1 if constraint_support else 0,
+        -exact_constraint_count,
+        -mixed_constraint_count,
         0 if original_core else 1,
         -original_concepts,
         -original_terms,
@@ -424,7 +632,7 @@ def prepare_answer_context(
 
     plan = search_module.plan_query(query)
     navigation = None
-    retrieval_queries = planned_queries(search_module, plan, query)
+    retrieval_queries = planned_queries(search_module, plan, query, rules)
     if plan["retrieval_guidance"].get("use_topic_navigation"):
         navigation = topic_navigation(navigation_module, query)
         retrieval_queries.extend(navigation["suggested_search_queries"][:3])
@@ -468,11 +676,38 @@ def prepare_answer_context(
             **entry,
             "video_id": video_id,
             "selection_reasons": reasons,
+            "constraint_scope": video_constraint_scope(
+                search_module, video, rules
+            ),
         }
+        record["constraint_match"] = constraint_decision(
+            search_module, query, plan, video, rules
+        )[4]
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=selected_sort_key)
-    selected_entries = accepted[:max_videos]
+    exact_entries = [
+        entry
+        for entry in accepted
+        if all(
+            match == "exact" for match in entry["constraint_match"].values()
+        )
+    ]
+    support_entries = [entry for entry in accepted if entry not in exact_entries]
+    support_limit = rules.get("max_generic_constraint_support_videos", 4)
+    eligible_entries = [
+        *exact_entries,
+        *support_entries[:support_limit],
+    ]
+    policy_excluded_entries = [
+        {
+            **entry,
+            "selection_reasons": ["generic_constraint_support_limit_exceeded"],
+        }
+        for entry in support_entries[support_limit:]
+    ]
+    rejected.extend(policy_excluded_entries)
+    selected_entries = eligible_entries[:max_videos]
     selected_ids = [item["video_id"] for item in selected_entries]
     lookup = search_module.lookup_videos(
         selected_ids,
@@ -491,8 +726,16 @@ def prepare_answer_context(
                 "label": f"V{index}",
                 "role": (
                     "core"
-                    if entry["best_query_index"] == 0
-                    and candidate["relevance_tier"] == "direct"
+                    if candidate["relevance_tier"] == "direct"
+                    and any(
+                        match["query_index"] == 0
+                        and match["rank"] <= rules["top_rank_acceptance"]
+                        for match in entry["matches"]
+                    )
+                    and all(
+                        match == "exact"
+                        for match in entry["constraint_match"].values()
+                    )
                     else "supporting"
                 ),
                 "video_id": entry["video_id"],
@@ -501,6 +744,16 @@ def prepare_answer_context(
                 "category": candidate["category"],
                 "confidence": candidate["confidence"],
                 "selection_reasons": entry["selection_reasons"],
+                "constraint_scope": entry["constraint_scope"],
+                "constraint_match": entry["constraint_match"],
+                "claim_scope_policy": (
+                    "exact_requested_conditions"
+                    if all(
+                        match == "exact"
+                        for match in entry["constraint_match"].values()
+                    )
+                    else "mixed_or_generic_support_only_not_condition_specific_proof"
+                ),
                 "matched_query_units": sorted(
                     {item["query"] for item in entry["matches"]}
                 ),
@@ -515,6 +768,7 @@ def prepare_answer_context(
         "query": query,
         "question_interpretation": {
             "intent_frame": plan["retrieval_guidance"]["intent_frame"],
+            "constraints": query_constraints(search_module, query, rules),
             "strategy": plan["retrieval_guidance"]["strategy"],
             "query_units": plan["retrieval_guidance"].get("query_units", []),
             "retrieval_queries": retrieval_queries,
@@ -528,9 +782,9 @@ def prepare_answer_context(
         "topic_navigation": navigation,
         "selection": {
             "high_recall_candidate_count": len(merged),
-            "eligible_video_count": len(accepted),
+            "eligible_video_count": len(eligible_entries),
             "selected_video_count": len(selected_videos),
-            "selection_truncated": len(accepted) > len(selected_videos),
+            "selection_truncated": len(eligible_entries) > len(selected_videos),
             "max_selected_videos": max_videos,
             "selected_video_ids": selected_ids,
             "rejected_candidate_count": len(rejected),
@@ -550,6 +804,7 @@ def prepare_answer_context(
                 "只引用 selected_videos；不得把被拒绝候选恢复为证据。",
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
+                "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
             ],
@@ -581,7 +836,7 @@ def prepare_answer_context(
                 "title": item["candidate"]["title"],
                 "best_rank": item["best_rank"],
             }
-            for item in accepted[max_videos:]
+            for item in eligible_entries[max_videos:]
         ]
     return context
 

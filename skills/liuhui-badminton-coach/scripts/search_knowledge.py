@@ -185,6 +185,43 @@ def fallback_shards(query, rules):
     return shards
 
 
+def longest_non_overlapping_terms(text, terms):
+    normalized = normalize(text)
+    matches = []
+    for term in terms:
+        normalized_term = normalize(term)
+        if not normalized_term:
+            continue
+        start = 0
+        while True:
+            index = normalized.find(normalized_term, start)
+            if index < 0:
+                break
+            matches.append(
+                {
+                    "term": term,
+                    "start": index,
+                    "end": index + len(normalized_term),
+                    "length": len(normalized_term),
+                }
+            )
+            start = index + 1
+    retained = []
+    for match in matches:
+        if any(
+            other["length"] > match["length"]
+            and other["start"] <= match["start"]
+            and other["end"] >= match["end"]
+            for other in matches
+        ):
+            continue
+        retained.append(match)
+    return [
+        match["term"]
+        for match in sorted(retained, key=lambda item: (item["start"], -item["length"]))
+    ]
+
+
 def extract_negative_scopes(query, rules):
     intent_rules = rules.get("intent", {})
     markers = sorted(intent_rules.get("negation_markers", []), key=len, reverse=True)
@@ -251,11 +288,9 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
         for term in intent_rules.get("literal_symptom_terms", [])
         if normalize(term) in positive_normalized
     ]
-    scenarios = [
-        term
-        for term in intent_rules.get("scenario_terms", [])
-        if normalize(term) in positive_normalized
-    ]
+    scenarios = longest_non_overlapping_terms(
+        positive_query, intent_rules.get("scenario_terms", [])
+    )
     levels = [
         term
         for term in intent_rules.get("level_terms", [])

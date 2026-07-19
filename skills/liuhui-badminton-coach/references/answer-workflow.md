@@ -33,6 +33,8 @@ Still give purpose, a small set of reliable observation points, common errors, a
 
 - `core` supports the original question directly.
 - `supporting` covers a focused subproblem or mechanism.
+- `constraint_match` records how every explicit condition in the question matches the source. `exact` may support a conclusion under the requested conditions; `mixed_support` and `unspecified_support` may support only a shared principle or comparison, never a condition-specific action claim.
+- Follow `claim_scope_policy` literally. A source marked `mixed_or_generic_support_only_not_condition_specific_proof` cannot prove a backhand-only, forehand-only, singles-only, doubles-only, active-only, passive-only, attack-only, defense-only, court-zone-only, serve-role-only, serve-trajectory-only, or shot-direction-only instruction.
 - `selection_truncated: false` means every candidate that passed the configured finalist rules is present; it does not prove that the retrieval system found every semantically relevant video.
 - `selection_truncated: true` means rerun with a larger `--max-videos` only for a genuinely exhaustive survey. Do not silently claim completeness.
 - `rejected_candidates` from debug mode records deterministic exclusion reasons. Never cite it.

@@ -1,6 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
   "default_max_selected_videos": 24,
+  "max_generic_constraint_support_videos": 4,
   "default_segment_limit": 4,
   "top_rank_acceptance": 12,
   "single_concept_top_rank_acceptance": 6,
@@ -15,6 +16,118 @@
     ["单打", "双打"],
     ["接发", "发球"]
   ],
+  "constraint_axes": [
+    {
+      "name": "stroke_side",
+      "label": "击球侧",
+      "values": {
+        "forehand": ["正手", "正手位", "头顶区"],
+        "backhand": ["反手", "反手位", "反拍"]
+      },
+      "mixed_terms": ["正反手", "正手和反手", "正手与反手"]
+    },
+    {
+      "name": "court_zone",
+      "label": "场区",
+      "values": {
+        "forecourt": ["网前", "前场"],
+        "midcourt": ["中场", "中前场", "中腰"],
+        "rearcourt": ["后场", "底线"],
+        "fullcourt": ["全场", "四方球", "六点步法"]
+      },
+      "mixed_terms": ["前后场", "全场", "四方球", "六点步法"],
+      "query_value_suppressions": {
+        "rearcourt": ["发后场", "偷后场", "发高远"]
+      }
+    },
+    {
+      "name": "discipline",
+      "label": "项目",
+      "values": {
+        "singles": ["单打"],
+        "doubles": ["双打"]
+      },
+      "mixed_terms": ["单双打", "单打和双打", "单打与双打"]
+    },
+    {
+      "name": "serve_role",
+      "label": "发接发角色",
+      "values": {
+        "serve": ["发球", "发小球", "发高远", "发后场", "偷后场"],
+        "receive": ["接发", "接发球", "抢接发", "抢发"]
+      },
+      "mixed_terms": ["发接发", "发球和接发", "发球与接发"]
+    },
+    {
+      "name": "serve_trajectory",
+      "label": "发球线路",
+      "values": {
+        "short_serve": ["发小球", "发短球", "短发球"],
+        "deep_serve": ["发高远", "发后场", "偷后场"]
+      },
+      "mixed_terms": ["发球变化", "小球和后场", "小球与后场"]
+    },
+    {
+      "name": "pressure_state",
+      "label": "主动被动状态",
+      "values": {
+        "active": ["主动"],
+        "passive": ["被动"]
+      },
+      "mixed_terms": ["主动和被动", "主动与被动", "主动被动转换"],
+      "query_value_suppressions": {
+        "active": ["抢主动", "争取主动", "转为主动", "变为主动"]
+      }
+    },
+    {
+      "name": "tactical_phase",
+      "label": "攻防阶段",
+      "values": {
+        "attack": ["进攻", "强攻", "下压"],
+        "defense": ["防守", "接杀"]
+      },
+      "mixed_terms": ["攻防", "防守反击", "防反", "由守转攻"]
+    },
+    {
+      "name": "shot_direction",
+      "label": "出球方向",
+      "values": {
+        "straight": ["直线"],
+        "crosscourt": ["斜线", "对角"]
+      },
+      "mixed_terms": ["直线还是斜线", "直线和斜线", "直线与斜线", "线路选择"]
+    }
+  ],
+  "video_constraint_overrides": {
+    "7558912953539071292": {
+      "stroke_side": ["forehand"],
+      "basis": "用户测试指出画面为正手被动高远；文本只支持通用被动原则，不得作为反手专项示范。"
+    },
+    "7153445193713290511": {
+      "stroke_side": ["forehand"],
+      "basis": "00:14-00:21 转写明确要求拿正手处理后场被动球。"
+    },
+    "7522041413614816570": {
+      "serve_trajectory": ["short_serve"],
+      "basis": "维护者审核确认该视频讲双打反手短发的稳定与减速，不是偷后场示范。"
+    },
+    "7213191190382972172": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认正常击球位置的虎口与拍框关系用于基础正手发力握拍。"
+    },
+    "7453420876076240188": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认基础挥拍示范属于正常正手后场挥拍。"
+    },
+    "7383154379915906319": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认基础挥拍重快示范属于正常正手后场挥拍。"
+    },
+    "7102635326803332393": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认向前挥拍示范属于正常正手后场挥拍。"
+    }
+  },
   "incomplete_fragment_terms": [
     "先看上集",
     "接上集",
