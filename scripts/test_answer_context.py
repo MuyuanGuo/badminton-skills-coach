@@ -437,7 +437,7 @@ class AnswerContextTests(unittest.TestCase):
         }
         self.assertIn("7567155406117533051", smash_by_id)
         self.assertEqual(
-            smash_by_id["7567155406117533051"]["role"], "supporting"
+            smash_by_id["7567155406117533051"]["role"], "core"
         )
         self.assertNotIn("7067722128413543680", smash_by_id)
 
@@ -489,6 +489,72 @@ class AnswerContextTests(unittest.TestCase):
             "incomplete_series_fragment",
             drop_rejected["7054395778814561575"],
         )
+
+    def test_direct_instruction_survives_broad_canonical_concepts(self):
+        short_serve = self.context_module.prepare_answer_context(
+            "发小球怎么练？",
+            local_personalization=False,
+        )
+        short_serve_by_id = {
+            item["video_id"]: item for item in short_serve["selected_videos"]
+        }
+        for video_id in ["7589590613499595185", "7254755365995285812"]:
+            self.assertEqual(short_serve_by_id[video_id]["role"], "core")
+            self.assertEqual(
+                short_serve_by_id[video_id]["concept_match"], "exact_question"
+            )
+
+        defense = self.context_module.prepare_answer_context(
+            "防守怎么练？",
+            local_personalization=False,
+        )
+        defense_by_id = {
+            item["video_id"]: item for item in defense["selected_videos"]
+        }
+        for video_id in ["7586613438625959217", "7054025391601650948"]:
+            self.assertEqual(defense_by_id[video_id]["role"], "core")
+            self.assertEqual(
+                defense_by_id[video_id]["concept_match"], "exact_question"
+            )
+        self.assertNotIn(
+            "7387233755057949987",
+            {
+                item["video_id"]
+                for item in defense["selected_videos"]
+                if item["role"] == "core"
+            },
+        )
+
+        net_drop = self.context_module.prepare_answer_context(
+            "放网怎么打？",
+            local_personalization=False,
+        )
+        net_drop_by_id = {
+            item["video_id"]: item for item in net_drop["selected_videos"]
+        }
+        self.assertEqual(
+            net_drop_by_id["7524557392328461627"]["role"], "core"
+        )
+        self.assertEqual(
+            net_drop_by_id["7092959332047785250"]["role"], "supporting"
+        )
+
+        net_push = self.context_module.prepare_answer_context(
+            "推球怎么练？",
+            local_personalization=False,
+        )
+        net_push_by_id = {
+            item["video_id"]: item for item in net_push["selected_videos"]
+        }
+        self.assertEqual(
+            net_push_by_id["7131178146023427328"]["role"], "core"
+        )
+
+        net_pounce = self.context_module.prepare_answer_context(
+            "扑球怎么练？",
+            local_personalization=False,
+        )
+        self.assertEqual(net_pounce["selected_videos"], [])
 
     def test_known_cross_dimension_leaks_are_not_selected(self):
         cases = [
@@ -574,15 +640,26 @@ class AnswerContextTests(unittest.TestCase):
             "杀球动作怎么发力",
             local_personalization=False,
         )
-        smash_ids = {item["video_id"] for item in smash["selected_videos"]}
+        smash_by_id = {
+            item["video_id"]: item for item in smash["selected_videos"]
+        }
+        smash_ids = set(smash_by_id)
         self.assertEqual(
             smash_ids,
             {
                 "7052600326116887812",
                 "7440406891664133428",
                 "7484563688096091449",
+                "7550305145877155131",
                 "7567155406117533051",
+                "7659991105622862457",
             },
+        )
+        self.assertEqual(
+            smash_by_id["7550305145877155131"]["role"], "supporting"
+        )
+        self.assertEqual(
+            smash_by_id["7659991105622862457"]["role"], "supporting"
         )
         self.assertNotIn("7115241358255803683", smash_ids)
 

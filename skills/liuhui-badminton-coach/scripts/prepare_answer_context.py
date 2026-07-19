@@ -562,6 +562,28 @@ def video_constraint_scope(search_module, video, rules):
             "source": source,
             "suppressed_values": suppressed_values,
         }
+    for implication in rules.get("source_constraint_implications", []):
+        source_scope = scope.get(implication["source_axis"], {})
+        target_scope = scope.get(implication["target_axis"], {})
+        if target_scope.get("values"):
+            continue
+        if any(
+            search_module.normalize(term) in structured_text
+            for term in implication.get("suppress_when_terms", [])
+        ):
+            continue
+        if not set(implication["source_values"]).issubset(
+            source_scope.get("values", [])
+        ):
+            continue
+        scope[implication["target_axis"]] = {
+            "values": sorted(set(implication["target_values"])),
+            "source": "derived_constraint",
+            "suppressed_values": target_scope.get(
+                "suppressed_values", []
+            ),
+            "basis": implication.get("basis", ""),
+        }
     return scope
 
 
@@ -668,11 +690,26 @@ def unrequested_specific_scope(requested, scope, rules):
     allowed_sources = set(
         rules.get("unrequested_scope_support_only_sources", [])
     )
+    conditional_axes = {
+        condition["axis"]
+        for condition in rules.get(
+            "unrequested_scope_support_only_conditions", []
+        )
+        if set(scope.get(condition["axis"], {}).get("values", []))
+        & set(condition["values"])
+        and set(requested.get(condition["requested_axis"], []))
+        & set(condition["requested_values"])
+    }
     return {
         axis_name: scope[axis_name]
-        for axis_name in rules.get("unrequested_scope_support_only_axes", [])
+        for axis_name in scope
         if not requested.get(axis_name)
         and scope.get(axis_name, {}).get("values")
+        and (
+            axis_name
+            in rules.get("unrequested_scope_support_only_axes", [])
+            or axis_name in conditional_axes
+        )
         and (
             not allowed_sources
             or scope[axis_name].get("source") in allowed_sources
@@ -692,9 +729,20 @@ def unrequested_ranking_scope(requested, scope, rules):
 def is_direct_question_match(search_module, plan, match):
     if match.get("query_index") == 0:
         return True
-    if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
-        return False
     normalized_match = search_module.normalize(match.get("query", ""))
+    if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
+        if len(
+            plan.get("query_expansion", {}).get(
+                "matched_synonym_groups", []
+            )
+        ) != 1:
+            return False
+        return any(
+            normalized_match == search_module.normalize(term)
+            for term in plan.get("query_expansion", {}).get(
+                "original_terms", []
+            )
+        )
     for unit in plan["retrieval_guidance"].get("query_units", []):
         normalized_unit = search_module.normalize(unit)
         if normalized_unit and (
@@ -715,6 +763,74 @@ def term_matches_concept(search_module, term, concept, rules):
     for group in rules.get("_equivalent_groups", []):
         normalized_group = {search_module.normalize(item) for item in group}
         if normalized_term in normalized_group and normalized_concept in normalized_group:
+            return True
+    return False
+
+
+def substantive_instruction_text(search_module, video, rules):
+    note = video.get("teaching_note") or {}
+    evidence = {
+        key: value
+        for key, value in note.items()
+        if key
+        not in {
+            "note",
+            "video_id",
+            "title",
+            "url",
+            "topic",
+        }
+    }
+    reviewed_override = rules.get("video_constraint_overrides", {}).get(
+        video.get("video_id"), {}
+    )
+    return search_module.normalize(
+        " ".join(
+            [
+                search_module.flatten(evidence),
+                str(reviewed_override.get("basis", "")),
+            ]
+        )
+    )
+
+
+def has_instructional_evidence(video):
+    note = video.get("teaching_note") or {}
+    return bool(note.get("action_cues") or note.get("review_summary"))
+
+
+def match_has_substantive_concept_evidence(
+    search_module, match, video, concept, rules
+):
+    if not has_instructional_evidence(video):
+        return False
+    evidence = substantive_instruction_text(search_module, video, rules)
+    required_terms = {
+        concept,
+        *match.get("matched_original_terms", []),
+        *match.get("matched_equivalent_terms", []),
+    }
+    if any(
+        search_module.normalize(term) in evidence
+        for term in required_terms
+        if search_module.normalize(term)
+    ):
+        return True
+    axes = {
+        axis["name"]: axis for axis in rules.get("constraint_axes", [])
+    }
+    for axis_name in rules.get("substantive_concept_equivalence_axes", []):
+        axis = axes.get(axis_name)
+        if not axis:
+            continue
+        requested_values = query_axis_values(
+            search_module, match.get("query", ""), axis
+        )
+        evidence_values = axis_values(search_module, evidence, axis)
+        if (
+            len(requested_values) == 1
+            and requested_values == evidence_values
+        ):
             return True
     return False
 
@@ -884,6 +1000,9 @@ def match_has_full_concept_coverage(search_module, match, video, rules):
                 term_matches_concept(search_module, term, concept, rules)
                 for term in direct_terms
             )
+            or match_has_substantive_concept_evidence(
+                search_module, match, video, concept, rules
+            )
             for concept in match.get("matched_query_concepts", [])
         )
         if not concepts_covered:
@@ -971,7 +1090,10 @@ def concept_decision(search_module, plan, entry, video, rules):
         for match in direct_matches
         if match_passes_direct_threshold(search_module, match, video, rules)
     ]
-    if any(match.get("query_index") == 0 for match in exact_matches):
+    if (
+        plan["retrieval_guidance"].get("strategy") != "split_multi_issue"
+        and exact_matches
+    ) or any(match.get("query_index") == 0 for match in exact_matches):
         return "exact_question"
     if exact_matches:
         return "exact_query_unit"
@@ -979,7 +1101,7 @@ def concept_decision(search_module, plan, entry, video, rules):
     component_matches = [
         match
         for match in direct_matches
-        if match.get("query_concept_count", 0) >= 2
+        if match.get("query_concept_count", 0) >= 1
         and match.get("matched_structured_query_concepts")
         and match.get("rank", 10**6)
         <= rules.get("direct_review_rank_acceptance", 24)

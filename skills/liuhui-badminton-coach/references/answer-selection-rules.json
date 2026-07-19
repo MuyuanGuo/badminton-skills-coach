@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -7,6 +7,9 @@
   "top_rank_acceptance": 12,
   "single_concept_top_rank_acceptance": 6,
   "direct_review_rank_acceptance": 24,
+  "substantive_concept_equivalence_axes": [
+    "technique_variant"
+  ],
   "reviewed_evidence_min_strict_similarity": 0.35,
   "allowed_relevance_tiers": [
     "direct",
@@ -183,6 +186,16 @@
   "focus_term_source_suppressions": {
     "握拍": ["对方握拍", "对手握拍", "对方是正手握拍", "对方是反手握拍", "对手是正手握拍", "对手是反手握拍"]
   },
+  "source_constraint_implications": [
+    {
+      "source_axis": "shot_family",
+      "source_values": ["smash"],
+      "target_axis": "tactical_phase",
+      "target_values": ["attack"],
+      "suppress_when_terms": ["对方杀球", "对手杀球", "人家杀球"],
+      "basis": "明确的本方杀球教学属于进攻技术；对手杀球措辞不得证明本方处于进攻阶段。"
+    }
+  ],
   "video_display_title_overrides": {
     "7056596925721726220": "正手抽球：架拍与腰腹到手腕的旋转发力",
     "7656927370758796145": "双打抓回头：站位、轮转、握拍、锁腕和步法"
@@ -262,6 +275,14 @@
   ],
   "unrequested_scope_support_only_axes": [
     "pressure_state"
+  ],
+  "unrequested_scope_support_only_conditions": [
+    {
+      "axis": "stroke_side",
+      "values": ["backhand"],
+      "requested_axis": "shot_family",
+      "requested_values": ["smash"]
+    }
   ],
   "unrequested_scope_support_only_sources": [
     "primary_metadata",
