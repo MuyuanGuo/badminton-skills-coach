@@ -288,6 +288,21 @@ skill_retrieval_rules = json.loads(
 )
 if skill_retrieval_rules != retrieval_rules:
     raise SystemExit("Skill retrieval rules are out of sync with project config")
+retrieval_intent = retrieval_rules.get("intent", {})
+required_retrieval_intent_fields = {
+    "practice_request_terms",
+    "practice_schedule_terms",
+    "practice_context_terms",
+    "diagnosis_request_terms",
+    "comparison_request_terms",
+}
+if not required_retrieval_intent_fields.issubset(retrieval_intent):
+    raise SystemExit("Retrieval intent routing rules are incomplete")
+if any(
+    not retrieval_intent[field]
+    for field in required_retrieval_intent_fields
+):
+    raise SystemExit("Retrieval intent routing rules cannot be empty")
 
 answer_modality_rules = json.loads(
     (ROOT / "config" / "answer_modality_rules.json").read_text(encoding="utf-8")

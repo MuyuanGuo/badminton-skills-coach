@@ -544,6 +544,37 @@
         "discipline": ["doubles"],
         "serve_role": ["receive"]
       }
+    },
+    {
+      "case_id": "QUA018",
+      "query": "双打新手一个人练接发，每次20分钟怎么安排",
+      "intent_summary": "把带训练条件和时长的安排请求识别为训练计划，而不是普通技术解释",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "新手", "一个人练", "接发", "20分钟", "怎么安排"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打", "接发"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      }
+    },
+    {
+      "case_id": "QUA019",
+      "query": "双打站位怎么安排",
+      "intent_summary": "把战术站位安排保留为普通教练回答，不因安排二字误判为训练计划",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "站位", "怎么安排"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]}
     }
   ]
 }

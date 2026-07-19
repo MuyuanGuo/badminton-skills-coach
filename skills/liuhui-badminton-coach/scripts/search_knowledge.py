@@ -291,8 +291,23 @@ def extract_negative_scopes(query, rules):
 def requested_output(query, rules):
     normalized_query = normalize(query)
     intent_rules = rules.get("intent", {})
+    direct_practice_request = any(
+        normalize(term) in normalized_query
+        for term in intent_rules.get("practice_request_terms", [])
+    )
+    scheduled_practice_request = (
+        any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_schedule_terms", [])
+        )
+        and any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_context_terms", [])
+        )
+    )
+    if direct_practice_request or scheduled_practice_request:
+        return "practice"
     for label, key in [
-        ("practice", "practice_request_terms"),
         ("diagnosis", "diagnosis_request_terms"),
         ("comparison", "comparison_request_terms"),
     ]:

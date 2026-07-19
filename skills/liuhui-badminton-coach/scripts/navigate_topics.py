@@ -44,9 +44,27 @@ DISCIPLINE_SIGNALS = {
     "doubles": ["双打", "混双", "男双", "女双", "搭档轮转"],
 }
 SETUP_SIGNALS = {
-    "solo": ["一个人练", "单人练", "独练", "没有陪练", "无陪练", "自己练"],
+    "solo": [
+        "一个人练",
+        "一个人",
+        "单人练",
+        "单人",
+        "独练",
+        "没有陪练",
+        "无陪练",
+        "自己练",
+        "自己",
+    ],
     "coach": ["教练喂球", "有教练", "私教"],
-    "partner": ["有搭档", "搭档喂球", "有陪练", "朋友喂球"],
+    "partner": [
+        "有搭档",
+        "搭档喂球",
+        "有陪练",
+        "朋友喂球",
+        "有人喂球",
+        "帮我喂球",
+        "给我喂球",
+    ],
 }
 PAIN_SIGNALS = ["疼", "痛", "受伤", "扭伤", "拉伤", "不适"]
 
@@ -154,11 +172,73 @@ def infer_signal(query, signal_groups, default="unknown"):
     return default
 
 
+def setup_signal_in_text(text, signal):
+    needle = normalize(signal)
+    start = 0
+    while True:
+        index = text.find(needle, start)
+        if index < 0:
+            return False
+        negated_you = (
+            needle.startswith("有")
+            and index > 0
+            and text[index - 1] in {"没", "无"}
+        )
+        if not negated_you:
+            return True
+        start = index + 1
+
+
+def infer_practice_setup(query):
+    text = normalize(query)
+    for setup in ["coach", "partner", "solo"]:
+        if any(
+            setup_signal_in_text(text, signal)
+            for signal in SETUP_SIGNALS[setup]
+        ):
+            return setup
+    return "unknown"
+
+
+def chinese_number(text):
+    digits = {
+        "零": 0,
+        "〇": 0,
+        "一": 1,
+        "二": 2,
+        "两": 2,
+        "三": 3,
+        "四": 4,
+        "五": 5,
+        "六": 6,
+        "七": 7,
+        "八": 8,
+        "九": 9,
+    }
+    units = {"十": 10, "百": 100}
+    if not any(char in units for char in text):
+        return int("".join(str(digits[char]) for char in text))
+    total = 0
+    current = 0
+    for char in text:
+        if char in digits:
+            current = digits[char]
+        else:
+            total += (current or 1) * units[char]
+            current = 0
+    return total + current
+
+
 def infer_session_minutes(query, default):
     text = normalize(query)
     match = re.search(r"(\d{1,3})分钟", text)
     if match:
         return int(match.group(1)), "query"
+    chinese_match = re.search(
+        r"([零〇一二两三四五六七八九十百]{1,5})分钟", text
+    )
+    if chinese_match:
+        return chinese_number(chinese_match.group(1)), "query"
     if "半小时" in text:
         return 30, "query"
     if "一小时" in text or "1小时" in text:
@@ -166,19 +246,27 @@ def infer_session_minutes(query, default):
     return default, "default"
 
 
-def build_user_context(query, rules, level="auto", discipline="auto", setup="auto", session_minutes=None):
+def build_user_context(
+    query,
+    rules,
+    level="auto",
+    discipline="auto",
+    setup="auto",
+    session_minutes=None,
+):
     inferred_minutes, minutes_source = infer_session_minutes(
         query, rules["default_session_minutes"]
     )
+    inferred_level = infer_signal(query, LEVEL_SIGNALS)
+    inferred_discipline = infer_signal(query, DISCIPLINE_SIGNALS)
+    inferred_setup = infer_practice_setup(query)
     context = {
-        "level": infer_signal(query, LEVEL_SIGNALS) if level == "auto" else level,
+        "level": inferred_level if level == "auto" else level,
         "discipline": (
-            infer_signal(query, DISCIPLINE_SIGNALS)
-            if discipline == "auto"
-            else discipline
+            inferred_discipline if discipline == "auto" else discipline
         ),
         "practice_setup": (
-            infer_signal(query, SETUP_SIGNALS) if setup == "auto" else setup
+            inferred_setup if setup == "auto" else setup
         ),
         "session_minutes": (
             inferred_minutes if session_minutes is None else session_minutes
@@ -192,9 +280,27 @@ def build_user_context(query, rules, level="auto", discipline="auto", setup="aut
             normalize(signal) in normalize(query) for signal in PAIN_SIGNALS
         ),
         "sources": {
-            "level": "query" if level == "auto" and infer_signal(query, LEVEL_SIGNALS) != "unknown" else "argument" if level != "auto" else "default",
-            "discipline": "query" if discipline == "auto" and infer_signal(query, DISCIPLINE_SIGNALS) != "unknown" else "argument" if discipline != "auto" else "default",
-            "practice_setup": "query" if setup == "auto" and infer_signal(query, SETUP_SIGNALS) != "unknown" else "argument" if setup != "auto" else "default",
+            "level": (
+                "argument"
+                if level != "auto"
+                else "query"
+                if inferred_level != "unknown"
+                else "default"
+            ),
+            "discipline": (
+                "argument"
+                if discipline != "auto"
+                else "query"
+                if inferred_discipline != "unknown"
+                else "default"
+            ),
+            "practice_setup": (
+                "argument"
+                if setup != "auto"
+                else "query"
+                if inferred_setup != "unknown"
+                else "default"
+            ),
             "session_minutes": minutes_source if session_minutes is None else "argument",
         },
     }

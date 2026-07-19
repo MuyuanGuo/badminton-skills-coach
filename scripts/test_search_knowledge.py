@@ -315,6 +315,23 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(unknown["strategy"], "evidence_check")
         self.assertFalse(unknown["require_exhaustive_completion"])
 
+    def test_requested_output_recognizes_contextual_practice_schedules(self):
+        for query in [
+            "双打新手一个人练接发，每次20分钟怎么安排",
+            "有搭档喂球，30分钟如何分配网前搓球训练",
+            "帮我做一个15分钟的杀球练习计划",
+        ]:
+            with self.subTest(query=query):
+                frame = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]["intent_frame"]
+                self.assertEqual(frame["requested_output"], "practice")
+
+        tactical = self.search_module.plan_query("双打站位怎么安排")[
+            "retrieval_guidance"
+        ]["intent_frame"]
+        self.assertEqual(tactical["requested_output"], "coaching_answer")
+
     def test_query_plan_preserves_literal_symptom_after_known_concept(self):
         plan = self.search_module.plan_query("杀球总下网怎么办")
         frame = plan["retrieval_guidance"]["intent_frame"]

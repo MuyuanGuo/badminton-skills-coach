@@ -104,6 +104,32 @@ class TopicNavigationTests(unittest.TestCase):
         self.assertIn("搭档", goals)
         self.assertIn("下一拍衔接", goals)
 
+    def test_practice_context_handles_natural_solo_and_chinese_duration(self):
+        context = self.navigator.build_user_context(
+            "新手一个人每天练十五分钟杀球", self.practice_rules
+        )
+        self.assertEqual(context["level"], "beginner")
+        self.assertEqual(context["practice_setup"], "solo")
+        self.assertEqual(context["session_minutes"], 15)
+        self.assertEqual(context["sources"]["practice_setup"], "query")
+        self.assertEqual(context["sources"]["session_minutes"], "query")
+
+        partner = self.navigator.build_user_context(
+            "有一个人给我喂球，每次二十分钟", self.practice_rules
+        )
+        self.assertEqual(partner["practice_setup"], "partner")
+        self.assertEqual(partner["session_minutes"], 20)
+
+        no_partner = self.navigator.build_user_context(
+            "没有陪练，只能自己练二十分钟", self.practice_rules
+        )
+        self.assertEqual(no_partner["practice_setup"], "solo")
+
+        partner_without_coach = self.navigator.build_user_context(
+            "没有教练，但有搭档喂球", self.practice_rules
+        )
+        self.assertEqual(partner_without_coach["practice_setup"], "partner")
+
     def test_minute_allocation_is_exact_and_keeps_every_segment(self):
         for total in [5, 15, 30, 120]:
             with self.subTest(total=total):

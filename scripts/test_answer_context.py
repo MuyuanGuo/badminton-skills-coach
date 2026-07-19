@@ -490,6 +490,32 @@ class AnswerContextTests(unittest.TestCase):
             drop_rejected["7054395778814561575"],
         )
 
+    def test_focused_practice_request_returns_personalized_adaptation(self):
+        context = self.context_module.prepare_answer_context(
+            "双打新手一个人每天十五分钟怎么练接发",
+            max_videos=1,
+            local_personalization=False,
+        )
+        interpretation = context["question_interpretation"]
+        self.assertEqual(
+            interpretation["intent_frame"]["requested_output"], "practice"
+        )
+        self.assertEqual(interpretation["strategy"], "focused_evidence")
+        navigation = context["topic_navigation"]
+        self.assertIsNotNone(navigation)
+        self.assertEqual(navigation["user_context"]["level"], "beginner")
+        self.assertEqual(navigation["user_context"]["discipline"], "doubles")
+        self.assertEqual(navigation["user_context"]["practice_setup"], "solo")
+        self.assertEqual(navigation["user_context"]["session_minutes"], 15)
+        self.assertEqual(
+            sum(navigation["practice_adaptation"]["minute_allocation"].values()),
+            15,
+        )
+        self.assertIn(
+            "不要把需要稳定喂球的练习写成可独自完成",
+            navigation["practice_adaptation"]["setup_adaptation"],
+        )
+
     def test_generic_questions_condition_additional_specific_scope(self):
         backhand = self.context_module.prepare_answer_context(
             "反手怎么练？",

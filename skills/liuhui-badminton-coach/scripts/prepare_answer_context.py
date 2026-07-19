@@ -1575,8 +1575,16 @@ def prepare_answer_context(
     )
     navigation = None
     retrieval_queries = planned_queries(search_module, plan, query, rules)
-    if plan["retrieval_guidance"].get("use_topic_navigation"):
+    use_topic_navigation = plan["retrieval_guidance"].get(
+        "use_topic_navigation"
+    )
+    needs_practice_context = (
+        plan["retrieval_guidance"]["intent_frame"].get("requested_output")
+        == "practice"
+    )
+    if use_topic_navigation or needs_practice_context:
         navigation = topic_navigation(navigation_module, query)
+    if use_topic_navigation:
         retrieval_queries.extend(navigation["suggested_search_queries"][:3])
         retrieval_queries = list(dict.fromkeys(retrieval_queries))
 
