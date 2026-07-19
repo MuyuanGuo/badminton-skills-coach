@@ -1,5 +1,5 @@
 {
-  "version": "answer-modality-v1",
+  "version": "answer-modality-v2",
   "description": "根据用户问题判断文字解释与视频演示的合理分工。三种模式都必须给出文字答案和相关视频，只调整两者承担的内容。",
   "default_mode": "balanced",
   "decision": {
@@ -176,6 +176,11 @@
       "太慢",
       "疼",
       "受伤"
+    ],
+    "scenario_focused_requested_outputs": [
+      "coaching_answer",
+      "comparison",
+      "practice"
     ],
     "multi_issue_separators": [
       "而且",

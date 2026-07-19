@@ -614,6 +614,18 @@ def build_query_plan(query, expansion, answer_rules=None):
         clarification_policy = (
             "retrieve the focused concept directly and clarify only when the playing situation changes the recommendation"
         )
+    elif (
+        expansion["intent_frame"].get("scenarios")
+        and expansion["intent_frame"].get("requested_output")
+        in workflow_rules.get("scenario_focused_requested_outputs", [])
+    ):
+        strategy = "scenario_focused_evidence"
+        use_topic_navigation = False
+        query_units = [query]
+        require_exhaustive = True
+        clarification_policy = (
+            "treat the stated side, court area, discipline, or tactical phase as a valid evidence scope; retrieve it exhaustively and clarify only which specific technique would materially change the answer"
+        )
     else:
         strategy = "evidence_check"
         use_topic_navigation = False

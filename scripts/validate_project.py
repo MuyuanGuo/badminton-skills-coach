@@ -313,12 +313,21 @@ if set(answer_modality_rules.get("workflow", {})) != {
     "boundary_signals",
     "systematic_signals",
     "diagnostic_signals",
+    "scenario_focused_requested_outputs",
     "multi_issue_separators",
     "multi_issue_connectors",
     "relational_signals",
     "minimum_multi_issue_concepts",
 }:
     raise SystemExit("Answer workflow routing rules are incomplete")
+if set(
+    answer_modality_rules["workflow"][
+        "scenario_focused_requested_outputs"
+    ]
+) != {"coaching_answer", "comparison", "practice"}:
+    raise SystemExit(
+        "Scenario-focused workflow outputs are incomplete"
+    )
 
 practice_plan_rules = json.loads(
     (ROOT / "config" / "practice_plan_rules.json").read_text(encoding="utf-8")

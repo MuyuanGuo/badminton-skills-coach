@@ -499,6 +499,10 @@ class AnswerContextTests(unittest.TestCase):
             item["video_id"]: item for item in backhand["selected_videos"]
         }
         self.assertEqual(
+            backhand["question_interpretation"]["strategy"],
+            "scenario_focused_evidence",
+        )
+        self.assertEqual(
             backhand_by_id["7060717442825309480"]["claim_scope_policy"],
             "exact_question_scope",
         )

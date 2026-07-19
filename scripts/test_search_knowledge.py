@@ -291,6 +291,30 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertFalse(guidance["use_topic_navigation"])
         self.assertEqual(guidance["query_units"], ["正手握拍应该怎么握"])
 
+    def test_query_plan_treats_scenario_only_questions_as_grounded_scopes(self):
+        for query in [
+            "正手怎么练",
+            "反手怎么练",
+            "后场怎么练",
+            "单打怎么练",
+            "进攻怎么练",
+        ]:
+            with self.subTest(query=query):
+                guidance = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]
+                self.assertEqual(
+                    guidance["strategy"], "scenario_focused_evidence"
+                )
+                self.assertTrue(guidance["require_exhaustive_completion"])
+                self.assertFalse(guidance["use_topic_navigation"])
+
+        unknown = self.search_module.plan_query("球感怎么练")[
+            "retrieval_guidance"
+        ]
+        self.assertEqual(unknown["strategy"], "evidence_check")
+        self.assertFalse(unknown["require_exhaustive_completion"])
+
     def test_query_plan_preserves_literal_symptom_after_known_concept(self):
         plan = self.search_module.plan_query("杀球总下网怎么办")
         frame = plan["retrieval_guidance"]["intent_frame"]
