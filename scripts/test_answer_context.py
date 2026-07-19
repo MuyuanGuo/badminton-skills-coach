@@ -441,6 +441,55 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertNotIn("7067722128413543680", smash_by_id)
 
+    def test_generic_answers_keep_actor_and_prerequisite_scope(self):
+        defense = self.context_module.prepare_answer_context(
+            "防守怎么练？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7258462271670586658",
+            {video["video_id"] for video in defense["selected_videos"]},
+        )
+        defense_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in defense["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_constraint_conflict:tactical_phase",
+            defense_rejected["7258462271670586658"],
+        )
+
+        backhand = self.context_module.prepare_answer_context(
+            "反手怎么练？",
+            local_personalization=False,
+        )
+        backhand_ids = [
+            video["video_id"] for video in backhand["selected_videos"]
+        ]
+        self.assertLess(
+            backhand_ids.index("7060717442825309480"),
+            backhand_ids.index("7499776424493075772"),
+        )
+
+        drop = self.context_module.prepare_answer_context(
+            "吊球怎么练？",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertNotIn(
+            "7054395778814561575",
+            {video["video_id"] for video in drop["selected_videos"]},
+        )
+        drop_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in drop["rejected_candidates"]
+        }
+        self.assertIn(
+            "incomplete_series_fragment",
+            drop_rejected["7054395778814561575"],
+        )
+
     def test_known_cross_dimension_leaks_are_not_selected(self):
         cases = [
             ("后场步法怎么练", {"7406541084219821312"}),

@@ -410,6 +410,14 @@ def query_axis_values(search_module, query, axis):
 def source_axis_values(search_module, text, axis):
     values = axis_values(search_module, text, axis)
     normalized = search_module.normalize(text)
+    values.update(
+        value
+        for value, phrases in axis.get("source_value_additions", {}).items()
+        if any(
+            search_module.normalize(phrase) in normalized
+            for phrase in phrases
+        )
+    )
     suppressed = {
         value
         for value, phrases in axis.get("source_value_suppressions", {}).items()
@@ -1041,6 +1049,13 @@ def selection_decision(
     ):
         return False, ["purchase_query_requires_equipment_evidence"]
 
+    title_normalized = search_module.normalize(video.get("title", ""))
+    structured = structured_video_text(search_module, video)
+    for term in rules["incomplete_fragment_terms"]:
+        normalized_term = search_module.normalize(term)
+        if normalized_term in title_normalized or normalized_term in structured:
+            return False, ["incomplete_series_fragment"]
+
     if constraint_result is None:
         constraint_result = constraint_decision(
             search_module, query, plan, video, rules
@@ -1071,8 +1086,6 @@ def selection_decision(
     if concept_match == "none":
         return False, ["no_direct_or_supporting_question_evidence"]
 
-    title_normalized = search_module.normalize(video.get("title", ""))
-    structured = structured_video_text(search_module, video)
     positive_query = plan["retrieval_guidance"]["intent_frame"].get(
         "positive_query", query
     )
@@ -1089,10 +1102,6 @@ def selection_decision(
         and focus_match == "none"
     ):
         return False, ["required_focus_not_supported"]
-    for term in rules["incomplete_fragment_terms"]:
-        normalized_term = search_module.normalize(term)
-        if normalized_term in title_normalized or normalized_term in structured:
-            return False, ["incomplete_series_fragment"]
 
     requested_output = plan["retrieval_guidance"]["intent_frame"].get(
         "requested_output"

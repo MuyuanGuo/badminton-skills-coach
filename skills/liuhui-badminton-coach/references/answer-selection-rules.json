@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -55,6 +55,9 @@
       },
       "source_value_suppressions": {
         "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+      },
+      "source_value_additions": {
+        "net_shot": ["网前"]
       },
       "combine_primary_and_reviewed": true,
       "structured_evidence_policy": "support_only",
@@ -148,7 +151,10 @@
         "attack": ["进攻", "强攻", "下压"],
         "defense": ["防守", "接杀"]
       },
-      "mixed_terms": ["攻防", "防守反击", "防反", "由守转攻"]
+      "mixed_terms": ["攻防", "防守反击", "防反", "由守转攻"],
+      "source_value_suppressions": {
+        "defense": ["对方防守", "对手防守", "让对方防守", "让对手防守", "逼对方防守", "逼对手防守"]
+      }
     },
     {
       "name": "shot_direction",
@@ -250,6 +256,7 @@
     "接上期",
     "先把前三集",
     "看完再去练",
+    "教学后期出",
     "下集再讲",
     "未完待续"
   ],
@@ -262,6 +269,7 @@
   ],
   "unrequested_scope_ranking_axes": [
     "stroke_side",
+    "shot_family",
     "technique_variant",
     "discipline",
     "serve_trajectory",
