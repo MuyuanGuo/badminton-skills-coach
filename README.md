@@ -1,7 +1,8 @@
 # Badminton Skills Coach / 刘辉羽毛球教练 Skill
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
-[![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
+[![Branch: develop](https://img.shields.io/badge/branch-develop-f0ad4e.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)
+[![Status: unreleased](https://img.shields.io/badge/status-unreleased-f0ad4e.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
 ![Badminton Skills Coach：352 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
