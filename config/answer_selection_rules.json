@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -49,6 +49,7 @@
   },
   "query_actor_pronoun_markers": ["他", "她"],
   "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
+  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
   "opponent_response_implications": [
     {
@@ -118,6 +119,26 @@
       "trigger_terms": ["站位", "站哪", "站哪里"],
       "search_terms": ["双打 站位", "双打 发球后站位"],
       "derived_constraints": {"discipline": ["doubles"]}
+    }
+  ],
+  "target_action_scopes": [
+    {
+      "name": "positioning",
+      "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置"],
+      "query_context_terms": [],
+      "search_terms": ["站位"],
+      "source_terms": ["站位", "站哪里", "站在哪", "怎么站"],
+      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位"],
+      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "前后站位", "平行站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"]
+    },
+    {
+      "name": "team_coverage_rotation",
+      "query_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档"],
+      "query_context_terms": ["双打", "搭档", "队友", "同伴", "搭子", "我们"],
+      "search_terms": ["双打 轮转 补位"],
+      "source_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档", "保护好队友", "搭档处理", "队友的位置"],
+      "source_suppressions": [],
+      "source_override_terms": []
     }
   ],
   "constraint_axes": [
@@ -361,6 +382,10 @@
     "7102635326803332393": {
       "stroke_side": ["forehand"],
       "basis": "维护者审核确认向前挥拍示范属于正常正手后场挥拍。"
+    },
+    "7130069152592645411": {
+      "tactical_phase": ["defense"],
+      "basis": "00:27-00:45 是教练模拟进攻方杀球后，指导另一侧球员降低重心并调整防守站位；不得作为本方杀球后的进攻站位证据。"
     }
   },
   "incomplete_fragment_terms": [

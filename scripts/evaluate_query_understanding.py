@@ -126,6 +126,37 @@ def validate_registry(registry, answer_registry):
             )
         if case.get("expected_target_actor", "player") not in {"player", "partner"}:
             raise ValueError(f"{case_id} has an invalid target actor contract")
+        target_action_contract_fields = {
+            "expected_target_action_query",
+            "expected_target_condition_query",
+            "expected_target_action_constraints",
+            "expected_target_condition_constraints",
+            "expected_requested_action_scopes",
+        }
+        present_target_action_fields = target_action_contract_fields & set(case)
+        if present_target_action_fields and (
+            present_target_action_fields != target_action_contract_fields
+        ):
+            raise ValueError(f"{case_id} has an incomplete target action contract")
+        if present_target_action_fields:
+            if not isinstance(case["expected_target_action_query"], str):
+                raise ValueError(f"{case_id} has an invalid target action query")
+            if not isinstance(case["expected_target_condition_query"], str):
+                raise ValueError(f"{case_id} has an invalid target condition query")
+            if not isinstance(case["expected_target_action_constraints"], dict):
+                raise ValueError(
+                    f"{case_id} has invalid target action constraints"
+                )
+            if not isinstance(
+                case["expected_target_condition_constraints"], dict
+            ):
+                raise ValueError(
+                    f"{case_id} has invalid target condition constraints"
+                )
+            if not isinstance(case["expected_requested_action_scopes"], list):
+                raise ValueError(
+                    f"{case_id} has invalid requested action scopes"
+                )
     return cases, adversarial_cases
 
 
@@ -246,6 +277,28 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             actor_context["derived_target_constraints"]
             == expected_derived_target_constraints
         )
+        has_target_action_contract = "expected_target_action_query" in case
+        if has_target_action_contract:
+            checks["target_action_query"] = (
+                actor_context["target_action_query"]
+                == case["expected_target_action_query"]
+            )
+            checks["target_condition_query"] = (
+                actor_context["target_condition_query"]
+                == case["expected_target_condition_query"]
+            )
+            checks["target_action_constraints"] = (
+                actor_context["target_action_constraints"]
+                == case["expected_target_action_constraints"]
+            )
+            checks["target_condition_constraints"] = (
+                actor_context["target_condition_constraints"]
+                == case["expected_target_condition_constraints"]
+            )
+            checks["requested_action_scopes"] = (
+                actor_context["requested_action_scopes"]
+                == case["expected_requested_action_scopes"]
+            )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -264,6 +317,27 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                         expected_derived_target_constraints
                     ),
                     "target_actor": expected_target_actor,
+                    **(
+                        {
+                            "target_action_query": case[
+                                "expected_target_action_query"
+                            ],
+                            "target_condition_query": case[
+                                "expected_target_condition_query"
+                            ],
+                            "target_action_constraints": case[
+                                "expected_target_action_constraints"
+                            ],
+                            "target_condition_constraints": case[
+                                "expected_target_condition_constraints"
+                            ],
+                            "requested_action_scopes": case[
+                                "expected_requested_action_scopes"
+                            ],
+                        }
+                        if has_target_action_contract
+                        else {}
+                    ),
                 },
                 "actual": {
                     "intent": intent_frame,
@@ -281,6 +355,27 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                         "derived_target_constraints"
                     ],
                     "target_actor": actor_context["target_actor"],
+                    **(
+                        {
+                            "target_action_query": actor_context[
+                                "target_action_query"
+                            ],
+                            "target_condition_query": actor_context[
+                                "target_condition_query"
+                            ],
+                            "target_action_constraints": actor_context[
+                                "target_action_constraints"
+                            ],
+                            "target_condition_constraints": actor_context[
+                                "target_condition_constraints"
+                            ],
+                            "requested_action_scopes": actor_context[
+                                "requested_action_scopes"
+                            ],
+                        }
+                        if has_target_action_contract
+                        else {}
+                    ),
                 },
             }
         )

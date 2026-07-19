@@ -344,6 +344,8 @@ if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
 if not answer_selection_rules.get("query_target_actor_terms"):
     raise SystemExit("Query target actor terms are missing")
+if not answer_selection_rules.get("target_action_backreference_terms"):
+    raise SystemExit("Target action backreference terms are missing")
 pronoun_markers = set(
     answer_selection_rules.get("query_actor_pronoun_markers", [])
 )
@@ -368,6 +370,32 @@ for implication in answer_selection_rules.get(
         or not implication["derived_constraints"]
     ):
         raise SystemExit("Partner retrieval implication cannot be empty")
+target_action_scopes = answer_selection_rules.get("target_action_scopes", [])
+target_action_scope_names = [scope.get("name") for scope in target_action_scopes]
+if (
+    not target_action_scopes
+    or len(target_action_scope_names) != len(set(target_action_scope_names))
+):
+    raise SystemExit("Target action scopes are missing or duplicated")
+required_target_action_scope_fields = {
+    "name",
+    "query_terms",
+    "query_context_terms",
+    "search_terms",
+    "source_terms",
+    "source_suppressions",
+    "source_override_terms",
+}
+for scope in target_action_scopes:
+    if set(scope) != required_target_action_scope_fields:
+        raise SystemExit("Target action scope contract is incomplete")
+    if (
+        not scope["name"]
+        or not scope["query_terms"]
+        or not scope["search_terms"]
+        or not scope["source_terms"]
+    ):
+        raise SystemExit("Target action scope cannot be empty")
 constraint_axes = {
     axis["name"]: axis
     for axis in answer_selection_rules.get("constraint_axes", [])

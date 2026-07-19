@@ -598,6 +598,116 @@ class AnswerContextTests(unittest.TestCase):
                         item["constraint_scope"]["serve_role"]["values"],
                     )
 
+    def test_target_conditions_do_not_replace_requested_positioning_actions(self):
+        backhand_positioning = self.context_module.prepare_answer_context(
+            "我反手弱，应该怎么站位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        actor_context = backhand_positioning["question_interpretation"][
+            "actor_context"
+        ]
+        self.assertEqual(actor_context["target_action_query"], "应该怎么站位")
+        self.assertEqual(actor_context["target_condition_query"], "我反手弱")
+        self.assertEqual(actor_context["target_action_constraints"], {})
+        self.assertEqual(
+            actor_context["target_condition_constraints"],
+            {"stroke_side": ["backhand"]},
+        )
+        self.assertEqual(actor_context["requested_action_scopes"], ["positioning"])
+        self.assertEqual(backhand_positioning["selected_videos"], [])
+        backhand_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in backhand_positioning["rejected_candidates"]
+        }
+        self.assertIn(
+            "requested_action_wrong_actor:positioning",
+            backhand_rejected["7115241358255803683"],
+        )
+
+        backhand_practice = self.context_module.prepare_answer_context(
+            "我反手弱，应该怎么练",
+            max_videos=8,
+            local_personalization=False,
+        )
+        self.assertIn(
+            "7060717442825309480",
+            {item["video_id"] for item in backhand_practice["selected_videos"]},
+        )
+        self.assertEqual(
+            backhand_practice["question_interpretation"]["actor_context"][
+                "requested_action_scopes"
+            ],
+            [],
+        )
+
+        serve_positioning = self.context_module.prepare_answer_context(
+            "我发球总被扑，应该怎么站位",
+            max_videos=12,
+            local_personalization=False,
+            include_rejected=True,
+        )
+        serve_positioning_ids = {
+            item["video_id"] for item in serve_positioning["selected_videos"]
+        }
+        self.assertIn("7475440958130097466", serve_positioning_ids)
+        self.assertIn("7252154554828033295", serve_positioning_ids)
+        self.assertNotIn("7489412105641168187", serve_positioning_ids)
+        self.assertNotIn("7413335844594994447", serve_positioning_ids)
+
+        smash_positioning = self.context_module.prepare_answer_context(
+            "我杀球后回不来，应该怎么站位",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(smash_positioning["selected_videos"], [])
+        smash_rejected = {
+            item["video_id"]: item
+            for item in smash_positioning["rejected_candidates"]
+        }
+        self.assertEqual(
+            smash_rejected["7130069152592645411"]["constraint_match"][
+                "tactical_phase"
+            ],
+            "conflict",
+        )
+
+        backreferenced_positioning = self.context_module.prepare_answer_context(
+            "我站位总偏，应该怎么改",
+            max_videos=10,
+            local_personalization=False,
+            include_rejected=True,
+        )
+        backreferenced_actor = backreferenced_positioning[
+            "question_interpretation"
+        ]["actor_context"]
+        self.assertTrue(
+            backreferenced_actor["target_action_backreferences_condition"]
+        )
+        self.assertEqual(
+            backreferenced_actor["requested_action_scopes"], ["positioning"]
+        )
+        backreferenced_ids = {
+            item["video_id"]
+            for item in backreferenced_positioning["selected_videos"]
+        }
+        self.assertIn("7220984919747497255", backreferenced_ids)
+        self.assertNotIn("7115241358255803683", backreferenced_ids)
+        self.assertNotIn("7063638911301520680", backreferenced_ids)
+
+        rotation = self.context_module.prepare_answer_context(
+            "我双打轮转总慢，应该怎么改",
+            max_videos=10,
+            local_personalization=False,
+        )
+        rotation_ids = {
+            item["video_id"] for item in rotation["selected_videos"]
+        }
+        self.assertIn("7614167503938610417", rotation_ids)
+        self.assertIn("7656927370758796145", rotation_ids)
+        self.assertNotIn("7072543702161296640", rotation_ids)
+        self.assertNotIn("7501542236061420859", rotation_ids)
+
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
         allowed, failures, _, _, matches = self.constraint_decision(
             "反手高远怎么打", "正反手高远的区别"

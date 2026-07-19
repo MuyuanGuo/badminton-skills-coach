@@ -477,10 +477,14 @@ def _query_actor_segments(query, rules):
     last_explicit_referent = None
     cursor = 0
 
-    def append_text(text):
+    def append_text(text, force_new=False):
         if not text:
             return
-        if segments and segments[-1]["actor"] == current_actor:
+        if (
+            not force_new
+            and segments
+            and segments[-1]["actor"] == current_actor
+        ):
             segments[-1]["text"] += text
         else:
             segments.append({"actor": current_actor, "text": text})
@@ -494,7 +498,7 @@ def _query_actor_segments(query, rules):
             continue
         if token in separators:
             current_actor = "player"
-            append_text(" ")
+            append_text(" ", force_new=True)
         else:
             configured_actor = markers[token]
             if token in pronouns and last_explicit_referent in referent_actors:
@@ -527,20 +531,20 @@ def query_actor_text(query, rules):
     }
 
 
-def query_target_actor(query, actor_text, rules):
-    target_terms = [
-        str(term)
+def _segment_requests_answer(segment, rules):
+    normalized = re.sub(r"\s+", "", segment)
+    return any(
+        re.sub(r"\s+", "", str(term)) in normalized
         for term in rules.get("query_target_actor_terms", [])
         if str(term)
-    ]
+    )
+
+
+def query_target_actor(query, actor_text, rules):
     target_actor = None
 
-    def segment_requests_answer(segment):
-        normalized = re.sub(r"\s+", "", segment)
-        return any(re.sub(r"\s+", "", term) in normalized for term in target_terms)
-
     for segment in _query_actor_segments(query, rules):
-        if segment_requests_answer(segment["text"]):
+        if _segment_requests_answer(segment["text"], rules):
             target_actor = segment["actor"]
     if target_actor in {"player", "partner"}:
         return target_actor
@@ -596,6 +600,92 @@ def _query_constraints_from_text(
     return constraints
 
 
+def _query_target_action_context(
+    search_module,
+    query,
+    target_actor,
+    target_query,
+    target_actor_constraints,
+    rules,
+):
+    target_segments = [
+        segment
+        for segment in _query_actor_segments(query, rules)
+        if segment["actor"] == target_actor and segment["text"].strip()
+    ]
+    action_segments = [
+        segment["text"]
+        for segment in target_segments
+        if _segment_requests_answer(segment["text"], rules)
+    ]
+    condition_segments = [
+        segment["text"]
+        for segment in target_segments
+        if not _segment_requests_answer(segment["text"], rules)
+    ]
+    action_query = re.sub(
+        r"\s+", " ", " ".join(action_segments)
+    ).strip()
+    if not action_query:
+        action_query = target_query
+        condition_segments = []
+    condition_query = re.sub(
+        r"\s+", " ", " ".join(condition_segments)
+    ).strip()
+    action_constraints = _query_constraints_from_text(
+        search_module,
+        action_query,
+        rules,
+        value_additions_field=(
+            "opponent_query_value_additions"
+            if target_actor == "opponent"
+            else None
+        ),
+    )
+    condition_constraints = {}
+    for axis_name, values in target_actor_constraints.items():
+        remaining = set(values) - set(action_constraints.get(axis_name, []))
+        if remaining:
+            condition_constraints[axis_name] = sorted(remaining)
+
+    normalized_action = search_module.normalize(action_query)
+    action_backreferences_condition = bool(
+        condition_query
+        and any(
+            search_module.normalize(term) in normalized_action
+            for term in rules.get("target_action_backreference_terms", [])
+        )
+    )
+    action_scope_query = action_query
+    if action_backreferences_condition:
+        action_scope_query = " ".join([condition_query, action_query]).strip()
+    normalized_action_scope = search_module.normalize(action_scope_query)
+    normalized_full_query = search_module.normalize(query)
+    requested_action_scopes = []
+    for scope in rules.get("target_action_scopes", []):
+        if not any(
+            search_module.normalize(term) in normalized_action_scope
+            for term in scope["query_terms"]
+        ):
+            continue
+        context_terms = scope.get("query_context_terms", [])
+        if context_terms and not any(
+            search_module.normalize(term) in normalized_full_query
+            for term in context_terms
+        ):
+            continue
+        requested_action_scopes.append(scope["name"])
+    return {
+        "target_action_query": action_query,
+        "target_condition_query": condition_query,
+        "target_action_scope_query": action_scope_query,
+        "target_action_backreferences_condition": action_backreferences_condition,
+        "target_action_constraints": action_constraints,
+        "target_condition_constraints": condition_constraints,
+        "requested_action_scopes": requested_action_scopes,
+    }
+
+
 def query_actor_context(search_module, query, rules):
     actor_text = query_actor_text(query, rules)
     actor_constraints = {}
@@ -614,6 +704,14 @@ def query_actor_context(search_module, query, rules):
     opponent_constraints = actor_constraints.get("opponent", {})
     partner_constraints = actor_constraints.get("partner", {})
     target_actor = query_target_actor(query, actor_text, rules)
+    target_action_context = _query_target_action_context(
+        search_module,
+        query,
+        target_actor,
+        actor_text[target_actor],
+        actor_constraints.get(target_actor, {}),
+        rules,
+    )
     normalized_query = search_module.normalize(query)
     derived_player_constraints = {}
     derived_target_constraints = {}
@@ -655,6 +753,13 @@ def query_actor_context(search_module, query, rules):
                     derived_target_constraints.setdefault(axis_name, []).extend(
                         values
                     )
+    for scope_name in target_action_context["requested_action_scopes"]:
+        scope = next(
+            item
+            for item in rules.get("target_action_scopes", [])
+            if item["name"] == scope_name
+        )
+        derived_search_terms.extend(scope.get("search_terms", []))
     actor_constraints["player"] = player_constraints
     target_constraints = {
         axis_name: list(values)
@@ -675,6 +780,7 @@ def query_actor_context(search_module, query, rules):
         "actor_constraints": actor_constraints,
         "target_actor": target_actor,
         "target_query": actor_text[target_actor],
+        **target_action_context,
         "target_constraints": target_constraints,
         "derived_player_constraints": derived_player_constraints,
         "derived_target_constraints": derived_target_constraints,
@@ -1065,6 +1171,52 @@ def derived_player_constraint_failures(
         if not source_values & set(requested_values):
             failures.append(
                 f"derived_player_constraint_not_supported:{axis_name}"
+            )
+    return failures
+
+
+def requested_action_scope_failures(
+    search_module,
+    actor_context,
+    video,
+    rules,
+):
+    requested_scopes = set(actor_context.get("requested_action_scopes", []))
+    if not requested_scopes:
+        return []
+    support_text = search_module.normalize(
+        " ".join(
+            [
+                primary_video_constraint_text(search_module, video),
+                str(video.get("category", "")),
+                substantive_instruction_text(search_module, video, rules),
+            ]
+        )
+    )
+    failures = []
+    for scope in rules.get("target_action_scopes", []):
+        if scope["name"] not in requested_scopes:
+            continue
+        has_support = any(
+            search_module.normalize(term) in support_text
+            for term in scope["source_terms"]
+        )
+        if not has_support:
+            failures.append(
+                f"requested_action_not_supported:{scope['name']}"
+            )
+            continue
+        suppressed = any(
+            search_module.normalize(term) in support_text
+            for term in scope.get("source_suppressions", [])
+        )
+        overridden = any(
+            search_module.normalize(term) in support_text
+            for term in scope.get("source_override_terms", [])
+        )
+        if suppressed and not overridden:
+            failures.append(
+                f"requested_action_wrong_actor:{scope['name']}"
             )
     return failures
 
@@ -2006,6 +2158,60 @@ def prepare_answer_context(
         if derived_failures:
             keep = False
             reasons = derived_failures
+        action_failures = requested_action_scope_failures(
+            search_module,
+            actor_context,
+            video,
+            rules,
+        )
+        action_reason_may_replace = keep or set(reasons).issubset(
+            {
+                "recall_safeguard_only",
+                "no_direct_or_supporting_question_evidence",
+            }
+        )
+        if (
+            action_failures
+            and not actor_failures
+            and not derived_failures
+            and action_reason_may_replace
+        ):
+            keep = False
+            reasons = action_failures
+        condition_axes = set(
+            actor_context.get("target_condition_constraints", {})
+        )
+        condition_scope_supported = all(
+            constraint_result[4].get(axis_name)
+            in {"exact", "mixed_support", "incidental_support"}
+            and constraint_scope.get(axis_name, {}).get("source")
+            in {
+                "primary_metadata",
+                "reviewed_context",
+                "primary_and_reviewed",
+                "reviewed_override",
+                "category",
+            }
+            for axis_name in condition_axes
+        )
+        if (
+            actor_context.get("requested_action_scopes")
+            and not action_failures
+            and not actor_failures
+            and not derived_failures
+            and not keep
+            and set(reasons).issubset(
+                {
+                    "recall_safeguard_only",
+                    "no_direct_or_supporting_question_evidence",
+                }
+            )
+            and constraint_result[0]
+            and condition_scope_supported
+            and has_instructional_evidence(video)
+        ):
+            keep = True
+            reasons = ["matched_requested_action_scope_support_only"]
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )
@@ -2191,7 +2397,7 @@ def prepare_answer_context(
                 "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
-                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景，不得写成目标球员的击球动作。",
+                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的站位或轮转动作。requested_action_scopes 要求来源直接支持站位或团队补位，并排除只讨论对手站位的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",

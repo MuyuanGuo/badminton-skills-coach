@@ -849,6 +849,126 @@
         "serve_trajectory": ["deep_serve"]
       },
       "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA035",
+      "query": "我反手弱，应该怎么站位",
+      "intent_summary": "把反手弱保留为同一用户的条件，把站位识别为实际请求动作",
+      "expected_intent": {
+        "positive_query_contains": ["我反手弱", "应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么站位",
+      "expected_target_condition_query": "我反手弱",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"stroke_side": ["backhand"]},
+      "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA036",
+      "query": "我反手弱，应该怎么练",
+      "intent_summary": "把反手弱保留为训练对象，不因条件动作拆分而丢失反手教学范围",
+      "expected_intent": {
+        "positive_query_contains": ["我反手弱", "应该怎么练"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么练",
+      "expected_target_condition_query": "我反手弱",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"stroke_side": ["backhand"]},
+      "expected_requested_action_scopes": []
+    },
+    {
+      "case_id": "QUA037",
+      "query": "我发球总被扑，应该怎么站位",
+      "intent_summary": "把发球被扑保留为条件，只把发球后的本方站位作为请求动作",
+      "expected_intent": {
+        "positive_query_contains": ["我发球总被扑", "应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["serve"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么站位",
+      "expected_target_condition_query": "我发球总被扑",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"serve_role": ["serve"]},
+      "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA038",
+      "query": "我发球总被扑，应该怎么改",
+      "intent_summary": "把泛化的怎么改回接到此前的发球问题，不错误要求站位证据",
+      "expected_intent": {
+        "positive_query_contains": ["我发球总被扑", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {"serve_role": ["serve"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我发球总被扑",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"serve_role": ["serve"]},
+      "expected_requested_action_scopes": []
+    },
+    {
+      "case_id": "QUA039",
+      "query": "我双打轮转总慢，应该怎么改",
+      "intent_summary": "把省略的怎么改回指到前句双打轮转动作，不召回同项目但不同动作的视频",
+      "expected_intent": {
+        "positive_query_contains": ["我双打轮转总慢", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打"],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我双打轮转总慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"discipline": ["doubles"]},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA040",
+      "query": "我站位总偏，应该怎么改",
+      "intent_summary": "把省略的怎么改回指到前句本方站位，只允许直接支持本方站位的来源",
+      "expected_intent": {
+        "positive_query_contains": ["我站位总偏", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我站位总偏",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["positioning"]
     }
   ]
 }
