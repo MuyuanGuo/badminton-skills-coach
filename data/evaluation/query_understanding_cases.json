@@ -474,6 +474,76 @@
         "requested_output": "coaching_answer"
       },
       "expected_constraints": {"shot_direction": ["crosscourt"]}
+    },
+    {
+      "case_id": "QUA014",
+      "query": "后场吊网前怎么练",
+      "intent_summary": "把后场识别为击球位置，把网前识别为吊球目标，不把目标落点误作站位条件",
+      "expected_intent": {
+        "positive_query_contains": ["后场", "吊网前"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场", "网前"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "court_zone": ["rearcourt"]
+      }
+    },
+    {
+      "case_id": "QUA015",
+      "query": "吊球怎么打到网前",
+      "intent_summary": "识别吊球技术，但网前是球的目标落点而不是运动员所在场区",
+      "expected_intent": {
+        "positive_query_contains": ["吊球", "网前"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_family": ["drop"]}
+    },
+    {
+      "case_id": "QUA016",
+      "query": "网前勾对角怎么控制",
+      "intent_summary": "把勾对角识别为网前勾球，不得扩展成搓球、放网或其他网前技术",
+      "expected_intent": {
+        "positive_query_contains": ["网前", "勾对角"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "court_zone": ["forecourt"],
+        "technique_variant": ["net_hook"],
+        "shot_direction": ["crosscourt"]
+      }
+    },
+    {
+      "case_id": "QUA017",
+      "query": "双打接发推后场怎么打",
+      "intent_summary": "把推后场识别为接发推球目标，不把后场误作运动员所在区域",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "接发", "推后场"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打", "接发", "后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "court_zone": ["forecourt"],
+        "technique_variant": ["net_push"],
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      }
     }
   ]
 }

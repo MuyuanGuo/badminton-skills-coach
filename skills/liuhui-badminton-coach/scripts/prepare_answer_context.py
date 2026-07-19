@@ -370,11 +370,58 @@ def axis_values(search_module, text, axis):
     return {match["value"] for match in retained}
 
 
+def query_axis_values(search_module, query, axis):
+    values = axis_values(search_module, query, axis)
+    target_prefixes = [
+        search_module.normalize(prefix)
+        for prefix in axis.get("query_target_prefixes", [])
+        if search_module.normalize(prefix)
+    ]
+    if not values or not target_prefixes:
+        return values
+
+    normalized = search_module.normalize(query)
+    max_prefix_length = max(map(len, target_prefixes))
+    retained = set()
+    for value in values:
+        for term in axis["values"][value]:
+            normalized_term = search_module.normalize(term)
+            if not normalized_term:
+                continue
+            start = 0
+            while True:
+                index = normalized.find(normalized_term, start)
+                if index < 0:
+                    break
+                prefix = normalized[max(0, index - max_prefix_length):index]
+                if not any(prefix.endswith(item) for item in target_prefixes):
+                    retained.add(value)
+                    break
+                start = index + 1
+            if value in retained:
+                break
+    return retained
+
+
+def source_axis_values(search_module, text, axis):
+    values = axis_values(search_module, text, axis)
+    normalized = search_module.normalize(text)
+    suppressed = {
+        value
+        for value, phrases in axis.get("source_value_suppressions", {}).items()
+        if any(
+            search_module.normalize(phrase) in normalized
+            for phrase in phrases
+        )
+    }
+    return values - suppressed, suppressed
+
+
 def query_constraints(search_module, query, rules):
     constraints = {}
     normalized_query = search_module.normalize(query)
     for axis in rules.get("constraint_axes", []):
-        values = axis_values(search_module, query, axis)
+        values = query_axis_values(search_module, query, axis)
         for value, phrases in axis.get("query_value_suppressions", {}).items():
             if any(
                 search_module.normalize(phrase) in normalized_query
@@ -383,6 +430,12 @@ def query_constraints(search_module, query, rules):
                 values.discard(value)
         if values:
             constraints[axis["name"]] = sorted(values)
+    if (
+        constraints.get("serve_role") == ["receive"]
+        and constraints.get("technique_variant") == ["net_push"]
+        and "court_zone" not in constraints
+    ):
+        constraints["court_zone"] = ["forecourt"]
     if (
         constraints.get("shot_family") == ["smash"]
         and "tactical_phase" not in constraints
@@ -456,10 +509,24 @@ def video_constraint_scope(search_module, video, rules):
                 "basis": override.get("basis", ""),
             }
             continue
-        primary = axis_values(search_module, primary_text, axis)
-        reviewed = axis_values(search_module, reviewed_context, axis)
-        category = axis_values(search_module, category_text, axis)
-        structured = axis_values(search_module, structured_text, axis)
+        primary, primary_suppressed = source_axis_values(
+            search_module, primary_text, axis
+        )
+        reviewed, reviewed_suppressed = source_axis_values(
+            search_module, reviewed_context, axis
+        )
+        category, category_suppressed = source_axis_values(
+            search_module, category_text, axis
+        )
+        structured, structured_suppressed = source_axis_values(
+            search_module, structured_text, axis
+        )
+        suppressed_values = sorted(
+            primary_suppressed
+            | reviewed_suppressed
+            | category_suppressed
+            | structured_suppressed
+        )
         if axis.get("combine_primary_and_reviewed") and (primary or reviewed):
             values = primary | reviewed
             source = (
@@ -481,6 +548,7 @@ def video_constraint_scope(search_module, video, rules):
         scope[name] = {
             "values": sorted(values),
             "source": source,
+            "suppressed_values": suppressed_values,
         }
     return scope
 
@@ -500,7 +568,15 @@ def constraint_decision(search_module, query, plan, video, rules):
     for axis_name, requested_values in requested.items():
         scope_details = scope[axis_name]
         video_values = set(scope_details["values"])
+        suppressed_values = set(scope_details.get("suppressed_values", []))
         requested_values = set(requested_values)
+        if (
+            requested_values & suppressed_values
+            and not requested_values & video_values
+        ):
+            failures.append(f"explicit_constraint_conflict:{axis_name}")
+            matches[axis_name] = "conflict"
+            continue
         if not video_values:
             matches[axis_name] = "unspecified_support"
             continue
@@ -596,13 +672,28 @@ def required_focus_groups(search_module, query, rules):
     ]
 
 
-def video_supports_required_focus(search_module, video, groups):
+def text_supports_focus_group(search_module, text, group, rules):
+    normalized = search_module.normalize(text)
+    for focus_term, phrases in rules.get(
+        "focus_term_source_suppressions", {}
+    ).items():
+        if not any(
+            search_module.normalize(term) == search_module.normalize(focus_term)
+            for term in group
+        ):
+            continue
+        for phrase in phrases:
+            normalized = normalized.replace(search_module.normalize(phrase), "")
+    return any(
+        search_module.normalize(term) in normalized
+        for term in group
+    )
+
+
+def video_supports_required_focus(search_module, video, groups, rules):
     structured = structured_video_text(search_module, video)
     return all(
-        any(
-            search_module.normalize(term) in structured
-            for term in group
-        )
+        text_supports_focus_group(search_module, structured, group, rules)
         for group in groups
     )
 
@@ -634,18 +725,14 @@ def entry_focus_match(search_module, entry, video, rules):
             continue
         found_requirement = True
         if all(
-            any(
-                search_module.normalize(term) in primary_reviewed
-                for term in group
+            text_supports_focus_group(
+                search_module, primary_reviewed, group, rules
             )
             for group in groups
         ):
             best_rank = min(best_rank, 0)
         elif all(
-            any(
-                search_module.normalize(term) in structured
-                for term in group
-            )
+            text_supports_focus_group(search_module, structured, group, rules)
             for group in groups
         ):
             best_rank = min(best_rank, 1)
@@ -720,7 +807,9 @@ def match_has_full_concept_coverage(search_module, match, video, rules):
     focus_groups = required_focus_groups(
         search_module, match.get("query", ""), rules
     )
-    return video_supports_required_focus(search_module, video, focus_groups)
+    return video_supports_required_focus(
+        search_module, video, focus_groups, rules
+    )
 
 
 def match_passes_direct_threshold(search_module, match, video, rules):
@@ -860,11 +949,27 @@ def selection_decision(
     ):
         return False, ["purchase_query_requires_equipment_evidence"]
 
-    constraints_match, constraint_failures, _, _, constraint_matches = (
-        constraint_decision(search_module, query, plan, video, rules)
-    )
+    (
+        constraints_match,
+        constraint_failures,
+        requested_constraints,
+        _,
+        constraint_matches,
+    ) = constraint_decision(search_module, query, plan, video, rules)
     if not constraints_match:
         return False, constraint_failures
+    if (
+        len(requested_constraints.get("technique_variant", [])) == 1
+        and constraint_matches.get("technique_variant") == "unspecified_support"
+    ):
+        return False, ["specific_technique_not_supported"]
+    if (
+        requested_constraints.get("serve_role")
+        and requested_constraints.get("technique_variant")
+        and constraint_matches.get("serve_role") != "exact"
+        and constraint_matches.get("technique_variant") != "exact"
+    ):
+        return False, ["specific_technique_role_not_supported"]
 
     concept_match = concept_decision(search_module, plan, entry, video, rules)
     if concept_match == "none":
@@ -1339,6 +1444,9 @@ def prepare_answer_context(
     for index, entry in enumerate(selected_entries, start=1):
         candidate = entry["candidate"]
         evidence = lookup_by_id[entry["video_id"]]
+        display_title = rules.get("video_display_title_overrides", {}).get(
+            entry["video_id"], candidate["title"]
+        )
         selected_videos.append(
             {
                 "label": f"V{index}",
@@ -1353,7 +1461,7 @@ def prepare_answer_context(
                     else "supporting"
                 ),
                 "video_id": entry["video_id"],
-                "title": candidate["title"],
+                "title": display_title,
                 "url": candidate["url"],
                 "category": candidate["category"],
                 "confidence": candidate["confidence"],

@@ -37,7 +37,10 @@ Still give purpose, a small set of reliable observation points, common errors, a
 - `constraint_match` records every explicit condition. `exact` matches the requested scope. `partial_support`, `mixed_support`, `incidental_support`, and `unspecified_support` are auxiliary only; `conflict` is rejected.
 - Follow `claim_scope_policy` literally: `exact_question_scope`, `exact_query_unit_scope_only`, or `component_or_generic_support_only_not_full_question_proof`.
 - The selector distinguishes stroke side, shot family, net-shot variant, court zone, singles/doubles, serve role and trajectory, active/passive state, attack/defense phase, and shot direction.
+- Court-zone constraints describe where the player executes the stroke. A target phrase such as `吊网前`, `推后场`, or `打到底线` does not by itself place the player in that target zone.
+- Actor and goal wording remains scoped: `对方主动`, `对手推球`, or `争取主动` cannot prove that the player is executing the requested active stroke or push.
 - Reviewed evidence signals are generated from the maintained answer-quality registry. They may rank an already compatible candidate or admit it as limited support; they never override a scenario conflict, exclusion, safety boundary, or source-readiness check.
+- `title` may use a reviewed teaching-topic override when the public source title mixes teaching with product promotion. This changes presentation only; claims still require the original teaching note or transcript evidence.
 - The default policy admits at most 12 exact sources plus 4 supporting sources. `selection_truncated: false` means every source remaining after these policy quotas is present; it does not prove semantic completeness.
 - `selection_truncated: true` means rerun with a larger `--max-videos` only for a genuinely exhaustive survey. Do not silently claim completeness.
 - `rejected_candidates` records deterministic conflicts, evidence failures, and quota exclusions in debug mode. Never cite it.

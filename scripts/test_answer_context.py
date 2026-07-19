@@ -360,6 +360,105 @@ class AnswerContextTests(unittest.TestCase):
             self.selection_rules["max_supporting_videos"],
         )
 
+    def test_target_zones_and_colloquial_net_shots_keep_the_right_evidence(self):
+        cases = [
+            (
+                "后场吊网前怎么练",
+                {"7520190707093654844"},
+                {
+                    "7486788550298471739",
+                    "7054395778814561575",
+                    "7071800926553541922",
+                    "7509355373729762619",
+                },
+            ),
+            (
+                "吊球怎么打到网前",
+                {"7306709804234444072"},
+                {
+                    "7054786188086955276",
+                    "7406541084219821312",
+                    "7661940775983482097",
+                },
+            ),
+            (
+                "网前勾对角怎么控制",
+                {"7150847019320429839"},
+                {"7071800926553541922", "7509355373729762619"},
+            ),
+            (
+                "双打接发推后场怎么打",
+                {"7131178146023427328", "7639306481355832689"},
+                {
+                    "7065491791167999232",
+                    "7074399231259266344",
+                    "7414339897990843663",
+                    "7504391919716273468",
+                    "7505345719160933692",
+                    "7619576226616745445",
+                },
+            ),
+        ]
+        for query, required_ids, forbidden_ids in cases:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                )
+                selected = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertTrue(required_ids.issubset(selected))
+                self.assertFalse(forbidden_ids & selected)
+
+    def test_opponent_and_goal_language_do_not_prove_player_pressure_state(self):
+        payload = self.context_module.prepare_answer_context(
+            "反手主动高远球怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        selected = {item["video_id"] for item in payload["selected_videos"]}
+        self.assertNotIn("7148267452877638944", selected)
+        self.assertNotIn("7072543702161296640", selected)
+        rejected = {
+            item["video_id"]: item["reasons"]
+            for item in payload["rejected_candidates"]
+        }
+        self.assertIn(
+            "explicit_constraint_conflict:pressure_state",
+            rejected["7148267452877638944"],
+        )
+        self.assertIn(
+            "explicit_constraint_conflict:pressure_state",
+            rejected["7072543702161296640"],
+        )
+
+    def test_opponent_focus_and_promotional_titles_do_not_pollute_answers(self):
+        grip = self.context_module.prepare_answer_context(
+            "握拍变化怎么练",
+            local_personalization=False,
+        )
+        grip_by_id = {
+            item["video_id"]: item for item in grip["selected_videos"]
+        }
+        self.assertNotIn("7475440958130097466", grip_by_id)
+        self.assertEqual(
+            grip_by_id["7656927370758796145"]["title"],
+            "双打抓回头：站位、轮转、握拍、锁腕和步法",
+        )
+
+        finger_power = self.context_module.prepare_answer_context(
+            "正手手指发力怎么练",
+            local_personalization=False,
+        )
+        power_by_id = {
+            item["video_id"]: item for item in finger_power["selected_videos"]
+        }
+        self.assertEqual(
+            power_by_id["7056596925721726220"]["title"],
+            "正手抽球：架拍与腰腹到手腕的旋转发力",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
