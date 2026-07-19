@@ -8,12 +8,12 @@
 
 `Badminton Skills Coach` 把“刘辉羽毛球”的公开抖音教学内容整理成可检索、可引用、可维护的 Codex Skill。它适合用来咨询羽毛球技术、战术、训练和纠错问题，并尽量给出对应视频、时间戳与证据边界。
 
-当前稳定发布位于 `main` 和 [`v1.1.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.1.0)；`develop` 包含尚未发布的后续修改。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
+你正在查看 `develop` 分支，其中包含下一版本的未发布修改，不代表稳定版本。普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
 
 ## 当前状态
 
-- 稳定版：`main` / `v1.1.0`
-- 开发分支：`develop`
+- 当前分支：`develop`（未发布开发版）
+- 最新稳定版：以 `main` 和 [GitHub Releases](https://github.com/MuyuanGuo/badminton-skills-coach/releases) 为准
 - 获取到的抖音公开视频：`473` 条
 - 已排除非教学/广告器材内容：`121` 条
 - 已加入 Skill 知识库的教学视频：`352` 条
