@@ -2903,6 +2903,62 @@
           "接杀时动作越大越容易借力"
         ]
       }
+    },
+    {
+      "case_id": "AQ036",
+      "query": "反手滑板怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_missing_action_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把用户常说的“滑板”识别为吊球下的具体切削变体；只保留经过视觉复核的反手滑板专项，排除同为反手的跳杀、普通吊球/劈吊，以及杀球来源中顺带提到滑板介入的片段。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7214304020775652620"
+        ],
+        "required_video_ids": [
+          "7214304020775652620"
+        ],
+        "irrelevant_video_ids": [
+          "7068835198938516777",
+          "7499776424493075772",
+          "7115241358255803683",
+          "7306709804234444072",
+          "7520190707093654844",
+          "7093706918492917033"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ036-P1",
+            "description": "当前知识库可可靠确认的专项来源是反手滑板视觉示范，复核摘要覆盖动作、击球点、握拍和步法；这些空间关系应以视频观察为主。",
+            "acceptable_terms": ["反手滑板", "击球点", "握拍", "步法"],
+            "evidence_video_ids": ["7214304020775652620"]
+          },
+          {
+            "point_id": "AQ036-P2",
+            "description": "该视频没有可用口播转写，现有视觉摘要不足以支持更细的拍面角度、触球方向或发力次序；回答必须保留这一证据限制。",
+            "acceptable_terms": ["视觉复核", "没有口播转写", "不能确定细节"],
+            "evidence_video_ids": ["7214304020775652620"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ036-B1",
+            "description": "反手滑板不能由泛反手、普通吊球、劈吊或反手跳杀来源直接证明；杀球中说“有滑板介入”也不能替代反手滑板专项证据。",
+            "acceptable_terms": ["反手滑板", "具体变体", "直接滑板证据"]
+          }
+        ],
+        "forbidden_claims": [
+          "所有反手技术都能直接证明反手滑板",
+          "普通吊球和劈吊视频都能证明滑板细节",
+          "滑板必须照搬杀球中的往回包裹动作"
+        ]
+      }
     }
   ]
 }

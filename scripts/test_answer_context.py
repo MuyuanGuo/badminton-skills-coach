@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 35)
+        self.assertEqual(result["cases"], 36)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -405,6 +405,53 @@ class AnswerContextTests(unittest.TestCase):
             context["question_interpretation"]["constraints"]["shot_family"],
             ["smash_block"],
         )
+
+    def test_backhand_slide_drop_requires_the_specific_variant(self):
+        constraints = self.context_module.query_constraints(
+            self.search_module,
+            "反手滑板怎么打",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            constraints,
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["drop"],
+                "technique_variant": ["drop_slice"],
+            },
+        )
+        context = self.context_module.prepare_answer_context(
+            "反手滑板怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            [item["video_id"] for item in context["selected_videos"]],
+            ["7214304020775652620"],
+        )
+        self.assertFalse(
+            {
+                "7068835198938516777",
+                "7499776424493075772",
+                "7115241358255803683",
+                "7306709804234444072",
+                "7520190707093654844",
+                "7093706918492917033",
+            }
+            & {item["video_id"] for item in context["selected_videos"]}
+        )
+        self.assertEqual(
+            self.context_module.required_constraint_support_failures(
+                {"technique_variant": ["drop_slice"]},
+                {"technique_variant": "unspecified_support"},
+                self.selection_rules,
+            ),
+            ["specific_technique_not_supported"],
+        )
+        forehand = self.context_module.prepare_answer_context(
+            "正手滑板怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(forehand["selected_videos"], [])
 
     def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):
         context = self.context_module.prepare_answer_context(
