@@ -388,6 +388,42 @@
       "expected_strategy": "evidence_check",
       "expected_query_units": ["劈杀怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ044",
+      "query": "快杀怎么打",
+      "intent_summary": "把快杀识别为强调小框架和出手速度的独立杀球变体，不退化为重杀或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["快杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ045",
+      "query": "遁地炮怎么打",
+      "intent_summary": "把遁地炮识别为顿地炮专项，并统一顿、蹲两种常见写法，不退化为跳杀或重杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["遁地炮怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ046",
+      "query": "定杀怎么打",
+      "intent_summary": "把定杀识别为独立杀球变体，同时保留当前证据只能支持比较、不能支持完整动作的边界",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["定杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ047",
+      "query": "轻杀怎么打",
+      "intent_summary": "把轻杀识别为减速保压并连接下一拍的战术型杀球变体，不退化为点杀或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["轻杀怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1307,6 +1343,44 @@
       "expected_constraints": {
         "shot_family": ["smash"],
         "technique_variant": ["smash_slice"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA053",
+      "query": "顿地炮怎么打",
+      "intent_summary": "把顿地炮正字写法映射到遁地炮专项，保留杀球家族和独立变体约束",
+      "expected_intent": {
+        "positive_query_contains": ["顿地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA054",
+      "query": "蹲地炮怎么打",
+      "intent_summary": "把用户常见的蹲地炮写法映射到遁地炮专项，不误解为低重心或普通蹲起训练",
+      "expected_intent": {
+        "positive_query_contains": ["蹲地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
         "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"

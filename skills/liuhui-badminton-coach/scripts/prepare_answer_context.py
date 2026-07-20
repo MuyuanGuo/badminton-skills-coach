@@ -617,7 +617,18 @@ def _query_constraints_from_text(
         and "tactical_phase" not in constraints
         and any(
             search_module.normalize(term) in normalized_query
-            for term in ["杀球", "扣杀", "重杀", "点杀", "跳杀", "压球", "杀"]
+            for term in [
+                "杀球",
+                "扣杀",
+                "重杀",
+                "点杀",
+                "跳杀",
+                "遁地炮",
+                "顿地炮",
+                "蹲地炮",
+                "压球",
+                "杀",
+            ]
         )
     ):
         constraints["tactical_phase"] = ["attack"]
@@ -2384,7 +2395,13 @@ def prepare_answer_context(
         if entry_is_core(entry)
     ]
     support_entries = [entry for entry in accepted if entry not in exact_entries]
-    support_limit = min(rules.get("max_supporting_videos", 4), max_videos)
+    support_limit = rules.get("max_supporting_videos", 4)
+    requested_variants = requested_constraints.get("technique_variant", [])
+    if len(requested_variants) == 1:
+        support_limit = rules.get(
+            "supporting_video_limits_by_technique_variant", {}
+        ).get(requested_variants[0], support_limit)
+    support_limit = min(support_limit, max_videos)
     exact_limit = rules.get("max_exact_videos", max_videos)
     if explicit_max_videos:
         exact_limit = (

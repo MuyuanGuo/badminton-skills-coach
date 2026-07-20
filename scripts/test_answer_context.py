@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 43)
+        self.assertEqual(result["cases"], 47)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1850,6 +1850,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7484563688096091449",
                 "7567155406117533051",
                 "7659991105622862457",
+                "7445495930280856892",
             },
         )
         self.assertEqual(
@@ -2053,6 +2054,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7383154379915906319",
                 "7506362888166083897",
                 "7125615679402724623",
+                "7445495930280856892",
             },
         )
 
@@ -2091,6 +2093,85 @@ class AnswerContextTests(unittest.TestCase):
             "7499776424493075772",
         }
         self.assertFalse(overlord_ids & hard_negatives)
+
+    def test_fast_ground_stationary_and_light_smashes_keep_variant_boundaries(self):
+        expected_constraints = {
+            "shot_family": ["smash"],
+            "tactical_phase": ["attack"],
+        }
+        cases = {
+            "快杀怎么打": (
+                "smash_fast",
+                {
+                    "7551459420703837498",
+                    "7606412946096327978",
+                    "7611635851789771721",
+                    "7506362888166083897",
+                },
+            ),
+            "遁地炮怎么打": (
+                "smash_ground_cannon",
+                {"7069575740836023587"},
+            ),
+            "定杀怎么打": (
+                "smash_stationary",
+                {"7069575740836023587"},
+            ),
+            "轻杀怎么打": (
+                "smash_light",
+                {"7093706918492917033"},
+            ),
+        }
+        selected_by_variant = {}
+        for query, (variant, expected_ids) in cases.items():
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                    include_rejected=True,
+                )
+                self.assertEqual(
+                    payload["question_interpretation"]["constraints"],
+                    {
+                        **expected_constraints,
+                        "technique_variant": [variant],
+                    },
+                )
+                selected = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertEqual(selected, expected_ids)
+                selected_by_variant[variant] = selected
+
+        variants = list(selected_by_variant)
+        for index, left in enumerate(variants):
+            for right in variants[index + 1 :]:
+                shared = selected_by_variant[left] & selected_by_variant[right]
+                if {left, right} == {
+                    "smash_ground_cannon",
+                    "smash_stationary",
+                }:
+                    self.assertEqual(shared, {"7069575740836023587"})
+                else:
+                    self.assertFalse(shared)
+
+        for spelling in ["顿地炮怎么打", "蹲地炮怎么打"]:
+            with self.subTest(spelling=spelling):
+                payload = self.context_module.prepare_answer_context(
+                    spelling,
+                    local_personalization=False,
+                )
+                self.assertEqual(
+                    payload["question_interpretation"]["constraints"],
+                    {
+                        **expected_constraints,
+                        "technique_variant": ["smash_ground_cannon"],
+                    },
+                )
+                self.assertEqual(
+                    [item["video_id"] for item in payload["selected_videos"]],
+                    ["7069575740836023587"],
+                )
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
         relationship = self.context_module.prepare_answer_context(

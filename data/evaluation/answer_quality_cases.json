@@ -3219,7 +3219,7 @@
       "review": {
         "status": "maintainer_reviewed",
         "maintainer_decision": "approved",
-        "notes": "把重杀从泛杀球、点杀、跳杀、霸王杀、反手杀球和遁地炮中拆出；保留直接讲力量框架、身体主导大边甩、放松贴球、顶肘空间和使用时机的来源。",
+        "notes": "把重杀从泛杀球、点杀、跳杀、霸王杀、反手杀球和遁地炮中拆出；保留直接讲力量框架、身体主导大边甩、放松贴球、顶肘空间、使用时机和女性双打原地重杀纠错的来源。",
         "maintainer_reviewer": "Codex evidence review",
         "reviewed_at": "2026-07-20"
       },
@@ -3234,7 +3234,8 @@
           "7484563688096091449",
           "7383154379915906319",
           "7506362888166083897",
-          "7125615679402724623"
+          "7125615679402724623",
+          "7445495930280856892"
         ],
         "irrelevant_video_ids": [
           "7272944156618542336",
@@ -3284,6 +3285,12 @@
             "description": "重杀属于身体主导的大边甩，点杀则偏向手指主导的小边甩；两者不能共享同一套发力结论。",
             "acceptable_terms": ["身体主导", "大边甩", "手指主导的小边甩"],
             "evidence_video_ids": ["7125615679402724623"]
+          },
+          {
+            "point_id": "AQ040-P7",
+            "description": "女性和双打原地重杀纠错中，要用非持拍手带动转体，利用后腿把重心压向左前方，并保持较高击球位置；这是有人群和场景条件的来源。",
+            "acceptable_terms": ["女性", "双打", "左手带动转体", "重心压向左前方", "击球位置高"],
+            "evidence_video_ids": ["7445495930280856892"]
           }
         ],
         "required_boundary_points": [
@@ -3522,6 +3529,250 @@
           "劈杀和劈吊的拍面与触球动作完全相同",
           "劈吊视频可以直接证明劈杀的切削细节",
           "所有正手位劈杀都必须起跳不转身"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ044",
+      "query": "快杀怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把快杀从普通杀球、重杀、点杀和跳杀中拆出；保留三条直接讲快速框架或挥速的来源，并把连续进攻中的快速跳杀限定在对应场景。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7606412946096327978",
+          "7551459420703837498"
+        ],
+        "required_video_ids": [
+          "7551459420703837498",
+          "7606412946096327978",
+          "7611635851789771721",
+          "7506362888166083897"
+        ],
+        "irrelevant_video_ids": [
+          "7485692231404342586",
+          "7659991105622862457",
+          "7484563688096091449",
+          "7272944156618542336",
+          "7055491154288102667",
+          "7069575740836023587",
+          "7093706918492917033",
+          "7068465954270792994",
+          "7059589039694957864"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ044-P1",
+            "description": "平快来球应采用较小的快速框架，减少侧身、抬肘和顶肘幅度以提高出手效率；来球较高且时间充足时才切换到力量型重杀框架。",
+            "acceptable_terms": ["平快来球", "快速框架", "减少侧身", "重杀框架"],
+            "evidence_video_ids": ["7551459420703837498"]
+          },
+          {
+            "point_id": "AQ044-P2",
+            "description": "快杀首先追求挥拍速度；顶肘后不要让大臂继续长距离前送，应让拍头尽快追上并超过大臂，并用快速抬拍缩短准备时间。",
+            "acceptable_terms": ["挥拍速度", "大臂停止前送", "拍头追上", "快速抬拍"],
+            "evidence_video_ids": ["7606412946096327978"]
+          },
+          {
+            "point_id": "AQ044-P3",
+            "description": "快、重、准是有取舍的不同目标；快杀通常使用较小动作、高架拍和更少侧身来集中爆发，不能同时假定拥有重杀的大幅身体引动。",
+            "acceptable_terms": ["快重准", "有取舍", "较小动作", "高架拍"],
+            "evidence_video_ids": ["7611635851789771721"]
+          },
+          {
+            "point_id": "AQ044-P4",
+            "description": "连续跳杀进攻时可先用较小侧身的快速跳杀保持连贯，出现终结机会再转为全力重杀；这条只适用于连续跳杀场景。",
+            "acceptable_terms": ["连续跳杀", "保持连贯", "终结机会", "全力重杀"],
+            "evidence_video_ids": ["7506362888166083897"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ044-B1",
+            "description": "快杀、普通杀球、重杀、点杀、跳杀和霸王杀不能互相替代；比较来源只能使用其明确的快杀分段，连续跳杀来源不能扩展成通用快杀动作。",
+            "acceptable_terms": ["不能互相替代", "快杀分段", "连续跳杀", "不能扩展"]
+          }
+        ],
+        "forbidden_claims": [
+          "快杀必须使用重杀的大幅度框架",
+          "快杀越充分侧身转体越好",
+          "所有快杀都必须起跳完成"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ045",
+      "query": "遁地炮怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "统一遁地炮、顿地炮和蹲地炮三种写法，只保留完整讲短暂离地、重心转移、击球落地时机和衔接的专项来源。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7069575740836023587"],
+        "required_video_ids": ["7069575740836023587"],
+        "irrelevant_video_ids": [
+          "7445495930280856892",
+          "7068835198938516777",
+          "7506362888166083897",
+          "7161980324409363712",
+          "7659991105622862457",
+          "7093706918492917033",
+          "7272944156618542336"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ045-P1",
+            "description": "顿地炮基本不做正式起跳：重心先在后脚，经蹬地和短暂离地迅速移到左脚。",
+            "acceptable_terms": ["基本不需要起跳", "后脚", "短暂离地", "左脚"],
+            "evidence_video_ids": ["7069575740836023587"]
+          },
+          {
+            "point_id": "AQ045-P2",
+            "description": "要把身体从后向前和从上向下的力量同时卡到击球点，击球与落地接近同时发生。",
+            "acceptable_terms": ["从后向前", "从上到下", "击球点", "击球和落地"],
+            "evidence_video_ids": ["7069575740836023587"]
+          },
+          {
+            "point_id": "AQ045-P3",
+            "description": "它适合处在可跳杀位置但无法跳杀或暂不具备跳杀能力时使用，是跳杀能力不足时的补充而不是同一动作。",
+            "acceptable_terms": ["可以跳杀的位置", "无法跳杀", "不具备跳杀能力", "补充"],
+            "evidence_video_ids": ["7069575740836023587"]
+          },
+          {
+            "point_id": "AQ045-P4",
+            "description": "击球后重心仍向前且没有明显摇摆，便于继续衔接；由于回球更可能偏平，要准备回抽或挡网跟进。",
+            "acceptable_terms": ["重心向前", "没有重心摇摆", "平球", "回抽", "挡网跟进"],
+            "evidence_video_ids": ["7069575740836023587"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ045-B1",
+            "description": "遁地炮、顿地炮和蹲地炮是同一查询意图；标题写遁地炮但口播只讲原地重杀、只顺带提及想学蹲地炮或只列能力排名的来源，都不能证明专项动作。",
+            "acceptable_terms": ["三种写法", "同一查询意图", "标题", "不能证明专项"]
+          }
+        ],
+        "forbidden_claims": [
+          "顿地炮需要像双脚跳杀一样追求起跳高度",
+          "标题里出现遁地炮就能证明完整动作",
+          "顿地炮打完必须把重心留在后脚"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ046",
+      "query": "定杀怎么打",
+      "case_type": "evidence_boundary",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把定杀识别为独立变体，但只允许当前唯一比较分段说明它与顿地炮的力量差异，不补写完整动作流程。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7069575740836023587"],
+        "required_video_ids": ["7069575740836023587"],
+        "irrelevant_video_ids": [
+          "7068835198938516777",
+          "7445495930280856892",
+          "7485692231404342586",
+          "7659991105622862457",
+          "7161980324409363712"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ046-P1",
+            "description": "现有可引用分段只说明：和顿地炮相比，定杀至少缺少身体从上到下的力量。",
+            "acceptable_terms": ["和顿地炮相比", "缺少", "从上到下的力"],
+            "evidence_video_ids": ["7069575740836023587"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ046-B1",
+            "description": "当前知识库没有完整的定杀动作教学；同一视频只能支持差异比较，标题中的能力排名、原地重杀和其他杀球变体不能用来补写架拍、步法、触球或发力流程。",
+            "acceptable_terms": ["没有完整", "只能支持差异", "不能补写", "动作流程"]
+          }
+        ],
+        "forbidden_claims": [
+          "现有来源完整讲解了定杀的所有动作",
+          "定杀和顿地炮完全相同",
+          "定杀必须采用某一种未经来源支持的手部发力"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ047",
+      "query": "轻杀怎么打",
+      "case_type": "evidence_boundary",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把轻杀从点杀和泛杀球中拆出；当前来源只可靠支持位置不好时减速保压、避免脚下脱节和连接下一拍的战术逻辑。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7093706918492917033"],
+        "required_video_ids": ["7093706918492917033"],
+        "irrelevant_video_ids": [
+          "7272944156618542336",
+          "7125615679402724623",
+          "7659991105622862457",
+          "7551459420703837498",
+          "7161980324409363712",
+          "7069575740836023587",
+          "7485692231404342586"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ047-P1",
+            "description": "位置不好时不应勉强全力杀，可以用轻杀或软压先取得下压主动。",
+            "acceptable_terms": ["位置不好", "不全力杀", "轻杀", "软压"],
+            "evidence_video_ids": ["7093706918492917033"]
+          },
+          {
+            "point_id": "AQ047-P2",
+            "description": "轻杀让球速稍慢但仍保持下压，避免球过去太快、回得也太快而导致脚下脱节。",
+            "acceptable_terms": ["球速慢一点", "保持下压", "脚下脱节"],
+            "evidence_video_ids": ["7093706918492917033"]
+          },
+          {
+            "point_id": "AQ047-P3",
+            "description": "减速后的主要价值是给自己留下跟进时间，使下一拍更好衔接，再寻找强攻机会。",
+            "acceptable_terms": ["跟进", "下一拍", "衔接", "强攻"],
+            "evidence_video_ids": ["7093706918492917033"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ047-B1",
+            "description": "当前轻杀来源只支持战术用途，不足以证明具体握拍、拍面、触球和手指发力；点杀、重杀或普通杀球动作来源不能填补这些细节。",
+            "acceptable_terms": ["只支持战术", "不足以证明", "手部动作", "不能填补"]
+          }
+        ],
+        "forbidden_claims": [
+          "轻杀就是点杀且手部动作完全相同",
+          "轻杀必须使用某种未经来源说明的拍面角度",
+          "位置不好时仍应每拍全力杀球"
         ]
       }
     }
