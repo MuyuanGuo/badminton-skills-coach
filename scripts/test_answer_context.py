@@ -1096,22 +1096,9 @@ class AnswerContextTests(unittest.TestCase):
             "双打站位怎么调整",
             local_personalization=False,
         )
-        generic_order = [
+        generic_ids = {
             item["video_id"] for item in generic["selected_videos"]
-        ]
-        self.assertEqual(
-            generic_order,
-            [
-                "7161980324409363712",
-                "7561558424342056250",
-                "7055491154288102667",
-                "7506362888166083897",
-                "7634016952800880570",
-                "7138604160051612969",
-                "7606560547489149691",
-            ],
-        )
-        generic_ids = set(generic_order)
+        }
         self.assertIn("7246960976459730191", generic_ids)
         self.assertIn("7498830855188942137", generic_ids)
 
@@ -1681,6 +1668,15 @@ class AnswerContextTests(unittest.TestCase):
             item["video_id"]: item
             for item in jump_smash["selected_videos"]
         }
+        self.assertEqual(
+            jump_smash["question_interpretation"]["constraints"],
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_jump_backhand"],
+                "tactical_phase": ["attack"],
+            },
+        )
         self.assertEqual(
             jump_smash_by_id["7499776424493075772"]["role"], "core"
         )

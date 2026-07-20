@@ -12,7 +12,7 @@
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 93,
+      "video_count": 94,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -66,8 +66,8 @@
             "突击",
             "扣杀"
           ],
-          "video_count": 31,
-          "ready_count": 31,
+          "video_count": 32,
+          "ready_count": 32,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -980,7 +980,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 130,
+      "video_count": 129,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1195,8 +1195,8 @@
         {
           "name": "发力综合待细分",
           "keywords": [],
-          "video_count": 10,
-          "ready_count": 10,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -1209,21 +1209,21 @@
               "score": 0
             },
             {
-              "video_id": "7499776424493075772",
-              "title": "反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏",
-              "url": "https://www.douyin.com/video/7499776424493075772",
-              "confidence": "medium",
-              "category": "发力与身体运用",
-              "duration_seconds": 49.6,
-              "score": 0
-            },
-            {
               "video_id": "7631290187235164026",
               "title": "发力其他细节 有些动作大家做不出来，还是不够夸张，夸张才能学的会，因为自己做动作是会打折扣的",
               "url": "https://www.douyin.com/video/7631290187235164026",
               "confidence": "medium",
               "category": "发力与身体运用",
               "duration_seconds": 180.6,
+              "score": 0
+            },
+            {
+              "video_id": "7184618028619910433",
+              "title": "各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许",
+              "url": "https://www.douyin.com/video/7184618028619910433",
+              "confidence": "medium",
+              "category": "发力与身体运用",
+              "duration_seconds": 131.0,
               "score": 0
             }
           ]

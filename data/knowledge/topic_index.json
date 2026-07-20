@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v8",
+  "taxonomy_version": "topic-taxonomy-v9",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -9,14 +9,14 @@
   "indexable_video_count": 352,
   "assigned_video_count": 352,
   "unassigned_video_ids": [],
-  "fallback_assigned_video_count": 95,
+  "fallback_assigned_video_count": 94,
   "multi_topic_video_count": 144,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 93,
+      "video_count": 94,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -151,8 +151,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 31,
-          "ready_count": 31,
+          "video_count": 32,
+          "ready_count": 32,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7659348110628345210",
@@ -175,6 +175,7 @@
             "7161980324409363712",
             "7440406891664133428",
             "7414339897990843663",
+            "7499776424493075772",
             "7272944156618542336",
             "7561558424342056250",
             "7052519937125911846",
@@ -2387,7 +2388,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 130,
+      "video_count": 129,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -3035,12 +3036,11 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 10,
-          "ready_count": 10,
+          "video_count": 9,
+          "ready_count": 9,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7054025391601650948",
-            "7499776424493075772",
             "7631290187235164026",
             "7184618028619910433",
             "7098897570482670888",
@@ -3059,22 +3059,6 @@
               "confidence": "medium",
               "processing_status": "ready",
               "topic": "双打一般情况下的防守上集",
-              "score": 0,
-              "match_basis": {
-                "title": 0,
-                "focus": 0,
-                "evidence": 0
-              },
-              "assignment_method": "category_fallback"
-            },
-            {
-              "video_id": "7499776424493075772",
-              "title": "反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏",
-              "url": "https://www.douyin.com/video/7499776424493075772",
-              "category": "发力与身体运用",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "反手跳sha 这是给已经会反手发力的朋友学习的",
               "score": 0,
               "match_basis": {
                 "title": 0,
@@ -3123,6 +3107,22 @@
               "confidence": "medium",
               "processing_status": "ready",
               "topic": "最后有彩蛋",
+              "score": 0,
+              "match_basis": {
+                "title": 0,
+                "focus": 0,
+                "evidence": 0
+              },
+              "assignment_method": "category_fallback"
+            },
+            {
+              "video_id": "7163836275487804676",
+              "title": "最容易忽略的发力小细节，还有好为人师，有人喜欢有人讨厌，所以平时打球更多的时候大家选择的大多都是沉默",
+              "url": "https://www.douyin.com/video/7163836275487804676",
+              "category": "发力与身体运用",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "最容易忽略的发力小细节",
               "score": 0,
               "match_basis": {
                 "title": 0,

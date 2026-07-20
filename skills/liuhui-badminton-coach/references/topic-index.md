@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `93`
+- Matched videos: `94`
 
 - **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
@@ -28,7 +28,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 反手被动高远 虽然被动，但是放松发力更重要，别说示范的球不到位，也打出界一米了，主要是在底线摄像机放不下了 [ready] https://www.douyin.com/video/7546109410041908538
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手高远球 提供一个训练方法，方法不唯一 [ready] https://www.douyin.com/video/7541623926234811705
-- **杀球与突击**: `31` videos, `31` ready, `0` needs visual review.
+- **杀球与突击**: `32` videos, `32` ready, `0` needs visual review.
   Keywords: 杀球, 重杀, 点杀, 突击, 扣杀
   Representative videos:
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
@@ -188,7 +188,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `130`
+- Matched videos: `129`
 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -220,12 +220,12 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 不用管身高，网带能卡住大臂就行在哪卡都可以，用网带辅助不依赖大臂挥下去 [ready] https://www.douyin.com/video/7322291358931127592
   - 基础挥拍重快 由于要控制时长我剪辑的很精简，基础挥拍如何打的重，如何打的快，建议多看两边，详细的我们直播间来说 [ready] https://www.douyin.com/video/7383154379915906319
   - 日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度 [ready] https://www.douyin.com/video/7393550140465777960
-- **发力综合待细分**: `10` videos, `10` ready, `0` needs visual review.
+- **发力综合待细分**: `9` videos, `9` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 双打一般情况下的防守上集，手指破了，挥速慢，望谅解 [ready] https://www.douyin.com/video/7054025391601650948
-  - 反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏 [ready] https://www.douyin.com/video/7499776424493075772
   - 发力其他细节 有些动作大家做不出来，还是不够夸张，夸张才能学的会，因为自己做动作是会打折扣的 [ready] https://www.douyin.com/video/7631290187235164026
+  - 各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许 [ready] https://www.douyin.com/video/7184618028619910433
 
 ### 握拍与拍面
 

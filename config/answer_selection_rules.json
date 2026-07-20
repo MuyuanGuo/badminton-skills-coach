@@ -1,5 +1,5 @@
 {
-  "version": 25,
+  "version": 26,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -229,6 +229,7 @@
       "label": "细分技术",
       "values": {
         "smash_point": ["点杀"],
+        "smash_jump_backhand": ["反手跳杀", "反手跳sha"],
         "smash_jump": ["跳杀", "跳sha", "起跳杀球", "双脚跳杀", "侧身跳杀"],
         "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
         "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
@@ -527,8 +528,9 @@
     },
     "7499776424493075772": {
       "stroke_side": ["backhand"],
-      "technique_variant": [],
-      "basis": "全段为反手跳杀专项；泛跳杀和正手跳杀问题不得用反手动作替代，后续需另建反手跳杀变体。"
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump_backhand"],
+      "basis": "全段为反手跳杀专项；只支持明确的反手跳杀问题，泛跳杀和正手跳杀问题不得用反手动作替代。"
     },
     "7069575740836023587": {
       "technique_variant": [],
