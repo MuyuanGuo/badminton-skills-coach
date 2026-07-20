@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 41)
+        self.assertEqual(result["cases"], 43)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1846,6 +1846,7 @@ class AnswerContextTests(unittest.TestCase):
             {
                 "7052600326116887812",
                 "7440406891664133428",
+                "7485692231404342586",
                 "7484563688096091449",
                 "7567155406117533051",
                 "7659991105622862457",
@@ -1895,6 +1896,78 @@ class AnswerContextTests(unittest.TestCase):
             "7069575740836023587",
         }
         self.assertFalse(selected & hard_negatives)
+
+    def test_basic_and_slice_smashes_require_the_named_variant(self):
+        basic = self.context_module.prepare_answer_context(
+            "普通杀球怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            basic["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_basic"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        basic_ids = {
+            item["video_id"] for item in basic["selected_videos"]
+        }
+        self.assertEqual(
+            basic_ids,
+            {
+                "7229506261136526647",
+                "7567155406117533051",
+                "7485692231404342586",
+                "7052519937125911846",
+                "7052600326116887812",
+                "7659348110628345210",
+                "7453420876076240188",
+            },
+        )
+        self.assertFalse(
+            basic_ids
+            & {
+                "7659991105622862457",
+                "7272944156618542336",
+                "7055491154288102667",
+                "7550305145877155131",
+                "7059589039694957864",
+                "7068465954270792994",
+                "7098897570482670888",
+            }
+        )
+
+        sliced = self.context_module.prepare_answer_context(
+            "劈杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            sliced["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_slice"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        self.assertEqual(
+            [item["video_id"] for item in sliced["selected_videos"]],
+            ["7059589039694957864"],
+        )
+        self.assertFalse(
+            {
+                "7306709804234444072",
+                "7174229898238676228",
+                "7118192644957818127",
+                "7229889111706848544",
+                "7511934047901846841",
+                "7485692231404342586",
+                "7659991105622862457",
+            }
+            & {item["video_id"] for item in sliced["selected_videos"]}
+        )
 
     def test_jump_smash_requires_direct_forehand_variant_evidence(self):
         generic = self.context_module.prepare_answer_context(

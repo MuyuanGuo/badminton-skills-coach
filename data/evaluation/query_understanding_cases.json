@@ -370,6 +370,24 @@
       "expected_strategy": "evidence_check",
       "expected_query_units": ["霸王杀怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ042",
+      "query": "普通杀球怎么打",
+      "intent_summary": "把普通杀球识别为基础杀球变体，不退化为泛杀球，也不混入重杀、点杀、跳杀、劈杀或反手杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["普通杀球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ043",
+      "query": "劈杀怎么打",
+      "intent_summary": "把劈杀识别为杀球下的顺向切削变体，不退化为泛杀球，也不让劈吊来源证明劈杀细节",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["劈杀怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1251,6 +1269,44 @@
       "expected_constraints": {
         "shot_family": ["smash"],
         "technique_variant": ["smash_overlord"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA051",
+      "query": "普通杀球怎么打",
+      "intent_summary": "同时保留杀球家族与普通杀球细分技术，不能只解析为泛杀球或其他变体",
+      "expected_intent": {
+        "positive_query_contains": ["普通杀球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_basic"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA052",
+      "query": "劈杀怎么打",
+      "intent_summary": "同时保留杀球家族与劈杀细分技术，不能解析为劈吊或泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["劈杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_slice"],
         "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
