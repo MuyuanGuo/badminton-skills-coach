@@ -1,5 +1,5 @@
 {
-  "version": 26,
+  "version": 27,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -156,7 +156,7 @@
       "label": "击球类型",
       "values": {
         "clear": ["高远球", "高远", "抽高远"],
-        "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "跳sha", "霸王杀", "鲨球"],
+        "smash": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "跳sha", "霸王杀", "A字霸王杀", "鲨球"],
         "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
@@ -229,6 +229,8 @@
       "label": "细分技术",
       "values": {
         "smash_point": ["点杀"],
+        "smash_heavy": ["重杀", "大力杀球", "全力杀球"],
+        "smash_overlord": ["霸王杀", "A字霸王杀", "A 字霸王杀"],
         "smash_jump_backhand": ["反手跳杀", "反手跳sha"],
         "smash_jump": ["跳杀", "跳sha", "起跳杀球", "双脚跳杀", "侧身跳杀"],
         "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
@@ -454,7 +456,62 @@
     },
     "7383154379915906319": {
       "stroke_side": ["forehand"],
-      "basis": "维护者审核确认基础挥拍重快示范属于正常正手后场挥拍。"
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:00-02:18 直接讲基础挥拍如何打重：身体驱动大臂、在击球前加速并放松随摆，01:02 起以重杀示范说明腰腹带动。"
+    },
+    "7659991105622862457": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:07-01:33 直接讲重杀框架：拍面立起、前臂不要藏在头后、肘朝后并让小臂位于大臂外侧，以获得更充分的展开和顶肘空间。"
+    },
+    "7484563688096091449": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:18-02:35 直接讲重杀中大臂先行带动放松的小臂，并给出下垂小臂、由肘向前带动的分解练习；02:23 起明确归结为重杀。"
+    },
+    "7551459420703837498": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:00-01:25 直接比较快杀与重杀：高来球可选择大幅度重杀，需放松抬拍、扩大大臂与顶肘空间，不能用快杀的小框架替代。"
+    },
+    "7068465954270792994": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:11-04:13 直接讲 A 字霸王杀的半程挥拍、正拍面击球和肘腕旋转卸力；07:43-07:49 明确它也可作为杀球训练。"
+    },
+    "7068092085533953315": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:27-02:40 直接讲 A 字架拍辅助起跳、击球前后旋转发力与卸力、双手摆动到高位后再架拍，以及半程收拍。"
+    },
+    "7067722128413543680": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:05-03:24 为霸王杀专项第一集，直接讲爆发力目标、转体带动引拍、击球前旋转发力、击球后旋转卸力和立拍角度边界。"
+    },
+    "7656560952972884730": {
+      "technique_variant": [],
+      "basis": "主体是通用后场发力与架拍，不是霸王杀专项；标题只提醒业余球友不要盲用高难度框架。"
+    },
+    "7611635851789771721": {
+      "technique_variant": [],
+      "basis": "主体是杀球体系与快、重、准的取舍，只用霸王杀举例说明爆发力最大化，不提供霸王杀专项动作流程。"
+    },
+    "7606412946096327978": {
+      "technique_variant": [],
+      "basis": "主体是快杀提速，只在体系比较中提到重杀框架和霸王杀，不能证明霸王杀专项；重杀也只作为快杀反例。"
+    },
+    "7573211923485260537": {
+      "technique_variant": [],
+      "basis": "主体是孙超个人架拍特点，只用霸王杀架拍作比较，不是霸王杀专项教学。"
+    },
+    "7486788550298471739": {
+      "technique_variant": [],
+      "basis": "主体是网前撤后场的抬肘与放松架拍，只顺带问到霸王杀，不能证明霸王杀动作。"
     },
     "7102635326803332393": {
       "stroke_side": ["forehand"],
@@ -476,7 +533,7 @@
     },
     "7125615679402724623": {
       "shot_family": ["smash"],
-      "technique_variant": ["smash_point"],
+      "technique_variant": ["smash_heavy", "smash_point"],
       "basis": "00:50-01:01 明确把点杀归为手指主导的小边甩，身体主要负责维持稳定，并与身体主导的重杀区分。"
     },
     "7093706918492917033": {
@@ -523,7 +580,7 @@
     "7506362888166083897": {
       "stroke_side": ["forehand"],
       "shot_family": ["smash"],
-      "technique_variant": ["smash_jump"],
+      "technique_variant": ["smash_heavy", "smash_jump"],
       "basis": "02:48-03:39 明确把贴球发力加入跳杀，并建议连续进攻先用较小侧身的快速跳杀，出现终结机会时再全力重杀。"
     },
     "7499776424493075772": {
@@ -689,6 +746,9 @@
     "教学后期出",
     "下集再讲",
     "未完待续"
+  ],
+  "incomplete_fragment_exempt_video_ids": [
+    "7067722128413543680"
   ],
   "unrequested_scope_support_only_axes": [
     "pressure_state"

@@ -6,13 +6,13 @@
   "video_count": 407,
   "indexable_video_count": 352,
   "assigned_video_count": 352,
-  "multi_topic_video_count": 144,
+  "multi_topic_video_count": 147,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 94,
+      "video_count": 99,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -66,8 +66,8 @@
             "突击",
             "扣杀"
           ],
-          "video_count": 32,
-          "ready_count": 32,
+          "video_count": 38,
+          "ready_count": 38,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2057,7 +2057,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 58,
+      "video_count": 57,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -2183,8 +2183,8 @@
         {
           "name": "教学与训练综合待细分",
           "keywords": [],
-          "video_count": 51,
-          "ready_count": 51,
+          "video_count": 50,
+          "ready_count": 50,
           "is_fallback": true,
           "representative_videos": [
             {

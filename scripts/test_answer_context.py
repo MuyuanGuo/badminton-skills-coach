@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 39)
+        self.assertEqual(result["cases"], 41)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1953,6 +1953,71 @@ class AnswerContextTests(unittest.TestCase):
         }
         self.assertFalse(generic_ids & hard_negatives)
         self.assertFalse(forehand_ids & hard_negatives)
+
+    def test_heavy_and_overlord_smashes_require_direct_variant_evidence(self):
+        heavy = self.context_module.prepare_answer_context(
+            "重杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            heavy["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_heavy"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        heavy_ids = {
+            item["video_id"] for item in heavy["selected_videos"]
+        }
+        self.assertEqual(
+            heavy_ids,
+            {
+                "7551459420703837498",
+                "7659991105622862457",
+                "7484563688096091449",
+                "7383154379915906319",
+                "7506362888166083897",
+                "7125615679402724623",
+            },
+        )
+
+        overlord = self.context_module.prepare_answer_context(
+            "霸王杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            overlord["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_overlord"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        overlord_ids = {
+            item["video_id"] for item in overlord["selected_videos"]
+        }
+        self.assertEqual(
+            overlord_ids,
+            {
+                "7068465954270792994",
+                "7068092085533953315",
+                "7067722128413543680",
+            },
+        )
+        hard_negatives = {
+            "7656560952972884730",
+            "7611635851789771721",
+            "7606412946096327978",
+            "7573211923485260537",
+            "7486788550298471739",
+            "7272944156618542336",
+            "7161980324409363712",
+            "7499776424493075772",
+        }
+        self.assertFalse(overlord_ids & hard_negatives)
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
         relationship = self.context_module.prepare_answer_context(

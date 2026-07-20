@@ -1766,10 +1766,13 @@ def selection_decision(
 
     title_normalized = search_module.normalize(video.get("title", ""))
     structured = structured_video_text(search_module, video)
-    for term in rules["incomplete_fragment_terms"]:
-        normalized_term = search_module.normalize(term)
-        if normalized_term in title_normalized or normalized_term in structured:
-            return False, ["incomplete_series_fragment"]
+    if video.get("video_id") not in rules.get(
+        "incomplete_fragment_exempt_video_ids", []
+    ):
+        for term in rules["incomplete_fragment_terms"]:
+            normalized_term = search_module.normalize(term)
+            if normalized_term in title_normalized or normalized_term in structured:
+                return False, ["incomplete_series_fragment"]
 
     if constraint_result is None:
         constraint_result = constraint_decision(
