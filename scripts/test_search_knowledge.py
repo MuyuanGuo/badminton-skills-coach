@@ -137,6 +137,30 @@ class SearchKnowledgeTests(unittest.TestCase):
             "effective_ranking_score", candidate["score_breakdown"]
         )
 
+    def test_point_smash_expands_to_direct_mechanics_evidence(self):
+        payload = self.search_module.search(
+            "点杀怎么打",
+            recall_mode="exhaustive",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        expansion = payload["query_expansion"]
+        related_terms = {item["term"] for item in expansion["related_terms"]}
+        self.assertTrue(
+            {"手指发力", "掌心", "后三指", "小边甩"}.issubset(
+                related_terms
+            )
+        )
+        candidate_ids = {
+            item["video_id"] for item in payload["candidate_manifest"]
+        }
+        self.assertTrue(
+            {
+                "7272944156618542336",
+                "7125615679402724623",
+            }.issubset(candidate_ids)
+        )
+
     def test_video_lookup_returns_stored_evidence(self):
         video_id = "7661940775983482097"
         payload = self.search_module.lookup_videos(

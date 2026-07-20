@@ -1,7 +1,11 @@
 {
-  "version": "topic-taxonomy-v6",
+  "version": "topic-taxonomy-v7",
   "field_weights": {"title": 6, "focus": 3, "evidence": 1},
   "default_minimum_score": 3,
+  "reviewed_video_topic_overrides": {
+    "7272944156618542336": ["后场技术/杀球与突击"],
+    "7125615679402724623": ["后场技术/杀球与突击"]
+  },
   "categories": [
     {
       "name": "后场技术",

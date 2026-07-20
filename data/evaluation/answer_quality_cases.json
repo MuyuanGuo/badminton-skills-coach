@@ -3035,6 +3035,79 @@
           "劈吊只需要横向刮拍面"
         ]
       }
+    },
+    {
+      "case_id": "AQ038",
+      "query": "点杀怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把点杀从普通杀球、重杀和跳杀中拆出；保留两条直接动作来源和一条软压跟进战术来源，排除高点杀球、点杀式效果等连续字面假命中。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7272944156618542336"
+        ],
+        "required_video_ids": [
+          "7272944156618542336",
+          "7125615679402724623",
+          "7093706918492917033"
+        ],
+        "irrelevant_video_ids": [
+          "7611635851789771721",
+          "7659348110628345210",
+          "7506362888166083897",
+          "7659991105622862457",
+          "7550305145877155131",
+          "7055491154288102667",
+          "7193151905139395872",
+          "7148990784363138344",
+          "7069575740836023587"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ038-P1",
+            "description": "点杀不以重杀的绝对力量为目标；来源直接指出点杀力量相对小，重点是短促、可控的快速下压。",
+            "acceptable_terms": ["不以重杀", "绝对力量", "力量相对小"],
+            "evidence_video_ids": ["7272944156618542336"]
+          },
+          {
+            "point_id": "AQ038-P2",
+            "description": "握拍时食指和拇指负责牵住球拍，掌心留空，后三指向下抓握并配合小臂；不能把拇指僵卡在拍柄上。",
+            "acceptable_terms": ["食指和拇指", "掌心留空", "后三指"],
+            "evidence_video_ids": ["7272944156618542336"]
+          },
+          {
+            "point_id": "AQ038-P3",
+            "description": "点杀属于手指主导的小边甩，身体主要维持稳定；这与重杀依靠身体主导的大边甩不同，也不需要刻意制造内旋。",
+            "acceptable_terms": ["手指主导", "小边甩", "身体主要维持"],
+            "evidence_video_ids": ["7125615679402724623"]
+          },
+          {
+            "point_id": "AQ038-P4",
+            "description": "位置不好时不宜勉强全力杀；轻杀或软压可以保留下压，让球速稍慢，从而减少脚下脱节并便于下一拍跟进。",
+            "acceptable_terms": ["位置不好", "软压", "下一拍跟进"],
+            "evidence_video_ids": ["7093706918492917033"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ038-B1",
+            "description": "普通杀球、重杀和跳杀不能替代点杀专项动作证据；高点杀球、点杀一样的效果和把点杀得很尖只是字面重叠，也不能证明点杀技术。",
+            "acceptable_terms": ["普通杀球", "高点杀球", "字面重叠"]
+          }
+        ],
+        "forbidden_claims": [
+          "点杀主要靠身体大幅甩动",
+          "虎口留空是点杀发力的关键",
+          "高点杀球就是点杀技术"
+        ]
+      }
     }
   ]
 }

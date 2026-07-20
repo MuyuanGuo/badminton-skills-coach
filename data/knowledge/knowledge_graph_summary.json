@@ -6,13 +6,13 @@
   "video_count": 407,
   "indexable_video_count": 352,
   "assigned_video_count": 352,
-  "multi_topic_video_count": 140,
+  "multi_topic_video_count": 141,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 87,
+      "video_count": 89,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -66,8 +66,8 @@
             "突击",
             "扣杀"
           ],
-          "video_count": 25,
-          "ready_count": 25,
+          "video_count": 27,
+          "ready_count": 27,
           "is_fallback": false,
           "representative_videos": [
             {

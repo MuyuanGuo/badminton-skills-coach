@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 37)
+        self.assertEqual(result["cases"], 38)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1847,6 +1847,45 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertNotIn("7550305145877155131", smash_ids)
         self.assertNotIn("7115241358255803683", smash_ids)
+
+    def test_point_smash_requires_direct_variant_evidence(self):
+        payload = self.context_module.prepare_answer_context(
+            "点杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            payload["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_point"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        selected_order = [
+            item["video_id"] for item in payload["selected_videos"]
+        ]
+        self.assertEqual(
+            selected_order,
+            [
+                "7272944156618542336",
+                "7093706918492917033",
+                "7125615679402724623",
+            ],
+        )
+        selected = set(selected_order)
+        hard_negatives = {
+            "7611635851789771721",
+            "7659348110628345210",
+            "7506362888166083897",
+            "7659991105622862457",
+            "7550305145877155131",
+            "7055491154288102667",
+            "7193151905139395872",
+            "7148990784363138344",
+            "7069575740836023587",
+        }
+        self.assertFalse(selected & hard_negatives)
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
         relationship = self.context_module.prepare_answer_context(

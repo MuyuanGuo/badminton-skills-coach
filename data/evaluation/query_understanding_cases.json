@@ -334,6 +334,15 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["劈吊怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ038",
+      "query": "点杀怎么打",
+      "intent_summary": "把点杀识别为杀球下的手指主导细分技术，不退化为普通杀球、重杀或跳杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["点杀怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1139,6 +1148,25 @@
       "expected_constraints": {
         "shot_family": ["drop"],
         "technique_variant": ["drop_basic"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA047",
+      "query": "点杀怎么打",
+      "intent_summary": "同时保留杀球家族与点杀细分技术，不能只解析为泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["点杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_point"],
+        "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
     }

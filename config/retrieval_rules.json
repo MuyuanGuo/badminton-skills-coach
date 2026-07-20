@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v13",
+  "version": "retrieval-v14",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -82,6 +82,7 @@
     {"query_terms": ["发接发"], "expanded_terms": {"接发": 0.7, "发球": 0.5, "抓球": 0.5}},
     {"query_terms": ["吊球"], "expanded_terms": {"劈吊": 0.75, "滑板": 0.45, "软压": 0.4}},
     {"query_terms": ["劈吊"], "expanded_terms": {"劈掉": 0.9, "批调": 0.9, "披掉": 0.9, "吊球": 0.65, "滑板": 0.45}},
+    {"query_terms": ["点杀"], "expanded_terms": {"手指发力": 0.9, "掌心": 0.75, "后三指": 0.8, "小边甩": 0.8}},
     {"query_terms": ["杀球"], "expanded_terms": {"重杀": 0.65, "突击": 0.45}},
     {"query_terms": ["重杀"], "expanded_terms": {"杀球": 0.65, "发力": 0.35}},
     {"query_terms": ["内旋"], "expanded_terms": {"小臂旋转": 0.7, "手腕": 0.25}},

@@ -24,10 +24,10 @@ class QueryUnderstandingTests(unittest.TestCase):
 
     def test_reviewed_registry_routes_all_cases_correctly(self):
         result = self.module.evaluate()
-        self.assertEqual(result["reviewed_cases"], 37)
-        self.assertEqual(result["adversarial_cases"], 46)
-        self.assertEqual(result["cases"], 83)
-        self.assertEqual(result["passed"], 83)
+        self.assertEqual(result["reviewed_cases"], 38)
+        self.assertEqual(result["adversarial_cases"], 47)
+        self.assertEqual(result["cases"], 85)
+        self.assertEqual(result["passed"], 85)
         self.assertEqual(result["accuracy"], 1.0)
 
     def test_negated_positive_topic_is_checked_separately_from_excluded_topic(self):
@@ -64,7 +64,7 @@ class QueryUnderstandingTests(unittest.TestCase):
         registry = self.module.load_json(self.module.CASES_PATH)
         registry["cases"] = registry["cases"][:-1]
         answer_registry = self.module.load_json(self.module.ANSWER_CASES_PATH)
-        with self.assertRaisesRegex(ValueError, "does not cover: AQ037"):
+        with self.assertRaisesRegex(ValueError, "does not cover: AQ038"):
             self.module.validate_registry(registry, answer_registry)
 
 

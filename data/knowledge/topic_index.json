@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v6",
+  "taxonomy_version": "topic-taxonomy-v7",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -10,13 +10,13 @@
   "assigned_video_count": 352,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 96,
-  "multi_topic_video_count": 140,
+  "multi_topic_video_count": 141,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 87,
+      "video_count": 89,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -151,8 +151,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 25,
-          "ready_count": 25,
+          "video_count": 27,
+          "ready_count": 27,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7659348110628345210",
@@ -174,8 +174,10 @@
             "7611635851789771721",
             "7440406891664133428",
             "7414339897990843663",
+            "7272944156618542336",
             "7052519937125911846",
             "7288529711267859747",
+            "7125615679402724623",
             "7130069152592645411",
             "7229889111706848544",
             "7138604160051612969",

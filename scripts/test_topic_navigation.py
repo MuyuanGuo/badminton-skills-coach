@@ -64,7 +64,9 @@ class TopicNavigationTests(unittest.TestCase):
                 },
             ],
         }
-        index = self.builder.build_index(data)
+        taxonomy = self.builder.load_taxonomy()
+        taxonomy["reviewed_video_topic_overrides"] = {}
+        index = self.builder.build_index(data, taxonomy=taxonomy)
         reception = next(
             subtopic
             for category in index["categories"]
@@ -171,9 +173,29 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(index["assigned_video_count"], ready_count)
         self.assertEqual(index["unassigned_video_ids"], [])
-        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v6")
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v7")
         self.assertTrue(
             any(category["name"] == "单打战术" for category in index["categories"])
+        )
+
+    def test_reviewed_point_smash_sources_are_in_the_smash_topic(self):
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        smash = next(
+            subtopic
+            for category in index["categories"]
+            if category["name"] == "后场技术"
+            for subtopic in category["subtopics"]
+            if subtopic["name"] == "杀球与突击"
+        )
+        self.assertTrue(
+            {
+                "7272944156618542336",
+                "7125615679402724623",
+            }.issubset(smash["video_ids"])
         )
 
     def test_singles_systematic_navigation_never_returns_doubles_branch(self):

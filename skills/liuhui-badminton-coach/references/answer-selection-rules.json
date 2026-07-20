@@ -1,5 +1,5 @@
 {
-  "version": 23,
+  "version": 24,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -228,6 +228,7 @@
       "name": "technique_variant",
       "label": "细分技术",
       "values": {
+        "smash_point": ["点杀"],
         "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
         "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
         "drop_reverse_slice": ["滑板", "滑板吊", "反手滑板"],
@@ -242,6 +243,7 @@
       },
       "category_evidence_policy": "ignore",
       "source_value_suppressions": {
+        "smash_point": ["高点杀球", "高点杀", "点杀一样的效果", "点杀式效果", "把点杀得"],
         "drop_slice": ["不要说劈吊", "不要说劈掉", "别谈劈吊", "别谈劈掉", "不是劈吊", "这次我们打劈掉上了", "这次我们打劈吊上了"],
         "drop_reverse_slice": ["不要说滑板", "不要说滑牌", "别谈滑板", "不是滑板"],
         "net_push": ["对手推球", "对方推球", "抓推"]
@@ -463,6 +465,21 @@
       "stroke_intent": ["downward_pressure"],
       "court_zone": ["midcourt"],
       "basis": "01:20-01:26 明确说明该后点击球形成点杀式效果，但出球属于中前场处理。"
+    },
+    "7272944156618542336": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_point"],
+      "basis": "00:00-01:43 直接讲点杀力量偏小的原因，以及食指、拇指牵住球拍、掌心留空、后三指抓握并配合小臂的发力方法。"
+    },
+    "7125615679402724623": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_point"],
+      "basis": "00:50-01:01 明确把点杀归为手指主导的小边甩，身体主要负责维持稳定，并与身体主导的重杀区分。"
+    },
+    "7093706918492917033": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_point"],
+      "basis": "00:39-01:07 直接讲位置不好时用轻杀或软压保持下压并连接下一拍；只支持点杀的战术使用场景，不证明手部动作细节。"
     },
     "7511934047901846841": {
       "shot_family": ["clear", "drop", "lift", "transition"],
