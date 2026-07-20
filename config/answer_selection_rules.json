@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 21,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -162,6 +162,7 @@
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
         "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
         "transition": ["过渡球", "过度球", "过渡动作", "正手过渡", "反手过渡", "正反手过渡", "过渡击球点", "过渡基础"],
+        "smash_block": ["挡杀", "接杀"],
         "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
         "deep_serve": ["发高远", "发后场", "偷后场", "高远发球"]
       },
@@ -185,10 +186,12 @@
       "source_value_suppressions": {
         "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"],
         "lift": ["对方挑球", "对手挑球", "对面挑球", "别人挑球", "逼迫对手进行挑球", "迫使对手挑球", "让对手挑球", "被迫挑球"],
-        "transition": ["攻防过渡", "轮转过渡", "阶段过渡"]
+        "transition": ["攻防过渡", "轮转过渡", "阶段过渡"],
+        "smash_block": ["对手接杀", "对方接杀", "对面接杀", "别人接杀", "队友接杀", "搭档接杀", "男队友的接杀"]
       },
       "source_value_additions": {
-        "net_shot": ["网前"]
+        "net_shot": ["网前"],
+        "smash_block": ["防守挡球", "防守挡直线", "防守挡斜线"]
       },
       "combine_primary_and_reviewed": true,
       "structured_evidence_policy": "support_only",
@@ -361,6 +364,14 @@
       },
       "unsupported_matches": ["unspecified_support", "incidental_support"],
       "failure_reason": "specific_transition_shot_family_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["smash_block"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_smash_block_shot_family_not_supported"
     }
   ],
   "focus_term_source_suppressions": {
@@ -473,6 +484,72 @@
       "stroke_side": ["backhand"],
       "shot_family": ["transition"],
       "basis": "00:00-00:24 明确为没有反手过渡球基础的练习者设计：先找带包切的勾球手感，再逐渐抬高击球点和框架；ASR 将“反手”误写为“繁手”。"
+    },
+    "7215787369381858599": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:04-01:04 明确讲接杀时不做来不及的正反手转换，以反手握拍覆盖追身与两侧来球，并用手臂带手腕做短促快速发力。"
+    },
+    "7117821949165718824": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:02-00:51 明确讲反手区接杀步法：近身时避免轻易迈出右脚造成转髋回位困难，只有来球特别远时才扩大跨步。"
+    },
+    "7647839024535507897": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "02:00-02:13 与 03:37-03:41 明确进入反手接杀分段，讲受压时借来球力量快速出手，不能把手腕向前僵顶。"
+    },
+    "7289635377009151247": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:04-00:30 明确讲接杀时间短、动作不能大，不能只动手腕，要用肘带动手腕并保持可通过的握拍空间。"
+    },
+    "7263668594196745487": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:41-01:23 明确示范固定准备框架后处理左侧接杀，拍面翻转完成出拍且大臂不大幅浮动。"
+    },
+    "7141200093922790688": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:27-00:57 明确说明准备时抬起肘和大臂、给腋下留空间，来球时翻拍即可形成接杀框架。"
+    },
+    "7422121561559272739": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:15-00:47 明确讲接杀低姿准备：降低重心并保持身体前倾，避免来球后再额外向前探身。"
+    },
+    "7586613438625959217": {
+      "shot_family": ["smash_block"],
+      "discipline": ["singles"],
+      "tactical_phase": ["defense"],
+      "basis": "00:05-01:59 明确讲单打接杀的短动作、步法、回位和衔接，要求先伸手够球再完成小幅移动与蹬回。"
+    },
+    "7609429014616637050": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:10-00:53 明确讲接杀受压和挑不起来时，通过改变大臂位置创造发力空间；能抢前点，但也要保留受压时的处理能力。"
+    },
+    "7154558892742151464": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "标题及 00:00-01:08 明确比较接杀挡近网与挡远网后的取位：挡近后向前跟进，挡远后不要盲目前压。"
+    },
+    "7602766054809333617": {
+      "shot_family": ["smash_block"],
+      "discipline": ["singles"],
+      "tactical_phase": ["attack", "defense"],
+      "basis": "00:20-00:31 明确讲根据对手杀球线路选择挡斜线或挡直线，02:13-02:21 继续讲防守后的移动与反击衔接。"
+    },
+    "7621243051541587889": {
+      "shot_family": ["smash_block"],
+      "discipline": ["doubles"],
+      "tactical_phase": ["attack", "defense"],
+      "basis": "00:02-01:18 明确讲双打防守时观察前场球员，再根据其位置选择挡直线或挡斜线，属于接杀后的防反线路证据。"
     }
   },
   "incomplete_fragment_terms": [

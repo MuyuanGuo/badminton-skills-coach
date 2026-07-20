@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 34)
+        self.assertEqual(result["cases"], 35)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -336,6 +336,74 @@ class AnswerContextTests(unittest.TestCase):
                 self.selection_rules,
             ),
             ["specific_transition_shot_family_not_supported"],
+        )
+
+    def test_smash_block_is_a_distinct_action_with_direct_evidence(self):
+        constraints = self.context_module.query_constraints(
+            self.search_module,
+            "反手挡杀怎么打",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            constraints,
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["smash_block"],
+            },
+        )
+        context = self.context_module.prepare_answer_context(
+            "反手挡杀怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            [item["video_id"] for item in context["selected_videos"]],
+            [
+                "7215787369381858599",
+                "7647839024535507897",
+                "7117821949165718824",
+                "7422121561559272739",
+                "7141200093922790688",
+                "7289635377009151247",
+            ],
+        )
+        self.assertFalse(
+            {
+                "7499776424493075772",
+                "7115241358255803683",
+                "7497098752897879355",
+                "7056596925721726220",
+                "7254755365995285812",
+                "7523163965838003514",
+            }
+            & {item["video_id"] for item in context["selected_videos"]}
+        )
+        self.assertEqual(
+            self.context_module.required_constraint_support_failures(
+                {"shot_family": ["smash_block"]},
+                {"shot_family": "incidental_support"},
+                self.selection_rules,
+            ),
+            ["specific_smash_block_shot_family_not_supported"],
+        )
+
+    def test_smash_block_scope_preserves_receive_to_counterattack_sources(self):
+        context = self.context_module.prepare_answer_context(
+            "接杀以后怎么防守反击",
+            local_personalization=False,
+        )
+        selected = {
+            item["video_id"] for item in context["selected_videos"]
+        }
+        self.assertTrue(
+            {
+                "7602766054809333617",
+                "7621243051541587889",
+                "7127470220309957923",
+            }.issubset(selected)
+        )
+        self.assertEqual(
+            context["question_interpretation"]["constraints"]["shot_family"],
+            ["smash_block"],
         )
 
     def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):

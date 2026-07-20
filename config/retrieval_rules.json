@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v11",
+  "version": "retrieval-v12",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -58,6 +58,7 @@
     ["推球", "推后场", "推底线"],
     ["挑球", "挑后场", "挑底线", "弹挑"],
     ["过渡球", "过度球", "过渡动作"],
+    ["挡杀", "接杀"],
     ["低重心", "重心低"]
   ],
   "directed_expansions": [

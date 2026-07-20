@@ -599,7 +599,8 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(
             payload["coverage"]["intrinsic_review_candidate_count"],
             payload["coverage"]["review_candidate_count"]
-            + payload["coverage"]["deferred_review_candidate_count"],
+            + payload["coverage"]["deferred_review_candidate_count"]
+            + payload["coverage"]["policy_rejected_review_candidate_count"],
         )
 
     def test_review_budget_never_rewrites_intrinsic_relevance(self):
