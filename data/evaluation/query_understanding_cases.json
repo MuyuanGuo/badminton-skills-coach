@@ -343,6 +343,15 @@
       "expected_strategy": "evidence_check",
       "expected_query_units": ["点杀怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ039",
+      "query": "跳杀怎么打",
+      "intent_summary": "把跳杀识别为杀球下的正手起跳细分技术，不退化为普通杀球、重杀、点杀或普通起跳",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["跳杀怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1166,6 +1175,26 @@
       "expected_constraints": {
         "shot_family": ["smash"],
         "technique_variant": ["smash_point"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA048",
+      "query": "正手跳杀怎么打",
+      "intent_summary": "同时保留正手、杀球家族和跳杀细分技术，不能退化为泛正手或泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["正手", "跳杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["正手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_jump"],
         "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"

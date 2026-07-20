@@ -173,7 +173,7 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(index["assigned_video_count"], ready_count)
         self.assertEqual(index["unassigned_video_ids"], [])
-        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v7")
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v8")
         self.assertTrue(
             any(category["name"] == "单打战术" for category in index["categories"])
         )
@@ -195,6 +195,31 @@ class TopicNavigationTests(unittest.TestCase):
             {
                 "7272944156618542336",
                 "7125615679402724623",
+            }.issubset(smash["video_ids"])
+        )
+
+    def test_reviewed_jump_smash_sources_are_in_the_smash_topic(self):
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        smash = next(
+            subtopic
+            for category in index["categories"]
+            if category["name"] == "后场技术"
+            for subtopic in category["subtopics"]
+            if subtopic["name"] == "杀球与突击"
+        )
+        self.assertTrue(
+            {
+                "7161980324409363712",
+                "7055491154288102667",
+                "7138604160051612969",
+                "7634016952800880570",
+                "7606560547489149691",
+                "7561558424342056250",
+                "7506362888166083897",
             }.issubset(smash["video_ids"])
         )
 

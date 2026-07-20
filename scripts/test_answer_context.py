@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 38)
+        self.assertEqual(result["cases"], 39)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1096,9 +1096,22 @@ class AnswerContextTests(unittest.TestCase):
             "双打站位怎么调整",
             local_personalization=False,
         )
-        generic_ids = {
+        generic_order = [
             item["video_id"] for item in generic["selected_videos"]
-        }
+        ]
+        self.assertEqual(
+            generic_order,
+            [
+                "7161980324409363712",
+                "7561558424342056250",
+                "7055491154288102667",
+                "7506362888166083897",
+                "7634016952800880570",
+                "7138604160051612969",
+                "7606560547489149691",
+            ],
+        )
+        generic_ids = set(generic_order)
         self.assertIn("7246960976459730191", generic_ids)
         self.assertIn("7498830855188942137", generic_ids)
 
@@ -1886,6 +1899,64 @@ class AnswerContextTests(unittest.TestCase):
             "7069575740836023587",
         }
         self.assertFalse(selected & hard_negatives)
+
+    def test_jump_smash_requires_direct_forehand_variant_evidence(self):
+        generic = self.context_module.prepare_answer_context(
+            "跳杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            generic["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_jump"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        expected = {
+            "7161980324409363712",
+            "7055491154288102667",
+            "7138604160051612969",
+            "7634016952800880570",
+            "7606560547489149691",
+            "7561558424342056250",
+            "7506362888166083897",
+        }
+        generic_ids = {
+            item["video_id"] for item in generic["selected_videos"]
+        }
+        self.assertEqual(generic_ids, expected)
+
+        forehand = self.context_module.prepare_answer_context(
+            "正手跳杀怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            forehand["question_interpretation"]["constraints"],
+            {
+                "stroke_side": ["forehand"],
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_jump"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        forehand_ids = {
+            item["video_id"] for item in forehand["selected_videos"]
+        }
+        self.assertEqual(forehand_ids, expected)
+        hard_negatives = {
+            "7499776424493075772",
+            "7069575740836023587",
+            "7068835198938516777",
+            "7083684012513840424",
+            "7097413480747191587",
+            "7567860375287303035",
+            "7096301894984846632",
+            "7246960976459730191",
+        }
+        self.assertFalse(generic_ids & hard_negatives)
+        self.assertFalse(forehand_ids & hard_negatives)
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
         relationship = self.context_module.prepare_answer_context(

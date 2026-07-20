@@ -1,5 +1,5 @@
 {
-  "version": 24,
+  "version": 25,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -229,6 +229,7 @@
       "label": "细分技术",
       "values": {
         "smash_point": ["点杀"],
+        "smash_jump": ["跳杀", "跳sha", "起跳杀球", "双脚跳杀", "侧身跳杀"],
         "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
         "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
         "drop_reverse_slice": ["滑板", "滑板吊", "反手滑板"],
@@ -244,6 +245,7 @@
       "category_evidence_policy": "ignore",
       "source_value_suppressions": {
         "smash_point": ["高点杀球", "高点杀", "点杀一样的效果", "点杀式效果", "把点杀得"],
+        "smash_jump": ["反手跳杀", "不像跳杀", "可以跳杀的位置", "没办法跳杀", "不具备跳杀", "就像我们跳杀时", "学跳杀的时候", "跳杀一样的效果"],
         "drop_slice": ["不要说劈吊", "不要说劈掉", "别谈劈吊", "别谈劈掉", "不是劈吊", "这次我们打劈掉上了", "这次我们打劈吊上了"],
         "drop_reverse_slice": ["不要说滑板", "不要说滑牌", "别谈滑板", "不是滑板"],
         "net_push": ["对手推球", "对方推球", "抓推"]
@@ -480,6 +482,65 @@
       "shot_family": ["smash"],
       "technique_variant": ["smash_point"],
       "basis": "00:39-01:07 直接讲位置不好时用轻杀或软压保持下压并连接下一拍；只支持点杀的战术使用场景，不证明手部动作细节。"
+    },
+    "7161980324409363712": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:03-02:16 直接讲跳杀入门：落地前完成挥拍、缩小挥拍与转体幅度、半侧身起跳、最高点架拍后在下落阶段击球，并逐步加入摆臂和换脚。"
+    },
+    "7055491154288102667": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:04-00:48 全段直接讲跳杀不是原地直上直下，而是转跳；先做转跳练习，再在空中转体向前完成击球。"
+    },
+    "7138604160051612969": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:00-01:51 直接纠正跳杀的起跳后架拍、转跳、半侧身、下落阶段击球、自然屈腿、向前挥拍和击球点位置。"
+    },
+    "7634016952800880570": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:23-02:18 直接讲跳杀起跳效率：少蹲、快蹲、快起，避免提前站死和用力深蹲，以更短时间获得空中动作余量。"
+    },
+    "7606560547489149691": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:01-02:48 直接讲双脚跳杀进阶纠错：不要全力起跳、用摆臂借力、调整击球点与大臂位置，并让空中姿态保留腰腹转动。"
+    },
+    "7561558424342056250": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:03-02:47 直接讲女性专业选手跳杀专项：双手摆动起跳、快速抬拍组织空中框架、避免深蹲，并按较高击球点自然形成屈腿。"
+    },
+    "7506362888166083897": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "02:48-03:39 明确把贴球发力加入跳杀，并建议连续进攻先用较小侧身的快速跳杀，出现终结机会时再全力重杀。"
+    },
+    "7499776424493075772": {
+      "stroke_side": ["backhand"],
+      "technique_variant": [],
+      "basis": "全段为反手跳杀专项；泛跳杀和正手跳杀问题不得用反手动作替代，后续需另建反手跳杀变体。"
+    },
+    "7069575740836023587": {
+      "technique_variant": [],
+      "basis": "全段主体为顿地炮，只在使用条件和能力比较中提到跳杀，不证明跳杀动作。"
+    },
+    "7068835198938516777": {
+      "technique_variant": [],
+      "basis": "标题列出跳杀能力和威力排名，但可引用内容实际延续 A 字下拍法与滑板介入纠错，不是跳杀专项。"
+    },
+    "7083684012513840424": {
+      "technique_variant": [],
+      "basis": "仅用跳杀作交叉步跳跃的类比，不提供跳杀专项动作证据。"
     },
     "7511934047901846841": {
       "shot_family": ["clear", "drop", "lift", "transition"],

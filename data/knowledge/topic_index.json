@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v7",
+  "taxonomy_version": "topic-taxonomy-v8",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -9,14 +9,14 @@
   "indexable_video_count": 352,
   "assigned_video_count": 352,
   "unassigned_video_ids": [],
-  "fallback_assigned_video_count": 96,
-  "multi_topic_video_count": 141,
+  "fallback_assigned_video_count": 95,
+  "multi_topic_video_count": 144,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 89,
+      "video_count": 93,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -151,8 +151,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 31,
+          "ready_count": 31,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7659348110628345210",
@@ -172,15 +172,19 @@
             "7202800263588105510",
             "7445495930280856892",
             "7611635851789771721",
+            "7161980324409363712",
             "7440406891664133428",
             "7414339897990843663",
             "7272944156618542336",
+            "7561558424342056250",
             "7052519937125911846",
             "7288529711267859747",
             "7125615679402724623",
+            "7634016952800880570",
             "7130069152592645411",
             "7229889111706848544",
             "7138604160051612969",
+            "7606560547489149691",
             "7174229898238676228"
           ],
           "representative_videos": [
@@ -4894,7 +4898,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 59,
+      "video_count": 58,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -5094,8 +5098,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 52,
-          "ready_count": 52,
+          "video_count": 51,
+          "ready_count": 51,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7061422431386324264",
@@ -5120,7 +5124,6 @@
             "7618301799796222833",
             "7086648517627858176",
             "7284439456776506658",
-            "7561558424342056250",
             "7073657979328826659",
             "7357171384377740544",
             "7259946986114190626",

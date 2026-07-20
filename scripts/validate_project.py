@@ -917,8 +917,12 @@ version_contracts = ["releases/latest"]
 if release_channel == "development":
     version_contracts.extend(
         [
-            f"**{skill_version} 开发分支**",
-            f"- 开发版：`develop` / `{skill_version}`",
+            "你正在查看 `develop` 分支",
+            f"当前开发版本是 **{skill_version}**",
+            "发布状态为 **unreleased**",
+            "- 当前分支：`develop`",
+            f"- 当前开发版本：`{skill_version}`",
+            "- 发布状态：`unreleased`",
         ]
     )
 else:

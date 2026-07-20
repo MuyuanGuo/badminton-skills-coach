@@ -161,6 +161,42 @@ class SearchKnowledgeTests(unittest.TestCase):
             }.issubset(candidate_ids)
         )
 
+    def test_jump_smash_expands_to_direct_mechanics_evidence(self):
+        payload = self.search_module.search(
+            "跳杀怎么打",
+            recall_mode="exhaustive",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        related_terms = {
+            item["term"] for item in payload["query_expansion"]["related_terms"]
+        }
+        self.assertTrue(
+            {
+                "转跳",
+                "半侧身",
+                "挥拍速度",
+                "最高点",
+                "架拍",
+                "少蹲",
+                "快起",
+            }.issubset(related_terms)
+        )
+        candidate_ids = {
+            item["video_id"] for item in payload["candidate_manifest"]
+        }
+        self.assertTrue(
+            {
+                "7161980324409363712",
+                "7055491154288102667",
+                "7138604160051612969",
+                "7634016952800880570",
+                "7606560547489149691",
+                "7561558424342056250",
+                "7506362888166083897",
+            }.issubset(candidate_ids)
+        )
+
     def test_video_lookup_returns_stored_evidence(self):
         video_id = "7661940775983482097"
         payload = self.search_module.lookup_videos(
