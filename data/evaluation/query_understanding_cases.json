@@ -325,6 +325,15 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["反手滑板怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ037",
+      "query": "劈吊怎么打",
+      "intent_summary": "把劈吊识别为吊球下的顺向切削变体，不退化为普通吊球或反向切削的滑板",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["劈吊怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1093,7 +1102,43 @@
       "expected_constraints": {
         "stroke_side": ["backhand"],
         "shot_family": ["drop"],
+        "technique_variant": ["drop_reverse_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA045",
+      "query": "劈吊怎么打",
+      "intent_summary": "同时保留吊球动作与劈吊细分技术，不能只解析为泛吊球或滑板",
+      "expected_intent": {
+        "positive_query_contains": ["劈吊"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
         "technique_variant": ["drop_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA046",
+      "query": "普通吊球怎么打",
+      "intent_summary": "把普通吊球识别为基础吊球变体，不能用劈吊或滑板专项替代",
+      "expected_intent": {
+        "positive_query_contains": ["普通吊球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "technique_variant": ["drop_basic"]
       },
       "expected_target_actor": "player"
     }

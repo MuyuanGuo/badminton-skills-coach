@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -228,18 +228,22 @@
       "name": "technique_variant",
       "label": "细分技术",
       "values": {
+        "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
+        "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
+        "drop_reverse_slice": ["滑板", "滑板吊", "反手滑板"],
         "net_spin": ["搓球", "展搓", "滚搓", "滚网", "搓"],
         "net_hook": ["勾球", "勾对角", "勾斜线"],
         "net_pounce": ["扑球"],
         "net_push": ["推球", "推后场", "推底线"],
-        "net_drop": ["放网", "挡网"],
-        "drop_slice": ["滑板", "滑板吊", "反手滑板"]
+        "net_drop": ["放网", "挡网"]
       },
       "mixed_value_sets": {
         "网前技术": ["net_drop", "net_hook", "net_pounce", "net_push", "net_spin"]
       },
       "category_evidence_policy": "ignore",
       "source_value_suppressions": {
+        "drop_slice": ["不要说劈吊", "不要说劈掉", "别谈劈吊", "别谈劈掉", "不是劈吊", "这次我们打劈掉上了", "这次我们打劈吊上了"],
+        "drop_reverse_slice": ["不要说滑板", "不要说滑牌", "别谈滑板", "不是滑板"],
         "net_push": ["对手推球", "对方推球", "抓推"]
       },
       "structured_evidence_policy": "support_only"
@@ -462,7 +466,47 @@
     },
     "7511934047901846841": {
       "shot_family": ["clear", "drop", "lift", "transition"],
+      "technique_variant": ["drop_slice"],
       "basis": "00:08-00:38 分别讲反手高远、过渡和劈吊，01:18-01:31 明确讲从下往上完成反手挑球；该综合视频可按具体分段支持这些反手技术。"
+    },
+    "7520190707093654844": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_basic"],
+      "basis": "01:58-02:10 明确要求先掌握普通吊球，并排除劈吊和滑板；该来源只能证明普通吊球基础，不能证明切削变体。"
+    },
+    "7306709804234444072": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:00-01:05 全段直接讲劈吊的包裹效果、侧身转正过程、击球与随挥，并纠正包裹不足。"
+    },
+    "7174229898238676228": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "01:23-01:44 明确比较劈吊、滑拍与高远球技术点的一致性和隐蔽关系；只按劈吊分段支持顺向切削，不用于证明滑板专项细节。"
+    },
+    "7229889111706848544": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:48-01:24 明确讲正手位斜线劈吊采用半侧身、不盲目换脚，并以更短距离完成回位。"
+    },
+    "7118192644957818127": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:00-01:02 直接讲重劈/劈吊在不同来球弧度下的起跳、击球点、落点、减速和高远球隐蔽关系。"
+    },
+    "7059589039694957864": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop", "smash"],
+      "technique_variant": ["drop_slice"],
+      "basis": "已复核口播 00:00-00:30 明确讲正手位起跳不转身处理劈杀和劈吊对角线，并说明隐蔽性、加速与回位。"
+    },
+    "7214304020775652620": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_reverse_slice"],
+      "basis": "视觉复核摘要明确为反手滑板专项，覆盖动作、击球点、握拍和步法；不得作为普通吊球或劈吊证据。"
     },
     "7226178331408928038": {
       "shot_family": ["drive"],

@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 36)
+        self.assertEqual(result["cases"], 37)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -417,7 +417,7 @@ class AnswerContextTests(unittest.TestCase):
             {
                 "stroke_side": ["backhand"],
                 "shot_family": ["drop"],
-                "technique_variant": ["drop_slice"],
+                "technique_variant": ["drop_reverse_slice"],
             },
         )
         context = self.context_module.prepare_answer_context(
@@ -441,7 +441,7 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(
             self.context_module.required_constraint_support_failures(
-                {"technique_variant": ["drop_slice"]},
+                {"technique_variant": ["drop_reverse_slice"]},
                 {"technique_variant": "unspecified_support"},
                 self.selection_rules,
             ),
@@ -452,6 +452,56 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         self.assertEqual(forehand["selected_videos"], [])
+
+    def test_slice_drop_and_basic_drop_do_not_cross_prove_each_other(self):
+        slice_constraints = self.context_module.query_constraints(
+            self.search_module,
+            "劈吊怎么打",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            slice_constraints,
+            {
+                "shot_family": ["drop"],
+                "technique_variant": ["drop_slice"],
+            },
+        )
+        slice_context = self.context_module.prepare_answer_context(
+            "劈吊怎么打",
+            local_personalization=False,
+        )
+        slice_selected = {
+            item["video_id"] for item in slice_context["selected_videos"]
+        }
+        self.assertIn("7306709804234444072", slice_selected)
+        self.assertFalse(
+            {
+                "7214304020775652620",
+                "7520190707093654844",
+                "7115241358255803683",
+            }
+            & slice_selected
+        )
+
+        basic_context = self.context_module.prepare_answer_context(
+            "普通吊球怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            basic_context["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["drop"],
+                "technique_variant": ["drop_basic"],
+            },
+        )
+        basic_selected = {
+            item["video_id"] for item in basic_context["selected_videos"]
+        }
+        self.assertIn("7520190707093654844", basic_selected)
+        self.assertFalse(
+            {"7306709804234444072", "7214304020775652620"}
+            & basic_selected
+        )
 
     def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):
         context = self.context_module.prepare_answer_context(
