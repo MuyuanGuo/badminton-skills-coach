@@ -3775,6 +3775,151 @@
           "位置不好时仍应每拍全力杀球"
         ]
       }
+    },
+    {
+      "case_id": "AQ048",
+      "query": "反手杀球怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_backhand_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把普通反手杀球从正手普通杀球、重杀、反手跳杀和反手转圈杀中拆出；保留两条基础专项和一条有明确进阶前提的来源。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7550305145877155131",
+          "7202800263588105510"
+        ],
+        "required_video_ids": [
+          "7550305145877155131",
+          "7202800263588105510",
+          "7288529711267859747"
+        ],
+        "irrelevant_video_ids": [
+          "7098897570482670888",
+          "7499776424493075772",
+          "7229506261136526647",
+          "7567155406117533051",
+          "7659991105622862457",
+          "7093706918492917033",
+          "7494729488699559225"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ048-P1",
+            "description": "反手体系会随击球位置变化：身前横向顶拍更接近抽高远，后场反手杀球要换成能向下出球的后场框架，不能把所有反手出球写成同一个动作。",
+            "acceptable_terms": ["击球位置", "抽高远", "后场框架", "不同动作"],
+            "evidence_video_ids": ["7550305145877155131"]
+          },
+          {
+            "point_id": "AQ048-P2",
+            "description": "后场反手杀球可捏住拍柄两个窄边并让肘向上顶，使拍面能够把球向下打；这与身前横向外顶的框架不同。",
+            "acceptable_terms": ["两个窄边", "肘向上顶", "向下", "横向外顶"],
+            "evidence_video_ids": ["7550305145877155131"]
+          },
+          {
+            "point_id": "AQ048-P3",
+            "description": "顶肘后不要让大臂继续和小臂一起慢慢前送；大臂及时让出位置，让小臂和拍头更早超过大臂，可以加快挥速而不必削弱力量。",
+            "acceptable_terms": ["顶肘后", "大臂让出位置", "小臂超过大臂", "加快挥速"],
+            "evidence_video_ids": ["7550305145877155131"]
+          },
+          {
+            "point_id": "AQ048-P4",
+            "description": "背身处理普通反手杀球时，击球点应在右肩上方的高点；拇指应顶偏右侧小棱或捏窄边，而不是顶正宽面或偏左侧棱，以便拍面形成向下压制。",
+            "acceptable_terms": ["右肩上方", "高点", "偏右侧小棱", "捏窄边", "向下压制"],
+            "evidence_video_ids": ["7202800263588105510"]
+          },
+          {
+            "point_id": "AQ048-P5",
+            "description": "进阶来源在女性或业余球友腰腹参与受限的条件下，用击球前收肘靠近胸前带动拍头加速；来源明确要求已有反手基础，不能当作通用入门动作。",
+            "acceptable_terms": ["进阶", "女性", "业余球友", "收肘", "已有反手基础"],
+            "evidence_video_ids": ["7288529711267859747"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ048-B1",
+            "description": "普通反手杀球、反手转圈杀和反手跳杀是不同变体，正手普通杀球与重杀来源也不能替代；多技术来源 720280... 只能使用其普通反手杀球分段。",
+            "acceptable_terms": ["不同变体", "不能替代", "普通反手杀球分段", "反手跳杀"]
+          }
+        ],
+        "forbidden_claims": [
+          "普通反手杀球必须转圈完成",
+          "反手跳杀可以直接证明站立反手杀球动作",
+          "正手重杀框架可以原样照搬到反手杀球"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ049",
+      "query": "反手转圈杀怎么打",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_backhand_smash_variant_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把反手转圈杀识别为来球已过身或快速截击后的特殊反手杀球变体；排除普通反手杀球、反手跳杀和正手杀球来源。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7098897570482670888"],
+        "required_video_ids": [
+          "7098897570482670888",
+          "7202800263588105510"
+        ],
+        "irrelevant_video_ids": [
+          "7550305145877155131",
+          "7288529711267859747",
+          "7499776424493075772",
+          "7229506261136526647",
+          "7567155406117533051",
+          "7659991105622862457"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ049-P1",
+            "description": "转圈杀不是普通来球下故意转一圈；它用于来球很快、已经过身或到了身体左侧，正常转身后够不到、需要快速转体抢到球的场景。",
+            "acceptable_terms": ["不是故意", "来球很快", "已经过身", "身体左侧", "够不到"],
+            "evidence_video_ids": ["7098897570482670888"]
+          },
+          {
+            "point_id": "AQ049-P2",
+            "description": "转圈来自快速转体后的惯性，击球后顺势继续旋转，而不是击球结束后再人为扭回去。",
+            "acceptable_terms": ["快速转体", "惯性", "顺势", "不是刻意行为"],
+            "evidence_video_ids": ["7098897570482670888"]
+          },
+          {
+            "point_id": "AQ049-P3",
+            "description": "发力时由腰带动上肢边甩，击球点比普通站立反手杀更靠后；找到球后左脚先蹬地，击球后右脚先落地。",
+            "acceptable_terms": ["腰带动上肢", "击球点更靠后", "左脚蹬地", "右脚落地"],
+            "evidence_video_ids": ["7098897570482670888"]
+          },
+          {
+            "point_id": "AQ049-P4",
+            "description": "另一条来源补充，转圈可能来自快速截击后的回动需要，也可能借身体旋转增加拍杆形变，使击球更短促、爆发更集中；只能使用该视频的转圈杀分段。",
+            "acceptable_terms": ["快速截击", "回动需要", "拍杆形变", "更短促", "爆发力"],
+            "evidence_video_ids": ["7202800263588105510"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ049-B1",
+            "description": "反手转圈杀、普通反手杀球和反手跳杀不能互相替代；这是一种有明确来球和回动条件的特殊变体，不能作为所有反手杀球的默认动作。",
+            "acceptable_terms": ["不能互相替代", "明确条件", "特殊变体", "不是默认动作"]
+          }
+        ],
+        "forbidden_claims": [
+          "所有反手杀球都应该主动转一圈",
+          "普通反手杀球和转圈杀没有场景差别",
+          "转圈杀就是反手跳杀"
+        ]
+      }
     }
   ]
 }

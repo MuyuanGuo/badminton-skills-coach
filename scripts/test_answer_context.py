@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 47)
+        self.assertEqual(result["cases"], 49)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -2027,6 +2027,87 @@ class AnswerContextTests(unittest.TestCase):
         }
         self.assertFalse(generic_ids & hard_negatives)
         self.assertFalse(forehand_ids & hard_negatives)
+
+    def test_backhand_smash_variants_require_matching_direct_segments(self):
+        ordinary = self.context_module.prepare_answer_context(
+            "反手杀球怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            ordinary["question_interpretation"]["constraints"],
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_backhand_basic"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        ordinary_ids = {
+            item["video_id"] for item in ordinary["selected_videos"]
+        }
+        self.assertEqual(
+            ordinary_ids,
+            {
+                "7550305145877155131",
+                "7202800263588105510",
+                "7288529711267859747",
+            },
+        )
+
+        spinning = self.context_module.prepare_answer_context(
+            "反手转圈杀怎么打",
+            local_personalization=False,
+            include_rejected=True,
+        )
+        self.assertEqual(
+            spinning["question_interpretation"]["constraints"],
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_backhand_spin"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        spinning_ids = {
+            item["video_id"] for item in spinning["selected_videos"]
+        }
+        self.assertEqual(
+            spinning_ids,
+            {"7098897570482670888", "7202800263588105510"},
+        )
+
+        jumping = self.context_module.prepare_answer_context(
+            "反手跳杀怎么打",
+            local_personalization=False,
+        )
+        jumping_ids = {
+            item["video_id"] for item in jumping["selected_videos"]
+        }
+        self.assertEqual(jumping_ids, {"7499776424493075772"})
+        self.assertEqual(
+            ordinary_ids & spinning_ids,
+            {"7202800263588105510"},
+        )
+        self.assertFalse(ordinary_ids & jumping_ids)
+        self.assertFalse(spinning_ids & jumping_ids)
+
+        alias = self.context_module.prepare_answer_context(
+            "转圈杀怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            alias["question_interpretation"]["constraints"],
+            {
+                "shot_family": ["smash"],
+                "technique_variant": ["smash_backhand_spin"],
+                "tactical_phase": ["attack"],
+            },
+        )
+        self.assertEqual(
+            {item["video_id"] for item in alias["selected_videos"]},
+            spinning_ids,
+        )
 
     def test_heavy_and_overlord_smashes_require_direct_variant_evidence(self):
         heavy = self.context_module.prepare_answer_context(

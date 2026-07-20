@@ -424,6 +424,24 @@
       "expected_strategy": "evidence_check",
       "expected_query_units": ["轻杀怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ048",
+      "query": "反手杀球怎么打",
+      "intent_summary": "把普通反手杀球识别为独立变体，同时保留反手侧与杀球家族，不能混入转圈杀、反手跳杀或正手杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手杀球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ049",
+      "query": "反手转圈杀怎么打",
+      "intent_summary": "把反手转圈杀识别为来球已过身后的特殊反手杀球变体，不退化为普通反手杀球或反手跳杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手转圈杀怎么打"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1381,6 +1399,25 @@
       "expected_constraints": {
         "shot_family": ["smash"],
         "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA055",
+      "query": "转圈杀怎么打",
+      "intent_summary": "把省略反手二字的常见问法仍识别为转圈杀独立变体，不泛化为普通杀球",
+      "expected_intent": {
+        "positive_query_contains": ["转圈杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_backhand_spin"],
         "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
