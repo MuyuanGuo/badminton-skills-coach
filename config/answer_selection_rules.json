@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "default_max_selected_videos": 16,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
@@ -161,6 +161,7 @@
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
         "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
         "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
+        "transition": ["过渡球", "过度球", "过渡动作", "正手过渡", "反手过渡", "正反手过渡", "过渡击球点", "过渡基础"],
         "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
         "deep_serve": ["发高远", "发后场", "偷后场", "高远发球"]
       },
@@ -183,7 +184,8 @@
       },
       "source_value_suppressions": {
         "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"],
-        "lift": ["对方挑球", "对手挑球", "对面挑球", "别人挑球", "逼迫对手进行挑球", "迫使对手挑球", "让对手挑球", "被迫挑球"]
+        "lift": ["对方挑球", "对手挑球", "对面挑球", "别人挑球", "逼迫对手进行挑球", "迫使对手挑球", "让对手挑球", "被迫挑球"],
+        "transition": ["攻防过渡", "轮转过渡", "阶段过渡"]
       },
       "source_value_additions": {
         "net_shot": ["网前"]
@@ -351,6 +353,14 @@
       },
       "unsupported_matches": ["unspecified_support", "incidental_support"],
       "failure_reason": "specific_lift_shot_family_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["transition"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_transition_shot_family_not_supported"
     }
   ],
   "focus_term_source_suppressions": {
@@ -439,7 +449,7 @@
       "basis": "01:20-01:26 明确说明该后点击球形成点杀式效果，但出球属于中前场处理。"
     },
     "7511934047901846841": {
-      "shot_family": ["clear", "drop", "lift"],
+      "shot_family": ["clear", "drop", "lift", "transition"],
       "basis": "00:08-00:38 分别讲反手高远、过渡和劈吊，01:18-01:31 明确讲从下往上完成反手挑球；该综合视频可按具体分段支持这些反手技术。"
     },
     "7226178331408928038": {
@@ -453,6 +463,16 @@
       "court_zone": ["forecourt"],
       "technique_variant": ["net_drop"],
       "basis": "00:00-00:32 明确讲正反手假挑真放的区分，以及做挑球时锁腕、向上处理和切削球头；可作为挑球与放网变化的进阶分段证据。"
+    },
+    "7060717442825309480": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["transition"],
+      "basis": "用户复核确认该视频讲反手过渡；00:00-01:19 口播说明立拍避免打高、按身后击球点调整握拍并让拍面向内包裹。"
+    },
+    "7344186576013905187": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["transition"],
+      "basis": "00:00-00:24 明确为没有反手过渡球基础的练习者设计：先找带包切的勾球手感，再逐渐抬高击球点和框架；ASR 将“反手”误写为“繁手”。"
     }
   },
   "incomplete_fragment_terms": [
@@ -492,6 +512,13 @@
     "pressure_state",
     "shot_direction"
   ],
+  "unrequested_ranking_value_priority": {
+    "default": 1,
+    "shot_family": {
+      "transition": 0,
+      "smash": 2
+    }
+  },
   "boundary_terms": {
     "pain_or_injury": [
       "疼",

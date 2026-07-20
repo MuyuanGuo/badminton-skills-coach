@@ -1985,6 +1985,24 @@ def selected_sort_key(entry, rules=None):
     }
     matched_fields = candidate.get("matched_fields", {})
 
+    value_priority_rules = rules.get(
+        "unrequested_ranking_value_priority", {}
+    )
+    default_value_priority = value_priority_rules.get("default", 1)
+    unrequested_value_priorities = [
+        value_priority_rules.get(axis_name, {}).get(
+            value, default_value_priority
+        )
+        for axis_name, scope_details in entry.get(
+            "unrequested_ranking_scope", {}
+        ).items()
+        for value in scope_details.get("values", [])
+    ]
+    unrequested_value_priority = min(
+        unrequested_value_priorities,
+        default=default_value_priority,
+    )
+
     def field_has_direct_term(field):
         return any(
             (
@@ -2016,6 +2034,7 @@ def selected_sort_key(entry, rules=None):
         entry.get("actor_context_rank", 2),
         symptom_match_rank,
         reviewed_evidence_rank,
+        unrequested_value_priority,
         -exact_constraint_count,
         mixed_constraint_count,
         focus_match_rank,

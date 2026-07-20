@@ -6,13 +6,13 @@
   "video_count": 407,
   "indexable_video_count": 352,
   "assigned_video_count": 352,
-  "multi_topic_video_count": 139,
+  "multi_topic_video_count": 140,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 86,
+      "video_count": 87,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -184,16 +184,60 @@
           ]
         },
         {
+          "name": "正反手过渡",
+          "keywords": [
+            "过渡球",
+            "过度球",
+            "过渡动作",
+            "正手过渡",
+            "反手过渡",
+            "正反手过渡",
+            "过渡击球点",
+            "过渡基础"
+          ],
+          "video_count": 4,
+          "ready_count": 4,
+          "is_fallback": false,
+          "representative_videos": [
+            {
+              "video_id": "7515625891511995706",
+              "title": "正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法",
+              "url": "https://www.douyin.com/video/7515625891511995706",
+              "confidence": "medium",
+              "category": "发力与身体运用",
+              "duration_seconds": 95.7,
+              "score": 18
+            },
+            {
+              "video_id": "7563513758061114875",
+              "title": "过渡击球点 简单来说就是放在外侧击球",
+              "url": "https://www.douyin.com/video/7563513758061114875",
+              "confidence": "medium",
+              "category": "握拍与基本动作",
+              "duration_seconds": 97.3,
+              "score": 10
+            },
+            {
+              "video_id": "7393550140465777960",
+              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
+              "url": "https://www.douyin.com/video/7393550140465777960",
+              "confidence": "medium",
+              "category": "握拍与基本动作",
+              "duration_seconds": 125.7,
+              "score": 9
+            }
+          ]
+        },
+        {
           "name": "反手后场",
           "keywords": [
             "反手高远",
             "反手后场",
-            "反手过渡",
             "反手杀球",
             "反拍"
           ],
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": false,
           "representative_videos": [
             {

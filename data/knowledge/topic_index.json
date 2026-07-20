@@ -1,6 +1,6 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v5",
+  "taxonomy_version": "topic-taxonomy-v6",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
@@ -10,13 +10,13 @@
   "assigned_video_count": 352,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 96,
-  "multi_topic_video_count": 139,
+  "multi_topic_video_count": 140,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 86,
+      "video_count": 87,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -514,11 +514,100 @@
           ]
         },
         {
+          "name": "正反手过渡",
+          "keywords": [
+            "过渡球",
+            "过度球",
+            "过渡动作",
+            "正手过渡",
+            "反手过渡",
+            "正反手过渡",
+            "过渡击球点",
+            "过渡基础"
+          ],
+          "context_any": [],
+          "is_fallback": false,
+          "video_count": 4,
+          "ready_count": 4,
+          "needs_visual_review_count": 0,
+          "video_ids": [
+            "7515625891511995706",
+            "7563513758061114875",
+            "7393550140465777960",
+            "7344186576013905187"
+          ],
+          "representative_videos": [
+            {
+              "video_id": "7515625891511995706",
+              "title": "正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法",
+              "url": "https://www.douyin.com/video/7515625891511995706",
+              "category": "发力与身体运用",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "正反手过渡 先掌握核心技术",
+              "score": 18,
+              "match_basis": {
+                "title": 2,
+                "focus": 2,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7563513758061114875",
+              "title": "过渡击球点 简单来说就是放在外侧击球",
+              "url": "https://www.douyin.com/video/7563513758061114875",
+              "category": "握拍与基本动作",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "过渡击球点 简单来说就是放在外侧击球",
+              "score": 10,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 1
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7393550140465777960",
+              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
+              "url": "https://www.douyin.com/video/7393550140465777960",
+              "category": "握拍与基本动作",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "日常纠错反手过渡 总结",
+              "score": 9,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7344186576013905187",
+              "title": "这个是一个思路，帮助没有过渡基础的朋友找到感觉，不能说两个技术感觉一模一样，但是手感非常的接近",
+              "url": "https://www.douyin.com/video/7344186576013905187",
+              "category": "训练与纠错",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "这个是一个思路",
+              "score": 6,
+              "match_basis": {
+                "title": 1,
+                "focus": 0,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            }
+          ]
+        },
+        {
           "name": "反手后场",
           "keywords": [
             "反手高远",
             "反手后场",
-            "反手过渡",
             "反手杀球",
             "反拍"
           ],
@@ -527,16 +616,14 @@
             "反拍"
           ],
           "is_fallback": false,
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 9,
+          "ready_count": 9,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7535400692573211962",
             "7550305145877155131",
             "7541623926234811705",
             "7055859367005949187",
-            "7393550140465777960",
-            "7515625891511995706",
             "7296314453379910947",
             "7248074193118547240",
             "7546109410041908538",
@@ -609,18 +696,18 @@
               "assignment_method": "rule_match"
             },
             {
-              "video_id": "7393550140465777960",
-              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
-              "url": "https://www.douyin.com/video/7393550140465777960",
+              "video_id": "7296314453379910947",
+              "title": "因为击球点不同我们人的姿态不一样，所以动作和大臂的幅度必然不一样",
+              "url": "https://www.douyin.com/video/7296314453379910947",
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
-              "topic": "日常纠错反手过渡 总结",
-              "score": 9,
+              "topic": "因为击球点不同我们人的姿态不一样",
+              "score": 5,
               "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 0
+                "title": 0,
+                "focus": 0,
+                "evidence": 5
               },
               "assignment_method": "rule_match"
             }

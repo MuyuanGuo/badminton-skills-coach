@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 33)
+        self.assertEqual(result["cases"], 34)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -289,6 +289,53 @@ class AnswerContextTests(unittest.TestCase):
                 self.selection_rules,
             ),
             ["specific_lift_shot_family_not_supported"],
+        )
+
+    def test_transition_is_a_distinct_action_with_direct_evidence(self):
+        constraints = self.context_module.query_constraints(
+            self.search_module,
+            "反手过渡球怎么打",
+            self.selection_rules,
+        )
+        self.assertEqual(
+            constraints,
+            {
+                "stroke_side": ["backhand"],
+                "shot_family": ["transition"],
+            },
+        )
+        context = self.context_module.prepare_answer_context(
+            "反手过渡球怎么打",
+            local_personalization=False,
+        )
+        self.assertEqual(
+            {item["video_id"] for item in context["selected_videos"]},
+            {
+                "7515625891511995706",
+                "7393550140465777960",
+                "7563513758061114875",
+                "7060717442825309480",
+                "7344186576013905187",
+                "7511934047901846841",
+            },
+        )
+        self.assertFalse(
+            {
+                "7535400692573211962",
+                "7541623926234811705",
+                "7550305145877155131",
+                "7499776424493075772",
+                "7523163965838003514",
+            }
+            & {item["video_id"] for item in context["selected_videos"]}
+        )
+        self.assertEqual(
+            self.context_module.required_constraint_support_failures(
+                {"shot_family": ["transition"]},
+                {"shot_family": "incidental_support"},
+                self.selection_rules,
+            ),
+            ["specific_transition_shot_family_not_supported"],
         )
 
     def test_doubles_net_pressure_keeps_front_sources_and_rejects_smashes(self):
@@ -1416,11 +1463,8 @@ class AnswerContextTests(unittest.TestCase):
             backhand["question_interpretation"]["strategy"],
             "scenario_focused_evidence",
         )
-        self.assertEqual(
-            backhand_by_id["7060717442825309480"]["claim_scope_policy"],
-            "exact_question_scope",
-        )
         for video_id in [
+            "7060717442825309480",
             "7499776424493075772",
             "7098897570482670888",
             "7535400692573211962",

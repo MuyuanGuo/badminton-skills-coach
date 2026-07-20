@@ -789,6 +789,42 @@ class SearchKnowledgeTests(unittest.TestCase):
                 manifest[video_id]["retrieval_policy_reasons"],
             )
 
+    def test_backhand_transition_requires_direct_transition_evidence(self):
+        payload = self.search_module.search(
+            "反手过渡球怎么打",
+            manifest_limit=400,
+            local_personalization=False,
+        )
+        result_ids = {item["video_id"] for item in payload["results"]}
+        self.assertEqual(
+            result_ids,
+            {
+                "7515625891511995706",
+                "7393550140465777960",
+                "7563513758061114875",
+                "7060717442825309480",
+                "7344186576013905187",
+                "7511934047901846841",
+            },
+        )
+        manifest = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+        }
+        self.assertIn("7541623926234811705", manifest)
+        for video_id in [
+            "7535400692573211962",
+            "7541623926234811705",
+            "7550305145877155131",
+        ]:
+            if video_id not in manifest:
+                continue
+            self.assertFalse(manifest[video_id]["retrieval_policy_eligible"])
+            self.assertIn(
+                "explicit_constraint_conflict:shot_family",
+                manifest[video_id]["retrieval_policy_reasons"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
