@@ -1,12 +1,44 @@
 {
   "version": 1,
   "created_at": "2026-07-17T00:00:00+00:00",
-  "updated_at": "2026-07-18T06:10:20.588716+00:00",
+  "updated_at": "2026-07-21T19:20:40.313257+00:00",
   "baseline_index_count": 472,
   "counts": {
-    "classified_teaching": 1
+    "classified_teaching": 2
   },
   "items": [
+    {
+      "video_id": "7664908274752137146",
+      "status": "classified_teaching",
+      "decision": "保留：教学",
+      "decision_reason": "标题明确为后场基础教学，说明进阶动作仅作为目标，应循序训练；保留并进入转写队列。",
+      "discovered_at": "2026-07-21T19:20:40.025131+00:00",
+      "resolved_at": "2026-07-21T19:20:40.313257+00:00",
+      "resolution_note": "标题明确为后场基础教学，说明进阶动作仅作为目标，应循序训练；保留并进入转写队列。",
+      "classification": {
+        "video_id": "7664908274752137146",
+        "url": "https://www.douyin.com/video/7664908274752137146",
+        "title": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+        "teaching_candidate": "unknown",
+        "raw_text": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+        "author_status": "主页最新作品区发现",
+        "decision": "保留：教学",
+        "decision_reason": "标题明确为后场基础教学，说明进阶动作仅作为目标，应循序训练；保留并进入转写队列。",
+        "primary_category": "",
+        "tags": "后场技术；训练与纠错",
+        "classification_rules_version": 2,
+        "classification_rules_hash": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1",
+        "classification_signals": {
+          "ad_strong_content": false,
+          "ad_strong_hashtag_only": false,
+          "equipment": false,
+          "commerce": false,
+          "teaching": false,
+          "teaching_hashtag": true,
+          "explicit_non_teaching": false
+        }
+      }
+    },
     {
       "video_id": "7663523942439940453",
       "status": "classified_teaching",

@@ -2,17 +2,17 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-21T07:05:38.144664+00:00",
-  "video_count": 407,
-  "indexable_video_count": 352,
-  "assigned_video_count": 352,
-  "multi_topic_video_count": 147,
+  "source_updated_at": "2026-07-21T19:41:04.105743+00:00",
+  "video_count": 408,
+  "indexable_video_count": 353,
+  "assigned_video_count": 353,
+  "multi_topic_video_count": 148,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 100,
+      "video_count": 102,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -109,8 +109,8 @@
             "举拍",
             "框架"
           ],
-          "video_count": 39,
-          "ready_count": 39,
+          "video_count": 41,
+          "ready_count": 41,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -996,6 +996,15 @@
           "is_fallback": false,
           "representative_videos": [
             {
+              "video_id": "7067722128413543680",
+              "title": "一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特…",
+              "url": "https://www.douyin.com/video/7067722128413543680",
+              "confidence": "medium",
+              "category": "步法与移动",
+              "duration_seconds": 210.1,
+              "score": 12
+            },
+            {
               "video_id": "7084422988291935523",
               "title": "腰腹的使用是小而快的爆发力，不要转的太狠太大",
               "url": "https://www.douyin.com/video/7084422988291935523",
@@ -1011,15 +1020,6 @@
               "confidence": "visual_reviewed",
               "category": "发力与身体运用",
               "duration_seconds": 12.4,
-              "score": 9
-            },
-            {
-              "video_id": "7067722128413543680",
-              "title": "一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特…",
-              "url": "https://www.douyin.com/video/7067722128413543680",
-              "confidence": "medium",
-              "category": "步法与移动",
-              "duration_seconds": 210.1,
               "score": 9
             }
           ]
@@ -1410,7 +1410,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 20,
+      "video_count": 21,
       "subtopics": [
         {
           "name": "发小球",
@@ -1461,8 +1461,8 @@
             "发球变化",
             "隐蔽"
           ],
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 12,
+          "ready_count": 12,
           "is_fallback": false,
           "representative_videos": [
             {

@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-07-18T06:39:43.480960+00:00",
+  "generated_at": "2026-07-21T19:38:18.837282+00:00",
   "classification_rules": {
-    "version": 2,
-    "sha256": "f15a6a54415b9753c72d5f479a70075805ee94be4eadb14488ca7b4cc37d76d1"
+    "version": 3,
+    "sha256": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7"
   },
-  "catalog_videos": 473,
-  "previous_kept": 352,
+  "catalog_videos": 474,
+  "previous_kept": 353,
   "effective_counts": {
-    "保留：教学": 352,
+    "保留：教学": 353,
     "排除：广告/器材推广": 17,
     "排除：非教学": 104
   },

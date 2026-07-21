@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `407`
-- Assigned videos: `352`
-- Multi-topic videos: `147`
+- Videos: `408`
+- Assigned videos: `353`
+- Multi-topic videos: `148`
 
 ## How To Use
 
@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `100`
+- Matched videos: `102`
 
 - **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
@@ -34,7 +34,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
   - 不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来 [ready] https://www.douyin.com/video/7567155406117533051
   - 重杀框架 可以和期一起看，不同的框架可以决定不同的杀球 [ready] https://www.douyin.com/video/7659991105622862457
-- **架拍与后场框架**: `39` videos, `39` ready, `0` needs visual review.
+- **架拍与后场框架**: `41` videos, `41` ready, `0` needs visual review.
   Keywords: 架拍, 顶肘, 引拍, 抬拍, 举拍, 框架
   Representative videos:
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
@@ -193,9 +193,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
   Representative videos:
+  - 一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特点，注意从引拍到击球为旋转发力，击球到动作结束为旋转卸力 [ready] https://www.douyin.com/video/7067722128413543680
   - 腰腹的使用是小而快的爆发力，不要转的太狠太大 [ready] https://www.douyin.com/video/7084422988291935523
   - 放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 [ready] https://www.douyin.com/video/7552759261840952636
-  - 一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特点，注意从引拍到击球为旋转发力，击球到动作结束为旋转卸力 [ready] https://www.douyin.com/video/7067722128413543680
 - **腰腹、核心与转体**: `20` videos, `20` ready, `0` needs visual review.
   Keywords: 腰腹, 核心, 转体, 转髋, 身体旋转
   Representative videos:
@@ -264,7 +264,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 单双打发球、接发、变化和发接发目的性。
 
-- Matched videos: `20`
+- Matched videos: `21`
 
 - **发小球**: `5` videos, `5` ready, `0` needs visual review.
   Keywords: 发小球, 反手发球, 正手发球
@@ -272,7 +272,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 正手发小球的教学，以前的作品里有，没有好的发球，只有合适的发球 [ready] https://www.douyin.com/video/7254755365995285812
   - 发小球进阶 大家总是关注球飞的贴不贴，贴当然重要，但是力量控制到过网能落也很重要 [ready] https://www.douyin.com/video/7589590613499595185
   - 保姆级反手发球教学 首先就是这三位都是年训学员，天天在一起关系比较好，所以说话自由一点，大家不要喷我！再一个就是时长比较长，啰嗦，但是每次教学大家都说是演员，所以我发一个相对完整的给大家看看，平时都是发精剪的，但是这种长的你们不喜欢看！ [ready] https://www.douyin.com/video/7626127268884067249
-- **发后场与发球变化**: `11` videos, `11` ready, `0` needs visual review.
+- **发后场与发球变化**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 发高远, 发后场, 偷后场, 发球变化, 隐蔽
   Representative videos:
   - 发球变化 发球隐蔽是非常重要的 [ready] https://www.douyin.com/video/7483346020332522812

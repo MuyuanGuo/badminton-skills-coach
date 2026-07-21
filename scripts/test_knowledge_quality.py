@@ -163,7 +163,7 @@ class KnowledgeQualityTests(unittest.TestCase):
                 {
                     "start": 1,
                     "end": 2,
-                    "text": "先架盘，再向前挥帕完成机球，用顿地炮。",
+                    "text": "先架盘握盘挥盘，再贴盘做隐拍，向前挥帕完成机球，用顿地炮。",
                 },
                 {
                     "start": 2,
@@ -175,11 +175,11 @@ class KnowledgeQualityTests(unittest.TestCase):
         )
         self.assertEqual(
             segments[0]["text"],
-            "先架拍，再向前挥拍完成击球，用遁地炮。",
+            "先架拍握拍挥拍，再贴拍做引拍，向前挥拍完成击球，用遁地炮。",
         )
         self.assertEqual(
             segments[0]["raw_text"],
-            "先架盘，再向前挥帕完成机球，用顿地炮。",
+            "先架盘握盘挥盘，再贴盘做隐拍，向前挥帕完成机球，用顿地炮。",
         )
         self.assertEqual(segments[1]["text"], "遁地炮也是自动转写错词。")
         self.assertEqual(segments[1]["raw_text"], "蹲地炮也是自动转写错词。")

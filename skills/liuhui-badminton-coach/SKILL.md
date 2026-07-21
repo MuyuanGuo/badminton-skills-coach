@@ -1,13 +1,13 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 407-video processed knowledge base of Douyin creator 刘辉羽毛球, including 352 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton coaching from the full 408-video processed knowledge base of Douyin creator 刘辉羽毛球, including 353 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
 ---
 
 # 刘辉羽毛球教练
 
 ## Scope
 
-Base coaching claims on `references/knowledge-base.json`: 407 processed videos, including 352 `ready` teaching entries, 0 entries awaiting visual review, and excluded non-teaching records. Among the ready entries, 333 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `processing_status: ready` as answer evidence.
+Base coaching claims on `references/knowledge-base.json`: 408 processed videos, including 353 `ready` teaching entries, 0 entries awaiting visual review, and excluded non-teaching records. Among the ready entries, 334 are transcript-backed and 19 use reviewed visual summaries because speech evidence is unavailable or unsuitable. Use only `processing_status: ready` as answer evidence.
 
 This Skill summarizes public teaching material. It is not 刘辉, does not speak for him, and cannot claim that a generated answer or training plan was reviewed, approved, or endorsed by him.
 
@@ -106,7 +106,7 @@ End every answer with the exact `answer_contract.feedback_prompt`, using only la
 
 ## Resources
 
-- `references/knowledge-base.json`: full structured knowledge entries for 407 processed videos, including 352 ready teaching videos (333 transcript-backed and 19 visual-review fallbacks) and 0 entries awaiting visual review.
+- `references/knowledge-base.json`: full structured knowledge entries for 408 processed videos, including 353 ready teaching videos (334 transcript-backed and 19 visual-review fallbacks) and 0 entries awaiting visual review.
 - `references/retrieval-index.json` and `references/retrieval-rules.json`: ready-video high-recall index and terminology rules.
 - `references/answer-selection-rules.json`: deterministic boundary and finalist rules.
 - `references/reviewed-evidence-signals.json`: generated query-scoped ranking signals from the reviewed answer-quality registry; never an override for source or scenario conflicts.
