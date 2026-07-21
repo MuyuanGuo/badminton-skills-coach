@@ -3920,6 +3920,336 @@
           "转圈杀就是反手跳杀"
         ]
       }
+    },
+    {
+      "case_id": "AQ050",
+      "query": "平高球怎么打",
+      "case_type": "evidence_boundary",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_missing_named_action_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "当前知识库只有一条平高球发力分段和一条正反手纯动作示范；保留有限回答，排除接对方平高球、拦截平高球和比赛解说中的顺带提及。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7125615679402724623", "7498295344284093755"],
+        "required_video_ids": ["7125615679402724623", "7498295344284093755"],
+        "irrelevant_video_ids": [
+          "7066596981992394025",
+          "7193151905139395872",
+          "7064753436809514281",
+          "7105205741954321699",
+          "7055130343476710667",
+          "7054025391601650948",
+          "7376838935164505384",
+          "7252154554828033295"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ050-P1",
+            "description": "现有直接文字只支持平高球采用手指主导的小边甩发力，身体主要负责维持稳定；不能把身体主导的大边甩写成平高球的唯一默认发力。",
+            "acceptable_terms": ["手指主导", "小边甩", "身体维持", "不是大边甩"],
+            "evidence_video_ids": ["7125615679402724623"]
+          },
+          {
+            "point_id": "AQ050-P2",
+            "description": "手指主导时可以从放松到捏紧完成发力；来源只讲发力模式，没有完整说明平高球的飞行线路、击球点和拍面流程。",
+            "acceptable_terms": ["放松捏紧", "发力模式", "没有完整", "击球点"],
+            "evidence_video_ids": ["7125615679402724623"]
+          },
+          {
+            "point_id": "AQ050-P3",
+            "description": "纯动作视频只可用于观察正手和反手后场平高球示范，不能从无口播画面推导具体手部机制或伪造时间戳。",
+            "acceptable_terms": ["正手", "反手", "纯动作示范", "不能推导", "无时间戳"],
+            "evidence_video_ids": ["7498295344284093755"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ050-B1",
+            "description": "本方打平高球、处理对手平高球、用步法拦截平高球和比赛中顺带使用平高球是不同证据角色；后三类不能证明平高球击球动作。",
+            "acceptable_terms": ["不同证据角色", "处理对手", "拦截", "不能证明动作"]
+          }
+        ],
+        "forbidden_claims": [
+          "处理对手平高球的视频可以证明本方怎么打平高球",
+          "现有文字来源完整讲解了平高球的所有动作",
+          "纯动作示范能够证明未经复核的拍面和手指细节"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ051",
+      "query": "假挑真放怎么做",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_missing_named_action_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "将正反手假挑真放路由到直接教学分段，并把明确说后续再教学的纯展示预告设为硬负例。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7151961376448138531"],
+        "required_video_ids": ["7151961376448138531"],
+        "irrelevant_video_ids": [
+          "7151589626031901992",
+          "7523163965838003514",
+          "7511934047901846841",
+          "7252154554828033295"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ051-P1",
+            "description": "假挑真放同时覆盖正手和反手，但必须区分真正向上挑球与最终切削放网，不能把两种触球写成同一动作。",
+            "acceptable_terms": ["正手", "反手", "向上挑球", "切削放网", "不同动作"],
+            "evidence_video_ids": ["7151961376448138531"]
+          },
+          {
+            "point_id": "AQ051-P2",
+            "description": "真正做挑球时保持手腕锁住；反手拇指顶斜棱，并做轻微向上的动作以保持击球稳定。",
+            "acceptable_terms": ["手腕锁住", "拇指斜棱", "向上", "稳定"],
+            "evidence_video_ids": ["7151961376448138531"]
+          },
+          {
+            "point_id": "AQ051-P3",
+            "description": "切削放网阶段不要主动加入手指和手腕发力，应从头到尾锁住手腕并按来源所示方向削击；否则球容易飞起。",
+            "acceptable_terms": ["手指手腕不要发力", "锁住", "削击", "球会飞"],
+            "evidence_video_ids": ["7151961376448138531"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ051-B1",
+            "description": "715158... 只展示动作并明确说随后教学奉上，不能从该预告补写机制；普通挑球来源也不能单独证明假挑真放。",
+            "acceptable_terms": ["只展示", "随后教学", "不能补写", "普通挑球不能证明"]
+          }
+        ],
+        "forbidden_claims": [
+          "假挑真放需要主动甩腕加力",
+          "纯展示预告完整讲解了假挑真放",
+          "普通挑球动作可以直接证明假挑真放的切削细节"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ052",
+      "query": "动态低架怎么做",
+      "case_type": "technical_action",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_missing_named_action_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "将作者标题所称动态低架映射到同视频的方法二，只使用已复核的后场准备和绕拍分段，不混入升框架或泛动态发力。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7589749293205363633"],
+        "required_video_ids": ["7589749293205363633"],
+        "irrelevant_video_ids": [
+          "7109288333884329231",
+          "7641533740292048049",
+          "7582017752145136945",
+          "7551459420703837498"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ052-P1",
+            "description": "问题来自球与球拍都从身体前方移动：球拍一边抬一边追，等拍头超过来球时已经失去合适发力位置。",
+            "acceptable_terms": ["从前面", "一边追", "超过来球", "失去发力位置"],
+            "evidence_video_ids": ["7589749293205363633"]
+          },
+          {
+            "point_id": "AQ052-P2",
+            "description": "动态低架对应基础较弱者的方法二：不要从前面抬拍，先让球拍从下方向后绕到身体后方，再从该位置向前击球，把动作做完整。",
+            "acceptable_terms": ["方法二", "不从前面抬", "从下方向后", "动作完整"],
+            "evidence_video_ids": ["7589749293205363633"]
+          },
+          {
+            "point_id": "AQ052-P3",
+            "description": "与快速框架的差别是：快速框架瞬间把球拍送到位以给挥拍留时间，但提前摆好框架不利于充分发力；两者按发力基础选择。",
+            "acceptable_terms": ["快速框架", "瞬间到位", "留给挥拍", "不利于发力", "按基础选择"],
+            "evidence_video_ids": ["7589749293205363633"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ052-B1",
+            "description": "这条来源只教后场准备路线和框架选择，不足以替代某个具体后场球种的完整击球、拍面和触球教学；升框架和泛动态发力也不是动态低架。",
+            "acceptable_terms": ["只教准备", "框架选择", "不能替代完整击球", "不是升框架"]
+          }
+        ],
+        "forbidden_claims": [
+          "动态低架就是从身体前方快速抬拍",
+          "升框架可以直接证明动态低架",
+          "现有来源完整讲解了所有后场球的触球细节"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ053",
+      "query": "远网怎么打",
+      "case_type": "tactics",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_ambiguous_term_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "远网是深度与处理场景的统称，不是单一手法；泛问必须先说明歧义，再分平搓远网、中路远网分球和防远网转推。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7411850466457292084", "7262546080133401890"],
+        "required_video_ids": [
+          "7411850466457292084",
+          "7262546080133401890",
+          "7076257912192060707",
+          "7258462271670586658"
+        ],
+        "irrelevant_video_ids": [
+          "7092959332047785250",
+          "7500519808157371711",
+          "7252154554828033295",
+          "7154558892742151464"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ053-P1",
+            "description": "远网不是单一动作，至少要区分平搓远网、中路远网分球、防远网转推和远网吊球；泛问不能只给其中一种手法。",
+            "acceptable_terms": ["不是单一动作", "平搓远网", "中路远网", "防远网转推", "远网吊球"],
+            "evidence_video_ids": [
+              "7411850466457292084",
+              "7262546080133401890",
+              "7076257912192060707",
+              "7258462271670586658"
+            ]
+          },
+          {
+            "point_id": "AQ053-P2",
+            "description": "平搓远网用于来球较平、不能下压也不能近网搓的场景；正手以手腕类似拧灯泡控制拍面斜上和挥拍斜下，形成较平出球，反手再由手指随手腕介入加速。",
+            "acceptable_terms": ["来球很平", "不能压", "拧灯泡", "拍面斜上", "挥拍斜下", "手指加速"],
+            "evidence_video_ids": ["7411850466457292084"]
+          },
+          {
+            "point_id": "AQ053-P3",
+            "description": "中路远网面对对手中后场抓推时，不能盲目搓、挡或平推；先保持推球框架，再提肘、放低拍头完成正反手分球，并用拍面高度控制线路高低。",
+            "acceptable_terms": ["中路", "不能盲目", "推球框架", "提肘", "分球", "拍面高度"],
+            "evidence_video_ids": ["7262546080133401890"]
+          },
+          {
+            "point_id": "AQ053-P4",
+            "description": "边线远网与中路远网的可用角度不同：边线可勾或平推，中路勾球和平推更容易出界，因此要用分球限制对手抓推。",
+            "acceptable_terms": ["边线", "中路", "勾球", "平推", "出界", "分球"],
+            "evidence_video_ids": ["7076257912192060707"]
+          },
+          {
+            "point_id": "AQ053-P5",
+            "description": "防远网转推时，对方回球较平不要盲目多冲一步；应让出发力位，必要时由小臂和手指补发力，并用两侧喂球练习左右移动后再出球。",
+            "acceptable_terms": ["不要多冲", "让出发力位", "小臂和手指", "两侧喂球", "左右移动"],
+            "evidence_video_ids": ["7258462271670586658"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ053-B1",
+            "description": "各远网分支的来球条件、拍面和战术目标不同，不能把平搓手法、中路分球和防守转推拼成一个通用动作；杀上网后处理对手远网也应保留该前冲场景。",
+            "acceptable_terms": ["分支", "条件不同", "不能拼成", "杀上网场景"]
+          }
+        ],
+        "forbidden_claims": [
+          "远网只有平搓一种打法",
+          "中路远网可以不看对手取位一律平推",
+          "杀上网后的远网处理可以证明所有远网动作"
+        ]
+      }
+    },
+    {
+      "case_id": "AQ054",
+      "query": "杀上网怎么练",
+      "case_type": "training_plan",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_named_sequence_audit",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "将杀上网识别为杀球后的特定向前衔接，不再退化成泛上网或泛杀球；保留核心交叉步、混双轮转条件、中路线路和软压进阶。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7065157571816000809", "7092959332047785250"],
+        "required_video_ids": [
+          "7065157571816000809",
+          "7092959332047785250",
+          "7087759120761228578",
+          "7093706918492917033"
+        ],
+        "irrelevant_video_ids": [
+          "7142313105324870950",
+          "7099644893269839144",
+          "7445495930280856892",
+          "7195014413932367116",
+          "7659348110628345210",
+          "7252154554828033295"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ054-P1",
+            "description": "只考虑杀球后继续向前衔接时，直接步法来源给出的核心是交叉步；这不是所有杀球后的通用回位。",
+            "acceptable_terms": ["只考虑向前", "交叉步", "不是通用回位"],
+            "evidence_video_ids": ["7065157571816000809"]
+          },
+          {
+            "point_id": "AQ054-P2",
+            "description": "混双女选手从后场轮转向前时，可打斜线或中路杀上网后直接前走，把后场交给男队友；斜线和中路用于限制对手回球角度，必须保留搭档覆盖条件。",
+            "acceptable_terms": ["混双", "女选手", "斜线", "中路", "男队友覆盖"],
+            "evidence_video_ids": ["7087759120761228578"]
+          },
+          {
+            "point_id": "AQ054-P3",
+            "description": "杀上网到中路拿球时要按双方位置选择分边线路；由于身体带着从后向前惯性，推球若被抓容易立刻陷入防守反击。",
+            "acceptable_terms": ["中路拿球", "分边", "从后向前惯性", "被抓推", "防守反击"],
+            "evidence_video_ids": ["7092959332047785250"]
+          },
+          {
+            "point_id": "AQ054-P4",
+            "description": "位置不好时可先用速度较慢的软压保持下压和脚下衔接，再逐步进入杀上网；它支持训练降速，不证明基础步法。",
+            "acceptable_terms": ["位置不好", "软压", "慢一点", "脚下衔接", "不证明步法"],
+            "evidence_video_ids": ["7093706918492917033"]
+          },
+          {
+            "point_id": "AQ054-P5",
+            "description": "默认 15 分钟练习应按热身、交叉步技术分解、固定线路或二选一衔接、自测组成，并给出三天修正、两周进阶和动作质量下降时停止的标准。",
+            "acceptable_terms": ["15 分钟", "热身", "技术分解", "二选一", "自测", "三天", "两周", "停止"],
+            "evidence_video_ids": [
+              "7065157571816000809",
+              "7092959332047785250",
+              "7087759120761228578",
+              "7093706918492917033"
+            ]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ054-B1",
+            "description": "泛上网步法、泛杀球动作、原地重杀和比赛解说中的顺带提及不能证明杀上网；单双打覆盖不同，混双轮转规则不得推广为单打默认。",
+            "acceptable_terms": ["泛上网不能证明", "泛杀球不能证明", "单双打不同", "混双不能推广"]
+          }
+        ],
+        "forbidden_claims": [
+          "所有杀球后都必须立即交叉步冲到网前",
+          "混双女选手杀上网后不需要搭档覆盖后场",
+          "泛上网步法可以直接证明杀上网专项"
+        ]
+      }
     }
   ]
 }

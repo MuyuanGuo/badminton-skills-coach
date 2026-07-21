@@ -442,6 +442,51 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["反手转圈杀怎么打"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ050",
+      "query": "平高球怎么打",
+      "intent_summary": "把平高球识别为独立命名球种，只允许有限发力和示范证据，不退化为高远球或处理对手平高球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["平高球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ051",
+      "query": "假挑真放怎么做",
+      "intent_summary": "把假挑真放识别为挑球与放网组合的命名变体，并排除只展示后承诺再教学的预告来源",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["假挑真放怎么做"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ052",
+      "query": "动态低架怎么做",
+      "intent_summary": "把动态低架识别为后场准备框架的独立变体，不混入升框架、快速框架或泛动态发力",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["动态低架怎么做"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ053",
+      "query": "远网怎么打",
+      "intent_summary": "把远网识别为包含多种手法和战术场景的歧义统称，必须分支回答而不是静默收窄",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["远网怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ054",
+      "query": "杀上网怎么练",
+      "intent_summary": "把杀上网识别为杀球后的特定向前衔接并保留练习请求，不退化为泛上网步法或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["杀上网怎么练"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1419,6 +1464,128 @@
         "shot_family": ["smash"],
         "technique_variant": ["smash_backhand_spin"],
         "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA056",
+      "query": "平高怎么打",
+      "intent_summary": "把平高简称映射到平高球独立球种，不退化为泛高远球",
+      "expected_intent": {
+        "positive_query_contains": ["平高"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["flat_clear"],
+        "technique_variant": ["flat_clear"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA057",
+      "query": "动态低架拍怎么做",
+      "intent_summary": "把动态低架拍别名映射到动态低架独立框架，不误解为泛架拍",
+      "expected_intent": {
+        "positive_query_contains": ["动态低架拍"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "technique_variant": ["rear_dynamic_low_frame"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA058",
+      "query": "平搓远网怎么打",
+      "intent_summary": "把平搓远网识别为远网中的独立手法，不混入中路分球或防远网转推",
+      "expected_intent": {
+        "positive_query_contains": ["平搓远网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["far_net_flat_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA059",
+      "query": "中路远网怎么处理",
+      "intent_summary": "把中路远网识别为推球框架下的分球和线路分支，不退化为所有远网",
+      "expected_intent": {
+        "positive_query_contains": ["中路远网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "technique_variant": ["far_net_middle_split"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA060",
+      "query": "防远网转推怎么练",
+      "intent_summary": "把防远网转推识别为远网中的防守转推训练分支，并保留练习请求",
+      "expected_intent": {
+        "positive_query_contains": ["防远网转推"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "technique_variant": ["far_net_defense_to_push"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA061",
+      "query": "远网吊球怎么打",
+      "intent_summary": "把远网吊球识别为吊球分支，不混入平搓远网、中路远网或防远网转推",
+      "expected_intent": {
+        "positive_query_contains": ["远网吊球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "technique_variant": ["far_net_drop"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA062",
+      "query": "杀完上网怎么练",
+      "intent_summary": "把杀完上网别名映射到杀上网专项并保留练习请求，不退化为泛上网",
+      "expected_intent": {
+        "positive_query_contains": ["杀完上网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "technique_variant": ["kill_to_net"]
       },
       "expected_target_actor": "player"
     }

@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 49)
+        self.assertEqual(result["cases"], 54)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -1732,9 +1732,7 @@ class AnswerContextTests(unittest.TestCase):
         self.assertEqual(
             net_drop_by_id["7524557392328461627"]["role"], "core"
         )
-        self.assertEqual(
-            net_drop_by_id["7092959332047785250"]["role"], "supporting"
-        )
+        self.assertNotIn("7092959332047785250", net_drop_by_id)
 
         net_push = self.context_module.prepare_answer_context(
             "推球怎么练？",
@@ -2108,6 +2106,103 @@ class AnswerContextTests(unittest.TestCase):
             {item["video_id"] for item in alias["selected_videos"]},
             spinning_ids,
         )
+
+    def test_named_missing_actions_use_direct_sources_and_preserve_boundaries(self):
+        expected = {
+            "平高球怎么打": {
+                "7498295344284093755",
+                "7125615679402724623",
+            },
+            "假挑真放怎么做": {"7151961376448138531"},
+            "动态低架怎么做": {"7589749293205363633"},
+            "远网怎么打": {
+                "7411850466457292084",
+                "7262546080133401890",
+                "7076257912192060707",
+                "7258462271670586658",
+            },
+            "杀上网怎么练": {
+                "7065157571816000809",
+                "7092959332047785250",
+                "7087759120761228578",
+                "7093706918492917033",
+            },
+        }
+        contexts = {}
+        for query, expected_ids in expected.items():
+            context = self.context_module.prepare_answer_context(
+                query,
+                local_personalization=False,
+                include_rejected=True,
+            )
+            contexts[query] = context
+            self.assertEqual(
+                {item["video_id"] for item in context["selected_videos"]},
+                expected_ids,
+            )
+
+        flat_clear_rejected = {
+            item["video_id"]
+            for item in contexts["平高球怎么打"]["rejected_candidates"]
+        }
+        self.assertTrue(
+            {
+                "7066596981992394025",
+                "7193151905139395872",
+                "7064753436809514281",
+                "7105205741954321699",
+                "7055130343476710667",
+                "7054025391601650948",
+            }.issubset(flat_clear_rejected)
+        )
+
+        fake_rejected = {
+            item["video_id"]
+            for item in contexts["假挑真放怎么做"]["rejected_candidates"]
+        }
+        self.assertIn("7151589626031901992", fake_rejected)
+
+        far_net = contexts["远网怎么打"]
+        self.assertEqual(
+            [item["name"] for item in far_net["question_interpretation"]["ambiguities"]],
+            ["far_net_context"],
+        )
+
+        kill_to_net_rejected = {
+            item["video_id"]
+            for item in contexts["杀上网怎么练"]["rejected_candidates"]
+        }
+        self.assertTrue(
+            {
+                "7142313105324870950",
+                "7099644893269839144",
+                "7445495930280856892",
+                "7195014413932367116",
+                "7659348110628345210",
+                "7252154554828033295",
+            }.issubset(kill_to_net_rejected)
+        )
+
+    def test_far_net_subtypes_are_mutually_scoped(self):
+        cases = {
+            "平搓远网怎么打": {"7411850466457292084"},
+            "中路远网怎么处理": {
+                "7262546080133401890",
+                "7076257912192060707",
+            },
+            "防远网转推怎么练": {"7258462271670586658"},
+            "远网吊球怎么打": {"7093706918492917033"},
+        }
+        for query, expected_ids in cases.items():
+            context = self.context_module.prepare_answer_context(
+                query,
+                local_personalization=False,
+            )
+            self.assertEqual(
+                {item["video_id"] for item in context["selected_videos"]},
+                expected_ids,
+            )
+            self.assertEqual(context["question_interpretation"]["ambiguities"], [])
 
     def test_heavy_and_overlord_smashes_require_direct_variant_evidence(self):
         heavy = self.context_module.prepare_answer_context(

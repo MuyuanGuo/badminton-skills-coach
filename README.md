@@ -9,7 +9,7 @@
 
 `Badminton Skills Coach` 把“刘辉羽毛球”的公开抖音教学内容整理成可检索、可引用、可维护的 Codex Skill。它适合用来咨询羽毛球技术、战术、训练和纠错问题，并尽量给出对应视频、时间戳与证据边界。
 
-你正在查看 `develop` 分支，当前开发版本是 **1.1.1-dev.1**，发布状态为 **unreleased**。这里提供的是下一版本的开发快照，不是稳定版本；普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
+你正在查看 `develop` 分支。它是持续集成分支，不代表任何稳定版本。当前开发版本是 **1.1.1-dev.1**，发布状态为 **unreleased**；普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
 
 ## 当前状态
 
@@ -236,7 +236,7 @@ python3 scripts/promote_feedback.py --help
 - 维护脚本变更：覆盖失败恢复、路径安全和幂等性。
 - 文档变更：确认安装命令、链接和版本号仍有效。
 
-提交前至少运行“验证”章节中的核心命令。Pull Request 目标分支为 `develop`；正式版本通过 `develop -> main` 的发布 PR 进入稳定分支。
+提交前至少运行“验证”章节中的核心命令。Pull Request 目标分支为 `develop`；该分支的 README 必须保持开发版版本号和 `unreleased` 状态。只有正式版本通过 `develop -> main` 的发布 PR 时，才切换为稳定版文案。
 
 ## 队列状态
 
