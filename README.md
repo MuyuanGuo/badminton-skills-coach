@@ -1,20 +1,17 @@
 # Badminton Skills Coach / 刘辉羽毛球教练 Skill
 
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
-[![Branch: develop](https://img.shields.io/badge/branch-develop-f0ad4e.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)
-[![Status: unreleased](https://img.shields.io/badge/status-unreleased-f0ad4e.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)
+[![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
 `Badminton Skills Coach` 把“刘辉羽毛球”的公开抖音教学内容整理成可检索、可引用、可维护的 Codex Skill。它适合用来咨询羽毛球技术、战术、训练和纠错问题，并尽量给出对应视频、时间戳与证据边界。
 
-你正在查看 `develop` 分支。它是持续集成分支，不代表任何稳定版本。当前开发版本是 **1.2.0-dev.1**，发布状态为 **unreleased**；普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
+这是 **1.2.0 稳定版**。GitHub `main` 分支和 [`v1.2.0`](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.2.0) Release 提供当前正式版本；`develop` 用于后续增量维护。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
 
 ## 当前状态
 
-- 当前分支：`develop`
-- 当前开发版本：`1.2.0-dev.1`
-- 发布状态：`unreleased`（开发快照，不提供稳定版保证）
-- 稳定版入口：[`main`](https://github.com/MuyuanGuo/badminton-skills-coach/tree/main) 和 [GitHub Releases](https://github.com/MuyuanGuo/badminton-skills-coach/releases)
+- 稳定版：`main` / `v1.2.0`
+- 开发分支：`develop`
 - 获取到的抖音公开视频：`474` 条
 - 已排除非教学/广告器材内容：`121` 条
 - 已加入 Skill 知识库的教学视频：`353` 条
@@ -40,16 +37,20 @@
 
 日常使用只需要 Python 3.10 或更新版本，不需要 `OPENAI_API_KEY`，也不需要安装转写依赖。
 
-### 安装当前开发版
+### 安装稳定版
 
 ```bash
-git clone --branch develop https://github.com/MuyuanGuo/badminton-skills-coach.git
-cd badminton-skills-coach
-python3 scripts/install_skill.py --dry-run
-python3 scripts/install_skill.py
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.0/liuhui-badminton-coach-v1.2.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.2.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.0/SHA256SUMS.txt \
+  -o /tmp/SHA256SUMS.txt
+(cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
+install_dir="$(mktemp -d)"
+unzip -q /tmp/liuhui-badminton-coach-v1.2.0.zip -d "$install_dir"
+python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ```
 
-这会安装当前 `develop` 分支的未发布内容。需要稳定版时，请使用 [`main` 分支](https://github.com/MuyuanGuo/badminton-skills-coach/tree/main)或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)，并按对应版本 README 安装。
+安装器会先运行 doctor，再原子替换旧版本，避免遗留已经删除的文件。重新启动 Codex 后即可使用。
 
 安装后运行 doctor：
 
