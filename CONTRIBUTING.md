@@ -37,9 +37,12 @@ python3 scripts/evaluate_answer_policy.py
 python3 scripts/evaluate_query_equivalence.py
 python3 scripts/evaluate_answer_quality.py \
   --answers data/evaluation/answer_quality_answers.json \
-  --min-answer-snapshots 34 \
-  --min-answer-snapshot-coverage 0.59 \
-  --require-critical-answer-coverage
+  --min-approved 57 \
+  --min-answer-snapshots 57 \
+  --min-answer-snapshot-coverage 1.0 \
+  --require-complete-answer-coverage \
+  --require-critical-answer-coverage \
+  --require-manual-review
 python3 scripts/evaluate_forward_test_results.py
 python3 scripts/evaluate_retrieval.py
 python3 scripts/validate_project.py

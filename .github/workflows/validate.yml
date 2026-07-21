@@ -132,10 +132,12 @@ jobs:
           python scripts/evaluate_answer_quality.py
           python scripts/evaluate_answer_quality.py \
             --answers data/evaluation/answer_quality_answers.json \
-            --min-approved 30 \
-            --min-answer-snapshots 34 \
-            --min-answer-snapshot-coverage 0.59 \
-            --require-critical-answer-coverage
+            --min-approved 57 \
+            --min-answer-snapshots 57 \
+            --min-answer-snapshot-coverage 1.0 \
+            --require-complete-answer-coverage \
+            --require-critical-answer-coverage \
+            --require-manual-review
           python scripts/evaluate_feedback_signals.py
           python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
@@ -161,10 +163,12 @@ jobs:
           python scripts/evaluate_video_comprehension.py
           python scripts/evaluate_answer_quality.py \
             --answers data/evaluation/answer_quality_answers.json \
-            --min-approved 30 \
-            --min-answer-snapshots 34 \
-            --min-answer-snapshot-coverage 0.59 \
-            --require-critical-answer-coverage
+            --min-approved 57 \
+            --min-answer-snapshots 57 \
+            --min-answer-snapshot-coverage 1.0 \
+            --require-complete-answer-coverage \
+            --require-critical-answer-coverage \
+            --require-manual-review
           python scripts/evaluate_feedback_signals.py
           python scripts/evaluate_forward_test_results.py
           python scripts/build_manifest.py --check

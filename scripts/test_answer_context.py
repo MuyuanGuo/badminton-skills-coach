@@ -59,7 +59,7 @@ class AnswerContextTests(unittest.TestCase):
         result = self.module.evaluate()
         self.assertEqual(result["cases"], 57)
         self.assertEqual(result["candidate_recall"], 1.0)
-        self.assertGreaterEqual(result["selected_video_recall"], 0.95)
+        self.assertEqual(result["selected_video_recall"], 1.0)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
         self.assertEqual(result["answer_mode_accuracy"], 1.0)
         self.assertEqual(result["context_evidence_coverage"], 1.0)
@@ -1077,6 +1077,112 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("7656927370758796145", rotation_ids)
         self.assertNotIn("7072543702161296640", rotation_ids)
         self.assertNotIn("7501542236061420859", rotation_ids)
+
+    def test_partner_referents_survive_negation_and_object_pronouns(self):
+        cases = [
+            "我搭档反手比较弱，对方连续压他反手时，我应该怎么补位？",
+            "我不是要教搭档反手，我想问他反手被压住时我站哪里补他？",
+            "别教我队友怎么反手，我想知道对面追着打她反手时我该补哪边",
+            "不是让搭档练反手；我问的是对面连续推他反手时，我站哪边帮他补空档",
+            "我不想让同伴学反拍，我要问对手追着攻她反手时，自己怎么保护她的空当",
+        ]
+        for query in cases:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                    include_rejected=True,
+                )
+                actor = payload["question_interpretation"]["actor_context"]
+                self.assertEqual(
+                    payload["question_interpretation"]["intent_frame"][
+                        "requested_output"
+                    ],
+                    "coaching_answer",
+                )
+                self.assertIn("反手", actor["partner_query"])
+                self.assertEqual(
+                    actor["partner_constraints"]["stroke_side"], ["backhand"]
+                )
+                self.assertEqual(actor["target_actor"], "player")
+                self.assertEqual(
+                    actor["requested_action_scopes"],
+                    ["team_coverage_rotation"],
+                )
+                self.assertEqual(
+                    actor["derived_target_constraints"],
+                    {"discipline": ["doubles"]},
+                )
+                selected = {
+                    item["video_id"]: item
+                    for item in payload["selected_videos"]
+                }
+                self.assertTrue(selected)
+                self.assertTrue(
+                    all(item["concept_match"] != "none" for item in selected.values())
+                )
+
+    def test_multi_actor_rotation_sequences_preserve_event_order(self):
+        cases = {
+            "我杀球后搭档退到后场，对手挡网，我该怎么轮转？": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+            "我接杀挡网后，对手挑我搭档后场，我下一拍该守哪里？": [
+                ("player", "prior_action"),
+                ("opponent", "response"),
+                ("partner", "coverage_condition"),
+                ("player", "target_action"),
+            ],
+            "我重杀后队友已经退到底线，对面回放网，我下一拍要补哪里": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+            "我点杀完，搭档退守后场，对手回了个网前小球，我是留前场还是一起退？": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+            "我劈杀以后搭子守到后面，对手放短，我下一拍是守前面还是回撤": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+            "我霸王杀后搭档守底线，对面回短球，我应该顶在前面还是往后退": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+        }
+        expected_ids = {"7656927370758796145", "7614167503938610417"}
+        for query, expected_chain in cases.items():
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                )
+                actor = payload["question_interpretation"]["actor_context"]
+                self.assertEqual(actor["target_action_query"], "双打轮转补位")
+                self.assertEqual(
+                    actor["requested_action_scopes"],
+                    ["team_coverage_rotation"],
+                )
+                self.assertEqual(
+                    [(item["actor"], item["role"]) for item in actor["event_chain"]],
+                    expected_chain,
+                )
+                selected_ids = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertTrue(selected_ids & expected_ids)
+                self.assertNotIn("7071800926553541922", selected_ids)
 
     def test_action_scope_fallback_requires_every_explicit_constraint(self):
         defense = self.context_module.prepare_answer_context(
@@ -2510,6 +2616,11 @@ class AnswerContextTests(unittest.TestCase):
             "反手区网前球老是来不及，怎么才能上得快？",
             "网前反手球总是来不及",
             "反手网前上网慢",
+            "对手吊到网前时我总是赶不到，我不想练后场被动球，应该先改什么？",
+            "对方一吊到前场我就够不到，不考虑后场技术，我的启动该怎么调整",
+            "别人放了个小球我总是上不去，后场被动别讲，只看怎么把第一步启动快",
+            "对方吊短以后我老够不着，只说往前启动，不要后场救球",
+            "别人放网我总够不到，不要后场方案，只看预动怎么接上网步法",
         ]
         expected_ids = {
             "7099644893269839144",
@@ -2587,6 +2698,37 @@ class AnswerContextTests(unittest.TestCase):
                 "requested_action_scopes"
             ],
         )
+
+    def test_named_technique_comparison_rejects_unspecified_tactical_sources(self):
+        for query in [
+            "顿地炮是不是跳杀的一种？它和普通重杀的落点有什么区别？",
+            "遁地炮跟跳杀、重杀在起跳和落点上到底什么关系",
+            "dun地炮和主动跳杀到底谁更尖，哪个落点更靠后？",
+            "遁地炮和跳杀哪个更容易打出尖球？不起跳的话为什么反而落得更深",
+        ]:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                    include_rejected=True,
+                )
+                selected_ids = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertEqual(selected_ids, {"7069575740836023587"})
+                rejected = {
+                    item["video_id"]: item["reasons"]
+                    for item in payload["rejected_candidates"]
+                }
+                for video_id in {
+                    "7413335844594994447",
+                    "7619576226616745445",
+                    "7075140710332239119",
+                }:
+                    self.assertIn(
+                        "named_technique_comparison_not_supported",
+                        rejected[video_id],
+                    )
 
     def test_interrupted_kill_to_net_sequence_preserves_named_action(self):
         queries = [

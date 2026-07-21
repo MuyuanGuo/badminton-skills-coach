@@ -291,8 +291,25 @@ class ProjectArtifactsTests(unittest.TestCase):
             if "scripts/evaluate_answer_quality.py" in command
         ]
         self.assertEqual(len(answer_commands), 1)
+        self.assertEqual(
+            answer_commands[0][answer_commands[0].index("--min-approved") + 1],
+            "57",
+        )
+        self.assertEqual(
+            answer_commands[0][
+                answer_commands[0].index("--min-answer-snapshots") + 1
+            ],
+            "57",
+        )
+        self.assertEqual(
+            answer_commands[0][
+                answer_commands[0].index("--min-answer-snapshot-coverage") + 1
+            ],
+            "1.0",
+        )
+        self.assertIn("--require-complete-answer-coverage", answer_commands[0])
         self.assertIn("--require-critical-answer-coverage", answer_commands[0])
-        self.assertIn("--min-answer-snapshot-coverage", answer_commands[0])
+        self.assertIn("--require-manual-review", answer_commands[0])
         self.assertTrue(
             any(
                 "scripts/evaluate_forward_test_results.py" in command

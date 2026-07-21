@@ -1,5 +1,5 @@
 {
-  "version": 35,
+  "version": 36,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -70,6 +70,9 @@
     "他": ["其他", "吉他"]
   },
   "query_actor_pronoun_markers": ["他", "她"],
+  "query_actor_object_pronoun_prefixes": ["压", "打", "推", "攻", "针对", "盯", "追"],
+  "query_actor_partner_object_pronoun_prefixes": ["帮", "替", "保护"],
+  "query_actor_object_pronoun_restore_prefixes": ["帮", "替"],
   "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
   "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
@@ -94,10 +97,10 @@
   "reception_symptom_implications": [
     {
       "name": "late_to_forecourt_incoming_shot",
-      "symptom_terms": ["来不及", "接不到", "够不到", "赶不上", "到不了", "太慢", "上网慢", "上得慢"],
-      "incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球", "网前"],
-      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "够不到", "到不了"],
-      "implicit_response_incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球"],
+      "symptom_terms": ["来不及", "接不到", "够不到", "够不着", "赶不上", "赶不到", "到不了", "上不去", "太慢", "上网慢", "上得慢"],
+      "incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球", "网前"],
+      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "赶不到", "够不到", "够不着", "到不了", "上不去"],
+      "implicit_response_incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球"],
       "prior_action_suffixes": ["后", "以后", "之后", "完"],
       "player_action_prefixes_by_incoming_term": {
         "小球": ["发"],
@@ -138,6 +141,38 @@
       "reason": "球员先杀球、对手回网前或远网、球员再描述上网或回动困难，仍属于杀上网事件链；主体切换、连接词和到位症状不得切断序列。"
     }
   ],
+  "multi_actor_sequence_implications": [
+    {
+      "name": "smash_partner_retreat_opponent_net_rotation",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["杀球", "扣杀", "重杀", "跳杀", "点杀", "快杀", "轻杀", "劈杀", "霸王杀", "遁地炮"]},
+        {"actor": "partner", "role": "coverage_condition", "terms": ["退到后场", "退后场", "退到底线", "退底线", "守到后面", "守后面", "退到后面", "退后面", "后场", "底线"]},
+        {"actor": "opponent", "role": "response", "terms": ["挡网", "放网", "回挡网", "回放网", "放短", "挡短", "网前小球", "挡小球", "放小球", "短球", "小球"]},
+        {"actor": "player", "role": "target_action", "terms": ["轮转", "补位", "补哪里", "补哪边", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"]}
+      ],
+      "canonical_action_query": "双打轮转补位",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位", "双打 进攻轮转", "双打 搭档保护"],
+      "retain_prior_player_constraints": false,
+      "reason": "球员进攻后，搭档与对手的连续动作共同决定下一拍轮转；不得把先前杀球当成当前所问技术。"
+    },
+    {
+      "name": "block_net_opponent_lift_partner_rear_coverage",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["接杀挡网", "挡杀挡网", "挡网"]},
+        {"actor": "opponent", "role": "response", "terms": ["挑球", "挑后场", "挑"]},
+        {"actor": "partner", "role": "coverage_condition", "terms": ["后场", "底线"]},
+        {"actor": "player", "role": "target_action", "terms": ["守哪里", "守哪边", "轮转", "补位"]}
+      ],
+      "canonical_action_query": "双打轮转补位",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位", "双打 防守转进攻轮转", "双打 搭档保护"],
+      "retain_prior_player_constraints": false,
+      "reason": "球员挡网、对手挑后场且搭档接管后场时，当前问题是本方下一拍覆盖位置，不是挡网手法。"
+    }
+  ],
   "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
   "opponent_condition_player_action_rejected_sources": [
     "primary_metadata",
@@ -175,7 +210,7 @@
   ],
   "partner_retrieval_implications": [
     {
-      "trigger_terms": ["补位", "保护", "协防", "软肋"],
+      "trigger_terms": ["补位", "补", "保护", "协防", "软肋"],
       "search_terms": ["双打 补位", "双打 轮转保护"],
       "derived_constraints": {"discipline": ["doubles"]}
     },
@@ -211,7 +246,7 @@
     },
     {
       "name": "positioning",
-      "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置"],
+      "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置", "守哪里", "守哪边"],
       "query_context_terms": [],
       "search_terms": ["站位"],
       "source_terms": ["站位", "站哪里", "站在哪", "怎么站"],
@@ -220,7 +255,7 @@
     },
     {
       "name": "team_coverage_rotation",
-      "query_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档"],
+      "query_terms": ["补位", "补", "补哪里", "补哪边", "轮转", "协防", "帮", "保护", "保护队友", "保护搭档", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"],
       "query_context_terms": ["双打", "搭档", "队友", "同伴", "搭子", "我们"],
       "search_terms": ["双打 轮转 补位"],
       "source_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档", "保护好队友", "搭档处理", "队友的位置"],
@@ -266,7 +301,9 @@
       },
       "opponent_query_value_additions": {
         "smash": ["杀"],
-        "drop": ["吊"]
+        "drop": ["吊"],
+        "lift": ["挑"],
+        "net_shot": ["放短", "挡短"]
       },
       "query_value_suppressions": {
         "clear": ["发高远", "高远发球"],
@@ -303,6 +340,9 @@
         "midcourt": ["中场", "中前场", "中腰"],
         "rearcourt": ["后场", "底线"],
         "fullcourt": ["全场", "四方球", "六点步法"]
+      },
+      "partner_query_value_additions": {
+        "rearcourt": ["守到后面", "守后面", "退到后面", "退后面"]
       },
       "mixed_terms": ["前后场", "全场", "四方球", "六点步法"],
       "mixed_value_sets": {
@@ -350,6 +390,9 @@
       },
       "mixed_value_sets": {
         "网前技术": ["net_drop", "net_hook", "net_pounce", "net_push", "net_spin"]
+      },
+      "opponent_query_value_additions": {
+        "net_drop": ["放短", "挡短"]
       },
       "category_evidence_policy": "ignore",
       "source_value_suppressions": {
@@ -468,6 +511,21 @@
     "technique_variant": "specific_technique_not_supported",
     "stroke_intent": "specific_stroke_intent_not_supported"
   },
+  "required_multi_value_constraint_support_axes": {
+    "technique_variant": "named_technique_comparison_not_supported"
+  },
+  "named_technique_comparison_focus_groups": [
+    {
+      "name": "classification_or_takeoff",
+      "query_terms": ["起跳", "主动跳", "跳杀的一种", "算不算跳杀"],
+      "source_terms": ["不起跳", "不主动起跳", "自然短暂离地", "跳杀"]
+    },
+    {
+      "name": "trajectory_or_landing",
+      "query_terms": ["落点", "更尖", "尖球", "杀得尖", "靠后", "更深", "落得深", "长杀", "短杀"],
+      "source_terms": ["落点", "更尖", "杀得尖", "尖", "靠后", "长杀", "短杀", "下压不如跳杀"]
+    }
+  ],
   "required_constraint_support_conditions": [
     {
       "axis": "court_zone",

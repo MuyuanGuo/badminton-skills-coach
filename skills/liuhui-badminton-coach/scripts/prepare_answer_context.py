@@ -499,6 +499,7 @@ def _query_actor_segments(query, rules):
     segments = []
     current_actor = "player"
     last_explicit_referent = None
+    previous_explicit_referent = None
     cursor = 0
 
     def append_text(text, force_new=False):
@@ -525,12 +526,50 @@ def _query_actor_segments(query, rules):
             append_text(" ", force_new=True)
         else:
             configured_actor = markers[token]
+            actor_before_marker = current_actor
+            restore_actor_after_pronoun = None
             if token in pronouns and last_explicit_referent in referent_actors:
-                current_actor = last_explicit_referent
+                prefix = re.sub(r"\s+", "", query[cursor : match.start()])
+                object_pronoun = any(
+                    prefix.endswith(term)
+                    for term in rules.get(
+                        "query_actor_object_pronoun_prefixes", []
+                    )
+                )
+                partner_object_pronoun = any(
+                    prefix.endswith(term)
+                    for term in rules.get(
+                        "query_actor_partner_object_pronoun_prefixes", []
+                    )
+                )
+                if partner_object_pronoun and "partner" in {
+                    last_explicit_referent,
+                    previous_explicit_referent,
+                }:
+                    current_actor = "partner"
+                elif (
+                    object_pronoun
+                    and current_actor == last_explicit_referent
+                    and previous_explicit_referent in referent_actors
+                ):
+                    current_actor = previous_explicit_referent
+                else:
+                    current_actor = last_explicit_referent
+                if any(
+                    prefix.endswith(term)
+                    for term in rules.get(
+                        "query_actor_object_pronoun_restore_prefixes", []
+                    )
+                ):
+                    restore_actor_after_pronoun = actor_before_marker
             else:
                 current_actor = configured_actor
             append_text(token)
+            if restore_actor_after_pronoun:
+                current_actor = restore_actor_after_pronoun
             if token not in pronouns and configured_actor in referent_actors:
+                if configured_actor != last_explicit_referent:
+                    previous_explicit_referent = last_explicit_referent
                 last_explicit_referent = configured_actor
         cursor = match.end()
     append_text(query[cursor:])
@@ -657,6 +696,37 @@ def _action_sequence_implication(search_module, query, rules):
             for term in terms
             if search_module.normalize(term) in normalized_text
         ]
+
+    normalized_actor_text = {
+        actor: search_module.normalize(text)
+        for actor, text in actor_text.items()
+    }
+    for implication in rules.get("multi_actor_sequence_implications", []):
+        event_chain = []
+        for event in implication.get("events", []):
+            matches = matching_terms(
+                normalized_actor_text.get(event["actor"], ""),
+                event.get("terms", []),
+            )
+            if not matches:
+                event_chain = []
+                break
+            event_chain.append(
+                {
+                    "actor": event["actor"],
+                    "role": event["role"],
+                    "term": matches[0],
+                }
+            )
+        if event_chain:
+            result = dict(implication)
+            event_chain[-1]["term"] = implication["canonical_action_query"]
+            result["matched_context"] = {
+                "match_type": "multi_actor_sequence",
+                "event_chain": event_chain,
+                "explicit_after_term": event_chain[-1]["term"],
+            }
+            return result
 
     def matched_implication(
         implication,
@@ -895,6 +965,9 @@ def _query_target_action_context(
             ),
             "event_chain": matched_context.get("event_chain", []),
             "condition_constraints_are_incoming": False,
+            "retain_prior_player_constraints": sequence_implication.get(
+                "retain_prior_player_constraints", True
+            ),
         }
 
     reception_implication = _reception_symptom_implication(
@@ -971,7 +1044,11 @@ def _query_target_action_context(
         value_additions_field=(
             "opponent_query_value_additions"
             if target_actor == "opponent"
-            else None
+            else (
+                "partner_query_value_additions"
+                if target_actor == "partner"
+                else None
+            )
         ),
     )
     condition_constraints = {}
@@ -1007,6 +1084,12 @@ def _query_target_action_context(
         ):
             continue
         requested_action_scopes.append(scope["name"])
+    if "team_coverage_rotation" in requested_action_scopes:
+        requested_action_scopes = [
+            scope_name
+            for scope_name in requested_action_scopes
+            if scope_name != "positioning"
+        ]
     return {
         "target_action_query": action_query,
         "target_condition_query": condition_query,
@@ -1033,7 +1116,11 @@ def query_actor_context(search_module, query, rules):
             value_additions_field=(
                 "opponent_query_value_additions"
                 if actor == "opponent"
-                else None
+                else (
+                    "partner_query_value_additions"
+                    if actor == "partner"
+                    else None
+                )
             ),
         )
     player_constraints = actor_constraints.get("player", {})
@@ -1049,6 +1136,10 @@ def query_actor_context(search_module, query, rules):
         rules,
     )
     if target_action_context.get("inferred_target_action"):
+        if not target_action_context.get("retain_prior_player_constraints", True):
+            actor_constraints[target_actor] = {}
+            if target_actor == "player":
+                player_constraints = actor_constraints[target_actor]
         target_actor_constraints = actor_constraints.setdefault(
             target_actor, {}
         )
@@ -1085,6 +1176,7 @@ def query_actor_context(search_module, query, rules):
     for implication in (
         rules.get("opponent_response_implications", [])
         if target_actor == "player"
+        and not target_action_context.get("condition_constraints_are_incoming")
         else []
     ):
         opponent_values = set(
@@ -1473,6 +1565,14 @@ def required_constraint_support_failures(requested, matches, rules):
             and matches.get(axis_name) == "unspecified_support"
         ):
             failures.append(failure_reason)
+    for axis_name, failure_reason in rules.get(
+        "required_multi_value_constraint_support_axes", {}
+    ).items():
+        if (
+            len(requested.get(axis_name, [])) > 1
+            and matches.get(axis_name) == "unspecified_support"
+        ):
+            failures.append(failure_reason)
     for condition in rules.get(
         "required_constraint_support_conditions", []
     ):
@@ -1491,6 +1591,47 @@ def required_constraint_support_failures(requested, matches, rules):
         if matches.get(condition["axis"]) in unsupported_matches:
             failures.append(condition["failure_reason"])
     return list(dict.fromkeys(failures))
+
+
+def named_technique_comparison_focus_failures(
+    search_module,
+    query,
+    requested,
+    video,
+    rules,
+):
+    if len(requested.get("technique_variant", [])) <= 1:
+        return []
+    normalized_query = search_module.normalize(query)
+    support_text = search_module.normalize(
+        " ".join(
+            [
+                primary_video_constraint_text(search_module, video),
+                substantive_instruction_text(search_module, video, rules),
+            ]
+        )
+    )
+    requested_groups = [
+        group
+        for group in rules.get(
+            "named_technique_comparison_focus_groups", []
+        )
+        if any(
+            search_module.normalize(term) in normalized_query
+            for term in group.get("query_terms", [])
+        )
+    ]
+    if not requested_groups:
+        return []
+    if all(
+        any(
+            search_module.normalize(term) in support_text
+            for term in group.get("source_terms", [])
+        )
+        for group in requested_groups
+    ):
+        return []
+    return ["named_technique_comparison_focus_not_supported"]
 
 
 def unrequested_specific_scope(requested, scope, rules):
@@ -2166,6 +2307,15 @@ def selection_decision(
     )
     if support_failures:
         return False, support_failures
+    comparison_focus_failures = named_technique_comparison_focus_failures(
+        search_module,
+        query,
+        requested_constraints,
+        video,
+        rules,
+    )
+    if comparison_focus_failures:
+        return False, comparison_focus_failures
     if (
         requested_constraints.get("serve_role")
         and requested_constraints.get("technique_variant")
@@ -2190,7 +2340,12 @@ def selection_decision(
     )
     query_normalized = search_module.normalize(positive_query)
     symptom_match = symptom_decision(search_module, plan, video, rules)
-    if symptom_match == "none":
+    reviewed_symptom_support = bool(
+        symptom_match == "none"
+        and entry.get("reviewed_evidence_rank", 2) <= 1
+        and concept_match != "none"
+    )
+    if symptom_match == "none" and not reviewed_symptom_support:
         return False, ["literal_symptom_or_mechanism_not_supported"]
     focus_match = entry_focus_match(
         search_module, plan, entry, video, rules
@@ -2263,6 +2418,8 @@ def selection_decision(
         reasons.append("matched_literal_symptom")
     elif symptom_match.startswith("mechanism_"):
         reasons.append("matched_literal_symptom_mechanism")
+    elif reviewed_symptom_support:
+        reasons.append("matched_reviewed_symptom_mechanism")
     if any(
         match in {
             "unspecified_support",
@@ -2349,9 +2506,10 @@ def selected_sort_key(entry, rules=None):
         "direct_structured": 1,
         "mechanism_primary": 2,
         "mechanism_structured": 3,
-        "not_required": 4,
-        "none": 5,
-    }.get(entry.get("symptom_match", "not_required"), 5)
+        "reviewed_mechanism": 1,
+        "not_required": 5,
+        "none": 6,
+    }.get(entry.get("symptom_match", "not_required"), 6)
     reviewed_evidence_rank = entry.get("reviewed_evidence_rank", 2)
     direct_terms = {
         search_term
@@ -2715,6 +2873,12 @@ def prepare_answer_context(
             )
             and constraint_result[0]
             and action_fallback_scope_supported
+            and (
+                concept_decision(search_module, plan, entry, video, rules)
+                != "none"
+                or set(actor_context.get("requested_action_scopes", []))
+                == {"positioning"}
+            )
             and has_instructional_evidence(video)
         ):
             keep = True
@@ -2776,6 +2940,12 @@ def prepare_answer_context(
         record["symptom_match"] = symptom_decision(
             search_module, plan, video, rules
         )
+        if (
+            record["symptom_match"] == "none"
+            and entry.get("reviewed_evidence_rank", 2) <= 1
+            and record["concept_match"] != "none"
+        ):
+            record["symptom_match"] = "reviewed_mechanism"
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=lambda entry: selected_sort_key(entry, rules))

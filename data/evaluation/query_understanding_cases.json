@@ -2030,6 +2030,225 @@
       },
       "expected_target_condition_constraints": {},
       "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA077",
+      "query": "我搭档反手比较弱，对方连续压他反手时，我应该怎么补位？",
+      "intent_summary": "把压他解析为对手压搭档，并把用户所问保留为双打补位而非搭档反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["搭档反手比较弱", "对方连续压他反手", "怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我应该怎么补位",
+      "expected_target_condition_query": "我",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA078",
+      "query": "我不是要教搭档反手，我想问他反手被压住时我站哪里补他？",
+      "intent_summary": "否定教搭档反手时仍保留搭档主体，使后续他指向搭档并把目标识别为团队补位",
+      "expected_intent": {
+        "positive_query_contains": ["我想问他反手被压住", "站哪里补他"],
+        "positive_query_excludes": ["要教搭档反手"],
+        "excluded_terms_contains": ["搭档反手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {
+        "stroke_side": ["backhand"],
+        "stroke_intent": ["downward_pressure"]
+      },
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我 我想问我站哪里补",
+      "expected_target_condition_query": "",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA079",
+      "query": "对手吊到网前时我总是赶不到，我不想练后场被动球，应该先改什么？",
+      "intent_summary": "把吊到网前后赶不到识别为向前启动问题，并保留排除后场被动球的否定范围",
+      "expected_intent": {
+        "positive_query_contains": ["吊到网前", "赶不到", "应该先改什么"],
+        "positive_query_excludes": ["后场被动球"],
+        "excluded_terms_contains": ["后场被动球"],
+        "literal_symptoms_contains": ["赶不到"],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对手吊到网前时我总是赶不到，我 ，应该先改什么？",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["forward_reception_movement"],
+      "expected_event_chain": [
+        {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "吊到网前"},
+        {"actor": "player", "role": "target_action", "term": "向前启动 上网步法"}
+      ]
+    },
+    {
+      "case_id": "QUA080",
+      "query": "我杀球后搭档退到后场，对手挡网，我该怎么轮转？",
+      "intent_summary": "保留球员杀球、搭档退后、对手挡网和球员轮转的四步多人事件链",
+      "expected_intent": {
+        "positive_query_contains": ["我杀球", "搭档退到后场", "对手挡网", "怎么轮转"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我杀球后搭档退到后场，对手挡网，我该怎么轮转？",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "杀球"},
+        {"actor": "partner", "role": "coverage_condition", "term": "退到后场"},
+        {"actor": "opponent", "role": "response", "term": "挡网"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
+    },
+    {
+      "case_id": "QUA081",
+      "query": "我接杀挡网后，对手挑我搭档后场，我下一拍该守哪里？",
+      "intent_summary": "把接杀挡网、对手挑球、搭档接管后场和球员补位解析为有序团队覆盖事件链",
+      "expected_intent": {
+        "positive_query_contains": ["接杀挡网", "对手挑", "搭档后场", "守哪里"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {"shot_family": ["lift"]},
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我接杀挡网后，对手挑我搭档后场，我下一拍该守哪里？",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "接杀挡网"},
+        {"actor": "opponent", "role": "response", "term": "挑"},
+        {"actor": "partner", "role": "coverage_condition", "term": "后场"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
+    },
+    {
+      "case_id": "QUA082",
+      "query": "别教我队友怎么反手，我想知道对面追着打她反手时我该补哪边",
+      "intent_summary": "别教的否定范围只排除队友反手教学，仍保留队友主体并把她解析为队友",
+      "expected_intent": {
+        "positive_query_contains": ["对面追着打她反手", "我该补哪边"],
+        "positive_query_excludes": ["队友怎么反手"],
+        "excluded_terms_contains": ["队友", "反手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我想知道我该补哪边",
+      "expected_target_condition_query": "",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA083",
+      "query": "对方一吊到前场我就够不到，不考虑后场技术，我的启动该怎么调整",
+      "intent_summary": "把吊到前场后够不到识别为向前启动问题，而不是泛启动或后场技术",
+      "expected_intent": {
+        "positive_query_contains": ["吊到前场", "够不到", "启动该怎么调整"],
+        "positive_query_excludes": ["后场技术"],
+        "excluded_terms_contains": ["后场技术"],
+        "literal_symptoms_contains": ["够不到"],
+        "scenarios_contains": ["前场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对方一吊到前场我就够不到， ，我的启动该怎么调整",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["forward_reception_movement"],
+      "expected_event_chain": [
+        {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "吊到前场"},
+        {"actor": "player", "role": "target_action", "term": "向前启动 上网步法"}
+      ]
+    },
+    {
+      "case_id": "QUA084",
+      "query": "我重杀后队友已经退到底线，对面回放网，我下一拍要补哪里",
+      "intent_summary": "把重杀、队友退底线、对面放网和球员补位保留为四步团队轮转事件链",
+      "expected_intent": {
+        "positive_query_contains": ["重杀", "队友已经退到底线", "对面回放网", "补哪里"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我重杀后队友已经退到底线，对面回放网，我下一拍要补哪里",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "重杀"},
+        {"actor": "partner", "role": "coverage_condition", "term": "退到底线"},
+        {"actor": "opponent", "role": "response", "term": "放网"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
     }
   ]
 }

@@ -295,19 +295,73 @@ def extract_negative_scopes(query, rules):
     pattern = re.compile(
         rf"(?P<marker>{marker_pattern})\s*(?P<scope>.+?)(?=(?:{stop_pattern})|$)"
     )
-    scopes = []
-    spans = []
+    scope_records = []
+    actor_markers = sorted(
+        intent_rules.get("negated_scope_actor_markers", []),
+        key=len,
+        reverse=True,
+    )
+    postposed_markers = sorted(
+        intent_rules.get("postposed_negation_markers", []),
+        key=len,
+        reverse=True,
+    )
+    if postposed_markers:
+        postposed_pattern = re.compile(
+            rf"(?P<scope>[^，,。；;！？!?]+?)\s*"
+            rf"(?P<marker>{'|'.join(re.escape(item) for item in postposed_markers)})"
+            rf"(?=(?:{stop_pattern})|$)"
+        )
+        for match in postposed_pattern.finditer(query):
+            scope = match.group("scope").strip(" ，,。；;！？!?\t\n")
+            if not scope:
+                continue
+            scope_records.append(
+                {
+                    "start": match.start(),
+                    "end": match.end(),
+                    "marker": match.group("marker"),
+                    "text": scope,
+                    "actor_markers": longest_non_overlapping_terms(
+                        scope, actor_markers
+                    ),
+                }
+            )
     for match in pattern.finditer(query):
-        scope = match.group("scope").strip()
+        if any(
+            record["start"] < match.end()
+            and match.start() < record["end"]
+            for record in scope_records
+        ):
+            continue
+        scope = match.group("scope").strip(" ，,。；;！？!?\t\n")
         if not scope:
             continue
-        scopes.append({"marker": match.group("marker"), "text": scope})
-        spans.append(match.span())
+        scope_records.append(
+            {
+                "start": match.start(),
+                "end": match.end(),
+                "marker": match.group("marker"),
+                "text": scope,
+                "actor_markers": longest_non_overlapping_terms(
+                    scope, actor_markers
+                ),
+            }
+        )
+    scope_records.sort(key=lambda item: item["start"])
+    scopes = [
+        {"marker": record["marker"], "text": record["text"]}
+        for record in scope_records
+    ]
+    positive_query = query
     actor_query = query
-    for start, end in reversed(spans):
-        actor_query = actor_query[:start] + " " + actor_query[end:]
+    for record in reversed(scope_records):
+        start = record["start"]
+        end = record["end"]
+        replacement = " ".join(record["actor_markers"])
+        positive_query = positive_query[:start] + " " + positive_query[end:]
+        actor_query = actor_query[:start] + f" {replacement} " + actor_query[end:]
     actor_query = re.sub(r"\s+", " ", actor_query).strip()
-    positive_query = actor_query
     positive_query = re.sub(r"[，,。；;！？!?]+", " ", positive_query)
     positive_query = re.sub(r"\s+", " ", positive_query).strip()
     return positive_query or query, actor_query or query, scopes
@@ -350,10 +404,24 @@ def requested_output(query, rules):
         ("diagnosis", "diagnosis_request_terms"),
         ("comparison", "comparison_request_terms"),
     ]:
-        if any(
-            normalize(term) in normalized_query
+        matching_terms = [
+            term
             for term in intent_rules.get(key, [])
-        ):
+            if normalize(term) in normalized_query
+        ]
+        if label == "comparison":
+            suppressions = intent_rules.get(
+                "comparison_request_term_suppressions", {}
+            )
+            matching_terms = [
+                term
+                for term in matching_terms
+                if not any(
+                    normalize(phrase) in normalized_query
+                    for phrase in suppressions.get(term, [])
+                )
+            ]
+        if matching_terms:
             return label
     return "coaching_answer"
 

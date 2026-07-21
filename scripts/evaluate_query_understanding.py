@@ -157,6 +157,10 @@ def validate_registry(registry, answer_registry):
                 raise ValueError(
                     f"{case_id} has invalid requested action scopes"
                 )
+        if "expected_event_chain" in case and not isinstance(
+            case["expected_event_chain"], list
+        ):
+            raise ValueError(f"{case_id} has an invalid event chain contract")
     return cases, adversarial_cases
 
 
@@ -299,6 +303,10 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                 actor_context["requested_action_scopes"]
                 == case["expected_requested_action_scopes"]
             )
+        if "expected_event_chain" in case:
+            checks["event_chain"] = (
+                actor_context["event_chain"] == case["expected_event_chain"]
+            )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -338,6 +346,11 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                         if has_target_action_contract
                         else {}
                     ),
+                    **(
+                        {"event_chain": case["expected_event_chain"]}
+                        if "expected_event_chain" in case
+                        else {}
+                    ),
                 },
                 "actual": {
                     "intent": intent_frame,
@@ -374,6 +387,11 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                             ],
                         }
                         if has_target_action_contract
+                        else {}
+                    ),
+                    **(
+                        {"event_chain": actor_context["event_chain"]}
+                        if "expected_event_chain" in case
                         else {}
                     ),
                 },
