@@ -46,6 +46,7 @@ class PublicFeedbackEndToEndTests(unittest.TestCase):
                 "还应该加入 https://www.douyin.com/video/7656560952972884730；"
                 "回答太笼统，我仍然不知道怎么做。"
             )
+            private_answer = "私人回答正文：包含固定球友场景，不得自动公开。"
             local = self.feedback.record_feedback(
                 question=private_question,
                 video_specs=[
@@ -53,6 +54,7 @@ class PublicFeedbackEndToEndTests(unittest.TestCase):
                     "V2=7659348110628345210",
                 ],
                 feedback_text=private_feedback,
+                answer_text=private_answer,
                 core_refs=["V1"],
                 answer_mode="balanced",
                 queue_dir=local_queue,
@@ -69,11 +71,13 @@ class PublicFeedbackEndToEndTests(unittest.TestCase):
             exported = self.feedback.export_github_feedback(
                 feedback_id=local["feedback_id"],
                 public_question=public_question,
+                public_answer_excerpt="回答第二点没有给出可执行的杀球力量调整方法。",
                 confirm_public=True,
                 queue_dir=local_queue,
             )
             self.assertNotIn(private_question, exported["issue_body"])
             self.assertNotIn(private_feedback, exported["issue_body"])
+            self.assertNotIn(private_answer, exported["issue_body"])
             self.assertFalse(exported["uploaded"])
 
             issue_url = (

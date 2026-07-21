@@ -96,13 +96,13 @@ Never cite `needs_visual_review`, `needs_correction`, `not_teaching`, or `low_va
 
 When the user evaluates a prior answer, first read `references/feedback-workflow.md`. A `V` mapping is scoped to that answer turn only.
 
-Record the original question, exact answer-turn mapping, and the user's wording in one operation with `scripts/feedback.py record`. Confirm the parsed signals in plain language. Only after explicit confirmation may an accepted local record affect future similar questions; otherwise leave it pending. Never upload local feedback without explicit consent.
+Record the original question, exact answer text, exact answer-turn mapping, and the user's wording in one operation with `scripts/feedback.py record`. Bind them with the returned integrity digest, then confirm the parsed signals in plain language. Only after explicit confirmation may an accepted local record affect future similar questions; otherwise leave it pending. Never upload local feedback without explicit consent.
 
-If the user wants public sharing, generate a sanitized export with `export-github --confirm-public`. Explain that the command did not upload anything. Public behavior changes only after a real public Issue URL is fetched, source and consent checks pass, regression tests pass, and a new Skill release promotes it.
+If the user wants public sharing, require a separately approved sanitized question and sanitized answer or exact error excerpt, then generate an export with `export-github --confirm-public`. Explain that the command did not upload anything. Public behavior changes only after a real public Issue URL is fetched, source and consent checks pass, regression tests pass, and a new Skill release promotes it.
 
 If personalization should be disabled, rerun the answer context with `--no-local-personalization`. Public promoted signals remain; local accepted signals are ignored.
 
-End normal coaching answers with one compact optional example using labels that exist in that answer, for example: `反馈示例：V1 最有价值；V2 与问题无关；你理解错了，我真正问的是“……”`.
+End every answer with the exact `answer_contract.feedback_prompt`, using only labels that exist in that answer. When both labels exist, it resembles: `反馈可直接回复：V1 最有价值；V2 不相关；第 2 点结论不对；回答漏了“……”；你理解错了，我真正问的是“……”。` Omit unavailable video clauses.
 
 ## Resources
 

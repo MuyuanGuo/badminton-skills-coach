@@ -62,6 +62,9 @@ class FeedbackPromotionTests(unittest.TestCase):
 ### 回答编号
 A-public-example
 
+### Skill 回答或出错片段
+回答正文中的杀球力量建议过于笼统。
+
 ### 最有价值的视频
 https://www.douyin.com/video/7659991105622862457
 
@@ -234,6 +237,9 @@ https://www.douyin.com/video/7659991105622862457
 ### 回答编号
 A-public-correction
 
+### Skill 回答或出错片段
+回答把用户问题错误地收窄成单一发力问题。
+
 ### 最有价值的视频
 无
 
@@ -316,6 +322,7 @@ A-public-correction
             question="杀球不重怎么办",
             video_specs=["V1=7659991105622862457"],
             feedback_text="V1 最有价值。",
+            answer_text="杀球力量回答正文。",
             share_upstream=True,
             queue_dir=self.queue_dir,
         )
@@ -372,6 +379,9 @@ A-public-correction
 
         changed_body = """### 用户问题
 公开问题的新修订
+
+### Skill 回答或出错片段
+修改后的回答仍缺少可执行步骤。
 
 ### 最有价值的视频
 7656560952972884730

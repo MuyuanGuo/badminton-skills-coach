@@ -155,6 +155,36 @@ class AnswerContextTests(unittest.TestCase):
             len(context["selected_videos"]),
         )
 
+    def test_feedback_prompt_uses_only_labels_from_the_current_answer(self):
+        multiple = self.context_module.prepare_answer_context(
+            "双打封网怎么压球",
+            local_personalization=False,
+        )
+        multiple_prompt = multiple["answer_contract"]["feedback_prompt"]
+        self.assertIn("V1 最有价值", multiple_prompt)
+        self.assertIn("V2 不相关", multiple_prompt)
+        self.assertNotIn("V3", multiple_prompt)
+
+        single = self.context_module.prepare_answer_context(
+            "反手滑板怎么打",
+            local_personalization=False,
+        )
+        single_prompt = single["answer_contract"]["feedback_prompt"]
+        self.assertIn("V1 最有价值", single_prompt)
+        self.assertNotIn("V2", single_prompt)
+
+        no_video = self.context_module.prepare_answer_context(
+            "正手滑板怎么打",
+            local_personalization=False,
+        )
+        no_video_prompt = no_video["answer_contract"]["feedback_prompt"]
+        self.assertNotRegex(no_video_prompt, r"V\d+")
+
+        for prompt in [multiple_prompt, single_prompt, no_video_prompt]:
+            self.assertIn("第 2 点结论不对", prompt)
+            self.assertIn("回答漏了", prompt)
+            self.assertIn("你理解错了，我真正问的是", prompt)
+
     def test_constraint_axes_reject_opposite_only_sources_in_both_directions(self):
         cases = [
             ("反手高远怎么打", "正手高远教学", "stroke_side"),

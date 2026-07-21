@@ -1205,6 +1205,8 @@ for required_export_contract in [
     "--confirm-public",
     '"uploaded": False',
     '"original_question_included": False',
+    '"original_answer_included": False',
+    '"sanitized_answer_excerpt_included": True',
     '"raw_feedback_included": False',
     '"clause_assignments": parsed["clause_assignments"]',
     '"turn_id": turn_id',
@@ -1253,6 +1255,7 @@ if not feedback_issue_form.exists():
 feedback_issue_text = feedback_issue_form.read_text(encoding="utf-8")
 for required_issue_field in [
     "用户问题",
+    "Skill 回答或出错片段",
     "用户真实意图",
     "最有价值的视频",
     "明确不相关的视频",

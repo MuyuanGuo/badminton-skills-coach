@@ -23,6 +23,15 @@ body:
       description: 如果回答中提供或你保留了 answer_id，可以填写；没有可留空。
 
   - type: textarea
+    id: answer-text
+    attributes:
+      label: Skill 回答或出错片段
+      description: 请粘贴经过脱敏的完整回答；内容较长时，至少保留出错原句、对应上下文和相关视频链接或 evidence_id。不要提交私人聊天内容。
+      placeholder: 第 2 点写道“……”，并引用了 evidence_id 1234567890123456789；这里的问题是……
+    validations:
+      required: true
+
+  - type: textarea
     id: intended-query
     attributes:
       label: 用户真实意图

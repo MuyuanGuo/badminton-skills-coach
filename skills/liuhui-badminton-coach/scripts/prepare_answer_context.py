@@ -30,6 +30,10 @@ def load_navigation_module():
     return load_sibling("liuhui_answer_navigation", "navigate_topics.py")
 
 
+def load_feedback_module():
+    return load_sibling("liuhui_answer_feedback", "feedback.py")
+
+
 def load_selection_rules():
     rules = json.loads(SELECTION_RULES_PATH.read_text(encoding="utf-8"))
     retrieval_rules = json.loads(RETRIEVAL_RULES_PATH.read_text(encoding="utf-8"))
@@ -2716,6 +2720,7 @@ def prepare_answer_context(
         raise ValueError("query cannot be empty")
     search_module = load_search_module()
     navigation_module = load_navigation_module()
+    feedback_module = load_feedback_module()
     rules = load_selection_rules()
     explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
@@ -3134,6 +3139,12 @@ def prepare_answer_context(
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
+            ],
+            "feedback_prompt": feedback_module.build_feedback_hint(selected_videos),
+            "feedback_prompt_rules": [
+                "每次回答必须在最后逐字输出 feedback_prompt。",
+                "不得添加本轮 selected_videos 中不存在的 V 标签。",
+                "同一对话中的后续反馈必须绑定原问题、完整回答、精确 V 映射和用户原话，再按 feedback-workflow.md 解析与确认。",
             ],
         },
         "source_handling": {
