@@ -626,6 +626,7 @@ def _query_constraints_from_text(
                 "遁地炮",
                 "顿地炮",
                 "蹲地炮",
+                "dun地炮",
                 "压球",
                 "杀",
             ]
@@ -853,6 +854,37 @@ def query_ambiguities(search_module, query, rules):
             }
         )
     return ambiguities
+
+
+def query_terminology_corrections(search_module, query, rules):
+    normalized = search_module.normalize(query)
+    corrections = []
+    for rule in rules.get("canonical_terminology", []):
+        matched_terms = [
+            term
+            for term in rule.get("accepted_input_errors", [])
+            if search_module.normalize(term) in normalized
+        ]
+        if not matched_terms:
+            continue
+        corrections.append(
+            {
+                "name": rule["name"],
+                "matched_terms": matched_terms,
+                "canonical_term": rule["canonical_term"],
+                "required_statement": rule["required_statement"],
+            }
+        )
+    return corrections
+
+
+def requested_technique_definitions(requested_constraints, rules):
+    definitions = rules.get("technique_definitions", {})
+    return [
+        {"technique_variant": variant, **definitions[variant]}
+        for variant in requested_constraints.get("technique_variant", [])
+        if variant in definitions
+    ]
 
 
 def explicit_constraint_terms(search_module, query, rules):
@@ -2506,6 +2538,16 @@ def prepare_answer_context(
                 ),
                 rules,
             ),
+            "terminology_corrections": query_terminology_corrections(
+                search_module,
+                plan["retrieval_guidance"]["intent_frame"].get(
+                    "positive_query", query
+                ),
+                rules,
+            ),
+            "technique_definitions": requested_technique_definitions(
+                requested_constraints, rules
+            ),
             "strategy": plan["retrieval_guidance"]["strategy"],
             "query_units": plan["retrieval_guidance"].get("query_units", []),
             "retrieval_queries": retrieval_queries,
@@ -2547,6 +2589,8 @@ def prepare_answer_context(
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
                 "question_interpretation.ambiguities 非空时，先逐条说明 required_statement；不得把有多种场区含义的术语静默收窄成一种技术。",
+                "question_interpretation.terminology_corrections 非空时，先说明 required_statement，并在回答正文、视频标题改写和观看重点中只使用 canonical_term；错误输入词只可在纠正句中出现一次。",
+                "question_interpretation.technique_definitions 是维护者确认的规范术语、父类、起跳边界和线路分类；用于解释技术归属，但不能让父类视频替代所问细分技术的直接动作证据。",
                 "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的站位或轮转动作。requested_action_scopes 要求来源直接支持站位或团队补位，并排除只讨论对手站位的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",

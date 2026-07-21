@@ -138,13 +138,26 @@ class KnowledgeQualityTests(unittest.TestCase):
                 {
                     "start": 1,
                     "end": 2,
-                    "text": "先架盘，再向前挥帕完成机球。",
+                    "text": "先架盘，再向前挥帕完成机球，用顿地炮。",
+                },
+                {
+                    "start": 2,
+                    "end": 3,
+                    "text": "蹲地炮也是自动转写错词。",
                 }
             ],
             RULES,
         )
-        self.assertEqual(segments[0]["text"], "先架拍，再向前挥拍完成击球。")
-        self.assertEqual(segments[0]["raw_text"], "先架盘，再向前挥帕完成机球。")
+        self.assertEqual(
+            segments[0]["text"],
+            "先架拍，再向前挥拍完成击球，用遁地炮。",
+        )
+        self.assertEqual(
+            segments[0]["raw_text"],
+            "先架盘，再向前挥帕完成机球，用顿地炮。",
+        )
+        self.assertEqual(segments[1]["text"], "遁地炮也是自动转写错词。")
+        self.assertEqual(segments[1]["raw_text"], "蹲地炮也是自动转写错词。")
 
     def test_overlapping_evidence_windows_are_deduplicated(self):
         item = {"title": "击球发力", "category": "发力", "tags": "发力"}

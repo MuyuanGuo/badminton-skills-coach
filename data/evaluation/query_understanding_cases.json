@@ -401,7 +401,7 @@
     {
       "case_id": "AQ045",
       "query": "遁地炮怎么打",
-      "intent_summary": "把遁地炮识别为顿地炮专项，并统一顿、蹲两种常见写法，不退化为跳杀或重杀",
+      "intent_summary": "把遁地炮识别为不起跳重杀下的长杀细分；规范输出只使用遁地炮，不退化为跳杀或泛重杀",
       "expected_answer_mode": "balanced",
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["遁地炮怎么打"],
@@ -1413,7 +1413,7 @@
     {
       "case_id": "QUA053",
       "query": "顿地炮怎么打",
-      "intent_summary": "把顿地炮正字写法映射到遁地炮专项，保留杀球家族和独立变体约束",
+      "intent_summary": "把错误输入顿地炮纠正并映射到遁地炮专项，输出不得把错词当成规范名称",
       "expected_intent": {
         "positive_query_contains": ["顿地炮"],
         "positive_query_excludes": [],
@@ -1432,7 +1432,7 @@
     {
       "case_id": "QUA054",
       "query": "蹲地炮怎么打",
-      "intent_summary": "把用户常见的蹲地炮写法映射到遁地炮专项，不误解为低重心或普通蹲起训练",
+      "intent_summary": "把错误输入蹲地炮纠正并映射到遁地炮专项，不误解为低重心或普通蹲起训练",
       "expected_intent": {
         "positive_query_contains": ["蹲地炮"],
         "positive_query_excludes": [],
@@ -1586,6 +1586,25 @@
       },
       "expected_constraints": {
         "technique_variant": ["kill_to_net"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA063",
+      "query": "dun地炮怎么打",
+      "intent_summary": "把拼音混写错误输入纠正并映射到遁地炮专项，输出只使用规范名称遁地炮",
+      "expected_intent": {
+        "positive_query_contains": ["dun地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
     }

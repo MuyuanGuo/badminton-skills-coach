@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `99`
+- Matched videos: `100`
 
 - **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
@@ -28,7 +28,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 反手被动高远 虽然被动，但是放松发力更重要，别说示范的球不到位，也打出界一米了，主要是在底线摄像机放不下了 [ready] https://www.douyin.com/video/7546109410041908538
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手高远球 提供一个训练方法，方法不唯一 [ready] https://www.douyin.com/video/7541623926234811705
-- **杀球与突击**: `38` videos, `38` ready, `0` needs visual review.
+- **杀球与突击**: `39` videos, `39` ready, `0` needs visual review.
   Keywords: 杀球, 重杀, 点杀, 突击, 扣杀
   Representative videos:
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
@@ -188,7 +188,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `129`
+- Matched videos: `128`
 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -208,7 +208,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋 [ready] https://www.douyin.com/video/7052600326116887812
   - 发力细节 每个人的情况不一样，我告诉抡大臂的人要用小臂，告诉内旋挥不正的人压手腕，不过他 但凡能做对一点，就总让我想起一位故人 [ready] https://www.douyin.com/video/7570301879545426171
   - 双打防守进阶 外旋是大臂带动小臂的必然动作，用手指发力也可以，但是非常考验力量 [ready] https://www.douyin.com/video/7414339897990843663
-- **击球空间与发力点**: `27` videos, `27` ready, `0` needs visual review.
+- **击球空间与发力点**: `26` videos, `26` ready, `0` needs visual review.
   Keywords: 贴球, 发力空间, 击球点, 高点
   Representative videos:
   - 注意击球点要在起跳的高点击，而不是向上的过程中，45度起跳是更容易的起跳杀球，视频中的侧身跳杀对身体要求更多，腿有伤，大家忽略高度😂 [ready] https://www.douyin.com/video/7055491154288102667

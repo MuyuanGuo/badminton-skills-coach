@@ -2318,6 +2318,26 @@ class AnswerContextTests(unittest.TestCase):
                 }
                 self.assertEqual(selected, expected_ids)
                 selected_by_variant[variant] = selected
+                if variant == "smash_ground_cannon":
+                    interpretation = payload["question_interpretation"]
+                    self.assertEqual(
+                        interpretation["terminology_corrections"], []
+                    )
+                    self.assertEqual(
+                        interpretation["technique_definitions"],
+                        [
+                            {
+                                "technique_variant": "smash_ground_cannon",
+                                "canonical_term": "遁地炮",
+                                "parent_variant": "smash_heavy",
+                                "classification": "不起跳重杀的细分技术",
+                                "trajectory_class": "long_smash",
+                                "trajectory_statement": "按落点属于长杀，落点比追求尖锐下压的跳杀更靠后。",
+                                "takeoff_boundary": "不主动起跳，也不追求起跳高度；蹬地转移重心时可能自然短暂离地，但这不等于跳杀。",
+                                "evidence_basis": "维护者确认技术分类；7069575740836023587 的 00:04-00:22 直接支持不主动起跳与短暂自然离地，02:35-02:44 直接支持其下压不如跳杀尖、回球更偏平。",
+                            }
+                        ],
+                    )
 
         variants = list(selected_by_variant)
         for index, left in enumerate(variants):
@@ -2331,7 +2351,7 @@ class AnswerContextTests(unittest.TestCase):
                 else:
                     self.assertFalse(shared)
 
-        for spelling in ["顿地炮怎么打", "蹲地炮怎么打"]:
+        for spelling in ["顿地炮怎么打", "蹲地炮怎么打", "dun地炮怎么打"]:
             with self.subTest(spelling=spelling):
                 payload = self.context_module.prepare_answer_context(
                     spelling,
@@ -2348,6 +2368,13 @@ class AnswerContextTests(unittest.TestCase):
                     [item["video_id"] for item in payload["selected_videos"]],
                     ["7069575740836023587"],
                 )
+                correction = payload["question_interpretation"][
+                    "terminology_corrections"
+                ]
+                self.assertEqual(len(correction), 1)
+                self.assertEqual(correction[0]["canonical_term"], "遁地炮")
+                self.assertEqual(correction[0]["matched_terms"], [spelling[:-3]])
+                self.assertIn("只作为输入纠错词", correction[0]["required_statement"])
 
     def test_relationship_and_multi_issue_evidence_keep_scoped_roles(self):
         relationship = self.context_module.prepare_answer_context(

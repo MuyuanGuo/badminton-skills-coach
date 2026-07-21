@@ -4,7 +4,7 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-18T08:28:39.249248+00:00",
+  "source_updated_at": "2026-07-21T02:08:18.550106+00:00",
   "video_count": 407,
   "indexable_video_count": 352,
   "assigned_video_count": 352,
@@ -16,7 +16,7 @@
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 99,
+      "video_count": 100,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -151,8 +151,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 38,
-          "ready_count": 38,
+          "video_count": 39,
+          "ready_count": 39,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7659348110628345210",
@@ -171,6 +171,7 @@
             "7485692231404342586",
             "7202800263588105510",
             "7445495930280856892",
+            "7069575740836023587",
             "7068465954270792994",
             "7067722128413543680",
             "7611635851789771721",
@@ -251,11 +252,11 @@
               "confidence": "medium",
               "processing_status": "ready",
               "topic": "重杀",
-              "score": 13,
+              "score": 15,
               "match_basis": {
                 "title": 1,
                 "focus": 1,
-                "evidence": 4
+                "evidence": 6
               },
               "assignment_method": "rule_match"
             },
@@ -2394,7 +2395,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 129,
+      "video_count": 128,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -2779,8 +2780,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 26,
+          "ready_count": 26,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7055491154288102667",
@@ -2803,7 +2804,6 @@
             "7064372942880148777",
             "7558912953539071292",
             "7161980324409363712",
-            "7069575740836023587",
             "7616819993833503601",
             "7202800263588105510",
             "7524557392328461627",
