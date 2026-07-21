@@ -8,6 +8,7 @@ from pathlib import Path
 from build_douyin_knowledge import (
     assess_transcript,
     automatic_note,
+    build_record,
     build_knowledge,
     runtime_transcript_segments,
     reconcile_updated_at,
@@ -35,6 +36,30 @@ def transcript(text, language="zh", probability=1.0, segment_count=5):
 
 
 class KnowledgeQualityTests(unittest.TestCase):
+    def test_douyin_builder_persists_source_neutral_evidence_identity(self):
+        video_id = "123456789012345678"
+        record = build_record(
+            {
+                "video_id": video_id,
+                "title": "击球教学",
+                "url": f"https://www.douyin.com/video/{video_id}",
+                "category": "握拍与基本动作",
+                "tags": "握拍与基本动作；训练与纠错",
+                "classification_decision": "保留：教学",
+            },
+            ROOT / "data" / "transcripts" / "douyin" / f"{video_id}.json",
+            transcript("击球时先放松再发力。"),
+            {},
+            {},
+            RULES,
+        )
+        self.assertEqual(record["evidence_id"], video_id)
+        self.assertEqual(record["source_type"], "douyin_video")
+        self.assertEqual(record["canonical_url"], record["url"])
+        self.assertIsNone(record["parent_source_id"])
+        self.assertIsNone(record["clip_start_seconds"])
+        self.assertIsNone(record["clip_end_seconds"])
+
     def test_unprocessed_queue_items_are_skipped_but_transcribed_items_are_required(self):
         pending_queue = {
             "counts": {"classified_teaching": 1},
@@ -209,6 +234,12 @@ class KnowledgeQualityTests(unittest.TestCase):
                 "videos": [
                     {
                         "video_id": "ready",
+                        "evidence_id": "ready",
+                        "source_type": "test_video",
+                        "canonical_url": "https://example.test/ready",
+                        "parent_source_id": None,
+                        "clip_start_seconds": None,
+                        "clip_end_seconds": None,
                         "processing_status": "ready",
                         "transcript_file": relative,
                         "title": "握拍",
@@ -221,6 +252,12 @@ class KnowledgeQualityTests(unittest.TestCase):
                     },
                     {
                         "video_id": "review",
+                        "evidence_id": "review",
+                        "source_type": "test_video",
+                        "canonical_url": "https://example.test/review",
+                        "parent_source_id": None,
+                        "clip_start_seconds": None,
+                        "clip_end_seconds": None,
                         "processing_status": "needs_visual_review",
                         "transcript_file": relative,
                         "title": "握拍",
@@ -265,6 +302,12 @@ class KnowledgeQualityTests(unittest.TestCase):
                 "videos": [
                     {
                         "video_id": "tagged",
+                        "evidence_id": "tagged",
+                        "source_type": "test_video",
+                        "canonical_url": "https://example.test/tagged",
+                        "parent_source_id": None,
+                        "clip_start_seconds": None,
+                        "clip_end_seconds": None,
                         "processing_status": "ready",
                         "transcript_file": str(transcript_path.relative_to(ROOT)),
                         "title": "网前框架",

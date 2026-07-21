@@ -24,15 +24,17 @@ class QueryEquivalenceTests(unittest.TestCase):
 
     def test_registry_covers_paraphrases_symptoms_and_negative_controls(self):
         families = self.module.validate_registry(self.module.load_registry())
-        self.assertEqual(len(families), 1)
-        self.assertEqual(len(families[0]["variants"]), 4)
-        self.assertEqual(len(families[0]["negative_controls"]), 3)
+        self.assertEqual(len(families), 2)
+        self.assertEqual(len(families[0]["variants"]), 6)
+        self.assertEqual(len(families[0]["negative_controls"]), 6)
+        self.assertEqual(len(families[1]["variants"]), 6)
+        self.assertEqual(len(families[1]["negative_controls"]), 2)
 
     def test_query_equivalence_quality_gate_passes(self):
         result = self.module.evaluate()
-        self.assertEqual(result["families"], 1)
-        self.assertEqual(result["variants"], 4)
-        self.assertEqual(result["negative_controls"], 3)
+        self.assertEqual(result["families"], 2)
+        self.assertEqual(result["variants"], 12)
+        self.assertEqual(result["negative_controls"], 8)
         self.assertEqual(result["failed_families"], [])
 
 

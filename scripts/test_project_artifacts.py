@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MODULE_PATH = ROOT / "scripts" / "project_artifacts.py"
 SIGNAL_BUILDER_PATH = ROOT / "scripts" / "build_reviewed_evidence_signals.py"
+UPDATE_PIPELINE_PATH = ROOT / "scripts" / "run_full_update_pipeline.py"
 
 
 def load_module(name="project_artifacts_tested", path=MODULE_PATH):
@@ -26,6 +27,9 @@ class ProjectArtifactsTests(unittest.TestCase):
         cls.module = load_module()
         cls.signal_builder = load_module(
             "reviewed_evidence_signal_builder_tested", SIGNAL_BUILDER_PATH
+        )
+        cls.update_pipeline = load_module(
+            "full_update_pipeline_tested", UPDATE_PIPELINE_PATH
         )
 
     def fixture(self):
@@ -135,6 +139,41 @@ class ProjectArtifactsTests(unittest.TestCase):
         ):
             self.module.derive_project_status(index, teaching, knowledge)
 
+    def test_source_neutral_evidence_accepts_livestream_clips(self):
+        evidence_id = "live:2026-07-21:clip-003"
+        result = self.module.validate_evidence_records(
+            [
+                {
+                    "video_id": evidence_id,
+                    "evidence_id": evidence_id,
+                    "source_type": "livestream_clip",
+                    "canonical_url": "https://example.test/live/2026-07-21?t=315",
+                    "parent_source_id": "live:2026-07-21",
+                    "clip_start_seconds": 315,
+                    "clip_end_seconds": 372,
+                }
+            ]
+        )
+        self.assertEqual(result, [evidence_id])
+
+    def test_source_neutral_clip_requires_parent_and_complete_range(self):
+        with self.assertRaisesRegex(
+            self.module.ArtifactConsistencyError, "partial clip range"
+        ):
+            self.module.validate_evidence_records(
+                [
+                    {
+                        "video_id": "live:clip-004",
+                        "evidence_id": "live:clip-004",
+                        "source_type": "livestream_clip",
+                        "canonical_url": "https://example.test/live?t=400",
+                        "parent_source_id": None,
+                        "clip_start_seconds": 400,
+                        "clip_end_seconds": None,
+                    }
+                ]
+            )
+
     def test_real_project_status_reconciles(self):
         status = self.module.derive_project_status(
             json.loads((ROOT / "data/douyin_video_index.json").read_text(encoding="utf-8")),
@@ -242,7 +281,24 @@ class ProjectArtifactsTests(unittest.TestCase):
             )
         )
         self.assertEqual(actual, expected)
-        self.assertEqual(len(actual["signals"]), 56)
+        self.assertEqual(len(actual["signals"]), 57)
+
+    def test_full_update_pipeline_enforces_answer_and_forward_quality(self):
+        commands = self.update_pipeline.validation_commands()
+        answer_commands = [
+            command
+            for command in commands
+            if "scripts/evaluate_answer_quality.py" in command
+        ]
+        self.assertEqual(len(answer_commands), 1)
+        self.assertIn("--require-critical-answer-coverage", answer_commands[0])
+        self.assertIn("--min-answer-snapshot-coverage", answer_commands[0])
+        self.assertTrue(
+            any(
+                "scripts/evaluate_forward_test_results.py" in command
+                for command in commands
+            )
+        )
 
 
 if __name__ == "__main__":

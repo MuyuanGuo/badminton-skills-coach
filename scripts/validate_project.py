@@ -13,6 +13,7 @@ from project_artifacts import (
     derive_project_status,
     skill_reference_bytes,
     skill_reference_mismatches,
+    validate_evidence_records,
 )
 from update_readme_status import (
     update_agent_metadata_text,
@@ -56,6 +57,8 @@ json_paths = [
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
@@ -248,6 +251,9 @@ if any(
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
 )
+if douyin_knowledge.get("evidence_schema_version") != 1:
+    raise SystemExit("Knowledge evidence schema version is unsupported")
+validate_evidence_records(douyin_knowledge["videos"])
 if len(douyin_knowledge["videos"]) < 25:
     raise SystemExit("Full Douyin knowledge base regressed below pilot size")
 if len(douyin_knowledge["videos"]) < 405:
@@ -405,6 +411,9 @@ required_reception_implication_fields = {
     "symptom_terms",
     "incoming_terms",
     "response_terms",
+    "implicit_response_incoming_terms",
+    "prior_action_suffixes",
+    "player_action_prefixes_by_incoming_term",
     "target_action_query",
     "requested_action_scopes",
     "search_terms",
@@ -428,6 +437,65 @@ for implication in reception_implications:
         target_action_scope_names
     ):
         raise SystemExit("Reception implication uses an unknown action scope")
+    if not set(implication["implicit_response_incoming_terms"]).issubset(
+        implication["incoming_terms"]
+    ):
+        raise SystemExit("Reception implication has an unknown implicit response")
+    action_prefixes = implication["player_action_prefixes_by_incoming_term"]
+    if not set(action_prefixes).issubset(implication["incoming_terms"]) or any(
+        not prefixes for prefixes in action_prefixes.values()
+    ):
+        raise SystemExit("Reception implication action prefixes are invalid")
+action_sequence_implications = answer_selection_rules.get(
+    "action_sequence_implications", []
+)
+required_action_sequence_fields = {
+    "name",
+    "canonical_terms",
+    "before_terms",
+    "after_terms",
+    "max_gap_characters",
+    "opponent_response_groups",
+    "canonical_action_query",
+    "derived_constraints",
+    "requested_action_scopes",
+    "search_terms",
+    "symptom_terms",
+    "reason",
+}
+if not action_sequence_implications:
+    raise SystemExit("Action sequence implications are missing")
+for implication in action_sequence_implications:
+    if set(implication) != required_action_sequence_fields:
+        raise SystemExit("Action sequence implication contract is incomplete")
+    if any(
+        not implication[field]
+        for field in required_action_sequence_fields
+    ):
+        raise SystemExit("Action sequence implication cannot be empty")
+    if (
+        not isinstance(implication["max_gap_characters"], int)
+        or implication["max_gap_characters"] <= 0
+    ):
+        raise SystemExit("Action sequence implication has an invalid gap")
+    if not set(implication["symptom_terms"]).issubset(
+        retrieval_intent["literal_symptom_terms"]
+    ):
+        raise SystemExit("Action sequence symptoms are not routable")
+    if not set(implication["requested_action_scopes"]).issubset(
+        target_action_scope_names
+    ):
+        raise SystemExit("Action sequence implication uses an unknown action scope")
+    for response_group in implication["opponent_response_groups"]:
+        if set(response_group) != {
+            "response_terms",
+            "required_player_symptom_terms",
+        } or not all(response_group.values()):
+            raise SystemExit("Action sequence response group is incomplete")
+        if not set(response_group["required_player_symptom_terms"]).issubset(
+            retrieval_intent["literal_symptom_terms"]
+        ):
+            raise SystemExit("Action sequence response symptoms are not routable")
 constraint_axes = {
     axis["name"]: axis
     for axis in answer_selection_rules.get("constraint_axes", [])
@@ -728,6 +796,12 @@ if '"full_text"' in retrieval_index_text or '"transcript_text"' in retrieval_ind
     raise SystemExit("Retrieval index unexpectedly contains transcript text fields")
 allowed_retrieval_video_fields = {
     "video_id",
+    "evidence_id",
+    "source_type",
+    "canonical_url",
+    "parent_source_id",
+    "clip_start_seconds",
+    "clip_end_seconds",
     "topic_ids",
     "lexicon_terms",
     "field_lengths",
@@ -740,6 +814,11 @@ if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index
     raise SystemExit("Retrieval index video records contain unexpected fields")
 ready_video_ids = {
     video["video_id"]
+    for video in douyin_knowledge["videos"]
+    if video["processing_status"] == "ready"
+}
+ready_evidence_ids = {
+    video["evidence_id"]
     for video in douyin_knowledge["videos"]
     if video["processing_status"] == "ready"
 }
@@ -761,9 +840,9 @@ answer_quality_cases = json.loads(
 answer_quality_summary = validate_answer_quality_registry(
     answer_quality_cases,
     answer_quality_rules,
-    ready_video_ids,
+    ready_evidence_ids,
     minimum_cases=30,
-    all_video_ids={video["video_id"] for video in douyin_knowledge["videos"]},
+    all_video_ids={video["evidence_id"] for video in douyin_knowledge["videos"]},
 )
 if set(answer_quality_summary["status_counts"]) - set(
     answer_quality_rules["review_statuses"]
@@ -780,6 +859,11 @@ if {
 retrieval_video_ids = {video["video_id"] for video in retrieval_index["videos"]}
 if retrieval_video_ids != ready_video_ids:
     raise SystemExit("Retrieval index video IDs do not match ready knowledge videos")
+retrieval_evidence_ids = {
+    video["evidence_id"] for video in retrieval_index["videos"]
+}
+if retrieval_evidence_ids != ready_evidence_ids:
+    raise SystemExit("Retrieval index evidence IDs do not match ready knowledge evidence")
 
 feedback_signals = json.loads(
     (ROOT / "config" / "feedback_signals.json").read_text(encoding="utf-8")
@@ -1078,7 +1162,8 @@ for required_answer_contract in [
     "video_primary",
     "Never return a link-only answer",
     "核心视频与观看重点",
-    "video ID",
+    "evidence_id",
+    "canonical URL",
     "temporary CDN media URLs",
     "完整相关视频",
     "V1",

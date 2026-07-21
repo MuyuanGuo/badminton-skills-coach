@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 56)
+        self.assertEqual(result["cases"], 57)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -2507,6 +2507,9 @@ class AnswerContextTests(unittest.TestCase):
             "对手吊网前我总是接不到",
             "别人放网我来不及上去",
             "接前场小球启动太慢",
+            "反手区网前球老是来不及，怎么才能上得快？",
+            "网前反手球总是来不及",
+            "反手网前上网慢",
         ]
         expected_ids = {
             "7099644893269839144",
@@ -2533,6 +2536,14 @@ class AnswerContextTests(unittest.TestCase):
                 }
                 self.assertTrue(expected_ids & set(selected))
                 self.assertTrue(
+                    all(
+                        item["evidence_id"] == video_id
+                        and item["source_type"] == "douyin_video"
+                        and item["parent_source_id"] is None
+                        for video_id, item in selected.items()
+                    )
+                )
+                self.assertTrue(
                     all(item["role"] == "core" for item in selected.values())
                 )
                 self.assertNotIn("7109288333884329231", selected)
@@ -2556,11 +2567,34 @@ class AnswerContextTests(unittest.TestCase):
             ]
         )
 
+        backhand_forecourt = self.context_module.prepare_answer_context(
+            "网前反手球总是来不及",
+            local_personalization=False,
+        )
+        incoming = backhand_forecourt["question_interpretation"][
+            "actor_context"
+        ]["incoming_shot_constraints"]
+        self.assertEqual(incoming["stroke_side"], ["backhand"])
+        self.assertEqual(incoming["court_zone"], ["forecourt"])
+
+        serve = self.context_module.prepare_answer_context(
+            "发小球速度太慢，怎么打到后场",
+            local_personalization=False,
+        )
+        self.assertNotIn(
+            "forward_reception_movement",
+            serve["question_interpretation"]["actor_context"][
+                "requested_action_scopes"
+            ],
+        )
+
     def test_interrupted_kill_to_net_sequence_preserves_named_action(self):
         queries = [
             "杀球后来不及上网",
             "杀球后应该怎样上网",
             "杀球以后上网衔接太慢",
+            "杀球后被对手挡网，我总是来不及上去怎么办",
+            "我杀球后对手放网，总是跟不上怎么办",
         ]
         required_ids = {"7065157571816000809", "7092959332047785250"}
         hard_negatives = {"7109288333884329231", "7589749293205363633"}
@@ -2587,6 +2621,22 @@ class AnswerContextTests(unittest.TestCase):
                 self.assertTrue(required_ids.issubset(selected_ids))
                 self.assertFalse(selected_ids & hard_negatives)
 
+        interrupted = self.context_module.prepare_answer_context(
+            "我杀球后对手放网，总是跟不上怎么办",
+            local_personalization=False,
+        )
+        event_chain = interrupted["question_interpretation"]["actor_context"][
+            "event_chain"
+        ]
+        self.assertEqual(
+            [(item["actor"], item["role"]) for item in event_chain],
+            [
+                ("player", "prior_action"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+        )
+
         symptom = self.context_module.prepare_answer_context(
             "杀球后来不及上网", local_personalization=False
         )
@@ -2601,6 +2651,9 @@ class AnswerContextTests(unittest.TestCase):
             "杀球后回位来不及",
             "对手杀球后我上网",
             "接杀后我上网",
+            "对手杀球我挡网后应该怎么上网",
+            "我不想杀上网，只想杀球后回位，应该怎么练？",
+            "吊球后来不及上网",
         ]:
             with self.subTest(query=query):
                 payload = self.context_module.prepare_answer_context(

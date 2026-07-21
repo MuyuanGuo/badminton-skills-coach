@@ -32,7 +32,7 @@ def load_registry(path=CASES_PATH):
 
 
 def validate_registry(registry):
-    if registry.get("version") != 1:
+    if registry.get("version") != 2:
         raise ValueError("query-equivalence registry version is unsupported")
     families = registry.get("families", [])
     if not families:
@@ -74,6 +74,7 @@ def validate_registry(registry):
                 "expected_target_actor",
                 "forbidden_technique_variants",
                 "forbidden_action_scopes",
+                "forbidden_selected_video_ids",
             }:
                 raise ValueError(f"{family['family_id']} has an invalid negative control")
     if len(family_ids) != len(set(family_ids)):
@@ -168,6 +169,9 @@ def evaluate(cases_path=CASES_PATH):
                 interpretation["constraints"].get("technique_variant", [])
             )
             actual_scopes = set(actor["requested_action_scopes"])
+            selected_ids = {
+                item["video_id"] for item in payload["selected_videos"]
+            }
             checks = {
                 "target_actor": actor["target_actor"]
                 == control["expected_target_actor"],
@@ -176,6 +180,9 @@ def evaluate(cases_path=CASES_PATH):
                 ),
                 "action_scope_not_overgeneralized": not (
                     actual_scopes & set(control["forbidden_action_scopes"])
+                ),
+                "forbidden_evidence_not_selected": not (
+                    selected_ids & set(control["forbidden_selected_video_ids"])
                 ),
             }
             failures = [name for name, passed in checks.items() if not passed]
@@ -188,6 +195,7 @@ def evaluate(cases_path=CASES_PATH):
                     "query": control["query"],
                     "matched": not failures,
                     "failures": failures,
+                    "selected_video_ids": sorted(selected_ids),
                 }
             )
             negative_control_count += 1

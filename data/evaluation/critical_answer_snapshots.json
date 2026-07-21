@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "User-reported answer failures that must retain a reviewed final-answer snapshot. Add a case here whenever a real user report exposes an answer-level regression.",
+  "required_cases": [
+    {
+      "case_id": "AQ055",
+      "reason": "User report: a late forecourt-reception question returned no core video and cited backhand passive-clear evidence."
+    },
+    {
+      "case_id": "AQ056",
+      "reason": "User report: symptom wording for kill-to-net had to remain equivalent to the instructional wording."
+    },
+    {
+      "case_id": "AQ057",
+      "reason": "User report: an opponent response inserted into a kill-to-net sequence caused generic smash and late-contact evidence to replace the named sequence."
+    }
+  ]
+}

@@ -7,7 +7,11 @@ import json
 import re
 from pathlib import Path
 
-from project_artifacts import atomic_write_bundle, derive_project_status
+from project_artifacts import (
+    atomic_write_bundle,
+    derive_project_status,
+    validate_evidence_records,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -122,6 +126,7 @@ def build_manifest_payload():
     video_index = load_json("data/douyin_video_index.json")
     teaching_filter = load_json("data/douyin_teaching_filtered.json")
     knowledge = load_json("data/knowledge/douyin_knowledge_base.json")
+    validate_evidence_records(knowledge["videos"])
     status = derive_project_status(video_index, teaching_filter, knowledge)
     ready = [
         item for item in knowledge["videos"] if item["processing_status"] == "ready"

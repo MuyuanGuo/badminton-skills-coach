@@ -647,51 +647,204 @@ def _query_constraints_from_text(
 
 
 def _action_sequence_implication(search_module, query, rules):
-    normalized_query = search_module.normalize(query)
+    actor_text = query_actor_text(query, rules)
+    normalized_player = search_module.normalize(actor_text.get("player", ""))
+    normalized_opponent = search_module.normalize(actor_text.get("opponent", ""))
+
+    def matching_terms(normalized_text, terms):
+        return [
+            term
+            for term in terms
+            if search_module.normalize(term) in normalized_text
+        ]
+
+    def matched_implication(
+        implication,
+        match_type,
+        before_term="",
+        after_term="",
+        opponent_response_term="",
+    ):
+        result = dict(implication)
+        event_chain = []
+        if before_term:
+            event_chain.append(
+                {
+                    "actor": "player",
+                    "role": "prior_action",
+                    "term": before_term,
+                }
+            )
+        if opponent_response_term:
+            event_chain.append(
+                {
+                    "actor": "opponent",
+                    "role": "response",
+                    "term": opponent_response_term,
+                }
+            )
+        event_chain.append(
+            {
+                "actor": "player",
+                "role": "target_action",
+                "term": implication["canonical_action_query"],
+            }
+        )
+        result["matched_context"] = {
+            "match_type": match_type,
+            "event_chain": event_chain,
+            "explicit_after_term": after_term,
+        }
+        return result
+
     for implication in rules.get("action_sequence_implications", []):
-        if any(
-            search_module.normalize(term) in normalized_query
-            for term in implication.get("canonical_terms", [])
-        ):
-            return implication
+        canonical_matches = matching_terms(
+            normalized_player, implication.get("canonical_terms", [])
+        )
+        if canonical_matches:
+            return matched_implication(
+                implication,
+                "canonical_term",
+                after_term=canonical_matches[0],
+            )
         before_matches = [
-            (normalized_query.find(search_module.normalize(term)), term)
+            (normalized_player.find(search_module.normalize(term)), term)
             for term in implication.get("before_terms", [])
-            if search_module.normalize(term) in normalized_query
+            if search_module.normalize(term) in normalized_player
         ]
         after_matches = [
-            (normalized_query.find(search_module.normalize(term)), term)
+            (normalized_player.find(search_module.normalize(term)), term)
             for term in implication.get("after_terms", [])
-            if search_module.normalize(term) in normalized_query
+            if search_module.normalize(term) in normalized_player
+        ]
+        opponent_response_matches = [
+            term
+            for group in implication.get("opponent_response_groups", [])
+            for term in matching_terms(
+                normalized_opponent, group.get("response_terms", [])
+            )
         ]
         max_gap = implication.get("max_gap_characters", 12)
         for before_index, before_term in before_matches:
             before_end = before_index + len(search_module.normalize(before_term))
-            if any(
-                after_index >= before_end
-                and after_index - before_end <= max_gap
-                for after_index, _ in after_matches
-            ):
-                return implication
+            for after_index, after_term in after_matches:
+                if (
+                    after_index >= before_end
+                    and after_index - before_end <= max_gap
+                ):
+                    return matched_implication(
+                        implication,
+                        (
+                            "opponent_response_with_explicit_target"
+                            if opponent_response_matches
+                            else "same_actor_explicit_sequence"
+                        ),
+                        before_term=before_term,
+                        after_term=after_term,
+                        opponent_response_term=(
+                            opponent_response_matches[0]
+                            if opponent_response_matches
+                            else ""
+                        ),
+                    )
+
+        if not before_matches or not normalized_opponent:
+            continue
+        for response_group in implication.get("opponent_response_groups", []):
+            response_matches = matching_terms(
+                normalized_opponent,
+                response_group.get("response_terms", []),
+            )
+            symptom_matches = matching_terms(
+                normalized_player,
+                response_group.get("required_player_symptom_terms", []),
+            )
+            if response_matches and symptom_matches:
+                return matched_implication(
+                    implication,
+                    "opponent_response_interruption",
+                    before_term=before_matches[0][1],
+                    opponent_response_term=response_matches[0],
+                )
     return None
 
 
 def _reception_symptom_implication(search_module, query, rules):
-    normalized_query = search_module.normalize(query)
-    for implication in rules.get("reception_symptom_implications", []):
-        required_groups = [
-            implication.get("symptom_terms", []),
-            implication.get("incoming_terms", []),
-            implication.get("response_terms", []),
+    actor_text = query_actor_text(query, rules)
+    normalized_player = search_module.normalize(actor_text.get("player", ""))
+    normalized_opponent = search_module.normalize(actor_text.get("opponent", ""))
+
+    def matching_terms(normalized_text, terms):
+        return [
+            term
+            for term in terms
+            if search_module.normalize(term) in normalized_text
         ]
-        if all(
-            any(
-                search_module.normalize(term) in normalized_query
-                for term in terms
+
+    def term_is_prior_player_action(term, implication):
+        normalized_term = search_module.normalize(term)
+        prefix_terms = implication.get(
+            "player_action_prefixes_by_incoming_term", {}
+        ).get(term, [])
+        start = 0
+        found = False
+        while True:
+            index = normalized_player.find(normalized_term, start)
+            if index < 0:
+                return found
+            found = True
+            prefix = normalized_player[:index]
+            prefixed_as_action = any(
+                prefix.endswith(search_module.normalize(item))
+                for item in prefix_terms
             )
-            for terms in required_groups
-        ):
-            return implication
+            suffix = normalized_player[index + len(normalized_term):]
+            suffixed_as_action = any(
+                suffix.startswith(search_module.normalize(item))
+                for item in implication.get("prior_action_suffixes", [])
+            )
+            if not prefixed_as_action and not suffixed_as_action:
+                return False
+            start = index + 1
+
+    for implication in rules.get("reception_symptom_implications", []):
+        symptoms = matching_terms(
+            normalized_player, implication.get("symptom_terms", [])
+        )
+        opponent_incoming = matching_terms(
+            normalized_opponent, implication.get("incoming_terms", [])
+        )
+        player_incoming = [
+            term
+            for term in matching_terms(
+                normalized_player, implication.get("incoming_terms", [])
+            )
+            if not term_is_prior_player_action(term, implication)
+        ]
+        incoming = opponent_incoming or player_incoming
+        responses = matching_terms(
+            normalized_player, implication.get("response_terms", [])
+        )
+        implicit_terms = {
+            search_module.normalize(term)
+            for term in implication.get("implicit_response_incoming_terms", [])
+        }
+        implicit_response = any(
+            search_module.normalize(term) in implicit_terms for term in incoming
+        )
+        if symptoms and incoming and (responses or implicit_response):
+            result = dict(implication)
+            result["matched_context"] = {
+                "match_type": (
+                    "explicit_opponent_incoming"
+                    if opponent_incoming
+                    else "unmarked_incoming_condition"
+                ),
+                "incoming_term": incoming[0],
+                "symptom_term": symptoms[0],
+                "response_term": responses[0] if responses else "",
+            }
+            return result
     return None
 
 
@@ -704,7 +857,7 @@ def _query_target_action_context(
     rules,
 ):
     sequence_implication = _action_sequence_implication(
-        search_module, target_query, rules
+        search_module, query, rules
     )
     if sequence_implication and target_actor == "player":
         action_query = sequence_implication["canonical_action_query"]
@@ -713,12 +866,19 @@ def _query_target_action_context(
             search_module.normalize(term) in normalized_target_query
             for term in sequence_implication.get("symptom_terms", [])
         )
+        matched_context = sequence_implication.get("matched_context", {})
+        has_opponent_response = any(
+            item.get("actor") == "opponent"
+            for item in matched_context.get("event_chain", [])
+        )
         action_constraints = _query_constraints_from_text(
             search_module, action_query, rules
         )
         return {
             "target_action_query": action_query,
-            "target_condition_query": target_query if has_symptom else "",
+            "target_condition_query": (
+                query if has_symptom or has_opponent_response else ""
+            ),
             "target_action_scope_query": action_query,
             "target_action_backreferences_condition": False,
             "target_action_constraints": action_constraints,
@@ -733,6 +893,7 @@ def _query_target_action_context(
             "inferred_search_terms": list(
                 sequence_implication["search_terms"]
             ),
+            "event_chain": matched_context.get("event_chain", []),
             "condition_constraints_are_incoming": False,
         }
 
@@ -762,6 +923,20 @@ def _query_target_action_context(
             "inferred_search_terms": list(
                 reception_implication["search_terms"]
             ),
+            "event_chain": [
+                {
+                    "actor": "opponent_or_feed",
+                    "role": "incoming_condition",
+                    "term": reception_implication.get(
+                        "matched_context", {}
+                    ).get("incoming_term", ""),
+                },
+                {
+                    "actor": "player",
+                    "role": "target_action",
+                    "term": action_query,
+                },
+            ],
             "condition_constraints_are_incoming": True,
         }
 
@@ -842,6 +1017,7 @@ def _query_target_action_context(
         "requested_action_scopes": requested_action_scopes,
         "inferred_target_action": None,
         "inferred_search_terms": [],
+        "event_chain": [],
         "condition_constraints_are_incoming": False,
     }
 
@@ -872,6 +1048,19 @@ def query_actor_context(search_module, query, rules):
         actor_constraints.get(target_actor, {}),
         rules,
     )
+    if target_action_context.get("inferred_target_action"):
+        target_actor_constraints = actor_constraints.setdefault(
+            target_actor, {}
+        )
+        for axis_name, values in target_action_context.get(
+            "target_action_constraints", {}
+        ).items():
+            target_actor_constraints[axis_name] = sorted(
+                set(target_actor_constraints.get(axis_name, []))
+                | set(values)
+            )
+        if target_actor == "player":
+            player_constraints = target_actor_constraints
     if target_action_context.get("condition_constraints_are_incoming"):
         incoming_constraints = target_action_context[
             "target_condition_constraints"
@@ -2662,8 +2851,17 @@ def prepare_answer_context(
                     "core" if entry_is_core(entry) else "supporting"
                 ),
                 "video_id": entry["video_id"],
+                "evidence_id": evidence["evidence"]["evidence_id"],
+                "source_type": evidence["evidence"]["source_type"],
+                "parent_source_id": evidence["evidence"]["parent_source_id"],
+                "clip_start_seconds": evidence["evidence"][
+                    "clip_start_seconds"
+                ],
+                "clip_end_seconds": evidence["evidence"][
+                    "clip_end_seconds"
+                ],
                 "title": display_title,
-                "url": candidate["url"],
+                "url": evidence["evidence"]["canonical_url"],
                 "category": candidate["category"],
                 "confidence": candidate["confidence"],
                 "selection_reasons": entry["selection_reasons"],
@@ -2754,13 +2952,13 @@ def prepare_answer_context(
             ],
             "citation_rules": [
                 "只引用 selected_videos；不得把被拒绝候选恢复为证据。",
-                "每个 V 标签只对应一个视频，并在答案中只输出一次该视频 URL。",
+                "每个 V 标签只对应一个 evidence_id，并在答案中只输出一次 canonical URL。当前抖音条目的 evidence_id 等于 video_id；直播切片等新来源使用自己的稳定 evidence_id。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
                 "question_interpretation.ambiguities 非空时，先逐条说明 required_statement；不得把有多种场区含义的术语静默收窄成一种技术。",
                 "question_interpretation.terminology_corrections 非空时，先说明 required_statement，并在回答正文、视频标题改写和观看重点中只使用 canonical_term；错误输入词只可在纠正句中出现一次。",
                 "question_interpretation.technique_definitions 是维护者确认的规范术语、父类、起跳边界和线路分类；用于解释技术归属，但不能让父类视频替代所问细分技术的直接动作证据。",
-                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；inferred_target_action 非空时，先说明从症状推导出的目标动作，并把 incoming_shot_constraints 仅视为来球条件。target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的动作范围。requested_action_scopes 要求来源直接支持所问动作，并排除只讨论其他场景或其他主体的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
+                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。event_chain 非空时必须按顺序保留每个主体的先前动作、对手响应与目标动作，不得因中间插入另一主体而丢失命名序列。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；inferred_target_action 非空时，先说明从症状推导出的目标动作，并把 incoming_shot_constraints 仅视为来球条件。target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的动作范围。requested_action_scopes 要求来源直接支持所问动作，并排除只讨论其他场景或其他主体的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",

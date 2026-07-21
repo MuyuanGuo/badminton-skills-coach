@@ -1,5 +1,5 @@
 {
-  "version": 34,
+  "version": 35,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -94,9 +94,15 @@
   "reception_symptom_implications": [
     {
       "name": "late_to_forecourt_incoming_shot",
-      "symptom_terms": ["来不及", "接不到", "够不到", "赶不上", "到不了", "太慢"],
-      "incoming_terms": ["网前小球", "前场小球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球"],
-      "response_terms": ["接", "上去", "上网", "启动", "赶不上", "够不到", "到不了"],
+      "symptom_terms": ["来不及", "接不到", "够不到", "赶不上", "到不了", "太慢", "上网慢", "上得慢"],
+      "incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球", "网前"],
+      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "够不到", "到不了"],
+      "implicit_response_incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球"],
+      "prior_action_suffixes": ["后", "以后", "之后", "完"],
+      "player_action_prefixes_by_incoming_term": {
+        "小球": ["发"],
+        "网前": ["打到", "吊到", "放到"]
+      },
       "target_action_query": "向前启动 上网步法",
       "requested_action_scopes": ["forward_reception_movement"],
       "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
@@ -108,8 +114,18 @@
       "name": "kill_to_net_interrupted_sequence",
       "canonical_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
       "before_terms": ["杀球", "扣杀", "杀完球", "杀完"],
-      "after_terms": ["上网", "跟上网前", "跟到网前"],
+      "after_terms": ["上网", "上去", "冲上去", "冲不上去", "跟上网前", "跟到网前", "跟上前场", "跟到前场", "跟不上前场", "冲到前场"],
       "max_gap_characters": 12,
+      "opponent_response_groups": [
+        {
+          "response_terms": ["挡网", "放网", "挡小球", "放小球"],
+          "required_player_symptom_terms": ["来不及", "赶不上", "跟不上", "接不到", "够不到", "到不了", "太慢", "冲不上去", "跟不上前场"]
+        },
+        {
+          "response_terms": ["回远网", "远网"],
+          "required_player_symptom_terms": ["回不去", "来不及回", "退不回", "退不回去"]
+        }
+      ],
       "canonical_action_query": "杀上网",
       "derived_constraints": {
         "shot_family": ["smash"],
@@ -118,8 +134,8 @@
       },
       "requested_action_scopes": ["kill_to_net_sequence"],
       "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
-      "symptom_terms": ["来不及", "赶不上", "跟不上", "太慢", "衔接慢"],
-      "reason": "同一主体先杀球再上网描述的是杀上网专项；连接词、提问词或到位症状不得切断动作序列。"
+      "symptom_terms": ["来不及", "赶不上", "跟不上", "太慢", "衔接慢", "回不去", "冲不上去", "跟不上前场"],
+      "reason": "球员先杀球、对手回网前或远网、球员再描述上网或回动困难，仍属于杀上网事件链；主体切换、连接词和到位症状不得切断序列。"
     }
   ],
   "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
@@ -186,7 +202,7 @@
     },
     {
       "name": "forward_reception_movement",
-      "query_terms": ["向前启动", "上网步法"],
+      "query_terms": ["向前启动", "上网步法", "上网", "上去", "上前", "上得快", "冲上前场", "跟上前场"],
       "query_context_terms": [],
       "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
       "source_terms": ["正手往前的高速实战步法", "正手网前步法", "中场上网搓球", "职业运动员上网因为身体能力强"],

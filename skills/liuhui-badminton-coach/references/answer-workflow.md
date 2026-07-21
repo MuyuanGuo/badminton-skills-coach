@@ -55,7 +55,7 @@ Use the following order, omitting only sections that truly do not apply:
 1. **直接回答**: answer the actual question and identify the situation.
 2. **文字解释**: synthesize all distinct supported points; do not copy transcripts line by line.
 3. **适用边界**: state conditions that change the advice.
-4. **核心视频与观看重点**: strongest one to three videos, with reason, observation target, timestamp when available, video ID, and canonical URL.
+4. **核心视频与观看重点**: strongest one to three evidence items, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
 5. **完整相关视频**: every other selected worthwhile video, grouped by subtopic when long. Reuse labels and do not repeat URLs.
 6. **置信边界**: separate source-backed facts, reasonable synthesis, and what requires watching the source or the user's own video.
 
@@ -114,10 +114,10 @@ An exhaustive manifest proves only that configured retrieval channels were not t
 Use the selected label and canonical source once:
 
 ```text
-V1｜视频标题（视频 ID：1234567890123456789）
+V1｜来源标题（证据 ID：1234567890123456789）
 观看重点：……
 关键片段：00:23-00:38
 https://www.douyin.com/video/1234567890123456789
 ```
 
-If a public link fails, preserve the title and video ID. The textual answer must remain useful without link access.
+For current Douyin videos, `evidence_id` equals the numeric `video_id`. For a livestream clip or another source type, use the returned stable `evidence_id`, parent-source identity, clip range, and canonical URL instead of inventing a numeric video ID. If a public link fails, preserve the title and evidence ID. The textual answer must remain useful without link access.

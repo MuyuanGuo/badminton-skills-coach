@@ -165,6 +165,66 @@ class AnswerQualityTests(unittest.TestCase):
         self.assertEqual(result["missing_case_ids"], ["AQ902"])
         self.assertEqual(result["automatic_pass_rate"], 1.0)
 
+    def test_critical_snapshot_requirements_are_explicit_and_validated(self):
+        registry = {"cases": [self.reviewed_case()]}
+        required = self.module.validate_snapshot_requirements(
+            {
+                "version": 1,
+                "required_cases": [
+                    {
+                        "case_id": "AQ901",
+                        "reason": "A real user report exposed this regression.",
+                    }
+                ],
+            },
+            registry,
+        )
+        self.assertEqual(required, {"AQ901"})
+
+        with self.assertRaisesRegex(
+            self.module.RegistryValidationError, "unknown case"
+        ):
+            self.module.validate_snapshot_requirements(
+                {
+                    "version": 1,
+                    "required_cases": [
+                        {"case_id": "AQ999", "reason": "Unknown"}
+                    ],
+                },
+                registry,
+            )
+
+    def test_source_neutral_url_and_evidence_id_are_supported(self):
+        evidence_id = "live:2026-07-21:clip-003"
+        case = self.reviewed_case()
+        case["gold"]["primary_video_ids"] = [evidence_id]
+        case["gold"]["required_video_ids"] = [evidence_id]
+        case["gold"]["required_text_points"][0]["evidence_video_ids"] = [
+            evidence_id
+        ]
+        answer = self.good_answer()
+        source_url = "https://example.test/live/2026-07-21?t=315"
+        answer["answer_text"] = answer["answer_text"].replace(
+            "https://www.douyin.com/video/7501542236061420859",
+            source_url,
+        )
+        answer["video_notes"] = [
+            {
+                "evidence_id": evidence_id,
+                "reason": "直接讲解直播中的双打发接发准备优先级",
+                "watch_focus": "观察切片内如何覆盖对手最快出球线路",
+            }
+        ]
+        result = self.module.evaluate_case_answer(
+            case,
+            answer,
+            self.rules,
+            {evidence_id},
+            evidence_urls={source_url: evidence_id},
+        )
+        self.assertTrue(result["automatic_pass"])
+        self.assertEqual(result["linked_video_ids"], [evidence_id])
+
     def review_markdown(self, data):
         return (
             "## AQ901 · 双打接发怎么抢主动\n\n"

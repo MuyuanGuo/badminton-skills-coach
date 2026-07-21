@@ -9,8 +9,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES_PATH = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
 DEFAULT_RULES_PATH = ROOT / "config" / "answer_quality_rules.json"
+DEFAULT_SNAPSHOT_REQUIREMENTS_PATH = (
+    ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
+)
 KNOWLEDGE_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
-VIDEO_URL_PATTERN = re.compile(r"https://www\.douyin\.com/video/(\d+)")
+URL_PATTERN = re.compile(r"https?://[^\s)\]]+")
+DOUYIN_URL_PATTERN = re.compile(r"https://www\.douyin\.com/video/(\d+)")
+EVIDENCE_TAG_PATTERN = re.compile(r"\[evidence:([A-Za-z0-9._:-]+)\]")
 CASE_ID_PATTERN = re.compile(r"AQ\d{3}")
 DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}")
 
@@ -25,10 +30,30 @@ def load_json(path):
 
 def ready_video_ids(knowledge):
     return {
-        video["video_id"]
+        str(video.get("evidence_id") or video["video_id"])
         for video in knowledge["videos"]
         if video["processing_status"] == "ready"
     }
+
+
+def ready_evidence_url_map(knowledge):
+    return {
+        video.get("canonical_url") or video.get("url"): str(
+            video.get("evidence_id") or video["video_id"]
+        )
+        for video in knowledge["videos"]
+        if video.get("processing_status") == "ready"
+        and (video.get("canonical_url") or video.get("url"))
+    }
+
+
+def linked_evidence_ids(answer_text, evidence_urls=None):
+    references = EVIDENCE_TAG_PATTERN.findall(answer_text)
+    for url, evidence_id in (evidence_urls or {}).items():
+        references.extend([evidence_id] * answer_text.count(url))
+    if not evidence_urls:
+        references.extend(DOUYIN_URL_PATTERN.findall(answer_text))
+    return references
 
 
 def case_is_regression_ready(case):
@@ -195,7 +220,7 @@ def validate_registry(
 
 
 def normalized_text_length(text):
-    without_urls = VIDEO_URL_PATTERN.sub("", text)
+    without_urls = URL_PATTERN.sub("", text)
     return len(re.sub(r"\s+", "", without_urls))
 
 
@@ -204,7 +229,14 @@ def point_is_covered(point, answer_text):
     return any(term.casefold() in normalized for term in point["acceptable_terms"])
 
 
-def evaluate_case_answer(case, answer, rules, ready_ids, require_manual_review=False):
+def evaluate_case_answer(
+    case,
+    answer,
+    rules,
+    ready_ids,
+    require_manual_review=False,
+    evidence_urls=None,
+):
     failures = []
     answer_text = answer.get("answer_text", "")
     if not isinstance(answer_text, str) or not answer_text.strip():
@@ -220,7 +252,7 @@ def evaluate_case_answer(case, answer, rules, ready_ids, require_manual_review=F
     if text_length < minimum_text:
         failures.append("text_too_short")
 
-    linked_video_ids = VIDEO_URL_PATTERN.findall(answer_text)
+    linked_video_ids = linked_evidence_ids(answer_text, evidence_urls)
     link_counts = Counter(linked_video_ids)
     duplicate_video_ids = sorted(
         video_id for video_id, count in link_counts.items() if count > 1
@@ -267,13 +299,18 @@ def evaluate_case_answer(case, answer, rules, ready_ids, require_manual_review=F
     if not isinstance(video_notes, list):
         video_notes = []
         failures.append("video_notes_invalid")
-    note_ids = [note.get("video_id") for note in video_notes if isinstance(note, dict)]
+    note_ids = [
+        note.get("evidence_id") or note.get("video_id")
+        for note in video_notes
+        if isinstance(note, dict)
+    ]
     if len(note_ids) != len(set(note_ids)):
         failures.append("duplicate_video_notes")
     notes_by_id = {
-        note.get("video_id"): note
+        (note.get("evidence_id") or note.get("video_id")): note
         for note in video_notes
-        if isinstance(note, dict) and note.get("video_id")
+        if isinstance(note, dict)
+        and (note.get("evidence_id") or note.get("video_id"))
     }
     note_rules = rules["video_note_requirements"]
     missing_video_notes = []
@@ -351,7 +388,14 @@ def evaluate_case_answer(case, answer, rules, ready_ids, require_manual_review=F
     }
 
 
-def evaluate_answers(registry, answers_payload, rules, ready_ids, require_manual_review=False):
+def evaluate_answers(
+    registry,
+    answers_payload,
+    rules,
+    ready_ids,
+    require_manual_review=False,
+    evidence_urls=None,
+):
     ready_cases = {
         case["case_id"]: case
         for case in registry["cases"]
@@ -375,6 +419,7 @@ def evaluate_answers(registry, answers_payload, rules, ready_ids, require_manual
             rules,
             ready_ids,
             require_manual_review=require_manual_review,
+            evidence_urls=evidence_urls,
         )
         for case_id in sorted(set(ready_cases) & set(answers_by_id))
     ]
@@ -392,6 +437,36 @@ def evaluate_answers(registry, answers_payload, rules, ready_ids, require_manual
     }
 
 
+def validate_snapshot_requirements(payload, registry):
+    if payload.get("version") != 1:
+        raise RegistryValidationError(
+            "Critical answer snapshot schema version is unsupported"
+        )
+    required_cases = payload.get("required_cases", [])
+    known_case_ids = {case["case_id"] for case in registry.get("cases", [])}
+    case_ids = []
+    for item in required_cases:
+        if set(item) != {"case_id", "reason"}:
+            raise RegistryValidationError(
+                "Critical answer snapshot requirement has an invalid schema"
+            )
+        case_id = item["case_id"]
+        if case_id not in known_case_ids:
+            raise RegistryValidationError(
+                f"Critical answer snapshot references unknown case: {case_id}"
+            )
+        if not isinstance(item["reason"], str) or not item["reason"].strip():
+            raise RegistryValidationError(
+                f"Critical answer snapshot {case_id} has no reason"
+            )
+        case_ids.append(case_id)
+    if len(case_ids) != len(set(case_ids)):
+        raise RegistryValidationError(
+            "Critical answer snapshot case IDs must be unique"
+        )
+    return set(case_ids)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Validate the answer-quality gold registry and evaluate answer snapshots."
@@ -402,8 +477,15 @@ def main():
     parser.add_argument("--require-cases", type=int, default=30)
     parser.add_argument("--min-approved", type=int, default=0)
     parser.add_argument("--min-answer-snapshots", type=int, default=0)
+    parser.add_argument("--min-answer-snapshot-coverage", type=float, default=0.0)
     parser.add_argument("--min-automatic-pass-rate", type=float, default=1.0)
     parser.add_argument("--require-complete-answer-coverage", action="store_true")
+    parser.add_argument("--require-critical-answer-coverage", action="store_true")
+    parser.add_argument(
+        "--snapshot-requirements",
+        type=Path,
+        default=DEFAULT_SNAPSHOT_REQUIREMENTS_PATH,
+    )
     parser.add_argument("--require-manual-review", action="store_true")
     args = parser.parse_args()
 
@@ -411,6 +493,7 @@ def main():
     rules = load_json(args.rules)
     knowledge = load_json(KNOWLEDGE_PATH)
     ready_ids = ready_video_ids(knowledge)
+    evidence_urls = ready_evidence_url_map(knowledge)
     all_video_ids = {video["video_id"] for video in knowledge["videos"]}
     registry_result = validate_registry(
         registry,
@@ -427,13 +510,28 @@ def main():
         )
 
     if args.answers:
+        answers_payload = load_json(args.answers)
         answers_result = evaluate_answers(
             registry,
-            load_json(args.answers),
+            answers_payload,
             rules,
             ready_ids,
             require_manual_review=args.require_manual_review,
+            evidence_urls=evidence_urls,
         )
+        required_snapshot_ids = validate_snapshot_requirements(
+            load_json(args.snapshot_requirements), registry
+        )
+        supplied_snapshot_ids = {
+            answer["case_id"] for answer in answers_payload["answers"]
+        }
+        missing_critical_ids = sorted(
+            required_snapshot_ids - supplied_snapshot_ids
+        )
+        answers_result["critical_snapshot_requirements"] = len(
+            required_snapshot_ids
+        )
+        answers_result["missing_critical_case_ids"] = missing_critical_ids
         result["answers"] = answers_result
         print(json.dumps(result, ensure_ascii=False, indent=2))
         if answers_result["answers_supplied"] < args.min_answer_snapshots:
@@ -443,6 +541,16 @@ def main():
             )
         if args.require_complete_answer_coverage and answers_result["missing_case_ids"]:
             raise SystemExit("Answer snapshot is missing approved cases")
+        if (
+            answers_result["snapshot_coverage"]
+            < args.min_answer_snapshot_coverage
+        ):
+            raise SystemExit("Answer snapshot coverage is below threshold")
+        if args.require_critical_answer_coverage and missing_critical_ids:
+            raise SystemExit(
+                "Answer snapshot is missing critical cases: "
+                + ", ".join(missing_critical_ids)
+            )
         if answers_result["automatic_pass_rate"] < args.min_automatic_pass_rate:
             raise SystemExit("Answer quality automatic pass rate is below threshold")
         return

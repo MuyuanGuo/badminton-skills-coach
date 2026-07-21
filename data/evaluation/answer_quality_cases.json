@@ -4416,6 +4416,83 @@
           "混双杀上网不需要搭档覆盖后场"
         ]
       }
+    },
+    {
+      "case_id": "AQ057",
+      "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_kill_to_net_opponent_response_feedback",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链；不因对手响应插入或上去这一省略表达退化为泛杀球与泛来不及检索。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-21"
+      },
+      "gold": {
+        "primary_video_ids": [
+          "7065157571816000809",
+          "7092959332047785250"
+        ],
+        "required_video_ids": [
+          "7065157571816000809",
+          "7092959332047785250",
+          "7087759120761228578",
+          "7093706918492917033"
+        ],
+        "irrelevant_video_ids": [
+          "7109288333884329231",
+          "7589749293205363633",
+          "7659348110628345210",
+          "7309303794733485327",
+          "7099644893269839144"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ057-P1",
+            "description": "明确恢复球员杀球、对手挡网、球员继续上网的三段事件链，并把问题识别为杀上网到位症状。",
+            "acceptable_terms": ["杀上网", "对手挡网", "继续上网", "事件链", "到位症状"],
+            "evidence_video_ids": ["7065157571816000809", "7092959332047785250"]
+          },
+          {
+            "point_id": "AQ057-P2",
+            "description": "决定杀上网后，向前衔接要从杀球落地后的第一步开始；直接步法来源给出的核心是交叉步。",
+            "acceptable_terms": ["落地后第一步", "交叉步", "向前衔接"],
+            "evidence_video_ids": ["7065157571816000809"]
+          },
+          {
+            "point_id": "AQ057-P3",
+            "description": "位置不好时勉强全力杀会让回球过快并造成脚下脱节，可用慢一些的软压保持下压并争取跟进时间。",
+            "acceptable_terms": ["位置不好", "全力杀", "脚下脱节", "软压", "跟进时间"],
+            "evidence_video_ids": ["7093706918492917033"]
+          },
+          {
+            "point_id": "AQ057-P4",
+            "description": "杀上网带有从后向前惯性，到中路后应按双方位置选择线路，并保留停止前冲或转守的能力。",
+            "acceptable_terms": ["从后向前惯性", "中路", "双方位置", "停止前冲", "转守"],
+            "evidence_video_ids": ["7092959332047785250"]
+          },
+          {
+            "point_id": "AQ057-P5",
+            "description": "混双女选手后场杀上网必须保留男队友覆盖后场的条件，不得推广成所有单双打的固定轮转。",
+            "acceptable_terms": ["混双", "男队友覆盖", "不能推广", "单打"],
+            "evidence_video_ids": ["7087759120761228578"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ057-B1",
+            "description": "反手被动高远、动态低架、泛杀球和泛上网不能替代杀上网事件链的直接证据。",
+            "acceptable_terms": ["反手被动高远不能证明", "动态低架不能证明", "泛杀球", "泛上网", "直接证据"]
+          }
+        ],
+        "forbidden_claims": [
+          "杀球后被挡网来不及上去应该练反手被动高远",
+          "看到对手挡网以后才开始向前移动",
+          "所有杀球后都必须立即冲到网前"
+        ]
+      }
     }
   ]
 }

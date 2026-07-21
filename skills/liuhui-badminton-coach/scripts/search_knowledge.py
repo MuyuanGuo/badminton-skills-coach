@@ -45,6 +45,29 @@ def normalize(text):
     return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", text.lower()))
 
 
+def evidence_descriptor(record):
+    """Return a source-neutral identity for a video or future teaching clip."""
+    legacy_video_id = str(record.get("video_id", ""))
+    evidence_id = str(record.get("evidence_id") or legacy_video_id)
+    canonical_url = record.get("canonical_url") or record.get("url") or ""
+    source_type = record.get("source_type")
+    if not source_type:
+        source_type = (
+            "douyin_video"
+            if "douyin.com/video/" in canonical_url
+            else "external_video"
+        )
+    return {
+        "evidence_id": evidence_id,
+        "source_type": source_type,
+        "canonical_url": canonical_url,
+        "parent_source_id": record.get("parent_source_id"),
+        "clip_start_seconds": record.get("clip_start_seconds"),
+        "clip_end_seconds": record.get("clip_end_seconds"),
+        "legacy_video_id": legacy_video_id or None,
+    }
+
+
 def load_answer_rules():
     return json.loads(ANSWER_RULES_PATH.read_text(encoding="utf-8"))
 
@@ -1665,9 +1688,41 @@ def assign_review_budget(ranked, query_concept_count, rules):
         )
 
 
+def apply_structured_query_expansion(query, expansion, selection_module, rules):
+    actor_query = expansion["intent_frame"].get(
+        "actor_query", expansion["positive_query"]
+    )
+    actor_context = selection_module.query_actor_context(
+        SimpleNamespace(normalize=normalize), actor_query, rules
+    )
+    derived_terms = (
+        actor_context.get("derived_search_terms", [])
+        if actor_context.get("inferred_target_action")
+        else []
+    )
+    for term in derived_terms:
+        expansion["term_weights"][term] = max(
+            expansion["term_weights"].get(term, 0), 3.5
+        )
+        if term not in expansion["synonym_terms"]:
+            expansion["synonym_terms"].append(term)
+    expansion["synonym_terms"].sort()
+    expansion["structured_query_context"] = {
+        "target_actor": actor_context["target_actor"],
+        "target_action_query": actor_context["target_action_query"],
+        "requested_action_scopes": actor_context["requested_action_scopes"],
+        "derived_search_terms": derived_terms,
+        "event_chain": actor_context.get("event_chain", []),
+    }
+    return actor_context
+
+
 def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     expansion = expand_query(query, retrieval_index, rules)
     selection_module, selection_rules = load_selection_policy()
+    apply_structured_query_expansion(
+        query, expansion, selection_module, selection_rules
+    )
     boundary = selection_module.classify_boundary(
         expansion["positive_query"], selection_rules
     )
@@ -2625,6 +2680,7 @@ def lookup_videos(
         record = records.get(video_id) or {}
         result = {
             "video_id": video_id,
+            "evidence": evidence_descriptor(video),
             "title": video["title"],
             "category": video["category"],
             "confidence": video["confidence"],

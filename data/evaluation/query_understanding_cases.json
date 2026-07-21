@@ -505,6 +505,15 @@
       "expected_strategy": "literal_symptom_first",
       "expected_query_units": ["杀球后来不及上网"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ057",
+      "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "intent_summary": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["杀球后被对手挡网，我总是来不及上去怎么办"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1729,6 +1738,291 @@
       "expected_target_actor": "player",
       "expected_target_action_query": "杀上网",
       "expected_target_condition_query": "杀球后来不及上网",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA068",
+      "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "intent_summary": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "对手挡网", "来不及上去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA069",
+      "query": "我杀球后对手放网，总是跟不上怎么办",
+      "intent_summary": "目标动作被省略时，仍从球员杀球、对手放网和跟不上症状恢复杀上网事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "对手放网", "跟不上"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["跟不上"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "我杀球后对手放网，总是跟不上怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA070",
+      "query": "网前反手球总是来不及",
+      "intent_summary": "把反手和网前保留为来球条件，把省略的目标动作恢复为向前启动和上网步法",
+      "expected_intent": {
+        "positive_query_contains": ["网前", "反手", "来不及"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": ["网前", "反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "网前反手球总是来不及",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "stroke_side": ["backhand"],
+        "court_zone": ["forecourt"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA071",
+      "query": "反手网前上网慢",
+      "intent_summary": "压缩表达中的上网慢仍指向向前启动，不得按反手后场被动技术检索",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "网前", "上网慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["上网慢"],
+        "scenarios_contains": ["反手", "网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "反手网前上网慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "stroke_side": ["backhand"],
+        "court_zone": ["forecourt"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA072",
+      "query": "我不想杀上网，只想杀球后回位，应该怎么练？",
+      "intent_summary": "把杀上网作为明确排除项，只保留杀球后回位的正向练习意图",
+      "expected_intent": {
+        "positive_query_contains": ["杀球后回位"],
+        "positive_query_excludes": ["杀上网"],
+        "excluded_terms_contains": ["杀上网"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA073",
+      "query": "杀球后对手回远网我回不去怎么办",
+      "intent_summary": "把对手回远网和球员回不去保留为杀上网后的战术反制事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "回不去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["回不去"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我回不去怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA074",
+      "query": "杀球后上网衔接慢",
+      "intent_summary": "把衔接慢保留为杀上网专项中的到位症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "上网", "衔接慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["衔接慢"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后上网衔接慢",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA075",
+      "query": "杀球后对手回远网我来不及回怎么办",
+      "intent_summary": "对手回远网后的来不及回应保留为杀上网事件链症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "来不及回"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及回"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我来不及回怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA076",
+      "query": "杀球后对手回远网我退不回怎么办",
+      "intent_summary": "对手回远网后的退不回应保留为杀上网事件链症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "退不回"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["退不回"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我退不回怎么办",
       "expected_target_action_constraints": {
         "shot_family": ["smash"],
         "technique_variant": ["kill_to_net"],

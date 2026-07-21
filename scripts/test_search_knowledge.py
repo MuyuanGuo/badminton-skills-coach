@@ -206,6 +206,18 @@ class SearchKnowledgeTests(unittest.TestCase):
         )
         self.assertEqual(payload["missing_video_ids"], [])
         self.assertEqual(payload["results"][0]["video_id"], video_id)
+        self.assertEqual(
+            payload["results"][0]["evidence"],
+            {
+                "evidence_id": video_id,
+                "source_type": "douyin_video",
+                "canonical_url": f"https://www.douyin.com/video/{video_id}",
+                "parent_source_id": None,
+                "clip_start_seconds": None,
+                "clip_end_seconds": None,
+                "legacy_video_id": video_id,
+            },
+        )
         self.assertIn("teaching_note", payload["results"][0])
         self.assertIn("summary", payload["results"][0]["teaching_note"])
         self.assertIn("evidence", payload["results"][0]["teaching_note"])
@@ -220,6 +232,43 @@ class SearchKnowledgeTests(unittest.TestCase):
             0,
         )
         self.assertEqual(payload["answer_guidance"]["mode"], "balanced")
+
+    def test_source_neutral_evidence_descriptor_supports_live_clips(self):
+        descriptor = self.search_module.evidence_descriptor(
+            {
+                "video_id": "legacy-placeholder",
+                "evidence_id": "live:2026-07-21:clip-003",
+                "source_type": "livestream_clip",
+                "canonical_url": "https://example.test/live/2026-07-21?t=315",
+                "parent_source_id": "live:2026-07-21",
+                "clip_start_seconds": 315,
+                "clip_end_seconds": 372,
+            }
+        )
+        self.assertEqual(descriptor["evidence_id"], "live:2026-07-21:clip-003")
+        self.assertEqual(descriptor["source_type"], "livestream_clip")
+        self.assertEqual(descriptor["parent_source_id"], "live:2026-07-21")
+        self.assertEqual(descriptor["clip_start_seconds"], 315)
+        self.assertEqual(descriptor["clip_end_seconds"], 372)
+
+    def test_cross_actor_event_chain_expands_low_level_recall(self):
+        query = "杀球后被对手挡网，我总是来不及上去怎么办"
+        ranked, expansion = self.search_module.rank_candidates(
+            query, *self.search_module.load_resources()
+        )
+        context = expansion["structured_query_context"]
+        self.assertEqual(context["target_action_query"], "杀上网")
+        self.assertEqual(context["requested_action_scopes"], ["kill_to_net_sequence"])
+        self.assertIn("杀上网", context["derived_search_terms"])
+        candidate_ids = {item["video_id"] for item in ranked}
+        self.assertTrue(
+            {
+                "7065157571816000809",
+                "7087759120761228578",
+                "7092959332047785250",
+                "7093706918492917033",
+            }.issubset(candidate_ids)
+        )
 
     def test_video_lookup_rejects_non_ready_evidence(self):
         video_id = "7387250672263040267"
@@ -463,6 +512,14 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertIn("吊球", frame["positive_query"])
         self.assertIn("杀球", frame["excluded_terms"])
         self.assertIn("吊球", plan["query_expansion"]["original_terms"])
+
+        sequence = self.search_module.plan_query(
+            "我不想杀上网，只想杀球后回位，应该怎么练？"
+        )
+        sequence_frame = sequence["retrieval_guidance"]["intent_frame"]
+        self.assertNotIn("杀上网", sequence_frame["positive_query"])
+        self.assertIn("杀球后回位", sequence_frame["positive_query"])
+        self.assertIn("杀上网", sequence_frame["excluded_terms"])
 
     def test_negated_topic_is_penalized_out_of_top_results(self):
         ranked, expansion = self.search_module.rank_candidates(

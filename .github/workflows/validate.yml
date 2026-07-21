@@ -40,6 +40,7 @@ jobs:
             scripts/evaluate_answer_context.py \
             scripts/evaluate_answer_quality.py \
             scripts/evaluate_feedback_signals.py \
+            scripts/evaluate_forward_test_results.py \
             scripts/evaluate_query_equivalence.py \
             scripts/evaluate_query_understanding.py \
             scripts/evaluate_retrieval.py \
@@ -70,6 +71,7 @@ jobs:
             scripts/test_feedback_pipeline.py \
             scripts/test_feedback_personalization.py \
             scripts/test_feedback_promotion.py \
+            scripts/test_forward_test_results.py \
             scripts/test_knowledge_quality.py \
             scripts/test_knowledge_graph_html.py \
             scripts/test_media_assets.py \
@@ -109,6 +111,7 @@ jobs:
           python scripts/test_feedback_pipeline.py
           python scripts/test_feedback_personalization.py
           python scripts/test_feedback_promotion.py
+          python scripts/test_forward_test_results.py
           python scripts/test_knowledge_quality.py
           python scripts/test_knowledge_graph_html.py
           python scripts/test_media_assets.py
@@ -127,6 +130,12 @@ jobs:
           python scripts/evaluate_answer_policy.py
           python scripts/evaluate_answer_context.py
           python scripts/evaluate_answer_quality.py
+          python scripts/evaluate_answer_quality.py \
+            --answers data/evaluation/answer_quality_answers.json \
+            --min-approved 30 \
+            --min-answer-snapshots 34 \
+            --min-answer-snapshot-coverage 0.59 \
+            --require-critical-answer-coverage
           python scripts/evaluate_feedback_signals.py
           python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
@@ -153,6 +162,9 @@ jobs:
           python scripts/evaluate_answer_quality.py \
             --answers data/evaluation/answer_quality_answers.json \
             --min-approved 30 \
-            --min-answer-snapshots 10
+            --min-answer-snapshots 34 \
+            --min-answer-snapshot-coverage 0.59 \
+            --require-critical-answer-coverage
           python scripts/evaluate_feedback_signals.py
+          python scripts/evaluate_forward_test_results.py
           python scripts/build_manifest.py --check
