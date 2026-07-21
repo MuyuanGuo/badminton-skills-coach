@@ -9,10 +9,10 @@ Use this workflow only for answers produced with this Skill and for explicit use
 3. Order labels by answer usefulness, not by raw retrieval rank.
 4. Keep the question and mapping in task context. Do not persist the user's question merely because an answer was generated.
 
-End the answer with one short optional feedback example that uses only labels present in that answer:
+End every answer with the exact `answer_contract.feedback_prompt`, which uses only labels present in that answer and parser-covered wording:
 
 ```text
-反馈示例：V1 最有价值；V2 不相关；文字漏了“被动情况下如何处理”。
+反馈可直接回复：V1 最有价值；V2 不相关；第 2 点结论不对；回答漏了“被动情况下如何处理”；你理解错了，我真正问的是“……”。
 ```
 
 For a misunderstood question, ask the user to state the correction explicitly, for example `你理解错了，我真正问的是“接发战术和接发握拍两个问题”`. For a transcript, interpretation, or citation problem, require the relevant `V` label, for example `V2 转写错了，原视频说的是……`.
@@ -21,11 +21,12 @@ Do not imply that unselected videos are irrelevant.
 
 ## When the user gives feedback
 
-Only after the user explicitly gives feedback, save the prior question, exact label mapping, and user's words in one operation:
+Only after the user explicitly gives feedback, save the prior question, exact answer text, exact label mapping, and user's words in one operation. The answer text and mapping are covered by one integrity digest:
 
 ```bash
 python3 scripts/feedback.py record \
   --question "用户原问题" \
+  --answer-file /path/to/exact-answer.md \
   --mode balanced \
   --video V1=VIDEO_ID \
   --video V2=VIDEO_ID \
@@ -94,7 +95,7 @@ python3 scripts/search_knowledge.py "用户问题" --no-local-personalization
 
 ## GitHub feedback
 
-Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Ask users to paste video IDs or Douyin links, not only local `V` labels.
+Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Require a sanitized original question, sanitized complete answer or exact error excerpt, and a concrete error or omission. Ask users to paste video IDs or Douyin links, not only local `V` labels.
 
 To share an accepted local record, first ask the user to provide or approve a sanitized public version of the question. After separate public-sharing consent, generate a GitHub Issue body:
 
@@ -102,12 +103,13 @@ To share an accepted local record, first ask the user to provide or approve a sa
 python3 scripts/feedback.py export-github \
   --feedback-id FEEDBACK_ID \
   --public-question "脱敏后的代表性问题" \
+  --public-answer-excerpt "脱敏后的完整回答或出错原句及必要上下文" \
   --public-intended-query "脱敏后的真实意图（仅问题理解错误时需要）" \
   --confirm-public \
   --output /path/to/issue-body.md
 ```
 
-The export contains only the sanitized question, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original question or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Do not mark it as uploaded until a real public Issue URL exists.
+The export contains only the separately approved sanitized question, sanitized answer excerpt, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original local question, original answer, or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Do not mark it as uploaded until a real public Issue URL exists.
 
 After a public Issue exists in the canonical repository, fetch and import it through the GitHub API:
 

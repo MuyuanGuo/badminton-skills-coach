@@ -7,6 +7,7 @@ import os
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 ANSWER_RULES_PATH = ROOT / "references" / "answer-modality-rules.json"
 FEEDBACK_RULES_PATH = ROOT / "references" / "feedback-rules.json"
 FEEDBACK_SIGNALS_PATH = ROOT / "references" / "feedback-signals.json"
+SELECTION_SCRIPT_PATH = ROOT / "scripts" / "prepare_answer_context.py"
 
 TIER_ORDER = {
     "direct": 0,
@@ -25,6 +27,10 @@ TIER_ORDER = {
 }
 
 DEFAULT_MANIFEST_LIMIT = object()
+_SELECTION_MODULE = None
+_SELECTION_RULES = None
+_RESOURCE_CACHE = None
+_VIDEO_CONSTRAINT_SCOPE_CACHE = {}
 
 
 def flatten(value):
@@ -39,8 +45,53 @@ def normalize(text):
     return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", text.lower()))
 
 
+def evidence_descriptor(record):
+    """Return a source-neutral identity for a video or future teaching clip."""
+    legacy_video_id = str(record.get("video_id", ""))
+    evidence_id = str(record.get("evidence_id") or legacy_video_id)
+    canonical_url = record.get("canonical_url") or record.get("url") or ""
+    source_type = record.get("source_type")
+    if not source_type:
+        source_type = (
+            "douyin_video"
+            if "douyin.com/video/" in canonical_url
+            else "external_video"
+        )
+    return {
+        "evidence_id": evidence_id,
+        "source_type": source_type,
+        "canonical_url": canonical_url,
+        "parent_source_id": record.get("parent_source_id"),
+        "clip_start_seconds": record.get("clip_start_seconds"),
+        "clip_end_seconds": record.get("clip_end_seconds"),
+        "legacy_video_id": legacy_video_id or None,
+    }
+
+
 def load_answer_rules():
     return json.loads(ANSWER_RULES_PATH.read_text(encoding="utf-8"))
+
+
+def load_selection_module():
+    global _SELECTION_MODULE
+    if _SELECTION_MODULE is None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "liuhui_retrieval_selection_policy", SELECTION_SCRIPT_PATH
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _SELECTION_MODULE = module
+    return _SELECTION_MODULE
+
+
+def load_selection_policy():
+    global _SELECTION_RULES
+    module = load_selection_module()
+    if _SELECTION_RULES is None:
+        _SELECTION_RULES = module.load_selection_rules()
+    return module, _SELECTION_RULES
 
 
 def classify_answer_mode(query, rules=None):
@@ -141,10 +192,14 @@ def hashed_ngrams(text, sizes):
 
 
 def load_resources():
-    knowledge = json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8"))
-    retrieval_index = json.loads(RETRIEVAL_INDEX_PATH.read_text(encoding="utf-8"))
-    rules = json.loads(RULES_PATH.read_text(encoding="utf-8"))
-    return knowledge, retrieval_index, rules
+    global _RESOURCE_CACHE
+    if _RESOURCE_CACHE is None:
+        _RESOURCE_CACHE = (
+            json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8")),
+            json.loads(RETRIEVAL_INDEX_PATH.read_text(encoding="utf-8")),
+            json.loads(RULES_PATH.read_text(encoding="utf-8")),
+        )
+    return _RESOURCE_CACHE
 
 
 def build_lexicon(retrieval_index, rules):
@@ -185,51 +240,200 @@ def fallback_shards(query, rules):
     return shards
 
 
+def longest_non_overlapping_terms(text, terms):
+    normalized = normalize(text)
+    matches = []
+    for term in terms:
+        normalized_term = normalize(term)
+        if not normalized_term:
+            continue
+        start = 0
+        while True:
+            index = normalized.find(normalized_term, start)
+            if index < 0:
+                break
+            matches.append(
+                {
+                    "term": term,
+                    "start": index,
+                    "end": index + len(normalized_term),
+                    "length": len(normalized_term),
+                }
+            )
+            start = index + 1
+    retained = []
+    for match in matches:
+        if any(
+            other["length"] > match["length"]
+            and other["start"] <= match["start"]
+            and other["end"] >= match["end"]
+            for other in matches
+        ):
+            continue
+        retained.append(match)
+    return [
+        match["term"]
+        for match in sorted(retained, key=lambda item: (item["start"], -item["length"]))
+    ]
+
+
 def extract_negative_scopes(query, rules):
     intent_rules = rules.get("intent", {})
     markers = sorted(intent_rules.get("negation_markers", []), key=len, reverse=True)
     contrasts = sorted(intent_rules.get("contrast_markers", []), key=len, reverse=True)
     if not markers:
         return query, []
-    marker_pattern = "|".join(re.escape(marker) for marker in markers)
+    marker_patterns = []
+    for marker in markers:
+        escaped = re.escape(marker)
+        if marker.startswith("不") and len(marker) > 1:
+            escaped = rf"(?<!{re.escape(marker[1])}){escaped}"
+        marker_patterns.append(escaped)
+    marker_pattern = "|".join(marker_patterns)
     stop_parts = contrasts + ["，", ",", "。", "；", ";", "！", "!", "？", "?"]
     stop_pattern = "|".join(re.escape(part) for part in stop_parts)
     pattern = re.compile(
         rf"(?P<marker>{marker_pattern})\s*(?P<scope>.+?)(?=(?:{stop_pattern})|$)"
     )
-    scopes = []
-    spans = []
+    scope_records = []
+    actor_markers = sorted(
+        intent_rules.get("negated_scope_actor_markers", []),
+        key=len,
+        reverse=True,
+    )
+    postposed_markers = sorted(
+        intent_rules.get("postposed_negation_markers", []),
+        key=len,
+        reverse=True,
+    )
+    if postposed_markers:
+        postposed_pattern = re.compile(
+            rf"(?P<scope>[^，,。；;！？!?]+?)\s*"
+            rf"(?P<marker>{'|'.join(re.escape(item) for item in postposed_markers)})"
+            rf"(?=(?:{stop_pattern})|$)"
+        )
+        for match in postposed_pattern.finditer(query):
+            scope = match.group("scope").strip(" ，,。；;！？!?\t\n")
+            if not scope:
+                continue
+            scope_records.append(
+                {
+                    "start": match.start(),
+                    "end": match.end(),
+                    "marker": match.group("marker"),
+                    "text": scope,
+                    "actor_markers": longest_non_overlapping_terms(
+                        scope, actor_markers
+                    ),
+                }
+            )
     for match in pattern.finditer(query):
-        scope = match.group("scope").strip()
+        if any(
+            record["start"] < match.end()
+            and match.start() < record["end"]
+            for record in scope_records
+        ):
+            continue
+        scope = match.group("scope").strip(" ，,。；;！？!?\t\n")
         if not scope:
             continue
-        scopes.append({"marker": match.group("marker"), "text": scope})
-        spans.append(match.span())
+        scope_records.append(
+            {
+                "start": match.start(),
+                "end": match.end(),
+                "marker": match.group("marker"),
+                "text": scope,
+                "actor_markers": longest_non_overlapping_terms(
+                    scope, actor_markers
+                ),
+            }
+        )
+    scope_records.sort(key=lambda item: item["start"])
+    scopes = [
+        {"marker": record["marker"], "text": record["text"]}
+        for record in scope_records
+    ]
     positive_query = query
-    for start, end in reversed(spans):
+    actor_query = query
+    for record in reversed(scope_records):
+        start = record["start"]
+        end = record["end"]
+        replacement = " ".join(record["actor_markers"])
         positive_query = positive_query[:start] + " " + positive_query[end:]
+        actor_query = actor_query[:start] + f" {replacement} " + actor_query[end:]
+    actor_query = re.sub(r"\s+", " ", actor_query).strip()
     positive_query = re.sub(r"[，,。；;！？!?]+", " ", positive_query)
     positive_query = re.sub(r"\s+", " ", positive_query).strip()
-    return positive_query or query, scopes
+    return positive_query or query, actor_query or query, scopes
 
 
 def requested_output(query, rules):
     normalized_query = normalize(query)
     intent_rules = rules.get("intent", {})
+    direct_practice_request = any(
+        normalize(term) in normalized_query
+        for term in intent_rules.get("practice_request_terms", [])
+    )
+    scheduled_practice_request = (
+        any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_schedule_terms", [])
+        )
+        and any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_context_terms", [])
+        )
+    )
+    explicit_practice_plan_request = (
+        any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_plan_nouns", [])
+        )
+        and any(
+            normalize(term) in normalized_query
+            for term in intent_rules.get("practice_plan_request_terms", [])
+        )
+    )
+    if (
+        direct_practice_request
+        or scheduled_practice_request
+        or explicit_practice_plan_request
+    ):
+        return "practice"
     for label, key in [
-        ("practice", "practice_request_terms"),
         ("diagnosis", "diagnosis_request_terms"),
         ("comparison", "comparison_request_terms"),
     ]:
-        if any(
-            normalize(term) in normalized_query
+        matching_terms = [
+            term
             for term in intent_rules.get(key, [])
-        ):
+            if normalize(term) in normalized_query
+        ]
+        if label == "comparison":
+            suppressions = intent_rules.get(
+                "comparison_request_term_suppressions", {}
+            )
+            matching_terms = [
+                term
+                for term in matching_terms
+                if not any(
+                    normalize(phrase) in normalized_query
+                    for phrase in suppressions.get(term, [])
+                )
+            ]
+        if matching_terms:
             return label
     return "coaching_answer"
 
 
-def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
+def build_intent_frame(
+    query,
+    positive_query,
+    actor_query,
+    negative_scopes,
+    lexicon,
+    rules,
+):
     positive_normalized = normalize(positive_query)
     intent_rules = rules.get("intent", {})
     excluded_seed_terms = set()
@@ -240,7 +444,7 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
         )
         excluded_seed_terms.update(fallback_shards(scope["text"], rules))
     excluded_terms = set(excluded_seed_terms)
-    for group in rules.get("synonym_groups", []):
+    for group in rules.get("equivalent_groups", []):
         if any(
             normalize(term) in {normalize(seed) for seed in excluded_seed_terms}
             for term in group
@@ -251,11 +455,9 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
         for term in intent_rules.get("literal_symptom_terms", [])
         if normalize(term) in positive_normalized
     ]
-    scenarios = [
-        term
-        for term in intent_rules.get("scenario_terms", [])
-        if normalize(term) in positive_normalized
-    ]
+    scenarios = longest_non_overlapping_terms(
+        positive_query, intent_rules.get("scenario_terms", [])
+    )
     levels = [
         term
         for term in intent_rules.get("level_terms", [])
@@ -263,6 +465,7 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
     ]
     return {
         "positive_query": positive_query,
+        "actor_query": actor_query,
         "negative_scopes": negative_scopes,
         "excluded_seed_terms": sorted(excluded_seed_terms),
         "excluded_terms": sorted(excluded_terms),
@@ -275,9 +478,16 @@ def build_intent_frame(query, positive_query, negative_scopes, lexicon, rules):
 
 def expand_query(query, retrieval_index, rules):
     lexicon = build_lexicon(retrieval_index, rules)
-    positive_query, negative_scopes = extract_negative_scopes(query, rules)
+    positive_query, actor_query, negative_scopes = extract_negative_scopes(
+        query, rules
+    )
     intent_frame = build_intent_frame(
-        query, positive_query, negative_scopes, lexicon, rules
+        query,
+        positive_query,
+        actor_query,
+        negative_scopes,
+        lexicon,
+        rules,
     )
     query_normalized = normalize(positive_query)
     original_terms = {
@@ -540,6 +750,18 @@ def build_query_plan(query, expansion, answer_rules=None):
         require_exhaustive = True
         clarification_policy = (
             "retrieve the focused concept directly and clarify only when the playing situation changes the recommendation"
+        )
+    elif (
+        expansion["intent_frame"].get("scenarios")
+        and expansion["intent_frame"].get("requested_output")
+        in workflow_rules.get("scenario_focused_requested_outputs", [])
+    ):
+        strategy = "scenario_focused_evidence"
+        use_topic_navigation = False
+        query_units = [query]
+        require_exhaustive = True
+        clarification_policy = (
+            "treat the stated side, court area, discipline, or tactical phase as a valid evidence scope; retrieve it exhaustively and clarify only which specific technique would materially change the answer"
         )
     else:
         strategy = "evidence_check"
@@ -1516,6 +1738,11 @@ def assign_review_budget(ranked, query_concept_count, rules):
         candidate.setdefault(
             "intrinsic_relevance_tier", candidate["relevance_tier"]
         )
+        if candidate.get("retrieval_policy_eligible") is False:
+            candidate["review_rank"] = None
+            candidate["within_review_budget"] = False
+            candidate["review_priority"] = "policy_rejected"
+            continue
         if candidate["relevance_tier"] not in {"direct", "strong_related"}:
             candidate["review_rank"] = None
             candidate["within_review_budget"] = False
@@ -1529,8 +1756,47 @@ def assign_review_budget(ranked, query_concept_count, rules):
         )
 
 
+def apply_structured_query_expansion(query, expansion, selection_module, rules):
+    actor_query = expansion["intent_frame"].get(
+        "actor_query", expansion["positive_query"]
+    )
+    actor_context = selection_module.query_actor_context(
+        SimpleNamespace(normalize=normalize), actor_query, rules
+    )
+    derived_terms = (
+        actor_context.get("derived_search_terms", [])
+        if actor_context.get("inferred_target_action")
+        else []
+    )
+    for term in derived_terms:
+        expansion["term_weights"][term] = max(
+            expansion["term_weights"].get(term, 0), 3.5
+        )
+        if term not in expansion["synonym_terms"]:
+            expansion["synonym_terms"].append(term)
+    expansion["synonym_terms"].sort()
+    expansion["structured_query_context"] = {
+        "target_actor": actor_context["target_actor"],
+        "target_action_query": actor_context["target_action_query"],
+        "requested_action_scopes": actor_context["requested_action_scopes"],
+        "derived_search_terms": derived_terms,
+        "event_chain": actor_context.get("event_chain", []),
+    }
+    return actor_context
+
+
 def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     expansion = expand_query(query, retrieval_index, rules)
+    selection_module, selection_rules = load_selection_policy()
+    apply_structured_query_expansion(
+        query, expansion, selection_module, selection_rules
+    )
+    boundary = selection_module.classify_boundary(
+        expansion["positive_query"], selection_rules
+    )
+    if boundary["type"] != "none":
+        # Boundary language is an answer constraint, not a technical focus signal.
+        expansion["focus_shards"] = []
     records = {item["video_id"]: item for item in retrieval_index["videos"]}
     topic_ids = {item["topic_id"] for item in expansion["matched_topics"]}
     original_terms = set(expansion["original_terms"])
@@ -1857,6 +2123,155 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     return ranked, expansion
 
 
+def apply_retrieval_policy(
+    query,
+    ranked,
+    expansion,
+    knowledge,
+    retrieval_guidance,
+    retrieval_rules,
+):
+    """Partition surfaced evidence from exhaustive recall without deleting it."""
+
+    selection_module, selection_rules = load_selection_policy()
+    boundary = selection_module.classify_boundary(
+        expansion["positive_query"], selection_rules
+    )
+    plan = {
+        "query": query,
+        "query_expansion": {
+            key: value for key, value in expansion.items() if key != "term_weights"
+        },
+        "retrieval_guidance": retrieval_guidance,
+    }
+    policy_api = SimpleNamespace(normalize=normalize, flatten=flatten)
+    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    rejected_counts = Counter()
+    requested_constraints = selection_module.query_constraints(
+        policy_api, expansion["positive_query"], selection_rules
+    )
+    actor_context = selection_module.query_actor_context(
+        policy_api, expansion["positive_query"], selection_rules
+    )
+
+    for candidate in ranked:
+        video = videos[candidate["video_id"]]
+        reasons = []
+        if boundary["type"] == "pain_or_injury":
+            reasons.append("medical_boundary_has_no_direct_safety_evidence")
+        elif boundary["type"] == "endorsement_or_authorship":
+            reasons.append("identity_boundary_does_not_need_teaching_video")
+        elif (
+            boundary["type"] == "insufficient_observation"
+            and "唯一原因" in boundary.get("matched_terms", [])
+        ):
+            reasons.append("unique_cause_cannot_be_established_without_observation")
+        elif (
+            boundary["type"] == "purchase_advice"
+            and video.get("category")
+            not in selection_rules["purchase_allowed_categories"]
+        ):
+            reasons.append("purchase_query_requires_equipment_evidence")
+
+        if not reasons:
+            constraint_scope = _VIDEO_CONSTRAINT_SCOPE_CACHE.get(
+                candidate["video_id"]
+            )
+            if constraint_scope is None:
+                constraint_scope = selection_module.video_constraint_scope(
+                    policy_api, video, selection_rules
+                )
+                _VIDEO_CONSTRAINT_SCOPE_CACHE[candidate["video_id"]] = (
+                    constraint_scope
+                )
+            (
+                allowed,
+                failures,
+                policy_requested_constraints,
+                _,
+                constraint_matches,
+            ) = selection_module.constraint_decision(
+                policy_api,
+                query,
+                plan,
+                video,
+                selection_rules,
+                requested=requested_constraints,
+                scope=constraint_scope,
+            )
+            if not allowed:
+                reasons.extend(failures)
+            else:
+                reasons.extend(
+                    selection_module.required_constraint_support_failures(
+                        policy_requested_constraints,
+                        constraint_matches,
+                        selection_rules,
+                    )
+                )
+            if not reasons and actor_context.get("inferred_target_action"):
+                reasons.extend(
+                    selection_module.requested_action_scope_failures(
+                        policy_api,
+                        actor_context,
+                        video,
+                        selection_rules,
+                    )
+                )
+
+        title_normalized = normalize(video.get("title", ""))
+        if not reasons and any(
+            normalize(term) in title_normalized
+            for term in selection_rules["incomplete_fragment_terms"]
+        ):
+            reasons.append("incomplete_series_fragment")
+
+        structured = selection_module.structured_video_text(policy_api, video)
+        positive_query = expansion["positive_query"]
+        if (
+            not reasons
+            and expansion["intent_frame"].get("requested_output") == "comparison"
+            and "被动" in positive_query
+            and normalize("被动") not in structured
+        ):
+            reasons.append("comparison_missing_passive_scenario")
+        if (
+            not reasons
+            and "姿势" in positive_query
+            and "被动" not in positive_query
+            and normalize("被动") in title_normalized
+        ):
+            reasons.append("basic_form_query_conflicts_with_passive_variant")
+
+        eligible = not reasons
+        candidate["retrieval_policy_eligible"] = eligible
+        candidate["retrieval_policy_reasons"] = reasons
+        rejected_counts.update(reasons)
+
+    ranked.sort(
+        key=lambda item: (
+            0 if item["retrieval_policy_eligible"] else 1,
+            candidate_sort_key(item, retrieval_rules),
+        )
+    )
+    assign_review_budget(
+        ranked,
+        len(expansion["matched_synonym_groups"]),
+        retrieval_rules,
+    )
+    return ranked, {
+        "boundary_type": boundary["type"],
+        "eligible_candidate_count": sum(
+            item["retrieval_policy_eligible"] for item in ranked
+        ),
+        "rejected_candidate_count": sum(
+            not item["retrieval_policy_eligible"] for item in ranked
+        ),
+        "rejection_reason_counts": dict(sorted(rejected_counts.items())),
+        "exhaustive_candidates_preserved": True,
+    }
+
+
 def ranked_result(candidate, video):
     return {
         **compact_candidate(candidate),
@@ -1906,6 +2321,11 @@ def compact_candidate(candidate):
             "同时命中排除词，已降权："
             + "、".join(candidate["matched_excluded_terms"])
         )
+    if candidate.get("retrieval_policy_eligible") is False:
+        why_retrieved.append(
+            "仅保留在穷举召回清单，不能作为当前问题证据："
+            + "、".join(candidate.get("retrieval_policy_reasons", []))
+        )
     result = {
         "video_id": candidate["video_id"],
         "title": candidate["title"],
@@ -1941,6 +2361,12 @@ def compact_candidate(candidate):
             "ngram_coverage_by_field", {}
         ),
         "score_breakdown": candidate.get("score_breakdown", {}),
+        "retrieval_policy_eligible": candidate.get(
+            "retrieval_policy_eligible", True
+        ),
+        "retrieval_policy_reasons": candidate.get(
+            "retrieval_policy_reasons", []
+        ),
         "why_retrieved": why_retrieved,
     }
     if candidate.get("feedback_adjustment"):
@@ -2138,7 +2564,18 @@ def search(
         local_personalization=local_personalization,
         feedback_dir=feedback_dir,
     )
+    ranked, retrieval_policy = apply_retrieval_policy(
+        query,
+        ranked,
+        expansion,
+        knowledge,
+        retrieval_guidance,
+        rules,
+    )
     videos = {video["video_id"]: video for video in knowledge["videos"]}
+    eligible_ranked = [
+        item for item in ranked if item["retrieval_policy_eligible"]
+    ]
     accessible_candidate_count = (
         len(ranked)
         if recall_mode == "exhaustive"
@@ -2201,6 +2638,11 @@ def search(
                 "see_manifest_offset": 0,
             }
         ),
+        "retrieval_policy": (
+            retrieval_policy
+            if manifest_offset == 0
+            else {"pagination": True, "see_manifest_offset": 0}
+        ),
         "query_expansion": (
             {
                 key: value
@@ -2213,6 +2655,8 @@ def search(
         "coverage": {
             "indexable_videos": retrieval_index["indexable_video_count"],
             "candidate_count": len(ranked),
+            "eligible_candidate_count": len(eligible_ranked),
+            "policy_rejected_candidate_count": len(ranked) - len(eligible_ranked),
             "accessible_candidate_count": accessible_candidate_count,
             "candidate_manifest_count": len(manifest),
             "default_manifest_limit_applied": default_manifest_limit_applied,
@@ -2230,6 +2674,11 @@ def search(
                 intrinsic_tier_counts[tier]
                 for tier in ["direct", "strong_related"]
             ),
+            "policy_rejected_review_candidate_count": sum(
+                item["retrieval_policy_eligible"] is False
+                and item["relevance_tier"] in {"direct", "strong_related"}
+                for item in ranked
+            ),
             "review_candidate_count": sum(
                 item["within_review_budget"] for item in ranked
             ),
@@ -2245,7 +2694,7 @@ def search(
         },
         "results": [
             ranked_result(item, videos[item["video_id"]])
-            for item in (ranked[:limit] if manifest_offset == 0 else [])
+            for item in (eligible_ranked[:limit] if manifest_offset == 0 else [])
         ],
         "candidate_manifest": [compact_candidate(item) for item in manifest],
     }
@@ -2299,6 +2748,7 @@ def lookup_videos(
         record = records.get(video_id) or {}
         result = {
             "video_id": video_id,
+            "evidence": evidence_descriptor(video),
             "title": video["title"],
             "category": video["category"],
             "confidence": video["confidence"],

@@ -1,0 +1,171 @@
+{
+  "version": 2,
+  "families": [
+    {
+      "family_id": "QE001",
+      "description": "杀上网的教学问法和症状问法必须保留同一命名动作与核心证据，症状只增加诊断条件。",
+      "expected_target_actor": "player",
+      "canonical_target_action_query": "杀上网",
+      "expected_constraints_subset": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_requested_action_scopes": ["kill_to_net_sequence"],
+      "required_shared_selected_video_ids": [
+        "7065157571816000809",
+        "7092959332047785250"
+      ],
+      "minimum_shared_selected_video_ids": 2,
+      "forbidden_selected_video_ids": [
+        "7109288333884329231",
+        "7589749293205363633",
+        "7659348110628345210"
+      ],
+      "variants": [
+        {
+          "query": "杀上网怎么练",
+          "role": "canonical_instruction",
+          "expected_literal_symptoms_contains": []
+        },
+        {
+          "query": "杀球后来不及上网",
+          "role": "symptom",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "杀球后应该怎样上网",
+          "role": "instructional_paraphrase",
+          "expected_literal_symptoms_contains": []
+        },
+        {
+          "query": "杀球以后上网衔接太慢",
+          "role": "symptom_paraphrase",
+          "expected_literal_symptoms_contains": ["太慢"]
+        },
+        {
+          "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+          "role": "opponent_response_inserted",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "我杀球后对手放网，总是跟不上怎么办",
+          "role": "implicit_target_after_opponent_response",
+          "expected_literal_symptoms_contains": ["跟不上"]
+        }
+      ],
+      "negative_controls": [
+        {
+          "query": "杀球后回位来不及",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        },
+        {
+          "query": "对手杀球后我上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        },
+        {
+          "query": "接杀后我上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        },
+        {
+          "query": "对手杀球我挡网后应该怎么上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        },
+        {
+          "query": "我不想杀上网，只想杀球后回位，应该怎么练？",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        },
+        {
+          "query": "吊球后来不及上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"],
+          "forbidden_selected_video_ids": ["7065157571816000809", "7092959332047785250"]
+        }
+      ]
+    },
+    {
+      "family_id": "QE002",
+      "description": "前场来球导致来不及时，应把来球当作条件、把向前启动与上网步法当作目标动作；语序、主体标记和反手区描述不得把检索拉向后场反手被动技术。",
+      "expected_target_actor": "player",
+      "canonical_target_action_query": "向前启动 上网步法",
+      "expected_constraints_subset": {},
+      "expected_requested_action_scopes": ["forward_reception_movement"],
+      "required_shared_selected_video_ids": [
+        "7099644893269839144",
+        "7353467942706695458",
+        "7642648621985030138"
+      ],
+      "minimum_shared_selected_video_ids": 3,
+      "forbidden_selected_video_ids": [
+        "7109288333884329231",
+        "7589749293205363633",
+        "7309303794733485327",
+        "7065157571816000809"
+      ],
+      "variants": [
+        {
+          "query": "来不及接网前小球或者网前吊球怎么办",
+          "role": "canonical_symptom",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "对手吊网前我总是接不到",
+          "role": "explicit_opponent",
+          "expected_literal_symptoms_contains": ["接不到"]
+        },
+        {
+          "query": "别人放网我来不及上去",
+          "role": "explicit_opponent_with_response",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "反手区网前球老是来不及，怎么才能上得快？",
+          "role": "side_condition_and_paraphrased_response",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "网前反手球总是来不及",
+          "role": "implicit_target_action",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "反手网前上网慢",
+          "role": "compressed_symptom",
+          "expected_literal_symptoms_contains": []
+        }
+      ],
+      "negative_controls": [
+        {
+          "query": "反手被动高远来不及架拍",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": [],
+          "forbidden_action_scopes": ["forward_reception_movement"],
+          "forbidden_selected_video_ids": ["7099644893269839144", "7353467942706695458", "7406541084219821312", "7642648621985030138"]
+        },
+        {
+          "query": "发小球速度太慢，怎么打到后场",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": [],
+          "forbidden_action_scopes": ["forward_reception_movement"],
+          "forbidden_selected_video_ids": ["7099644893269839144", "7353467942706695458", "7406541084219821312", "7642648621985030138"]
+        }
+      ]
+    }
+  ]
+}

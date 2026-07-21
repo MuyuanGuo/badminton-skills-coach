@@ -407,6 +407,12 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
         )
     record = {
         "video_id": item["video_id"],
+        "evidence_id": item["video_id"],
+        "source_type": "douyin_video",
+        "canonical_url": item["url"],
+        "parent_source_id": None,
+        "clip_start_seconds": None,
+        "clip_end_seconds": None,
         "title": clean_title(item["title"]),
         "url": item["url"],
         "category": item["category"],
@@ -485,6 +491,7 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
         status_counts[status] = status_counts.get(status, 0) + 1
     return {
         "version": 1,
+        "evidence_schema_version": 1,
         "scope": "刘辉羽毛球抖音教学视频",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "quality_rules_version": rules["version"],

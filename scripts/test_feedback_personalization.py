@@ -30,6 +30,7 @@ class FeedbackPersonalizationTests(unittest.TestCase):
         self.temporary_directory.cleanup()
 
     def record_and_accept(self, **kwargs):
+        kwargs.setdefault("answer_text", "用于反馈个性化测试的完整回答。")
         record = self.feedback.record_feedback(
             queue_dir=self.feedback_dir,
             **kwargs,
@@ -110,6 +111,7 @@ class FeedbackPersonalizationTests(unittest.TestCase):
             question=query,
             video_specs=["V1=7661940775983482097"],
             feedback_text="V1 最有价值。",
+            answer_text="网前框架回答正文。",
             queue_dir=self.feedback_dir,
         )
         pending_payload = self.search_query(query)

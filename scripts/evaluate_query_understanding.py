@@ -15,17 +15,32 @@ SEARCH_PATH = (
     / "scripts"
     / "search_knowledge.py"
 )
+CONTEXT_PATH = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "prepare_answer_context.py"
+)
 
 
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_search_module():
-    spec = importlib.util.spec_from_file_location("liuhui_query_understanding", SEARCH_PATH)
+def load_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def load_search_module():
+    return load_module("liuhui_query_understanding", SEARCH_PATH)
+
+
+def load_context_module():
+    return load_module("liuhui_query_constraints", CONTEXT_PATH)
 
 
 def validate_registry(registry, answer_registry):
@@ -95,6 +110,57 @@ def validate_registry(registry, answer_registry):
             raise ValueError(f"{case_id} has no intent summary")
         if set(case.get("expected_intent", {})) != expected_intent_fields:
             raise ValueError(f"{case_id} has an invalid intent contract")
+        if not isinstance(case.get("expected_constraints"), dict):
+            raise ValueError(f"{case_id} has no constraint contract")
+        if not isinstance(case.get("expected_opponent_constraints", {}), dict):
+            raise ValueError(f"{case_id} has an invalid opponent constraint contract")
+        if not isinstance(case.get("expected_partner_constraints", {}), dict):
+            raise ValueError(f"{case_id} has an invalid partner constraint contract")
+        if not isinstance(case.get("expected_player_constraints", {}), dict):
+            raise ValueError(f"{case_id} has an invalid player constraint contract")
+        if not isinstance(
+            case.get("expected_derived_target_constraints", {}), dict
+        ):
+            raise ValueError(
+                f"{case_id} has an invalid derived target constraint contract"
+            )
+        if case.get("expected_target_actor", "player") not in {"player", "partner"}:
+            raise ValueError(f"{case_id} has an invalid target actor contract")
+        target_action_contract_fields = {
+            "expected_target_action_query",
+            "expected_target_condition_query",
+            "expected_target_action_constraints",
+            "expected_target_condition_constraints",
+            "expected_requested_action_scopes",
+        }
+        present_target_action_fields = target_action_contract_fields & set(case)
+        if present_target_action_fields and (
+            present_target_action_fields != target_action_contract_fields
+        ):
+            raise ValueError(f"{case_id} has an incomplete target action contract")
+        if present_target_action_fields:
+            if not isinstance(case["expected_target_action_query"], str):
+                raise ValueError(f"{case_id} has an invalid target action query")
+            if not isinstance(case["expected_target_condition_query"], str):
+                raise ValueError(f"{case_id} has an invalid target condition query")
+            if not isinstance(case["expected_target_action_constraints"], dict):
+                raise ValueError(
+                    f"{case_id} has invalid target action constraints"
+                )
+            if not isinstance(
+                case["expected_target_condition_constraints"], dict
+            ):
+                raise ValueError(
+                    f"{case_id} has invalid target condition constraints"
+                )
+            if not isinstance(case["expected_requested_action_scopes"], list):
+                raise ValueError(
+                    f"{case_id} has invalid requested action scopes"
+                )
+        if "expected_event_chain" in case and not isinstance(
+            case["expected_event_chain"], list
+        ):
+            raise ValueError(f"{case_id} has an invalid event chain contract")
     return cases, adversarial_cases
 
 
@@ -128,6 +194,8 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
     answer_registry = load_json(answer_cases_path)
     cases, adversarial_cases = validate_registry(registry, answer_registry)
     search_module = load_search_module()
+    context_module = load_context_module()
+    selection_rules = context_module.load_selection_rules()
     results = []
 
     for case in cases:
@@ -167,6 +235,78 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
         plan = search_module.plan_query(case["query"])
         intent_frame = plan["retrieval_guidance"]["intent_frame"]
         checks = evaluate_intent_contract(intent_frame, case["expected_intent"])
+        constraints = context_module.query_constraints(
+            search_module,
+            intent_frame.get("actor_query", intent_frame["positive_query"]),
+            selection_rules,
+        )
+        checks["constraints"] = constraints == case["expected_constraints"]
+        actor_context = context_module.query_actor_context(
+            search_module,
+            intent_frame.get("actor_query", intent_frame["positive_query"]),
+            selection_rules,
+        )
+        expected_opponent_constraints = case.get(
+            "expected_opponent_constraints", {}
+        )
+        checks["opponent_constraints"] = (
+            actor_context["opponent_constraints"]
+            == expected_opponent_constraints
+        )
+        expected_target_actor = case.get("expected_target_actor", "player")
+        checks["target_actor"] = (
+            actor_context["target_actor"] == expected_target_actor
+        )
+        expected_player_constraints = case.get(
+            "expected_player_constraints",
+            case["expected_constraints"]
+            if expected_target_actor == "player"
+            else {},
+        )
+        checks["player_constraints"] = (
+            actor_context["player_constraints"]
+            == expected_player_constraints
+        )
+        expected_partner_constraints = case.get(
+            "expected_partner_constraints", {}
+        )
+        checks["partner_constraints"] = (
+            actor_context["partner_constraints"]
+            == expected_partner_constraints
+        )
+        expected_derived_target_constraints = case.get(
+            "expected_derived_target_constraints", {}
+        )
+        checks["derived_target_constraints"] = (
+            actor_context["derived_target_constraints"]
+            == expected_derived_target_constraints
+        )
+        has_target_action_contract = "expected_target_action_query" in case
+        if has_target_action_contract:
+            checks["target_action_query"] = (
+                actor_context["target_action_query"]
+                == case["expected_target_action_query"]
+            )
+            checks["target_condition_query"] = (
+                actor_context["target_condition_query"]
+                == case["expected_target_condition_query"]
+            )
+            checks["target_action_constraints"] = (
+                actor_context["target_action_constraints"]
+                == case["expected_target_action_constraints"]
+            )
+            checks["target_condition_constraints"] = (
+                actor_context["target_condition_constraints"]
+                == case["expected_target_condition_constraints"]
+            )
+            checks["requested_action_scopes"] = (
+                actor_context["requested_action_scopes"]
+                == case["expected_requested_action_scopes"]
+            )
+        if "expected_event_chain" in case:
+            checks["event_chain"] = (
+                actor_context["event_chain"] == case["expected_event_chain"]
+            )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -175,8 +315,86 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                 "intent_summary": case["intent_summary"],
                 "matched": not mismatches,
                 "mismatches": mismatches,
-                "expected": case["expected_intent"],
-                "actual": intent_frame,
+                "expected": {
+                    "intent": case["expected_intent"],
+                    "constraints": case["expected_constraints"],
+                    "opponent_constraints": expected_opponent_constraints,
+                    "partner_constraints": expected_partner_constraints,
+                    "player_constraints": expected_player_constraints,
+                    "derived_target_constraints": (
+                        expected_derived_target_constraints
+                    ),
+                    "target_actor": expected_target_actor,
+                    **(
+                        {
+                            "target_action_query": case[
+                                "expected_target_action_query"
+                            ],
+                            "target_condition_query": case[
+                                "expected_target_condition_query"
+                            ],
+                            "target_action_constraints": case[
+                                "expected_target_action_constraints"
+                            ],
+                            "target_condition_constraints": case[
+                                "expected_target_condition_constraints"
+                            ],
+                            "requested_action_scopes": case[
+                                "expected_requested_action_scopes"
+                            ],
+                        }
+                        if has_target_action_contract
+                        else {}
+                    ),
+                    **(
+                        {"event_chain": case["expected_event_chain"]}
+                        if "expected_event_chain" in case
+                        else {}
+                    ),
+                },
+                "actual": {
+                    "intent": intent_frame,
+                    "constraints": constraints,
+                    "opponent_constraints": actor_context[
+                        "opponent_constraints"
+                    ],
+                    "partner_constraints": actor_context[
+                        "partner_constraints"
+                    ],
+                    "player_constraints": actor_context[
+                        "player_constraints"
+                    ],
+                    "derived_target_constraints": actor_context[
+                        "derived_target_constraints"
+                    ],
+                    "target_actor": actor_context["target_actor"],
+                    **(
+                        {
+                            "target_action_query": actor_context[
+                                "target_action_query"
+                            ],
+                            "target_condition_query": actor_context[
+                                "target_condition_query"
+                            ],
+                            "target_action_constraints": actor_context[
+                                "target_action_constraints"
+                            ],
+                            "target_condition_constraints": actor_context[
+                                "target_condition_constraints"
+                            ],
+                            "requested_action_scopes": actor_context[
+                                "requested_action_scopes"
+                            ],
+                        }
+                        if has_target_action_contract
+                        else {}
+                    ),
+                    **(
+                        {"event_chain": actor_context["event_chain"]}
+                        if "expected_event_chain" in case
+                        else {}
+                    ),
+                },
             }
         )
 
@@ -197,7 +415,7 @@ def main():
     )
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--answer-cases", type=Path, default=ANSWER_CASES_PATH)
-    parser.add_argument("--require-cases", type=int, default=34)
+    parser.add_argument("--require-cases", type=int, default=60)
     parser.add_argument("--min-accuracy", type=float, default=1.0)
     args = parser.parse_args()
 

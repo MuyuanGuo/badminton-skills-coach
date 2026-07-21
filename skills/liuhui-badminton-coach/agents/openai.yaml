@@ -1,4 +1,4 @@
 interface:
   display_name: "刘辉羽毛球教练"
-  short_description: "基于352条教学视频回答，并安全使用已审核的本地与公共反馈"
+  short_description: "基于353条教学视频回答，并安全使用已审核的本地与公共反馈"
   default_prompt: "Use $liuhui-badminton-coach to answer with complete source evidence, stable video labels, promoted public feedback, and my accepted local preferences; record new explicit feedback for review."

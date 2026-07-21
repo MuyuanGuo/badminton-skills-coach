@@ -13,6 +13,7 @@ from project_artifacts import (
     derive_project_status,
     skill_reference_bytes,
     skill_reference_mismatches,
+    validate_evidence_records,
 )
 from update_readme_status import (
     update_agent_metadata_text,
@@ -49,15 +50,19 @@ json_paths = [
     "config/knowledge_quality_rules.json",
     "config/practice_plan_rules.json",
     "config/retrieval_rules.json",
+    "config/reviewed_evidence_signals.json",
     "data/knowledge/build_manifest.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
+    "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
@@ -78,6 +83,7 @@ json_paths = [
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
+    "skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
 for relative_path in json_paths:
@@ -245,6 +251,9 @@ if any(
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
 )
+if douyin_knowledge.get("evidence_schema_version") != 1:
+    raise SystemExit("Knowledge evidence schema version is unsupported")
+validate_evidence_records(douyin_knowledge["videos"])
 if len(douyin_knowledge["videos"]) < 25:
     raise SystemExit("Full Douyin knowledge base regressed below pilot size")
 if len(douyin_knowledge["videos"]) < 405:
@@ -286,6 +295,282 @@ skill_retrieval_rules = json.loads(
 )
 if skill_retrieval_rules != retrieval_rules:
     raise SystemExit("Skill retrieval rules are out of sync with project config")
+retrieval_intent = retrieval_rules.get("intent", {})
+required_retrieval_intent_fields = {
+    "practice_request_terms",
+    "practice_schedule_terms",
+    "practice_context_terms",
+    "practice_plan_nouns",
+    "practice_plan_request_terms",
+    "diagnosis_request_terms",
+    "comparison_request_terms",
+}
+if not required_retrieval_intent_fields.issubset(retrieval_intent):
+    raise SystemExit("Retrieval intent routing rules are incomplete")
+if any(
+    not retrieval_intent[field]
+    for field in required_retrieval_intent_fields
+):
+    raise SystemExit("Retrieval intent routing rules cannot be empty")
+
+answer_selection_rules = json.loads(
+    (ROOT / "config" / "answer_selection_rules.json").read_text(
+        encoding="utf-8"
+    )
+)
+skill_answer_selection_rules = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "answer-selection-rules.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_answer_selection_rules != answer_selection_rules:
+    raise SystemExit("Skill answer selection rules are out of sync")
+actor_markers = answer_selection_rules.get("query_actor_markers", {})
+if set(actor_markers) != {"player", "opponent", "partner"} or any(
+    not actor_markers[actor] for actor in actor_markers
+):
+    raise SystemExit("Query actor markers are incomplete")
+flattened_actor_markers = [
+    marker for markers in actor_markers.values() for marker in markers
+]
+if len(flattened_actor_markers) != len(set(flattened_actor_markers)):
+    raise SystemExit("Query actor markers cannot identify both actors")
+all_actor_markers = set(flattened_actor_markers)
+for marker, suppressions in answer_selection_rules.get(
+    "query_actor_marker_suppressions", {}
+).items():
+    if marker not in all_actor_markers or not suppressions:
+        raise SystemExit("Query actor marker suppression references an unknown marker")
+    if any(marker not in phrase for phrase in suppressions):
+        raise SystemExit("Query actor marker suppression must contain its marker")
+if not answer_selection_rules.get("query_actor_clause_separators"):
+    raise SystemExit("Query actor clause separators are missing")
+if not answer_selection_rules.get("query_target_actor_terms"):
+    raise SystemExit("Query target actor terms are missing")
+if not answer_selection_rules.get("target_action_backreference_terms"):
+    raise SystemExit("Target action backreference terms are missing")
+pronoun_markers = set(
+    answer_selection_rules.get("query_actor_pronoun_markers", [])
+)
+if not pronoun_markers or not pronoun_markers.issubset(
+    set(actor_markers["opponent"])
+):
+    raise SystemExit("Query actor pronoun markers are incomplete")
+if not answer_selection_rules.get("partner_condition_support_terms"):
+    raise SystemExit("Partner condition support terms are missing")
+for implication in answer_selection_rules.get(
+    "partner_retrieval_implications", []
+):
+    if set(implication) != {
+        "trigger_terms",
+        "search_terms",
+        "derived_constraints",
+    }:
+        raise SystemExit("Partner retrieval implication contract is incomplete")
+    if (
+        not implication["trigger_terms"]
+        or not implication["search_terms"]
+        or not implication["derived_constraints"]
+    ):
+        raise SystemExit("Partner retrieval implication cannot be empty")
+target_action_scopes = answer_selection_rules.get("target_action_scopes", [])
+target_action_scope_names = [scope.get("name") for scope in target_action_scopes]
+if (
+    not target_action_scopes
+    or len(target_action_scope_names) != len(set(target_action_scope_names))
+):
+    raise SystemExit("Target action scopes are missing or duplicated")
+required_target_action_scope_fields = {
+    "name",
+    "query_terms",
+    "query_context_terms",
+    "search_terms",
+    "source_terms",
+    "source_suppressions",
+    "source_override_terms",
+}
+for scope in target_action_scopes:
+    if set(scope) != required_target_action_scope_fields:
+        raise SystemExit("Target action scope contract is incomplete")
+    if (
+        not scope["name"]
+        or not scope["query_terms"]
+        or not scope["search_terms"]
+        or not scope["source_terms"]
+    ):
+        raise SystemExit("Target action scope cannot be empty")
+reception_implications = answer_selection_rules.get(
+    "reception_symptom_implications", []
+)
+required_reception_implication_fields = {
+    "name",
+    "symptom_terms",
+    "incoming_terms",
+    "response_terms",
+    "implicit_response_incoming_terms",
+    "prior_action_suffixes",
+    "player_action_prefixes_by_incoming_term",
+    "target_action_query",
+    "requested_action_scopes",
+    "search_terms",
+    "reason",
+}
+if not reception_implications:
+    raise SystemExit("Reception symptom implications are missing")
+for implication in reception_implications:
+    if set(implication) != required_reception_implication_fields:
+        raise SystemExit("Reception symptom implication contract is incomplete")
+    if any(
+        not implication[field]
+        for field in required_reception_implication_fields
+    ):
+        raise SystemExit("Reception symptom implication cannot be empty")
+    if not set(implication["symptom_terms"]).issubset(
+        retrieval_intent["literal_symptom_terms"]
+    ):
+        raise SystemExit("Reception implication symptoms are not routable")
+    if not set(implication["requested_action_scopes"]).issubset(
+        target_action_scope_names
+    ):
+        raise SystemExit("Reception implication uses an unknown action scope")
+    if not set(implication["implicit_response_incoming_terms"]).issubset(
+        implication["incoming_terms"]
+    ):
+        raise SystemExit("Reception implication has an unknown implicit response")
+    action_prefixes = implication["player_action_prefixes_by_incoming_term"]
+    if not set(action_prefixes).issubset(implication["incoming_terms"]) or any(
+        not prefixes for prefixes in action_prefixes.values()
+    ):
+        raise SystemExit("Reception implication action prefixes are invalid")
+action_sequence_implications = answer_selection_rules.get(
+    "action_sequence_implications", []
+)
+required_action_sequence_fields = {
+    "name",
+    "canonical_terms",
+    "before_terms",
+    "after_terms",
+    "max_gap_characters",
+    "opponent_response_groups",
+    "canonical_action_query",
+    "derived_constraints",
+    "requested_action_scopes",
+    "search_terms",
+    "symptom_terms",
+    "reason",
+}
+if not action_sequence_implications:
+    raise SystemExit("Action sequence implications are missing")
+for implication in action_sequence_implications:
+    if set(implication) != required_action_sequence_fields:
+        raise SystemExit("Action sequence implication contract is incomplete")
+    if any(
+        not implication[field]
+        for field in required_action_sequence_fields
+    ):
+        raise SystemExit("Action sequence implication cannot be empty")
+    if (
+        not isinstance(implication["max_gap_characters"], int)
+        or implication["max_gap_characters"] <= 0
+    ):
+        raise SystemExit("Action sequence implication has an invalid gap")
+    if not set(implication["symptom_terms"]).issubset(
+        retrieval_intent["literal_symptom_terms"]
+    ):
+        raise SystemExit("Action sequence symptoms are not routable")
+    if not set(implication["requested_action_scopes"]).issubset(
+        target_action_scope_names
+    ):
+        raise SystemExit("Action sequence implication uses an unknown action scope")
+    for response_group in implication["opponent_response_groups"]:
+        if set(response_group) != {
+            "response_terms",
+            "required_player_symptom_terms",
+        } or not all(response_group.values()):
+            raise SystemExit("Action sequence response group is incomplete")
+        if not set(response_group["required_player_symptom_terms"]).issubset(
+            retrieval_intent["literal_symptom_terms"]
+        ):
+            raise SystemExit("Action sequence response symptoms are not routable")
+constraint_axes = {
+    axis["name"]: axis
+    for axis in answer_selection_rules.get("constraint_axes", [])
+}
+required_derived_axes = set(
+    answer_selection_rules.get(
+        "derived_player_constraint_required_match_axes", []
+    )
+)
+if not required_derived_axes or not required_derived_axes.issubset(constraint_axes):
+    raise SystemExit("Derived player constraint match axes are incomplete")
+for implication in answer_selection_rules.get(
+    "partner_retrieval_implications", []
+):
+    for axis_name, values in implication["derived_constraints"].items():
+        if axis_name not in constraint_axes:
+            raise SystemExit("Partner retrieval implication uses an unknown axis")
+        allowed_values = set(constraint_axes[axis_name]["values"])
+        if not values or not set(values).issubset(allowed_values):
+            raise SystemExit("Partner retrieval implication uses an unknown value")
+for axis in constraint_axes.values():
+    allowed_values = set(axis.get("values", {}))
+    for field in [
+        "opponent_query_value_additions",
+        "query_value_suppressions",
+        "source_value_additions",
+        "source_value_suppressions",
+    ]:
+        configured_values = set(axis.get(field, {}))
+        if not configured_values.issubset(allowed_values):
+            raise SystemExit(f"{field} contains an unknown constraint value")
+        if any(not terms for terms in axis.get(field, {}).values()):
+            raise SystemExit(f"{field} contains an empty term list")
+    if axis.get("category_evidence_policy", "allow") not in {"allow", "ignore"}:
+        raise SystemExit("Unknown category evidence policy")
+required_implication_fields = {
+    "opponent_axis",
+    "opponent_values",
+    "player_axis",
+    "player_values",
+    "response_terms",
+    "search_terms",
+}
+for implication in answer_selection_rules.get(
+    "opponent_response_implications", []
+):
+    if set(implication) != required_implication_fields:
+        raise SystemExit("Opponent response implication contract is incomplete")
+    for prefix in ["opponent", "player"]:
+        axis_name = implication[f"{prefix}_axis"]
+        if axis_name not in constraint_axes:
+            raise SystemExit("Opponent response implication uses an unknown axis")
+        allowed_values = set(constraint_axes[axis_name]["values"])
+        if not set(implication[f"{prefix}_values"]).issubset(allowed_values):
+            raise SystemExit("Opponent response implication uses an unknown value")
+    if not implication["response_terms"] or not implication["search_terms"]:
+        raise SystemExit("Opponent response implication has no retrieval trigger")
+boundary_terms = answer_selection_rules.get("boundary_terms", {})
+expected_boundary_groups = {
+    "pain_or_injury",
+    "endorsement_or_authorship",
+    "purchase_advice",
+    "visual_confirmation",
+    "insufficient_observation",
+}
+if set(boundary_terms) != expected_boundary_groups:
+    raise SystemExit("Answer selection boundary groups are incomplete")
+flattened_boundary_terms = [
+    term for terms in boundary_terms.values() for term in terms
+]
+if len(flattened_boundary_terms) != len(set(flattened_boundary_terms)):
+    raise SystemExit("Answer selection boundary terms must be unambiguous")
+pain_terms = set(boundary_terms["pain_or_injury"])
+if not pain_terms.issubset(retrieval_intent["literal_symptom_terms"]):
+    raise SystemExit("Pain boundaries are missing from literal symptoms")
 
 answer_modality_rules = json.loads(
     (ROOT / "config" / "answer_modality_rules.json").read_text(encoding="utf-8")
@@ -311,12 +596,42 @@ if set(answer_modality_rules.get("workflow", {})) != {
     "boundary_signals",
     "systematic_signals",
     "diagnostic_signals",
+    "scenario_focused_requested_outputs",
     "multi_issue_separators",
     "multi_issue_connectors",
     "relational_signals",
     "minimum_multi_issue_concepts",
 }:
     raise SystemExit("Answer workflow routing rules are incomplete")
+if set(
+    answer_modality_rules["workflow"][
+        "scenario_focused_requested_outputs"
+    ]
+) != {"coaching_answer", "comparison", "practice"}:
+    raise SystemExit(
+        "Scenario-focused workflow outputs are incomplete"
+    )
+if set(answer_modality_rules["workflow"]["boundary_signals"]) != set(
+    flattened_boundary_terms
+):
+    raise SystemExit(
+        "Answer workflow boundary signals differ from final boundary rules"
+    )
+if not pain_terms.issubset(
+    answer_modality_rules["workflow"]["diagnostic_signals"]
+):
+    raise SystemExit("Pain boundaries are missing from diagnostic signals")
+text_primary_boundary_terms = set().union(
+    boundary_terms["pain_or_injury"],
+    boundary_terms["endorsement_or_authorship"],
+    boundary_terms["purchase_advice"],
+)
+if set(
+    answer_modality_rules["decision"]["decisive_text_boundary_terms"]
+) != text_primary_boundary_terms:
+    raise SystemExit(
+        "Text-primary boundary signals differ from boundary categories"
+    )
 
 practice_plan_rules = json.loads(
     (ROOT / "config" / "practice_plan_rules.json").read_text(encoding="utf-8")
@@ -481,6 +796,12 @@ if '"full_text"' in retrieval_index_text or '"transcript_text"' in retrieval_ind
     raise SystemExit("Retrieval index unexpectedly contains transcript text fields")
 allowed_retrieval_video_fields = {
     "video_id",
+    "evidence_id",
+    "source_type",
+    "canonical_url",
+    "parent_source_id",
+    "clip_start_seconds",
+    "clip_end_seconds",
     "topic_ids",
     "lexicon_terms",
     "field_lengths",
@@ -493,6 +814,11 @@ if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index
     raise SystemExit("Retrieval index video records contain unexpected fields")
 ready_video_ids = {
     video["video_id"]
+    for video in douyin_knowledge["videos"]
+    if video["processing_status"] == "ready"
+}
+ready_evidence_ids = {
+    video["evidence_id"]
     for video in douyin_knowledge["videos"]
     if video["processing_status"] == "ready"
 }
@@ -514,9 +840,9 @@ answer_quality_cases = json.loads(
 answer_quality_summary = validate_answer_quality_registry(
     answer_quality_cases,
     answer_quality_rules,
-    ready_video_ids,
+    ready_evidence_ids,
     minimum_cases=30,
-    all_video_ids={video["video_id"] for video in douyin_knowledge["videos"]},
+    all_video_ids={video["evidence_id"] for video in douyin_knowledge["videos"]},
 )
 if set(answer_quality_summary["status_counts"]) - set(
     answer_quality_rules["review_statuses"]
@@ -533,6 +859,11 @@ if {
 retrieval_video_ids = {video["video_id"] for video in retrieval_index["videos"]}
 if retrieval_video_ids != ready_video_ids:
     raise SystemExit("Retrieval index video IDs do not match ready knowledge videos")
+retrieval_evidence_ids = {
+    video["evidence_id"] for video in retrieval_index["videos"]
+}
+if retrieval_evidence_ids != ready_evidence_ids:
+    raise SystemExit("Retrieval index evidence IDs do not match ready knowledge evidence")
 
 feedback_signals = json.loads(
     (ROOT / "config" / "feedback_signals.json").read_text(encoding="utf-8")
@@ -698,19 +1029,26 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
-version_contracts = [
-    f"- 稳定版：`main` / `v{stable_version}`",
-    f"releases/tag/v{stable_version}",
-]
+version_contracts = ["releases/latest"]
 if release_channel == "development":
     version_contracts.extend(
         [
-            f"**{skill_version} 开发分支**",
-            f"- 开发版：`develop` / `{skill_version}`",
+            "你正在查看 `develop` 分支",
+            f"当前开发版本是 **{skill_version}**",
+            "发布状态为 **unreleased**",
+            "- 当前分支：`develop`",
+            f"- 当前开发版本：`{skill_version}`",
+            "- 发布状态：`unreleased`",
         ]
     )
 else:
-    version_contracts.append(f"**{skill_version} 稳定版**")
+    version_contracts.extend(
+        [
+            f"**{skill_version} 稳定版**",
+            f"- 稳定版：`main` / `v{stable_version}`",
+            f"releases/tag/v{stable_version}",
+        ]
+    )
 for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")
@@ -824,7 +1162,8 @@ for required_answer_contract in [
     "video_primary",
     "Never return a link-only answer",
     "核心视频与观看重点",
-    "video ID",
+    "evidence_id",
+    "canonical URL",
     "temporary CDN media URLs",
     "完整相关视频",
     "V1",
@@ -866,6 +1205,8 @@ for required_export_contract in [
     "--confirm-public",
     '"uploaded": False',
     '"original_question_included": False',
+    '"original_answer_included": False',
+    '"sanitized_answer_excerpt_included": True',
     '"raw_feedback_included": False',
     '"clause_assignments": parsed["clause_assignments"]',
     '"turn_id": turn_id',
@@ -914,6 +1255,7 @@ if not feedback_issue_form.exists():
 feedback_issue_text = feedback_issue_form.read_text(encoding="utf-8")
 for required_issue_field in [
     "用户问题",
+    "Skill 回答或出错片段",
     "用户真实意图",
     "最有价值的视频",
     "明确不相关的视频",

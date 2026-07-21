@@ -2,6 +2,7 @@
 import argparse
 import json
 import re
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from douyin_pipeline import (
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "data" / "douyin_video_index.json"
 TEACHING_PATH = ROOT / "data" / "douyin_teaching_filtered.json"
+LEDGER_PATH = ROOT / "data" / "douyin_classification_ledger.json"
 QUEUE_PATH = ROOT / "data" / "processing" / "douyin_queue.json"
 DISCOVERY_STATE_PATH = ROOT / "data" / "processing" / "douyin_discovery_state.json"
 TRANSACTION_PATH = ROOT / "data" / "processing" / ".douyin-update-transaction.json"
@@ -202,6 +204,7 @@ def build_apply_payloads(new_videos, classified):
     ]
     index = load_json(INDEX_PATH)
     teaching = load_json(TEACHING_PATH)
+    ledger = load_json(LEDGER_PATH)
     queue = load_json(QUEUE_PATH)
     discovery = load_discovery_state(len(index["videos"]))
 
@@ -213,12 +216,29 @@ def build_apply_payloads(new_videos, classified):
     index["note"] = "Updated by scripts/check_douyin_updates.py from observed homepage metadata."
 
     teaching_existing = {str(item["video_id"]) for item in teaching["videos"]}
+    ledger_existing = {str(item["video_id"]) for item in ledger["videos"]}
     queue_existing = {str(item["video_id"]) for item in queue["items"]}
     discovery_existing = {str(item["video_id"]) for item in discovery["items"]}
 
     teaching_inserts = [
         item for item in classified
         if item["decision"] == "保留：教学" and item["video_id"] not in teaching_existing
+    ]
+    ledger_inserts = [
+        {
+            **item,
+            "automatic_decision": item["decision"],
+            "automatic_decision_reason": item["decision_reason"],
+            "previous_decision": "new_discovery",
+            "migration_action": (
+                "await_manual_review"
+                if item["decision"].startswith("待复核")
+                else "accept_current_rules"
+            ),
+            "classified_at": applied_at,
+        }
+        for item in classified
+        if item["video_id"] not in ledger_existing
     ]
     queue_inserts = [
         {
@@ -270,6 +290,13 @@ def build_apply_payloads(new_videos, classified):
         item["decision"] == "排除：非教学" for item in classified
     )
 
+    ledger["videos"] = ledger_inserts + ledger["videos"]
+    ledger["generated_at"] = applied_at
+    ledger["classification_rules"] = rules_identity
+    ledger["counts"] = dict(
+        sorted(Counter(item["decision"] for item in ledger["videos"]).items())
+    )
+
     queue["items"] = queue_inserts + queue["items"]
     queue["counts"] = compute_status_counts(queue["items"])
     queue["updated_at"] = applied_at
@@ -281,11 +308,13 @@ def build_apply_payloads(new_videos, classified):
     return {
         INDEX_PATH: index,
         TEACHING_PATH: teaching,
+        LEDGER_PATH: ledger,
         QUEUE_PATH: queue,
         DISCOVERY_STATE_PATH: discovery,
     }, {
         "index_added": len(inserts),
         "teaching_added": len(teaching_inserts),
+        "ledger_added": len(ledger_inserts),
         "queue_added": len(queue_inserts),
         "discovery_recorded": len(discovery_inserts),
         "review_pending": sum(
@@ -310,6 +339,7 @@ REVIEW_RESOLUTIONS = {
 def resolve_review(video_id, resolution, note):
     discovery = load_json(DISCOVERY_STATE_PATH)
     teaching = load_json(TEACHING_PATH)
+    ledger = load_json(LEDGER_PATH)
     queue = load_json(QUEUE_PATH)
     item = next(
         (row for row in discovery["items"] if str(row["video_id"]) == str(video_id)),
@@ -329,6 +359,12 @@ def resolve_review(video_id, resolution, note):
     classification = dict(item["classification"])
     classification["decision"] = decision
     classification["decision_reason"] = note.strip() or "人工复核决定"
+    ledger_item = next(
+        (row for row in ledger["videos"] if str(row["video_id"]) == str(video_id)),
+        None,
+    )
+    if not ledger_item:
+        raise ValueError(f"Classification ledger item not found: {video_id}")
 
     if teaching["counts"].get("review", 0) <= 0:
         raise ValueError("Teaching review count is already zero; refusing inconsistent resolution")
@@ -373,6 +409,17 @@ def resolve_review(video_id, resolution, note):
     teaching["generated_at"] = resolved_at
     queue["counts"] = compute_status_counts(queue["items"])
     queue["updated_at"] = resolved_at
+    ledger_item.update(
+        {
+            "decision": decision,
+            "decision_reason": classification["decision_reason"],
+            "migration_action": f"manual_review_{resolution.replace('-', '_')}",
+        }
+    )
+    ledger["generated_at"] = resolved_at
+    ledger["counts"] = dict(
+        sorted(Counter(row["decision"] for row in ledger["videos"]).items())
+    )
     item.update(
         {
             "status": status,
@@ -388,6 +435,7 @@ def resolve_review(video_id, resolution, note):
     commit_json_transaction(
         {
             TEACHING_PATH: teaching,
+            LEDGER_PATH: ledger,
             QUEUE_PATH: queue,
             DISCOVERY_STATE_PATH: discovery,
         },

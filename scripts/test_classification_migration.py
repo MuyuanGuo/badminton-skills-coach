@@ -17,7 +17,7 @@ class ClassificationMigrationTests(unittest.TestCase):
             {"video_id": "1", "title": "正手握拍教学", "raw_text": ""},
             self.rules,
         )
-        self.assertEqual(result["classification_rules_version"], 2)
+        self.assertEqual(result["classification_rules_version"], 3)
         self.assertEqual(len(result["classification_rules_hash"]), 64)
 
     def test_transcript_evidence_prevents_title_only_false_exclusion(self):

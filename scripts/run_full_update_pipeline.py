@@ -26,6 +26,7 @@ def build_commands():
         [sys.executable, "scripts/build_visual_review_queue.py"],
         [sys.executable, "scripts/generate_knowledge_graph.py"],
         [sys.executable, "scripts/build_answer_quality_review_queue.py"],
+        [sys.executable, "scripts/build_reviewed_evidence_signals.py"],
     ]
 
 
@@ -34,10 +35,26 @@ def validation_commands():
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
         [sys.executable, "scripts/evaluate_answer_policy.py"],
         [sys.executable, "scripts/evaluate_answer_context.py"],
-        [sys.executable, "scripts/evaluate_answer_quality.py"],
+        [
+            sys.executable,
+            "scripts/evaluate_answer_quality.py",
+            "--answers",
+            "data/evaluation/answer_quality_answers.json",
+            "--min-approved",
+            "57",
+            "--min-answer-snapshots",
+            "57",
+            "--min-answer-snapshot-coverage",
+            "1.0",
+            "--require-complete-answer-coverage",
+            "--require-critical-answer-coverage",
+            "--require-manual-review",
+        ],
         [sys.executable, "scripts/evaluate_feedback_signals.py"],
         [sys.executable, "scripts/evaluate_query_understanding.py"],
+        [sys.executable, "scripts/evaluate_query_equivalence.py"],
         [sys.executable, "scripts/evaluate_retrieval.py"],
+        [sys.executable, "scripts/evaluate_forward_test_results.py"],
         [
             sys.executable,
             "scripts/evaluate_video_comprehension.py",

@@ -18,12 +18,32 @@
 
 ## 本地验证
 
+回答质量问题按以下顺序处理：
+
+1. 在单题黄金集固定目标动作、直接证据、硬负例和答案边界。
+2. 在问题理解集固定主体、条件、症状、否定和目标动作。
+3. 在关系评测中加入自然改写及最接近的负例，验证共享核心证据与不得共享的范围。
+4. 真实用户反馈必须加入 `critical_answer_snapshots.json` 并保存审核后的最终答案快照。
+5. 修改后先跑受影响的确定性门禁，再用未泄露预期答案的新任务做盲测；保存原始回答、逐项审核结果和运行时指纹，合并前运行完整流水线。
+
+新失败类型没有现成门禁时，先扩展评测方法，再修改运行时规则。不要用上层模型偶然答对来掩盖错误的底层意图或证据上下文。
+
 至少运行与你改动相关的测试。提交完整流水线或共享逻辑改动时，运行：
 
 ```bash
 python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
+python3 scripts/evaluate_query_equivalence.py
+python3 scripts/evaluate_answer_quality.py \
+  --answers data/evaluation/answer_quality_answers.json \
+  --min-approved 57 \
+  --min-answer-snapshots 57 \
+  --min-answer-snapshot-coverage 1.0 \
+  --require-complete-answer-coverage \
+  --require-critical-answer-coverage \
+  --require-manual-review
+python3 scripts/evaluate_forward_test_results.py
 python3 scripts/evaluate_retrieval.py
 python3 scripts/validate_project.py
 ```

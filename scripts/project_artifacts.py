@@ -36,6 +36,10 @@ SKILL_REFERENCE_PATHS = (
         Path("skills/liuhui-badminton-coach/references/answer-selection-rules.json"),
     ),
     (
+        Path("config/reviewed_evidence_signals.json"),
+        Path("skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json"),
+    ),
+    (
         Path("config/practice_plan_rules.json"),
         Path("skills/liuhui-badminton-coach/references/practice-plan-rules.json"),
     ),
@@ -60,10 +64,99 @@ ALLOWED_KNOWLEDGE_STATUSES = (
     READY_STATUSES | PENDING_KNOWLEDGE_STATUSES | EXCLUDED_KNOWLEDGE_STATUSES
 )
 VIDEO_ID_PATTERN = re.compile(r"\d{18,20}")
+SOURCE_TYPE_PATTERN = re.compile(r"[a-z][a-z0-9_]*")
 
 
 class ArtifactConsistencyError(ValueError):
     """Raised when source artifacts cannot form one consistent project state."""
+
+
+def validate_evidence_records(records, label="Knowledge base"):
+    """Validate source-neutral evidence identity and clip provenance."""
+
+    evidence_ids = []
+    for record in records:
+        missing = [
+            field
+            for field in [
+                "evidence_id",
+                "source_type",
+                "canonical_url",
+                "parent_source_id",
+                "clip_start_seconds",
+                "clip_end_seconds",
+            ]
+            if field not in record
+        ]
+        if missing:
+            raise ArtifactConsistencyError(
+                f"{label} record is missing evidence fields: {', '.join(missing)}"
+            )
+        evidence_id = record["evidence_id"]
+        source_type = record["source_type"]
+        canonical_url = record["canonical_url"]
+        if not isinstance(evidence_id, str) or not evidence_id.strip():
+            raise ArtifactConsistencyError(f"{label} has an empty evidence ID")
+        if not isinstance(source_type, str) or not SOURCE_TYPE_PATTERN.fullmatch(
+            source_type
+        ):
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has an invalid source type"
+            )
+        if not isinstance(canonical_url, str) or not re.match(
+            r"https?://", canonical_url
+        ):
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has an invalid canonical URL"
+            )
+        parent_source_id = record["parent_source_id"]
+        start = record["clip_start_seconds"]
+        end = record["clip_end_seconds"]
+        if parent_source_id is not None and (
+            not isinstance(parent_source_id, str) or not parent_source_id.strip()
+        ):
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has an invalid parent source"
+            )
+        if (start is None) != (end is None):
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has a partial clip range"
+            )
+        if start is not None and (
+            isinstance(start, bool)
+            or isinstance(end, bool)
+            or not isinstance(start, (int, float))
+            or not isinstance(end, (int, float))
+            or start < 0
+            or end <= start
+        ):
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has an invalid clip range"
+            )
+        if source_type.endswith("_clip") and (
+            parent_source_id is None or start is None
+        ):
+            raise ArtifactConsistencyError(
+                f"{label} clip {evidence_id!r} is missing parent provenance"
+            )
+        if source_type == "douyin_video":
+            video_id = str(record.get("video_id", ""))
+            expected_url = f"https://www.douyin.com/video/{video_id}"
+            if (
+                evidence_id != video_id
+                or not VIDEO_ID_PATTERN.fullmatch(video_id)
+                or canonical_url != expected_url
+                or record.get("url") != expected_url
+                or parent_source_id is not None
+                or start is not None
+            ):
+                raise ArtifactConsistencyError(
+                    f"{label} Douyin evidence {evidence_id!r} is not canonical"
+                )
+        evidence_ids.append(evidence_id)
+    if len(evidence_ids) != len(set(evidence_ids)):
+        raise ArtifactConsistencyError(f"{label} contains duplicate evidence IDs")
+    return evidence_ids
 
 
 def _record_ids(records, label):

@@ -137,6 +137,66 @@ class SearchKnowledgeTests(unittest.TestCase):
             "effective_ranking_score", candidate["score_breakdown"]
         )
 
+    def test_point_smash_expands_to_direct_mechanics_evidence(self):
+        payload = self.search_module.search(
+            "点杀怎么打",
+            recall_mode="exhaustive",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        expansion = payload["query_expansion"]
+        related_terms = {item["term"] for item in expansion["related_terms"]}
+        self.assertTrue(
+            {"手指发力", "掌心", "后三指", "小边甩"}.issubset(
+                related_terms
+            )
+        )
+        candidate_ids = {
+            item["video_id"] for item in payload["candidate_manifest"]
+        }
+        self.assertTrue(
+            {
+                "7272944156618542336",
+                "7125615679402724623",
+            }.issubset(candidate_ids)
+        )
+
+    def test_jump_smash_expands_to_direct_mechanics_evidence(self):
+        payload = self.search_module.search(
+            "跳杀怎么打",
+            recall_mode="exhaustive",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        related_terms = {
+            item["term"] for item in payload["query_expansion"]["related_terms"]
+        }
+        self.assertTrue(
+            {
+                "转跳",
+                "半侧身",
+                "挥拍速度",
+                "最高点",
+                "架拍",
+                "少蹲",
+                "快起",
+            }.issubset(related_terms)
+        )
+        candidate_ids = {
+            item["video_id"] for item in payload["candidate_manifest"]
+        }
+        self.assertTrue(
+            {
+                "7161980324409363712",
+                "7055491154288102667",
+                "7138604160051612969",
+                "7634016952800880570",
+                "7606560547489149691",
+                "7561558424342056250",
+                "7506362888166083897",
+            }.issubset(candidate_ids)
+        )
+
     def test_video_lookup_returns_stored_evidence(self):
         video_id = "7661940775983482097"
         payload = self.search_module.lookup_videos(
@@ -146,6 +206,18 @@ class SearchKnowledgeTests(unittest.TestCase):
         )
         self.assertEqual(payload["missing_video_ids"], [])
         self.assertEqual(payload["results"][0]["video_id"], video_id)
+        self.assertEqual(
+            payload["results"][0]["evidence"],
+            {
+                "evidence_id": video_id,
+                "source_type": "douyin_video",
+                "canonical_url": f"https://www.douyin.com/video/{video_id}",
+                "parent_source_id": None,
+                "clip_start_seconds": None,
+                "clip_end_seconds": None,
+                "legacy_video_id": video_id,
+            },
+        )
         self.assertIn("teaching_note", payload["results"][0])
         self.assertIn("summary", payload["results"][0]["teaching_note"])
         self.assertIn("evidence", payload["results"][0]["teaching_note"])
@@ -160,6 +232,43 @@ class SearchKnowledgeTests(unittest.TestCase):
             0,
         )
         self.assertEqual(payload["answer_guidance"]["mode"], "balanced")
+
+    def test_source_neutral_evidence_descriptor_supports_live_clips(self):
+        descriptor = self.search_module.evidence_descriptor(
+            {
+                "video_id": "legacy-placeholder",
+                "evidence_id": "live:2026-07-21:clip-003",
+                "source_type": "livestream_clip",
+                "canonical_url": "https://example.test/live/2026-07-21?t=315",
+                "parent_source_id": "live:2026-07-21",
+                "clip_start_seconds": 315,
+                "clip_end_seconds": 372,
+            }
+        )
+        self.assertEqual(descriptor["evidence_id"], "live:2026-07-21:clip-003")
+        self.assertEqual(descriptor["source_type"], "livestream_clip")
+        self.assertEqual(descriptor["parent_source_id"], "live:2026-07-21")
+        self.assertEqual(descriptor["clip_start_seconds"], 315)
+        self.assertEqual(descriptor["clip_end_seconds"], 372)
+
+    def test_cross_actor_event_chain_expands_low_level_recall(self):
+        query = "杀球后被对手挡网，我总是来不及上去怎么办"
+        ranked, expansion = self.search_module.rank_candidates(
+            query, *self.search_module.load_resources()
+        )
+        context = expansion["structured_query_context"]
+        self.assertEqual(context["target_action_query"], "杀上网")
+        self.assertEqual(context["requested_action_scopes"], ["kill_to_net_sequence"])
+        self.assertIn("杀上网", context["derived_search_terms"])
+        candidate_ids = {item["video_id"] for item in ranked}
+        self.assertTrue(
+            {
+                "7065157571816000809",
+                "7087759120761228578",
+                "7092959332047785250",
+                "7093706918492917033",
+            }.issubset(candidate_ids)
+        )
 
     def test_video_lookup_rejects_non_ready_evidence(self):
         video_id = "7387250672263040267"
@@ -275,6 +384,56 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(guidance["strategy"], "boundary_first")
         self.assertTrue(guidance["must_state_boundary_first"])
 
+    def test_query_plan_uses_the_final_boundary_contract(self):
+        text_primary_queries = [
+            "练杀球肩膀痛怎么办",
+            "打高远球手腕不适怎么处理",
+            "练步法把脚踝扭伤了还能练吗",
+            "杀球拉伤了该怎么恢复训练",
+            "这个Skill是刘辉本人授权的吗",
+            "刘辉同意这个训练计划吗",
+            "哪款球拍适合我",
+        ]
+        for query in text_primary_queries:
+            with self.subTest(query=query):
+                plan = self.search_module.plan_query(query)
+                guidance = plan["retrieval_guidance"]
+                self.assertEqual(guidance["strategy"], "boundary_first")
+                self.assertTrue(guidance["must_state_boundary_first"])
+                self.assertEqual(plan["answer_guidance"]["mode"], "text_primary")
+
+        visual = self.search_module.plan_query("我的反手握拍完全正确吗")
+        self.assertEqual(
+            visual["retrieval_guidance"]["strategy"], "boundary_first"
+        )
+        self.assertEqual(visual["answer_guidance"]["mode"], "video_primary")
+
+        insufficient = self.search_module.plan_query(
+            "只描述杀球下网，唯一原因是什么"
+        )
+        self.assertEqual(
+            insufficient["retrieval_guidance"]["strategy"], "boundary_first"
+        )
+        self.assertEqual(insufficient["answer_guidance"]["mode"], "balanced")
+
+        normal_training = self.search_module.plan_query("杀球还能不能继续练")
+        self.assertEqual(
+            normal_training["retrieval_guidance"]["strategy"],
+            "focused_evidence",
+        )
+        self.assertFalse(
+            normal_training["retrieval_guidance"]["must_state_boundary_first"]
+        )
+
+    def test_pain_variants_are_preserved_as_literal_symptoms(self):
+        for symptom in ["痛", "扭伤", "拉伤", "不适", "不舒服"]:
+            query = f"练杀球肩膀{symptom}怎么办"
+            with self.subTest(symptom=symptom):
+                frame = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]["intent_frame"]
+                self.assertIn(symptom, frame["literal_symptoms"])
+
     def test_query_plan_puts_text_only_action_claim_behind_evidence_boundary(self):
         plan = self.search_module.plan_query(
             "只看文字说明，能不能确认我的正手握拍完全正确"
@@ -291,6 +450,55 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertFalse(guidance["use_topic_navigation"])
         self.assertEqual(guidance["query_units"], ["正手握拍应该怎么握"])
 
+    def test_query_plan_treats_scenario_only_questions_as_grounded_scopes(self):
+        for query in [
+            "正手怎么练",
+            "反手怎么练",
+            "后场怎么练",
+            "单打怎么练",
+            "进攻怎么练",
+        ]:
+            with self.subTest(query=query):
+                guidance = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]
+                self.assertEqual(
+                    guidance["strategy"], "scenario_focused_evidence"
+                )
+                self.assertTrue(guidance["require_exhaustive_completion"])
+                self.assertFalse(guidance["use_topic_navigation"])
+
+        unknown = self.search_module.plan_query("球感怎么练")[
+            "retrieval_guidance"
+        ]
+        self.assertEqual(unknown["strategy"], "evidence_check")
+        self.assertFalse(unknown["require_exhaustive_completion"])
+
+    def test_requested_output_recognizes_contextual_practice_schedules(self):
+        for query in [
+            "双打新手一个人练接发，每次20分钟怎么安排",
+            "有搭档喂球，30分钟如何分配网前搓球训练",
+            "帮我做一个15分钟的杀球练习计划",
+            "给我一个双打接发训练计划",
+        ]:
+            with self.subTest(query=query):
+                frame = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]["intent_frame"]
+                self.assertEqual(frame["requested_output"], "practice")
+
+        tactical = self.search_module.plan_query("双打站位怎么安排")[
+            "retrieval_guidance"
+        ]["intent_frame"]
+        self.assertEqual(tactical["requested_output"], "coaching_answer")
+
+        referenced_plan = self.search_module.plan_query(
+            "刘辉同意这个训练计划吗"
+        )["retrieval_guidance"]["intent_frame"]
+        self.assertEqual(
+            referenced_plan["requested_output"], "coaching_answer"
+        )
+
     def test_query_plan_preserves_literal_symptom_after_known_concept(self):
         plan = self.search_module.plan_query("杀球总下网怎么办")
         frame = plan["retrieval_guidance"]["intent_frame"]
@@ -304,6 +512,14 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertIn("吊球", frame["positive_query"])
         self.assertIn("杀球", frame["excluded_terms"])
         self.assertIn("吊球", plan["query_expansion"]["original_terms"])
+
+        sequence = self.search_module.plan_query(
+            "我不想杀上网，只想杀球后回位，应该怎么练？"
+        )
+        sequence_frame = sequence["retrieval_guidance"]["intent_frame"]
+        self.assertNotIn("杀上网", sequence_frame["positive_query"])
+        self.assertIn("杀球后回位", sequence_frame["positive_query"])
+        self.assertIn("杀上网", sequence_frame["excluded_terms"])
 
     def test_negated_topic_is_penalized_out_of_top_results(self):
         ranked, expansion = self.search_module.rank_candidates(
@@ -500,7 +716,8 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(
             payload["coverage"]["intrinsic_review_candidate_count"],
             payload["coverage"]["review_candidate_count"]
-            + payload["coverage"]["deferred_review_candidate_count"],
+            + payload["coverage"]["deferred_review_candidate_count"]
+            + payload["coverage"]["policy_rejected_review_candidate_count"],
         )
 
     def test_review_budget_never_rewrites_intrinsic_relevance(self):
@@ -527,20 +744,141 @@ class SearchKnowledgeTests(unittest.TestCase):
             manifest_limit=None,
             local_personalization=False,
         )
-        self.assertLessEqual(payload["coverage"]["review_candidate_count"], 8)
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["coverage"]["review_candidate_count"], 0)
         self.assertEqual(payload["coverage"]["tier_counts"].get("direct", 0), 0)
         reviewable = [
             item
             for item in payload["candidate_manifest"]
-            if item["relevance_tier"] in {"direct", "strong_related"}
+            if item["within_review_budget"]
         ]
-        self.assertTrue(reviewable)
+        self.assertEqual(reviewable, [])
         self.assertTrue(
-            all("pain_or_injury" in item["matched_required_intents"] for item in reviewable)
+            payload["retrieval_policy"]["exhaustive_candidates_preserved"]
         )
+
+    def test_boundary_only_query_does_not_surface_generic_training_videos(self):
+        payload = self.search_module.search(
+            "你给出的训练建议是不是刘辉本人认可的",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        self.assertEqual(payload["results"], [])
+        self.assertEqual(payload["query_expansion"]["focus_shards"], [])
+        self.assertGreater(payload["coverage"]["candidate_count"], 0)
+        self.assertEqual(payload["coverage"]["eligible_candidate_count"], 0)
+
+    def test_retrieval_policy_preserves_rejected_scenario_candidates_for_audit(
+        self,
+    ):
+        payload = self.search_module.search(
+            "正手高远球的击球姿势是什么样",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        for video_id in {
+            "7541623926234811705",
+            "7546109410041908538",
+            "7558912953539071292",
+        }:
+            self.assertNotIn(video_id, surfaced)
+            self.assertIn(video_id, rejected)
+            self.assertFalse(rejected[video_id]["within_review_budget"])
+
+    def test_net_pressure_policy_surfaces_direct_sources_not_smash_mentions(self):
+        payload = self.search_module.search(
+            "双打封网怎么压球",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        self.assertTrue(
+            {"7077740726926298402", "7607852875611759802"}.issubset(
+                surfaced
+            )
+        )
+        self.assertNotIn("7445495930280856892", surfaced)
+
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        self.assertIn("7445495930280856892", rejected)
         self.assertIn(
-            "pain_or_injury",
-            payload["results"][0]["matched_required_intents"],
+            "specific_stroke_intent_not_supported",
+            rejected["7445495930280856892"]["retrieval_policy_reasons"],
+        )
+        self.assertFalse(
+            rejected["7445495930280856892"]["within_review_budget"]
+        )
+
+        forecourt = self.search_module.search(
+            "双打网前怎么下压",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        forecourt_ids = {item["video_id"] for item in forecourt["results"]}
+        self.assertTrue(
+            {"7077740726926298402", "7607852875611759802"}.issubset(
+                forecourt_ids
+            )
+        )
+        forecourt_rejected = {
+            item["video_id"]: item
+            for item in forecourt["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        for video_id in [
+            "7205399670959459623",
+            "7322291358931127592",
+        ]:
+            self.assertNotIn(video_id, forecourt_ids)
+        self.assertIn("7205399670959459623", forecourt_rejected)
+        self.assertIn(
+            "specific_pressure_court_zone_not_supported",
+            forecourt_rejected["7205399670959459623"][
+                "retrieval_policy_reasons"
+            ],
+        )
+        if "7322291358931127592" in forecourt_rejected:
+            self.assertIn(
+                "specific_pressure_court_zone_not_supported",
+                forecourt_rejected["7322291358931127592"][
+                    "retrieval_policy_reasons"
+                ],
+            )
+
+    def test_late_forecourt_reception_surfaces_movement_not_passive_clear(self):
+        payload = self.search_module.search(
+            "来不及接网前小球或者网前吊球怎么办",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        self.assertTrue(
+            {
+                "7099644893269839144",
+                "7353467942706695458",
+                "7406541084219821312",
+                "7642648621985030138",
+            }.issubset(surfaced)
+        )
+        self.assertNotIn("7109288333884329231", surfaced)
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        self.assertIn(
+            "requested_action_not_supported:forward_reception_movement",
+            rejected["7109288333884329231"]["retrieval_policy_reasons"],
         )
 
     def test_screening_tags_are_not_ranked_as_evidence_fields(self):
@@ -558,6 +896,78 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(score, 0.0)
         self.assertEqual(terms, [])
         self.assertEqual(fields, {})
+
+    def test_backhand_lift_requires_direct_lift_evidence(self):
+        payload = self.search_module.search(
+            "反手挑球怎么打",
+            manifest_limit=400,
+            local_personalization=False,
+        )
+        result_ids = [item["video_id"] for item in payload["results"]]
+        self.assertEqual(result_ids[0], "7523163965838003514")
+        self.assertEqual(
+            set(result_ids),
+            {
+                "7523163965838003514",
+                "7511934047901846841",
+                "7151961376448138531",
+            },
+        )
+        manifest = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+        }
+        self.assertIn("7226178331408928038", manifest)
+        self.assertIn("7541623926234811705", manifest)
+        for video_id in [
+            "7499776424493075772",
+            "7541623926234811705",
+            "7447084061371272507",
+            "7226178331408928038",
+        ]:
+            if video_id not in manifest:
+                continue
+            self.assertFalse(manifest[video_id]["retrieval_policy_eligible"])
+            self.assertIn(
+                "explicit_constraint_conflict:shot_family",
+                manifest[video_id]["retrieval_policy_reasons"],
+            )
+
+    def test_backhand_transition_requires_direct_transition_evidence(self):
+        payload = self.search_module.search(
+            "反手过渡球怎么打",
+            manifest_limit=400,
+            local_personalization=False,
+        )
+        result_ids = {item["video_id"] for item in payload["results"]}
+        self.assertEqual(
+            result_ids,
+            {
+                "7515625891511995706",
+                "7393550140465777960",
+                "7563513758061114875",
+                "7060717442825309480",
+                "7344186576013905187",
+                "7511934047901846841",
+            },
+        )
+        manifest = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+        }
+        self.assertIn("7541623926234811705", manifest)
+        for video_id in [
+            "7535400692573211962",
+            "7541623926234811705",
+            "7550305145877155131",
+        ]:
+            if video_id not in manifest:
+                continue
+            self.assertFalse(manifest[video_id]["retrieval_policy_eligible"])
+            self.assertIn(
+                "explicit_constraint_conflict:shot_family",
+                manifest[video_id]["retrieval_policy_reasons"],
+            )
 
 
 if __name__ == "__main__":

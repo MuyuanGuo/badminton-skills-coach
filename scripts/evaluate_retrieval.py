@@ -178,7 +178,9 @@ def main():
     parser.add_argument("--min-mrr", type=float, default=0.55)
     parser.add_argument("--min-ndcg-at-k", type=float, default=0.70)
     parser.add_argument("--max-average-review-candidates", type=float, default=40)
-    parser.add_argument("--max-hard-negative-top-k-violations", type=int)
+    parser.add_argument(
+        "--max-hard-negative-top-k-violations", type=int, default=0
+    )
     args = parser.parse_args()
     result = evaluate(args.top_k, args.cases)
     print(json.dumps(result, ensure_ascii=False, indent=2))

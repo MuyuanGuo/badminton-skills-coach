@@ -66,6 +66,13 @@ class DouyinClassificationRulesTest(unittest.TestCase):
         self.assertEqual(item["decision"], "待复核：仅通用教学标签")
         self.assertEqual(item["primary_category"], "")
 
+    def test_rear_court_basics_is_explicit_teaching_content(self):
+        item = self.classify_title(
+            "后场基础，进阶后的样子可以当成目标，但是不能直接在目标动作上训练"
+        )
+        self.assertEqual(item["decision"], "保留：教学")
+        self.assertEqual(item["primary_category"], "后场技术")
+
     def test_transcribed_state_drops_only_temporary_media_fields(self):
         item = {
             "video_id": "123456789012345678",

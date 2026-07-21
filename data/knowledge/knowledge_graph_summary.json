@@ -2,17 +2,17 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-18T08:28:39.249248+00:00",
-  "video_count": 407,
-  "indexable_video_count": 352,
-  "assigned_video_count": 352,
-  "multi_topic_video_count": 136,
+  "source_updated_at": "2026-07-21T19:41:04.105743+00:00",
+  "video_count": 408,
+  "indexable_video_count": 353,
+  "assigned_video_count": 353,
+  "multi_topic_video_count": 148,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 87,
+      "video_count": 102,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -58,17 +58,16 @@
           ]
         },
         {
-          "name": "杀球、突击与压球",
+          "name": "杀球与突击",
           "keywords": [
             "杀球",
             "重杀",
             "点杀",
             "突击",
-            "压球",
             "扣杀"
           ],
-          "video_count": 26,
-          "ready_count": 26,
+          "video_count": 39,
+          "ready_count": 39,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -78,7 +77,7 @@
               "confidence": "curated",
               "category": "后场技术",
               "duration_seconds": 199.3,
-              "score": 44
+              "score": 42
             },
             {
               "video_id": "7567155406117533051",
@@ -110,8 +109,8 @@
             "举拍",
             "框架"
           ],
-          "video_count": 39,
-          "ready_count": 39,
+          "video_count": 41,
+          "ready_count": 41,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -185,16 +184,60 @@
           ]
         },
         {
+          "name": "正反手过渡",
+          "keywords": [
+            "过渡球",
+            "过度球",
+            "过渡动作",
+            "正手过渡",
+            "反手过渡",
+            "正反手过渡",
+            "过渡击球点",
+            "过渡基础"
+          ],
+          "video_count": 4,
+          "ready_count": 4,
+          "is_fallback": false,
+          "representative_videos": [
+            {
+              "video_id": "7515625891511995706",
+              "title": "正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法",
+              "url": "https://www.douyin.com/video/7515625891511995706",
+              "confidence": "medium",
+              "category": "发力与身体运用",
+              "duration_seconds": 95.7,
+              "score": 18
+            },
+            {
+              "video_id": "7563513758061114875",
+              "title": "过渡击球点 简单来说就是放在外侧击球",
+              "url": "https://www.douyin.com/video/7563513758061114875",
+              "confidence": "medium",
+              "category": "握拍与基本动作",
+              "duration_seconds": 97.3,
+              "score": 10
+            },
+            {
+              "video_id": "7393550140465777960",
+              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
+              "url": "https://www.douyin.com/video/7393550140465777960",
+              "confidence": "medium",
+              "category": "握拍与基本动作",
+              "duration_seconds": 125.7,
+              "score": 9
+            }
+          ]
+        },
+        {
           "name": "反手后场",
           "keywords": [
             "反手高远",
             "反手后场",
-            "反手过渡",
             "反手杀球",
             "反拍"
           ],
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -266,9 +309,9 @@
     },
     {
       "name": "网前技术",
-      "description": "搓、勾、推、扑、放网及网前持拍框架。",
+      "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 49,
+      "video_count": 52,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -426,6 +469,47 @@
               "confidence": "medium",
               "category": "网前技术",
               "duration_seconds": 93.6,
+              "score": 9
+            }
+          ]
+        },
+        {
+          "name": "挑球与挑后场",
+          "keywords": [
+            "挑球",
+            "挑后场",
+            "挑底线",
+            "弹挑"
+          ],
+          "video_count": 4,
+          "ready_count": 4,
+          "is_fallback": false,
+          "representative_videos": [
+            {
+              "video_id": "7518239001813339449",
+              "title": "正手挑球 他的变化在于手的放松，和整个人的状态，包括击球的声音，挑球想进步也是很难的，都是黄金技术",
+              "url": "https://www.douyin.com/video/7518239001813339449",
+              "confidence": "medium",
+              "category": "发力与身体运用",
+              "duration_seconds": 101.4,
+              "score": 18
+            },
+            {
+              "video_id": "7523163965838003514",
+              "title": "反手挑球 嗓子哑了，轻声细语发不出声，只能使点劲儿说话",
+              "url": "https://www.douyin.com/video/7523163965838003514",
+              "confidence": "medium",
+              "category": "训练与纠错",
+              "duration_seconds": 131.5,
+              "score": 11
+            },
+            {
+              "video_id": "7226178331408928038",
+              "title": "对面挡网直接挑球就行了，对面如果站直线可以直接变线",
+              "url": "https://www.douyin.com/video/7226178331408928038",
+              "confidence": "medium",
+              "category": "中前场与抽挡",
+              "duration_seconds": 46.8,
               "score": 9
             }
           ]
@@ -896,7 +980,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 130,
+      "video_count": 128,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -911,6 +995,15 @@
           "ready_count": 12,
           "is_fallback": false,
           "representative_videos": [
+            {
+              "video_id": "7067722128413543680",
+              "title": "一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特…",
+              "url": "https://www.douyin.com/video/7067722128413543680",
+              "confidence": "medium",
+              "category": "步法与移动",
+              "duration_seconds": 210.1,
+              "score": 12
+            },
             {
               "video_id": "7084422988291935523",
               "title": "腰腹的使用是小而快的爆发力，不要转的太狠太大",
@@ -927,15 +1020,6 @@
               "confidence": "visual_reviewed",
               "category": "发力与身体运用",
               "duration_seconds": 12.4,
-              "score": 9
-            },
-            {
-              "video_id": "7067722128413543680",
-              "title": "一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特…",
-              "url": "https://www.douyin.com/video/7067722128413543680",
-              "confidence": "medium",
-              "category": "步法与移动",
-              "duration_seconds": 210.1,
               "score": 9
             }
           ]
@@ -1031,8 +1115,8 @@
             "击球点",
             "高点"
           ],
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 26,
+          "ready_count": 26,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1111,8 +1195,8 @@
         {
           "name": "发力综合待细分",
           "keywords": [],
-          "video_count": 10,
-          "ready_count": 10,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -1125,21 +1209,21 @@
               "score": 0
             },
             {
-              "video_id": "7499776424493075772",
-              "title": "反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏",
-              "url": "https://www.douyin.com/video/7499776424493075772",
-              "confidence": "medium",
-              "category": "发力与身体运用",
-              "duration_seconds": 49.6,
-              "score": 0
-            },
-            {
               "video_id": "7631290187235164026",
               "title": "发力其他细节 有些动作大家做不出来，还是不够夸张，夸张才能学的会，因为自己做动作是会打折扣的",
               "url": "https://www.douyin.com/video/7631290187235164026",
               "confidence": "medium",
               "category": "发力与身体运用",
               "duration_seconds": 180.6,
+              "score": 0
+            },
+            {
+              "video_id": "7184618028619910433",
+              "title": "各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许",
+              "url": "https://www.douyin.com/video/7184618028619910433",
+              "confidence": "medium",
+              "category": "发力与身体运用",
+              "duration_seconds": 131.0,
               "score": 0
             }
           ]
@@ -1326,7 +1410,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 20,
+      "video_count": 21,
       "subtopics": [
         {
           "name": "发小球",
@@ -1377,8 +1461,8 @@
             "发球变化",
             "隐蔽"
           ],
-          "video_count": 11,
-          "ready_count": 11,
+          "video_count": 12,
+          "ready_count": 12,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1973,7 +2057,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 59,
+      "video_count": 57,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -2099,8 +2183,8 @@
         {
           "name": "教学与训练综合待细分",
           "keywords": [],
-          "video_count": 52,
-          "ready_count": 52,
+          "video_count": 50,
+          "ready_count": 50,
           "is_fallback": true,
           "representative_videos": [
             {

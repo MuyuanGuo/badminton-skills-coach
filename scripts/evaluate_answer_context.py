@@ -180,7 +180,7 @@ def main():
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--top-k", type=int, default=12)
     parser.add_argument("--min-candidate-recall", type=float, default=1.0)
-    parser.add_argument("--min-selected-video-recall", type=float, default=0.95)
+    parser.add_argument("--min-selected-video-recall", type=float, default=1.0)
     parser.add_argument("--min-primary-selected-rate", type=float, default=0.95)
     parser.add_argument("--min-answer-mode-accuracy", type=float, default=1.0)
     parser.add_argument("--min-context-evidence-coverage", type=float, default=1.0)

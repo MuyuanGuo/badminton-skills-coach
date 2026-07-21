@@ -27,6 +27,7 @@ class DouyinUpdateStateTests(unittest.TestCase):
         return {
             "INDEX_PATH": root / "index.json",
             "TEACHING_PATH": root / "teaching.json",
+            "LEDGER_PATH": root / "ledger.json",
             "QUEUE_PATH": root / "queue.json",
             "DISCOVERY_STATE_PATH": root / "discovery.json",
             "TRANSACTION_PATH": root / ".transaction.json",
@@ -49,6 +50,10 @@ class DouyinUpdateStateTests(unittest.TestCase):
                     "excluded_non_teaching": 0,
                 },
             },
+        )
+        self.module.write_json(
+            paths["LEDGER_PATH"],
+            {"videos": [], "counts": {}, "classification_rules": {}},
         )
         self.module.write_json(
             paths["QUEUE_PATH"],
@@ -99,6 +104,7 @@ class DouyinUpdateStateTests(unittest.TestCase):
                 ]
                 applied = self.module.apply_updates(new_videos, classified)
                 self.assertEqual(applied["index_added"], 3)
+                self.assertEqual(applied["ledger_added"], 3)
                 self.assertEqual(applied["queue_added"], 1)
                 self.assertEqual(applied["review_pending"], 1)
 
@@ -116,10 +122,23 @@ class DouyinUpdateStateTests(unittest.TestCase):
                 )
                 self.assertEqual(result["status"], "classified_teaching")
                 teaching = self.module.load_json(paths["TEACHING_PATH"])
+                ledger = self.module.load_json(paths["LEDGER_PATH"])
                 queue = self.module.load_json(paths["QUEUE_PATH"])
                 discovery = self.module.load_json(paths["DISCOVERY_STATE_PATH"])
                 self.assertEqual(teaching["counts"]["review"], 0)
                 self.assertEqual(teaching["counts"]["kept_teaching"], 2)
+                self.assertEqual(
+                    ledger["counts"],
+                    {"保留：教学": 2, "排除：非教学": 1},
+                )
+                reviewed = next(
+                    item
+                    for item in ledger["videos"]
+                    if item["video_id"] == "100000000000000002"
+                )
+                self.assertEqual(reviewed["automatic_decision"], "待复核：教学夹带推广")
+                self.assertEqual(reviewed["decision"], "保留：教学")
+                self.assertEqual(reviewed["migration_action"], "manual_review_keep")
                 self.assertEqual(queue["counts"], {"classified_teaching": 2})
                 rules_identity = self.module.load_classification_rules()[
                     "_rules_identity"

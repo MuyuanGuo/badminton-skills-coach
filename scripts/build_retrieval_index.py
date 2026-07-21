@@ -117,6 +117,12 @@ def build_index(knowledge, topic_index, rules):
         records.append(
             {
                 "video_id": video["video_id"],
+                "evidence_id": video["evidence_id"],
+                "source_type": video["source_type"],
+                "canonical_url": video["canonical_url"],
+                "parent_source_id": video["parent_source_id"],
+                "clip_start_seconds": video["clip_start_seconds"],
+                "clip_end_seconds": video["clip_end_seconds"],
                 "topic_ids": matched_topics,
                 "lexicon_terms": matched_terms,
                 "field_lengths": {

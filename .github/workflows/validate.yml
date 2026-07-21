@@ -28,6 +28,7 @@ jobs:
             scripts/build_manifest.py \
             scripts/build_douyin_knowledge.py \
             scripts/build_retrieval_index.py \
+            scripts/build_reviewed_evidence_signals.py \
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
@@ -39,6 +40,8 @@ jobs:
             scripts/evaluate_answer_context.py \
             scripts/evaluate_answer_quality.py \
             scripts/evaluate_feedback_signals.py \
+            scripts/evaluate_forward_test_results.py \
+            scripts/evaluate_query_equivalence.py \
             scripts/evaluate_query_understanding.py \
             scripts/evaluate_retrieval.py \
             scripts/evaluate_video_comprehension.py \
@@ -68,11 +71,13 @@ jobs:
             scripts/test_feedback_pipeline.py \
             scripts/test_feedback_personalization.py \
             scripts/test_feedback_promotion.py \
+            scripts/test_forward_test_results.py \
             scripts/test_knowledge_quality.py \
             scripts/test_knowledge_graph_html.py \
             scripts/test_media_assets.py \
             scripts/test_project_artifacts.py \
             scripts/test_public_feedback_e2e.py \
+            scripts/test_query_equivalence.py \
             scripts/test_query_understanding.py \
             scripts/test_release_package.py \
             scripts/test_repository_links.py \
@@ -106,11 +111,13 @@ jobs:
           python scripts/test_feedback_pipeline.py
           python scripts/test_feedback_personalization.py
           python scripts/test_feedback_promotion.py
+          python scripts/test_forward_test_results.py
           python scripts/test_knowledge_quality.py
           python scripts/test_knowledge_graph_html.py
           python scripts/test_media_assets.py
           python scripts/test_project_artifacts.py
           python scripts/test_public_feedback_e2e.py
+          python scripts/test_query_equivalence.py
           python scripts/test_query_understanding.py
           python scripts/test_release_package.py
           python scripts/test_repository_links.py
@@ -123,7 +130,16 @@ jobs:
           python scripts/evaluate_answer_policy.py
           python scripts/evaluate_answer_context.py
           python scripts/evaluate_answer_quality.py
+          python scripts/evaluate_answer_quality.py \
+            --answers data/evaluation/answer_quality_answers.json \
+            --min-approved 57 \
+            --min-answer-snapshots 57 \
+            --min-answer-snapshot-coverage 1.0 \
+            --require-complete-answer-coverage \
+            --require-critical-answer-coverage \
+            --require-manual-review
           python scripts/evaluate_feedback_signals.py
+          python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_retrieval.py
           python scripts/evaluate_video_comprehension.py
@@ -142,11 +158,17 @@ jobs:
           python scripts/evaluate_answer_policy.py \
             --cases data/evaluation/answer_quality_cases.json
           python scripts/evaluate_answer_context.py
+          python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_video_comprehension.py
           python scripts/evaluate_answer_quality.py \
             --answers data/evaluation/answer_quality_answers.json \
-            --min-approved 30 \
-            --min-answer-snapshots 10
+            --min-approved 57 \
+            --min-answer-snapshots 57 \
+            --min-answer-snapshot-coverage 1.0 \
+            --require-complete-answer-coverage \
+            --require-critical-answer-coverage \
+            --require-manual-review
           python scripts/evaluate_feedback_signals.py
+          python scripts/evaluate_forward_test_results.py
           python scripts/build_manifest.py --check

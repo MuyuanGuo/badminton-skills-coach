@@ -1,10 +1,38 @@
 {
-  "version": 1,
-  "default_max_selected_videos": 24,
+  "version": 36,
+  "canonical_terminology": [
+    {
+      "name": "ground_cannon_name",
+      "canonical_term": "遁地炮",
+      "accepted_input_errors": ["顿地炮", "蹲地炮", "dun地炮"],
+      "required_statement": "规范名称是“遁地炮”；“顿地炮”“蹲地炮”和“dun地炮”只作为输入纠错词，回答中统一使用“遁地炮”。"
+    }
+  ],
+  "technique_definitions": {
+    "smash_ground_cannon": {
+      "canonical_term": "遁地炮",
+      "parent_variant": "smash_heavy",
+      "classification": "不起跳重杀的细分技术",
+      "trajectory_class": "long_smash",
+      "trajectory_statement": "按落点属于长杀，落点比追求尖锐下压的跳杀更靠后。",
+      "takeoff_boundary": "不主动起跳，也不追求起跳高度；蹬地转移重心时可能自然短暂离地，但这不等于跳杀。",
+      "evidence_basis": "维护者确认技术分类；7069575740836023587 的 00:04-00:22 直接支持不主动起跳与短暂自然离地，02:35-02:44 直接支持其下压不如跳杀尖、回球更偏平。"
+    }
+  },
+  "default_max_selected_videos": 16,
+  "max_exact_videos": 12,
+  "max_supporting_videos": 4,
+  "supporting_video_limits_by_technique_variant": {
+    "smash_heavy": 5
+  },
   "default_segment_limit": 4,
   "top_rank_acceptance": 12,
   "single_concept_top_rank_acceptance": 6,
   "direct_review_rank_acceptance": 24,
+  "substantive_concept_equivalence_axes": [
+    "technique_variant"
+  ],
+  "reviewed_evidence_min_strict_similarity": 0.35,
   "allowed_relevance_tiers": [
     "direct",
     "strong_related"
@@ -15,12 +43,1096 @@
     ["单打", "双打"],
     ["接发", "发球"]
   ],
+  "query_actor_markers": {
+    "opponent": ["对手", "对方", "对面", "人家", "其他人", "别人", "陪练给我", "陪练向我", "发球机给我", "发球机向我", "陪练", "发球机", "他", "她"],
+    "partner": ["搭档", "队友", "同伴", "搭子"],
+    "player": [
+      "我应该",
+      "我该",
+      "我怎么",
+      "我如何",
+      "我们",
+      "自己",
+      "怎么应对",
+      "如何应对",
+      "怎么防",
+      "如何防",
+      "怎么接",
+      "如何接",
+      "怎么针对",
+      "如何针对",
+      "应该怎么打",
+      "该怎么打",
+      "我"
+    ]
+  },
+  "query_actor_marker_suppressions": {
+    "他": ["其他", "吉他"]
+  },
+  "query_actor_pronoun_markers": ["他", "她"],
+  "query_actor_object_pronoun_prefixes": ["压", "打", "推", "攻", "针对", "盯", "追"],
+  "query_actor_partner_object_pronoun_prefixes": ["帮", "替", "保护"],
+  "query_actor_object_pronoun_restore_prefixes": ["帮", "替"],
+  "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
+  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
+  "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
+  "opponent_response_implications": [
+    {
+      "opponent_axis": "serve_role",
+      "opponent_values": ["serve"],
+      "player_axis": "serve_role",
+      "player_values": ["receive"],
+      "response_terms": ["怎么接", "如何接", "接发", "抢接发", "抢发", "怎么应对", "如何应对", "怎么处理", "如何处理"],
+      "search_terms": ["接发"]
+    },
+    {
+      "opponent_axis": "shot_family",
+      "opponent_values": ["clear", "smash", "drop", "drive", "net_shot"],
+      "player_axis": "tactical_phase",
+      "player_values": ["defense"],
+      "response_terms": ["防守", "接杀", "怎么防", "如何防", "怎么接", "如何接", "怎么应对", "如何应对", "站哪里", "怎么处理", "如何处理"],
+      "search_terms": ["防守"]
+    }
+  ],
+  "reception_symptom_implications": [
+    {
+      "name": "late_to_forecourt_incoming_shot",
+      "symptom_terms": ["来不及", "接不到", "够不到", "够不着", "赶不上", "赶不到", "到不了", "上不去", "太慢", "上网慢", "上得慢"],
+      "incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球", "网前"],
+      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "赶不到", "够不到", "够不着", "到不了", "上不去"],
+      "implicit_response_incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球"],
+      "prior_action_suffixes": ["后", "以后", "之后", "完"],
+      "player_action_prefixes_by_incoming_term": {
+        "小球": ["发"],
+        "网前": ["打到", "吊到", "放到"]
+      },
+      "target_action_query": "向前启动 上网步法",
+      "requested_action_scopes": ["forward_reception_movement"],
+      "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
+      "reason": "“来不及接/够不到”描述到位症状，网前小球或吊球描述对手来球；目标动作是向前启动和上网步法，不是用户自己打吊球。"
+    }
+  ],
+  "action_sequence_implications": [
+    {
+      "name": "kill_to_net_interrupted_sequence",
+      "canonical_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
+      "before_terms": ["杀球", "扣杀", "杀完球", "杀完"],
+      "after_terms": ["上网", "上去", "冲上去", "冲不上去", "跟上网前", "跟到网前", "跟上前场", "跟到前场", "跟不上前场", "冲到前场"],
+      "max_gap_characters": 12,
+      "opponent_response_groups": [
+        {
+          "response_terms": ["挡网", "放网", "挡小球", "放小球"],
+          "required_player_symptom_terms": ["来不及", "赶不上", "跟不上", "接不到", "够不到", "到不了", "太慢", "冲不上去", "跟不上前场"]
+        },
+        {
+          "response_terms": ["回远网", "远网"],
+          "required_player_symptom_terms": ["回不去", "来不及回", "退不回", "退不回去"]
+        }
+      ],
+      "canonical_action_query": "杀上网",
+      "derived_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "requested_action_scopes": ["kill_to_net_sequence"],
+      "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
+      "symptom_terms": ["来不及", "赶不上", "跟不上", "太慢", "衔接慢", "回不去", "冲不上去", "跟不上前场"],
+      "reason": "球员先杀球、对手回网前或远网、球员再描述上网或回动困难，仍属于杀上网事件链；主体切换、连接词和到位症状不得切断序列。"
+    }
+  ],
+  "multi_actor_sequence_implications": [
+    {
+      "name": "smash_partner_retreat_opponent_net_rotation",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["杀球", "扣杀", "重杀", "跳杀", "点杀", "快杀", "轻杀", "劈杀", "霸王杀", "遁地炮"]},
+        {"actor": "partner", "role": "coverage_condition", "terms": ["退到后场", "退后场", "退到底线", "退底线", "守到后面", "守后面", "退到后面", "退后面", "后场", "底线"]},
+        {"actor": "opponent", "role": "response", "terms": ["挡网", "放网", "回挡网", "回放网", "放短", "挡短", "网前小球", "挡小球", "放小球", "短球", "小球"]},
+        {"actor": "player", "role": "target_action", "terms": ["轮转", "补位", "补哪里", "补哪边", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"]}
+      ],
+      "canonical_action_query": "双打轮转补位",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位", "双打 进攻轮转", "双打 搭档保护"],
+      "retain_prior_player_constraints": false,
+      "reason": "球员进攻后，搭档与对手的连续动作共同决定下一拍轮转；不得把先前杀球当成当前所问技术。"
+    },
+    {
+      "name": "block_net_opponent_lift_partner_rear_coverage",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["接杀挡网", "挡杀挡网", "挡网"]},
+        {"actor": "opponent", "role": "response", "terms": ["挑球", "挑后场", "挑"]},
+        {"actor": "partner", "role": "coverage_condition", "terms": ["后场", "底线"]},
+        {"actor": "player", "role": "target_action", "terms": ["守哪里", "守哪边", "轮转", "补位"]}
+      ],
+      "canonical_action_query": "双打轮转补位",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位", "双打 防守转进攻轮转", "双打 搭档保护"],
+      "retain_prior_player_constraints": false,
+      "reason": "球员挡网、对手挑后场且搭档接管后场时，当前问题是本方下一拍覆盖位置，不是挡网手法。"
+    }
+  ],
+  "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
+  "opponent_condition_player_action_rejected_sources": [
+    "primary_metadata",
+    "reviewed_override"
+  ],
+  "opponent_condition_support_terms": [
+    "对手",
+    "对方",
+    "对面",
+    "人家",
+    "针对",
+    "应对",
+    "对付",
+    "防守",
+    "接杀",
+    "接发",
+    "接球",
+    "回球",
+    "站位",
+    "回球概率"
+  ],
+  "partner_condition_support_terms": [
+    "搭档",
+    "队友",
+    "同伴",
+    "搭子",
+    "配合",
+    "轮转",
+    "补位",
+    "保护",
+    "协防",
+    "站位",
+    "两个人",
+    "双打"
+  ],
+  "partner_retrieval_implications": [
+    {
+      "trigger_terms": ["补位", "补", "保护", "协防", "软肋"],
+      "search_terms": ["双打 补位", "双打 轮转保护"],
+      "derived_constraints": {"discipline": ["doubles"]}
+    },
+    {
+      "trigger_terms": ["轮转", "配合"],
+      "search_terms": ["双打 轮转", "双打 配合"],
+      "derived_constraints": {"discipline": ["doubles"]}
+    },
+    {
+      "trigger_terms": ["站位", "站哪", "站哪里"],
+      "search_terms": ["双打 站位", "双打 发球后站位"],
+      "derived_constraints": {"discipline": ["doubles"]}
+    }
+  ],
+  "target_action_scopes": [
+    {
+      "name": "kill_to_net_sequence",
+      "query_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
+      "query_context_terms": [],
+      "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
+      "source_terms": ["杀上网"],
+      "source_suppressions": ["不让你做杀上网", "不要做杀上网", "不是杀上网", "对手针对杀上网回远网"],
+      "source_override_terms": []
+    },
+    {
+      "name": "forward_reception_movement",
+      "query_terms": ["向前启动", "上网步法", "上网", "上去", "上前", "上得快", "冲上前场", "跟上前场"],
+      "query_context_terms": [],
+      "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
+      "source_terms": ["正手往前的高速实战步法", "正手网前步法", "中场上网搓球", "职业运动员上网因为身体能力强"],
+      "source_suppressions": ["杀上网", "杀球之后", "快速突击", "高质量防守", "冲劲儿过猛"],
+      "source_override_terms": []
+    },
+    {
+      "name": "positioning",
+      "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置", "守哪里", "守哪边"],
+      "query_context_terms": [],
+      "search_terms": ["站位"],
+      "source_terms": ["站位", "站哪里", "站在哪", "怎么站"],
+      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位"],
+      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "前后站位", "平行站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"]
+    },
+    {
+      "name": "team_coverage_rotation",
+      "query_terms": ["补位", "补", "补哪里", "补哪边", "轮转", "协防", "帮", "保护", "保护队友", "保护搭档", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"],
+      "query_context_terms": ["双打", "搭档", "队友", "同伴", "搭子", "我们"],
+      "search_terms": ["双打 轮转 补位"],
+      "source_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档", "保护好队友", "搭档处理", "队友的位置"],
+      "source_suppressions": [],
+      "source_override_terms": []
+    }
+  ],
+  "constraint_axes": [
+    {
+      "name": "stroke_side",
+      "label": "击球侧",
+      "values": {
+        "forehand": ["正手", "正手位", "头顶区"],
+        "backhand": ["反手", "反手位", "反拍"]
+      },
+      "mixed_terms": ["正反手", "正手和反手", "正手与反手"]
+    },
+    {
+      "name": "shot_family",
+      "label": "击球类型",
+      "values": {
+        "clear": ["高远球", "高远", "抽高远"],
+        "flat_clear": ["平高球", "平高"],
+        "smash": ["杀球", "扣杀", "普通杀球", "普通的杀球", "基础杀球", "反手杀球", "普通反手杀球", "反手转圈杀", "反手转圈杀球", "反手转着圈杀", "反手转着圈杀球", "转圈杀", "转着圈杀", "重杀", "点杀", "跳杀", "跳sha", "劈杀", "劈杀球", "快杀", "快速杀球", "遁地炮", "顿地炮", "蹲地炮", "dun地炮", "定杀", "轻杀", "轻杀球", "霸王杀", "A字霸王杀", "鲨球"],
+        "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板", "滑板吊", "远网吊"],
+        "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
+        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
+        "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
+        "transition": ["过渡球", "过度球", "过渡动作", "正手过渡", "反手过渡", "正反手过渡", "过渡击球点", "过渡基础"],
+        "smash_block": ["挡杀", "接杀"],
+        "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
+        "deep_serve": ["发高远", "发后场", "偷后场", "高远发球"]
+      },
+      "mixed_value_sets": {
+        "假挑真放": ["lift", "net_shot"],
+        "吊杀": ["drop", "smash"],
+        "吊球和杀球": ["drop", "smash"],
+        "吊球与杀球": ["drop", "smash"],
+        "杀吊结合": ["drop", "smash"],
+        "发球变化": ["deep_serve", "short_serve"],
+        "小球和后场": ["deep_serve", "short_serve"],
+        "小球与后场": ["deep_serve", "short_serve"]
+      },
+      "opponent_query_value_additions": {
+        "smash": ["杀"],
+        "drop": ["吊"],
+        "lift": ["挑"],
+        "net_shot": ["放短", "挡短"]
+      },
+      "query_value_suppressions": {
+        "clear": ["发高远", "高远发球"],
+        "net_shot": ["网前步法", "网前站位"]
+      },
+      "source_value_suppressions": {
+        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"],
+        "lift": ["对方挑球", "对手挑球", "对面挑球", "别人挑球", "逼迫对手进行挑球", "迫使对手挑球", "让对手挑球", "被迫挑球"],
+        "transition": ["攻防过渡", "轮转过渡", "阶段过渡"],
+        "smash_block": ["对手接杀", "对方接杀", "对面接杀", "别人接杀", "队友接杀", "搭档接杀", "男队友的接杀"]
+      },
+      "source_value_additions": {
+        "net_shot": ["网前"],
+        "smash_block": ["防守挡球", "防守挡直线", "防守挡斜线"]
+      },
+      "combine_primary_and_reviewed": true,
+      "structured_evidence_policy": "support_only",
+      "structured_mismatch_policy": "conflict"
+    },
+    {
+      "name": "stroke_intent",
+      "label": "击球意图",
+      "values": {
+        "downward_pressure": ["压球", "压下去", "压住", "压不住", "下压"]
+      },
+      "structured_evidence_policy": "support_only",
+      "structured_mismatch_policy": "conflict"
+    },
+    {
+      "name": "court_zone",
+      "label": "场区",
+      "values": {
+        "forecourt": ["网前", "前场"],
+        "midcourt": ["中场", "中前场", "中腰"],
+        "rearcourt": ["后场", "底线"],
+        "fullcourt": ["全场", "四方球", "六点步法"]
+      },
+      "partner_query_value_additions": {
+        "rearcourt": ["守到后面", "守后面", "退到后面", "退后面"]
+      },
+      "mixed_terms": ["前后场", "全场", "四方球", "六点步法"],
+      "mixed_value_sets": {
+        "封网": ["forecourt", "midcourt"]
+      },
+      "query_value_suppressions": {
+        "rearcourt": ["发后场", "偷后场", "发高远"]
+      },
+      "query_target_prefixes": ["打到", "吊到", "吊", "推到", "推", "挑到", "挑", "放到", "压到", "送到", "拨到", "落到", "落在", "发", "偷"]
+    },
+    {
+      "name": "technique_variant",
+      "label": "细分技术",
+      "values": {
+        "smash_basic": ["普通杀球", "普通的杀球", "基础杀球"],
+        "smash_point": ["点杀"],
+        "smash_slice": ["劈杀", "劈杀球"],
+        "smash_heavy": ["重杀", "大力杀球", "全力杀球"],
+        "smash_fast": ["快杀", "快速杀球"],
+        "smash_ground_cannon": ["遁地炮", "顿地炮", "蹲地炮", "dun地炮"],
+        "smash_stationary": ["定杀"],
+        "smash_light": ["轻杀", "轻杀球"],
+        "smash_backhand_basic": ["普通反手杀球", "反手杀球", "站着反手杀"],
+        "smash_backhand_spin": ["反手转圈杀球", "反手转着圈杀球", "反手转圈杀", "反手转着圈杀", "转圈杀", "转着圈杀"],
+        "flat_clear": ["平高球", "平高"],
+        "fake_lift_real_net": ["假挑真放", "假挑真放球"],
+        "rear_dynamic_low_frame": ["动态低架", "动态低架拍"],
+        "far_net_umbrella": ["远网", "远网球"],
+        "far_net_flat_slice": ["平搓远网", "平搓远网球"],
+        "far_net_middle_split": ["中路远网", "中路远网球", "远网分球"],
+        "far_net_defense_to_push": ["防远网转推", "远网转推"],
+        "far_net_drop": ["远网吊球", "远网吊"],
+        "kill_to_net": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
+        "smash_overlord": ["霸王杀", "A字霸王杀", "A 字霸王杀"],
+        "smash_jump_backhand": ["反手跳杀", "反手跳sha"],
+        "smash_jump": ["跳杀", "跳sha", "起跳杀球", "双脚跳杀", "侧身跳杀"],
+        "drop_basic": ["普通吊球", "普通的吊球", "普通吊", "基础吊球"],
+        "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
+        "drop_reverse_slice": ["滑板", "滑板吊", "反手滑板"],
+        "net_spin": ["搓球", "展搓", "滚搓", "滚网", "搓"],
+        "net_hook": ["勾球", "勾对角", "勾斜线"],
+        "net_pounce": ["扑球"],
+        "net_push": ["推球", "推后场", "推底线"],
+        "net_drop": ["放网", "挡网"]
+      },
+      "mixed_value_sets": {
+        "网前技术": ["net_drop", "net_hook", "net_pounce", "net_push", "net_spin"]
+      },
+      "opponent_query_value_additions": {
+        "net_drop": ["放短", "挡短"]
+      },
+      "category_evidence_policy": "ignore",
+      "source_value_suppressions": {
+        "smash_basic": ["先会普通杀球", "先学普通杀球", "普通杀球是前提"],
+        "smash_point": ["高点杀球", "高点杀", "点杀一样的效果", "点杀式效果", "把点杀得"],
+        "smash_jump": ["反手跳杀", "不像跳杀", "可以跳杀的位置", "没办法跳杀", "不具备跳杀", "就像我们跳杀时", "学跳杀的时候", "跳杀一样的效果"],
+        "drop_slice": ["不要说劈吊", "不要说劈掉", "别谈劈吊", "别谈劈掉", "不是劈吊", "这次我们打劈掉上了", "这次我们打劈吊上了"],
+        "drop_reverse_slice": ["不要说滑板", "不要说滑牌", "别谈滑板", "不是滑板"],
+        "fake_lift_real_net": ["随后教学奉上", "教学奉上"],
+        "kill_to_net": ["不让你做杀上网", "不要做杀上网", "不是杀上网"],
+        "net_push": ["对手推球", "对方推球", "抓推"]
+      },
+      "structured_evidence_policy": "support_only"
+    },
+    {
+      "name": "discipline",
+      "label": "项目",
+      "values": {
+        "singles": ["单打"],
+        "doubles": ["双打"]
+      },
+      "mixed_terms": ["单双打", "单打和双打", "单打与双打"]
+    },
+    {
+      "name": "serve_role",
+      "label": "发接发角色",
+      "values": {
+        "serve": ["发球", "发小球", "发高远", "发后场", "偷后场"],
+        "receive": ["接发", "接发球", "接發", "接發球", "抢接发", "抢发"]
+      },
+      "mixed_terms": ["发接发", "发球和接发", "发球与接发"],
+      "category_evidence_policy": "ignore",
+      "source_value_suppressions": {
+        "serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发球", "对手发球", "人家发球", "别人发球", "他发球", "她发球", "陪练发球", "发球机", "对着墙发球", "你给我发球", "我给你发球", "给我发球", "给你发球", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+      }
+    },
+    {
+      "name": "serve_trajectory",
+      "label": "发球线路",
+      "values": {
+        "short_serve": ["发小球", "发短球", "短发球"],
+        "deep_serve": ["发高远", "发后场", "偷后场"]
+      },
+      "mixed_terms": ["发球变化", "小球和后场", "小球与后场"],
+      "source_value_suppressions": {
+        "deep_serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
+      }
+    },
+    {
+      "name": "pressure_state",
+      "label": "主动被动状态",
+      "values": {
+        "active": ["主动"],
+        "passive": ["被动"]
+      },
+      "mixed_terms": ["主动和被动", "主动与被动", "主动被动转换"],
+      "query_value_suppressions": {
+        "active": ["抢主动", "争取主动", "转为主动", "变为主动"]
+      },
+      "source_value_suppressions": {
+        "active": ["对方主动", "对手主动", "对面主动", "抢主动", "争取主动", "争取尽可能的主动", "争取一个尽可能的主动", "转为主动", "变为主动"]
+      }
+    },
+    {
+      "name": "tactical_phase",
+      "label": "攻防阶段",
+      "values": {
+        "attack": ["进攻", "强攻", "下压"],
+        "defense": ["防守", "接杀"]
+      },
+      "mixed_terms": ["攻防", "防守反击", "防反", "由守转攻"],
+      "source_value_suppressions": {
+        "defense": ["对方防守", "对手防守", "让对方防守", "让对手防守", "逼对方防守", "逼对手防守"]
+      }
+    },
+    {
+      "name": "shot_direction",
+      "label": "出球方向",
+      "values": {
+        "straight": ["直线"],
+        "crosscourt": ["斜线", "对角"]
+      },
+      "mixed_terms": ["直线还是斜线", "直线和斜线", "直线与斜线", "线路选择"]
+    }
+  ],
+  "relationship_equivalent_groups": [
+    ["配合", "衔接", "结合", "搭配", "串联"]
+  ],
+  "query_ambiguities": [
+    {
+      "name": "downward_pressure_context",
+      "query_terms": ["压球", "压下去", "压住", "压不住", "下压"],
+      "resolved_by_terms": ["杀球", "扣杀", "重杀", "点杀", "跳杀", "后场", "封网", "网前", "前场", "中场", "中前场", "抽挡", "平抽挡", "接杀"],
+      "required_statement": "“压球”可能指后场杀球下压，也可能指中前场或封网时把来球压住；未说明场区时，必须分场景说明，不得默认成后场杀球。"
+    },
+    {
+      "name": "far_net_context",
+      "query_terms": ["远网", "远网球"],
+      "resolved_by_terms": ["平搓远网", "中路远网", "远网分球", "防远网转推", "远网转推", "远网吊球", "远网吊"],
+      "required_statement": "“远网”不是单一动作，可能指平搓远网、中路远网分球、防远网转推或远网吊球；未说明具体场景时，必须分支说明，不得把其中一种手法写成全部远网的通用动作。"
+    }
+  ],
+  "required_focus_equivalent_groups": [
+    ["姿势", "动作", "框架", "挥拍"],
+    ["击球点", "击球位置", "点位"],
+    ["落点", "瞄准", "线路"],
+    ["站位", "保护位置"],
+    ["步法", "脚步", "交叉步", "并步", "垫步", "启动", "回动", "移动"],
+    ["握拍", "虎口", "拍柄", "手型"],
+    ["拍面", "拍型", "角度"],
+    ["手肘", "肘"],
+    ["节奏", "变速", "快慢"],
+    ["封网", "抢网", "后杀前封", "前封后杀"]
+  ],
+  "required_single_value_constraint_support_axes": {
+    "technique_variant": "specific_technique_not_supported",
+    "stroke_intent": "specific_stroke_intent_not_supported"
+  },
+  "required_multi_value_constraint_support_axes": {
+    "technique_variant": "named_technique_comparison_not_supported"
+  },
+  "named_technique_comparison_focus_groups": [
+    {
+      "name": "classification_or_takeoff",
+      "query_terms": ["起跳", "主动跳", "跳杀的一种", "算不算跳杀"],
+      "source_terms": ["不起跳", "不主动起跳", "自然短暂离地", "跳杀"]
+    },
+    {
+      "name": "trajectory_or_landing",
+      "query_terms": ["落点", "更尖", "尖球", "杀得尖", "靠后", "更深", "落得深", "长杀", "短杀"],
+      "source_terms": ["落点", "更尖", "杀得尖", "尖", "靠后", "长杀", "短杀", "下压不如跳杀"]
+    }
+  ],
+  "required_constraint_support_conditions": [
+    {
+      "axis": "court_zone",
+      "when_requested": {
+        "stroke_intent": ["downward_pressure"]
+      },
+      "failure_reason": "specific_pressure_court_zone_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["lift"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_lift_shot_family_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["transition"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_transition_shot_family_not_supported"
+    },
+    {
+      "axis": "shot_family",
+      "when_requested": {
+        "shot_family": ["smash_block"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_smash_block_shot_family_not_supported"
+    }
+  ],
+  "focus_term_source_suppressions": {
+    "握拍": ["对方握拍", "对手握拍", "对方是正手握拍", "对方是反手握拍", "对手是正手握拍", "对手是反手握拍"]
+  },
+  "source_constraint_implications": [
+    {
+      "source_axis": "shot_family",
+      "source_values": ["smash"],
+      "target_axis": "tactical_phase",
+      "target_values": ["attack"],
+      "suppress_when_terms": ["对方杀球", "对手杀球", "人家杀球"],
+      "basis": "明确的本方杀球教学属于进攻技术；对手杀球措辞不得证明本方处于进攻阶段。"
+    }
+  ],
+  "video_display_title_overrides": {
+    "7056596925721726220": "正手抽球：架拍与腰腹到手腕的旋转发力",
+    "7059589039694957864": "正手位劈杀与劈吊：隐蔽、回动和下一拍衔接",
+    "7065157571816000809": "杀上网：只考虑向前衔接时使用交叉步",
+    "7092959332047785250": "杀上网后的中路处理、线路与前冲惯性",
+    "7151961376448138531": "正反手假挑真放：锁腕、向上与切削边界",
+    "7202800263588105510": "反手杀球：击球点、握拍与转圈杀边界",
+    "7262546080133401890": "中路远网：推球框架、分球与线路判断",
+    "7411850466457292084": "平搓远网：正反手拍面、手腕与手指发力",
+    "7498295344284093755": "正反手后场动作示范：高远、平高与其他出球",
+    "7589749293205363633": "动态低架与快速框架：后场来球下的准备选择",
+    "7656927370758796145": "双打抓回头：站位、轮转、握拍、锁腕和步法"
+  },
+  "literal_symptom_support_terms": {
+    "下网": ["拍面", "击球点", "下压", "挥拍", "发力空间"],
+    "出界": ["拍面", "击球点", "落点", "线路", "发力"],
+    "不到位": ["发力", "击球点", "底线", "挥拍", "力量传导"],
+    "不稳定": ["拍面", "握拍", "框架", "节奏", "控制"],
+    "来不及": ["架拍", "准备", "挥拍速度", "动作幅度", "节奏", "启动", "回动"],
+    "接不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "够不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "赶不上": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "到不了": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "没力量": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "不重": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "没威胁": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "没有威胁": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
+    "僵硬": ["放松", "框架", "挥拍", "发力", "握拍"],
+    "太慢": ["节奏", "速度", "启动", "预动", "回动"],
+    "疼": [],
+    "受伤": []
+  },
+  "video_constraint_overrides": {
+    "7558912953539071292": {
+      "stroke_side": ["forehand"],
+      "basis": "用户测试指出画面为正手被动高远；文本只支持通用被动原则，不得作为反手专项示范。"
+    },
+    "7153445193713290511": {
+      "stroke_side": ["forehand"],
+      "basis": "00:14-00:21 转写明确要求拿正手处理后场被动球。"
+    },
+    "7522041413614816570": {
+      "serve_trajectory": ["short_serve"],
+      "basis": "维护者审核确认该视频讲双打反手短发的稳定与减速，不是偷后场示范。"
+    },
+    "7213191190382972172": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认正常击球位置的虎口与拍框关系用于基础正手发力握拍。"
+    },
+    "7453420876076240188": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["clear", "smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "维护者审核确认 00:19-15:00 系统讲正常正手后场基础挥拍，覆盖握拍、架拍、转体、挥拍和腰腹加入；可用于普通杀球的共用基础，但不能证明重杀、点杀、跳杀或劈杀专项。"
+    },
+    "7052600326116887812": {
+      "shot_family": ["clear", "smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "00:00-00:46 明确把杀球和高远球放在同一基础挥拍链条中，讲架拍、蹬地、腿髋腰肩肘到手指的顺序；只支持普通杀球的共用发力基础。"
+    },
+    "7229506261136526647": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "00:15-00:53 直接纠正基础杀球：不要把大臂整体甩出，蹬地后先建立击球框架再完成挥拍。"
+    },
+    "7567155406117533051": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "人工视觉复核确认全段比较不同杀球发力体系，说明都从脚蹬地向球拍传递，并应按手臂、腰腹和手腕能力选择个人配比。"
+    },
+    "7485692231404342586": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "01:08-01:36 直接讲普通杀球的下压发生在挥拍后半段，要在高点击球并让拍面随后向下，不能一开始就向下压。"
+    },
+    "7052519937125911846": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "00:03-00:12 直接纠正普通杀球动作幅度过大，强调不能把力量全部耗在扩大动作上。"
+    },
+    "7659348110628345210": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_basic"],
+      "basis": "00:08-03:11 直接讲非重杀取向的杀球落点、快速突击架拍、向下击球、边线与头顶区回位保护，可支持普通杀球的落点和衔接。"
+    },
+    "7639306481355832689": {
+      "shot_family": ["net_shot"],
+      "technique_variant": ["net_drop", "net_push"],
+      "basis": "00:48-00:51 明确说明接发准备可直接出手做推或放，用于接发推球与放网的准备机制。"
+    },
+    "7148267452877638944": {
+      "pressure_state": ["passive"],
+      "basis": "标题中的“对方太主动”描述对手占主动，本方是在受压条件下处理，不能作为本方主动球证据。"
+    },
+    "7131178146023427328": {
+      "shot_family": ["net_shot"],
+      "court_zone": ["forecourt"],
+      "technique_variant": ["net_push"],
+      "basis": "标题和训练内容明确讲网前推球动作缩小及其与搓、勾的动作一致性，属于网前推球技术证据。"
+    },
+    "7383154379915906319": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:00-02:18 直接讲基础挥拍如何打重：身体驱动大臂、在击球前加速并放松随摆，01:02 起以重杀示范说明腰腹带动。"
+    },
+    "7659991105622862457": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:07-01:33 直接讲重杀框架：拍面立起、前臂不要藏在头后、肘朝后并让小臂位于大臂外侧，以获得更充分的展开和顶肘空间。"
+    },
+    "7484563688096091449": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "00:18-02:35 直接讲重杀中大臂先行带动放松的小臂，并给出下垂小臂、由肘向前带动的分解练习；02:23 起明确归结为重杀。"
+    },
+    "7551459420703837498": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_fast", "smash_heavy"],
+      "basis": "00:07-00:57 直接讲平快来球采用快速框架和快杀，缩小侧身、抬肘和顶肘幅度以提高出手效率；00:59-01:25 再与高来球使用的大幅度重杀框架对比。"
+    },
+    "7068465954270792994": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:11-04:13 直接讲 A 字霸王杀的半程挥拍、正拍面击球和肘腕旋转卸力；07:43-07:49 明确它也可作为杀球训练。"
+    },
+    "7068092085533953315": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:27-02:40 直接讲 A 字架拍辅助起跳、击球前后旋转发力与卸力、双手摆动到高位后再架拍，以及半程收拍。"
+    },
+    "7067722128413543680": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_overlord"],
+      "basis": "00:05-03:24 为霸王杀专项第一集，直接讲爆发力目标、转体带动引拍、击球前旋转发力、击球后旋转卸力和立拍角度边界。"
+    },
+    "7656560952972884730": {
+      "technique_variant": [],
+      "basis": "主体是通用后场发力与架拍，不是霸王杀专项；标题只提醒业余球友不要盲用高难度框架。"
+    },
+    "7611635851789771721": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_fast"],
+      "basis": "00:20-01:19 直接比较杀得快、重、准三种目标；快杀采用较小动作、高架拍和更少侧身以追求爆发与速度。霸王杀仅为快杀例子，不能证明霸王杀专项。"
+    },
+    "7606412946096327978": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_fast"],
+      "basis": "00:19-06:51 全段主体为快杀提速：顶肘后及时停止大臂前送，使拍头尽快追上并超过大臂，并加入快速抬拍；重杀框架和霸王杀只用于比较。"
+    },
+    "7573211923485260537": {
+      "technique_variant": [],
+      "basis": "主体是孙超个人架拍特点，只用霸王杀架拍作比较，不是霸王杀专项教学。"
+    },
+    "7486788550298471739": {
+      "technique_variant": [],
+      "basis": "主体是网前撤后场的抬肘与放松架拍，只顺带问到霸王杀，不能证明霸王杀动作。"
+    },
+    "7102635326803332393": {
+      "stroke_side": ["forehand"],
+      "basis": "维护者审核确认向前挥拍示范属于正常正手后场挥拍。"
+    },
+    "7130069152592645411": {
+      "tactical_phase": ["defense"],
+      "basis": "00:27-00:45 是教练模拟进攻方杀球后，指导另一侧球员降低重心并调整防守站位；不得作为本方杀球后的进攻站位证据。"
+    },
+    "7193151905139395872": {
+      "stroke_intent": ["downward_pressure"],
+      "court_zone": ["midcourt"],
+      "technique_variant": [],
+      "basis": "01:20-01:26 明确说明该后点击球形成点杀式效果，但出球属于中前场处理。"
+    },
+    "7272944156618542336": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_point"],
+      "basis": "00:00-01:43 直接讲点杀力量偏小的原因，以及食指、拇指牵住球拍、掌心留空、后三指抓握并配合小臂的发力方法。"
+    },
+    "7125615679402724623": {
+      "shot_family": ["flat_clear", "smash"],
+      "technique_variant": ["flat_clear", "smash_heavy", "smash_point"],
+      "basis": "00:50-01:07 明确把点杀和平高球归为手指主导的小边甩，身体主要负责维持稳定，并允许放松到捏紧的发力；只支持平高球的发力模式，不提供完整飞行线路或击球动作教程。"
+    },
+    "7093706918492917033": {
+      "shot_family": ["drop", "smash"],
+      "technique_variant": ["far_net_drop", "far_net_umbrella", "kill_to_net", "smash_light", "smash_point"],
+      "tactical_phase": ["attack"],
+      "basis": "00:39-01:14 直接讲位置不好时用轻杀、点杀或远网吊球保持下压并连接下一拍，并说明慢一些的软压便于杀上网；支持这些战术使用场景，但不证明对应手部动作细节。"
+    },
+    "7161980324409363712": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:03-02:16 直接讲跳杀入门：落地前完成挥拍、缩小挥拍与转体幅度、半侧身起跳、最高点架拍后在下落阶段击球，并逐步加入摆臂和换脚。"
+    },
+    "7055491154288102667": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:04-00:48 全段直接讲跳杀不是原地直上直下，而是转跳；先做转跳练习，再在空中转体向前完成击球。"
+    },
+    "7138604160051612969": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:00-01:51 直接纠正跳杀的起跳后架拍、转跳、半侧身、下落阶段击球、自然屈腿、向前挥拍和击球点位置。"
+    },
+    "7634016952800880570": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:23-02:18 直接讲跳杀起跳效率：少蹲、快蹲、快起，避免提前站死和用力深蹲，以更短时间获得空中动作余量。"
+    },
+    "7606560547489149691": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:01-02:48 直接讲双脚跳杀进阶纠错：不要全力起跳、用摆臂借力、调整击球点与大臂位置，并让空中姿态保留腰腹转动。"
+    },
+    "7561558424342056250": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump"],
+      "basis": "00:03-02:47 直接讲女性专业选手跳杀专项：双手摆动起跳、快速抬拍组织空中框架、避免深蹲，并按较高击球点自然形成屈腿。"
+    },
+    "7506362888166083897": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_fast", "smash_heavy", "smash_jump"],
+      "basis": "02:48-03:39 明确把贴球发力加入跳杀，并建议连续进攻先用较小侧身的快速跳杀，出现终结机会时再全力重杀；只在连续跳杀条件下支持快杀。"
+    },
+    "7499776424493075772": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_jump_backhand"],
+      "basis": "全段为反手跳杀专项；只支持明确的反手跳杀问题，泛跳杀和正手跳杀问题不得用反手动作替代。"
+    },
+    "7550305145877155131": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_backhand_basic"],
+      "basis": "00:09-02:12 直接区分反手抽高远与反手杀球框架，并讲后场反手杀球的握拍、向上顶肘、下压出球以及顶肘后让小臂和拍头尽快超过大臂。"
+    },
+    "7202800263588105510": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_backhand_basic", "smash_backhand_spin"],
+      "basis": "00:08-01:01 直接讲普通反手杀球在背身时的右肩上方高点击球，以及拇指顶右侧小棱或捏窄边以形成向下拍面；01:06-01:50 再单独解释转圈杀的回动惯性和爆发用途。"
+    },
+    "7288529711267859747": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_backhand_basic"],
+      "basis": "00:56-02:29 直接讲女性或业余球友腰腹参与受限时的进阶反手发力：击球前收肘靠近胸前带动拍头加速；来源明确要求已有反手基础，不可作为通用入门动作。"
+    },
+    "7098897570482670888": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_backhand_spin"],
+      "basis": "00:04-01:45 全段为反手转圈杀专项：只在来球已过身或左侧、需要快速转体够球时顺惯性旋转，不应为普通来球刻意转圈；并讲腰带上肢、偏后击球点、左脚蹬地与右脚落地。"
+    },
+    "7069575740836023587": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_ground_cannon", "smash_stationary"],
+      "basis": "00:04-02:44 全段主体为遁地炮，直接讲不主动起跳、短暂自然离地、重心从后脚移向左脚、前后与上下力量合并、击球落地时机、适用条件和下一拍；维护者确认它是不起跳重杀的长杀细分；02:03-02:08 只支持定杀缺少从上到下身体力的对比边界，不支持定杀完整动作。"
+    },
+    "7445495930280856892": {
+      "shot_family": ["smash"],
+      "technique_variant": ["smash_heavy"],
+      "basis": "标题写遁地炮，但 00:09-02:20 的口播主体是女性和双打场景下的原地重杀纠错，包括左手带转、后腿利用、重心前压与击球点；没有直接说明遁地炮的短暂自然离地与击球落地时机，不能作为遁地炮专项。"
+    },
+    "7068835198938516777": {
+      "technique_variant": [],
+      "basis": "标题列出跳杀、遁地炮和定杀的能力与威力排名，但可引用口播实际延续 A 字下拍法与滑板介入纠错；不能作为跳杀、遁地炮或定杀专项。"
+    },
+    "7083684012513840424": {
+      "technique_variant": [],
+      "basis": "仅用跳杀作交叉步跳跃的类比，不提供跳杀专项动作证据。"
+    },
+    "7511934047901846841": {
+      "shot_family": ["clear", "drop", "lift", "transition"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:08-00:38 分别讲反手高远、过渡和劈吊，01:18-01:31 明确讲从下往上完成反手挑球；该综合视频可按具体分段支持这些反手技术。"
+    },
+    "7520190707093654844": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_basic"],
+      "basis": "01:58-02:10 明确要求先掌握普通吊球，并排除劈吊和滑板；该来源只能证明普通吊球基础，不能证明切削变体。"
+    },
+    "7306709804234444072": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:00-01:05 全段直接讲劈吊的包裹效果、侧身转正过程、击球与随挥，并纠正包裹不足。"
+    },
+    "7174229898238676228": {
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "01:23-01:44 明确比较劈吊、滑拍与高远球技术点的一致性和隐蔽关系；只按劈吊分段支持顺向切削，不用于证明滑板专项细节。"
+    },
+    "7229889111706848544": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:48-01:24 明确讲正手位斜线劈吊采用半侧身、不盲目换脚，并以更短距离完成回位。"
+    },
+    "7118192644957818127": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_slice"],
+      "basis": "00:00-01:02 直接讲重劈/劈吊在不同来球弧度下的起跳、击球点、落点、减速和高远球隐蔽关系。"
+    },
+    "7059589039694957864": {
+      "stroke_side": ["forehand"],
+      "shot_family": ["drop", "smash"],
+      "technique_variant": ["drop_slice", "smash_slice"],
+      "basis": "已复核口播 00:00-01:05 明确讲正手位起跳不转身处理劈杀和劈吊对角线：不转身增强隐蔽性，并让左脚保持在前以便向左横跳、衔接下一拍；只能按用户点名的对应技术分段使用。"
+    },
+    "7214304020775652620": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["drop"],
+      "technique_variant": ["drop_reverse_slice"],
+      "basis": "视觉复核摘要明确为反手滑板专项，覆盖动作、击球点、握拍和步法；不得作为普通吊球或劈吊证据。"
+    },
+    "7226178331408928038": {
+      "shot_family": ["drive"],
+      "tactical_phase": ["defense"],
+      "basis": "可引用证据 00:09-00:25 讲接杀时先打直线、引动前场球员后再变线，没有直接的挑球动作证据；标题中的挑球不得证明挑球技术。"
+    },
+    "7151961376448138531": {
+      "stroke_side": ["forehand", "backhand"],
+      "shot_family": ["lift", "net_shot"],
+      "court_zone": ["forecourt"],
+      "technique_variant": ["fake_lift_real_net", "net_drop"],
+      "basis": "00:00-00:32 明确讲正反手假挑真放的区分，以及做挑球时锁腕、向上处理和切削球头；可作为挑球与放网变化的进阶分段证据。"
+    },
+    "7151589626031901992": {
+      "technique_variant": [],
+      "basis": "00:17-00:28 只展示正反手假挑真放，并明确说后续教学再奉上；不得用展示预告推导动作机制。"
+    },
+    "7498295344284093755": {
+      "stroke_side": ["forehand", "backhand"],
+      "shot_family": ["flat_clear"],
+      "technique_variant": ["flat_clear"],
+      "basis": "人工视觉复核确认纯动作示范包含正反手后场平高球；只能用于观察动作和两侧出球，不得从无口播示范推导详细手部机制或时间戳。"
+    },
+    "7066596981992394025": {
+      "technique_variant": [],
+      "basis": "标题提到封住边线平高球，但可引用口播实际讲正手让点分直线，不提供平高球击球动作。"
+    },
+    "7064753436809514281": {
+      "technique_variant": [],
+      "basis": "主体讲拦截对手平高球时的并步、横跳和突击，不是本方平高球击球技术。"
+    },
+    "7105205741954321699": {
+      "technique_variant": [],
+      "basis": "口播把平高球作为来球条件，主体讲半侧身或不转身突击步法，不是平高球出球教学。"
+    },
+    "7055130343476710667": {
+      "technique_variant": [],
+      "basis": "主体讲双打防守中如何处理对手吊球或压来的平高球，不是本方平高球击球动作。"
+    },
+    "7054025391601650948": {
+      "technique_variant": [],
+      "basis": "主体是双打防守动作，平高球只作为对手后续来球，不可证明本方如何打平高球。"
+    },
+    "7376838935164505384": {
+      "technique_variant": [],
+      "basis": "只在单打冷门技术清单中点名变速平高，没有可执行的平高球动作教学。"
+    },
+    "7252154554828033295": {
+      "technique_variant": [],
+      "basis": "长篇比赛解说只零散提到变化平高球和杀上网后的一个处理，不足以证明任一命名动作的完整技术或训练方法。"
+    },
+    "7589749293205363633": {
+      "court_zone": ["rearcourt"],
+      "technique_variant": ["rear_dynamic_low_frame"],
+      "basis": "维护者审核确认标题所称动态低架对应方法二；00:10-00:21 讲从前抬拍追球会失去发力位置，00:38-00:49 讲基础较弱者从下方向后绕拍、再向前击球以做完整动作。"
+    },
+    "7411850466457292084": {
+      "shot_family": ["net_shot"],
+      "court_zone": ["forecourt", "midcourt"],
+      "technique_variant": ["far_net_flat_slice", "far_net_umbrella"],
+      "basis": "00:07-01:27 全段直接讲来球平、不能压或近网搓时使用平搓远网，覆盖正反手拍面、手腕路径、手指加速和下一拍举拍。"
+    },
+    "7262546080133401890": {
+      "shot_family": ["net_shot"],
+      "court_zone": ["forecourt", "midcourt"],
+      "technique_variant": ["far_net_middle_split", "far_net_umbrella"],
+      "basis": "00:08-03:14 直接讲中路远网条件下不能盲目搓、挡或平推，并教正反手以推球框架、提肘和拍面高度完成分球，再按对手取位选择分或推。"
+    },
+    "7076257912192060707": {
+      "shot_family": ["net_shot"],
+      "court_zone": ["forecourt", "midcourt"],
+      "technique_variant": ["far_net_middle_split", "far_net_umbrella"],
+      "basis": "00:05-01:45 直接比较边线与中路远网的线路选择：边线可勾或平推，中路角度受限，需要分球并控制速度和落点深度。"
+    },
+    "7258462271670586658": {
+      "shot_family": ["drive", "net_shot"],
+      "court_zone": ["midcourt"],
+      "technique_variant": ["far_net_defense_to_push", "far_net_umbrella"],
+      "basis": "00:09-01:20 直接讲对手防远网回球较平时，不要盲目多冲一步；要让出发力位，以手臂、小臂和手指完成转推，并给出两侧喂球移动练习。"
+    },
+    "7500519808157371711": {
+      "technique_variant": [],
+      "basis": "比赛解说只零散出现远网，不是远网命名技术的教学来源。"
+    },
+    "7065157571816000809": {
+      "shot_family": ["smash"],
+      "technique_variant": ["kill_to_net"],
+      "tactical_phase": ["attack"],
+      "basis": "人工视觉复核确认纯动作示范只考虑杀球后继续上网的衔接，明确使用交叉步；不适用于杀后仍需覆盖其他方向的通用回位。"
+    },
+    "7087759120761228578": {
+      "shot_family": ["smash"],
+      "discipline": ["doubles"],
+      "technique_variant": ["kill_to_net"],
+      "tactical_phase": ["attack"],
+      "basis": "00:54-01:37 直接讲混双女选手打斜线或中路杀上网后向前走、男队友覆盖后场，以及两条线路为何限制对手角度；必须保留混双轮转条件。"
+    },
+    "7092959332047785250": {
+      "shot_family": ["smash", "net_shot"],
+      "court_zone": ["midcourt"],
+      "technique_variant": ["kill_to_net"],
+      "tactical_phase": ["attack"],
+      "basis": "00:15-01:31 直接讲杀上网在中路拿球后的线路选择，以及从后向前惯性使被抓推时容易陷入防守反击；只支持杀上网后的中路战术分段。"
+    },
+    "7300032085358660904": {
+      "shot_family": ["smash", "net_shot"],
+      "technique_variant": ["kill_to_net"],
+      "tactical_phase": ["attack"],
+      "basis": "00:23-02:23 直接分析对手针对杀上网回远网时，本方前冲惯性和回不去的问题，并给出停顿放网或重新转守等条件性处理；用于战术边界，不作为基础步法证明。"
+    },
+    "7060717442825309480": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["transition"],
+      "basis": "用户复核确认该视频讲反手过渡；00:00-01:19 口播说明立拍避免打高、按身后击球点调整握拍并让拍面向内包裹。"
+    },
+    "7344186576013905187": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["transition"],
+      "basis": "00:00-00:24 明确为没有反手过渡球基础的练习者设计：先找带包切的勾球手感，再逐渐抬高击球点和框架；ASR 将“反手”误写为“繁手”。"
+    },
+    "7215787369381858599": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:04-01:04 明确讲接杀时不做来不及的正反手转换，以反手握拍覆盖追身与两侧来球，并用手臂带手腕做短促快速发力。"
+    },
+    "7117821949165718824": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:02-00:51 明确讲反手区接杀步法：近身时避免轻易迈出右脚造成转髋回位困难，只有来球特别远时才扩大跨步。"
+    },
+    "7647839024535507897": {
+      "stroke_side": ["backhand"],
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "02:00-02:13 与 03:37-03:41 明确进入反手接杀分段，讲受压时借来球力量快速出手，不能把手腕向前僵顶。"
+    },
+    "7289635377009151247": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:04-00:30 明确讲接杀时间短、动作不能大，不能只动手腕，要用肘带动手腕并保持可通过的握拍空间。"
+    },
+    "7263668594196745487": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:41-01:23 明确示范固定准备框架后处理左侧接杀，拍面翻转完成出拍且大臂不大幅浮动。"
+    },
+    "7141200093922790688": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:27-00:57 明确说明准备时抬起肘和大臂、给腋下留空间，来球时翻拍即可形成接杀框架。"
+    },
+    "7422121561559272739": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:15-00:47 明确讲接杀低姿准备：降低重心并保持身体前倾，避免来球后再额外向前探身。"
+    },
+    "7586613438625959217": {
+      "shot_family": ["smash_block"],
+      "discipline": ["singles"],
+      "tactical_phase": ["defense"],
+      "basis": "00:05-01:59 明确讲单打接杀的短动作、步法、回位和衔接，要求先伸手够球再完成小幅移动与蹬回。"
+    },
+    "7609429014616637050": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "00:10-00:53 明确讲接杀受压和挑不起来时，通过改变大臂位置创造发力空间；能抢前点，但也要保留受压时的处理能力。"
+    },
+    "7154558892742151464": {
+      "shot_family": ["smash_block"],
+      "tactical_phase": ["defense"],
+      "basis": "标题及 00:00-01:08 明确比较接杀挡近网与挡远网后的取位：挡近后向前跟进，挡远后不要盲目前压。"
+    },
+    "7602766054809333617": {
+      "shot_family": ["smash_block"],
+      "discipline": ["singles"],
+      "tactical_phase": ["attack", "defense"],
+      "basis": "00:20-00:31 明确讲根据对手杀球线路选择挡斜线或挡直线，02:13-02:21 继续讲防守后的移动与反击衔接。"
+    },
+    "7621243051541587889": {
+      "shot_family": ["smash_block"],
+      "discipline": ["doubles"],
+      "tactical_phase": ["attack", "defense"],
+      "basis": "00:02-01:18 明确讲双打防守时观察前场球员，再根据其位置选择挡直线或挡斜线，属于接杀后的防反线路证据。"
+    }
+  },
   "incomplete_fragment_terms": [
     "先看上集",
+    "看过上集",
+    "看完上集",
+    "看上集再看下集",
     "接上集",
+    "接上期",
+    "先把前三集",
+    "看完再去练",
+    "教学后期出",
     "下集再讲",
     "未完待续"
   ],
+  "incomplete_fragment_exempt_video_ids": [
+    "7067722128413543680"
+  ],
+  "unrequested_scope_support_only_axes": [
+    "pressure_state"
+  ],
+  "unrequested_scope_support_only_conditions": [
+    {
+      "axis": "stroke_side",
+      "values": ["backhand"],
+      "requested_axis": "shot_family",
+      "requested_values": ["smash"]
+    }
+  ],
+  "unrequested_scope_support_only_sources": [
+    "primary_metadata",
+    "reviewed_override"
+  ],
+  "unrequested_scope_ranking_axes": [
+    "stroke_side",
+    "shot_family",
+    "technique_variant",
+    "discipline",
+    "serve_trajectory",
+    "pressure_state",
+    "shot_direction"
+  ],
+  "unrequested_ranking_value_priority": {
+    "default": 1,
+    "shot_family": {
+      "transition": 0,
+      "smash": 2
+    }
+  },
   "boundary_terms": {
     "pain_or_injury": [
       "疼",
@@ -28,12 +1140,14 @@
       "受伤",
       "扭伤",
       "拉伤",
-      "不适"
+      "不适",
+      "不舒服"
     ],
     "endorsement_or_authorship": [
       "本人认可",
       "本人同意",
       "本人背书",
+      "本人授权",
       "刘辉认可",
       "刘辉同意",
       "是不是刘辉",
@@ -49,6 +1163,7 @@
     ],
     "visual_confirmation": [
       "只看文字",
+      "仅看文字",
       "完全正确",
       "确认我的动作",
       "确认我的握拍"

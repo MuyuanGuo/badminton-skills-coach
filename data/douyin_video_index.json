@@ -2,10 +2,17 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-07-18T06:10:20.588716+00:00",
-  "collected_unique_links": 473,
+  "collected_at": "2026-07-21T19:20:40.025131+00:00",
+  "collected_unique_links": 474,
   "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7664908274752137146",
+      "url": "https://www.douyin.com/video/7664908274752137146",
+      "title": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "teaching_candidate": "unknown",
+      "raw_text": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球"
+    },
     {
       "video_id": "7663523942439940453",
       "url": "https://www.douyin.com/video/7663523942439940453",

@@ -136,6 +136,34 @@ def build_index(data, taxonomy=None):
                     )
                     coverage_counter[video["video_id"]] += 1
 
+    for video_id, topic_ids in taxonomy.get(
+        "reviewed_video_topic_overrides", {}
+    ).items():
+        video = videos_by_id.get(video_id)
+        if video is None:
+            raise ValueError(
+                f"Reviewed topic override references a non-ready video: {video_id}"
+            )
+        for topic_id in topic_ids:
+            if topic_id not in topic_rules:
+                raise ValueError(
+                    f"Reviewed topic override references an unknown topic: {topic_id}"
+                )
+            existing_ids = {
+                item["video_id"] for item in matches_by_topic[topic_id]
+            }
+            if video_id in existing_ids:
+                continue
+            matches_by_topic[topic_id].append(
+                compact_video(
+                    video,
+                    taxonomy["default_minimum_score"],
+                    {"title": 0, "focus": 0, "evidence": 0},
+                    assignment_method="reviewed_override",
+                )
+            )
+            coverage_counter[video_id] += 1
+
     fallback_count = 0
     for video in videos:
         if coverage_counter[video["video_id"]] > 0:

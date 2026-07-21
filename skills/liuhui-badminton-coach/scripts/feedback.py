@@ -28,7 +28,8 @@ GITHUB_ISSUE_PATTERN = re.compile(
     r"^https://github\.com/MuyuanGuo/badminton-skills-coach/issues/([1-9]\d*)/?$"
 )
 INTENDED_QUERY_PATTERN = re.compile(
-    r"(?:我(?:真正)?问的是|我的(?:真实)?问题是|应该理解为|你应该回答的是)"
+    r"(?:我(?:真正)?问的是|我(?:真正)?想问的是|我的(?:真实)?问题是|"
+    r"应该理解为|你应该回答的是)"
     r"\s*[：:，,]?\s*(.+?)(?:[。！？!\n]|$)",
     re.IGNORECASE,
 )
@@ -222,20 +223,32 @@ def knowledge_version(knowledge):
 
 
 def build_feedback_hint(videos):
-    references = [video["ref"] for video in videos]
+    references = [
+        video.get("ref") or video.get("label")
+        for video in videos
+        if video.get("ref") or video.get("label")
+    ]
     if len(references) >= 2:
         return (
-            f"反馈：{references[0]} 最有价值；{references[-1]} 不相关；"
-            "文字漏了‘……’。"
+            f"反馈可直接回复：{references[0]} 最有价值；"
+            f"{references[-1]} 不相关；第 2 点结论不对；"
+            "回答漏了‘……’；你理解错了，我真正问的是‘……’。"
         )
     if references:
-        return f"反馈：{references[0]} 最有价值；文字漏了‘……’。"
-    return "反馈：文字漏了‘……’，或者回答理解错了我的问题。"
+        return (
+            f"反馈可直接回复：{references[0]} 最有价值；第 2 点结论不对；"
+            "回答漏了‘……’；你理解错了，我真正问的是‘……’。"
+        )
+    return (
+        "反馈可直接回复：第 2 点结论不对；回答漏了‘……’；"
+        "你理解错了，我真正问的是‘……’。"
+    )
 
 
-def answer_context_sha256(question, videos):
+def answer_context_sha256(question, answer_text, videos):
     canonical = {
         "question": question.strip(),
+        "answer_text": answer_text.strip(),
         "videos": [
             {"ref": video["ref"], "video_id": video["video_id"]}
             for video in videos
@@ -250,11 +263,15 @@ def answer_context_sha256(question, videos):
 def create_answer_context(
     question,
     video_specs,
+    answer_text,
     core_refs=None,
     answer_mode=None,
     user_context=None,
     queue_dir=None,
 ):
+    answer_text = str(answer_text or "").strip()
+    if not answer_text:
+        raise ValueError("The exact Skill answer text is required for feedback")
     knowledge, rules = load_resources()
     videos = validate_video_mappings(video_specs, core_refs or [], knowledge)
     created_at = utc_now()
@@ -265,11 +282,12 @@ def create_answer_context(
         "schema_version": rules["version"],
         "answer_id": answer_id,
         "turn_id": answer_id,
-        "context_sha256": answer_context_sha256(question, videos),
+        "context_sha256": answer_context_sha256(question, answer_text, videos),
         "created_at": created_at,
         "skill_version": rules["skill_version"],
         "channel": rules["channel"],
         "question": question.strip(),
+        "answer_text": answer_text,
         "user_context": unique_in_order(user_context or []),
         "answer_mode": answer_mode,
         "knowledge_version": knowledge_version(knowledge),
@@ -500,7 +518,14 @@ def submit_feedback(
     turn_id = answer.get("turn_id", answer_id)
     if turn_id != answer_id:
         raise ValueError("Answer context turn ID does not match its answer ID")
-    expected_digest = answer_context_sha256(answer["question"], answer["videos"])
+    answer_text = str(answer.get("answer_text") or "").strip()
+    if not answer_text:
+        raise ValueError(
+            "Answer context lacks the exact Skill answer text; recreate it before recording feedback"
+        )
+    expected_digest = answer_context_sha256(
+        answer["question"], answer_text, answer["videos"]
+    )
     stored_digest = answer.get("context_sha256")
     if stored_digest and stored_digest != expected_digest:
         raise ValueError("Answer context mapping failed its integrity check")
@@ -520,6 +545,7 @@ def submit_feedback(
         "skill_version": answer["skill_version"],
         "channel": answer["channel"],
         "question": answer["question"],
+        "answer_text": answer_text,
         "user_context": answer["user_context"],
         "answer_mode": answer["answer_mode"],
         "knowledge_version": answer["knowledge_version"],
@@ -540,6 +566,7 @@ def record_feedback(
     question,
     video_specs,
     feedback_text,
+    answer_text,
     core_refs=None,
     answer_mode=None,
     user_context=None,
@@ -549,6 +576,7 @@ def record_feedback(
     answer = create_answer_context(
         question=question,
         video_specs=video_specs,
+        answer_text=answer_text,
         core_refs=core_refs,
         answer_mode=answer_mode,
         user_context=user_context,
@@ -601,6 +629,11 @@ def review_feedback(feedback_id, decision, note, reviewer, queue_dir=None):
     payload = show_feedback(feedback_id, target_dir)
     if payload.get("status") == "superseded" or payload.get("superseded_by"):
         raise ValueError("Superseded feedback revisions cannot be reviewed")
+    if decision == "accepted" and payload.get("parser_warnings"):
+        raise ValueError(
+            "Feedback with unresolved parser warnings cannot be accepted; "
+            "collect a clarified local response or import a corrected GitHub revision"
+        )
     reviewed_at = utc_now()
     payload["status"] = decision
     payload["updated_at"] = reviewed_at
@@ -744,6 +777,7 @@ def fetch_github_issue(issue_url, token=None, opener=None):
 def export_github_feedback(
     feedback_id,
     public_question,
+    public_answer_excerpt,
     public_intended_query=None,
     confirm_public=False,
     queue_dir=None,
@@ -752,6 +786,8 @@ def export_github_feedback(
         raise ValueError("Explicit --confirm-public consent is required")
     if not public_question.strip():
         raise ValueError("A sanitized public question is required")
+    if not str(public_answer_excerpt or "").strip():
+        raise ValueError("A sanitized public answer or exact error excerpt is required")
     target_dir = Path(queue_dir or default_queue_dir())
     payload = show_feedback(feedback_id, target_dir)
     if payload.get("status") != "accepted":
@@ -791,6 +827,9 @@ def export_github_feedback(
 ### 回答编号
 {payload.get('answer_id') or '无'}
 
+### Skill 回答或出错片段
+{str(public_answer_excerpt).strip()}
+
 ### 最有价值的视频
 {github_video_lines(signals.get('helpful_video_ids', []))}
 
@@ -807,7 +846,7 @@ def export_github_feedback(
 {chr(10).join(f'- {label}' for label in issue_types) if issue_types else '没有明显问题'}
 
 ### 补充说明
-本地反馈已脱敏导出；原始问题和原始反馈未包含在此正文中。
+本地反馈已脱敏导出；原始问题、原始回答和原始反馈未包含在此正文中。
 
 ### 版本信息
 {payload.get('skill_version', 'unknown')}
@@ -821,6 +860,7 @@ def export_github_feedback(
     payload["github_export"] = {
         "exported_at": exported_at,
         "public_question": public_question.strip(),
+        "public_answer_excerpt": str(public_answer_excerpt).strip(),
         "uploaded": False,
     }
     atomic_write_json(target_dir / "queue" / f"{feedback_id}.json", payload)
@@ -833,6 +873,8 @@ def export_github_feedback(
         "privacy": {
             "raw_feedback_included": False,
             "original_question_included": False,
+            "original_answer_included": False,
+            "sanitized_answer_excerpt_included": True,
             "explicit_public_consent": True,
             "intended_query_was_explicitly_provided": bool(public_intended_query),
         },
@@ -910,6 +952,7 @@ def import_github_issue(body, source_url, queue_dir=None, source_verification=No
     question = sections.get("用户问题", "")
     if not question:
         raise ValueError("GitHub issue is missing the 用户问题 section")
+    answer_text = sections.get("Skill 回答或出错片段", "")
 
     body_hash = body_sha256(body)
     previous_imports = github_imports_for_source(target_dir, source_url)
@@ -961,6 +1004,8 @@ def import_github_issue(body, source_url, queue_dir=None, source_verification=No
     )
     if "question_misunderstood" in text_issue_types and not intended_query:
         warnings.append("missing_intended_query")
+    if not answer_text:
+        warnings.append("missing_answer_text")
     if SOURCE_ISSUE_TYPES.intersection(text_issue_types) and not source_issue_ids:
         warnings.append("missing_source_issue_video")
     actionable = any([helpful_ids, irrelevant_ids, missing_ids, text_issue_types])
@@ -995,6 +1040,7 @@ def import_github_issue(body, source_url, queue_dir=None, source_verification=No
         "skill_version": sections.get("版本信息") or "unknown",
         "channel": "unknown",
         "question": question,
+        "answer_text": answer_text,
         "user_context": [],
         "answer_mode": None,
         "knowledge_version": knowledge_version(knowledge),
@@ -1098,6 +1144,18 @@ def print_json(payload):
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
+def add_answer_text_arguments(parser):
+    answer_source = parser.add_mutually_exclusive_group(required=True)
+    answer_source.add_argument("--answer-text")
+    answer_source.add_argument("--answer-file", type=Path)
+
+
+def answer_text_from_args(args):
+    if args.answer_file:
+        return args.answer_file.read_text(encoding="utf-8")
+    return args.answer_text
+
+
 def build_parser():
     parser = argparse.ArgumentParser(
         description="Record and review feedback for the Liu Hui badminton Skill."
@@ -1108,6 +1166,7 @@ def build_parser():
         "create-answer", help="Persist a question and its stable V1...Vn video mapping."
     )
     create.add_argument("--question", required=True)
+    add_answer_text_arguments(create)
     create.add_argument("--video", action="append", default=[], help="V1=VIDEO_ID")
     create.add_argument("--core-video", action="append", default=[], help="V1")
     create.add_argument("--mode")
@@ -1119,6 +1178,7 @@ def build_parser():
         help="Persist an answer mapping and explicit feedback in one operation.",
     )
     record.add_argument("--question", required=True)
+    add_answer_text_arguments(record)
     record.add_argument("--video", action="append", default=[], help="V1=VIDEO_ID")
     record.add_argument("--core-video", action="append", default=[], help="V1")
     record.add_argument("--mode")
@@ -1176,6 +1236,7 @@ def build_parser():
     )
     export_issue.add_argument("--feedback-id", required=True)
     export_issue.add_argument("--public-question", required=True)
+    export_issue.add_argument("--public-answer-excerpt", required=True)
     export_issue.add_argument("--public-intended-query")
     export_issue.add_argument("--confirm-public", action="store_true")
     export_issue.add_argument("--output", type=Path)
@@ -1191,6 +1252,7 @@ def main():
             result = create_answer_context(
                 question=args.question,
                 video_specs=args.video,
+                answer_text=answer_text_from_args(args),
                 core_refs=args.core_video,
                 answer_mode=args.mode,
                 user_context=args.user_context,
@@ -1201,6 +1263,7 @@ def main():
                 question=args.question,
                 video_specs=args.video,
                 feedback_text=args.feedback,
+                answer_text=answer_text_from_args(args),
                 core_refs=args.core_video,
                 answer_mode=args.mode,
                 user_context=args.user_context,
@@ -1230,6 +1293,7 @@ def main():
             result = export_github_feedback(
                 feedback_id=args.feedback_id,
                 public_question=args.public_question,
+                public_answer_excerpt=args.public_answer_excerpt,
                 public_intended_query=args.public_intended_query,
                 confirm_public=args.confirm_public,
                 queue_dir=args.queue_dir,

@@ -64,7 +64,9 @@ class TopicNavigationTests(unittest.TestCase):
                 },
             ],
         }
-        index = self.builder.build_index(data)
+        taxonomy = self.builder.load_taxonomy()
+        taxonomy["reviewed_video_topic_overrides"] = {}
+        index = self.builder.build_index(data, taxonomy=taxonomy)
         reception = next(
             subtopic
             for category in index["categories"]
@@ -103,6 +105,32 @@ class TopicNavigationTests(unittest.TestCase):
         self.assertIn("30 分钟", goals)
         self.assertIn("搭档", goals)
         self.assertIn("下一拍衔接", goals)
+
+    def test_practice_context_handles_natural_solo_and_chinese_duration(self):
+        context = self.navigator.build_user_context(
+            "新手一个人每天练十五分钟杀球", self.practice_rules
+        )
+        self.assertEqual(context["level"], "beginner")
+        self.assertEqual(context["practice_setup"], "solo")
+        self.assertEqual(context["session_minutes"], 15)
+        self.assertEqual(context["sources"]["practice_setup"], "query")
+        self.assertEqual(context["sources"]["session_minutes"], "query")
+
+        partner = self.navigator.build_user_context(
+            "有一个人给我喂球，每次二十分钟", self.practice_rules
+        )
+        self.assertEqual(partner["practice_setup"], "partner")
+        self.assertEqual(partner["session_minutes"], 20)
+
+        no_partner = self.navigator.build_user_context(
+            "没有陪练，只能自己练二十分钟", self.practice_rules
+        )
+        self.assertEqual(no_partner["practice_setup"], "solo")
+
+        partner_without_coach = self.navigator.build_user_context(
+            "没有教练，但有搭档喂球", self.practice_rules
+        )
+        self.assertEqual(partner_without_coach["practice_setup"], "partner")
 
     def test_minute_allocation_is_exact_and_keeps_every_segment(self):
         for total in [5, 15, 30, 120]:
@@ -145,9 +173,54 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(index["assigned_video_count"], ready_count)
         self.assertEqual(index["unassigned_video_ids"], [])
-        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v3")
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v10")
         self.assertTrue(
             any(category["name"] == "单打战术" for category in index["categories"])
+        )
+
+    def test_reviewed_point_smash_sources_are_in_the_smash_topic(self):
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        smash = next(
+            subtopic
+            for category in index["categories"]
+            if category["name"] == "后场技术"
+            for subtopic in category["subtopics"]
+            if subtopic["name"] == "杀球与突击"
+        )
+        self.assertTrue(
+            {
+                "7272944156618542336",
+                "7125615679402724623",
+            }.issubset(smash["video_ids"])
+        )
+
+    def test_reviewed_jump_smash_sources_are_in_the_smash_topic(self):
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        smash = next(
+            subtopic
+            for category in index["categories"]
+            if category["name"] == "后场技术"
+            for subtopic in category["subtopics"]
+            if subtopic["name"] == "杀球与突击"
+        )
+        self.assertTrue(
+            {
+                "7161980324409363712",
+                "7055491154288102667",
+                "7138604160051612969",
+                "7634016952800880570",
+                "7606560547489149691",
+                "7561558424342056250",
+                "7506362888166083897",
+            }.issubset(smash["video_ids"])
         )
 
     def test_singles_systematic_navigation_never_returns_doubles_branch(self):

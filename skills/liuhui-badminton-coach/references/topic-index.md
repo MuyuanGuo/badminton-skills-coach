@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `407`
-- Assigned videos: `352`
-- Multi-topic videos: `136`
+- Videos: `408`
+- Assigned videos: `353`
+- Multi-topic videos: `148`
 
 ## How To Use
 
@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `87`
+- Matched videos: `102`
 
 - **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
@@ -28,13 +28,13 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 反手被动高远 虽然被动，但是放松发力更重要，别说示范的球不到位，也打出界一米了，主要是在底线摄像机放不下了 [ready] https://www.douyin.com/video/7546109410041908538
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手高远球 提供一个训练方法，方法不唯一 [ready] https://www.douyin.com/video/7541623926234811705
-- **杀球、突击与压球**: `26` videos, `26` ready, `0` needs visual review.
-  Keywords: 杀球, 重杀, 点杀, 突击, 压球, 扣杀
+- **杀球与突击**: `39` videos, `39` ready, `0` needs visual review.
+  Keywords: 杀球, 重杀, 点杀, 突击, 扣杀
   Representative videos:
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
   - 不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来 [ready] https://www.douyin.com/video/7567155406117533051
   - 重杀框架 可以和期一起看，不同的框架可以决定不同的杀球 [ready] https://www.douyin.com/video/7659991105622862457
-- **架拍与后场框架**: `39` videos, `39` ready, `0` needs visual review.
+- **架拍与后场框架**: `41` videos, `41` ready, `0` needs visual review.
   Keywords: 架拍, 顶肘, 引拍, 抬拍, 举拍, 框架
   Representative videos:
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
@@ -46,8 +46,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 软压还包括点杀，远网吊球等等 [ready] https://www.douyin.com/video/7093706918492917033
   - 吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反 [ready] https://www.douyin.com/video/7115241358255803683
   - 这样削球是最稳定的劈吊 [ready] https://www.douyin.com/video/7306709804234444072
-- **反手后场**: `11` videos, `11` ready, `0` needs visual review.
-  Keywords: 反手高远, 反手后场, 反手过渡, 反手杀球, 反拍
+- **正反手过渡**: `4` videos, `4` ready, `0` needs visual review.
+  Keywords: 过渡球, 过度球, 过渡动作, 正手过渡, 反手过渡, 正反手过渡, 过渡击球点, 过渡基础
+  Representative videos:
+  - 正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法 [ready] https://www.douyin.com/video/7515625891511995706
+  - 过渡击球点 简单来说就是放在外侧击球 [ready] https://www.douyin.com/video/7563513758061114875
+  - 日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度 [ready] https://www.douyin.com/video/7393550140465777960
+- **反手后场**: `9` videos, `9` ready, `0` needs visual review.
+  Keywords: 反手高远, 反手后场, 反手杀球, 反拍
   Representative videos:
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果 [ready] https://www.douyin.com/video/7550305145877155131
@@ -61,9 +67,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 ### 网前技术
 
-搓、勾、推、扑、放网及网前持拍框架。
+搓、勾、推、扑、挑、放网及网前持拍框架。
 
-- Matched videos: `49`
+- Matched videos: `52`
 
 - **搓球与滚网**: `10` videos, `10` ready, `0` needs visual review.
   Keywords: 搓球, 滚网, 平搓
@@ -89,6 +95,12 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 挡网 我最近发的东西都是大家认为简单，但是一点不简单的东西 [ready] https://www.douyin.com/video/7524557392328461627
   - 用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂 [ready] https://www.douyin.com/video/7071800926553541922
   - 也不要问为什么不放网，对方远网球这个不可能去钓鱼失误率太高，也不能挡远网，惯性大没办法抓推 [ready] https://www.douyin.com/video/7092959332047785250
+- **挑球与挑后场**: `4` videos, `4` ready, `0` needs visual review.
+  Keywords: 挑球, 挑后场, 挑底线, 弹挑
+  Representative videos:
+  - 正手挑球 他的变化在于手的放松，和整个人的状态，包括击球的声音，挑球想进步也是很难的，都是黄金技术 [ready] https://www.douyin.com/video/7518239001813339449
+  - 反手挑球 嗓子哑了，轻声细语发不出声，只能使点劲儿说话 [ready] https://www.douyin.com/video/7523163965838003514
+  - 对面挡网直接挑球就行了，对面如果站直线可以直接变线 [ready] https://www.douyin.com/video/7226178331408928038
 - **网前框架与步法**: `8` videos, `8` ready, `0` needs visual review.
   Keywords: 网前框架, 网前步法, 上网, 持拍
   Representative videos:
@@ -176,14 +188,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `130`
+- Matched videos: `128`
 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
   Representative videos:
+  - 一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特点，注意从引拍到击球为旋转发力，击球到动作结束为旋转卸力 [ready] https://www.douyin.com/video/7067722128413543680
   - 腰腹的使用是小而快的爆发力，不要转的太狠太大 [ready] https://www.douyin.com/video/7084422988291935523
   - 放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 [ready] https://www.douyin.com/video/7552759261840952636
-  - 一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特点，注意从引拍到击球为旋转发力，击球到动作结束为旋转卸力 [ready] https://www.douyin.com/video/7067722128413543680
 - **腰腹、核心与转体**: `20` videos, `20` ready, `0` needs visual review.
   Keywords: 腰腹, 核心, 转体, 转髋, 身体旋转
   Representative videos:
@@ -196,7 +208,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋 [ready] https://www.douyin.com/video/7052600326116887812
   - 发力细节 每个人的情况不一样，我告诉抡大臂的人要用小臂，告诉内旋挥不正的人压手腕，不过他 但凡能做对一点，就总让我想起一位故人 [ready] https://www.douyin.com/video/7570301879545426171
   - 双打防守进阶 外旋是大臂带动小臂的必然动作，用手指发力也可以，但是非常考验力量 [ready] https://www.douyin.com/video/7414339897990843663
-- **击球空间与发力点**: `27` videos, `27` ready, `0` needs visual review.
+- **击球空间与发力点**: `26` videos, `26` ready, `0` needs visual review.
   Keywords: 贴球, 发力空间, 击球点, 高点
   Representative videos:
   - 注意击球点要在起跳的高点击，而不是向上的过程中，45度起跳是更容易的起跳杀球，视频中的侧身跳杀对身体要求更多，腿有伤，大家忽略高度😂 [ready] https://www.douyin.com/video/7055491154288102667
@@ -208,12 +220,12 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 不用管身高，网带能卡住大臂就行在哪卡都可以，用网带辅助不依赖大臂挥下去 [ready] https://www.douyin.com/video/7322291358931127592
   - 基础挥拍重快 由于要控制时长我剪辑的很精简，基础挥拍如何打的重，如何打的快，建议多看两边，详细的我们直播间来说 [ready] https://www.douyin.com/video/7383154379915906319
   - 日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度 [ready] https://www.douyin.com/video/7393550140465777960
-- **发力综合待细分**: `10` videos, `10` ready, `0` needs visual review.
+- **发力综合待细分**: `9` videos, `9` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 双打一般情况下的防守上集，手指破了，挥速慢，望谅解 [ready] https://www.douyin.com/video/7054025391601650948
-  - 反手跳sha 这是给已经会反手发力的朋友学习的，不会的也可以先收藏 [ready] https://www.douyin.com/video/7499776424493075772
   - 发力其他细节 有些动作大家做不出来，还是不够夸张，夸张才能学的会，因为自己做动作是会打折扣的 [ready] https://www.douyin.com/video/7631290187235164026
+  - 各位不要钻牛角尖里，哪条腿都可以作为发力的源头，只要实际情况允许 [ready] https://www.douyin.com/video/7184618028619910433
 
 ### 握拍与拍面
 
@@ -252,7 +264,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 单双打发球、接发、变化和发接发目的性。
 
-- Matched videos: `20`
+- Matched videos: `21`
 
 - **发小球**: `5` videos, `5` ready, `0` needs visual review.
   Keywords: 发小球, 反手发球, 正手发球
@@ -260,7 +272,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 正手发小球的教学，以前的作品里有，没有好的发球，只有合适的发球 [ready] https://www.douyin.com/video/7254755365995285812
   - 发小球进阶 大家总是关注球飞的贴不贴，贴当然重要，但是力量控制到过网能落也很重要 [ready] https://www.douyin.com/video/7589590613499595185
   - 保姆级反手发球教学 首先就是这三位都是年训学员，天天在一起关系比较好，所以说话自由一点，大家不要喷我！再一个就是时长比较长，啰嗦，但是每次教学大家都说是演员，所以我发一个相对完整的给大家看看，平时都是发精剪的，但是这种长的你们不喜欢看！ [ready] https://www.douyin.com/video/7626127268884067249
-- **发后场与发球变化**: `11` videos, `11` ready, `0` needs visual review.
+- **发后场与发球变化**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 发高远, 发后场, 偷后场, 发球变化, 隐蔽
   Representative videos:
   - 发球变化 发球隐蔽是非常重要的 [ready] https://www.douyin.com/video/7483346020332522812
@@ -376,7 +388,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 训练设计、动作纠错、实战复盘、恢复与体能。
 
-- Matched videos: `59`
+- Matched videos: `57`
 
 - **专项训练方法**: `2` videos, `2` ready, `0` needs visual review.
   Keywords: 多球训练, 训练方法, 练习方法, 分解练习, 专项训练
@@ -397,7 +409,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   Representative videos:
   - 如何快速恢复对抗能力 觉得训练的时候实在不行了，就可以直接最后一个项目了 [ready] https://www.douyin.com/video/7432633273060314408
   - 职业运动员上网因为身体能力强，大部分采用跨步，但是依然每局还是能见到垫步的出现 [ready] https://www.douyin.com/video/7099644893269839144
-- **教学与训练综合待细分**: `52` videos, `52` ready, `0` needs visual review.
+- **教学与训练综合待细分**: `50` videos, `50` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走 [ready] https://www.douyin.com/video/7061422431386324264

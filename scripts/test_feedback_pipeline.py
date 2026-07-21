@@ -25,6 +25,8 @@ def load_feedback_module():
 
 
 class FeedbackPipelineTests(unittest.TestCase):
+    ANSWER_TEXT = "直接回答：双打补位要根据队友位置和来球线路判断。"
+
     @classmethod
     def setUpClass(cls):
         cls.feedback = load_feedback_module()
@@ -40,6 +42,7 @@ class FeedbackPipelineTests(unittest.TestCase):
         self.answer = self.feedback.create_answer_context(
             question="双打轮转时应该什么时候补位？",
             video_specs=self.video_specs,
+            answer_text=self.ANSWER_TEXT,
             core_refs=["V1"],
             answer_mode="text_primary",
             user_context=["双打", "业余中级"],
@@ -60,6 +63,7 @@ class FeedbackPipelineTests(unittest.TestCase):
             self.feedback.load_resources()[1]["skill_version"],
         )
         self.assertEqual(self.answer["turn_id"], self.answer["answer_id"])
+        self.assertEqual(self.answer["answer_text"], self.ANSWER_TEXT)
         self.assertEqual(len(self.answer["context_sha256"]), 64)
         self.assertEqual(
             set(self.feedback.extract_video_refs(self.answer["feedback_hint"])),
@@ -71,9 +75,17 @@ class FeedbackPipelineTests(unittest.TestCase):
         self.assertTrue(saved_path.exists())
 
     def test_answer_context_rejects_gaps_and_duplicate_video_ids(self):
+        with self.assertRaisesRegex(ValueError, "exact Skill answer text"):
+            self.feedback.create_answer_context(
+                question="测试",
+                video_specs=[],
+                answer_text="",
+                queue_dir=self.queue_dir,
+            )
         with self.assertRaisesRegex(ValueError, "contiguous"):
             self.feedback.create_answer_context(
                 question="测试",
+                answer_text="测试回答",
                 video_specs=[
                     "V1=7661940775983482097",
                     "V3=7659991105622862457",
@@ -83,6 +95,7 @@ class FeedbackPipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "multiple references"):
             self.feedback.create_answer_context(
                 question="测试",
+                answer_text="测试回答",
                 video_specs=[
                     "V1=7661940775983482097",
                     "V2=7661940775983482097",
@@ -147,6 +160,7 @@ class FeedbackPipelineTests(unittest.TestCase):
         later_answer = self.feedback.create_answer_context(
             question="另一轮问题",
             video_specs=["V1=7659991105622862457"],
+            answer_text="另一轮回答",
             queue_dir=self.queue_dir,
         )
         queued = self.feedback.submit_feedback(
@@ -167,7 +181,7 @@ class FeedbackPipelineTests(unittest.TestCase):
             self.queue_dir / "answers" / f"{self.answer['answer_id']}.json"
         )
         stored = json.loads(answer_path.read_text(encoding="utf-8"))
-        stored["videos"][0]["video_id"] = "7659991105622862457"
+        stored["answer_text"] = "被篡改的回答"
         answer_path.write_text(
             json.dumps(stored, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -207,6 +221,7 @@ class FeedbackPipelineTests(unittest.TestCase):
             question="网前框架为什么容易僵硬？",
             video_specs=["V1=7661940775983482097"],
             feedback_text="V1 最有价值，已经解决了我的问题。",
+            answer_text="网前框架回答正文。",
             core_refs=["V1"],
             answer_mode="balanced",
             queue_dir=isolated_queue,
@@ -222,6 +237,9 @@ class FeedbackPipelineTests(unittest.TestCase):
 
 ### 回答编号
 A-public-example
+
+### Skill 回答或出错片段
+回答遗漏了队友被动回球后的补位边界。
 
 ### 最有价值的视频
 https://www.douyin.com/video/7614167503938610417
@@ -256,9 +274,47 @@ https://www.douyin.com/video/7614167503938610417
             imported["signals"]["text_issue_types"], ["missing_content"]
         )
 
+    def test_github_issue_without_answer_text_requires_clarification(self):
+        body = """### 用户问题
+双打轮转时什么时候补位？
+
+### 最有价值的视频
+无
+
+### 明确不相关的视频
+无
+
+### 遗漏的视频
+无
+
+### 文字回答问题
+存在错误结论
+
+### 补充说明
+第二点结论不对。
+"""
+        imported = self.feedback.import_github_issue(
+            body=body,
+            source_url="https://github.com/example/repo/issues/99",
+            queue_dir=self.queue_dir,
+        )
+        self.assertEqual(imported["status"], "needs_clarification")
+        self.assertIn("missing_answer_text", imported["parser_warnings"])
+        with self.assertRaisesRegex(ValueError, "cannot be accepted"):
+            self.feedback.review_feedback(
+                feedback_id=imported["feedback_id"],
+                decision="accepted",
+                note="不应跳过缺失回答文本",
+                reviewer="test-maintainer",
+                queue_dir=self.queue_dir,
+            )
+
     def test_github_api_fetch_verifies_canonical_issue_before_import(self):
         body = """### 用户问题
 双打轮转时什么时候补位？
+
+### Skill 回答或出错片段
+回答正文中的轮转条件说明。
 
 ### 最有价值的视频
 7614167503938610417
@@ -352,6 +408,9 @@ https://www.douyin.com/video/7614167503938610417
         original_body = """### 用户问题
 杀球不重怎么办？
 
+### Skill 回答或出错片段
+回答中关于杀球力量的第二点。
+
 ### 最有价值的视频
 7659991105622862457
 
@@ -421,6 +480,7 @@ https://www.douyin.com/video/7614167503938610417
             question="我的私人问题：昨天在单位球馆被同事针对反手位怎么办？",
             video_specs=["V1=7614167503938610417", "V2=7659991105622862457"],
             feedback_text="这是私人反馈：V1 最有价值；V2 不相关；文字太笼统。",
+            answer_text="私人回答正文：包含不应公开的球馆场景。",
             core_refs=["V1"],
             answer_mode="balanced",
             queue_dir=self.queue_dir,
@@ -429,6 +489,7 @@ https://www.douyin.com/video/7614167503938610417
             self.feedback.export_github_feedback(
                 feedback_id=queued["feedback_id"],
                 public_question="双打中如何保护反手位？",
+                public_answer_excerpt="回答中的反手位保护建议。",
                 confirm_public=True,
                 queue_dir=self.queue_dir,
             )
@@ -444,16 +505,19 @@ https://www.douyin.com/video/7614167503938610417
             self.feedback.export_github_feedback(
                 feedback_id=reviewed["feedback_id"],
                 public_question="双打中如何保护反手位？",
+                public_answer_excerpt="回答中的反手位保护建议。",
                 queue_dir=self.queue_dir,
             )
 
     def test_export_github_is_sanitized_and_round_trips_through_import(self):
         private_question = "我的私人问题：昨天在单位球馆被同事针对反手位怎么办？"
         private_feedback = "这是私人反馈：V1 最有价值；V2 不相关；文字太笼统。"
+        private_answer = "私人回答正文：复述了单位球馆和同事信息。"
         queued = self.feedback.record_feedback(
             question=private_question,
             video_specs=["V1=7614167503938610417", "V2=7659991105622862457"],
             feedback_text=private_feedback,
+            answer_text=private_answer,
             core_refs=["V1"],
             answer_mode="balanced",
             queue_dir=self.queue_dir,
@@ -466,9 +530,11 @@ https://www.douyin.com/video/7614167503938610417
             queue_dir=self.queue_dir,
         )
         public_question = "双打中如何保护反手位？"
+        public_answer_excerpt = "回答第二点把搭档反手训练误当成我的补位问题。"
         exported = self.feedback.export_github_feedback(
             feedback_id=reviewed["feedback_id"],
             public_question=public_question,
+            public_answer_excerpt=public_answer_excerpt,
             confirm_public=True,
             queue_dir=self.queue_dir,
         )
@@ -476,9 +542,15 @@ https://www.douyin.com/video/7614167503938610417
         self.assertFalse(exported["uploaded"])
         self.assertEqual(exported["privacy"]["raw_feedback_included"], False)
         self.assertEqual(exported["privacy"]["original_question_included"], False)
+        self.assertEqual(exported["privacy"]["original_answer_included"], False)
+        self.assertTrue(
+            exported["privacy"]["sanitized_answer_excerpt_included"]
+        )
         self.assertIn(public_question, exported["issue_body"])
+        self.assertIn(public_answer_excerpt, exported["issue_body"])
         self.assertNotIn(private_question, exported["issue_body"])
         self.assertNotIn(private_feedback, exported["issue_body"])
+        self.assertNotIn(private_answer, exported["issue_body"])
         self.assertIn("7614167503938610417", exported["issue_body"])
         self.assertIn("7659991105622862457", exported["issue_body"])
 
@@ -494,6 +566,7 @@ https://www.douyin.com/video/7614167503938610417
         )
         self.assertEqual(imported["status"], "pending_review")
         self.assertEqual(imported["question"], public_question)
+        self.assertEqual(imported["answer_text"], public_answer_excerpt)
         self.assertEqual(
             imported["signals"]["helpful_video_ids"], ["7614167503938610417"]
         )

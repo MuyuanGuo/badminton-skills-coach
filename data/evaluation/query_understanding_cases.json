@@ -230,11 +230,11 @@
     {
       "case_id": "AQ026",
       "query": "我只描述杀球总下网，不给动作视频，能不能确定唯一原因",
-      "intent_summary": "先按杀球下网症状检索，同时说明无动作视频不能确定唯一原因",
+      "intent_summary": "先说明无动作视频不能确定唯一原因，再按杀球下网症状保留证据边界",
       "expected_answer_mode": "balanced",
-      "expected_strategy": "literal_symptom_first",
+      "expected_strategy": "boundary_first",
       "expected_query_units": ["我只描述杀球总下网，不给动作视频，能不能确定唯一原因"],
-      "expected_must_state_boundary_first": false
+      "expected_must_state_boundary_first": true
     },
     {
       "case_id": "AQ027",
@@ -271,6 +271,249 @@
       "expected_strategy": "boundary_first",
       "expected_query_units": ["只看文字说明，能不能确认我的正手握拍完全正确"],
       "expected_must_state_boundary_first": true
+    },
+    {
+      "case_id": "AQ031",
+      "query": "双打封网怎么压球",
+      "intent_summary": "解释双打中前场封网的下压处理，不把压球默认解释成后场杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打封网怎么压球"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ032",
+      "query": "双打网前怎么下压",
+      "intent_summary": "把网前视为下压动作的明确场区，拒绝没有前场范围的通用压抽和后场杀球来源",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["双打网前怎么下压"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ033",
+      "query": "反手挑球怎么打",
+      "intent_summary": "把反手挑球识别为独立的下手挑高动作，不退化为泛反手技术",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手挑球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ034",
+      "query": "反手过渡球怎么打",
+      "intent_summary": "把反手过渡球识别为独立动作，不退化为泛反手或反手高远",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手过渡球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ035",
+      "query": "反手挡杀怎么打",
+      "intent_summary": "把反手挡杀识别为独立接杀动作，不退化为泛反手、防守或反手杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手挡杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ036",
+      "query": "反手滑板怎么打",
+      "intent_summary": "把反手滑板识别为吊球下的具体切削变体，不退化为泛反手或普通吊球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手滑板怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ037",
+      "query": "劈吊怎么打",
+      "intent_summary": "把劈吊识别为吊球下的顺向切削变体，不退化为普通吊球或反向切削的滑板",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["劈吊怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ038",
+      "query": "点杀怎么打",
+      "intent_summary": "把点杀识别为杀球下的手指主导细分技术，不退化为普通杀球、重杀或跳杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["点杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ039",
+      "query": "跳杀怎么打",
+      "intent_summary": "把跳杀识别为杀球下的正手起跳细分技术，不退化为普通杀球、重杀、点杀或普通起跳",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["跳杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ040",
+      "query": "重杀怎么打",
+      "intent_summary": "把重杀识别为杀球下的力量型细分技术，不退化为普通杀球、点杀、跳杀或霸王杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["重杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ041",
+      "query": "霸王杀怎么打",
+      "intent_summary": "把霸王杀识别为 A 字架拍、半程挥拍与旋转卸力组成的独立杀球细分技术",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["霸王杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ042",
+      "query": "普通杀球怎么打",
+      "intent_summary": "把普通杀球识别为基础杀球变体，不退化为泛杀球，也不混入重杀、点杀、跳杀、劈杀或反手杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["普通杀球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ043",
+      "query": "劈杀怎么打",
+      "intent_summary": "把劈杀识别为杀球下的顺向切削变体，不退化为泛杀球，也不让劈吊来源证明劈杀细节",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["劈杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ044",
+      "query": "快杀怎么打",
+      "intent_summary": "把快杀识别为强调小框架和出手速度的独立杀球变体，不退化为重杀或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["快杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ045",
+      "query": "遁地炮怎么打",
+      "intent_summary": "把遁地炮识别为不起跳重杀下的长杀细分；规范输出只使用遁地炮，不退化为跳杀或泛重杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["遁地炮怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ046",
+      "query": "定杀怎么打",
+      "intent_summary": "把定杀识别为独立杀球变体，同时保留当前证据只能支持比较、不能支持完整动作的边界",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["定杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ047",
+      "query": "轻杀怎么打",
+      "intent_summary": "把轻杀识别为减速保压并连接下一拍的战术型杀球变体，不退化为点杀或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "evidence_check",
+      "expected_query_units": ["轻杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ048",
+      "query": "反手杀球怎么打",
+      "intent_summary": "把普通反手杀球识别为独立变体，同时保留反手侧与杀球家族，不能混入转圈杀、反手跳杀或正手杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手杀球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ049",
+      "query": "反手转圈杀怎么打",
+      "intent_summary": "把反手转圈杀识别为来球已过身后的特殊反手杀球变体，不退化为普通反手杀球或反手跳杀",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["反手转圈杀怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ050",
+      "query": "平高球怎么打",
+      "intent_summary": "把平高球识别为独立命名球种，只允许有限发力和示范证据，不退化为高远球或处理对手平高球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["平高球怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ051",
+      "query": "假挑真放怎么做",
+      "intent_summary": "把假挑真放识别为挑球与放网组合的命名变体，并排除只展示后承诺再教学的预告来源",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["假挑真放怎么做"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ052",
+      "query": "动态低架怎么做",
+      "intent_summary": "把动态低架识别为后场准备框架的独立变体，不混入升框架、快速框架或泛动态发力",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["动态低架怎么做"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ053",
+      "query": "远网怎么打",
+      "intent_summary": "把远网识别为包含多种手法和战术场景的歧义统称，必须分支回答而不是静默收窄",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["远网怎么打"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ054",
+      "query": "杀上网怎么练",
+      "intent_summary": "把杀上网识别为杀球后的特定向前衔接并保留练习请求，不退化为泛上网步法或泛杀球",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "focused_evidence",
+      "expected_query_units": ["杀上网怎么练"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ055",
+      "query": "来不及接网前小球或者网前吊球怎么办",
+      "intent_summary": "把前场来球接不到的症状映射为向前启动和上网步法，并把吊球或小球保留为来球条件",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["来不及接网前小球或者网前吊球怎么办"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ056",
+      "query": "杀球后来不及上网",
+      "intent_summary": "把杀球到上网识别为同一杀上网动作序列，同时保留来不及这个诊断症状",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["杀球后来不及上网"],
+      "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ057",
+      "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "intent_summary": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["杀球后被对手挡网，我总是来不及上去怎么办"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -285,7 +528,8 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": [],
         "requested_output": "practice"
-      }
+      },
+      "expected_constraints": {"shot_family": ["drop"]}
     },
     {
       "case_id": "QUA002",
@@ -298,7 +542,8 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": ["双打"],
         "requested_output": "coaching_answer"
-      }
+      },
+      "expected_constraints": {"discipline": ["doubles"]}
     },
     {
       "case_id": "QUA003",
@@ -311,6 +556,10 @@
         "literal_symptoms_contains": ["下网"],
         "scenarios_contains": [],
         "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
       }
     },
     {
@@ -324,7 +573,1682 @@
         "literal_symptoms_contains": [],
         "scenarios_contains": ["单打", "被动", "后场"],
         "requested_output": "comparison"
+      },
+      "expected_constraints": {
+        "court_zone": ["rearcourt"],
+        "discipline": ["singles"],
+        "pressure_state": ["passive"],
+        "shot_direction": ["crosscourt", "straight"]
       }
+    },
+    {
+      "case_id": "QUA005",
+      "query": "不要讲正手，只讲反手被动高远",
+      "intent_summary": "排除正手后只保留反手被动高远条件",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "被动", "高远"],
+        "positive_query_excludes": ["正手"],
+        "excluded_terms_contains": ["正手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手", "被动"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "pressure_state": ["passive"],
+        "shot_family": ["clear"],
+        "stroke_side": ["backhand"]
+      }
+    },
+    {
+      "case_id": "QUA006",
+      "query": "单打防守站位，不要讲双打",
+      "intent_summary": "保留单打防守站位并排除双打",
+      "expected_intent": {
+        "positive_query_contains": ["单打", "防守", "站位"],
+        "positive_query_excludes": ["双打"],
+        "excluded_terms_contains": ["双打"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["单打", "防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "discipline": ["singles"],
+        "tactical_phase": ["defense"]
+      }
+    },
+    {
+      "case_id": "QUA007",
+      "query": "只讲接发，不讲发球",
+      "intent_summary": "只保留接发角色并排除发球角色",
+      "expected_intent": {
+        "positive_query_contains": ["接发"],
+        "positive_query_excludes": ["发球"],
+        "excluded_terms_contains": ["发球"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["接发"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]}
+    },
+    {
+      "case_id": "QUA008",
+      "query": "发小球，不要偷后场",
+      "intent_summary": "保留短发球并排除偷后场变化",
+      "expected_intent": {
+        "positive_query_contains": ["发小球"],
+        "positive_query_excludes": ["偷后场"],
+        "excluded_terms_contains": ["后场"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "serve_role": ["serve"],
+        "serve_trajectory": ["short_serve"],
+        "shot_family": ["short_serve"]
+      }
+    },
+    {
+      "case_id": "QUA009",
+      "query": "被动处理，不是主动球",
+      "intent_summary": "保留被动处理并排除主动球",
+      "expected_intent": {
+        "positive_query_contains": ["被动"],
+        "positive_query_excludes": ["主动"],
+        "excluded_terms_contains": ["主动"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["被动"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"pressure_state": ["passive"]}
+    },
+    {
+      "case_id": "QUA010",
+      "query": "防守站位，不讲进攻",
+      "intent_summary": "保留防守站位并排除进攻",
+      "expected_intent": {
+        "positive_query_contains": ["防守", "站位"],
+        "positive_query_excludes": ["进攻"],
+        "excluded_terms_contains": ["进攻"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]}
+    },
+    {
+      "case_id": "QUA011",
+      "query": "只打直线，不打斜线",
+      "intent_summary": "保留直线并排除斜线，不能扩散排除整个线路概念组",
+      "expected_intent": {
+        "positive_query_contains": ["直线"],
+        "positive_query_excludes": ["斜线"],
+        "excluded_terms_contains": ["斜线"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["直线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_direction": ["straight"]}
+    },
+    {
+      "case_id": "QUA012",
+      "query": "是不是刘辉本人认可",
+      "intent_summary": "疑问词是不是不能被误判为否定标记",
+      "expected_intent": {
+        "positive_query_contains": ["是不是", "本人认可"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {}
+    },
+    {
+      "case_id": "QUA013",
+      "query": "到底打不打斜线",
+      "intent_summary": "正反问句打不打不能被误判为排除斜线",
+      "expected_intent": {
+        "positive_query_contains": ["打不打", "斜线"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["斜线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_direction": ["crosscourt"]}
+    },
+    {
+      "case_id": "QUA014",
+      "query": "后场吊网前怎么练",
+      "intent_summary": "把后场识别为击球位置，把网前识别为吊球目标，不把目标落点误作站位条件",
+      "expected_intent": {
+        "positive_query_contains": ["后场", "吊网前"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场", "网前"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "court_zone": ["rearcourt"]
+      }
+    },
+    {
+      "case_id": "QUA015",
+      "query": "吊球怎么打到网前",
+      "intent_summary": "识别吊球技术，但网前是球的目标落点而不是运动员所在场区",
+      "expected_intent": {
+        "positive_query_contains": ["吊球", "网前"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"shot_family": ["drop"]}
+    },
+    {
+      "case_id": "QUA016",
+      "query": "网前勾对角怎么控制",
+      "intent_summary": "把勾对角识别为网前勾球，不得扩展成搓球、放网或其他网前技术",
+      "expected_intent": {
+        "positive_query_contains": ["网前", "勾对角"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "court_zone": ["forecourt"],
+        "technique_variant": ["net_hook"],
+        "shot_direction": ["crosscourt"]
+      }
+    },
+    {
+      "case_id": "QUA017",
+      "query": "双打接发推后场怎么打",
+      "intent_summary": "把推后场识别为接发推球目标，不把后场误作运动员所在区域",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "接发", "推后场"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打", "接发", "后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "court_zone": ["forecourt"],
+        "technique_variant": ["net_push"],
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      }
+    },
+    {
+      "case_id": "QUA018",
+      "query": "双打新手一个人练接发，每次20分钟怎么安排",
+      "intent_summary": "把带训练条件和时长的安排请求识别为训练计划，而不是普通技术解释",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "新手", "一个人练", "接发", "20分钟", "怎么安排"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打", "接发"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      }
+    },
+    {
+      "case_id": "QUA019",
+      "query": "双打站位怎么安排",
+      "intent_summary": "把战术站位安排保留为普通教练回答，不因安排二字误判为训练计划",
+      "expected_intent": {
+        "positive_query_contains": ["双打", "站位", "怎么安排"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]}
+    },
+    {
+      "case_id": "QUA020",
+      "query": "对手反手弱，应该怎么针对",
+      "intent_summary": "把反手保留为对手弱点条件，不误作用户要执行的反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "反手", "怎么针对"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"stroke_side": ["backhand"]}
+    },
+    {
+      "case_id": "QUA021",
+      "query": "对手发高远球，我怎么接",
+      "intent_summary": "把高远发球识别为对手来球，并把用户角色推导为接发而不是发球",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      }
+    },
+    {
+      "case_id": "QUA022",
+      "query": "对方正手杀球很重，我怎么防守",
+      "intent_summary": "把正手杀球保留为对手进攻条件，只把防守作为用户动作约束",
+      "expected_intent": {
+        "positive_query_contains": ["对方", "正手", "杀球", "我怎么防守"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["正手", "防守"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]},
+      "expected_opponent_constraints": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      }
+    },
+    {
+      "case_id": "QUA023",
+      "query": "对手吊直线，我怎么防",
+      "intent_summary": "识别省略球字的吊球线路，把吊直线保留为对手来球，并把怎么防推导为用户防守",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "吊直线", "我怎么防"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["直线"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"tactical_phase": ["defense"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["drop"],
+        "shot_direction": ["straight"]
+      }
+    },
+    {
+      "case_id": "QUA024",
+      "query": "他的反手弱，怎么针对",
+      "intent_summary": "把他的识别为对手代词，不误作用户要执行的反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["他的", "反手", "怎么针对"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"stroke_side": ["backhand"]}
+    },
+    {
+      "case_id": "QUA025",
+      "query": "他总发高远球，我怎么接",
+      "intent_summary": "把他识别为发球方，并把用户角色推导为接发而不是发球",
+      "expected_intent": {
+        "positive_query_contains": ["他总发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      }
+    },
+    {
+      "case_id": "QUA026",
+      "query": "其他反手问题怎么处理",
+      "intent_summary": "其他一词中的他不是对手代词，反手仍应保留为用户动作条件",
+      "expected_intent": {
+        "positive_query_contains": ["其他", "反手", "怎么处理"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_opponent_constraints": {}
+    },
+    {
+      "case_id": "QUA027",
+      "query": "搭档反手弱，我应该怎么补位",
+      "intent_summary": "把搭档反手保留为队友条件，只把补位建议指向用户",
+      "expected_intent": {
+        "positive_query_contains": ["搭档", "反手", "我应该怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA028",
+      "query": "队友发球总被扑，我怎么站位",
+      "intent_summary": "把发球识别为队友动作，不误作用户自己发球",
+      "expected_intent": {
+        "positive_query_contains": ["队友", "发球", "我怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"serve_role": ["serve"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA029",
+      "query": "对手总压我队友反手，我们怎么轮转保护",
+      "intent_summary": "同时保留对手、队友和团队响应三个主体，不把队友反手变成用户技术",
+      "expected_intent": {
+        "positive_query_contains": ["对手", "队友", "反手", "我们怎么轮转保护"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA030",
+      "query": "我的反手弱，搭档应该怎么补位",
+      "intent_summary": "把用户反手保留为条件，并把建议目标切换到搭档",
+      "expected_intent": {
+        "positive_query_contains": ["我的", "反手", "搭档应该怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_player_constraints": {"stroke_side": ["backhand"]},
+      "expected_partner_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA031",
+      "query": "队友反手弱，他应该怎么站位",
+      "intent_summary": "把他回指到最近明确出现的队友，并把站位协作推导为双打场景",
+      "expected_intent": {
+        "positive_query_contains": ["队友", "反手", "他应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "discipline": ["doubles"]
+      },
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA032",
+      "query": "我的搭档发球总被扑，他应该怎么调整站位",
+      "intent_summary": "把他回指到搭档，保留搭档发球条件并把调整站位限定为双打",
+      "expected_intent": {
+        "positive_query_contains": ["我的搭档", "发球", "他应该怎么调整站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "serve_role": ["serve"],
+        "discipline": ["doubles"]
+      },
+      "expected_player_constraints": {},
+      "expected_partner_constraints": {"serve_role": ["serve"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "partner"
+    },
+    {
+      "case_id": "QUA033",
+      "query": "陪练给我发高远球，我怎么接",
+      "intent_summary": "把陪练识别为来球方，把给我中的我识别为受事，并把用户动作推导为接发",
+      "expected_intent": {
+        "positive_query_contains": ["陪练", "给我发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA034",
+      "query": "发球机给我发高远球，我怎么接",
+      "intent_summary": "把发球机识别为训练来球方而不是用户本人，并只约束用户接发角色",
+      "expected_intent": {
+        "positive_query_contains": ["发球机", "给我发高远球", "我怎么接"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["receive"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["deep_serve"],
+        "serve_role": ["serve"],
+        "serve_trajectory": ["deep_serve"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA035",
+      "query": "我反手弱，应该怎么站位",
+      "intent_summary": "把反手弱保留为同一用户的条件，把站位识别为实际请求动作",
+      "expected_intent": {
+        "positive_query_contains": ["我反手弱", "应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么站位",
+      "expected_target_condition_query": "我反手弱",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"stroke_side": ["backhand"]},
+      "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA036",
+      "query": "我反手弱，应该怎么练",
+      "intent_summary": "把反手弱保留为训练对象，不因条件动作拆分而丢失反手教学范围",
+      "expected_intent": {
+        "positive_query_contains": ["我反手弱", "应该怎么练"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {"stroke_side": ["backhand"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么练",
+      "expected_target_condition_query": "我反手弱",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"stroke_side": ["backhand"]},
+      "expected_requested_action_scopes": []
+    },
+    {
+      "case_id": "QUA037",
+      "query": "我发球总被扑，应该怎么站位",
+      "intent_summary": "把发球被扑保留为条件，只把发球后的本方站位作为请求动作",
+      "expected_intent": {
+        "positive_query_contains": ["我发球总被扑", "应该怎么站位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"serve_role": ["serve"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么站位",
+      "expected_target_condition_query": "我发球总被扑",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"serve_role": ["serve"]},
+      "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA038",
+      "query": "我发球总被扑，应该怎么改",
+      "intent_summary": "把泛化的怎么改回接到此前的发球问题，不错误要求站位证据",
+      "expected_intent": {
+        "positive_query_contains": ["我发球总被扑", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {"serve_role": ["serve"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我发球总被扑",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"serve_role": ["serve"]},
+      "expected_requested_action_scopes": []
+    },
+    {
+      "case_id": "QUA039",
+      "query": "我双打轮转总慢，应该怎么改",
+      "intent_summary": "把省略的怎么改回指到前句双打轮转动作，不召回同项目但不同动作的视频",
+      "expected_intent": {
+        "positive_query_contains": ["我双打轮转总慢", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["双打"],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我双打轮转总慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"discipline": ["doubles"]},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA040",
+      "query": "我站位总偏，应该怎么改",
+      "intent_summary": "把省略的怎么改回指到前句本方站位，只允许直接支持本方站位的来源",
+      "expected_intent": {
+        "positive_query_contains": ["我站位总偏", "应该怎么改"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "应该怎么改",
+      "expected_target_condition_query": "我站位总偏",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["positioning"]
+    },
+    {
+      "case_id": "QUA041",
+      "query": "反手挑球怎么打",
+      "intent_summary": "同时保留反手侧与挑球动作类型，不能只解析为泛反手",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "挑球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["lift"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA042",
+      "query": "反手过渡球怎么打",
+      "intent_summary": "同时保留反手侧与过渡球动作类型，不能只解析为泛反手",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "过渡球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["transition"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA043",
+      "query": "反手挡杀怎么打",
+      "intent_summary": "同时保留反手侧与挡杀动作类型，不能只解析为泛反手或防守",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "挡杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["smash_block"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA044",
+      "query": "反手滑板怎么打",
+      "intent_summary": "同时保留反手侧、吊球动作和滑板细分技术，不能只解析为泛反手",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "滑板"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["drop"],
+        "technique_variant": ["drop_reverse_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA045",
+      "query": "劈吊怎么打",
+      "intent_summary": "同时保留吊球动作与劈吊细分技术，不能只解析为泛吊球或滑板",
+      "expected_intent": {
+        "positive_query_contains": ["劈吊"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "technique_variant": ["drop_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA046",
+      "query": "普通吊球怎么打",
+      "intent_summary": "把普通吊球识别为基础吊球变体，不能用劈吊或滑板专项替代",
+      "expected_intent": {
+        "positive_query_contains": ["普通吊球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "technique_variant": ["drop_basic"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA047",
+      "query": "点杀怎么打",
+      "intent_summary": "同时保留杀球家族与点杀细分技术，不能只解析为泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["点杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_point"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA048",
+      "query": "正手跳杀怎么打",
+      "intent_summary": "同时保留正手、杀球家族和跳杀细分技术，不能退化为泛正手或泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["正手", "跳杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["正手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_jump"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA049",
+      "query": "重杀怎么打",
+      "intent_summary": "同时保留杀球家族与重杀细分技术，不能只解析为泛杀球或与点杀、跳杀互换",
+      "expected_intent": {
+        "positive_query_contains": ["重杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_heavy"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA050",
+      "query": "A字霸王杀怎么打",
+      "intent_summary": "同时保留杀球家族与 A 字霸王杀细分技术，不能退化为泛杀球或普通 A 字架拍",
+      "expected_intent": {
+        "positive_query_contains": ["A字霸王杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_overlord"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA051",
+      "query": "普通杀球怎么打",
+      "intent_summary": "同时保留杀球家族与普通杀球细分技术，不能只解析为泛杀球或其他变体",
+      "expected_intent": {
+        "positive_query_contains": ["普通杀球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_basic"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA052",
+      "query": "劈杀怎么打",
+      "intent_summary": "同时保留杀球家族与劈杀细分技术，不能解析为劈吊或泛杀球",
+      "expected_intent": {
+        "positive_query_contains": ["劈杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_slice"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA053",
+      "query": "顿地炮怎么打",
+      "intent_summary": "把错误输入顿地炮纠正并映射到遁地炮专项，输出不得把错词当成规范名称",
+      "expected_intent": {
+        "positive_query_contains": ["顿地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA054",
+      "query": "蹲地炮怎么打",
+      "intent_summary": "把错误输入蹲地炮纠正并映射到遁地炮专项，不误解为低重心或普通蹲起训练",
+      "expected_intent": {
+        "positive_query_contains": ["蹲地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA055",
+      "query": "转圈杀怎么打",
+      "intent_summary": "把省略反手二字的常见问法仍识别为转圈杀独立变体，不泛化为普通杀球",
+      "expected_intent": {
+        "positive_query_contains": ["转圈杀"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_backhand_spin"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA056",
+      "query": "平高怎么打",
+      "intent_summary": "把平高简称映射到平高球独立球种，不退化为泛高远球",
+      "expected_intent": {
+        "positive_query_contains": ["平高"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["flat_clear"],
+        "technique_variant": ["flat_clear"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA057",
+      "query": "动态低架拍怎么做",
+      "intent_summary": "把动态低架拍别名映射到动态低架独立框架，不误解为泛架拍",
+      "expected_intent": {
+        "positive_query_contains": ["动态低架拍"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "technique_variant": ["rear_dynamic_low_frame"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA058",
+      "query": "平搓远网怎么打",
+      "intent_summary": "把平搓远网识别为远网中的独立手法，不混入中路分球或防远网转推",
+      "expected_intent": {
+        "positive_query_contains": ["平搓远网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["far_net_flat_slice"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA059",
+      "query": "中路远网怎么处理",
+      "intent_summary": "把中路远网识别为推球框架下的分球和线路分支，不退化为所有远网",
+      "expected_intent": {
+        "positive_query_contains": ["中路远网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "technique_variant": ["far_net_middle_split"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA060",
+      "query": "防远网转推怎么练",
+      "intent_summary": "把防远网转推识别为远网中的防守转推训练分支，并保留练习请求",
+      "expected_intent": {
+        "positive_query_contains": ["防远网转推"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "technique_variant": ["far_net_defense_to_push"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA061",
+      "query": "远网吊球怎么打",
+      "intent_summary": "把远网吊球识别为吊球分支，不混入平搓远网、中路远网或防远网转推",
+      "expected_intent": {
+        "positive_query_contains": ["远网吊球"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop"],
+        "technique_variant": ["far_net_drop"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA062",
+      "query": "杀完上网怎么练",
+      "intent_summary": "把杀完上网别名映射到杀上网专项并保留练习请求，不退化为泛上网",
+      "expected_intent": {
+        "positive_query_contains": ["杀完上网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA063",
+      "query": "dun地炮怎么打",
+      "intent_summary": "把拼音混写错误输入纠正并映射到遁地炮专项，输出只使用规范名称遁地炮",
+      "expected_intent": {
+        "positive_query_contains": ["dun地炮"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["smash_ground_cannon"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA064",
+      "query": "对手吊网前我总是接不到",
+      "intent_summary": "把对手吊网前视为来球条件，把接不到映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["吊网前", "接不到"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["接不到"],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对手吊网前我总是接不到",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"shot_family": ["drop"]},
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA065",
+      "query": "别人放网我来不及上去",
+      "intent_summary": "把别人放网视为来球条件，把来不及上去映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["放网", "来不及上去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "别人放网我来不及上去",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA066",
+      "query": "接前场小球启动太慢",
+      "intent_summary": "把前场小球视为来球条件，把启动太慢映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["前场小球", "启动太慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["太慢"],
+        "scenarios_contains": ["前场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "接前场小球启动太慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"court_zone": ["forecourt"]},
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA067",
+      "query": "杀球后来不及上网",
+      "intent_summary": "连接词和来不及症状不能切断杀球到上网的命名动作序列",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "来不及", "上网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后来不及上网",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA068",
+      "query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "intent_summary": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "对手挡网", "来不及上去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后被对手挡网，我总是来不及上去怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA069",
+      "query": "我杀球后对手放网，总是跟不上怎么办",
+      "intent_summary": "目标动作被省略时，仍从球员杀球、对手放网和跟不上症状恢复杀上网事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "对手放网", "跟不上"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["跟不上"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "我杀球后对手放网，总是跟不上怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA070",
+      "query": "网前反手球总是来不及",
+      "intent_summary": "把反手和网前保留为来球条件，把省略的目标动作恢复为向前启动和上网步法",
+      "expected_intent": {
+        "positive_query_contains": ["网前", "反手", "来不及"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": ["网前", "反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "网前反手球总是来不及",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "stroke_side": ["backhand"],
+        "court_zone": ["forecourt"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA071",
+      "query": "反手网前上网慢",
+      "intent_summary": "压缩表达中的上网慢仍指向向前启动，不得按反手后场被动技术检索",
+      "expected_intent": {
+        "positive_query_contains": ["反手", "网前", "上网慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["上网慢"],
+        "scenarios_contains": ["反手", "网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "反手网前上网慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "stroke_side": ["backhand"],
+        "court_zone": ["forecourt"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA072",
+      "query": "我不想杀上网，只想杀球后回位，应该怎么练？",
+      "intent_summary": "把杀上网作为明确排除项，只保留杀球后回位的正向练习意图",
+      "expected_intent": {
+        "positive_query_contains": ["杀球后回位"],
+        "positive_query_excludes": ["杀上网"],
+        "excluded_terms_contains": ["杀上网"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA073",
+      "query": "杀球后对手回远网我回不去怎么办",
+      "intent_summary": "把对手回远网和球员回不去保留为杀上网后的战术反制事件链",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "回不去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["回不去"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我回不去怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA074",
+      "query": "杀球后上网衔接慢",
+      "intent_summary": "把衔接慢保留为杀上网专项中的到位症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "上网", "衔接慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["衔接慢"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后上网衔接慢",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA075",
+      "query": "杀球后对手回远网我来不及回怎么办",
+      "intent_summary": "对手回远网后的来不及回应保留为杀上网事件链症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "来不及回"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及回"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我来不及回怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA076",
+      "query": "杀球后对手回远网我退不回怎么办",
+      "intent_summary": "对手回远网后的退不回应保留为杀上网事件链症状",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "回远网", "退不回"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["退不回"],
+        "scenarios_contains": [],
+        "requested_output": "diagnosis"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_opponent_constraints": {
+        "technique_variant": ["far_net_umbrella"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后对手回远网我退不回怎么办",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
+    },
+    {
+      "case_id": "QUA077",
+      "query": "我搭档反手比较弱，对方连续压他反手时，我应该怎么补位？",
+      "intent_summary": "把压他解析为对手压搭档，并把用户所问保留为双打补位而非搭档反手技术",
+      "expected_intent": {
+        "positive_query_contains": ["搭档反手比较弱", "对方连续压他反手", "怎么补位"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我应该怎么补位",
+      "expected_target_condition_query": "我",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA078",
+      "query": "我不是要教搭档反手，我想问他反手被压住时我站哪里补他？",
+      "intent_summary": "否定教搭档反手时仍保留搭档主体，使后续他指向搭档并把目标识别为团队补位",
+      "expected_intent": {
+        "positive_query_contains": ["我想问他反手被压住", "站哪里补他"],
+        "positive_query_excludes": ["要教搭档反手"],
+        "excluded_terms_contains": ["搭档反手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {
+        "stroke_side": ["backhand"],
+        "stroke_intent": ["downward_pressure"]
+      },
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我 我想问我站哪里补",
+      "expected_target_condition_query": "",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA079",
+      "query": "对手吊到网前时我总是赶不到，我不想练后场被动球，应该先改什么？",
+      "intent_summary": "把吊到网前后赶不到识别为向前启动问题，并保留排除后场被动球的否定范围",
+      "expected_intent": {
+        "positive_query_contains": ["吊到网前", "赶不到", "应该先改什么"],
+        "positive_query_excludes": ["后场被动球"],
+        "excluded_terms_contains": ["后场被动球"],
+        "literal_symptoms_contains": ["赶不到"],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对手吊到网前时我总是赶不到，我 ，应该先改什么？",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["forward_reception_movement"],
+      "expected_event_chain": [
+        {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "吊到网前"},
+        {"actor": "player", "role": "target_action", "term": "向前启动 上网步法"}
+      ]
+    },
+    {
+      "case_id": "QUA080",
+      "query": "我杀球后搭档退到后场，对手挡网，我该怎么轮转？",
+      "intent_summary": "保留球员杀球、搭档退后、对手挡网和球员轮转的四步多人事件链",
+      "expected_intent": {
+        "positive_query_contains": ["我杀球", "搭档退到后场", "对手挡网", "怎么轮转"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我杀球后搭档退到后场，对手挡网，我该怎么轮转？",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "杀球"},
+        {"actor": "partner", "role": "coverage_condition", "term": "退到后场"},
+        {"actor": "opponent", "role": "response", "term": "挡网"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
+    },
+    {
+      "case_id": "QUA081",
+      "query": "我接杀挡网后，对手挑我搭档后场，我下一拍该守哪里？",
+      "intent_summary": "把接杀挡网、对手挑球、搭档接管后场和球员补位解析为有序团队覆盖事件链",
+      "expected_intent": {
+        "positive_query_contains": ["接杀挡网", "对手挑", "搭档后场", "守哪里"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {"shot_family": ["lift"]},
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我接杀挡网后，对手挑我搭档后场，我下一拍该守哪里？",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "接杀挡网"},
+        {"actor": "opponent", "role": "response", "term": "挑"},
+        {"actor": "partner", "role": "coverage_condition", "term": "后场"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
+    },
+    {
+      "case_id": "QUA082",
+      "query": "别教我队友怎么反手，我想知道对面追着打她反手时我该补哪边",
+      "intent_summary": "别教的否定范围只排除队友反手教学，仍保留队友主体并把她解析为队友",
+      "expected_intent": {
+        "positive_query_contains": ["对面追着打她反手", "我该补哪边"],
+        "positive_query_excludes": ["队友怎么反手"],
+        "excluded_terms_contains": ["队友", "反手"],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_partner_constraints": {"stroke_side": ["backhand"]},
+      "expected_player_constraints": {},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "我想知道我该补哪边",
+      "expected_target_condition_query": "",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"]
+    },
+    {
+      "case_id": "QUA083",
+      "query": "对方一吊到前场我就够不到，不考虑后场技术，我的启动该怎么调整",
+      "intent_summary": "把吊到前场后够不到识别为向前启动问题，而不是泛启动或后场技术",
+      "expected_intent": {
+        "positive_query_contains": ["吊到前场", "够不到", "启动该怎么调整"],
+        "positive_query_excludes": ["后场技术"],
+        "excluded_terms_contains": ["后场技术"],
+        "literal_symptoms_contains": ["够不到"],
+        "scenarios_contains": ["前场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对方一吊到前场我就够不到， ，我的启动该怎么调整",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["forward_reception_movement"],
+      "expected_event_chain": [
+        {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "吊到前场"},
+        {"actor": "player", "role": "target_action", "term": "向前启动 上网步法"}
+      ]
+    },
+    {
+      "case_id": "QUA084",
+      "query": "我重杀后队友已经退到底线，对面回放网，我下一拍要补哪里",
+      "intent_summary": "把重杀、队友退底线、对面放网和球员补位保留为四步团队轮转事件链",
+      "expected_intent": {
+        "positive_query_contains": ["重杀", "队友已经退到底线", "对面回放网", "补哪里"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_partner_constraints": {"court_zone": ["rearcourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_derived_target_constraints": {"discipline": ["doubles"]},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我重杀后队友已经退到底线，对面回放网，我下一拍要补哪里",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "重杀"},
+        {"actor": "partner", "role": "coverage_condition", "term": "退到底线"},
+        {"actor": "opponent", "role": "response", "term": "放网"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
     }
   ]
 }
