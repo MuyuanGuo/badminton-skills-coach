@@ -5,8 +5,6 @@
 [![Status: unreleased](https://img.shields.io/badge/status-unreleased-f0ad4e.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
-![Badminton Skills Coach：353 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
-
 `Badminton Skills Coach` 把“刘辉羽毛球”的公开抖音教学内容整理成可检索、可引用、可维护的 Codex Skill。它适合用来咨询羽毛球技术、战术、训练和纠错问题，并尽量给出对应视频、时间戳与证据边界。
 
 你正在查看 `develop` 分支。它是持续集成分支，不代表任何稳定版本。当前开发版本是 **1.2.0-dev.1**，发布状态为 **unreleased**；普通用户请使用 `main` 或 [最新 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)。项目未获得刘辉本人授权，仅用于个人学习和知识工程实践。
