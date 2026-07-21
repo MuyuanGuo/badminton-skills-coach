@@ -2027,6 +2027,9 @@ def apply_retrieval_policy(
     requested_constraints = selection_module.query_constraints(
         policy_api, expansion["positive_query"], selection_rules
     )
+    actor_context = selection_module.query_actor_context(
+        policy_api, expansion["positive_query"], selection_rules
+    )
 
     for candidate in ranked:
         video = videos[candidate["video_id"]]
@@ -2080,6 +2083,15 @@ def apply_retrieval_policy(
                     selection_module.required_constraint_support_failures(
                         policy_requested_constraints,
                         constraint_matches,
+                        selection_rules,
+                    )
+                )
+            if not reasons and actor_context.get("inferred_target_action"):
+                reasons.extend(
+                    selection_module.requested_action_scope_failures(
+                        policy_api,
+                        actor_context,
+                        video,
                         selection_rules,
                     )
                 )

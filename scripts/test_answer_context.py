@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 54)
+        self.assertEqual(result["cases"], 55)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -2499,6 +2499,61 @@ class AnswerContextTests(unittest.TestCase):
         self.assertEqual(
             power_by_id["7056596925721726220"]["title"],
             "正手抽球：架拍与腰腹到手腕的旋转发力",
+        )
+
+    def test_late_forecourt_reception_routes_to_forward_movement(self):
+        queries = [
+            "来不及接网前小球或者网前吊球怎么办",
+            "对手吊网前我总是接不到",
+            "别人放网我来不及上去",
+            "接前场小球启动太慢",
+        ]
+        expected_ids = {
+            "7099644893269839144",
+            "7353467942706695458",
+            "7406541084219821312",
+            "7642648621985030138",
+        }
+        for query in queries:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                    include_rejected=True,
+                )
+                actor = payload["question_interpretation"]["actor_context"]
+                self.assertEqual(actor["target_action_query"], "向前启动 上网步法")
+                self.assertEqual(
+                    actor["requested_action_scopes"],
+                    ["forward_reception_movement"],
+                )
+                selected = {
+                    item["video_id"]: item
+                    for item in payload["selected_videos"]
+                }
+                self.assertTrue(expected_ids & set(selected))
+                self.assertTrue(
+                    all(item["role"] == "core" for item in selected.values())
+                )
+                self.assertNotIn("7109288333884329231", selected)
+                rejected = {
+                    item["video_id"]: item["reasons"]
+                    for item in payload["rejected_candidates"]
+                }
+                if query == queries[0]:
+                    self.assertIn(
+                        "requested_action_not_supported:forward_reception_movement",
+                        rejected["7109288333884329231"],
+                    )
+
+        unrelated = self.context_module.prepare_answer_context(
+            "发小球速度太慢，怎么打到后场",
+            local_personalization=False,
+        )
+        self.assertIsNone(
+            unrelated["question_interpretation"]["actor_context"][
+                "inferred_target_action"
+            ]
         )
 
 

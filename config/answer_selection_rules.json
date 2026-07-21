@@ -1,5 +1,5 @@
 {
-  "version": 32,
+  "version": 33,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -91,6 +91,18 @@
       "search_terms": ["防守"]
     }
   ],
+  "reception_symptom_implications": [
+    {
+      "name": "late_to_forecourt_incoming_shot",
+      "symptom_terms": ["来不及", "接不到", "够不到", "赶不上", "到不了", "太慢"],
+      "incoming_terms": ["网前小球", "前场小球", "网前球", "吊网前", "网前吊球", "吊球", "放网", "小球"],
+      "response_terms": ["接", "上去", "上网", "启动", "赶不上", "够不到", "到不了"],
+      "target_action_query": "向前启动 上网步法",
+      "requested_action_scopes": ["forward_reception_movement"],
+      "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
+      "reason": "“来不及接/够不到”描述到位症状，网前小球或吊球描述对手来球；目标动作是向前启动和上网步法，不是用户自己打吊球。"
+    }
+  ],
   "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
   "opponent_condition_player_action_rejected_sources": [
     "primary_metadata",
@@ -144,6 +156,15 @@
     }
   ],
   "target_action_scopes": [
+    {
+      "name": "forward_reception_movement",
+      "query_terms": ["向前启动", "上网步法"],
+      "query_context_terms": [],
+      "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
+      "source_terms": ["正手往前的高速实战步法", "正手网前步法", "中场上网搓球", "职业运动员上网因为身体能力强"],
+      "source_suppressions": ["杀上网", "杀球之后", "快速突击", "高质量防守", "冲劲儿过猛"],
+      "source_override_terms": []
+    },
     {
       "name": "positioning",
       "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置"],
@@ -468,6 +489,10 @@
     "不到位": ["发力", "击球点", "底线", "挥拍", "力量传导"],
     "不稳定": ["拍面", "握拍", "框架", "节奏", "控制"],
     "来不及": ["架拍", "准备", "挥拍速度", "动作幅度", "节奏", "启动", "回动"],
+    "接不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "够不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "赶不上": ["启动", "上网", "向前", "步法", "节奏", "回动"],
+    "到不了": ["启动", "上网", "向前", "步法", "节奏", "回动"],
     "没力量": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
     "不重": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],
     "没威胁": ["发力", "力量", "框架", "空间", "挥拍", "速度", "落点"],

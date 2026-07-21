@@ -4265,6 +4265,80 @@
           "泛上网步法可以直接证明杀上网专项"
         ]
       }
+    },
+    {
+      "case_id": "AQ055",
+      "query": "来不及接网前小球或者网前吊球怎么办",
+      "case_type": "diagnosis",
+      "expected_mode": "balanced",
+      "provenance": "maintainer_forecourt_reception_symptom_feedback",
+      "review": {
+        "status": "maintainer_reviewed",
+        "maintainer_decision": "approved",
+        "notes": "将来不及接前场来球解释为向前启动和上网步法问题；来球名称只作为条件，排除仅命中来不及的反手被动高远及杀上网专项。",
+        "maintainer_reviewer": "Codex evidence review",
+        "reviewed_at": "2026-07-20"
+      },
+      "gold": {
+        "primary_video_ids": ["7353467942706695458", "7406541084219821312"],
+        "required_video_ids": [
+          "7353467942706695458",
+          "7406541084219821312",
+          "7099644893269839144",
+          "7642648621985030138"
+        ],
+        "irrelevant_video_ids": [
+          "7109288333884329231",
+          "7065157571816000809",
+          "7092959332047785250",
+          "7142313105324870950",
+          "7589749293205363633"
+        ],
+        "required_text_points": [
+          {
+            "point_id": "AQ055-P1",
+            "description": "先把问题解释为到达前场的向前启动和上网步法，而不是用户自己要打吊球或网前小球。",
+            "acceptable_terms": ["向前启动", "上网步法", "来球条件", "不是打吊球"],
+            "evidence_video_ids": ["7353467942706695458", "7406541084219821312"]
+          },
+          {
+            "point_id": "AQ055-P2",
+            "description": "正手前场启动时先打开腿部支撑，让左腿到左后方形成向右前方蹬出的空间，再完成第一步。",
+            "acceptable_terms": ["先开腿", "左腿", "左后方", "向右前方", "第一步"],
+            "evidence_video_ids": ["7406541084219821312"]
+          },
+          {
+            "point_id": "AQ055-P3",
+            "description": "按距离选择步法：距离近可用高频并步，距离长则组合并步、垫步和蹬跨步，最后一步落稳且膝盖脚尖外摆。",
+            "acceptable_terms": ["距离近", "并步", "垫步", "蹬跨步", "落稳", "脚尖外摆"],
+            "evidence_video_ids": ["7353467942706695458"]
+          },
+          {
+            "point_id": "AQ055-P4",
+            "description": "长距离上网不要全程碎步；途中加入垫步可少走一步并降低前冲惯性。",
+            "acceptable_terms": ["不要碎步", "垫步", "少一步", "惯性更小"],
+            "evidence_video_ids": ["7099644893269839144"]
+          },
+          {
+            "point_id": "AQ055-P5",
+            "description": "跑动不是从头到尾只求快：第一启动可以快，追球过程要匹配球速，最后确认步保留调整。",
+            "acceptable_terms": ["第一启动", "匹配球速", "最后确认步", "调整"],
+            "evidence_video_ids": ["7642648621985030138"]
+          }
+        ],
+        "required_boundary_points": [
+          {
+            "point_id": "AQ055-B1",
+            "description": "现有直接来源主要覆盖正手前场和不同距离的向前移动；杀球后的杀上网是另一种特定衔接，反手被动高远也不能证明本题。",
+            "acceptable_terms": ["正手前场", "不同距离", "杀上网是另一种", "反手被动高远不能证明"]
+          }
+        ],
+        "forbidden_claims": [
+          "来不及接网前球应该练反手被动高远",
+          "所有前场来球都必须使用同一种固定步数",
+          "杀上网专项可以无条件证明任何上网启动"
+        ]
+      }
     }
   ]
 }

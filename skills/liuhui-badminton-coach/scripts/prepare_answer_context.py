@@ -636,6 +636,25 @@ def _query_constraints_from_text(
     return constraints
 
 
+def _reception_symptom_implication(search_module, query, rules):
+    normalized_query = search_module.normalize(query)
+    for implication in rules.get("reception_symptom_implications", []):
+        required_groups = [
+            implication.get("symptom_terms", []),
+            implication.get("incoming_terms", []),
+            implication.get("response_terms", []),
+        ]
+        if all(
+            any(
+                search_module.normalize(term) in normalized_query
+                for term in terms
+            )
+            for terms in required_groups
+        ):
+            return implication
+    return None
+
+
 def _query_target_action_context(
     search_module,
     query,
@@ -644,6 +663,34 @@ def _query_target_action_context(
     target_actor_constraints,
     rules,
 ):
+    reception_implication = _reception_symptom_implication(
+        search_module, query, rules
+    )
+    if reception_implication and target_actor == "player":
+        action_query = reception_implication["target_action_query"]
+        return {
+            "target_action_query": action_query,
+            "target_condition_query": query,
+            "target_action_scope_query": action_query,
+            "target_action_backreferences_condition": True,
+            "target_action_constraints": _query_constraints_from_text(
+                search_module, action_query, rules
+            ),
+            "target_condition_constraints": _query_constraints_from_text(
+                search_module, query, rules
+            ),
+            "requested_action_scopes": list(
+                reception_implication["requested_action_scopes"]
+            ),
+            "inferred_target_action": {
+                "rule": reception_implication["name"],
+                "reason": reception_implication["reason"],
+            },
+            "inferred_search_terms": list(
+                reception_implication["search_terms"]
+            ),
+        }
+
     target_segments = [
         segment
         for segment in _query_actor_segments(query, rules)
@@ -719,6 +766,8 @@ def _query_target_action_context(
         "target_action_constraints": action_constraints,
         "target_condition_constraints": condition_constraints,
         "requested_action_scopes": requested_action_scopes,
+        "inferred_target_action": None,
+        "inferred_search_terms": [],
     }
 
 
@@ -748,10 +797,27 @@ def query_actor_context(search_module, query, rules):
         actor_constraints.get(target_actor, {}),
         rules,
     )
+    if target_action_context["inferred_target_action"]:
+        incoming_constraints = target_action_context[
+            "target_condition_constraints"
+        ]
+        for axis_name, incoming_values in incoming_constraints.items():
+            retained = set(player_constraints.get(axis_name, [])) - set(
+                incoming_values
+            )
+            if retained:
+                player_constraints[axis_name] = sorted(retained)
+            else:
+                player_constraints.pop(axis_name, None)
+        actor_constraints["player"] = player_constraints
+    else:
+        incoming_constraints = {}
     normalized_query = search_module.normalize(query)
     derived_player_constraints = {}
     derived_target_constraints = {}
-    derived_search_terms = []
+    derived_search_terms = list(
+        target_action_context.get("inferred_search_terms", [])
+    )
     for implication in (
         rules.get("opponent_response_implications", [])
         if target_actor == "player"
@@ -821,6 +887,7 @@ def query_actor_context(search_module, query, rules):
         "derived_player_constraints": derived_player_constraints,
         "derived_target_constraints": derived_target_constraints,
         "derived_search_terms": list(dict.fromkeys(derived_search_terms)),
+        "incoming_shot_constraints": incoming_constraints,
     }
 
 
@@ -2098,13 +2165,20 @@ def selected_sort_key(entry, rules=None):
 
 
 def entry_is_core(entry):
+    inferred_action_match = entry.get("inferred_target_action_match", False)
     return bool(
         not entry.get("unrequested_constraint_scope")
-        and all(
-            match == "exact"
-            for match in entry["constraint_match"].values()
+        and (
+            inferred_action_match
+            or (
+                all(
+                    match == "exact"
+                    for match in entry["constraint_match"].values()
+                )
+                and entry["concept_match"]
+                in {"exact_question", "exact_query_unit"}
+            )
         )
-        and entry["concept_match"] in {"exact_question", "exact_query_unit"}
     )
 
 
@@ -2372,6 +2446,7 @@ def prepare_answer_context(
                 {
                     "recall_safeguard_only",
                     "no_direct_or_supporting_question_evidence",
+                    "literal_symptom_or_mechanism_not_supported",
                 }
             )
             and constraint_result[0]
@@ -2379,7 +2454,13 @@ def prepare_answer_context(
             and has_instructional_evidence(video)
         ):
             keep = True
-            reasons = ["matched_requested_action_scope_support_only"]
+            reasons = [
+                (
+                    "matched_inferred_target_action_scope"
+                    if actor_context.get("inferred_target_action")
+                    else "matched_requested_action_scope_support_only"
+                )
+            ]
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )
@@ -2393,6 +2474,10 @@ def prepare_answer_context(
             "constraint_scope": constraint_scope,
             "unrequested_constraint_scope": unrequested_scope,
             "unrequested_ranking_scope": ranking_scope,
+            "inferred_target_action_match": bool(
+                actor_context.get("inferred_target_action")
+                and not action_failures
+            ),
         }
         record["constraint_match"] = constraint_result[4]
         record["actor_context_rank"] = partner_context_rank(
@@ -2408,6 +2493,15 @@ def prepare_answer_context(
         if keep and ranking_scope:
             record["selection_reasons"].append(
                 "unrequested_additional_scope_requires_conditioning"
+            )
+        if (
+            keep
+            and record["inferred_target_action_match"]
+            and "matched_inferred_target_action_scope"
+            not in record["selection_reasons"]
+        ):
+            record["selection_reasons"].append(
+                "matched_inferred_target_action_scope"
             )
         record["concept_match"] = concept_decision(
             search_module, plan, entry, video, rules
@@ -2591,7 +2685,7 @@ def prepare_answer_context(
                 "question_interpretation.ambiguities 非空时，先逐条说明 required_statement；不得把有多种场区含义的术语静默收窄成一种技术。",
                 "question_interpretation.terminology_corrections 非空时，先说明 required_statement，并在回答正文、视频标题改写和观看重点中只使用 canonical_term；错误输入词只可在纠正句中出现一次。",
                 "question_interpretation.technique_definitions 是维护者确认的规范术语、父类、起跳边界和线路分类；用于解释技术归属，但不能让父类视频替代所问细分技术的直接动作证据。",
-                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的站位或轮转动作。requested_action_scopes 要求来源直接支持站位或团队补位，并排除只讨论对手站位的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
+                "actor_context 已解析他/她的最近明确指代以及陪练、发球机等来球方；target_actor 指明建议对象。target_action_query 是实际请求动作，target_condition_query 是同一主体的既有状态或症状，不得把条件动作当成所问动作；inferred_target_action 非空时，先说明从症状推导出的目标动作，并把 incoming_shot_constraints 仅视为来球条件。target_action_backreferences_condition 为真时，怎么改等泛化请求只从 target_action_scope_query 继承已配置的动作范围。requested_action_scopes 要求来源直接支持所问动作，并排除只讨论其他场景或其他主体的来源。opponent_constraints、partner_constraints 与其他非目标主体约束只描述条件，不得当成目标球员执行动作。硬证据范围只使用 question_interpretation.constraints，其中 derived_target_constraints 可能是补位、轮转或站位所隐含的双打场景。",
                 "concept_match 只说明概念覆盖；只有 claim_scope_policy 为 exact_question_scope 时才可支持无额外条件的完整问题。",
                 "claim_scope_policy 为 additional_specific_scope_only_not_unrestricted_full_question_proof 时，必须明确说明 unrequested_constraint_scope 或 unrequested_ranking_scope 中的额外条件，不得把专项来源概括为泛问通则。",
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",

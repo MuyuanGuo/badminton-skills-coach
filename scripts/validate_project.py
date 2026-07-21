@@ -396,6 +396,37 @@ for scope in target_action_scopes:
         or not scope["source_terms"]
     ):
         raise SystemExit("Target action scope cannot be empty")
+reception_implications = answer_selection_rules.get(
+    "reception_symptom_implications", []
+)
+required_reception_implication_fields = {
+    "name",
+    "symptom_terms",
+    "incoming_terms",
+    "response_terms",
+    "target_action_query",
+    "requested_action_scopes",
+    "search_terms",
+    "reason",
+}
+if not reception_implications:
+    raise SystemExit("Reception symptom implications are missing")
+for implication in reception_implications:
+    if set(implication) != required_reception_implication_fields:
+        raise SystemExit("Reception symptom implication contract is incomplete")
+    if any(
+        not implication[field]
+        for field in required_reception_implication_fields
+    ):
+        raise SystemExit("Reception symptom implication cannot be empty")
+    if not set(implication["symptom_terms"]).issubset(
+        retrieval_intent["literal_symptom_terms"]
+    ):
+        raise SystemExit("Reception implication symptoms are not routable")
+    if not set(implication["requested_action_scopes"]).issubset(
+        target_action_scope_names
+    ):
+        raise SystemExit("Reception implication uses an unknown action scope")
 constraint_axes = {
     axis["name"]: axis
     for axis in answer_selection_rules.get("constraint_axes", [])

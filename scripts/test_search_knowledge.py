@@ -798,6 +798,32 @@ class SearchKnowledgeTests(unittest.TestCase):
                 ],
             )
 
+    def test_late_forecourt_reception_surfaces_movement_not_passive_clear(self):
+        payload = self.search_module.search(
+            "来不及接网前小球或者网前吊球怎么办",
+            manifest_limit=None,
+            local_personalization=False,
+        )
+        surfaced = {item["video_id"] for item in payload["results"]}
+        self.assertTrue(
+            {
+                "7099644893269839144",
+                "7353467942706695458",
+                "7406541084219821312",
+                "7642648621985030138",
+            }.issubset(surfaced)
+        )
+        self.assertNotIn("7109288333884329231", surfaced)
+        rejected = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+            if not item["retrieval_policy_eligible"]
+        }
+        self.assertIn(
+            "requested_action_not_supported:forward_reception_movement",
+            rejected["7109288333884329231"]["retrieval_policy_reasons"],
+        )
+
     def test_screening_tags_are_not_ranked_as_evidence_fields(self):
         video = {
             "title": "网前框架",

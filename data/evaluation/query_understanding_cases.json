@@ -487,6 +487,15 @@
       "expected_strategy": "focused_evidence",
       "expected_query_units": ["杀上网怎么练"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ055",
+      "query": "来不及接网前小球或者网前吊球怎么办",
+      "intent_summary": "把前场来球接不到的症状映射为向前启动和上网步法，并把吊球或小球保留为来球条件",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["来不及接网前小球或者网前吊球怎么办"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1607,6 +1616,77 @@
         "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
+    },
+    {
+      "case_id": "QUA064",
+      "query": "对手吊网前我总是接不到",
+      "intent_summary": "把对手吊网前视为来球条件，把接不到映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["吊网前", "接不到"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["接不到"],
+        "scenarios_contains": ["网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {"shot_family": ["drop"]},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "对手吊网前我总是接不到",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"shot_family": ["drop"]},
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA065",
+      "query": "别人放网我来不及上去",
+      "intent_summary": "把别人放网视为来球条件，把来不及上去映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["放网", "来不及上去"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "别人放网我来不及上去",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"]
+      },
+      "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA066",
+      "query": "接前场小球启动太慢",
+      "intent_summary": "把前场小球视为来球条件，把启动太慢映射为自己的向前启动和上网步法问题",
+      "expected_intent": {
+        "positive_query_contains": ["前场小球", "启动太慢"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["太慢"],
+        "scenarios_contains": ["前场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {},
+      "expected_player_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "向前启动 上网步法",
+      "expected_target_condition_query": "接前场小球启动太慢",
+      "expected_target_action_constraints": {},
+      "expected_target_condition_constraints": {"court_zone": ["forecourt"]},
+      "expected_requested_action_scopes": ["forward_reception_movement"]
     }
   ]
 }
