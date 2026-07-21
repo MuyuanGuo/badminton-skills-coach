@@ -38,6 +38,7 @@ def validation_commands():
         [sys.executable, "scripts/evaluate_answer_quality.py"],
         [sys.executable, "scripts/evaluate_feedback_signals.py"],
         [sys.executable, "scripts/evaluate_query_understanding.py"],
+        [sys.executable, "scripts/evaluate_query_equivalence.py"],
         [sys.executable, "scripts/evaluate_retrieval.py"],
         [
             sys.executable,

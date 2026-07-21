@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "families": [
+    {
+      "family_id": "QE001",
+      "description": "杀上网的教学问法和症状问法必须保留同一命名动作与核心证据，症状只增加诊断条件。",
+      "expected_target_actor": "player",
+      "canonical_target_action_query": "杀上网",
+      "expected_constraints_subset": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_requested_action_scopes": ["kill_to_net_sequence"],
+      "required_shared_selected_video_ids": [
+        "7065157571816000809",
+        "7092959332047785250"
+      ],
+      "minimum_shared_selected_video_ids": 2,
+      "forbidden_selected_video_ids": [
+        "7109288333884329231",
+        "7589749293205363633",
+        "7659348110628345210"
+      ],
+      "variants": [
+        {
+          "query": "杀上网怎么练",
+          "role": "canonical_instruction",
+          "expected_literal_symptoms_contains": []
+        },
+        {
+          "query": "杀球后来不及上网",
+          "role": "symptom",
+          "expected_literal_symptoms_contains": ["来不及"]
+        },
+        {
+          "query": "杀球后应该怎样上网",
+          "role": "instructional_paraphrase",
+          "expected_literal_symptoms_contains": []
+        },
+        {
+          "query": "杀球以后上网衔接太慢",
+          "role": "symptom_paraphrase",
+          "expected_literal_symptoms_contains": ["太慢"]
+        }
+      ],
+      "negative_controls": [
+        {
+          "query": "杀球后回位来不及",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"]
+        },
+        {
+          "query": "对手杀球后我上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"]
+        },
+        {
+          "query": "接杀后我上网",
+          "expected_target_actor": "player",
+          "forbidden_technique_variants": ["kill_to_net"],
+          "forbidden_action_scopes": ["kill_to_net_sequence"]
+        }
+      ]
+    }
+  ]
+}

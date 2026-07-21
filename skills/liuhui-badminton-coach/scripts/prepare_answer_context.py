@@ -633,7 +633,47 @@ def _query_constraints_from_text(
         )
     ):
         constraints["tactical_phase"] = ["attack"]
+    sequence_implication = _action_sequence_implication(
+        search_module, query, rules
+    )
+    if sequence_implication:
+        for axis_name, values in sequence_implication.get(
+            "derived_constraints", {}
+        ).items():
+            constraints[axis_name] = sorted(
+                set(constraints.get(axis_name, [])) | set(values)
+            )
     return constraints
+
+
+def _action_sequence_implication(search_module, query, rules):
+    normalized_query = search_module.normalize(query)
+    for implication in rules.get("action_sequence_implications", []):
+        if any(
+            search_module.normalize(term) in normalized_query
+            for term in implication.get("canonical_terms", [])
+        ):
+            return implication
+        before_matches = [
+            (normalized_query.find(search_module.normalize(term)), term)
+            for term in implication.get("before_terms", [])
+            if search_module.normalize(term) in normalized_query
+        ]
+        after_matches = [
+            (normalized_query.find(search_module.normalize(term)), term)
+            for term in implication.get("after_terms", [])
+            if search_module.normalize(term) in normalized_query
+        ]
+        max_gap = implication.get("max_gap_characters", 12)
+        for before_index, before_term in before_matches:
+            before_end = before_index + len(search_module.normalize(before_term))
+            if any(
+                after_index >= before_end
+                and after_index - before_end <= max_gap
+                for after_index, _ in after_matches
+            ):
+                return implication
+    return None
 
 
 def _reception_symptom_implication(search_module, query, rules):
@@ -663,6 +703,39 @@ def _query_target_action_context(
     target_actor_constraints,
     rules,
 ):
+    sequence_implication = _action_sequence_implication(
+        search_module, target_query, rules
+    )
+    if sequence_implication and target_actor == "player":
+        action_query = sequence_implication["canonical_action_query"]
+        normalized_target_query = search_module.normalize(target_query)
+        has_symptom = any(
+            search_module.normalize(term) in normalized_target_query
+            for term in sequence_implication.get("symptom_terms", [])
+        )
+        action_constraints = _query_constraints_from_text(
+            search_module, action_query, rules
+        )
+        return {
+            "target_action_query": action_query,
+            "target_condition_query": target_query if has_symptom else "",
+            "target_action_scope_query": action_query,
+            "target_action_backreferences_condition": False,
+            "target_action_constraints": action_constraints,
+            "target_condition_constraints": {},
+            "requested_action_scopes": list(
+                sequence_implication["requested_action_scopes"]
+            ),
+            "inferred_target_action": {
+                "rule": sequence_implication["name"],
+                "reason": sequence_implication["reason"],
+            },
+            "inferred_search_terms": list(
+                sequence_implication["search_terms"]
+            ),
+            "condition_constraints_are_incoming": False,
+        }
+
     reception_implication = _reception_symptom_implication(
         search_module, query, rules
     )
@@ -689,6 +762,7 @@ def _query_target_action_context(
             "inferred_search_terms": list(
                 reception_implication["search_terms"]
             ),
+            "condition_constraints_are_incoming": True,
         }
 
     target_segments = [
@@ -768,6 +842,7 @@ def _query_target_action_context(
         "requested_action_scopes": requested_action_scopes,
         "inferred_target_action": None,
         "inferred_search_terms": [],
+        "condition_constraints_are_incoming": False,
     }
 
 
@@ -797,7 +872,7 @@ def query_actor_context(search_module, query, rules):
         actor_constraints.get(target_actor, {}),
         rules,
     )
-    if target_action_context["inferred_target_action"]:
+    if target_action_context.get("condition_constraints_are_incoming"):
         incoming_constraints = target_action_context[
             "target_condition_constraints"
         ]

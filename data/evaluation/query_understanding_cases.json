@@ -496,6 +496,15 @@
       "expected_strategy": "literal_symptom_first",
       "expected_query_units": ["来不及接网前小球或者网前吊球怎么办"],
       "expected_must_state_boundary_first": false
+    },
+    {
+      "case_id": "AQ056",
+      "query": "杀球后来不及上网",
+      "intent_summary": "把杀球到上网识别为同一杀上网动作序列，同时保留来不及这个诊断症状",
+      "expected_answer_mode": "balanced",
+      "expected_strategy": "literal_symptom_first",
+      "expected_query_units": ["杀球后来不及上网"],
+      "expected_must_state_boundary_first": false
     }
   ],
   "adversarial_cases": [
@@ -1594,7 +1603,14 @@
         "requested_output": "practice"
       },
       "expected_constraints": {
-        "technique_variant": ["kill_to_net"]
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
       },
       "expected_target_actor": "player"
     },
@@ -1687,6 +1703,39 @@
       "expected_target_action_constraints": {},
       "expected_target_condition_constraints": {"court_zone": ["forecourt"]},
       "expected_requested_action_scopes": ["forward_reception_movement"]
+    },
+    {
+      "case_id": "QUA067",
+      "query": "杀球后来不及上网",
+      "intent_summary": "连接词和来不及症状不能切断杀球到上网的命名动作序列",
+      "expected_intent": {
+        "positive_query_contains": ["杀球", "来不及", "上网"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["来不及"],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "杀上网",
+      "expected_target_condition_query": "杀球后来不及上网",
+      "expected_target_action_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["kill_to_net_sequence"]
     }
   ]
 }

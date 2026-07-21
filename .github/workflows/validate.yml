@@ -40,6 +40,7 @@ jobs:
             scripts/evaluate_answer_context.py \
             scripts/evaluate_answer_quality.py \
             scripts/evaluate_feedback_signals.py \
+            scripts/evaluate_query_equivalence.py \
             scripts/evaluate_query_understanding.py \
             scripts/evaluate_retrieval.py \
             scripts/evaluate_video_comprehension.py \
@@ -74,6 +75,7 @@ jobs:
             scripts/test_media_assets.py \
             scripts/test_project_artifacts.py \
             scripts/test_public_feedback_e2e.py \
+            scripts/test_query_equivalence.py \
             scripts/test_query_understanding.py \
             scripts/test_release_package.py \
             scripts/test_repository_links.py \
@@ -112,6 +114,7 @@ jobs:
           python scripts/test_media_assets.py
           python scripts/test_project_artifacts.py
           python scripts/test_public_feedback_e2e.py
+          python scripts/test_query_equivalence.py
           python scripts/test_query_understanding.py
           python scripts/test_release_package.py
           python scripts/test_repository_links.py
@@ -125,6 +128,7 @@ jobs:
           python scripts/evaluate_answer_context.py
           python scripts/evaluate_answer_quality.py
           python scripts/evaluate_feedback_signals.py
+          python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_retrieval.py
           python scripts/evaluate_video_comprehension.py
@@ -143,6 +147,7 @@ jobs:
           python scripts/evaluate_answer_policy.py \
             --cases data/evaluation/answer_quality_cases.json
           python scripts/evaluate_answer_context.py
+          python scripts/evaluate_query_equivalence.py
           python scripts/evaluate_query_understanding.py
           python scripts/evaluate_video_comprehension.py
           python scripts/evaluate_answer_quality.py \

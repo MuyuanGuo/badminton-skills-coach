@@ -18,12 +18,15 @@
 
 ## 本地验证
 
+回答质量问题先判断故障属于问题理解、检索、证据范围还是答案组织。每次修复至少增加一个真实单题回归；若问题涉及同义改写、症状与目标动作、主体或条件变化，还要在 `data/evaluation/query_equivalence_cases.json` 中声明必须保持的语义、允许变化的字段、共享核心证据和负例。新失败类型没有现成门禁时，先扩展评测方法，再修改运行时规则。
+
 至少运行与你改动相关的测试。提交完整流水线或共享逻辑改动时，运行：
 
 ```bash
 python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
+python3 scripts/evaluate_query_equivalence.py
 python3 scripts/evaluate_retrieval.py
 python3 scripts/validate_project.py
 ```

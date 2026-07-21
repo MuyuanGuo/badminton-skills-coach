@@ -57,7 +57,7 @@ class AnswerContextTests(unittest.TestCase):
 
     def test_full_pre_answer_context_registry_passes_quality_gates(self):
         result = self.module.evaluate()
-        self.assertEqual(result["cases"], 55)
+        self.assertEqual(result["cases"], 56)
         self.assertEqual(result["candidate_recall"], 1.0)
         self.assertGreaterEqual(result["selected_video_recall"], 0.95)
         self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
@@ -2555,6 +2555,66 @@ class AnswerContextTests(unittest.TestCase):
                 "inferred_target_action"
             ]
         )
+
+    def test_interrupted_kill_to_net_sequence_preserves_named_action(self):
+        queries = [
+            "杀球后来不及上网",
+            "杀球后应该怎样上网",
+            "杀球以后上网衔接太慢",
+        ]
+        required_ids = {"7065157571816000809", "7092959332047785250"}
+        hard_negatives = {"7109288333884329231", "7589749293205363633"}
+        for query in queries:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query,
+                    local_personalization=False,
+                )
+                interpretation = payload["question_interpretation"]
+                actor = interpretation["actor_context"]
+                self.assertEqual(actor["target_action_query"], "杀上网")
+                self.assertEqual(
+                    interpretation["constraints"]["technique_variant"],
+                    ["kill_to_net"],
+                )
+                self.assertEqual(
+                    actor["requested_action_scopes"],
+                    ["kill_to_net_sequence"],
+                )
+                selected_ids = {
+                    item["video_id"] for item in payload["selected_videos"]
+                }
+                self.assertTrue(required_ids.issubset(selected_ids))
+                self.assertFalse(selected_ids & hard_negatives)
+
+        symptom = self.context_module.prepare_answer_context(
+            "杀球后来不及上网", local_personalization=False
+        )
+        self.assertIn(
+            "来不及",
+            symptom["question_interpretation"]["intent_frame"][
+                "literal_symptoms"
+            ],
+        )
+
+        for query in [
+            "杀球后回位来不及",
+            "对手杀球后我上网",
+            "接杀后我上网",
+        ]:
+            with self.subTest(query=query):
+                payload = self.context_module.prepare_answer_context(
+                    query, local_personalization=False
+                )
+                interpretation = payload["question_interpretation"]
+                self.assertNotIn(
+                    "kill_to_net",
+                    interpretation["constraints"].get("technique_variant", []),
+                )
+                self.assertNotIn(
+                    "kill_to_net_sequence",
+                    interpretation["actor_context"]["requested_action_scopes"],
+                )
 
 
 if __name__ == "__main__":

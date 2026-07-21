@@ -59,6 +59,7 @@ json_paths = [
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
+    "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",

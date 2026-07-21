@@ -1,5 +1,5 @@
 {
-  "version": 33,
+  "version": 34,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -103,6 +103,25 @@
       "reason": "“来不及接/够不到”描述到位症状，网前小球或吊球描述对手来球；目标动作是向前启动和上网步法，不是用户自己打吊球。"
     }
   ],
+  "action_sequence_implications": [
+    {
+      "name": "kill_to_net_interrupted_sequence",
+      "canonical_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
+      "before_terms": ["杀球", "扣杀", "杀完球", "杀完"],
+      "after_terms": ["上网", "跟上网前", "跟到网前"],
+      "max_gap_characters": 12,
+      "canonical_action_query": "杀上网",
+      "derived_constraints": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "requested_action_scopes": ["kill_to_net_sequence"],
+      "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
+      "symptom_terms": ["来不及", "赶不上", "跟不上", "太慢", "衔接慢"],
+      "reason": "同一主体先杀球再上网描述的是杀上网专项；连接词、提问词或到位症状不得切断动作序列。"
+    }
+  ],
   "derived_player_constraint_required_match_axes": ["serve_role", "tactical_phase"],
   "opponent_condition_player_action_rejected_sources": [
     "primary_metadata",
@@ -156,6 +175,15 @@
     }
   ],
   "target_action_scopes": [
+    {
+      "name": "kill_to_net_sequence",
+      "query_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
+      "query_context_terms": [],
+      "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
+      "source_terms": ["杀上网"],
+      "source_suppressions": ["不让你做杀上网", "不要做杀上网", "不是杀上网", "对手针对杀上网回远网"],
+      "source_override_terms": []
+    },
     {
       "name": "forward_reception_movement",
       "query_terms": ["向前启动", "上网步法"],
@@ -661,6 +689,7 @@
     "7093706918492917033": {
       "shot_family": ["drop", "smash"],
       "technique_variant": ["far_net_drop", "far_net_umbrella", "kill_to_net", "smash_light", "smash_point"],
+      "tactical_phase": ["attack"],
       "basis": "00:39-01:14 直接讲位置不好时用轻杀、点杀或远网吊球保持下压并连接下一拍，并说明慢一些的软压便于杀上网；支持这些战术使用场景，但不证明对应手部动作细节。"
     },
     "7161980324409363712": {
