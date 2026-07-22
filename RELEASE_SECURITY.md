@@ -16,19 +16,21 @@ Download all assets from the same Release, then run:
 shasum -a 256 -c SHA256SUMS.txt
 ```
 
-To verify the GitHub build attestation:
-
-```bash
-gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
-  --repo MuyuanGuo/badminton-skills-coach
-```
-
-To inspect the signed CycloneDX predicate:
+To verify the GitHub build attestation and its signed CycloneDX predicate:
 
 ```bash
 gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
   --repo MuyuanGuo/badminton-skills-coach \
   --predicate-type https://cyclonedx.org/bom
+```
+
+To inspect the verified predicate as JSON, add `--format json`:
+
+```bash
+gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
+  --repo MuyuanGuo/badminton-skills-coach \
+  --predicate-type https://cyclonedx.org/bom \
+  --format json
 ```
 
 Replace `v1.3.0` with the version being downloaded. Older releases created before this workflow may provide checksums without a GitHub attestation.

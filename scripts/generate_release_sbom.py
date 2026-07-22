@@ -21,6 +21,25 @@ def sha256_bytes(content):
     return hashlib.sha256(content).hexdigest()
 
 
+def append_checksum(checksum_path, artifact_path):
+    checksum_path = Path(checksum_path)
+    artifact_path = Path(artifact_path)
+    if not artifact_path.is_file():
+        raise ValueError(f"Release artifact does not exist: {artifact_path}")
+    existing = (
+        checksum_path.read_text(encoding="utf-8")
+        if checksum_path.exists()
+        else ""
+    )
+    if existing and not existing.endswith("\n"):
+        existing += "\n"
+    checksum_path.parent.mkdir(parents=True, exist_ok=True)
+    checksum_path.write_text(
+        f"{existing}{sha256_bytes(artifact_path.read_bytes())}  {artifact_path.name}\n",
+        encoding="utf-8",
+    )
+
+
 def source_timestamp(source_commit):
     if not source_commit:
         return "2026-01-01T00:00:00Z"
@@ -118,6 +137,7 @@ def main():
     parser.add_argument("--version", required=True)
     parser.add_argument("--source-commit")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--checksum-file", type=Path)
     args = parser.parse_args()
     try:
         sbom = build_sbom(args.archive, args.version, args.source_commit)
@@ -128,6 +148,8 @@ def main():
         json.dumps(sbom, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    if args.checksum_file:
+        append_checksum(args.checksum_file, args.output)
     print(args.output)
 
 

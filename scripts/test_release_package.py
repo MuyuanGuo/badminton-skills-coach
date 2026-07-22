@@ -8,7 +8,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from generate_release_sbom import build_sbom
+from generate_release_sbom import append_checksum, build_sbom
 from package_skill_release import archive_name, package_skill, release_files
 
 
@@ -86,6 +86,23 @@ class ReleasePackageTests(unittest.TestCase):
             self.assertTrue(
                 all(component["hashes"][0]["alg"] == "SHA-256" for component in first["components"])
             )
+
+    def test_checksum_manifest_uses_downloadable_asset_names(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packaged = package_skill(RELEASE_VERSION, directory)
+            nested = Path(directory) / "dist"
+            nested.mkdir()
+            sbom_path = nested / "SBOM.cdx.json"
+            sbom_path.write_text("{}\n", encoding="utf-8")
+            checksum_path = Path(packaged["checksum_file"])
+
+            append_checksum(checksum_path, sbom_path)
+
+            lines = checksum_path.read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(lines), 2)
+            self.assertTrue(lines[0].endswith(f"  {Path(packaged['archive']).name}"))
+            self.assertTrue(lines[1].endswith("  SBOM.cdx.json"))
+            self.assertNotIn("dist/", lines[1])
 
 
 if __name__ == "__main__":
