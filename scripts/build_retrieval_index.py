@@ -25,6 +25,14 @@ def normalize(text):
     return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", text.lower()))
 
 
+def searchable_teaching_note(note):
+    return {
+        key: value
+        for key, value in note.items()
+        if key != "coverage_evidence"
+    }
+
+
 def ngram_hash(value):
     return hashlib.blake2b(value.encode("utf-8"), digest_size=6).hexdigest()
 
@@ -92,7 +100,9 @@ def build_index(knowledge, topic_index, rules):
         full_text = "".join(segment.get("text", "") for segment in segments)
         field_text = {
             "title": normalize(video.get("retrieval_title") or video["title"]),
-            "teaching_note": normalize(flatten(video["teaching_note"])),
+            "teaching_note": normalize(
+                flatten(searchable_teaching_note(video["teaching_note"]))
+            ),
             "transcript": normalize(full_text),
         }
         evidence_searchable = "".join(field_text.values())
@@ -135,7 +145,9 @@ def build_index(knowledge, topic_index, rules):
                     )
                 ),
                 "teaching_note_ngrams": sorted(
-                    hashed_ngrams(flatten(video["teaching_note"]), sizes)
+                    hashed_ngrams(
+                        flatten(searchable_teaching_note(video["teaching_note"])), sizes
+                    )
                 ),
                 "transcript_ngrams": sorted(hashed_ngrams(full_text, sizes)),
             }

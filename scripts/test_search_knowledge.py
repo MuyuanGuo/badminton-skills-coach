@@ -588,7 +588,11 @@ class SearchKnowledgeTests(unittest.TestCase):
             if video.get("confidence") == "reviewed_transcript"
         ]
         self.assertEqual(len(visual), 19)
-        self.assertEqual(len(reviewed_transcript), 5)
+        self.assertEqual(len(reviewed_transcript), 6)
+        self.assertIn(
+            "7664908274752137146",
+            {video["video_id"] for video in reviewed_transcript},
+        )
         for video in visual:
             with self.subTest(video_id=video["video_id"]):
                 self.assertEqual(video["transcript_segments"], [])

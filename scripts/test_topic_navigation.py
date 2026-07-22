@@ -66,6 +66,7 @@ class TopicNavigationTests(unittest.TestCase):
         }
         taxonomy = self.builder.load_taxonomy()
         taxonomy["reviewed_video_topic_overrides"] = {}
+        taxonomy["reviewed_video_topic_replacements"] = {}
         index = self.builder.build_index(data, taxonomy=taxonomy)
         reception = next(
             subtopic
@@ -79,6 +80,66 @@ class TopicNavigationTests(unittest.TestCase):
             reception["representative_videos"][0]["video_id"],
             "100000000000000002",
         )
+
+    def test_serve_variation_topic_requires_serve_context(self):
+        data = {
+            "scope": "test",
+            "updated_at": "2026-07-21T00:00:00Z",
+            "videos": [
+                {
+                    "video_id": "100000000000000003",
+                    "title": "后场架拍怎样提高隐蔽性",
+                    "url": "https://www.douyin.com/video/100000000000000003",
+                    "category": "后场技术",
+                    "processing_status": "ready",
+                    "confidence": "medium",
+                    "teaching_note": {"topic": "后场架拍和挥拍空间"},
+                }
+            ],
+        }
+        taxonomy = self.builder.load_taxonomy()
+        taxonomy["reviewed_video_topic_overrides"] = {}
+        taxonomy["reviewed_video_topic_replacements"] = {}
+        index = self.builder.build_index(data, taxonomy=taxonomy)
+        serve_variation = next(
+            subtopic
+            for category in index["categories"]
+            if category["name"] == "发球与接发"
+            for subtopic in category["subtopics"]
+            if subtopic["name"] == "发后场与发球变化"
+        )
+        self.assertNotIn("100000000000000003", serve_variation["video_ids"])
+
+    def test_reviewed_topic_replacement_is_exclusive(self):
+        video_id = "100000000000000004"
+        data = {
+            "scope": "test",
+            "updated_at": "2026-07-21T00:00:00Z",
+            "videos": [
+                {
+                    "video_id": video_id,
+                    "title": "后场架拍与发球隐蔽变化",
+                    "url": f"https://www.douyin.com/video/{video_id}",
+                    "category": "后场技术",
+                    "processing_status": "ready",
+                    "confidence": "reviewed_transcript",
+                    "teaching_note": {"topic": "后场架拍与发球隐蔽变化"},
+                }
+            ],
+        }
+        taxonomy = self.builder.load_taxonomy()
+        taxonomy["reviewed_video_topic_overrides"] = {}
+        taxonomy["reviewed_video_topic_replacements"] = {
+            video_id: ["后场技术/架拍与后场框架"]
+        }
+        index = self.builder.build_index(data, taxonomy=taxonomy)
+        assigned_topics = {
+            f"{category['name']}/{subtopic['name']}"
+            for category in index["categories"]
+            for subtopic in category["subtopics"]
+            if video_id in subtopic["video_ids"]
+        }
+        self.assertEqual(assigned_topics, {"后场技术/架拍与后场框架"})
 
     def test_context_is_inferred_and_changes_learning_path(self):
         query = "零基础双打接发系统学习，每次30分钟，有搭档"
@@ -173,10 +234,25 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(index["assigned_video_count"], ready_count)
         self.assertEqual(index["unassigned_video_ids"], [])
-        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v10")
+        self.assertEqual(index["taxonomy_version"], "topic-taxonomy-v11")
         self.assertTrue(
             any(category["name"] == "单打战术" for category in index["categories"])
         )
+
+    def test_latest_reviewed_video_only_uses_rear_court_framework_topic(self):
+        video_id = "7664908274752137146"
+        index = json.loads(
+            (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assigned_topics = {
+            f"{category['name']}/{subtopic['name']}"
+            for category in index["categories"]
+            for subtopic in category["subtopics"]
+            if video_id in subtopic["video_ids"]
+        }
+        self.assertEqual(assigned_topics, {"后场技术/架拍与后场框架"})
 
     def test_reviewed_point_smash_sources_are_in_the_smash_topic(self):
         index = json.loads(

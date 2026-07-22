@@ -9,7 +9,7 @@ This file is intentionally browser-context JavaScript. It expects `window` and
 Use it from an authenticated browser session on the creator profile page. The
 repository monitor consumes the saved JSON through:
 
-  python3 scripts/monitor_douyin_updates.py --snapshot data/tmp/douyin_profile_latest.json
+  python3 scripts/monitor_douyin_updates.py --snapshot data/tmp/douyin_profile_incremental_snapshot.json
 */
 
 (function () {
@@ -150,14 +150,16 @@ repository monitor consumes the saved JSON through:
 
     const videos = Array.from(collected.values());
     return {
-      collector_version: 2,
+      collector_version: 3,
+      snapshot_scope: "incremental_recent_profile_observation",
+      full_profile_archive: false,
       profile_url: profileUrl,
       profile_id: observedProfileId,
       collected_at: new Date().toISOString(),
       collected_unique_links: videos.length,
       scroll_rounds_completed: roundsCompleted,
       stable_rounds: stableRounds,
-      collection_complete: stableRounds >= stableThreshold,
+      scroll_stabilized: stableRounds >= stableThreshold,
       videos,
     };
   }

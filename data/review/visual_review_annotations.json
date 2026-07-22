@@ -1,14 +1,33 @@
 {
   "version": "visual-review-annotations-v2",
   "source": "output/visual_review_queue.md",
-  "reviewed_count": 79,
+  "reviewed_count": 80,
   "status_counts": {
-    "approved": 24,
+    "approved": 25,
     "needs_correction": 0,
     "not_teaching": 55,
     "low_value": 0
   },
   "items": [
+    {
+      "rank": 1,
+      "video_id": "7664908274752137146",
+      "title": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的",
+      "url": "https://www.douyin.com/video/7664908274752137146",
+      "category": "后场技术",
+      "review_status": "approved",
+      "review_notes": "完整转写约202秒，内容是后场基础动作与进阶小动作的关系：基础球友应保留完整的架拍、引拍和挥拍空间，先稳定把球打出去，再逐步集中和缩小动作；前半段不过早发力，触球瞬间加速；明显的线性动作更稳定准确，小而快的动作会牺牲稳定度和力度。按完整转写作为教学证据入库。",
+      "evidence_source": "reviewed_transcript",
+      "teaching_summary": "后场基础与进阶动作：隐蔽性差或失误多时先检查架拍、握拍和挥拍基础；基础球友保留完整引拍和发力空间，先稳定出球，再逐步集中、缩小动作；前半段放松，触球瞬间加速。清晰的线性动作更稳定准确，小而快的动作需要更高的球感、距离感和手指手腕力量。",
+      "retrieval_title": "后场基础：完整框架、触球加速与逐步缩小动作",
+      "category_override": "后场技术",
+      "tags_override": [
+        "后场技术",
+        "训练与纠错",
+        "架拍与后场框架"
+      ],
+      "reviewed_at": "2026-07-21T23:45:15Z"
+    },
     {
       "rank": 1,
       "video_id": "7656927370758796145",

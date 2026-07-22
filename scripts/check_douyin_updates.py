@@ -111,6 +111,16 @@ def validate_snapshot_payload(payload, known_count, source_config, current_time=
             f"expected {expected_profile_id}, observed {observed_profile_id or 'missing'}"
         )
 
+    if int(payload.get("collector_version") or 0) >= 3:
+        if payload.get("snapshot_scope") != "incremental_recent_profile_observation":
+            raise ValueError(
+                "Snapshot scope must identify an incremental profile observation"
+            )
+        if payload.get("full_profile_archive") is not False:
+            raise ValueError("Incremental snapshots must not claim to be full profile archives")
+        if payload.get("scroll_stabilized") is not True:
+            raise ValueError("Incremental snapshot scrolling did not stabilize")
+
     videos = payload.get("videos")
     if not isinstance(videos, list):
         raise ValueError("Snapshot videos must be a list")
@@ -456,7 +466,9 @@ def main():
     parser.add_argument(
         "--input",
         type=Path,
-        default=ROOT / "data" / "tmp" / "douyin_profile_latest.json",
+        default=(
+            ROOT / "data" / "tmp" / "douyin_profile_incremental_snapshot.json"
+        ),
         help="Observed homepage JSON with a videos/items list",
     )
     parser.add_argument(

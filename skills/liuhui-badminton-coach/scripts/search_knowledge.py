@@ -1523,10 +1523,18 @@ def apply_feedback_layers(
     return reranked, guidance
 
 
+def searchable_teaching_note(note):
+    return {
+        key: value
+        for key, value in note.items()
+        if key != "coverage_evidence"
+    }
+
+
 def field_values(video):
     return {
         "title": video.get("retrieval_title") or video["title"],
-        "teaching_note": flatten(video["teaching_note"]),
+        "teaching_note": flatten(searchable_teaching_note(video["teaching_note"])),
     }
 
 
@@ -1560,7 +1568,9 @@ def dynamic_term_statistics(knowledge, terms):
             continue
         field_text = {
             "title": normalize(video.get("retrieval_title") or video["title"]),
-            "teaching_note": normalize(flatten(video["teaching_note"])),
+            "teaching_note": normalize(
+                flatten(searchable_teaching_note(video["teaching_note"]))
+            ),
             "transcript": normalize(
                 "".join(
                     segment.get("text", "")
@@ -2399,6 +2409,7 @@ def compact_quality(quality):
 def compact_teaching_note(note):
     evidence_fields = {
         "key_evidence",
+        "coverage_evidence",
         "error_evidence",
         "action_cues",
         "principles",

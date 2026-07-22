@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-07-21T19:38:18.837282+00:00",
+  "generated_at": "2026-07-21T23:48:06.897584+00:00",
   "source": "data/douyin_video_index.json",
   "classification_rules": {
     "version": 3,
@@ -20,7 +20,7 @@
       "raw_text": "4357 后场基础 进阶后的样子可以当成目标，但是不能直接在目标动作上训练，要一步一个脚印的#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "author_status": "主页最新作品区发现",
       "decision": "保留：教学",
-      "decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "decision_reason": "既有用户复核确认教学内容",
       "primary_category": "后场技术",
       "tags": "后场技术；训练与纠错",
       "classification_rules_version": 3,
@@ -37,8 +37,8 @@
       "automatic_decision": "保留：教学",
       "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
       "previous_decision": "保留：教学",
-      "migration_action": "accept_current_rules",
-      "classified_at": "2026-07-21T19:38:18.837282+00:00"
+      "migration_action": "preserve_reviewed_keep",
+      "classified_at": "2026-07-21T23:48:06.897584+00:00"
     },
     {
       "video_id": "7663523942439940453",

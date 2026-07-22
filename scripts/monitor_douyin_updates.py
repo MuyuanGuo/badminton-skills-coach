@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SNAPSHOT = ROOT / "data" / "tmp" / "douyin_profile_latest.json"
+DEFAULT_SNAPSHOT = ROOT / "data" / "tmp" / "douyin_profile_incremental_snapshot.json"
 DEFAULT_REPORT = ROOT / "output" / "douyin-update-report.json"
 DEFAULT_STATE = ROOT / "output" / "douyin-monitor-state.json"
 

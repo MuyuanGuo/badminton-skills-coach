@@ -1,16 +1,16 @@
 {
   "version": "topic-index-v2",
-  "taxonomy_version": "topic-taxonomy-v10",
+  "taxonomy_version": "topic-taxonomy-v11",
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-21T19:41:04.105743+00:00",
+  "source_updated_at": "2026-07-22T00:07:06.843715+00:00",
   "video_count": 408,
   "indexable_video_count": 353,
   "assigned_video_count": 353,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 93,
-  "multi_topic_video_count": 148,
+  "multi_topic_video_count": 147,
   "categories": [
     {
       "name": "后场技术",
@@ -326,7 +326,6 @@
             "7628342769941691121",
             "7656560952972884730",
             "7344186576013905187",
-            "7664908274752137146",
             "7169772952039345411",
             "7145708380047297833",
             "7641533740292048049",
@@ -339,6 +338,7 @@
             "7262546080133401890",
             "7517867684509420857",
             "7486788550298471739",
+            "7664908274752137146",
             "7102635326803332393",
             "7497098752897879355"
           ],
@@ -3586,7 +3586,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 21,
+      "video_count": 17,
       "subtopics": [
         {
           "name": "发小球",
@@ -3699,10 +3699,17 @@
             "发球变化",
             "隐蔽"
           ],
-          "context_any": [],
+          "context_any": [
+            "发球",
+            "发小球",
+            "发后场",
+            "发高远",
+            "偷后场",
+            "接发"
+          ],
           "is_fallback": false,
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 8,
+          "ready_count": 8,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7483346020332522812",
@@ -3710,12 +3717,8 @@
             "7517867684509420857",
             "7124871920230632745",
             "7291120515530493184",
-            "7071068959021255951",
-            "7664908274752137146",
             "7271452082337598760",
-            "7174229898238676228",
             "7113001319694224655",
-            "7172742523096517927",
             "7118192644957818127"
           ],
           "representative_videos": [

@@ -153,7 +153,9 @@ const snapshot = await context.window.__collectDouyinProfileSnapshot({
   settleMs: 0,
 });
 
-assert.equal(snapshot.collector_version, 2);
+assert.equal(snapshot.collector_version, 3);
+assert.equal(snapshot.snapshot_scope, "incremental_recent_profile_observation");
+assert.equal(snapshot.full_profile_archive, false);
 assert.equal(snapshot.collected_unique_links, 2);
 assert.deepEqual(
   Array.from(snapshot.videos, (item) => item.video_id),
@@ -162,7 +164,7 @@ assert.deepEqual(
 assert.ok(!snapshot.videos.some((item) => item.video_id === "7579314130383234937"));
 assert.ok(!snapshot.videos.some((item) => item.video_id === "7319487299002092836"));
 assert.ok(!snapshot.videos.some((item) => item.video_id === "7319487299002092999"));
-assert.equal(snapshot.collection_complete, true);
+assert.equal(snapshot.scroll_stabilized, true);
 await assert.rejects(
   context.window.__collectDouyinProfileSnapshot({
     expectedProfileId: "wrong-profile",
