@@ -4,7 +4,7 @@
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
-![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.png)
+![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)
 
 面向 Codex 的证据驱动羽毛球教练 Skill：把公开教学视频变成可检索、可引用、可回归验证的训练建议，并给出值得观看的视频、时间戳和证据边界。
 

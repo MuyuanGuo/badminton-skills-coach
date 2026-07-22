@@ -143,8 +143,8 @@ def update_readme_text(
     )
     readme = replace_optional(
         readme,
-        r"^!\[Badminton Skills Coach：\d+ 条教学视频、证据型检索与刘辉教学图谱\]\(\.github/assets/social-preview\.png\)$",
-        f"![Badminton Skills Coach：{ready_count} 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)",
+        r"^!\[Badminton Skills Coach：\d+ 条教学视频、证据型检索与刘辉教学图谱\]\(\.github/assets/social-preview\.(?:png|jpg)\)$",
+        "![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)",
         "README social-preview alt text",
     )
     readme = replace_optional(
