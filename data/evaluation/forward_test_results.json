@@ -1,7 +1,7 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus three consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "901b86d90bccf06ee91745df3b193eaf9f7e2986cb9c2f4b90e2f781f7139eb9",
+  "runtime_fingerprint": "dfec02b3bd96126fe0a97f87716f72eab31e4fc5e5fe9b5f8ab832e20bfcf00c",
   "results": [
     {
       "case_id": "AQ055",
