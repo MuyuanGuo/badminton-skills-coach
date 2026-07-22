@@ -54,6 +54,20 @@ class EvaluationReportTests(unittest.TestCase):
             right.write_text("changed", encoding="utf-8")
             self.assertNotEqual(original, self.module.hash_paths([left, right], root))
 
+    def test_input_fingerprint_uses_explicit_committed_inputs(self):
+        self.assertIn(
+            "data/evaluation/evaluation_baselines.json",
+            self.module.EVALUATION_INPUTS,
+        )
+        self.assertNotIn(
+            "data/evaluation/evaluation_report.json",
+            self.module.EVALUATION_INPUTS,
+        )
+        self.assertNotIn(
+            "data/knowledge/liuhui_badminton_map.json",
+            self.module.EVALUATION_INPUTS,
+        )
+
     def test_baseline_comparison_honors_direction_and_tolerance(self):
         evaluations = {"suite": {"score": 0.98, "errors": 0, "ready": True}}
         baseline = {

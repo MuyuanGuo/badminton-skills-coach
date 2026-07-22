@@ -24,6 +24,7 @@ BASELINE_PATH = ROOT / "data" / "evaluation" / "evaluation_baselines.json"
 REPORT_PATH = ROOT / "data" / "evaluation" / "evaluation_report.json"
 HTML_PATH = ROOT / "docs" / "evaluation" / "index.html"
 CORE_EVALUATORS = (
+    "build_douyin_knowledge.py",
     "evaluate_answer_context.py",
     "evaluate_answer_policy.py",
     "evaluate_answer_quality.py",
@@ -32,6 +33,21 @@ CORE_EVALUATORS = (
     "evaluate_query_understanding.py",
     "evaluate_retrieval.py",
     "evaluate_video_comprehension.py",
+)
+EVALUATION_INPUTS = (
+    "config/answer_quality_rules.json",
+    "config/feedback_rules.json",
+    "config/knowledge_quality_rules.json",
+    "data/evaluation/answer_modality_cases.json",
+    "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/answer_quality_cases.json",
+    "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/evaluation_baselines.json",
+    "data/evaluation/forward_test_results.json",
+    "data/evaluation/query_equivalence_cases.json",
+    "data/evaluation/query_understanding_cases.json",
+    "data/knowledge/douyin_knowledge_base.json",
+    "data/knowledge/retrieval_index.json",
 )
 
 
@@ -64,14 +80,7 @@ def hash_paths(paths, root=ROOT):
 
 def fingerprint_paths(root=ROOT):
     root = Path(root)
-    input_paths = []
-    for directory in (root / "config", root / "data" / "evaluation", root / "data" / "knowledge"):
-        input_paths.extend(directory.glob("*.json"))
-    input_paths = [
-        path
-        for path in input_paths
-        if path not in {root / "data/evaluation/evaluation_report.json"}
-    ]
+    input_paths = [root / relative for relative in EVALUATION_INPUTS]
     runtime_paths = [root / "scripts" / name for name in CORE_EVALUATORS]
     runtime_paths.extend(
         path
