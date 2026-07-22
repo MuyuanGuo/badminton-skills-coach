@@ -1088,7 +1088,7 @@ for docs_path, docs_status_contract in docs_pages:
     for docs_version_contract in [
         docs_status_contract,
         f"releases/download/v{stable_version}",
-        f"liuhui-badminton-coach-v{stable_version}.zip",
+        f"liuhui-badminton-coach-{stable_version}.zip",
     ]:
         if docs_version_contract not in docs_text:
             raise SystemExit(

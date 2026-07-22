@@ -111,13 +111,13 @@ flowchart TD
 ### 安装稳定版
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/liuhui-badminton-coach-v1.3.0.zip \
-  -o /tmp/liuhui-badminton-coach-v1.3.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/liuhui-badminton-coach-1.3.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.3.0.zip
 curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-v1.3.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.3.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ```
 
