@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "asr_canonicalization": {
     "架盘": "架拍",
     "架攀": "架拍",
@@ -34,6 +34,9 @@
     "maximum_window_segment_overlap": 0.5,
     "minimum_instruction_signal_matches_for_single_term": 1,
     "key_evidence_limit": 5,
+    "coverage_evidence_limit": 3,
+    "coverage_evidence_temporal_buckets": 3,
+    "minimum_duration_for_temporal_coverage_seconds": 90,
     "error_evidence_limit": 3,
     "action_cue_limit": 4,
     "teaching_terms": [

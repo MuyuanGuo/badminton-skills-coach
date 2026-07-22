@@ -238,6 +238,25 @@ class AnswerContextTests(unittest.TestCase):
             serve_target["shot_family"], ["deep_serve", "short_serve"]
         )
 
+    def test_deep_serve_query_excludes_rear_court_stroke_video(self):
+        context = self.context_module.prepare_answer_context(
+            "发后场球怎么增加变化和隐蔽性？",
+            max_videos=8,
+            local_personalization=False,
+        )
+        selected_ids = {
+            video["video_id"] for video in context["selected_videos"]
+        }
+        self.assertNotIn("7664908274752137146", selected_ids)
+        self.assertTrue(context["selected_videos"])
+        self.assertTrue(
+            all(
+                "serve"
+                in video["constraint_scope"]["serve_role"]["values"]
+                for video in context["selected_videos"]
+            )
+        )
+
     def test_downward_pressure_is_not_silently_parsed_as_smash(self):
         net_pressure = self.context_module.query_constraints(
             self.search_module,

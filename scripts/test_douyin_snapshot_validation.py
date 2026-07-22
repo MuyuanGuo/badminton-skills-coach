@@ -79,6 +79,27 @@ class DouyinSnapshotValidationTests(unittest.TestCase):
                 mismatched_count, 40, self.config, self.now
             )
 
+    def test_v3_snapshot_declares_incremental_scope_and_scroll_completion(self):
+        payload = self.payload()
+        payload.update(
+            {
+                "collector_version": 3,
+                "snapshot_scope": "incremental_recent_profile_observation",
+                "full_profile_archive": False,
+                "scroll_stabilized": True,
+            }
+        )
+        result = self.module.validate_snapshot_payload(
+            payload, 40, self.config, self.now
+        )
+        self.assertEqual(result["observed"], 5)
+
+        payload["scroll_stabilized"] = False
+        with self.assertRaisesRegex(ValueError, "did not stabilize"):
+            self.module.validate_snapshot_payload(
+                payload, 40, self.config, self.now
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

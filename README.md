@@ -157,14 +157,16 @@ python3 scripts/doctor.py --profile all
 在已登录抖音的浏览器中打开“刘辉羽毛球”主页，运行 `scripts/douyin_profile_snapshot_dom.js`，并把结果保存为：
 
 ```text
-data/tmp/douyin_profile_latest.json
+data/tmp/douyin_profile_incremental_snapshot.json
 ```
+
+该文件只保存本次滚动过程中观察到的近期主页卡片，用于发现增量；它会被下一次采集覆盖，不是完整主页归档，也不会替代正式视频索引。
 
 预览新视频和分类结果：
 
 ```bash
 python3 scripts/check_douyin_updates.py \
-  --input data/tmp/douyin_profile_latest.json \
+  --input data/tmp/douyin_profile_incremental_snapshot.json \
   --report output/douyin-update-report.json
 ```
 
@@ -172,7 +174,7 @@ python3 scripts/check_douyin_updates.py \
 
 ```bash
 python3 scripts/check_douyin_updates.py \
-  --input data/tmp/douyin_profile_latest.json \
+  --input data/tmp/douyin_profile_incremental_snapshot.json \
   --report output/douyin-update-report.json \
   --apply
 ```

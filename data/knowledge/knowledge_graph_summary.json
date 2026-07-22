@@ -2,11 +2,11 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-21T19:41:04.105743+00:00",
+  "source_updated_at": "2026-07-22T00:07:06.843715+00:00",
   "video_count": 408,
   "indexable_video_count": 353,
   "assigned_video_count": 353,
-  "multi_topic_video_count": 148,
+  "multi_topic_video_count": 147,
   "categories": [
     {
       "name": "后场技术",
@@ -1410,7 +1410,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 21,
+      "video_count": 17,
       "subtopics": [
         {
           "name": "发小球",
@@ -1461,8 +1461,8 @@
             "发球变化",
             "隐蔽"
           ],
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 8,
+          "ready_count": 8,
           "is_fallback": false,
           "representative_videos": [
             {

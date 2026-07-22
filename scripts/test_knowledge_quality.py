@@ -194,6 +194,31 @@ class KnowledgeQualityTests(unittest.TestCase):
             len({item["timestamp"] for item in evidence}), len(evidence)
         )
 
+    def test_long_transcript_key_evidence_covers_later_time_buckets(self):
+        item = {
+            "title": "后场架拍和发力",
+            "category": "后场技术",
+            "tags": "后场技术；训练与纠错",
+        }
+        early_evidence_indexes = {0, 3, 6, 9, 11}
+        segments = [
+            {
+                "start": index * 12,
+                "end": index * 12 + 4,
+                "text": (
+                    "先检查后场架拍和发力是否完整。"
+                    if index in early_evidence_indexes
+                    else "明显的直线挥拍更稳定。"
+                    if index == 17
+                    else "继续说明动作。"
+                ),
+            }
+            for index in range(18)
+        ]
+        note = automatic_note(item, segments, RULES)
+        evidence = note["note"]["coverage_evidence"]
+        self.assertTrue(any(item["timestamp"].startswith("03:12") for item in evidence))
+
     def test_language_and_han_quality_are_both_enforced(self):
         source = transcript("bad audio transcript ", language="en", probability=0.3)
         quality = assess_transcript(source, RULES)

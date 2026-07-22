@@ -59,7 +59,9 @@ def compile_terms(terms):
     return re.compile("|".join(re.escape(term) for term in values)) if values else None
 
 
-def select_evidence(segments, patterns, limit, rules):
+def select_evidence(
+    segments, patterns, limit, rules, temporal_buckets=1, minimum_duration=0
+):
     selected = []
     scored = []
     evidence_rules = rules["evidence"]
@@ -72,7 +74,32 @@ def select_evidence(segments, patterns, limit, rules):
         )
         if score:
             scored.append((score, len(canonical_text), index))
-    for _, _, index in sorted(scored, key=lambda item: (-item[0], item[2])):
+    ranked = sorted(scored, key=lambda item: (-item[0], item[2]))
+    ordered_indexes = []
+    if segments and temporal_buckets > 1:
+        transcript_start = float(segments[0].get("start") or 0)
+        transcript_end = float(
+            segments[-1].get("end") or segments[-1].get("start") or transcript_start
+        )
+        duration = transcript_end - transcript_start
+        if duration >= minimum_duration:
+            for bucket in range(temporal_buckets):
+                bucket_start = transcript_start + duration * bucket / temporal_buckets
+                bucket_end = transcript_start + duration * (bucket + 1) / temporal_buckets
+                candidates = [
+                    item
+                    for item in ranked
+                    if bucket_start
+                    <= float(segments[item[2]].get("start") or 0)
+                    < bucket_end
+                ]
+                if candidates:
+                    ordered_indexes.append(candidates[0][2])
+    ordered_indexes.extend(
+        index for _, _, index in ranked if index not in ordered_indexes
+    )
+
+    for index in ordered_indexes:
         item = evidence_window(segments, index, rules)
         if len(re.sub(r"\s+", "", item["text"])) < evidence_rules.get(
             "minimum_evidence_window_characters", 1
@@ -216,6 +243,35 @@ def automatic_note(item, segments, rules):
         evidence_rules["key_evidence_limit"],
         rules,
     )
+    coverage_evidence = []
+    minimum_coverage_duration = evidence_rules.get(
+        "minimum_duration_for_temporal_coverage_seconds", 0
+    )
+    transcript_duration = (
+        float(segments[-1].get("end") or segments[-1].get("start") or 0)
+        - float(segments[0].get("start") or 0)
+        if segments
+        else 0
+    )
+    if transcript_duration >= minimum_coverage_duration:
+        coverage_evidence = select_evidence(
+            segments,
+            [(topic_pattern, 3), (teaching_pattern, 1)],
+            evidence_rules.get("coverage_evidence_limit", 3),
+            rules,
+            temporal_buckets=evidence_rules.get(
+                "coverage_evidence_temporal_buckets", 1
+            ),
+            minimum_duration=minimum_coverage_duration,
+        )
+        key_markers = {
+            (item.get("timestamp"), item.get("text")) for item in key_evidence
+        }
+        coverage_evidence = [
+            item
+            for item in coverage_evidence
+            if (item.get("timestamp"), item.get("text")) not in key_markers
+        ]
     error_evidence = select_evidence(
         segments,
         [(compile_terms(evidence_rules["error_terms"]), 1)],
@@ -263,14 +319,17 @@ def automatic_note(item, segments, rules):
         < evidence_rules.get("minimum_instruction_signal_matches_for_single_term", 0)
     ):
         issues.append("single_term_without_instruction_signal")
+    note = {
+        "topic": clean_title(item["title"]).split("，")[0][:100],
+        "key_evidence": key_evidence,
+        "error_evidence": error_evidence,
+        "action_cues": action_cues,
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。",
+    }
+    if coverage_evidence:
+        note["coverage_evidence"] = coverage_evidence
     return {
-        "note": {
-            "topic": clean_title(item["title"]).split("，")[0][:100],
-            "key_evidence": key_evidence,
-            "error_evidence": error_evidence,
-            "action_cues": action_cues,
-            "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。",
-        },
+        "note": note,
         "quality": {
             "topic_terms": topic_values,
             "key_evidence_count": len(key_evidence),

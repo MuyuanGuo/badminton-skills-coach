@@ -36,7 +36,16 @@ def video_text_fields(video):
     evidence = {
         key: value
         for key, value in note.items()
-        if key not in {"title", "topic", "problem", "video_id", "url", "category"}
+        if key
+        not in {
+            "title",
+            "topic",
+            "problem",
+            "video_id",
+            "url",
+            "category",
+            "coverage_evidence",
+        }
     }
     return {
         "title": str(video.get("retrieval_title") or video["title"]).lower(),
@@ -160,6 +169,39 @@ def build_index(data, taxonomy=None):
                     taxonomy["default_minimum_score"],
                     {"title": 0, "focus": 0, "evidence": 0},
                     assignment_method="reviewed_override",
+                )
+            )
+            coverage_counter[video_id] += 1
+
+    for video_id, topic_ids in taxonomy.get(
+        "reviewed_video_topic_replacements", {}
+    ).items():
+        video = videos_by_id.get(video_id)
+        if video is None:
+            raise ValueError(
+                f"Reviewed topic replacement references a non-ready video: {video_id}"
+            )
+        unknown_topics = [
+            topic_id for topic_id in topic_ids if topic_id not in topic_rules
+        ]
+        if unknown_topics:
+            raise ValueError(
+                f"Reviewed topic replacement references unknown topics: {unknown_topics}"
+            )
+        for topic_id in matches_by_topic:
+            matches_by_topic[topic_id] = [
+                item
+                for item in matches_by_topic[topic_id]
+                if item["video_id"] != video_id
+            ]
+        coverage_counter[video_id] = 0
+        for topic_id in topic_ids:
+            matches_by_topic[topic_id].append(
+                compact_video(
+                    video,
+                    taxonomy["default_minimum_score"],
+                    {"title": 0, "focus": 0, "evidence": 0},
+                    assignment_method="reviewed_replacement",
                 )
             )
             coverage_counter[video_id] += 1

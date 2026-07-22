@@ -1,5 +1,5 @@
 {
-  "version": 36,
+  "version": 37,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -527,6 +527,14 @@
     }
   ],
   "required_constraint_support_conditions": [
+    {
+      "axis": "serve_role",
+      "when_requested": {
+        "serve_role": ["serve"]
+      },
+      "unsupported_matches": ["unspecified_support", "incidental_support"],
+      "failure_reason": "specific_serve_role_not_supported"
+    },
     {
       "axis": "court_zone",
       "when_requested": {
