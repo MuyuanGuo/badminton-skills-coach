@@ -90,6 +90,8 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn('hreflang="zh-CN"', english)
         self.assertIn("releases/latest", chinese)
         self.assertIn("releases/latest", english)
+        self.assertIn("./evaluation/", chinese)
+        self.assertIn("../evaluation/", english)
 
 
 if __name__ == "__main__":
