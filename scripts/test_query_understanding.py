@@ -25,10 +25,33 @@ class QueryUnderstandingTests(unittest.TestCase):
     def test_reviewed_registry_routes_all_cases_correctly(self):
         result = self.module.evaluate()
         self.assertEqual(result["reviewed_cases"], 57)
-        self.assertEqual(result["adversarial_cases"], 84)
-        self.assertEqual(result["cases"], 141)
-        self.assertEqual(result["passed"], 141)
+        self.assertEqual(result["adversarial_cases"], 86)
+        self.assertEqual(result["cases"], 143)
+        self.assertEqual(result["passed"], 143)
         self.assertEqual(result["accuracy"], 1.0)
+
+    def test_ambiguous_sequence_is_reported(self):
+        result = self.module.evaluate()
+        case = next(item for item in result["results"] if item["case_id"] == "QUA085")
+        self.assertTrue(case["matched"])
+        self.assertEqual(
+            case["actual"]["ambiguities"],
+            ["drop_then_smash_or_smash_receive"],
+        )
+
+    def test_doubles_actor_chain_is_preserved(self):
+        result = self.module.evaluate()
+        case = next(item for item in result["results"] if item["case_id"] == "QUA086")
+        self.assertTrue(case["matched"])
+        self.assertEqual(
+            [(item["actor"], item["role"]) for item in case["actual"]["event_chain"]],
+            [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
+        )
 
     def test_negated_positive_topic_is_checked_separately_from_excluded_topic(self):
         registry = self.module.load_json(self.module.CASES_PATH)

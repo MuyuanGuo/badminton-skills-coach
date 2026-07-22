@@ -143,6 +143,69 @@
   ],
   "multi_actor_sequence_implications": [
     {
+      "name": "lift_partner_forecourt_opponent_push_behind_rotation",
+      "events": [
+        {
+          "actor": "player",
+          "role": "prior_action",
+          "terms": [
+            "挑球到后场",
+            "挑到后场",
+            "挑球"
+          ]
+        },
+        {
+          "actor": "partner",
+          "role": "coverage_condition",
+          "terms": [
+            "抢到网前",
+            "守在网前",
+            "留在网前",
+            "网前"
+          ]
+        },
+        {
+          "actor": "opponent",
+          "role": "response",
+          "terms": [
+            "推过他身后",
+            "推过她身后",
+            "推过搭档身后",
+            "推过队友身后",
+            "推到身后"
+          ]
+        },
+        {
+          "actor": "player",
+          "role": "target_action",
+          "terms": [
+            "退守哪块区域",
+            "退守哪里",
+            "退守哪边",
+            "守哪块区域",
+            "该守哪里",
+            "应该守哪里"
+          ]
+        }
+      ],
+      "canonical_action_query": "双打轮转补位",
+      "derived_constraints": {
+        "discipline": [
+          "doubles"
+        ]
+      },
+      "requested_action_scopes": [
+        "team_coverage_rotation"
+      ],
+      "search_terms": [
+        "双打 轮转 补位",
+        "双打 防守轮转",
+        "双打 搭档保护"
+      ],
+      "retain_prior_player_constraints": false,
+      "reason": "球员挑后场、搭档在网前且对手把球推过搭档身后时，当前问题是本方下一拍防守轮转，不是先前挑球手法。"
+    },
+    {
       "name": "smash_partner_retreat_opponent_net_rotation",
       "events": [
         {"actor": "player", "role": "prior_action", "terms": ["杀球", "扣杀", "重杀", "跳杀", "点杀", "快杀", "轻杀", "劈杀", "霸王杀", "遁地炮"]},
@@ -493,6 +556,12 @@
       "query_terms": ["远网", "远网球"],
       "resolved_by_terms": ["平搓远网", "中路远网", "远网分球", "防远网转推", "远网转推", "远网吊球", "远网吊"],
       "required_statement": "“远网”不是单一动作，可能指平搓远网、中路远网分球、防远网转推或远网吊球；未说明具体场景时，必须分支说明，不得把其中一种手法写成全部远网的通用动作。"
+    },
+    {
+      "name": "drop_then_smash_or_smash_receive",
+      "query_terms": ["吊球接杀球", "吊接杀"],
+      "resolved_by_terms": ["吊球后杀球", "吊球后接着杀球", "吊球后衔接杀球", "吊球之后杀球", "吊球后衔接下一拍杀球", "吊球和杀球衔接", "吊杀衔接", "接杀防守", "接对方杀球", "接杀以后"],
+      "required_statement": "“吊球接杀球”可能指吊球后衔接下一拍杀球，也可能指吊球与接杀防守两项练习；必须先确认所指序列，不得静默按其中一种解释。"
     }
   ],
   "required_focus_equivalent_groups": [

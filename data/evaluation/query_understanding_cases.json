@@ -2249,6 +2249,58 @@
         {"actor": "opponent", "role": "response", "term": "放网"},
         {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
       ]
+    },
+    {
+      "case_id": "QUA085",
+      "query": "我每次只能独练12分钟，没有陪练，想把吊球接杀球练顺；请安排今天、三天修正和两周进阶",
+      "intent_summary": "把吊球接杀球识别为可能表示吊后杀球序列或吊球加接杀防守的歧义表达，要求先确认而不是静默收窄",
+      "expected_intent": {
+        "positive_query_contains": ["独练12分钟", "没有陪练", "吊球接杀球", "三天修正", "两周进阶"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": [],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "shot_family": ["drop", "smash", "smash_block"],
+        "tactical_phase": ["defense"]
+      },
+      "expected_player_constraints": {
+        "shot_family": ["drop", "smash", "smash_block"],
+        "tactical_phase": ["defense"]
+      },
+      "expected_ambiguity_names": ["drop_then_smash_or_smash_receive"]
+    },
+    {
+      "case_id": "QUA086",
+      "query": "我挑球到后场后，搭档抢到网前，对手把球推过他身后；这时我应该退守哪块区域",
+      "intent_summary": "把挑后场、搭档抢网、对手推过搭档身后和球员退守区域保留为四步双打轮转事件链",
+      "expected_intent": {
+        "positive_query_contains": ["我挑球到后场", "搭档抢到网前", "对手把球推过他身后", "我应该退守哪块区域"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["后场", "网前"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {"discipline": ["doubles"]},
+      "expected_opponent_constraints": {},
+      "expected_partner_constraints": {"court_zone": ["forecourt"]},
+      "expected_player_constraints": {"discipline": ["doubles"]},
+      "expected_derived_target_constraints": {},
+      "expected_target_actor": "player",
+      "expected_target_action_query": "双打轮转补位",
+      "expected_target_condition_query": "我挑球到后场后，搭档抢到网前，对手把球推过他身后；这时我应该退守哪块区域",
+      "expected_target_action_constraints": {"discipline": ["doubles"]},
+      "expected_target_condition_constraints": {},
+      "expected_requested_action_scopes": ["team_coverage_rotation"],
+      "expected_event_chain": [
+        {"actor": "player", "role": "prior_action", "term": "挑球到后场"},
+        {"actor": "partner", "role": "coverage_condition", "term": "抢到网前"},
+        {"actor": "opponent", "role": "response", "term": "推过他身后"},
+        {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
+      ]
     }
   ]
 }
