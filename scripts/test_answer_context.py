@@ -1209,6 +1209,12 @@ class AnswerContextTests(unittest.TestCase):
                 ("opponent", "response"),
                 ("player", "target_action"),
             ],
+            "我挑球到后场后，搭档抢到网前，对手把球推过他身后；这时我应该退守哪块区域": [
+                ("player", "prior_action"),
+                ("partner", "coverage_condition"),
+                ("opponent", "response"),
+                ("player", "target_action"),
+            ],
         }
         expected_ids = {"7656927370758796145", "7614167503938610417"}
         for query, expected_chain in cases.items():

@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "description": "Auditable critical-answer forward tests plus two consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "33e9485c485e038bd1633eabbcb4f9d0f04b563d76f72e04aebced54bd35866d",
+  "description": "Auditable critical-answer forward tests plus three consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
+  "runtime_fingerprint": "901b86d90bccf06ee91745df3b193eaf9f7e2986cb9c2f4b90e2f781f7139eb9",
   "results": [
     {
       "case_id": "AQ055",
@@ -342,6 +342,121 @@
             }
           ],
           "review_notes": "纠错词只用于输入纠正，规范术语和比较结论一致；没有使用泛技术来源替代命名技术的直接证据。"
+        }
+      ]
+    },
+    {
+      "round_id": "I3",
+      "sequence": 3,
+      "tested_at": "2026-07-22",
+      "validation_mode": "same_agent_structural_audit",
+      "reviewer": "Codex same-task structural audit",
+      "independence_disclosure": "This third round used four fresh prompts after the first two rounds and after two newly discovered failures were moved into the regression registry; it was reviewed by the same agent and is not independent human or subagent validation.",
+      "verdict": "pass",
+      "cases": [
+        {
+          "case_id": "I3-01",
+          "query": "我只能独练11分钟，没人喂球，想练普通吊球后衔接下一拍杀球；给我今天安排、三天修正和两周巩固",
+          "verdict": "pass",
+          "reviewed_dimensions": [
+            "question_interpretation",
+            "evidence_selection",
+            "answer_boundaries",
+            "actionability"
+          ],
+          "question_interpretation_summary": "明确解析为普通吊球后衔接下一拍杀球，保留独练、11分钟、今天、三天和两周五项计划约束，并且不再误解为接杀防守。",
+          "selected_evidence": [
+            {
+              "evidence_id": "7520190707093654844",
+              "relevance": "直接支持普通吊球的拍面、球头向下和动作一致性，只作为吊球分解证据。"
+            }
+          ],
+          "review_notes": "完整答案将11分钟精确分成2分钟热身、4分钟普通吊球分解、3分钟无球衔接影子和2分钟自测，并给出三天与两周升级条件；由于证据只覆盖普通吊球，不把杀球或完整吊杀序列包装成刘辉已直接讲授的结论，衔接段明确标为保守练习结构和待补证据边界。"
+        },
+        {
+          "case_id": "I3-02",
+          "query": "别人说远网训练，我不知道指防远网转推、平搓远网、中路分球还是远网吊球；请先拆开术语再说各自有什么证据",
+          "verdict": "pass",
+          "reviewed_dimensions": [
+            "question_interpretation",
+            "evidence_selection",
+            "answer_boundaries",
+            "actionability"
+          ],
+          "question_interpretation_summary": "把远网拆成防远网转推、平搓远网、中路分球和远网吊球四个明确子项，不把总称静默收窄为单一技术。",
+          "selected_evidence": [
+            {
+              "evidence_id": "7258462271670586658",
+              "relevance": "直接支持防远网转推的让位、少冲一步、手臂小臂手指发力和两侧移动练习。"
+            },
+            {
+              "evidence_id": "7411850466457292084",
+              "relevance": "直接支持平搓远网的使用来球、正反手拍面、手腕路径、手指加速和下一拍举拍。"
+            },
+            {
+              "evidence_id": "7093706918492917033",
+              "relevance": "支持远网吊球作为软压选择的战术场景和下一拍衔接，但不证明手部动作细节。"
+            }
+          ],
+          "review_notes": "答案逐项说明三条来源各自能证明的内容，并明确知识库当前没有入选证据支持中路分球；不会把防远网转推、平搓远网或远网吊球互相替代，也不会用远网吊球的战术证据扩写动作细节。"
+        },
+        {
+          "case_id": "I3-03",
+          "query": "我挑球到后场，搭档留在网前，对面推过她身后；我应该守哪里",
+          "verdict": "pass",
+          "reviewed_dimensions": [
+            "question_interpretation",
+            "evidence_selection",
+            "answer_boundaries",
+            "actionability"
+          ],
+          "question_interpretation_summary": "按球员挑后场、搭档留网前、对手推过搭档身后、球员双打轮转补位的四步事件链解析；她明确指向搭档，建议对象仍是球员。",
+          "selected_evidence": [
+            {
+              "evidence_id": "7656927370758796145",
+              "relevance": "支持前场队员出球后由搭档处理中场与对角线路，以及球员向后轮转。"
+            },
+            {
+              "evidence_id": "7619576226616745445",
+              "relevance": "支持按自己、搭档和空当位置组织双打覆盖。"
+            },
+            {
+              "evidence_id": "7074399231259266344",
+              "relevance": "支持保护搭档未覆盖区域的团队目标。"
+            },
+            {
+              "evidence_id": "7087759120761228578",
+              "relevance": "作为特定混双前后分工条件下的轮转补充，不概括为所有组合通则。"
+            },
+            {
+              "evidence_id": "7614167503938610417",
+              "relevance": "支持后面的人跟随前面的人移动、覆盖空边和实战轮转容错。"
+            },
+            {
+              "evidence_id": "7106697344128748835",
+              "relevance": "支持队友留前时按回球线路退回对应后场区域或先保持平行防守。"
+            }
+          ],
+          "review_notes": "答案将球员责任限定为搭档身后和未覆盖后区，并根据对手推球线路说明侧向调整；先前挑球只作为事件条件，不退化为挑球教学，混双专项来源也保留其额外条件。"
+        },
+        {
+          "case_id": "I3-04",
+          "query": "我想学假挑真放；只演示动作并说以后再教的视频，能不能证明完整手法？现在可靠能学到什么",
+          "verdict": "pass",
+          "reviewed_dimensions": [
+            "question_interpretation",
+            "evidence_selection",
+            "answer_boundaries",
+            "actionability"
+          ],
+          "question_interpretation_summary": "识别假挑真放命名技术，同时把问题拆成预告式演示能否证明完整手法，以及当前直接证据实际支持哪些动作要点。",
+          "selected_evidence": [
+            {
+              "evidence_id": "7151961376448138531",
+              "relevance": "直接讲正反手假挑真放的锁腕、向上处理、切削球头和手指手腕误用边界。"
+            }
+          ],
+          "review_notes": "答案先明确仅演示并承诺以后教学的片段不能单独证明完整手法，再只从当前直接教学段落提炼锁腕、向上削击和避免额外手指手腕发力；不把单个片段宣称为完整课程，也保留正反手和前场范围。"
         }
       ]
     }

@@ -161,6 +161,10 @@ def validate_registry(registry, answer_registry):
             case["expected_event_chain"], list
         ):
             raise ValueError(f"{case_id} has an invalid event chain contract")
+        if "expected_ambiguity_names" in case and not isinstance(
+            case["expected_ambiguity_names"], list
+        ):
+            raise ValueError(f"{case_id} has an invalid ambiguity contract")
     return cases, adversarial_cases
 
 
@@ -307,6 +311,18 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             checks["event_chain"] = (
                 actor_context["event_chain"] == case["expected_event_chain"]
             )
+        ambiguity_names = [
+            item["name"]
+            for item in context_module.query_ambiguities(
+                search_module,
+                intent_frame.get("actor_query", intent_frame["positive_query"]),
+                selection_rules,
+            )
+        ]
+        if "expected_ambiguity_names" in case:
+            checks["ambiguities"] = (
+                ambiguity_names == case["expected_ambiguity_names"]
+            )
         mismatches = [field for field, matched in checks.items() if not matched]
         results.append(
             {
@@ -351,6 +367,11 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                         if "expected_event_chain" in case
                         else {}
                     ),
+                    **(
+                        {"ambiguities": case["expected_ambiguity_names"]}
+                        if "expected_ambiguity_names" in case
+                        else {}
+                    ),
                 },
                 "actual": {
                     "intent": intent_frame,
@@ -392,6 +413,11 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     **(
                         {"event_chain": actor_context["event_chain"]}
                         if "expected_event_chain" in case
+                        else {}
+                    ),
+                    **(
+                        {"ambiguities": ambiguity_names}
+                        if "expected_ambiguity_names" in case
                         else {}
                     ),
                 },

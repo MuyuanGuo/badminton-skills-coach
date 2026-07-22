@@ -58,6 +58,7 @@ class ForwardTestResultTests(unittest.TestCase):
             "unseen_rounds": [
                 self.unseen_round(1),
                 self.unseen_round(2),
+                self.unseen_round(3),
             ],
         }
         critical = {"required_cases": [{"case_id": "AQ901"}]}
@@ -104,8 +105,8 @@ class ForwardTestResultTests(unittest.TestCase):
             result, critical, cases, query_cases, "fingerprint"
         )
         self.assertEqual(summary["blind_passes"], 1)
-        self.assertEqual(summary["unseen_rounds"], 2)
-        self.assertEqual(summary["unseen_cases"], 8)
+        self.assertEqual(summary["unseen_rounds"], 3)
+        self.assertEqual(summary["unseen_cases"], 12)
 
     def test_stale_runtime_fingerprint_fails(self):
         result, critical, cases, query_cases = self.fixtures()
@@ -148,11 +149,11 @@ class ForwardTestResultTests(unittest.TestCase):
                 result, critical, cases, query_cases, "fingerprint"
             )
 
-    def test_one_unseen_round_fails(self):
+    def test_two_unseen_rounds_fail(self):
         result, critical, cases, query_cases = self.fixtures()
-        result["unseen_rounds"] = result["unseen_rounds"][:1]
+        result["unseen_rounds"] = result["unseen_rounds"][:2]
         with self.assertRaisesRegex(
-            self.module.ForwardTestValidationError, "At least two"
+            self.module.ForwardTestValidationError, "At least three"
         ):
             self.module.validate_forward_results(
                 result, critical, cases, query_cases, "fingerprint"
