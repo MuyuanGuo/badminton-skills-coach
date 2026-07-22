@@ -46,6 +46,7 @@ jobs:
             scripts/evaluate_query_understanding.py \
             scripts/evaluate_retrieval.py \
             scripts/evaluate_video_comprehension.py \
+            scripts/generate_evaluation_report.py \
             scripts/generate_knowledge_graph.py \
             scripts/generate_release_sbom.py \
             scripts/init_douyin_queue.py \
@@ -74,6 +75,7 @@ jobs:
             scripts/test_feedback_personalization.py \
             scripts/test_feedback_promotion.py \
             scripts/test_forward_test_results.py \
+            scripts/test_evaluation_report.py \
             scripts/test_knowledge_quality.py \
             scripts/test_maintenance_health.py \
             scripts/test_knowledge_graph_html.py \
@@ -116,6 +118,7 @@ jobs:
           python scripts/test_feedback_personalization.py
           python scripts/test_feedback_promotion.py
           python scripts/test_forward_test_results.py
+          python scripts/test_evaluation_report.py
           python scripts/test_knowledge_quality.py
           python scripts/test_maintenance_health.py
           python scripts/test_knowledge_graph_html.py
@@ -133,22 +136,8 @@ jobs:
           python scripts/test_topic_navigation.py
           python scripts/test_visual_review_workflow.py
           python scripts/test_video_comprehension.py
-          python scripts/evaluate_answer_policy.py
-          python scripts/evaluate_answer_context.py
-          python scripts/evaluate_answer_quality.py
-          python scripts/evaluate_answer_quality.py \
-            --answers data/evaluation/answer_quality_answers.json \
-            --min-approved 57 \
-            --min-answer-snapshots 57 \
-            --min-answer-snapshot-coverage 1.0 \
-            --require-complete-answer-coverage \
-            --require-critical-answer-coverage \
-            --require-manual-review
+          python scripts/generate_evaluation_report.py --check
           python scripts/evaluate_feedback_signals.py
-          python scripts/evaluate_query_equivalence.py
-          python scripts/evaluate_query_understanding.py
-          python scripts/evaluate_retrieval.py
-          python scripts/evaluate_video_comprehension.py
           python scripts/build_manifest.py --check
           python scripts/check_video_links.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
@@ -157,24 +146,3 @@ jobs:
 
       - name: Validate repository artifacts
         run: python scripts/validate_project.py
-
-      - name: Enforce stable-release quality gate
-        if: github.ref == 'refs/heads/main' || github.base_ref == 'main' || startsWith(github.ref, 'refs/tags/')
-        run: |
-          python scripts/evaluate_answer_policy.py \
-            --cases data/evaluation/answer_quality_cases.json
-          python scripts/evaluate_answer_context.py
-          python scripts/evaluate_query_equivalence.py
-          python scripts/evaluate_query_understanding.py
-          python scripts/evaluate_video_comprehension.py
-          python scripts/evaluate_answer_quality.py \
-            --answers data/evaluation/answer_quality_answers.json \
-            --min-approved 57 \
-            --min-answer-snapshots 57 \
-            --min-answer-snapshot-coverage 1.0 \
-            --require-complete-answer-coverage \
-            --require-critical-answer-coverage \
-            --require-manual-review
-          python scripts/evaluate_feedback_signals.py
-          python scripts/evaluate_forward_test_results.py
-          python scripts/build_manifest.py --check

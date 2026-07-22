@@ -1699,7 +1699,12 @@ def candidate_sort_key(candidate, rules):
         - intent_penalty
         - candidate.get("excluded_query_penalty", 0)
     )
-    return (-ranking_score, TIER_ORDER[candidate["relevance_tier"]], candidate["title"])
+    return (
+        -ranking_score,
+        TIER_ORDER[candidate["relevance_tier"]],
+        candidate["title"],
+        candidate["video_id"],
+    )
 
 
 def refresh_score_breakdown(candidate, rules):
