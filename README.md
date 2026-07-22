@@ -215,6 +215,7 @@ GitHub 反馈请使用 [Skill feedback Issue 模板](https://github.com/MuyuanGu
 
 ```text
 scripts/check_douyin_updates.py          增量主页观察与入队
+scripts/check_maintenance_health.py     知识新鲜度、积压和盲测健康检查
 scripts/process_douyin_ready_batch.py   下载、转写、重建和质量门禁
 scripts/run_full_update_pipeline.py     规则/笔记修改后的全量重建
 scripts/doctor.py                       环境与路径诊断
@@ -227,6 +228,12 @@ scripts/generate_release_sbom.py        CycloneDX 文件级 SBOM
 
 ```text
 增量检查 -> 分类复核 -> 入队 -> 下载/转写 -> Review notes -> 知识库重建 -> 评测 -> PR
+```
+
+每周维护检查会审计主页观察、知识构建、处理队列、分类复核和盲测时间；也可以随时手动运行：
+
+```bash
+python3 scripts/check_maintenance_health.py --fail-on overdue
 ```
 
 只修改规则、笔记或知识库结构时运行：

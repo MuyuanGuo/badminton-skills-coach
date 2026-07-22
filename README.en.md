@@ -108,6 +108,13 @@ Changes to retrieval, evidence, or answer behavior should also run the full qual
 python3 scripts/run_full_update_pipeline.py
 ```
 
+Check whether the committed profile observation, knowledge build, processing queue,
+classification review, or blind forward tests need maintenance:
+
+```bash
+python3 scripts/check_maintenance_health.py --fail-on overdue
+```
+
 Release archives are deterministic, checksum-published, accompanied by a CycloneDX SBOM, and attested by GitHub Actions. See [RELEASE_SECURITY.md](RELEASE_SECURITY.md) for verification instructions.
 
 ## License and source boundaries
