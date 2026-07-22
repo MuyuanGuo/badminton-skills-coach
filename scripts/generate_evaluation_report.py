@@ -5,6 +5,8 @@ import argparse
 import hashlib
 import html
 import json
+import os
+import sys
 from pathlib import Path
 
 import evaluate_answer_context
@@ -35,6 +37,14 @@ CORE_EVALUATORS = (
 
 def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def ensure_deterministic_hash_seed():
+    if os.environ.get("PYTHONHASHSEED") == "0":
+        return
+    environment = dict(os.environ)
+    environment["PYTHONHASHSEED"] = "0"
+    os.execvpe(sys.executable, [sys.executable, *sys.argv], environment)
 
 
 def json_bytes(payload):
@@ -421,6 +431,7 @@ def check_artifact(path, expected):
 
 
 def main():
+    ensure_deterministic_hash_seed()
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--write", action="store_true", help="Update committed reports.")

@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +29,18 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertEqual(first, self.module.json_bytes(payload))
         self.assertTrue(first.endswith(b"\n"))
         self.assertEqual(json.loads(first), payload)
+
+    def test_hash_seed_guard_reexecs_only_when_needed(self):
+        with mock.patch.dict("os.environ", {"PYTHONHASHSEED": "0"}, clear=True):
+            with mock.patch("os.execvpe") as execute:
+                self.module.ensure_deterministic_hash_seed()
+        execute.assert_not_called()
+
+        with mock.patch.dict("os.environ", {}, clear=True):
+            with mock.patch("os.execvpe") as execute:
+                self.module.ensure_deterministic_hash_seed()
+        execute.assert_called_once()
+        self.assertEqual(execute.call_args.args[2]["PYTHONHASHSEED"], "0")
 
     def test_hash_paths_includes_relative_path_and_content(self):
         with tempfile.TemporaryDirectory() as directory:
