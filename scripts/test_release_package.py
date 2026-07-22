@@ -8,6 +8,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
+from generate_release_sbom import build_sbom
 from package_skill_release import archive_name, package_skill, release_files
 
 
@@ -71,6 +72,20 @@ class ReleasePackageTests(unittest.TestCase):
             )
             self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
             self.assertTrue(json.loads(completed.stdout)["ok"])
+
+    def test_sbom_is_deterministic_and_covers_every_release_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            packaged = package_skill(RELEASE_VERSION, directory)
+            archive = Path(packaged["archive"])
+            first = build_sbom(archive, RELEASE_VERSION)
+            second = build_sbom(archive, RELEASE_VERSION)
+            self.assertEqual(first, second)
+            self.assertEqual(first["bomFormat"], "CycloneDX")
+            self.assertEqual(first["specVersion"], "1.6")
+            self.assertEqual(len(first["components"]), len(release_files()))
+            self.assertTrue(
+                all(component["hashes"][0]["alg"] == "SHA-256" for component in first["components"])
+            )
 
 
 if __name__ == "__main__":

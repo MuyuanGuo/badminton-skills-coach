@@ -1,0 +1,63 @@
+name: Package and attest release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Validate tagged project
+        run: |
+          python scripts/test_release_package.py
+          python scripts/validate_project.py
+
+      - name: Package archive and generate SBOM
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          SOURCE_COMMIT: ${{ github.sha }}
+        run: |
+          VERSION="${RELEASE_TAG#v}"
+          ARCHIVE="dist/liuhui-badminton-coach-${VERSION}.zip"
+          python scripts/package_skill_release.py --version "$VERSION" --output-dir dist
+          python scripts/generate_release_sbom.py \
+            --archive "$ARCHIVE" \
+            --version "$VERSION" \
+            --source-commit "$SOURCE_COMMIT" \
+            --output dist/SBOM.cdx.json
+          shasum -a 256 dist/SBOM.cdx.json >> dist/SHA256SUMS.txt
+
+      - name: Attest archive and SBOM
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/liuhui-badminton-coach-*.zip
+          sbom-path: dist/SBOM.cdx.json
+
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" dist/* --clobber
+          else
+            gh release create "$RELEASE_TAG" dist/* \
+              --verify-tag \
+              --generate-notes \
+              --title "Badminton Skills Coach $RELEASE_TAG"
+          fi

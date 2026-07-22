@@ -46,7 +46,7 @@ body:
     id: version
     attributes:
       label: 版本
-      placeholder: v1.2.0-dev.1 或提交哈希
+      placeholder: v1.3.0-dev.1、v1.2.0 或提交哈希
     validations:
       required: true
 

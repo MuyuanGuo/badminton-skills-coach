@@ -46,6 +46,7 @@ jobs:
             scripts/evaluate_retrieval.py \
             scripts/evaluate_video_comprehension.py \
             scripts/generate_knowledge_graph.py \
+            scripts/generate_release_sbom.py \
             scripts/init_douyin_queue.py \
             scripts/install_skill.py \
             scripts/media_assets.py \
@@ -76,6 +77,7 @@ jobs:
             scripts/test_knowledge_graph_html.py \
             scripts/test_media_assets.py \
             scripts/test_project_artifacts.py \
+            scripts/test_project_site.py \
             scripts/test_public_feedback_e2e.py \
             scripts/test_query_equivalence.py \
             scripts/test_query_understanding.py \
@@ -116,6 +118,7 @@ jobs:
           python scripts/test_knowledge_graph_html.py
           python scripts/test_media_assets.py
           python scripts/test_project_artifacts.py
+          python scripts/test_project_site.py
           python scripts/test_public_feedback_e2e.py
           python scripts/test_query_equivalence.py
           python scripts/test_query_understanding.py

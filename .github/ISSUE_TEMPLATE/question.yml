@@ -1,0 +1,47 @@
+name: 使用问题
+description: 提交可复现、适合长期保留的安装或使用问题
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        开放式交流请优先使用 Discussions。若问题涉及明确版本、命令或可复现行为，可使用此模板。不要粘贴 Token、Cookie、私人视频、完整聊天记录或本地反馈文件。
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 你的问题
+      description: 简洁说明你想完成什么，以及卡在哪里。
+    validations:
+      required: true
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: 已经尝试过什么
+      description: 请提供经过脱敏的命令、步骤或相关文档链接。
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      placeholder: v1.2.0、1.3.0-dev.1 或提交哈希
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 运行环境
+      placeholder: macOS 15 / Python 3.12 / Codex
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我确认以上内容不包含凭证、私人媒体、完整聊天记录或其他敏感信息。
+          required: true
