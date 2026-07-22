@@ -1079,6 +1079,22 @@ else:
 for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")
+docs_pages = [
+    (ROOT / "docs" / "index.html", f"稳定版 v{stable_version}"),
+    (ROOT / "docs" / "en" / "index.html", f"Stable v{stable_version}"),
+]
+for docs_path, docs_status_contract in docs_pages:
+    docs_text = docs_path.read_text(encoding="utf-8")
+    for docs_version_contract in [
+        docs_status_contract,
+        f"releases/download/v{stable_version}",
+        f"liuhui-badminton-coach-v{stable_version}.zip",
+    ]:
+        if docs_version_contract not in docs_text:
+            raise SystemExit(
+                f"Website install version is stale in {docs_path.relative_to(ROOT)}: "
+                f"{docs_version_contract}"
+            )
 expected_readme_text = update_readme_text(
     readme_text,
     video_index,

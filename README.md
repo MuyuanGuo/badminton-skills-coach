@@ -10,7 +10,7 @@
 
 [安装最新版](#安装稳定版) · [查看实际回答](#实际回答示例) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-这是 **1.2.1 稳定版**。GitHub `main` 分支和 [`v1.2.1` Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.2.1) 提供当前正式版本；`develop` 用于后续增量维护。本项目不是刘辉本人，也不代表其个人观点或背书。
+这是 **1.3.0 稳定版**。GitHub `main` 分支和 [`v1.3.0` Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.3.0) 提供当前正式版本；`develop` 用于后续增量维护。本项目不是刘辉本人，也不代表其个人观点或背书。
 
 ## 30 秒了解它
 
@@ -111,13 +111,13 @@ flowchart TD
 ### 安装稳定版
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.1/liuhui-badminton-coach-v1.2.1.zip \
-  -o /tmp/liuhui-badminton-coach-v1.2.1.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.1/SHA256SUMS.txt \
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/liuhui-badminton-coach-v1.3.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.3.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-v1.2.1.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-v1.3.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ```
 
@@ -246,11 +246,11 @@ python3 scripts/run_full_update_pipeline.py
 
 ## 分支与发布模型
 
-- 稳定版：`main` / `v1.2.1`
+- 稳定版：`main` / `v1.3.0`
 - 当前分支：`main`
 - 发布状态：`stable`
 - `develop`：下一版本的技术开发基线，README 使用 `unreleased` 文案。
-- `v1.2.1`：当前正式 Release；develop 上的实验性规则和未发布评测不代表稳定版行为。
+- `v1.3.0`：当前正式 Release；develop 上的实验性规则和未发布评测不代表稳定版行为。
 
 发布前必须在 `develop` 完成完整门禁，再通过 `develop -> main` 的发布 PR 更新版本号、构建产物和 README。发布后的紧急修复可以直接走小范围 PR，但下一轮开发仍需同步回 `develop`。
 
