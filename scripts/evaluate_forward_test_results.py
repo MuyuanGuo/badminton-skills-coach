@@ -14,7 +14,7 @@ CRITICAL_PATH = ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
 CASES_PATH = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
 QUERY_CASES_PATH = ROOT / "data" / "evaluation" / "query_understanding_cases.json"
 SKILL_ROOT = Path("skills/liuhui-badminton-coach")
-MIN_CONSECUTIVE_UNSEEN_ROUNDS = 2
+MIN_CONSECUTIVE_UNSEEN_ROUNDS = 3
 MIN_CASES_PER_UNSEEN_ROUND = 4
 REQUIRED_REVIEW_DIMENSIONS = {
     "question_interpretation",
@@ -72,7 +72,7 @@ def registered_queries(cases_payload, query_cases_payload):
 def validate_unseen_rounds(rounds, known_queries):
     if len(rounds) < MIN_CONSECUTIVE_UNSEEN_ROUNDS:
         raise ForwardTestValidationError(
-            "At least two consecutive unseen-prompt rounds are required"
+            "At least three consecutive unseen-prompt rounds are required"
         )
     sequences = [round_.get("sequence") for round_ in rounds]
     if sequences != list(range(1, len(rounds) + 1)):

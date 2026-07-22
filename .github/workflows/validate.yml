@@ -32,6 +32,7 @@ jobs:
             scripts/build_topic_index.py \
             scripts/build_visual_review_queue.py \
             scripts/check_douyin_updates.py \
+            scripts/check_maintenance_health.py \
             scripts/check_video_links.py \
             scripts/download_douyin_browser_batch.py \
             scripts/douyin_pipeline.py \
@@ -74,6 +75,7 @@ jobs:
             scripts/test_feedback_promotion.py \
             scripts/test_forward_test_results.py \
             scripts/test_knowledge_quality.py \
+            scripts/test_maintenance_health.py \
             scripts/test_knowledge_graph_html.py \
             scripts/test_media_assets.py \
             scripts/test_project_artifacts.py \
@@ -115,6 +117,7 @@ jobs:
           python scripts/test_feedback_promotion.py
           python scripts/test_forward_test_results.py
           python scripts/test_knowledge_quality.py
+          python scripts/test_maintenance_health.py
           python scripts/test_knowledge_graph_html.py
           python scripts/test_media_assets.py
           python scripts/test_project_artifacts.py

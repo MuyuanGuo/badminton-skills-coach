@@ -51,13 +51,13 @@ These numbers describe the current reviewed corpus and evaluation set. They are 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.1/liuhui-badminton-coach-v1.2.1.zip \
-  -o /tmp/liuhui-badminton-coach-v1.2.1.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.2.1/SHA256SUMS.txt \
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/liuhui-badminton-coach-v1.3.0.zip \
+  -o /tmp/liuhui-badminton-coach-v1.3.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-v1.2.1.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-v1.3.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ```
 
@@ -106,6 +106,13 @@ Changes to retrieval, evidence, or answer behavior should also run the full qual
 
 ```bash
 python3 scripts/run_full_update_pipeline.py
+```
+
+Check whether the committed profile observation, knowledge build, processing queue,
+classification review, or blind forward tests need maintenance:
+
+```bash
+python3 scripts/check_maintenance_health.py --fail-on overdue
 ```
 
 Release archives are deterministic, checksum-published, accompanied by a CycloneDX SBOM, and attested by GitHub Actions. See [RELEASE_SECURITY.md](RELEASE_SECURITY.md) for verification instructions.
