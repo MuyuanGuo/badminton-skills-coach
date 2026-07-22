@@ -519,7 +519,7 @@ A-public-correction
 
     def test_readme_status_updates_current_template_without_rewriting_sections(self):
         template = """# Project
-![Badminton Skills Coach：0 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)
+![Badminton Skills Coach：0 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.jpg)
 - 获取到的抖音公开视频：`0` 条
 - 已排除非教学/广告器材内容：`0` 条
 - 已加入 Skill 知识库的教学视频：`0` 条

@@ -27,11 +27,31 @@ class AssetParser(HTMLParser):
                 self.targets.append(value)
 
 
-def png_dimensions(path):
+def jpeg_dimensions(path):
     content = path.read_bytes()
-    if content[:8] != b"\x89PNG\r\n\x1a\n":
-        raise ValueError(f"Not a PNG: {path}")
-    return struct.unpack(">II", content[16:24])
+    if not content.startswith(b"\xff\xd8"):
+        raise ValueError(f"Not a JPEG: {path}")
+    offset = 2
+    start_of_frame_markers = {
+        0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
+        0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF,
+    }
+    while offset + 8 < len(content):
+        if content[offset] != 0xFF:
+            offset += 1
+            continue
+        while offset < len(content) and content[offset] == 0xFF:
+            offset += 1
+        marker = content[offset]
+        offset += 1
+        if marker in {0x01, *range(0xD0, 0xDA)}:
+            continue
+        segment_length = struct.unpack(">H", content[offset : offset + 2])[0]
+        if marker in start_of_frame_markers:
+            height, width = struct.unpack(">HH", content[offset + 3 : offset + 7])
+            return width, height
+        offset += segment_length
+    raise ValueError(f"JPEG dimensions not found: {path}")
 
 
 class ProjectSiteTests(unittest.TestCase):
@@ -49,10 +69,11 @@ class ProjectSiteTests(unittest.TestCase):
                 self.assertTrue(resolved.exists(), f"{page}: {target}")
 
     def test_social_preview_is_current_and_synchronized(self):
-        source = ROOT / ".github" / "assets" / "social-preview.png"
-        site_copy = DOCS / "assets" / "social-preview.png"
-        self.assertEqual(png_dimensions(source), (1280, 640))
-        self.assertEqual(png_dimensions(site_copy), (1280, 640))
+        source = ROOT / ".github" / "assets" / "social-preview.jpg"
+        site_copy = DOCS / "assets" / "social-preview.jpg"
+        self.assertEqual(jpeg_dimensions(source), (1280, 640))
+        self.assertEqual(jpeg_dimensions(site_copy), (1280, 640))
+        self.assertLess(source.stat().st_size, 1024 * 1024)
         self.assertEqual(
             hashlib.sha256(source.read_bytes()).digest(),
             hashlib.sha256(site_copy.read_bytes()).digest(),

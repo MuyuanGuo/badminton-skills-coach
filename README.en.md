@@ -4,7 +4,7 @@
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
 
-![Badminton Skills Coach: evidence-backed badminton video knowledge base](.github/assets/social-preview.png)
+![Badminton Skills Coach: evidence-backed badminton video knowledge base](.github/assets/social-preview.jpg)
 
 An evidence-backed badminton coaching Skill for Codex. It turns public Chinese coaching videos from Liu Hui Badminton into searchable, citable, regression-tested guidance with video links, timestamps, and explicit evidence boundaries.
 
