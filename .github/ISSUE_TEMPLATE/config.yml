@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: 使用问答与交流
+    url: https://github.com/MuyuanGuo/badminton-skills-coach/discussions
+    about: 安装、使用方法、训练场景交流和开放式讨论请优先使用 Discussions。
   - name: 安全问题
     url: https://github.com/MuyuanGuo/badminton-skills-coach/security/advisories/new
     about: 请私下报告凭证、隐私、文件安全或反馈链路绕过问题。

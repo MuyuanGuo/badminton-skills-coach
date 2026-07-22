@@ -127,17 +127,44 @@ for manifest_path in [
 
 ET.parse(ROOT / "output" / "liuhui-full-knowledge-map.drawio")
 
-social_preview = ROOT / ".github" / "assets" / "social-preview.png"
+def jpeg_dimensions(content):
+    if not content.startswith(b"\xff\xd8"):
+        raise ValueError("missing JPEG start marker")
+    offset = 2
+    start_of_frame_markers = {
+        0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7,
+        0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF,
+    }
+    while offset + 8 < len(content):
+        if content[offset] != 0xFF:
+            offset += 1
+            continue
+        while offset < len(content) and content[offset] == 0xFF:
+            offset += 1
+        marker = content[offset]
+        offset += 1
+        if marker in {0x01, *range(0xD0, 0xDA)}:
+            continue
+        segment_length = struct.unpack(">H", content[offset : offset + 2])[0]
+        if marker in start_of_frame_markers:
+            height, width = struct.unpack(">HH", content[offset + 3 : offset + 7])
+            return width, height
+        offset += segment_length
+    raise ValueError("missing JPEG size marker")
+
+
+social_preview = ROOT / ".github" / "assets" / "social-preview.jpg"
 preview_bytes = social_preview.read_bytes()
-if not preview_bytes.startswith(b"\x89PNG\r\n\x1a\n") or len(preview_bytes) < 24:
-    raise SystemExit("Social preview is missing or is not a valid PNG")
-preview_width, preview_height = struct.unpack(">II", preview_bytes[16:24])
-if (preview_width, preview_height) != (1280, 640):
+try:
+    preview_dimensions = jpeg_dimensions(preview_bytes)
+except (ValueError, struct.error) as error:
+    raise SystemExit(f"Social preview is missing or is not a valid JPEG: {error}")
+if preview_dimensions != (1280, 640):
     raise SystemExit(
-        f"Social preview must be 1280x640, found {preview_width}x{preview_height}"
+        f"Social preview must be 1280x640, found {preview_dimensions[0]}x{preview_dimensions[1]}"
     )
-if len(preview_bytes) > 2 * 1024 * 1024:
-    raise SystemExit("Social preview exceeds the 2 MB repository media budget")
+if len(preview_bytes) >= 1024 * 1024:
+    raise SystemExit("Social preview must remain below GitHub's 1 MB upload limit")
 
 def validate_skill_frontmatter(skill_name):
     skill_path = ROOT / "skills" / skill_name / "SKILL.md"

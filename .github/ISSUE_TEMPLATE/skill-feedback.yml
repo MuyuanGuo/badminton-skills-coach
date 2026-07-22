@@ -93,7 +93,7 @@ body:
     id: version
     attributes:
       label: 版本信息
-      description: 例如 v1.1.0 或 v1.2.0；不知道可填写 unknown。
+      description: 例如 v1.2.0；不知道可填写 unknown。
       placeholder: 1.2.0
     validations:
       required: true

@@ -67,6 +67,17 @@ def update_readme_text(
     answer_cases=None,
     queue=None,
 ):
+    if "| 已处理公开视频 |" in readme:
+        return update_technical_readme_text(
+            readme,
+            video_index,
+            teaching_filter,
+            knowledge,
+            feedback_signals,
+            answer_cases,
+            queue,
+        )
+
     status = derive_project_status(video_index, teaching_filter, knowledge)
     latest = status["latest_ready_video"]
     all_count = status["public_videos_collected"]
@@ -132,8 +143,8 @@ def update_readme_text(
     )
     readme = replace_optional(
         readme,
-        r"^!\[Badminton Skills Coach：\d+ 条教学视频、证据型检索与刘辉教学图谱\]\(\.github/assets/social-preview\.png\)$",
-        f"![Badminton Skills Coach：{ready_count} 条教学视频、证据型检索与刘辉教学图谱](.github/assets/social-preview.png)",
+        r"^!\[Badminton Skills Coach：\d+ 条教学视频、证据型检索与刘辉教学图谱\]\(\.github/assets/social-preview\.(?:png|jpg)\)$",
+        "![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)",
         "README social-preview alt text",
     )
     readme = replace_optional(
@@ -177,6 +188,45 @@ def update_readme_text(
         "README queue status",
     )
     return readme
+
+
+def update_technical_readme_text(
+    readme,
+    video_index,
+    teaching_filter,
+    knowledge,
+    feedback_signals,
+    answer_cases=None,
+    queue=None,
+):
+    """Update dynamic metrics in the recruiter-facing develop README."""
+
+    status = derive_project_status(video_index, teaching_filter, knowledge)
+    ready = [
+        video
+        for video in knowledge.get("videos", [])
+        if video.get("processing_status") == "ready"
+    ]
+    visual = sum(video.get("confidence") == "visual_reviewed" for video in ready)
+    processed = status["public_videos_collected"]
+    ready_count = status["ready_teaching_videos"]
+    transcript = len(ready) - visual
+    feedback_count = len(feedback_signals.get("signals", []))
+    answer_count = len((answer_cases or load_json(ANSWER_CASES)).get("cases", []))
+    replacements = {
+        r"^\| 已处理公开视频 \| \d+ \|": f"| 已处理公开视频 | {processed} |",
+        r"^\| 可用于回答的教学视频 \| \d+ \|": f"| 可用于回答的教学视频 | {ready_count} |",
+        r"^\| 转写证据 \| \d+ \|": f"| 转写证据 | {transcript} |",
+        r"^\| 视觉复核兜底 \| \d+ \|": f"| 视觉复核兜底 | {visual} |",
+        r"^\| 回答质量黄金用例 \| \d+/\d+ \|": f"| 回答质量黄金用例 | {answer_count}/{answer_count} |",
+        r"^\| 公共反馈信号 \| \d+ \|": f"| 公共反馈信号 | {feedback_count} |",
+    }
+    updated = readme
+    for pattern, replacement in replacements.items():
+        updated, count = re.subn(pattern, replacement, updated, flags=re.MULTILINE)
+        if count > 1:
+            raise ValueError(f"Technical README metric matched {count} times: {pattern}")
+    return updated
 
 
 def update_skill_status_text(skill, knowledge):
