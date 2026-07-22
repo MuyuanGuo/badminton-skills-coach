@@ -19,7 +19,7 @@ shasum -a 256 -c SHA256SUMS.txt
 To verify the GitHub build attestation and its signed CycloneDX predicate:
 
 ```bash
-gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
+gh attestation verify liuhui-badminton-coach-1.3.0.zip \
   --repo MuyuanGuo/badminton-skills-coach \
   --predicate-type https://cyclonedx.org/bom
 ```
@@ -27,7 +27,7 @@ gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
 To inspect the verified predicate as JSON, add `--format json`:
 
 ```bash
-gh attestation verify liuhui-badminton-coach-v1.3.0.zip \
+gh attestation verify liuhui-badminton-coach-1.3.0.zip \
   --repo MuyuanGuo/badminton-skills-coach \
   --predicate-type https://cyclonedx.org/bom \
   --format json
