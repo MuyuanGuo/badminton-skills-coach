@@ -10,7 +10,7 @@
 
 [安装最新版](#安装稳定版) · [查看实际回答](#实际回答示例) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-你正在查看 `develop` 分支。当前开发版本是 **1.3.0-dev.1**，发布状态为 **unreleased**。稳定使用请查看 [`main`](https://github.com/MuyuanGuo/badminton-skills-coach/tree/main) 和正式 [Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases)。本项目不是刘辉本人，也不代表其个人观点或背书。
+这是 **1.2.0 稳定版**。GitHub `main` 分支和 [`v1.2.0` Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.2.0) 提供当前正式版本；`develop` 用于后续增量维护。本项目不是刘辉本人，也不代表其个人观点或背书。
 
 ## 30 秒了解它
 
@@ -239,12 +239,11 @@ python3 scripts/run_full_update_pipeline.py
 
 ## 分支与发布模型
 
-- `develop`：当前技术开发基线，README 使用 `unreleased` 文案。
-- 当前分支：`develop`
-- 当前开发版本：`1.3.0-dev.1`
-- 发布状态：`unreleased`
-- `main`：稳定发布分支，只接受经过验证的发布 PR 或发布后修复。
-- `v1.2.0`：当前正式 Release；develop 上的 README、实验性规则和未发布评测不代表稳定版行为。
+- 稳定版：`main` / `v1.2.0`
+- 当前分支：`main`
+- 发布状态：`stable`
+- `develop`：下一版本的技术开发基线，README 使用 `unreleased` 文案。
+- `v1.2.0`：当前正式 Release；develop 上的实验性规则和未发布评测不代表稳定版行为。
 
 发布前必须在 `develop` 完成完整门禁，再通过 `develop -> main` 的发布 PR 更新版本号、构建产物和 README。发布后的紧急修复可以直接走小范围 PR，但下一轮开发仍需同步回 `develop`。
 
