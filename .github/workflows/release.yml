@@ -39,8 +39,8 @@ jobs:
             --archive "$ARCHIVE" \
             --version "$VERSION" \
             --source-commit "$SOURCE_COMMIT" \
-            --output dist/SBOM.cdx.json
-          shasum -a 256 dist/SBOM.cdx.json >> dist/SHA256SUMS.txt
+            --output dist/SBOM.cdx.json \
+            --checksum-file dist/SHA256SUMS.txt
 
       - name: Attest archive and SBOM
         uses: actions/attest@v4
