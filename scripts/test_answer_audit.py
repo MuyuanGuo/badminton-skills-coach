@@ -166,6 +166,27 @@ class AnswerAuditTests(unittest.TestCase):
         self.assertIn("unmapped_video_label", codes)
         self.assertIn("unmapped_evidence_id", codes)
 
+    def test_feedback_prompt_labels_are_not_treated_as_citations(self):
+        context = copy.deepcopy(self.context)
+        prompt = (
+            "反馈可直接回复：V1 最有价值；V3 不相关；"
+            "第 2 点结论不对；回答漏了‘……’。"
+        )
+        context["answer_contract"] = {"feedback_prompt": prompt}
+        answer = self.cases["answers"]["complete_conditional"] + "\n" + prompt
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertTrue(audit["passed"], audit["violations"])
+
+        missing = self.auditor.audit_answer(
+            context["query"],
+            context,
+            self.cases["answers"]["complete_conditional"],
+        )
+        self.assertIn(
+            "missing_feedback_prompt",
+            {item["code"] for item in missing["violations"]},
+        )
+
     def test_cli_returns_nonzero_and_structured_json_for_failed_answer(self):
         with tempfile.TemporaryDirectory() as directory:
             temporary = Path(directory)

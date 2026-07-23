@@ -71,6 +71,23 @@ class ClarificationStateTests(unittest.TestCase):
         self.assertNotIn("过网后才继续抬升", racket_question)
         self.assertNotIn("从一开始就向上飞", racket_question)
 
+    def test_passive_rearcourt_baseline_goal_implies_clear_only_when_unspecified(
+        self,
+    ):
+        selection_rules = self.runtime.load_selection_rules()
+        inferred = self.runtime.query_constraints(
+            self.search,
+            "后场被动来不及架拍怎么把球打到底线",
+            selection_rules,
+        )
+        self.assertEqual(inferred["shot_family"], ["clear"])
+        explicit = self.runtime.query_constraints(
+            self.search,
+            "后场被动时怎么挑球回到底线",
+            selection_rules,
+        )
+        self.assertEqual(explicit["shot_family"], ["lift"])
+
     def test_single_pending_question_binds_a_natural_reply(self):
         effective, continuation = self.runtime.resolve_continuation(
             self.search,
@@ -314,6 +331,44 @@ class ClarificationIntegrationTests(unittest.TestCase):
         self.assertEqual(
             contract["evidence_state_digest"],
             self.runtime.canonical_json_digest(contract["evidence_state"]),
+        )
+
+    def test_clarification_metadata_does_not_become_new_query_units(self):
+        context = self.continued_context
+        self.assertEqual(
+            context["question_interpretation"]["query_units"],
+            [self.original_query],
+        )
+        self.assertEqual(
+            [
+                item["text"]
+                for item in context["claim_evidence_map"]
+                if item["kind"] == "question_unit"
+            ],
+            [self.original_query],
+        )
+
+    def test_continuation_exposes_an_honest_evidence_gap(self):
+        context = self.continued_context
+        self.assertEqual(context["selected_videos"], [])
+        question_claim = next(
+            item
+            for item in context["claim_evidence_map"]
+            if item["kind"] == "question_unit"
+        )
+        self.assertEqual(question_claim["status"], "unsupported")
+        self.assertEqual(question_claim["evidence"], [])
+        completeness = {
+            item["item_id"]: item
+            for item in context["completeness_contract"]["items"]
+        }
+        self.assertEqual(
+            completeness[question_claim["claim_id"]]["status"],
+            "must_answer",
+        )
+        self.assertIn(
+            "explicitly state the evidence gap",
+            completeness[question_claim["claim_id"]]["required_treatment"],
         )
 
     def test_continuation_keeps_unique_cause_boundary(self):

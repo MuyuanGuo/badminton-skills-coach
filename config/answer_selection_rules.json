@@ -600,6 +600,15 @@
       "source_terms": ["落点", "更尖", "杀得尖", "尖", "靠后", "长杀", "短杀", "下压不如跳杀"]
     }
   ],
+  "query_constraint_implications": [
+    {
+      "name": "passive_rearcourt_to_baseline_is_clear",
+      "all_terms": ["后场", "被动"],
+      "any_terms": ["打到底线", "回到底线", "回球到底线"],
+      "only_if_axes_missing": ["shot_family"],
+      "derived_constraints": {"shot_family": ["clear"]}
+    }
+  ],
   "required_constraint_support_conditions": [
     {
       "axis": "serve_role",

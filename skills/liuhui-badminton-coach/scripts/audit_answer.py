@@ -318,7 +318,20 @@ def audit_answer(question, context, answer, rules=None):
         raise ValueError("answer must be a non-empty string")
 
     violations = []
-    units = answer_units(answer)
+    feedback_prompt = context.get("answer_contract", {}).get(
+        "feedback_prompt"
+    )
+    auditable_answer = answer
+    if feedback_prompt:
+        if not answer.rstrip().endswith(feedback_prompt):
+            add_violation(
+                violations,
+                "missing_feedback_prompt",
+                "The answer does not end with the exact required feedback prompt.",
+            )
+        else:
+            auditable_answer = answer.rstrip()[: -len(feedback_prompt)].rstrip()
+    units = answer_units(auditable_answer)
     claims = context.get("claim_evidence_map", [])
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
     selected_by_label, selected_by_evidence_id = selected_video_maps(context)
@@ -357,7 +370,7 @@ def audit_answer(question, context, answer, rules=None):
             "The supplied question does not match the question used to prepare the context.",
         )
 
-    all_labels = labels_in(answer, label_pattern)
+    all_labels = labels_in(auditable_answer, label_pattern)
     for label in sorted(all_labels):
         if label not in selected_by_label:
             add_violation(
@@ -367,7 +380,7 @@ def audit_answer(question, context, answer, rules=None):
                 details={"label": label, "allowed_labels": sorted(selected_by_label)},
             )
 
-    answer_evidence_ids = set(evidence_id_pattern.findall(answer))
+    answer_evidence_ids = set(evidence_id_pattern.findall(auditable_answer))
     for evidence_id in sorted(answer_evidence_ids):
         if evidence_id not in selected_by_evidence_id:
             add_violation(
@@ -516,7 +529,7 @@ def audit_answer(question, context, answer, rules=None):
     diagnostic = context.get("diagnostic_model", {})
     if diagnostic.get("do_not_claim_unique_cause"):
         boundary_pattern = compile_any(rules["unique_cause_boundary_patterns"])
-        if not boundary_pattern.search(answer):
+        if not boundary_pattern.search(auditable_answer):
             add_violation(
                 violations,
                 "missing_unique_cause_boundary",
@@ -526,14 +539,24 @@ def audit_answer(question, context, answer, rules=None):
     clarification = context.get("clarification_decision", {})
     if isinstance(turn_contract, dict) and not turn_contract_errors:
         for resolved in turn_contract.get("resolved_clarifications", []):
-            if text_match_score(resolved.get("answer", ""), answer, rules) < rules["resolved_clarification_match_threshold"]:
+            if (
+                text_match_score(
+                    resolved.get("answer", ""), auditable_answer, rules
+                )
+                < rules["resolved_clarification_match_threshold"]
+            ):
                 add_violation(
                     violations,
                     "missing_resolved_clarification",
                     "A resolved clarification is not acknowledged in the answer.",
                     details={"question_id": resolved.get("question_id")},
                 )
-            if text_match_score(resolved.get("question", ""), answer, rules) >= rules["reasked_question_match_threshold"]:
+            if (
+                text_match_score(
+                    resolved.get("question", ""), auditable_answer, rules
+                )
+                >= rules["reasked_question_match_threshold"]
+            ):
                 add_violation(
                     violations,
                     "resolved_clarification_reasked",
@@ -541,20 +564,29 @@ def audit_answer(question, context, answer, rules=None):
                     details={"question_id": resolved.get("question_id")},
                 )
         for request in turn_contract.get("pending_clarifications", []):
-            if text_match_score(request.get("question", ""), answer, rules) < rules["required_clarification_match_threshold"]:
+            if (
+                text_match_score(
+                    request.get("question", ""), auditable_answer, rules
+                )
+                < rules["required_clarification_match_threshold"]
+            ):
                 add_violation(
                     violations,
                     "missing_required_clarification",
                     "The answer omits a required focused clarification.",
                     details={"question_id": request.get("question_id")},
                 )
-    elif clarification.get("action") in {"ask_first", "answer_conditionally"} and clarification.get("questions"):
+    elif clarification.get("action") in {
+        "ask_first",
+        "answer_conditionally",
+    } and clarification.get("questions"):
         question_match = any(
-            text_match_score(question_text, answer, rules) >= rules["claim_match_threshold"]
+            text_match_score(question_text, auditable_answer, rules)
+            >= rules["claim_match_threshold"]
             for question_text in clarification["questions"]
         )
         has_clarification_marker = any(
-            marker in answer for marker in rules["clarification_markers"]
+            marker in auditable_answer for marker in rules["clarification_markers"]
         )
         if not has_clarification_marker and not question_match:
             add_violation(
@@ -565,7 +597,11 @@ def audit_answer(question, context, answer, rules=None):
 
     boundary = context.get("boundary", {})
     required_statement = boundary.get("required_statement")
-    if required_statement and text_match_score(required_statement, answer, rules) < rules["boundary_match_threshold"]:
+    if (
+        required_statement
+        and text_match_score(required_statement, auditable_answer, rules)
+        < rules["boundary_match_threshold"]
+    ):
         add_violation(
             violations,
             "missing_required_boundary",
@@ -577,7 +613,7 @@ def audit_answer(question, context, answer, rules=None):
         metadata = selected_by_label[label]
         evidence_id = metadata["evidence_id"]
         canonical_url = metadata["canonical_url"]
-        answer_without_urls = re.sub(r"https?://\S+", "", answer)
+        answer_without_urls = re.sub(r"https?://\S+", "", auditable_answer)
         if evidence_id and evidence_id not in answer_without_urls:
             add_violation(
                 violations,
@@ -585,19 +621,22 @@ def audit_answer(question, context, answer, rules=None):
                 f"{label} is cited without its stable evidence ID.",
                 details={"label": label, "evidence_id": evidence_id},
             )
-        if canonical_url and canonical_url not in answer:
+        if canonical_url and canonical_url not in auditable_answer:
             add_violation(
                 violations,
                 "missing_citation_url",
                 f"{label} is cited without its canonical URL.",
                 details={"label": label, "canonical_url": canonical_url},
             )
-        if canonical_url and answer.count(canonical_url) > 1:
+        if canonical_url and auditable_answer.count(canonical_url) > 1:
             add_violation(
                 violations,
                 "duplicate_citation_url",
                 f"{label}'s canonical URL appears more than once.",
-                details={"label": label, "occurrences": answer.count(canonical_url)},
+                details={
+                    "label": label,
+                    "occurrences": auditable_answer.count(canonical_url),
+                },
             )
 
     violations.sort(
