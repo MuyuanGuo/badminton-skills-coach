@@ -67,6 +67,32 @@ class AnswerAuditTests(unittest.TestCase):
         audit = self.audit_named_answer("complete_conditional")
         self.assertTrue(audit["passed"], audit["violations"])
         self.assertEqual(audit["summary"]["completeness_items_covered"], 5)
+        self.assertEqual(
+            audit["summary"]["completeness_items_substantive"], 5
+        )
+
+    def test_topic_echoes_with_valid_citations_are_not_complete_answers(self):
+        audit = self.audit_named_answer("echo_only_with_citations")
+        violations = [
+            item
+            for item in audit["violations"]
+            if item["code"] == "insubstantial_completeness_item"
+        ]
+        self.assertEqual(
+            {item["claim_id"] for item in violations},
+            {"Q1", "H1", "M1", "M2", "B1"},
+        )
+        self.assertEqual(audit["summary"]["completeness_items_covered"], 5)
+        self.assertEqual(audit["summary"]["completeness_items_substantive"], 0)
+
+    def test_each_material_branch_requires_substantive_treatment(self):
+        audit = self.audit_named_answer("branch_labels_only")
+        violations = [
+            item
+            for item in audit["violations"]
+            if item["code"] == "insubstantial_completeness_item"
+        ]
+        self.assertEqual([item["claim_id"] for item in violations], ["B1"])
 
     def test_claim_level_allowlist_rejects_globally_selected_wrong_video(self):
         audit = self.audit_named_answer("citation_mismatch")

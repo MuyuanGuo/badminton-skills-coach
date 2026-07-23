@@ -294,6 +294,8 @@
     "missing_unresolved_gap": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
     "missing_unique_boundary": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
     "unmapped_label": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。另见[V9]。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "echo_only_with_citations": "杀球后经常来不及上网。[V1]\n步法太慢可能。\n杀球后的重心与衔接路线可能。[V2]\n上一拍球路与留给衔接的时间可能。[V3]\n单打分支和双打分支可能。[V2][V3]\n仅凭文字不能确认唯一原因，需要连续动作视频确认。\n请补充这是单打还是双打。\nV1 证据 ID：7000000000000000001\nhttps://www.douyin.com/video/7000000000000000001\nV2 证据 ID：7000000000000000002\nhttps://www.douyin.com/video/7000000000000000002\nV3 证据 ID：7000000000000000003\nhttps://www.douyin.com/video/7000000000000000003",
+    "branch_labels_only": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支可能；双打分支可能。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
     "continuation_complete": "你已经补充：这是双打，杀球落地后重心停在原地。这个文字观察仍不能单独确认唯一原因。\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
     "continuation_missing_resolved": "你已经补充：这是双打。这个文字观察仍不能单独确认唯一原因。\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
     "continuation_reasks_resolved": "你已经补充：这是双打，杀球落地后重心停在原地。这个文字观察仍不能单独确认唯一原因。\n请再回答：这是单打还是双打场景？\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
@@ -389,6 +391,20 @@
       "answer_id": "continuation_missing_pending",
       "expected_pass": false,
       "expected_violation_codes_contains": ["missing_required_clarification"]
+    },
+    {
+      "case_id": "AAC014",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "echo_only_with_citations",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["insubstantial_completeness_item"]
+    },
+    {
+      "case_id": "AAC015",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "branch_labels_only",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["insubstantial_completeness_item"]
     }
   ]
 }
