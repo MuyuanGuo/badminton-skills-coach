@@ -16,6 +16,7 @@ RETRIEVAL_RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 REVIEWED_EVIDENCE_PATH = ROOT / "references" / "reviewed-evidence-signals.json"
 DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 1
+ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 
 
 def load_sibling(name, filename):
@@ -286,6 +287,56 @@ def build_clarification_state(context, continuation=None):
     ]
     state["state_digest"] = clarification_state_digest(state)
     return state
+
+
+def build_answer_turn_contract(context):
+    state = context["clarification_state"]
+    evidence_state = {
+        "selected_videos": [
+            {
+                "label": item.get("label"),
+                "evidence_id": str(
+                    item.get("evidence_id", item.get("video_id", ""))
+                ),
+                "canonical_url": item.get("canonical_url") or item.get("url"),
+            }
+            for item in context.get("selected_videos", [])
+        ],
+        "claim_evidence": [
+            {
+                "claim_id": item.get("claim_id"),
+                "kind": item.get("kind"),
+                "status": item.get("status"),
+                "eligible_video_labels": item.get(
+                    "eligible_video_labels", []
+                ),
+                "confidence_ceiling": item.get("confidence_ceiling", "none"),
+                "evidence": [
+                    {
+                        "label": evidence.get("label"),
+                        "evidence_id": str(evidence.get("evidence_id", "")),
+                        "directness": evidence.get("directness"),
+                        "scope": evidence.get("scope"),
+                    }
+                    for evidence in item.get("evidence", [])
+                ],
+            }
+            for item in context.get("claim_evidence_map", [])
+        ],
+    }
+    return {
+        "schema_version": ANSWER_TURN_CONTRACT_SCHEMA_VERSION,
+        "original_query": state["original_query"],
+        "effective_query": state["effective_query"],
+        "turn_number": len(state["turns"]),
+        "resolved_clarifications": state["resolved_answers"],
+        "pending_clarifications": state["pending_requests"],
+        "resolved_question_ids_must_not_be_reasked": [
+            item["question_id"] for item in state["resolved_answers"]
+        ],
+        "evidence_state": evidence_state,
+        "evidence_state_digest": canonical_json_digest(evidence_state),
+    }
 
 
 def reviewed_evidence_priorities(
@@ -4032,6 +4083,7 @@ def prepare_answer_context(
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
                 "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
+                "逐项执行 answer_turn_contract：正文承认每条 resolved_clarifications，不得重复询问 resolved_question_ids_must_not_be_reasked，并逐条提出 pending_clarifications；本轮引用只能来自契约绑定的最新 evidence_state。",
                 "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；selected_videos 只是全局引用白名单。",
                 "逐项完成 completeness_contract；must_answer、conditional 和 unresolved 项都不得静默省略。",
             ],
@@ -4056,6 +4108,7 @@ def prepare_answer_context(
     context["clarification_state"] = build_clarification_state(
         context, continuation
     )
+    context["answer_turn_contract"] = build_answer_turn_contract(context)
     if include_rejected:
         context["rejected_candidates"] = [
             {

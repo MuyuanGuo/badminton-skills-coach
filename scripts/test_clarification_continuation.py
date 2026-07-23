@@ -270,6 +270,14 @@ class ClarificationIntegrationTests(unittest.TestCase):
             request_ids,
             self.first_context["clarification_state"]["pending_question_ids"],
         )
+        contract = self.first_context["answer_turn_contract"]
+        self.assertEqual(contract["turn_number"], 1)
+        self.assertEqual(contract["pending_clarifications"], self.first_context[
+            "clarification_decision"
+        ]["clarification_requests"])
+        self.assertTrue(
+            all(item["purpose"] for item in contract["pending_clarifications"])
+        )
 
     def test_continuation_replans_without_losing_the_original_problem(self):
         context = self.continued_context
@@ -296,6 +304,16 @@ class ClarificationIntegrationTests(unittest.TestCase):
         )
         self.assertEqual(
             context["clarification_state"]["pending_question_ids"], []
+        )
+        contract = context["answer_turn_contract"]
+        self.assertEqual(contract["original_query"], self.original_query)
+        self.assertEqual(contract["effective_query"], context["query"])
+        self.assertEqual(contract["turn_number"], 2)
+        self.assertEqual(len(contract["resolved_clarifications"]), 3)
+        self.assertEqual(contract["pending_clarifications"], [])
+        self.assertEqual(
+            contract["evidence_state_digest"],
+            self.runtime.canonical_json_digest(contract["evidence_state"]),
         )
 
     def test_continuation_keeps_unique_cause_boundary(self):

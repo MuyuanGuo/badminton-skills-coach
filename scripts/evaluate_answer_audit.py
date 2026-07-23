@@ -32,7 +32,13 @@ def evaluate(cases_path=CASES_PATH):
     for case in payload["cases"]:
         context = payload["contexts"][case["context_id"]]
         answer = payload["answers"][case["answer_id"]]
-        audit = auditor.audit_answer(context["query"], context, answer)
+        question = case.get(
+            "question",
+            context.get("answer_turn_contract", {}).get(
+                "original_query", context["query"]
+            ),
+        )
+        audit = auditor.audit_answer(question, context, answer)
         actual_codes = {item["code"] for item in audit["violations"]}
         expected_codes = set(case.get("expected_violation_codes_contains", []))
         expected_violation_count += len(expected_codes)

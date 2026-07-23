@@ -2,6 +2,7 @@
 """Audit a generated coaching answer against its prepared answer context."""
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -10,6 +11,7 @@ from pathlib import Path
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
+ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 
 
 def load_json(path):
@@ -128,6 +130,141 @@ def add_violation(violations, code, message, *, claim_id=None, unit=None, detail
         violations.append(violation)
 
 
+def expected_evidence_state(context):
+    return {
+        "selected_videos": [
+            {
+                "label": item.get("label"),
+                "evidence_id": str(
+                    item.get("evidence_id", item.get("video_id", ""))
+                ),
+                "canonical_url": item.get("canonical_url") or item.get("url"),
+            }
+            for item in context.get("selected_videos", [])
+        ],
+        "claim_evidence": [
+            {
+                "claim_id": item.get("claim_id"),
+                "kind": item.get("kind"),
+                "status": item.get("status"),
+                "eligible_video_labels": item.get(
+                    "eligible_video_labels", []
+                ),
+                "confidence_ceiling": item.get("confidence_ceiling", "none"),
+                "evidence": [
+                    {
+                        "label": evidence.get("label"),
+                        "evidence_id": str(evidence.get("evidence_id", "")),
+                        "directness": evidence.get("directness"),
+                        "scope": evidence.get("scope"),
+                    }
+                    for evidence in item.get("evidence", [])
+                ],
+            }
+            for item in context.get("claim_evidence_map", [])
+        ],
+    }
+
+
+def canonical_json_digest(payload):
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_answer_turn_contract(context):
+    contract = context.get("answer_turn_contract")
+    if contract is None:
+        return None, []
+    errors = []
+    state = context.get("clarification_state")
+    required = {
+        "schema_version",
+        "original_query",
+        "effective_query",
+        "turn_number",
+        "resolved_clarifications",
+        "pending_clarifications",
+        "resolved_question_ids_must_not_be_reasked",
+        "evidence_state",
+        "evidence_state_digest",
+    }
+    if not isinstance(contract, dict) or required - set(contract):
+        return contract, ["missing required answer-turn fields"]
+    if contract.get("schema_version") != ANSWER_TURN_CONTRACT_SCHEMA_VERSION:
+        errors.append("unsupported schema_version")
+    if not all(
+        isinstance(contract.get(field), str) and contract[field].strip()
+        for field in ("original_query", "effective_query")
+    ):
+        errors.append("original_query and effective_query must be non-empty")
+    if not isinstance(contract.get("turn_number"), int) or contract["turn_number"] < 1:
+        errors.append("turn_number must be a positive integer")
+    if not isinstance(state, dict):
+        errors.append("missing clarification_state")
+    else:
+        comparisons = {
+            "original_query": state.get("original_query"),
+            "effective_query": state.get("effective_query"),
+            "turn_number": len(state.get("turns", [])),
+            "resolved_clarifications": state.get("resolved_answers"),
+            "pending_clarifications": state.get("pending_requests"),
+            "resolved_question_ids_must_not_be_reasked": [
+                item.get("question_id")
+                for item in state.get("resolved_answers", [])
+            ],
+        }
+        for field, expected in comparisons.items():
+            if contract.get(field) != expected:
+                errors.append(f"{field} does not match clarification_state")
+    resolved = contract.get("resolved_clarifications", [])
+    if not isinstance(resolved, list) or any(
+        not isinstance(item, dict)
+        or not all(
+            isinstance(item.get(field), str) and item[field].strip()
+            for field in ("question_id", "question", "answer")
+        )
+        for item in resolved
+    ):
+        errors.append("resolved clarifications require question_id, question, and answer")
+    pending = contract.get("pending_clarifications", [])
+    if not isinstance(pending, list) or any(
+        not isinstance(item, dict)
+        or not isinstance(item.get("question_id"), str)
+        or not item.get("question_id").strip()
+        or not isinstance(item.get("question"), str)
+        or not item.get("question").strip()
+        or not isinstance(item.get("purpose"), str)
+        or not item.get("purpose").strip()
+        for item in pending
+    ):
+        errors.append("pending clarifications require question_id, question, and purpose")
+    resolved_ids = [
+        item.get("question_id") for item in resolved if isinstance(item, dict)
+    ]
+    pending_ids = [
+        item.get("question_id") for item in pending if isinstance(item, dict)
+    ]
+    if len(resolved_ids) != len(set(resolved_ids)):
+        errors.append("resolved clarification IDs must be unique")
+    if len(pending_ids) != len(set(pending_ids)):
+        errors.append("pending clarification IDs must be unique")
+    if set(resolved_ids) & set(pending_ids):
+        errors.append("resolved and pending clarification IDs must not overlap")
+    evidence_state = expected_evidence_state(context)
+    if contract.get("evidence_state") != evidence_state:
+        errors.append("evidence_state does not match the current context")
+    if contract.get("evidence_state_digest") != canonical_json_digest(
+        evidence_state
+    ):
+        errors.append("evidence_state_digest does not match the current context")
+    return contract, errors
+
+
 def item_coverage(item, context, units, rules, marker_pattern):
     item_id = item["item_id"]
     explicit = [unit for unit in units if any(
@@ -193,7 +330,27 @@ def audit_answer(question, context, answer, rules=None):
     certainty_pattern = compile_any(rules["hard_certainty_markers"])
     universal_pattern = compile_any(rules["universal_markers"])
 
-    if normalized(context.get("query", "")) != normalized(question):
+    turn_contract, turn_contract_errors = validate_answer_turn_contract(context)
+    if turn_contract_errors:
+        add_violation(
+            violations,
+            "invalid_clarification_contract",
+            "The answer-turn contract is missing or inconsistent.",
+            details={"errors": turn_contract_errors},
+        )
+        if any("evidence_state" in error for error in turn_contract_errors):
+            add_violation(
+                violations,
+                "answer_turn_evidence_state_mismatch",
+                "The answer-turn contract does not describe the current evidence state.",
+            )
+
+    expected_question = (
+        turn_contract.get("original_query", "")
+        if isinstance(turn_contract, dict)
+        else context.get("query", "")
+    )
+    if normalized(expected_question) != normalized(question):
         add_violation(
             violations,
             "question_context_mismatch",
@@ -367,7 +524,31 @@ def audit_answer(question, context, answer, rules=None):
             )
 
     clarification = context.get("clarification_decision", {})
-    if clarification.get("action") in {"ask_first", "answer_conditionally"} and clarification.get("questions"):
+    if isinstance(turn_contract, dict) and not turn_contract_errors:
+        for resolved in turn_contract.get("resolved_clarifications", []):
+            if text_match_score(resolved.get("answer", ""), answer, rules) < rules["resolved_clarification_match_threshold"]:
+                add_violation(
+                    violations,
+                    "missing_resolved_clarification",
+                    "A resolved clarification is not acknowledged in the answer.",
+                    details={"question_id": resolved.get("question_id")},
+                )
+            if text_match_score(resolved.get("question", ""), answer, rules) >= rules["reasked_question_match_threshold"]:
+                add_violation(
+                    violations,
+                    "resolved_clarification_reasked",
+                    "The answer repeats a clarification question that the user already resolved.",
+                    details={"question_id": resolved.get("question_id")},
+                )
+        for request in turn_contract.get("pending_clarifications", []):
+            if text_match_score(request.get("question", ""), answer, rules) < rules["required_clarification_match_threshold"]:
+                add_violation(
+                    violations,
+                    "missing_required_clarification",
+                    "The answer omits a required focused clarification.",
+                    details={"question_id": request.get("question_id")},
+                )
+    elif clarification.get("action") in {"ask_first", "answer_conditionally"} and clarification.get("questions"):
         question_match = any(
             text_match_score(question_text, answer, rules) >= rules["claim_match_threshold"]
             for question_text in clarification["questions"]

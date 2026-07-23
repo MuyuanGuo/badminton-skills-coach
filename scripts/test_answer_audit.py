@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import importlib.util
 import json
 import subprocess
@@ -29,6 +30,9 @@ class AnswerAuditTests(unittest.TestCase):
         cls.evaluator = load_module(EVALUATOR_PATH, "answer_audit_evaluator_test")
         cls.cases = json.loads(CASES_PATH.read_text(encoding="utf-8"))
         cls.context = cls.cases["contexts"]["kill_to_net_diagnostic"]
+        cls.continuation_context = cls.cases["contexts"][
+            "kill_to_net_continuation"
+        ]
 
     def audit_named_answer(self, answer_id):
         return self.auditor.audit_answer(
@@ -98,6 +102,69 @@ class AnswerAuditTests(unittest.TestCase):
             "missing_citation_evidence_id",
             {item["code"] for item in audit["violations"]},
         )
+
+    def test_continuation_audits_against_original_question(self):
+        answer = self.cases["answers"]["continuation_complete"]
+        original = self.continuation_context["clarification_state"][
+            "original_query"
+        ]
+        audit = self.auditor.audit_answer(
+            original, self.continuation_context, answer
+        )
+        self.assertTrue(audit["passed"], audit["violations"])
+        wrong = self.auditor.audit_answer(
+            self.continuation_context["query"],
+            self.continuation_context,
+            answer,
+        )
+        self.assertIn(
+            "question_context_mismatch",
+            {item["code"] for item in wrong["violations"]},
+        )
+
+    def test_pending_clarification_requires_a_purpose(self):
+        context = copy.deepcopy(self.continuation_context)
+        del context["answer_turn_contract"]["pending_clarifications"][0][
+            "purpose"
+        ]
+        audit = self.auditor.audit_answer(
+            context["clarification_state"]["original_query"],
+            context,
+            self.cases["answers"]["continuation_complete"],
+        )
+        self.assertIn(
+            "invalid_clarification_contract",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_answer_turn_evidence_state_must_match_current_context(self):
+        context = copy.deepcopy(self.continuation_context)
+        context["answer_turn_contract"]["evidence_state_digest"] = "0" * 64
+        audit = self.auditor.audit_answer(
+            context["clarification_state"]["original_query"],
+            context,
+            self.cases["answers"]["continuation_complete"],
+        )
+        self.assertIn(
+            "answer_turn_evidence_state_mismatch",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_continuation_rejects_prior_turn_labels_and_evidence_ids(self):
+        answer = (
+            self.cases["answers"]["continuation_complete"]
+            + "\n旧轮证据 V1：7000000000000000001"
+        )
+        audit = self.auditor.audit_answer(
+            self.continuation_context["clarification_state"][
+                "original_query"
+            ],
+            self.continuation_context,
+            answer,
+        )
+        codes = {item["code"] for item in audit["violations"]}
+        self.assertIn("unmapped_video_label", codes)
+        self.assertIn("unmapped_evidence_id", codes)
 
     def test_cli_returns_nonzero_and_structured_json_for_failed_answer(self):
         with tempfile.TemporaryDirectory() as directory:
