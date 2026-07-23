@@ -152,6 +152,136 @@
           "canonical_url": "https://www.douyin.com/video/7000000000000000003"
         }
       ]
+    },
+    "kill_to_net_continuation": {
+      "query": "我杀球后经常来不及上网，是不是步法太慢？\n补充说明（比赛项目）：双打\n补充说明（上一拍后的重心与衔接路线）：杀球落地后重心停在原地",
+      "diagnostic_model": {
+        "do_not_claim_unique_cause": false
+      },
+      "clarification_decision": {
+        "action": "answer_conditionally",
+        "questions": [
+          "上一拍是重杀、点杀还是吊球？",
+          "击球后第一步是向前、原地调整还是先后退？"
+        ]
+      },
+      "claim_evidence_map": [],
+      "completeness_contract": {
+        "items": [],
+        "silent_omission_forbidden": true
+      },
+      "selected_videos": [],
+      "clarification_state": {
+        "schema_version": 1,
+        "original_query": "我杀球后经常来不及上网，是不是步法太慢？",
+        "effective_query": "我杀球后经常来不及上网，是不是步法太慢？\n补充说明（比赛项目）：双打\n补充说明（上一拍后的重心与衔接路线）：杀球落地后重心停在原地",
+        "turns": [
+          {
+            "turn": 1,
+            "role": "user",
+            "kind": "original_query",
+            "text": "我杀球后经常来不及上网，是不是步法太慢？",
+            "answered_question_ids": []
+          },
+          {
+            "turn": 2,
+            "role": "user",
+            "kind": "clarification_reply",
+            "text": "双打，杀球落地后重心停在原地",
+            "answered_question_ids": [
+              "clarify.branch.discipline",
+              "clarify.mechanism.movement_transition"
+            ]
+          }
+        ],
+        "resolved_answers": [
+          {
+            "question_id": "clarify.branch.discipline",
+            "question": "这是单打还是双打场景？",
+            "answer": "双打",
+            "query_label": "比赛项目",
+            "unknown_type": "branch_axis:discipline",
+            "turn": 2
+          },
+          {
+            "question_id": "clarify.mechanism.movement_transition",
+            "question": "杀球落地后重心是在向前还是停在原地？",
+            "answer": "杀球落地后重心停在原地",
+            "query_label": "上一拍后的重心与衔接路线",
+            "unknown_type": "user_movement_observation",
+            "turn": 2
+          }
+        ],
+        "pending_question_ids": [
+          "clarify.mechanism.shot_choice",
+          "clarify.mechanism.first_step"
+        ],
+        "pending_requests": [
+          {
+            "question_id": "clarify.mechanism.shot_choice",
+            "unknown_type": "user_movement_observation",
+            "question": "上一拍是重杀、点杀还是吊球？",
+            "query_label": "上一拍球路",
+            "purpose": "不同球路会改变可用的衔接时间和证据范围。"
+          },
+          {
+            "question_id": "clarify.mechanism.first_step",
+            "unknown_type": "user_movement_observation",
+            "question": "击球后第一步是向前、原地调整还是先后退？",
+            "query_label": "击球后第一步",
+            "purpose": "第一步方向会改变动作链诊断和对应证据。"
+          }
+        ]
+      },
+      "answer_turn_contract": {
+        "schema_version": 1,
+        "original_query": "我杀球后经常来不及上网，是不是步法太慢？",
+        "effective_query": "我杀球后经常来不及上网，是不是步法太慢？\n补充说明（比赛项目）：双打\n补充说明（上一拍后的重心与衔接路线）：杀球落地后重心停在原地",
+        "turn_number": 2,
+        "resolved_clarifications": [
+          {
+            "question_id": "clarify.branch.discipline",
+            "question": "这是单打还是双打场景？",
+            "answer": "双打",
+            "query_label": "比赛项目",
+            "unknown_type": "branch_axis:discipline",
+            "turn": 2
+          },
+          {
+            "question_id": "clarify.mechanism.movement_transition",
+            "question": "杀球落地后重心是在向前还是停在原地？",
+            "answer": "杀球落地后重心停在原地",
+            "query_label": "上一拍后的重心与衔接路线",
+            "unknown_type": "user_movement_observation",
+            "turn": 2
+          }
+        ],
+        "pending_clarifications": [
+          {
+            "question_id": "clarify.mechanism.shot_choice",
+            "unknown_type": "user_movement_observation",
+            "question": "上一拍是重杀、点杀还是吊球？",
+            "query_label": "上一拍球路",
+            "purpose": "不同球路会改变可用的衔接时间和证据范围。"
+          },
+          {
+            "question_id": "clarify.mechanism.first_step",
+            "unknown_type": "user_movement_observation",
+            "question": "击球后第一步是向前、原地调整还是先后退？",
+            "query_label": "击球后第一步",
+            "purpose": "第一步方向会改变动作链诊断和对应证据。"
+          }
+        ],
+        "resolved_question_ids_must_not_be_reasked": [
+          "clarify.branch.discipline",
+          "clarify.mechanism.movement_transition"
+        ],
+        "evidence_state": {
+          "selected_videos": [],
+          "claim_evidence": []
+        },
+        "evidence_state_digest": "46c921693aa9f7487a12ce52f97525acf0f183792a700c92b2376a49721e7c21"
+      }
     }
   },
   "answers": {
@@ -163,7 +293,11 @@
     "excessive_confidence": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n上一拍球路与留给衔接的时间一定是你的问题。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
     "missing_unresolved_gap": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
     "missing_unique_boundary": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
-    "unmapped_label": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。另见[V9]。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003"
+    "unmapped_label": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。另见[V9]。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "continuation_complete": "你已经补充：这是双打，杀球落地后重心停在原地。这个文字观察仍不能单独确认唯一原因。\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
+    "continuation_missing_resolved": "你已经补充：这是双打。这个文字观察仍不能单独确认唯一原因。\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
+    "continuation_reasks_resolved": "你已经补充：这是双打，杀球落地后重心停在原地。这个文字观察仍不能单独确认唯一原因。\n请再回答：这是单打还是双打场景？\n请继续补充：上一拍是重杀、点杀还是吊球？\n还需要确认：击球后第一步是向前、原地调整还是先后退？",
+    "continuation_missing_pending": "你已经补充：这是双打，杀球落地后重心停在原地。这个文字观察仍不能单独确认唯一原因。\n请继续补充：上一拍是重杀、点杀还是吊球？"
   },
   "cases": [
     {
@@ -227,6 +361,34 @@
       "answer_id": "unmapped_label",
       "expected_pass": false,
       "expected_violation_codes_contains": ["unmapped_video_label"]
+    },
+    {
+      "case_id": "AAC010",
+      "context_id": "kill_to_net_continuation",
+      "answer_id": "continuation_complete",
+      "expected_pass": true,
+      "expected_violation_codes_excludes": ["question_context_mismatch"]
+    },
+    {
+      "case_id": "AAC011",
+      "context_id": "kill_to_net_continuation",
+      "answer_id": "continuation_missing_resolved",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["missing_resolved_clarification"]
+    },
+    {
+      "case_id": "AAC012",
+      "context_id": "kill_to_net_continuation",
+      "answer_id": "continuation_reasks_resolved",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["resolved_clarification_reasked"]
+    },
+    {
+      "case_id": "AAC013",
+      "context_id": "kill_to_net_continuation",
+      "answer_id": "continuation_missing_pending",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["missing_required_clarification"]
     }
   ]
 }

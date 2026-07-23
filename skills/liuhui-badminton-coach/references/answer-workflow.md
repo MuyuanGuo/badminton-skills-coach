@@ -21,6 +21,8 @@ The continuation state keeps the original query, raw user turns, question-bound 
 
 After continuation, use `diagnostic_model.clarification_observations` as user-reported text, not independently observed movement. A supplied singles/doubles or forehand/backhand answer may close that scenario branch and change eligible evidence. A description such as “落地后重心停在原地” may prioritize a source-backed check, but must not remove `unique_cause_confirmation_requires_user_video` or turn a possible mechanism into a confirmed cause.
 
+Use `answer_turn_contract` as the handoff between context generation, answer composition, and final audit. Its `original_query` is the only valid question argument for `audit_answer.py`; `effective_query` is retrieval input, not replacement wording. Explicitly acknowledge every resolved answer, do not repeat any resolved question, and include every pending question rather than using a generic “请补充”. Each pending request must retain a non-empty `purpose`. The contract's evidence state and digest must match this turn's `selected_videos` and `claim_evidence_map`, so a prior turn's V labels and evidence IDs are never valid by inheritance.
+
 ## Diagnostic Contract
 
 Read the diagnostic fields before composing prose:

@@ -3,6 +3,9 @@
   "description": "Deterministic final-answer checks for evidence scope, diagnostic certainty, completeness, and citation integrity.",
   "claim_match_threshold": 0.34,
   "boundary_match_threshold": 0.45,
+  "resolved_clarification_match_threshold": 0.8,
+  "reasked_question_match_threshold": 0.9,
+  "required_clarification_match_threshold": 0.8,
   "conditional_markers": [
     "如果",
     "若",

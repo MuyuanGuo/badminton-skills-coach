@@ -35,20 +35,21 @@ python3 scripts/prepare_answer_context.py "用户本轮完整回复" --continue-
 
 Natural free text is accepted only when exactly one question is pending and the reply contains a relevant answer cue. When multiple questions are pending, bind every supplied answer to its stable `question_id` in a JSON object and add `--clarification-answers answers.json`. It is valid to answer only some pending questions. Never guess a binding for an irrelevant, inconclusive, or ambiguous reply.
 
-Read `clarification_state.original_query`, `resolved_answers`, and `pending_question_ids` after every continuation. The top-level `query` is the effective merged query used to rerun the full planner, retrieval, selection, and evidence mapping; it is not a replacement for the preserved original wording. Never reuse the prior turn's selected videos or claim mappings. Text clarification can narrow a branch or report an observation, but only the user's continuous action video can confirm a unique physical cause.
+Read `answer_turn_contract` after every turn. Use its `original_query` when auditing, acknowledge every `resolved_clarifications` answer in the response body, never repeat a question listed by `resolved_question_ids_must_not_be_reasked`, and ask every `pending_clarifications` item once with its stated `purpose` preserved in your reasoning. Its evidence digest binds the answer to the freshly generated `selected_videos` and `claim_evidence_map`. The top-level `query` is only the effective merged query used to rerun the full planner, retrieval, selection, and evidence mapping; it is not a replacement for the preserved original wording. Never reuse the prior turn's selected videos or claim mappings. Text clarification can narrow a branch or report an observation, but only the user's continuous action video can confirm a unique physical cause.
 
 Read the result in this order:
 
 1. `question_interpretation`: verify the positive intent, exclusions, literal symptoms, scenario, requested output, and split query units. Never silently answer a nearby question.
 2. `diagnostic_model`: distinguish reported symptoms, the user's hypotheses, source-supported mechanisms, and material scenario branches. A user hypothesis is never a confirmed cause. Without the user's continuous movement video, keep causes conditional or unverified.
 3. `clarification_decision`: `answer_now` directly; `answer_conditionally` gives the useful scoped answer now and asks only the returned focused `clarification_requests`; `ask_first` asks before choosing a materially different branch. Never ask more than its `question_limit`, preserve each returned `question_id` for the next turn, and use `purpose` to verify that the question is physically coherent and materially useful before asking it.
-4. `boundary`: state its `required_statement` before coaching when present.
-5. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
-6. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
-7. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
-8. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
-9. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
-10. `selection`, `answer_contract`, and `source_handling`: follow them literally. If `selection_truncated` is true and the question genuinely requires a complete survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
+4. `answer_turn_contract`: preserve every resolved clarification in the prose, ask every still-pending question, never re-ask a resolved `question_id`, and use only the evidence state generated for this turn.
+5. `boundary`: state its `required_statement` before coaching when present.
+6. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
+7. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
+8. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
+9. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
+10. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
+11. `selection`, `answer_contract`, and `source_handling`: follow them literally. If `selection_truncated` is true and the question genuinely requires a complete survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
 
 For a diagnostic or other multi-claim answer, save the prepared context and final draft, then run `scripts/audit_answer.py` before sending it. A nonzero exit means the draft still violates the evidence, confidence, completeness, branch, boundary, or citation contract; revise and rerun until `passed` is true. The auditor is a deterministic safety gate, not proof that every possible semantic error has been found.
 
