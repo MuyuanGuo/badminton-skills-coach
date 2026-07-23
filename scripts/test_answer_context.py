@@ -55,16 +55,6 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn("握拍", context["retrieval_queries"])
         self.assertIn("7053654124042194215", context["candidate_ids"])
 
-    def test_full_pre_answer_context_registry_passes_quality_gates(self):
-        result = self.module.evaluate()
-        self.assertEqual(result["cases"], 57)
-        self.assertEqual(result["candidate_recall"], 1.0)
-        self.assertEqual(result["selected_video_recall"], 1.0)
-        self.assertGreaterEqual(result["primary_selected_rate"], 0.95)
-        self.assertEqual(result["answer_mode_accuracy"], 1.0)
-        self.assertEqual(result["context_evidence_coverage"], 1.0)
-        self.assertEqual(result["hard_negative_selected_violations"], 0)
-
     def test_boundary_questions_do_not_leak_generic_coaching_videos(self):
         pain = self.module.prepare_case_context(
             self.search_module,

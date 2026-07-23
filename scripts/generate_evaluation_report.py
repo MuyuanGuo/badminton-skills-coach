@@ -25,6 +25,19 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE_PATH = ROOT / "data" / "evaluation" / "evaluation_baselines.json"
 REPORT_PATH = ROOT / "data" / "evaluation" / "evaluation_report.json"
 HTML_PATH = ROOT / "docs" / "evaluation" / "index.html"
+EVALUATION_RESULTS_SCHEMA_VERSION = 1
+EVALUATION_SUITES = {
+    "answer_policy",
+    "answer_context",
+    "answer_quality",
+    "query_equivalence",
+    "query_understanding",
+    "diagnostic_answer_contract",
+    "answer_audit",
+    "retrieval",
+    "video_comprehension",
+    "forward_tests",
+}
 CORE_EVALUATORS = (
     "build_douyin_knowledge.py",
     "evaluate_answer_audit.py",
@@ -324,14 +337,27 @@ def compare_baseline(evaluations, baseline):
     return comparisons
 
 
-def build_report(root=ROOT):
+def load_evaluation_results(path, root=ROOT):
+    payload = load_json(path)
+    if payload.get("schema_version") != EVALUATION_RESULTS_SCHEMA_VERSION:
+        raise ValueError("evaluation results schema version is unsupported")
+    expected_fingerprints = fingerprint_paths(root)
+    if payload.get("build") != expected_fingerprints:
+        raise ValueError("evaluation results do not match the current inputs and runtime")
+    evaluations = payload.get("evaluations")
+    if not isinstance(evaluations, dict) or set(evaluations) != EVALUATION_SUITES:
+        raise ValueError("evaluation results do not contain the required suites")
+    return evaluations
+
+
+def build_report(root=ROOT, evaluations=None):
     root = Path(root)
     versions = load_json(root / "config/feedback_rules.json")
     baselines = load_json(root / "data/evaluation/evaluation_baselines.json")
     stable_version = versions["stable_version"]
     baseline_key = f"v{stable_version}"
     baseline = baselines["baselines"][baseline_key]
-    evaluations = collect_evaluations(root)
+    evaluations = evaluations if evaluations is not None else collect_evaluations(root)
     comparisons = compare_baseline(evaluations, baseline)
     regressions = [item for item in comparisons if not item["passed"]]
     fingerprints = fingerprint_paths(root)
@@ -477,9 +503,17 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--write", action="store_true", help="Update committed reports.")
     mode.add_argument("--check", action="store_true", help="Fail when reports are stale.")
+    parser.add_argument(
+        "--evaluations",
+        type=Path,
+        help="Read precomputed evaluator results instead of running evaluators.",
+    )
     args = parser.parse_args()
 
-    report = build_report()
+    evaluations = (
+        load_evaluation_results(args.evaluations) if args.evaluations else None
+    )
+    report = build_report(evaluations=evaluations)
     report_content = json_bytes(report)
     html_content = render_html(report)
     if args.write:

@@ -37,12 +37,27 @@ class AnswerAuditTests(unittest.TestCase):
             self.cases["answers"][answer_id],
         )
 
-    def test_gold_registry_passes(self):
-        result = self.evaluator.evaluate()
-        self.assertEqual(result["cases"], 9)
-        self.assertEqual(result["passed"], 9)
-        self.assertEqual(result["accuracy"], 1.0)
-        self.assertEqual(result["violation_detection_rate"], 1.0)
+    def test_evaluator_accepts_a_small_fixture(self):
+        source_case = self.cases["cases"][0]
+        payload = {
+            "contexts": {
+                source_case["context_id"]: self.cases["contexts"][
+                    source_case["context_id"]
+                ]
+            },
+            "answers": {
+                source_case["answer_id"]: self.cases["answers"][
+                    source_case["answer_id"]
+                ]
+            },
+            "cases": [source_case],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "cases.json"
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            result = self.evaluator.evaluate(path)
+        self.assertEqual(result["cases"], 1)
+        self.assertEqual(result["passed"], 1)
 
     def test_complete_conditional_answer_passes_without_false_positive(self):
         audit = self.audit_named_answer("complete_conditional")

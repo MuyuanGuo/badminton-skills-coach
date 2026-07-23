@@ -15,6 +15,7 @@ from project_artifacts import (
     skill_reference_mismatches,
     validate_evidence_records,
 )
+from run_ci_tests import test_groups
 from update_readme_status import (
     update_agent_metadata_text,
     update_readme_text,
@@ -27,17 +28,14 @@ ROOT = Path(__file__).resolve().parents[1]
 workflow_text = (ROOT / ".github" / "workflows" / "validate.yml").read_text(
     encoding="utf-8"
 )
-for test_path in sorted((ROOT / "scripts").glob("test_*.py")):
-    relative_test_path = str(test_path.relative_to(ROOT))
-    if f"python {relative_test_path}" not in workflow_text:
-        raise SystemExit(f"Regression test is not executed by CI: {relative_test_path}")
-for compiled_helper in [
-    "scripts/media_assets.py",
-    "scripts/project_artifacts.py",
-    "scripts/package_skill_release.py",
-]:
-    if compiled_helper not in workflow_text:
-        raise SystemExit(f"Core helper is not compiled by CI: {compiled_helper}")
+for group in test_groups():
+    if f"python scripts/run_ci_tests.py {group}" not in workflow_text:
+        raise SystemExit(f"CI does not execute the {group} test group")
+compile_command = (
+    "python -m compileall -q scripts skills/liuhui-badminton-coach/scripts"
+)
+if compile_command not in workflow_text:
+    raise SystemExit("CI does not compile all Python source directories")
 
 json_paths = [
     "config/answer_audit_rules.json",
