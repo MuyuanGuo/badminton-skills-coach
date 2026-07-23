@@ -45,7 +45,7 @@ Read the result in this order:
 4. `answer_turn_contract`: preserve every resolved clarification in the prose, ask every still-pending question, never re-ask a resolved `question_id`, and use only the evidence state generated for this turn.
 5. `boundary`: state its `required_statement` before coaching when present.
 6. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
-7. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
+7. `completeness_contract`: substantively answer every `must_answer` item, keep every `conditional` branch conditional, and explicitly resolve or name every `unresolved` gap. Repeating an item or branch label is not coverage; each material branch needs its own conclusion, condition, or evidence boundary. Complete means no necessary branch is silently omitted, not a longer answer.
 8. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
 9. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
 10. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.

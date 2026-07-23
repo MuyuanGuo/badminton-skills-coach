@@ -1,13 +1,13 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "ca5f4984405764513398c66eddc2b0f9aaceb11b774095639bd500fada147b3d",
+  "runtime_fingerprint": "b99d17717657a85e1b120a1cb7fc023fe350b105d57956cde601d5c3cd221cd9",
   "runtime_revalidation": {
     "tested_at": "2026-07-23",
     "validation_mode": "same_agent_structural_audit",
     "reviewer": "Codex current-task regression audit",
     "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
-    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and retains all four required evidence IDs. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, preserve the player-opponent event chain, and keep the singles/doubles and user-video diagnostic boundaries. Continuation retrieval now plans from the original question while applying resolved constraints, so clarification metadata does not become a new claim. Four continuation gold answers pass the final-answer audit: two retain current-turn citations, while two explicitly disclose an empty evidence set without restoring stale sources. The backhand passive-rearcourt baseline case now keeps clear evidence and excludes smash-block and drive sources. Thirteen continuation tests, fourteen diagnostic cases, eleven answer-audit tests, all fast and artifact tests, and all fifty-four answer-context tests pass."
+    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and retains all four required evidence IDs. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, preserve the player-opponent event chain, and keep the singles/doubles and user-video diagnostic boundaries. The answer auditor now distinguishes substantive coverage from topic repetition: a required item needs a conclusion or evidence boundary, and each material branch needs separate treatment. Fifteen answer-audit gold cases pass, including failures for citation-complete topic echoes and branch-label-only answers. This additive final-answer gate does not change historical blind answers, query interpretation, retrieval, selection, or claim-evidence mappings."
   },
   "results": [
     {

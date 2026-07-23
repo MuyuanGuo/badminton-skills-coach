@@ -34,7 +34,7 @@ Read the diagnostic fields before composing prose:
 - `material_branches` preserves conditions such as forehand/backhand or singles/doubles when they change the correct answer. Cover each evidenced branch until clarified.
 - `clarification_decision.action: answer_conditionally` means answer the supported scope now and then ask only the returned focused questions. Do not withhold useful evidence while waiting for a movement video.
 - `claim_evidence_map` narrows `selected_videos` per claim. Cite only its mapped labels for that claim and stay at or below its `confidence_ceiling`.
-- `completeness_contract` is the final checklist. A complete answer addresses every required item, preserves conditional branches, and names unresolved evidence gaps; extra length does not repair a missing branch.
+- `completeness_contract` is the final checklist. A complete answer substantively addresses every required item, preserves conditional branches, and names unresolved evidence gaps. Merely repeating an item or listing branch labels is not coverage; each material branch needs its own conclusion, condition, or evidence boundary, and extra length does not repair a missing branch.
 
 For a reported technical failure, separate four layers in the answer: the symptom, the user's proposed explanation, source-supported mechanisms, and what can only be verified from the user's continuous preparation-to-recovery video. Never claim one unique physical cause from text alone.
 
