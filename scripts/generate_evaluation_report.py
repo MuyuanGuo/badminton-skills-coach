@@ -63,6 +63,7 @@ EVALUATION_INPUTS = (
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
+    "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/query_equivalence_cases.json",
@@ -170,6 +171,9 @@ def collect_evaluations(root=ROOT):
         forward_fingerprint,
         evaluate_forward_test_results.load_json(
             root / "data/evaluation/diagnostic_answer_cases.json"
+        ),
+        evaluate_forward_test_results.load_json(
+            root / "data/evaluation/diagnostic_answer_continuation_cases.json"
         ),
     )
 

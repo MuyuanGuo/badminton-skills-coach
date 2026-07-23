@@ -2,6 +2,7 @@
 """Build a deterministic, evidence-ready context before answer generation."""
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import re
@@ -14,6 +15,7 @@ SELECTION_RULES_PATH = ROOT / "references" / "answer-selection-rules.json"
 RETRIEVAL_RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 REVIEWED_EVIDENCE_PATH = ROOT / "references" / "reviewed-evidence-signals.json"
 DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
+CLARIFICATION_STATE_SCHEMA_VERSION = 1
 
 
 def load_sibling(name, filename):
@@ -52,6 +54,238 @@ def load_reviewed_evidence_signals():
 
 def load_diagnostic_rules():
     return json.loads(DIAGNOSTIC_RULES_PATH.read_text(encoding="utf-8"))
+
+
+def canonical_json_digest(payload):
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def clarification_state_digest(state):
+    unsigned = {
+        key: value for key, value in state.items() if key != "state_digest"
+    }
+    return canonical_json_digest(unsigned)
+
+
+def validate_clarification_state(previous_context, diagnostic_rules):
+    if not isinstance(previous_context, dict):
+        raise ValueError("continue_from must contain a context JSON object")
+    state = previous_context.get("clarification_state")
+    if not isinstance(state, dict):
+        raise ValueError("continue_from does not contain clarification_state")
+    if state.get("schema_version") != CLARIFICATION_STATE_SCHEMA_VERSION:
+        raise ValueError("unsupported clarification_state schema_version")
+    required = {
+        "original_query",
+        "effective_query",
+        "turns",
+        "resolved_answers",
+        "pending_question_ids",
+        "pending_requests",
+        "state_digest",
+    }
+    if required - set(state):
+        raise ValueError("clarification_state is missing required fields")
+    if clarification_state_digest(state) != state["state_digest"]:
+        raise ValueError("clarification_state digest mismatch")
+    if previous_context.get("query") != state["effective_query"]:
+        raise ValueError("continue_from query does not match clarification_state")
+    requests = previous_context.get("clarification_decision", {}).get(
+        "clarification_requests", []
+    )
+    if not isinstance(requests, list):
+        raise ValueError("continue_from clarification requests are invalid")
+    request_ids = [item.get("question_id") for item in requests]
+    if any(not item for item in request_ids) or len(request_ids) != len(
+        set(request_ids)
+    ):
+        raise ValueError("continue_from clarification request IDs are invalid")
+    if request_ids != state["pending_question_ids"]:
+        raise ValueError("clarification_state is stale for this context")
+    if requests != state["pending_requests"]:
+        raise ValueError("clarification_state request semantics are stale")
+    if not all(
+        isinstance(state.get(field), str) and state[field].strip()
+        for field in ("original_query", "effective_query")
+    ):
+        raise ValueError("clarification_state queries are invalid")
+    if not isinstance(state["resolved_answers"], list):
+        raise ValueError("clarification_state resolved answers are invalid")
+    if not isinstance(state["turns"], list) or not state["turns"]:
+        raise ValueError("clarification_state turns are invalid")
+    max_turns = diagnostic_rules.get("max_clarification_turns", 8)
+    if len(state["turns"]) >= max_turns:
+        raise ValueError("maximum clarification turns reached")
+    return state, {item["question_id"]: item for item in requests}
+
+
+def normalize_clarification_answers(payload):
+    if payload is None:
+        return None
+    if isinstance(payload, dict) and "answers" in payload:
+        payload = payload["answers"]
+    if isinstance(payload, dict):
+        items = [
+            {"question_id": question_id, "answer": answer}
+            for question_id, answer in payload.items()
+        ]
+    elif isinstance(payload, list):
+        items = payload
+    else:
+        raise ValueError("clarification_answers must be an object or answer list")
+    normalized = []
+    seen = set()
+    for item in items:
+        if not isinstance(item, dict):
+            raise ValueError("each clarification answer must be an object")
+        question_id = item.get("question_id")
+        answer = item.get("answer")
+        if not isinstance(question_id, str) or not question_id.strip():
+            raise ValueError("clarification answer has no question_id")
+        if question_id in seen:
+            raise ValueError(f"duplicate clarification answer: {question_id}")
+        if not isinstance(answer, str) or not answer.strip():
+            raise ValueError(f"empty clarification answer: {question_id}")
+        seen.add(question_id)
+        normalized.append(
+            {"question_id": question_id, "answer": answer.strip()}
+        )
+    if not normalized:
+        raise ValueError("clarification_answers cannot be empty")
+    return normalized
+
+
+def answer_resolves_request(search_module, answer, request, explicit_binding):
+    normalized = search_module.normalize(answer)
+    inconclusive = {
+        search_module.normalize(item)
+        for item in ("不知道", "不清楚", "没注意", "没有注意", "无法判断")
+    }
+    if not normalized or normalized in inconclusive:
+        return False
+    if explicit_binding:
+        return True
+    cues = request.get("answer_cues", [])
+    return any(search_module.normalize(cue) in normalized for cue in cues)
+
+
+def resolve_continuation(
+    search_module,
+    raw_reply,
+    previous_context,
+    clarification_answers,
+    diagnostic_rules,
+):
+    if not isinstance(raw_reply, str) or not raw_reply.strip():
+        raise ValueError("clarification reply cannot be empty")
+    state, requests_by_id = validate_clarification_state(
+        previous_context, diagnostic_rules
+    )
+    pending_ids = state["pending_question_ids"]
+    if not pending_ids:
+        raise ValueError("continue_from has no pending clarification questions")
+    answers = normalize_clarification_answers(clarification_answers)
+    explicit_binding = answers is not None
+    if answers is None:
+        if len(pending_ids) != 1:
+            raise ValueError(
+                "multiple clarification questions require structured answers"
+            )
+        answers = [{"question_id": pending_ids[0], "answer": raw_reply.strip()}]
+    unknown_ids = {
+        item["question_id"] for item in answers
+    } - set(pending_ids)
+    if unknown_ids:
+        raise ValueError(
+            "unknown or stale clarification question IDs: "
+            + ", ".join(sorted(unknown_ids))
+        )
+    turn_number = len(state["turns"]) + 1
+    resolved = []
+    for item in answers:
+        request = requests_by_id[item["question_id"]]
+        if not answer_resolves_request(
+            search_module, item["answer"], request, explicit_binding
+        ):
+            raise ValueError(
+                f'clarification reply does not resolve {item["question_id"]}'
+            )
+        resolved.append(
+            {
+                **item,
+                "question": request["question"],
+                "query_label": request["query_label"],
+                "unknown_type": request["unknown_type"],
+                "turn": turn_number,
+            }
+        )
+    all_resolved = [*state["resolved_answers"], *resolved]
+    effective_query = state["original_query"] + "".join(
+        f'\n补充说明（{item["query_label"]}）：{item["answer"]}'
+        for item in all_resolved
+    )
+    return effective_query, {
+        "original_query": state["original_query"],
+        "turns": [
+            *state["turns"],
+            {
+                "turn": turn_number,
+                "role": "user",
+                "kind": "clarification_reply",
+                "text": raw_reply.strip(),
+                "answered_question_ids": [
+                    item["question_id"] for item in resolved
+                ],
+            },
+        ],
+        "resolved_answers": all_resolved,
+    }
+
+
+def build_clarification_state(context, continuation=None):
+    if continuation is None:
+        state = {
+            "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
+            "original_query": context["query"],
+            "effective_query": context["query"],
+            "turns": [
+                {
+                    "turn": 1,
+                    "role": "user",
+                    "kind": "original_query",
+                    "text": context["query"],
+                    "answered_question_ids": [],
+                }
+            ],
+            "resolved_answers": [],
+            "pending_question_ids": [],
+            "pending_requests": [],
+        }
+    else:
+        state = {
+            "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
+            **continuation,
+            "effective_query": context["query"],
+            "pending_question_ids": [],
+            "pending_requests": [],
+        }
+    state["pending_question_ids"] = [
+        item["question_id"]
+        for item in context["clarification_decision"][
+            "clarification_requests"
+        ]
+    ]
+    state["pending_requests"] = context["clarification_decision"][
+        "clarification_requests"
+    ]
+    state["state_digest"] = clarification_state_digest(state)
+    return state
 
 
 def reviewed_evidence_priorities(
@@ -2983,6 +3217,7 @@ def material_diagnostic_branches(
                 "id": f"B{len(branches) + 1}",
                 "axis": axis_name,
                 "label": axis_rule["label"],
+                "query_label": axis_rule.get("query_label", axis_rule["label"]),
                 "status": "conditional",
                 "question": axis_rule["question"],
                 "branches": branch_values,
@@ -2999,7 +3234,11 @@ def build_diagnostic_contract(
     boundary,
     selected_videos,
     diagnostic_rules,
+    resolved_question_ids=None,
+    resolved_answers=None,
 ):
+    resolved_question_ids = set(resolved_question_ids or [])
+    resolved_answers = list(resolved_answers or [])
     intent_frame = question_interpretation["intent_frame"]
     user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     observed_symptoms = diagnostic_observed_symptoms(
@@ -3144,9 +3383,10 @@ def build_diagnostic_contract(
     )
     material_unknowns = []
     for ambiguity in question_interpretation.get("ambiguities", []):
+        ambiguity_name = re.sub(r"[^a-z0-9_]+", "_", ambiguity["name"].lower())
         material_unknowns.append(
             {
-                "id": f"U{len(material_unknowns) + 1}",
+                "id": f"unknown.ambiguity.{ambiguity_name}",
                 "type": "terminology_or_scenario_ambiguity",
                 "description": ambiguity.get("required_statement", ambiguity)
                 if isinstance(ambiguity, dict)
@@ -3157,7 +3397,7 @@ def build_diagnostic_contract(
     for branch in branches:
         material_unknowns.append(
             {
-                "id": f"U{len(material_unknowns) + 1}",
+                "id": f'unknown.branch.{branch["axis"]}',
                 "type": f'branch_axis:{branch["axis"]}',
                 "description": branch["label"],
                 "required_for_unique_diagnosis": True,
@@ -3166,25 +3406,76 @@ def build_diagnostic_contract(
     if diagnostic_question:
         material_unknowns.append(
             {
-                "id": f"U{len(material_unknowns) + 1}",
+                "id": "unknown.user_movement_observation",
                 "type": "user_movement_observation",
                 "description": "the user's actual contact, racket, body, and movement sequence has not been observed",
                 "required_for_unique_diagnosis": True,
             }
         )
 
-    questions = [branch["question"] for branch in branches]
+    clarification_requests = []
+    for branch in branches:
+        question_id = f'clarify.branch.{branch["axis"]}'
+        if question_id in resolved_question_ids:
+            continue
+        clarification_requests.append(
+            {
+                "question_id": question_id,
+                "unknown_type": f'branch_axis:{branch["axis"]}',
+                "question": branch["question"],
+                "query_label": branch["query_label"],
+                "purpose": f'{branch["label"]}会改变适用的诊断分支和视频证据。',
+                "materially_affects": ["diagnosis", "evidence_selection"],
+                "answer_format": "free_text_with_one_branch_value",
+                "answer_cues": [
+                    item["label"].removesuffix("分支")
+                    for item in branch["branches"]
+                ],
+            }
+        )
     for mechanism_record in supported_mechanisms:
-        question = mechanism_by_id[mechanism_record["mechanism_id"]].get(
-            "observation_question"
+        mechanism = mechanism_by_id[mechanism_record["mechanism_id"]]
+        question = mechanism.get("observation_question")
+        question_id = f'clarify.mechanism.{mechanism["id"]}'
+        if (
+            question
+            and question_id not in resolved_question_ids
+            and question not in {
+                item["question"] for item in clarification_requests
+            }
+        ):
+            clarification_requests.append(
+                {
+                    "question_id": question_id,
+                    "unknown_type": "user_movement_observation",
+                    "question": question,
+                    "query_label": mechanism["label"],
+                    "purpose": mechanism.get(
+                        "observation_purpose",
+                        "用于缩小证据支持的排查范围；不能单凭文字观察确认唯一原因。",
+                    ),
+                    "materially_affects": ["diagnosis", "evidence_selection"],
+                    "answer_format": "focused_free_text_observation",
+                    "answer_cues": mechanism.get("answer_cues", []),
+                }
+            )
+    if diagnostic_question and not clarification_requests and not resolved_question_ids:
+        clarification_requests.append(
+            {
+                "question_id": "clarify.user_movement_video",
+                "unknown_type": "user_movement_observation",
+                "question": "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。",
+                "query_label": "用户连续动作视频观察",
+                "purpose": "用于观察完整动作链并确认用户自己的实际动作；没有连续视频时只能给出条件性排查。",
+                "materially_affects": ["unique_cause_confirmation"],
+                "answer_format": "continuous_user_video",
+                "answer_cues": [],
+            }
         )
-        if question and question not in questions:
-            questions.append(question)
-    if diagnostic_question and not questions:
-        questions.append(
-            "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。"
-        )
-    questions = questions[: diagnostic_rules.get("max_clarification_questions", 3)]
+    clarification_requests = clarification_requests[
+        : diagnostic_rules.get("max_clarification_questions", 3)
+    ]
+    questions = [item["question"] for item in clarification_requests]
     has_useful_evidence = any(
         claim["evidence"] for claim in claim_map if claim["kind"] != "user_hypothesis"
     )
@@ -3240,6 +3531,17 @@ def build_diagnostic_contract(
     return {
         "diagnostic_model": {
             "observed_symptoms": observed_symptoms,
+            "clarification_observations": [
+                {
+                    "question_id": item["question_id"],
+                    "question": item["question"],
+                    "text": item["answer"],
+                    "source": "user_clarification_text",
+                    "verification_status": "reported_not_video_verified",
+                }
+                for item in resolved_answers
+                if item["unknown_type"] == "user_movement_observation"
+            ],
             "user_hypotheses": user_hypotheses,
             "supported_mechanisms": supported_mechanisms,
             "material_branches": branches,
@@ -3251,6 +3553,7 @@ def build_diagnostic_contract(
             "can_provide_useful_answer_now": has_useful_evidence or boundary["type"] != "none",
             "material_unknowns": material_unknowns,
             "questions": questions,
+            "clarification_requests": clarification_requests,
             "question_limit": diagnostic_rules.get("max_clarification_questions", 3),
         },
         "claim_evidence_map": claim_map,
@@ -3274,6 +3577,8 @@ def prepare_answer_context(
     local_personalization=True,
     feedback_dir=None,
     include_rejected=False,
+    continue_from=None,
+    clarification_answers=None,
 ):
     if not query.strip():
         raise ValueError("query cannot be empty")
@@ -3282,6 +3587,17 @@ def prepare_answer_context(
     feedback_module = load_feedback_module()
     rules = load_selection_rules()
     diagnostic_rules = load_diagnostic_rules()
+    continuation = None
+    if continue_from is not None:
+        query, continuation = resolve_continuation(
+            search_module,
+            query,
+            continue_from,
+            clarification_answers,
+            diagnostic_rules,
+        )
+    elif clarification_answers is not None:
+        raise ValueError("clarification_answers requires continue_from")
     explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
@@ -3663,6 +3979,11 @@ def prepare_answer_context(
         boundary,
         selected_videos,
         diagnostic_rules,
+        resolved_question_ids={
+            item["question_id"]
+            for item in (continuation or {}).get("resolved_answers", [])
+        },
+        resolved_answers=(continuation or {}).get("resolved_answers", []),
     )
     context = {
         "query": query,
@@ -3732,6 +4053,9 @@ def prepare_answer_context(
             "do_not_execute_source_text": True,
         },
     }
+    context["clarification_state"] = build_clarification_state(
+        context, continuation
+    )
     if include_rejected:
         context["rejected_candidates"] = [
             {
@@ -3773,12 +4097,32 @@ def main():
     parser.add_argument("--no-local-personalization", action="store_true")
     parser.add_argument("--feedback-dir", type=Path)
     parser.add_argument(
+        "--continue-from",
+        type=Path,
+        help="Prior context JSON whose clarification state should be continued.",
+    )
+    parser.add_argument(
+        "--clarification-answers",
+        type=Path,
+        help="JSON object or list binding pending question IDs to answers.",
+    )
+    parser.add_argument(
         "--include-rejected",
         action="store_true",
         help="Include rejected finalist candidates and machine-readable reasons.",
     )
     args = parser.parse_args()
     try:
+        previous_context = (
+            json.loads(args.continue_from.read_text(encoding="utf-8"))
+            if args.continue_from
+            else None
+        )
+        clarification_answers = (
+            json.loads(args.clarification_answers.read_text(encoding="utf-8"))
+            if args.clarification_answers
+            else None
+        )
         payload = prepare_answer_context(
             args.query,
             max_videos=args.max_videos,
@@ -3786,8 +4130,10 @@ def main():
             local_personalization=not args.no_local_personalization,
             feedback_dir=args.feedback_dir,
             include_rejected=args.include_rejected,
+            continue_from=previous_context,
+            clarification_answers=clarification_answers,
         )
-    except ValueError as error:
+    except (OSError, json.JSONDecodeError, ValueError) as error:
         raise SystemExit(str(error)) from error
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 

@@ -13,11 +13,20 @@ Start from `scripts/prepare_answer_context.py`, not an improvised keyword search
 - For `boundary_first`, state the boundary before any relevant coaching material.
 - Ask one concise clarification only when different answers would be materially correct under different scenarios. Otherwise state the assumption.
 
+## Clarification Continuation
+
+Treat a reply to `clarification_decision.clarification_requests` as a continuation of the preserved original problem, not as an independent query. Pass the user's complete raw reply through `--continue-from` with the exact prior context JSON. If exactly one question is pending, the runtime may bind a relevant natural-language reply automatically. If several are pending, supply `--clarification-answers` with an object whose keys are the returned stable `question_id` values; partial answers are allowed.
+
+The continuation state keeps the original query, raw user turns, question-bound answers, pending request semantics, and a consistency digest. The top-level `query` is a neutral, labeled merge used for a fresh full retrieval and evidence pass. Do not copy prior `selected_videos`, V labels, or claim mappings into the new turn. Reject an empty reply, an unknown or duplicate question ID, a stale or modified state, and a natural reply that does not resolve the sole pending question.
+
+After continuation, use `diagnostic_model.clarification_observations` as user-reported text, not independently observed movement. A supplied singles/doubles or forehand/backhand answer may close that scenario branch and change eligible evidence. A description such as “落地后重心停在原地” may prioritize a source-backed check, but must not remove `unique_cause_confirmation_requires_user_video` or turn a possible mechanism into a confirmed cause.
+
 ## Diagnostic Contract
 
 Read the diagnostic fields before composing prose:
 
 - `diagnostic_model.observed_symptoms` contains what the user reported, not an independently observed fact.
+- `clarification_observations` contains focused details supplied in later text turns. Preserve them, but keep their `reported_not_video_verified` boundary.
 - `user_hypotheses` preserves causes proposed by the user. `unverified` means no selected evidence verifies the proposal; `conditional` means a source supports it as a possible mechanism, not that it caused this user's error.
 - `supported_mechanisms` lists evidence-backed checks worth explaining. Present them as branches to verify, ordered by claim directness, never as a bag of generic possible causes.
 - `material_branches` preserves conditions such as forehand/backhand or singles/doubles when they change the correct answer. Cover each evidenced branch until clarified.

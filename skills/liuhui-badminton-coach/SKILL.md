@@ -27,11 +27,21 @@ python3 scripts/prepare_answer_context.py "用户的完整原问题"
 
 This command performs intent preservation, boundary detection, topic navigation when needed, multi-query exhaustive recall, candidate merging, scenario-conflict filtering, finalist selection, stable `V1...Vn` labeling, and timestamped evidence lookup. Do not replace it with an unaudited top-k search.
 
+If the next user turn answers a pending clarification, do not treat the short reply as a new question. Continue from the exact prior context with exactly one command:
+
+```bash
+python3 scripts/prepare_answer_context.py "用户本轮完整回复" --continue-from context.json
+```
+
+Natural free text is accepted only when exactly one question is pending and the reply contains a relevant answer cue. When multiple questions are pending, bind every supplied answer to its stable `question_id` in a JSON object and add `--clarification-answers answers.json`. It is valid to answer only some pending questions. Never guess a binding for an irrelevant, inconclusive, or ambiguous reply.
+
+Read `clarification_state.original_query`, `resolved_answers`, and `pending_question_ids` after every continuation. The top-level `query` is the effective merged query used to rerun the full planner, retrieval, selection, and evidence mapping; it is not a replacement for the preserved original wording. Never reuse the prior turn's selected videos or claim mappings. Text clarification can narrow a branch or report an observation, but only the user's continuous action video can confirm a unique physical cause.
+
 Read the result in this order:
 
 1. `question_interpretation`: verify the positive intent, exclusions, literal symptoms, scenario, requested output, and split query units. Never silently answer a nearby question.
 2. `diagnostic_model`: distinguish reported symptoms, the user's hypotheses, source-supported mechanisms, and material scenario branches. A user hypothesis is never a confirmed cause. Without the user's continuous movement video, keep causes conditional or unverified.
-3. `clarification_decision`: `answer_now` directly; `answer_conditionally` gives the useful scoped answer now and asks only the returned focused questions; `ask_first` asks before choosing a materially different branch. Never ask more than its `question_limit`.
+3. `clarification_decision`: `answer_now` directly; `answer_conditionally` gives the useful scoped answer now and asks only the returned focused `clarification_requests`; `ask_first` asks before choosing a materially different branch. Never ask more than its `question_limit`, preserve each returned `question_id` for the next turn, and use `purpose` to verify that the question is physically coherent and materially useful before asking it.
 4. `boundary`: state its `required_statement` before coaching when present.
 5. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
 6. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
