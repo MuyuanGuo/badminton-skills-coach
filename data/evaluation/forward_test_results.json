@@ -1,13 +1,13 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "8d1a9cfe4e61a2ecaf917ca35ad0d6dfb0ec7e9a7917c1e392571a4a320389ec",
+  "runtime_fingerprint": "4c913520fefa52ea9ab69390e1c493fb84bd4a45ed00fdefd18a22f920c32eb5",
   "runtime_revalidation": {
-    "tested_at": "2026-07-22",
+    "tested_at": "2026-07-23",
     "validation_mode": "same_agent_structural_audit",
     "reviewer": "Codex current-task regression audit",
     "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
-    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and maps all four required evidence IDs across the question and distance-mechanism claims. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, and keep the singles/doubles and user-video diagnostic boundaries."
+    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and maps all four required evidence IDs across the question and distance-mechanism claims. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, and keep the singles/doubles and user-video diagnostic boundaries. The added final-answer auditor is an output gate and does not alter those retrieval or interpretation results; its own nine gold cases cover citation, confidence, completeness, branch, and boundary failures."
   },
   "results": [
     {

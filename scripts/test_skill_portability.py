@@ -67,6 +67,41 @@ class SkillPortabilityTests(unittest.TestCase):
             self.assertTrue(context_payload["selected_videos"])
             self.assertEqual(context_payload["selected_videos"][0]["label"], "V1")
 
+            audit_context_path = external_workdir / "audit-context.json"
+            audit_answer_path = external_workdir / "audit-answer.md"
+            audit_context_path.write_text(
+                json.dumps(
+                    {
+                        "query": "测试问题",
+                        "boundary": {"type": "none", "required_statement": None},
+                        "diagnostic_model": {"do_not_claim_unique_cause": False},
+                        "clarification_decision": {"action": "answer_now", "questions": []},
+                        "claim_evidence_map": [],
+                        "completeness_contract": {"items": []},
+                        "selected_videos": [],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            audit_answer_path.write_text("这是一个无需引用的边界回答。", encoding="utf-8")
+            audit = subprocess.run(
+                [
+                    sys.executable,
+                    str(installed_skill / "scripts" / "audit_answer.py"),
+                    "测试问题",
+                    "--context",
+                    str(audit_context_path),
+                    "--answer",
+                    str(audit_answer_path),
+                ],
+                cwd=external_workdir,
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            self.assertTrue(json.loads(audit.stdout)["passed"])
+
             navigation = subprocess.run(
                 [
                     sys.executable,

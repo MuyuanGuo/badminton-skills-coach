@@ -73,6 +73,7 @@ def skill_artifacts():
 
 def rule_artifacts():
     paths = [
+        "config/answer_audit_rules.json",
         "config/answer_modality_rules.json",
         "config/answer_selection_rules.json",
         "config/diagnostic_answer_rules.json",

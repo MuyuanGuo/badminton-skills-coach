@@ -40,6 +40,7 @@ for compiled_helper in [
         raise SystemExit(f"Core helper is not compiled by CI: {compiled_helper}")
 
 json_paths = [
+    "config/answer_audit_rules.json",
     "config/answer_modality_rules.json",
     "config/answer_selection_rules.json",
     "config/diagnostic_answer_rules.json",
@@ -56,6 +57,7 @@ json_paths = [
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
     "data/douyin_video_index.json",
+    "data/evaluation/answer_audit_cases.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/evaluation_baselines.json",
@@ -78,6 +80,7 @@ json_paths = [
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
+    "skills/liuhui-badminton-coach/references/answer-audit-rules.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
     "skills/liuhui-badminton-coach/references/diagnostic-answer-rules.json",
@@ -112,6 +115,11 @@ for runtime_file in [
     / "liuhui-badminton-coach"
     / "scripts"
     / "prepare_answer_context.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "audit_answer.py",
 ]:
     if not runtime_file.exists():
         raise SystemExit(f"Runtime setup file is missing: {runtime_file.relative_to(ROOT)}")

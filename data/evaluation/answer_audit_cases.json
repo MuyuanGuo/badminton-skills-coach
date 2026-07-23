@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "description": "Gold final-answer audit cases covering diagnostic certainty, completeness, evidence scope, and citation integrity.",
+  "contexts": {
+    "kill_to_net_diagnostic": {
+      "query": "我杀球后经常来不及上网，是不是步法太慢？",
+      "boundary": {
+        "type": "none",
+        "required_statement": null
+      },
+      "diagnostic_model": {
+        "user_hypotheses": [
+          {
+            "id": "H1",
+            "text": "步法太慢",
+            "status": "unverified"
+          }
+        ],
+        "material_branches": [
+          {
+            "id": "B1",
+            "axis": "discipline",
+            "label": "单打或双打",
+            "status": "conditional",
+            "branches": [
+              {
+                "value": "singles",
+                "label": "单打分支",
+                "eligible_video_labels": ["V2"]
+              },
+              {
+                "value": "doubles",
+                "label": "双打分支",
+                "eligible_video_labels": ["V3"]
+              }
+            ]
+          }
+        ],
+        "do_not_claim_unique_cause": true,
+        "unique_cause_confirmation_requires_user_video": true
+      },
+      "clarification_decision": {
+        "action": "answer_conditionally",
+        "questions": [
+          "这是单打还是双打场景？",
+          "杀球落地后重心是在向前还是停在原地？"
+        ]
+      },
+      "claim_evidence_map": [
+        {
+          "claim_id": "Q1",
+          "kind": "question_unit",
+          "text": "杀球后经常来不及上网",
+          "status": "supported",
+          "evidence": [
+            {
+              "label": "V1",
+              "evidence_id": "7000000000000000001",
+              "directness": "direct",
+              "scope": "exact_question_scope"
+            }
+          ],
+          "eligible_video_labels": ["V1"],
+          "confidence_ceiling": "high"
+        },
+        {
+          "claim_id": "H1",
+          "kind": "user_hypothesis",
+          "text": "步法太慢",
+          "status": "unverified",
+          "evidence": [],
+          "eligible_video_labels": [],
+          "confidence_ceiling": "none"
+        },
+        {
+          "claim_id": "M1",
+          "kind": "supported_mechanism",
+          "text": "杀球后的重心与衔接路线",
+          "status": "conditional",
+          "evidence": [
+            {
+              "label": "V2",
+              "evidence_id": "7000000000000000002",
+              "directness": "scoped",
+              "scope": "component_or_generic_support_only_not_full_question_proof"
+            }
+          ],
+          "eligible_video_labels": ["V2"],
+          "confidence_ceiling": "moderate"
+        },
+        {
+          "claim_id": "M2",
+          "kind": "supported_mechanism",
+          "text": "上一拍球路与留给衔接的时间",
+          "status": "conditional",
+          "evidence": [
+            {
+              "label": "V3",
+              "evidence_id": "7000000000000000003",
+              "directness": "component",
+              "scope": "component_or_generic_support_only_not_full_question_proof"
+            }
+          ],
+          "eligible_video_labels": ["V3"],
+          "confidence_ceiling": "low"
+        }
+      ],
+      "completeness_contract": {
+        "items": [
+          {
+            "item_id": "Q1",
+            "text": "杀球后经常来不及上网",
+            "status": "must_answer"
+          },
+          {
+            "item_id": "H1",
+            "text": "步法太慢",
+            "status": "unresolved"
+          },
+          {
+            "item_id": "M1",
+            "text": "杀球后的重心与衔接路线",
+            "status": "conditional"
+          },
+          {
+            "item_id": "M2",
+            "text": "上一拍球路与留给衔接的时间",
+            "status": "conditional"
+          },
+          {
+            "item_id": "B1",
+            "text": "单打或双打",
+            "status": "conditional"
+          }
+        ],
+        "silent_omission_forbidden": true
+      },
+      "selected_videos": [
+        {
+          "label": "V1",
+          "evidence_id": "7000000000000000001",
+          "canonical_url": "https://www.douyin.com/video/7000000000000000001"
+        },
+        {
+          "label": "V2",
+          "evidence_id": "7000000000000000002",
+          "canonical_url": "https://www.douyin.com/video/7000000000000000002"
+        },
+        {
+          "label": "V3",
+          "evidence_id": "7000000000000000003",
+          "canonical_url": "https://www.douyin.com/video/7000000000000000003"
+        }
+      ]
+    }
+  },
+  "answers": {
+    "complete_conditional": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认，不能把它直接当成原因。\n如果杀球后的重心与衔接路线停在原地，下一步可能会断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较重杀、轻杀和落点。[V3]\n单打分支如果没有搭档补位，要保留自己的衔接；双打分支如果搭档覆盖后场，前跟选择会不同。[V2][V3]\n请补充这是单打还是双打，并说明杀球落地后重心是在向前还是停在原地。\nV1｜证据 ID：7000000000000000001\nhttps://www.douyin.com/video/7000000000000000001\nV2｜证据 ID：7000000000000000002\nhttps://www.douyin.com/video/7000000000000000002\nV3｜证据 ID：7000000000000000003\nhttps://www.douyin.com/video/7000000000000000003",
+    "unsupported_cause": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢就是唯一原因。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "missing_branch": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "citation_mismatch": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V3]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "scope_overreach": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n杀球后的重心与衔接路线对任何人都普遍适用。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "excessive_confidence": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n上一拍球路与留给衔接的时间一定是你的问题。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "missing_unresolved_gap": "直接回答\n杀球后经常来不及上网，可以先排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "missing_unique_boundary": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003",
+    "unmapped_label": "直接回答\n杀球后经常来不及上网，可以先按两个分支排查；仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]\n步法太慢目前无法确认。\n如果杀球后的重心与衔接路线停住，下一步可能断开。[V2]\n如果要看上一拍球路与留给衔接的时间，需要比较球路。[V3]\n单打分支如果独自覆盖要保留衔接；双打分支如果搭档覆盖，选择会不同。[V2][V3]\n请补充这是单打还是双打。另见[V9]。\nV1 7000000000000000001 https://www.douyin.com/video/7000000000000000001\nV2 7000000000000000002 https://www.douyin.com/video/7000000000000000002\nV3 7000000000000000003 https://www.douyin.com/video/7000000000000000003"
+  },
+  "cases": [
+    {
+      "case_id": "AAC001",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "complete_conditional",
+      "expected_pass": true
+    },
+    {
+      "case_id": "AAC002",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "unsupported_cause",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["unsupported_causal_certainty"]
+    },
+    {
+      "case_id": "AAC003",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "missing_branch",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["missing_completeness_item"]
+    },
+    {
+      "case_id": "AAC004",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "citation_mismatch",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["citation_claim_mismatch"]
+    },
+    {
+      "case_id": "AAC005",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "scope_overreach",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["evidence_scope_overreach"]
+    },
+    {
+      "case_id": "AAC006",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "excessive_confidence",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["confidence_ceiling_exceeded"]
+    },
+    {
+      "case_id": "AAC007",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "missing_unresolved_gap",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["missing_completeness_item"]
+    },
+    {
+      "case_id": "AAC008",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "missing_unique_boundary",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["missing_unique_cause_boundary"]
+    },
+    {
+      "case_id": "AAC009",
+      "context_id": "kill_to_net_diagnostic",
+      "answer_id": "unmapped_label",
+      "expected_pass": false,
+      "expected_violation_codes_contains": ["unmapped_video_label"]
+    }
+  ]
+}

@@ -13,6 +13,7 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 MINIMUM_PYTHON = (3, 10)
 REQUIRED_SKILL_FILES = [
     "SKILL.md",
+    "scripts/audit_answer.py",
     "scripts/prepare_answer_context.py",
     "scripts/search_knowledge.py",
     "scripts/navigate_topics.py",
@@ -22,6 +23,7 @@ REQUIRED_SKILL_FILES = [
     "references/retrieval-rules.json",
     "references/answer-modality-rules.json",
     "references/answer-selection-rules.json",
+    "references/answer-audit-rules.json",
     "references/answer-workflow.md",
     "references/build-manifest.json",
     "references/practice-plan-rules.json",

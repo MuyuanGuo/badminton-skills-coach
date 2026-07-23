@@ -40,6 +40,8 @@ Read the result in this order:
 9. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
 10. `selection`, `answer_contract`, and `source_handling`: follow them literally. If `selection_truncated` is true and the question genuinely requires a complete survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
 
+For a diagnostic or other multi-claim answer, save the prepared context and final draft, then run `scripts/audit_answer.py` before sending it. A nonzero exit means the draft still violates the evidence, confidence, completeness, branch, boundary, or citation contract; revise and rerun until `passed` is true. The auditor is a deterministic safety gate, not proof that every possible semantic error has been found.
+
 For retrieval diagnosis only, rerun with `--include-rejected`. The rejected list is audit data, not an alternate evidence pool. Use `scripts/search_knowledge.py --plan-only`, its `retrieval_guidance`, or manual manifest pagination only when debugging the orchestrator.
 
 ## Answer Standard
@@ -124,6 +126,7 @@ End every answer with the exact `answer_contract.feedback_prompt`, using only la
 - `references/feedback-rules.json`, `references/feedback-signals.json`, and `references/feedback-workflow.md`: local and public feedback behavior.
 - `references/answer-workflow.md`: detailed answer, citation, navigation, practice, and feedback instructions.
 - `scripts/prepare_answer_context.py`: default answer-entry command.
+- `scripts/audit_answer.py`: final-answer evidence, confidence, completeness, and citation gate.
 - `scripts/search_knowledge.py`: lower-level search, `--plan-only`, manifest, and lookup diagnostics.
 - `scripts/navigate_topics.py`: lower-level topic navigation.
 - `scripts/feedback.py`: feedback recording, review, export, and import.

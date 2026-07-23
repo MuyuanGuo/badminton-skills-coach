@@ -121,6 +121,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "adversarial_cases": 86,
                 },
                 "diagnostic_answer_contract": {"accuracy": 1.0},
+                "answer_audit": {"violation_detection_rate": 1.0},
                 "retrieval": {
                     "mean_ndcg_at_k": 0.86,
                     "hard_negative_top_k_violations": 0,
@@ -144,6 +145,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "query_equivalence",
                     "query_understanding",
                     "diagnostic_answer_contract",
+                    "answer_audit",
                     "retrieval",
                     "video_comprehension",
                     "forward_tests",
@@ -155,7 +157,7 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertIn("abc123", page)
         self.assertIn("a" * 64, page)
         self.assertIn("57/57", page)
-        self.assertEqual(page.count(">PASS<"), 10)
+        self.assertEqual(page.count(">PASS<"), 11)
         self.assertIn("tbody td:nth-of-type(3)", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):
