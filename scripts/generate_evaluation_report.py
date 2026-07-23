@@ -12,6 +12,7 @@ from pathlib import Path
 import evaluate_answer_context
 import evaluate_answer_policy
 import evaluate_answer_quality
+import evaluate_diagnostic_answer_contract
 import evaluate_forward_test_results
 import evaluate_query_equivalence
 import evaluate_query_understanding
@@ -28,6 +29,7 @@ CORE_EVALUATORS = (
     "evaluate_answer_context.py",
     "evaluate_answer_policy.py",
     "evaluate_answer_quality.py",
+    "evaluate_diagnostic_answer_contract.py",
     "evaluate_forward_test_results.py",
     "evaluate_query_equivalence.py",
     "evaluate_query_understanding.py",
@@ -36,12 +38,14 @@ CORE_EVALUATORS = (
 )
 EVALUATION_INPUTS = (
     "config/answer_quality_rules.json",
+    "config/diagnostic_answer_rules.json",
     "config/feedback_rules.json",
     "config/knowledge_quality_rules.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/query_equivalence_cases.json",
@@ -147,12 +151,16 @@ def collect_evaluations(root=ROOT):
             root / "data/evaluation/query_understanding_cases.json"
         ),
         forward_fingerprint,
+        evaluate_forward_test_results.load_json(
+            root / "data/evaluation/diagnostic_answer_cases.json"
+        ),
     )
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
     equivalence = evaluate_query_equivalence.evaluate()
     understanding = evaluate_query_understanding.evaluate()
+    diagnostic = evaluate_diagnostic_answer_contract.evaluate()
     retrieval = evaluate_retrieval.evaluate(12)
     comprehension = evaluate_video_comprehension.evaluate(
         run_retrieval_roundtrip=True,
@@ -214,6 +222,10 @@ def collect_evaluations(root=ROOT):
                 "passed",
                 "accuracy",
             )
+        },
+        "diagnostic_answer_contract": {
+            key: diagnostic[key]
+            for key in ("cases", "passed", "accuracy")
         },
         "retrieval": {
             key: retrieval[key]
@@ -355,6 +367,7 @@ def render_html(report):
         "answer_quality": "Answer snapshots",
         "query_equivalence": "Query equivalence",
         "query_understanding": "Query understanding",
+        "diagnostic_answer_contract": "Diagnostic answer contract",
         "retrieval": "Evidence retrieval",
         "video_comprehension": "Video comprehension",
         "forward_tests": "Forward tests",
@@ -365,6 +378,7 @@ def render_html(report):
         "answer_quality": ("automatic_pass_rate", "Snapshot pass rate"),
         "query_equivalence": ("passed_families", "Families passed"),
         "query_understanding": ("accuracy", "Intent accuracy"),
+        "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
         "retrieval": ("mean_ndcg_at_k", "nDCG@12"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),

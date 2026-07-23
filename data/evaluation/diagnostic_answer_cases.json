@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "description": "Gold cases for diagnostic framing, clarification, claim-level evidence, and answer completeness.",
+  "cases": [
+    {
+      "case_id": "DAC001",
+      "query": "我杀球后经常来不及上网，是不是步法太慢？",
+      "expected": {
+        "observed_symptoms_contains": ["来不及"],
+        "hypotheses": [
+          {"text": "步法太慢", "status": "unverified", "evidence_ids": []}
+        ],
+        "supported_mechanism_ids_contains": ["movement_transition", "shot_choice_and_recovery_time"],
+        "branch_axes_contains": ["discipline"],
+        "clarification_action": "answer_conditionally",
+        "unknown_types_contains": ["branch_axis:discipline", "user_movement_observation"],
+        "unresolved_texts_contains": ["步法太慢"],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC002",
+      "query": "双打接杀挡网总冒高，是拍面还是击球点问题？",
+      "expected": {
+        "observed_symptoms_contains": ["冒高"],
+        "hypotheses": [
+          {"text": "拍面", "status": "conditional", "evidence_ids": ["7524557392328461627"]},
+          {"text": "击球点", "status": "conditional", "evidence_ids": ["7524557392328461627"]}
+        ],
+        "supported_mechanism_ids_contains": ["trajectory_control"],
+        "clarification_action": "answer_conditionally",
+        "minimum_must_answer_items": 1,
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC003",
+      "query": "后场被动来不及架拍怎么把球打到底线",
+      "expected": {
+        "observed_symptoms_contains": ["来不及"],
+        "supported_mechanism_ids_contains": ["preparation_timing", "swing_size_and_force"],
+        "branch_axes_contains": ["stroke_side"],
+        "branch_values": {"stroke_side": ["forehand", "backhand"]},
+        "clarification_action": "answer_conditionally",
+        "unknown_types_contains": ["branch_axis:stroke_side"],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC004",
+      "query": "我反手高远球总是出界，到底哪里有问题？",
+      "expected": {
+        "observed_symptoms_contains": ["出界"],
+        "supported_mechanism_ids_contains": ["contact_point"],
+        "branch_axes_excludes": ["discipline"],
+        "query_claim_excluded_evidence_ids": ["7548394643144068411"],
+        "clarification_action": "answer_conditionally",
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC005",
+      "query": "双打接发战术和接发握拍应该怎么调整",
+      "expected": {
+        "minimum_must_answer_items": 2,
+        "clarification_action": "answer_now",
+        "do_not_claim_unique_cause": false
+      }
+    },
+    {
+      "case_id": "DAC006",
+      "query": "我总觉得动作不对，是不是核心太弱？",
+      "expected": {
+        "hypotheses": [
+          {"text": "核心太弱", "status": "unverified", "evidence_ids": []}
+        ],
+        "clarification_action": "answer_conditionally",
+        "unknown_types_contains": ["user_movement_observation"],
+        "unresolved_texts_contains": ["核心太弱"],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC007",
+      "query": "我挡网不冒高但总下网，是不是力量太小？",
+      "expected": {
+        "observed_symptoms_contains": ["下网"],
+        "observed_symptoms_excludes": ["冒高"],
+        "hypotheses": [
+          {"text": "力量太小", "status": "unverified", "evidence_ids": []}
+        ],
+        "clarification_action": "answer_conditionally",
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC008",
+      "query": "我正手高远总出界但反手正常，是不是拍面问题？",
+      "expected": {
+        "observed_symptoms_contains": ["出界"],
+        "constraints": {"stroke_side": ["forehand"]},
+        "hypotheses": [
+          {"text": "拍面", "status": "conditional", "evidence_ids": ["7112628690395106560"]}
+        ],
+        "clarification_action": "answer_conditionally",
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC009",
+      "query": "我跳杀落地后接不上下一拍，到底是落点、重心还是步法？",
+      "expected": {
+        "hypotheses": [
+          {"text": "落点", "status": "unverified", "evidence_ids": []},
+          {"text": "重心", "status": "unverified", "evidence_ids": []},
+          {"text": "步法", "status": "unverified", "evidence_ids": []}
+        ],
+        "clarification_action": "answer_conditionally",
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC010",
+      "query": "单打杀球后总赶不到网前，是不是每次都该交叉步？",
+      "expected": {
+        "observed_symptoms_contains": ["赶不到"],
+        "constraints": {
+          "discipline": ["singles"],
+          "technique_variant": ["kill_to_net"]
+        },
+        "hypotheses": [
+          {"text": "每次都该交叉步", "status": "unverified", "evidence_ids": []}
+        ],
+        "clarification_action": "answer_conditionally",
+        "do_not_claim_unique_cause": true
+      }
+    }
+  ]
+}

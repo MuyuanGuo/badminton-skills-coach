@@ -13,6 +13,20 @@ Start from `scripts/prepare_answer_context.py`, not an improvised keyword search
 - For `boundary_first`, state the boundary before any relevant coaching material.
 - Ask one concise clarification only when different answers would be materially correct under different scenarios. Otherwise state the assumption.
 
+## Diagnostic Contract
+
+Read the diagnostic fields before composing prose:
+
+- `diagnostic_model.observed_symptoms` contains what the user reported, not an independently observed fact.
+- `user_hypotheses` preserves causes proposed by the user. `unverified` means no selected evidence verifies the proposal; `conditional` means a source supports it as a possible mechanism, not that it caused this user's error.
+- `supported_mechanisms` lists evidence-backed checks worth explaining. Present them as branches to verify, ordered by claim directness, never as a bag of generic possible causes.
+- `material_branches` preserves conditions such as forehand/backhand or singles/doubles when they change the correct answer. Cover each evidenced branch until clarified.
+- `clarification_decision.action: answer_conditionally` means answer the supported scope now and then ask only the returned focused questions. Do not withhold useful evidence while waiting for a movement video.
+- `claim_evidence_map` narrows `selected_videos` per claim. Cite only its mapped labels for that claim and stay at or below its `confidence_ceiling`.
+- `completeness_contract` is the final checklist. A complete answer addresses every required item, preserves conditional branches, and names unresolved evidence gaps; extra length does not repair a missing branch.
+
+For a reported technical failure, separate four layers in the answer: the symptom, the user's proposed explanation, source-supported mechanisms, and what can only be verified from the user's continuous preparation-to-recovery video. Never claim one unique physical cause from text alone.
+
 ## Text And Video Modes
 
 ### `text_primary`
@@ -53,7 +67,7 @@ Still give purpose, a small set of reliable observation points, common errors, a
 Use the following order, omitting only sections that truly do not apply:
 
 1. **直接回答**: answer the actual question and identify the situation.
-2. **文字解释**: synthesize all distinct supported points; do not copy transcripts line by line.
+2. **文字解释**: synthesize all distinct supported points; for diagnosis, distinguish verified source mechanisms from the user's still-unverified cause and give observable checks. Do not copy transcripts line by line.
 3. **适用边界**: state conditions that change the advice.
 4. **核心视频与观看重点**: strongest one to three evidence items, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
 5. **完整相关视频**: every other selected worthwhile video, grouped by subtopic when long. Reuse labels and do not repeat URLs.

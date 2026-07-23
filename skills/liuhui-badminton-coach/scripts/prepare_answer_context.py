@@ -13,6 +13,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 SELECTION_RULES_PATH = ROOT / "references" / "answer-selection-rules.json"
 RETRIEVAL_RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 REVIEWED_EVIDENCE_PATH = ROOT / "references" / "reviewed-evidence-signals.json"
+DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 
 
 def load_sibling(name, filename):
@@ -47,6 +48,10 @@ def load_reviewed_evidence_signals():
     return json.loads(REVIEWED_EVIDENCE_PATH.read_text(encoding="utf-8")).get(
         "signals", []
     )
+
+
+def load_diagnostic_rules():
+    return json.loads(DIAGNOSTIC_RULES_PATH.read_text(encoding="utf-8"))
 
 
 def reviewed_evidence_priorities(
@@ -2708,6 +2713,560 @@ def diversify_support_entries(
     return diversified
 
 
+def extract_user_hypotheses(query, diagnostic_rules):
+    """Return causes proposed by the user without treating them as facts."""
+    hypotheses = []
+    seen = set()
+    for rule in diagnostic_rules.get("hypothesis_patterns", []):
+        for match in re.finditer(rule["pattern"], query):
+            group_names = (
+                ["hypothesis"]
+                if rule["type"] == "single_cause_question"
+                else ["left", "right"]
+            )
+            for group_name in group_names:
+                raw_text = match.group(group_name).strip(" ，,。？?！!")
+                parts = re.split(r"[、]", raw_text)
+                for text in parts:
+                    text = re.sub(
+                        r"(?:造成|导致|引起|带来)?的?(?:问题|原因)?$",
+                        "",
+                        text,
+                    ).strip()
+                    if not text or text in seen:
+                        continue
+                    seen.add(text)
+                    hypotheses.append(
+                        {
+                            "id": f"H{len(hypotheses) + 1}",
+                            "text": text,
+                            "framing": rule["type"],
+                        }
+                    )
+    return hypotheses
+
+
+def diagnostic_mechanism_for_text(search_module, text, diagnostic_rules):
+    normalized = search_module.normalize(text)
+    matches = []
+    for mechanism in diagnostic_rules.get("mechanisms", []):
+        matched_terms = [
+            term
+            for term in mechanism.get("query_terms", [])
+            if search_module.normalize(term) in normalized
+        ]
+        if matched_terms:
+            matches.append((max(map(len, matched_terms)), mechanism))
+    return max(matches, key=lambda item: item[0])[1] if matches else None
+
+
+def diagnostic_observed_symptoms(
+    search_module, query, intent_frame, hypotheses, diagnostic_rules
+):
+    remaining_query = query
+    for hypothesis in hypotheses:
+        remaining_query = remaining_query.replace(hypothesis["text"], " ")
+    normalized_remaining = search_module.normalize(remaining_query)
+
+    def occurs_without_negation(term):
+        normalized_term = search_module.normalize(term)
+        start = 0
+        while True:
+            index = normalized_remaining.find(normalized_term, start)
+            if index < 0:
+                return False
+            prefix = normalized_remaining[max(0, index - 4) : index]
+            if not any(
+                prefix.endswith(marker)
+                for marker in ("不", "没", "没有", "并不", "不会", "从不")
+            ):
+                return True
+            start = index + len(normalized_term)
+    configured = diagnostic_rules.get("symptom_terms", [])
+    terms = [
+        term
+        for term in configured
+        if occurs_without_negation(term)
+    ]
+    terms.extend(
+        term
+        for term in intent_frame.get("literal_symptoms", [])
+        if occurs_without_negation(term)
+    )
+    unique_terms = list(dict.fromkeys(terms))
+    terms = [
+        term
+        for term in unique_terms
+        if not any(
+            search_module.normalize(term) != search_module.normalize(other)
+            and search_module.normalize(term) in search_module.normalize(other)
+            for other in unique_terms
+        )
+    ]
+    return [
+        {
+            "id": f"S{index}",
+            "text": term,
+            "source": "user_report",
+            "verification_status": "reported_not_observed",
+        }
+        for index, term in enumerate(terms, start=1)
+    ]
+
+
+def selected_video_evidence_text(search_module, video):
+    evidence_text = [
+        item.get("text", "")
+        for item in (video.get("teaching_note") or {}).get("evidence", [])
+    ]
+    evidence_text.extend(
+        item.get("text", "") for item in video.get("transcript_evidence", [])
+    )
+    return search_module.normalize(" ".join(evidence_text))
+
+
+def claim_scope_directness(video, diagnostic_rules):
+    strong_axes = set(diagnostic_rules.get("strong_scope_axes", []))
+    matches = {
+        axis: value
+        for axis, value in video.get("constraint_match", {}).items()
+        if axis in strong_axes
+    }
+    if not matches:
+        return "generic"
+    exact_count = sum(value == "exact" for value in matches.values())
+    weak = set(diagnostic_rules.get("weak_constraint_matches", []))
+    if not exact_count and all(value in weak for value in matches.values()):
+        return "incompatible"
+    if all(value == "exact" for value in matches.values()):
+        return "exact"
+    return "partial"
+
+
+def claim_evidence_entry(video, directness, reason):
+    return {
+        "label": video["label"],
+        "evidence_id": video["evidence_id"],
+        "directness": directness,
+        "scope": video["claim_scope_policy"],
+        "reason": reason,
+    }
+
+
+def confidence_ceiling(evidence_entries, selected_by_label):
+    if not evidence_entries:
+        return "none"
+    if any(item["directness"] == "direct" for item in evidence_entries):
+        direct_confidences = {
+            selected_by_label[item["label"]].get("confidence")
+            for item in evidence_entries
+            if item["directness"] == "direct"
+        }
+        if direct_confidences & {"curated", "reviewed_transcript"}:
+            return "high"
+        return "moderate"
+    if any(item["directness"] == "scoped" for item in evidence_entries):
+        return "moderate"
+    return "low"
+
+
+def query_unit_evidence(video, strategy, diagnostic_rules):
+    scope_directness = claim_scope_directness(video, diagnostic_rules)
+    if scope_directness == "incompatible":
+        return None
+    concept = video.get("concept_match")
+    symptom = video.get("symptom_match")
+    if concept == "none" and symptom in {"none", "not_required"}:
+        return None
+    if (
+        scope_directness == "exact"
+        and concept in {"exact_question", "exact_query_unit"}
+        and video.get("claim_scope_policy")
+        in {"exact_question_scope", "exact_query_unit_scope_only"}
+    ):
+        directness = "direct"
+    elif concept in {"exact_question", "exact_query_unit"}:
+        directness = "scoped"
+    else:
+        directness = "component"
+    reason = (
+        "directly covers the requested question scope"
+        if directness == "direct"
+        else (
+            "covers the question under stated source conditions"
+            if directness == "scoped"
+            else "supports only a component or mechanism of the question"
+        )
+    )
+    return claim_evidence_entry(video, directness, reason)
+
+
+def mechanism_evidence(
+    search_module, mechanism, selected_videos, diagnostic_rules
+):
+    matched = []
+    for video in selected_videos:
+        evidence_text = selected_video_evidence_text(search_module, video)
+        terms = [
+            term
+            for term in mechanism.get("evidence_terms", [])
+            if search_module.normalize(term) in evidence_text
+        ]
+        if not terms:
+            continue
+        scope_directness = claim_scope_directness(video, diagnostic_rules)
+        if scope_directness == "incompatible":
+            continue
+        directness = "direct" if scope_directness == "exact" else "scoped"
+        if video.get("concept_match") in {
+            "component_support",
+            "reviewed_support",
+            "expanded_support",
+        }:
+            directness = "component" if directness == "scoped" else "scoped"
+        matched.append(
+            claim_evidence_entry(
+                video,
+                directness,
+                f'direct evidence text matches {mechanism["label"]}: {terms[0]}',
+            )
+        )
+    rank = {"direct": 0, "scoped": 1, "component": 2}
+    matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
+    return matched[: diagnostic_rules.get("max_evidence_per_claim", 3)]
+
+
+def material_diagnostic_branches(
+    query, query_constraints, selected_videos, diagnostic_rules
+):
+    requested_variants = query_constraints.get("technique_variant", [])
+    required_axes = {
+        axis
+        for variant in requested_variants
+        for axis in diagnostic_rules.get("required_context_by_technique", {}).get(
+            variant, []
+        )
+    }
+    branch_axes = diagnostic_rules.get("material_branch_axes", {})
+    branches = []
+    for axis_name, axis_rule in branch_axes.items():
+        if axis_name in query_constraints:
+            continue
+        if axis_name not in required_axes and not any(
+            term.replace(" ", "").lower() in query.replace(" ", "").lower()
+            for term in axis_rule.get("trigger_terms", [])
+        ):
+            continue
+        labels_by_value = {}
+        for video in selected_videos:
+            if claim_scope_directness(video, diagnostic_rules) == "incompatible":
+                continue
+            values = video.get("constraint_scope", {}).get(axis_name, {}).get(
+                "values", []
+            )
+            for value in values:
+                if value in axis_rule.get("values", {}):
+                    labels_by_value.setdefault(value, []).append(video["label"])
+        if axis_name not in required_axes and len(labels_by_value) < 2:
+            continue
+        branch_values = []
+        for value, label in axis_rule.get("values", {}).items():
+            branch_values.append(
+                {
+                    "value": value,
+                    "label": label,
+                    "eligible_video_labels": labels_by_value.get(value, []),
+                }
+            )
+        branches.append(
+            {
+                "id": f"B{len(branches) + 1}",
+                "axis": axis_name,
+                "label": axis_rule["label"],
+                "status": "conditional",
+                "question": axis_rule["question"],
+                "branches": branch_values,
+            }
+        )
+    return branches
+
+
+def build_diagnostic_contract(
+    search_module,
+    query,
+    plan,
+    question_interpretation,
+    boundary,
+    selected_videos,
+    diagnostic_rules,
+):
+    intent_frame = question_interpretation["intent_frame"]
+    user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
+    observed_symptoms = diagnostic_observed_symptoms(
+        search_module,
+        query,
+        intent_frame,
+        user_hypotheses,
+        diagnostic_rules,
+    )
+    selected_by_label = {video["label"]: video for video in selected_videos}
+    claim_map = []
+    query_units = question_interpretation.get("query_units") or [query]
+    for unit in query_units:
+        evidence_entries = [
+            evidence
+            for video in selected_videos
+            if (
+                evidence := query_unit_evidence(
+                    video,
+                    question_interpretation["strategy"],
+                    diagnostic_rules,
+                )
+            )
+            and (
+                unit in video.get("matched_query_units", [])
+                or len(query_units) == 1
+            )
+        ][: diagnostic_rules.get("max_evidence_per_claim", 3)]
+        claim_map.append(
+            {
+                "claim_id": f"Q{len(claim_map) + 1}",
+                "kind": "question_unit",
+                "text": unit,
+                "status": "supported" if evidence_entries else "unsupported",
+                "evidence": evidence_entries,
+                "eligible_video_labels": [
+                    item["label"] for item in evidence_entries
+                ],
+                "confidence_ceiling": confidence_ceiling(
+                    evidence_entries, selected_by_label
+                ),
+            }
+        )
+
+    mechanism_by_id = {
+        item["id"]: item for item in diagnostic_rules.get("mechanisms", [])
+    }
+    hypothesis_mechanism_ids = set()
+    for hypothesis in user_hypotheses:
+        mechanism = diagnostic_mechanism_for_text(
+            search_module, hypothesis["text"], diagnostic_rules
+        )
+        evidence_entries = (
+            mechanism_evidence(
+                search_module, mechanism, selected_videos, diagnostic_rules
+            )
+            if mechanism
+            else []
+        )
+        if mechanism:
+            hypothesis_mechanism_ids.add(mechanism["id"])
+        hypothesis.update(
+            {
+                "mechanism_id": mechanism["id"] if mechanism else None,
+                "status": "conditional" if evidence_entries else "unverified",
+                "eligible_video_labels": [
+                    item["label"] for item in evidence_entries
+                ],
+                "reason": (
+                    "source evidence supports this as a possible mechanism, but the user's own movement has not been observed"
+                    if evidence_entries
+                    else "no selected source directly verifies this proposed cause"
+                ),
+            }
+        )
+        claim_map.append(
+            {
+                "claim_id": hypothesis["id"],
+                "kind": "user_hypothesis",
+                "text": hypothesis["text"],
+                "status": hypothesis["status"],
+                "evidence": evidence_entries,
+                "eligible_video_labels": hypothesis["eligible_video_labels"],
+                "confidence_ceiling": confidence_ceiling(
+                    evidence_entries, selected_by_label
+                ),
+            }
+        )
+
+    normalized_query = search_module.normalize(query)
+    supported_mechanisms = []
+    for mechanism in diagnostic_rules.get("mechanisms", []):
+        if mechanism["id"] in hypothesis_mechanism_ids:
+            continue
+        if not any(
+            search_module.normalize(term) in normalized_query
+            for term in mechanism.get("query_terms", [])
+        ):
+            continue
+        evidence_entries = mechanism_evidence(
+            search_module, mechanism, selected_videos, diagnostic_rules
+        )
+        if not evidence_entries:
+            continue
+        mechanism_record = {
+            "id": f"M{len(supported_mechanisms) + 1}",
+            "mechanism_id": mechanism["id"],
+            "label": mechanism["label"],
+            "status": "conditional",
+            "eligible_video_labels": [
+                item["label"] for item in evidence_entries
+            ],
+            "reason": "source-supported diagnostic branch; verify against the user's actual movement before attributing cause",
+        }
+        supported_mechanisms.append(mechanism_record)
+        claim_map.append(
+            {
+                "claim_id": mechanism_record["id"],
+                "kind": "supported_mechanism",
+                "text": mechanism["label"],
+                "status": "conditional",
+                "evidence": evidence_entries,
+                "eligible_video_labels": mechanism_record[
+                    "eligible_video_labels"
+                ],
+                "confidence_ceiling": confidence_ceiling(
+                    evidence_entries, selected_by_label
+                ),
+            }
+        )
+
+    branches = material_diagnostic_branches(
+        query,
+        question_interpretation["constraints"],
+        selected_videos,
+        diagnostic_rules,
+    )
+    diagnostic_question = bool(
+        observed_symptoms
+        or user_hypotheses
+        or question_interpretation["strategy"] == "literal_symptom_first"
+    )
+    material_unknowns = []
+    for ambiguity in question_interpretation.get("ambiguities", []):
+        material_unknowns.append(
+            {
+                "id": f"U{len(material_unknowns) + 1}",
+                "type": "terminology_or_scenario_ambiguity",
+                "description": ambiguity.get("required_statement", ambiguity)
+                if isinstance(ambiguity, dict)
+                else str(ambiguity),
+                "required_for_unique_diagnosis": True,
+            }
+        )
+    for branch in branches:
+        material_unknowns.append(
+            {
+                "id": f"U{len(material_unknowns) + 1}",
+                "type": f'branch_axis:{branch["axis"]}',
+                "description": branch["label"],
+                "required_for_unique_diagnosis": True,
+            }
+        )
+    if diagnostic_question:
+        material_unknowns.append(
+            {
+                "id": f"U{len(material_unknowns) + 1}",
+                "type": "user_movement_observation",
+                "description": "the user's actual contact, racket, body, and movement sequence has not been observed",
+                "required_for_unique_diagnosis": True,
+            }
+        )
+
+    questions = [branch["question"] for branch in branches]
+    for mechanism_record in supported_mechanisms:
+        question = mechanism_by_id[mechanism_record["mechanism_id"]].get(
+            "observation_question"
+        )
+        if question and question not in questions:
+            questions.append(question)
+    if diagnostic_question and not questions:
+        questions.append(
+            "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。"
+        )
+    questions = questions[: diagnostic_rules.get("max_clarification_questions", 3)]
+    has_useful_evidence = any(
+        claim["evidence"] for claim in claim_map if claim["kind"] != "user_hypothesis"
+    )
+    ask_first = bool(
+        question_interpretation.get("ambiguities")
+        and not has_useful_evidence
+        and boundary["type"] == "none"
+    )
+    clarification_action = (
+        "ask_first"
+        if ask_first
+        else (
+            "answer_conditionally"
+            if material_unknowns or branches
+            else "answer_now"
+        )
+    )
+
+    completeness_items = []
+    for claim in claim_map:
+        if claim["kind"] == "question_unit":
+            status = "must_answer"
+        elif claim["status"] in {"unverified", "unsupported"}:
+            status = "unresolved"
+        else:
+            status = "conditional"
+        completeness_items.append(
+            {
+                "item_id": claim["claim_id"],
+                "text": claim["text"],
+                "status": status,
+                "required_treatment": (
+                    "answer with mapped evidence or explicitly state the evidence gap"
+                    if status == "must_answer"
+                    else (
+                        "state that this remains unverified; do not silently accept or omit it"
+                        if status == "unresolved"
+                        else "explain as a conditional branch, not as the confirmed cause"
+                    )
+                ),
+            }
+        )
+    for branch in branches:
+        completeness_items.append(
+            {
+                "item_id": branch["id"],
+                "text": branch["label"],
+                "status": "conditional",
+                "required_treatment": "cover every evidenced branch separately until the missing context is supplied",
+            }
+        )
+
+    return {
+        "diagnostic_model": {
+            "observed_symptoms": observed_symptoms,
+            "user_hypotheses": user_hypotheses,
+            "supported_mechanisms": supported_mechanisms,
+            "material_branches": branches,
+            "do_not_claim_unique_cause": diagnostic_question,
+            "unique_cause_confirmation_requires_user_video": diagnostic_question,
+        },
+        "clarification_decision": {
+            "action": clarification_action,
+            "can_provide_useful_answer_now": has_useful_evidence or boundary["type"] != "none",
+            "material_unknowns": material_unknowns,
+            "questions": questions,
+            "question_limit": diagnostic_rules.get("max_clarification_questions", 3),
+        },
+        "claim_evidence_map": claim_map,
+        "completeness_contract": {
+            "items": completeness_items,
+            "unresolved_item_ids": [
+                item["item_id"]
+                for item in completeness_items
+                if item["status"] == "unresolved"
+            ],
+            "silent_omission_forbidden": True,
+            "complete_answer_definition": "cover every must_answer item, preserve every conditional branch, and name every unresolved evidence gap; completeness is not answer length",
+        },
+    }
+
+
 def prepare_answer_context(
     query,
     max_videos=None,
@@ -2722,6 +3281,7 @@ def prepare_answer_context(
     navigation_module = load_navigation_module()
     feedback_module = load_feedback_module()
     rules = load_selection_rules()
+    diagnostic_rules = load_diagnostic_rules()
     explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
@@ -3067,40 +3627,51 @@ def prepare_answer_context(
             }
         )
 
+    question_interpretation = {
+        "intent_frame": plan["retrieval_guidance"]["intent_frame"],
+        "constraints": requested_constraints,
+        "actor_context": actor_context,
+        "ambiguities": query_ambiguities(
+            search_module,
+            plan["retrieval_guidance"]["intent_frame"].get(
+                "positive_query", query
+            ),
+            rules,
+        ),
+        "terminology_corrections": query_terminology_corrections(
+            search_module,
+            plan["retrieval_guidance"]["intent_frame"].get(
+                "positive_query", query
+            ),
+            rules,
+        ),
+        "technique_definitions": requested_technique_definitions(
+            requested_constraints, rules
+        ),
+        "strategy": plan["retrieval_guidance"]["strategy"],
+        "query_units": plan["retrieval_guidance"].get("query_units", []),
+        "retrieval_queries": retrieval_queries,
+        "clarification_policy": plan["retrieval_guidance"].get(
+            "clarification_policy"
+        ),
+    }
+    diagnostic_contract = build_diagnostic_contract(
+        search_module,
+        query,
+        plan,
+        question_interpretation,
+        boundary,
+        selected_videos,
+        diagnostic_rules,
+    )
     context = {
         "query": query,
-        "question_interpretation": {
-            "intent_frame": plan["retrieval_guidance"]["intent_frame"],
-            "constraints": requested_constraints,
-            "actor_context": actor_context,
-            "ambiguities": query_ambiguities(
-                search_module,
-                plan["retrieval_guidance"]["intent_frame"].get(
-                    "positive_query", query
-                ),
-                rules,
-            ),
-            "terminology_corrections": query_terminology_corrections(
-                search_module,
-                plan["retrieval_guidance"]["intent_frame"].get(
-                    "positive_query", query
-                ),
-                rules,
-            ),
-            "technique_definitions": requested_technique_definitions(
-                requested_constraints, rules
-            ),
-            "strategy": plan["retrieval_guidance"]["strategy"],
-            "query_units": plan["retrieval_guidance"].get("query_units", []),
-            "retrieval_queries": retrieval_queries,
-            "clarification_policy": plan["retrieval_guidance"].get(
-                "clarification_policy"
-            ),
-        },
+        "question_interpretation": question_interpretation,
         "boundary": boundary,
         "answer_guidance": plan["answer_guidance"],
         "feedback_guidance": payloads[0]["feedback_guidance"],
         "topic_navigation": navigation,
+        **diagnostic_contract,
         "selection": {
             "high_recall_candidate_count": len(merged),
             "eligible_video_count": len(eligible_entries),
@@ -3139,6 +3710,9 @@ def prepare_answer_context(
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
+                "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
+                "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；selected_videos 只是全局引用白名单。",
+                "逐项完成 completeness_contract；must_answer、conditional 和 unresolved 项都不得静默省略。",
             ],
             "feedback_prompt": feedback_module.build_feedback_hint(selected_videos),
             "feedback_prompt_rules": [

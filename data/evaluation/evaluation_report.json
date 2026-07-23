@@ -4,14 +4,14 @@
   "development_version": "1.5.0-dev.1",
   "baseline_version": "v1.4.0",
   "build": {
-    "id": "e90fc003631f8373",
-    "inputs_sha256": "3e3e1ac25a50c08502ebc18d638344ecec7272a2530c3127f2e875aaf019c99d",
-    "runtime_sha256": "3bb00e5de5522b86eb4060e6d3285f03c930e7bcd7f81a71f48e6ded52d215d5"
+    "id": "f399538effb0f394",
+    "inputs_sha256": "f182fc8cf67ccc534bb8c8ec351b837cbd0e87b4f20c0ed86dd3eeba8df245f5",
+    "runtime_sha256": "7eab9a20b209bf283649168960b2061c35c927c2c89e8ec073b311353a9e431c"
   },
   "summary": {
     "status": "pass",
-    "suites": 8,
-    "baseline_metrics": 39,
+    "suites": 9,
+    "baseline_metrics": 41,
     "regressions": 0
   },
   "evaluations": {
@@ -61,6 +61,11 @@
       "passed": 143,
       "accuracy": 1.0
     },
+    "diagnostic_answer_contract": {
+      "cases": 10,
+      "passed": 10,
+      "accuracy": 1.0
+    },
     "retrieval": {
       "cases": 57,
       "expected_videos": 173,
@@ -90,9 +95,9 @@
     "forward_tests": {
       "critical_cases": 3,
       "blind_passes": 3,
-      "unseen_rounds": 3,
-      "unseen_cases": 12,
-      "consecutive_passes": 3,
+      "unseen_rounds": 6,
+      "unseen_cases": 24,
+      "consecutive_passes": 6,
       "failed": []
     }
   },
@@ -266,6 +271,22 @@
       "passed": true
     },
     {
+      "metric": "diagnostic_answer_contract.cases",
+      "current": 10,
+      "baseline": 10,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "diagnostic_answer_contract.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
       "metric": "retrieval.candidate_recall",
       "current": 1.0,
       "baseline": 1.0,
@@ -379,7 +400,7 @@
     },
     {
       "metric": "forward_tests.unseen_rounds",
-      "current": 3,
+      "current": 6,
       "baseline": 3,
       "direction": "at_least",
       "tolerance": 0,
@@ -387,7 +408,7 @@
     },
     {
       "metric": "forward_tests.unseen_cases",
-      "current": 12,
+      "current": 24,
       "baseline": 12,
       "direction": "at_least",
       "tolerance": 0,
@@ -395,7 +416,7 @@
     },
     {
       "metric": "forward_tests.consecutive_passes",
-      "current": 3,
+      "current": 6,
       "baseline": 3,
       "direction": "at_least",
       "tolerance": 0,

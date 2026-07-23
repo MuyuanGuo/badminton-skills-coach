@@ -1,6 +1,6 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton coaching from the full 408-video processed knowledge base of Douyin creator 刘辉羽毛球, including 353 ready teaching videos. Use when diagnosing technique, explaining strokes or footwork, comparing tactics, designing practice drills, answering questions about 刘辉's teaching, or recording feedback on a prior Skill answer. Give complete evidence-backed text, cite worthwhile videos with stable V1...Vn labels, apply promoted public and accepted local feedback without overriding sources, and queue new feedback for review. Do not impersonate 刘辉 or claim generated advice is personally endorsed by him.
+description: Evidence-backed badminton diagnostic Q&A from the full 408-video processed knowledge base of Douyin creator 刘辉羽毛球, including 353 ready teaching videos. Use to determine what a player is really asking, separate symptoms from assumed causes, explain strokes, footwork, or tactics, and map important claims to matching video evidence. Give calibrated and complete answers with stable V1...Vn citations, apply reviewed feedback without overriding sources, and never impersonate 刘辉 or claim personal endorsement.
 ---
 
 # 刘辉羽毛球教练
@@ -30,12 +30,15 @@ This command performs intent preservation, boundary detection, topic navigation 
 Read the result in this order:
 
 1. `question_interpretation`: verify the positive intent, exclusions, literal symptoms, scenario, requested output, and split query units. Never silently answer a nearby question.
-2. `boundary`: state its `required_statement` before coaching when present.
-3. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
-4. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
-5. `selected_videos`: these are the only videos eligible for citation. Read each teaching note and query-matched transcript window before using it.
-6. `selection`: if `selection_truncated` is true and the question genuinely requires a complete long-form survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
-7. `answer_contract` and `source_handling`: follow them literally.
+2. `diagnostic_model`: distinguish reported symptoms, the user's hypotheses, source-supported mechanisms, and material scenario branches. A user hypothesis is never a confirmed cause. Without the user's continuous movement video, keep causes conditional or unverified.
+3. `clarification_decision`: `answer_now` directly; `answer_conditionally` gives the useful scoped answer now and asks only the returned focused questions; `ask_first` asks before choosing a materially different branch. Never ask more than its `question_limit`.
+4. `boundary`: state its `required_statement` before coaching when present.
+5. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
+6. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
+7. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
+8. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
+9. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
+10. `selection`, `answer_contract`, and `source_handling`: follow them literally. If `selection_truncated` is true and the question genuinely requires a complete survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
 
 For retrieval diagnosis only, rerun with `--include-rejected`. The rejected list is audit data, not an alternate evidence pool. Use `scripts/search_knowledge.py --plan-only`, its `retrieval_guidance`, or manual manifest pagination only when debugging the orchestrator.
 
@@ -47,6 +50,8 @@ Every answer must do both jobs:
 - Use videos for details that are substantially easier to understand visually: grip shape, racket-face change, relative body position, trajectory, rhythm, continuous movement, and real-rally demonstration.
 
 Never return a link-only answer. Do not make prose pretend to replace visual learning. Do not omit useful textual conclusions merely because videos are cited.
+
+Begin `直接回答` by naming the actual failure or decision the user needs help with, then answer any proposed cause explicitly: supported only as a condition, still unverified, or unsupported by the selected evidence. Do not mirror an `是不是` premise as fact and do not force an `A 还是 B` question into one cause when both can matter. For diagnosis, order source-supported checks by how directly they explain the reported symptom, state what observation would distinguish them, and reserve confirmation of the user's own cause for a continuous movement video.
 
 Use this section order when applicable:
 
@@ -70,6 +75,7 @@ Read `references/answer-workflow.md` before composing a systematic learning path
 - `confidence: visual_reviewed` uses a reviewed visual summary and may not have a precise timestamp.
 - A title, category, tag, topic membership, retrieval score, or n-gram match is a lead, not proof of a detailed claim.
 - A specific claim needs a teaching-note item or timestamped transcript window that directly supports it.
+- `selected_videos` alone never proves a claim. Use only labels mapped to that claim in `claim_evidence_map`, preserve the returned `directness` and `scope`, and never write above `confidence_ceiling`.
 - Preserve active/passive, singles/doubles, forehand/backhand, level, and court-position distinctions. Treat `挑球`, `过渡球`, `挡杀/接杀`, named smash variants (`普通杀球`, `普通反手杀球`, `反手转圈杀`, `反手跳杀`, `点杀`, `跳杀`, `重杀`, `快杀`, `遁地炮`, `定杀`, `轻杀`, `劈杀`, `霸王杀`), and named drop variants (`普通吊球`, `劈吊`, `滑板`) as distinct actions or variants rather than generic backhand, forehand, clear, drop, drive, smash, defense, or net-play evidence; when the user names one of them, require direct support instead of relying on an incidental transcript mention, a broad same-side source, or generic tactics. Do not use ordinary-smash, heavy-smash, or jump-smash evidence to prove point-smash mechanics; phrases such as `高点杀球`, `点杀一样的效果`, and `把点杀得很尖` do not name the point-smash technique. Separate ordinary backhand smash, spinning backhand smash, and backhand jump smash; a multi-technique source may support only its matching segment, and an advanced backhand source must retain its prerequisite. Do not use ordinary-smash, point-smash, ground-cannon, backhand-jump-smash, or generic jump-training evidence to prove forehand jump-smash mechanics unless a source directly connects the component to jump smash; condition advanced, female-athlete, or continuous-attack sources instead of presenting them as universal beginner instructions. For fast smash, separate its small, quick framework from heavy-smash mechanics and condition a fast jump-smash source on continuous attack. Use only `遁地炮` as the canonical ground-cannon name; accept `顿地炮`, `蹲地炮`, and `dun地炮` only as input errors, correct them once, and never repeat them as valid names. Classify `遁地炮` as a non-jumping heavy-smash subtype and, by landing depth, a long smash whose landing point is farther back than a steep jump smash. Do not call the natural brief loss of ground contact caused by pushing and transferring weight a jump. Keep the evidence boundary specific: generic heavy-smash evidence cannot prove `遁地炮` footwork or timing, and a title, incidental mention, or ability ranking cannot prove the complete action. For stationary smash, state when the source supports only a comparison and not a complete action. For light smash, use tactical evidence about reduced pace, maintained downward pressure, and next-shot connection without inventing hand mechanics. Do not let `劈吊` prove `劈杀`, or `劈杀` prove `劈吊`; a multi-technique source may support each only through its matching segment. Do not use ordinary-drop evidence for a slice drop, a slice-drop source for a reverse-slice slide drop, or a source saying that one smash contains a slicing component as slide-drop technique evidence.
 - Treat `平高球`, `假挑真放`, `动态低架`, far-net subtypes, and `杀上网` as named scopes. For `平高球`, separate outgoing-stroke evidence from receiving or intercepting an opponent's flat clear, and state when only force-mode and visual-demo evidence exists. For `假挑真放`, reject a demonstration that promises later teaching as mechanism evidence. Do not substitute `升框架` or generic dynamic force for `动态低架`. Treat bare `远网` as ambiguous among flat-slice far net, middle far-net splitting, defensive far-net-to-push, and far-net drop; explain branches before details. Separate `杀上网` from generic smash and generic net footwork, and retain singles/doubles and partner-coverage conditions. Preserve `杀球 -> 上网` as that same named sequence when connectors, question words, or symptoms such as `来不及` appear between the actions; keep the symptom for diagnosis and do not let it retrieve unrelated generic late-contact evidence.
 - Treat `压球` and similar downward-pressure wording as context-dependent: distinguish rear-court smash pressure from forecourt or midcourt interception, state any returned ambiguity before coaching instead of defaulting to smash, and require direct court-zone support when the user names a zone.
@@ -109,6 +115,7 @@ End every answer with the exact `answer_contract.feedback_prompt`, using only la
 - `references/knowledge-base.json`: full structured knowledge entries for 408 processed videos, including 353 ready teaching videos (334 transcript-backed and 19 visual-review fallbacks) and 0 entries awaiting visual review.
 - `references/retrieval-index.json` and `references/retrieval-rules.json`: ready-video high-recall index and terminology rules.
 - `references/answer-selection-rules.json`: deterministic boundary and finalist rules.
+- `references/diagnostic-answer-rules.json`: deterministic symptom, hypothesis, clarification, claim-evidence, and completeness rules.
 - `references/reviewed-evidence-signals.json`: generated query-scoped ranking signals from the reviewed answer-quality registry; never an override for source or scenario conflicts.
 - `references/build-manifest.json`: corpus counts, latest ready video, rule versions, link integrity, and release-file hashes.
 - `references/answer-modality-rules.json`: text/video allocation.
