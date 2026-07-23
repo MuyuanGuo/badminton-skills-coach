@@ -75,6 +75,7 @@ def rule_artifacts():
     paths = [
         "config/answer_modality_rules.json",
         "config/answer_selection_rules.json",
+        "config/diagnostic_answer_rules.json",
         "config/douyin_classification_rules.json",
         "config/feedback_rules.json",
         "config/knowledge_quality_rules.json",

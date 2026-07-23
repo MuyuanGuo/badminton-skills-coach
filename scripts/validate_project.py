@@ -42,6 +42,7 @@ for compiled_helper in [
 json_paths = [
     "config/answer_modality_rules.json",
     "config/answer_selection_rules.json",
+    "config/diagnostic_answer_rules.json",
     "config/answer_quality_rules.json",
     "config/douyin_classification_rules.json",
     "config/douyin_source.json",
@@ -60,6 +61,7 @@ json_paths = [
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
@@ -78,6 +80,7 @@ json_paths = [
     "data/processing/douyin_discovery_state.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
+    "skills/liuhui-badminton-coach/references/diagnostic-answer-rules.json",
     "skills/liuhui-badminton-coach/references/build-manifest.json",
     "skills/liuhui-badminton-coach/references/practice-plan-rules.json",
     "skills/liuhui-badminton-coach/references/feedback-rules.json",
