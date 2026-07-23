@@ -19,6 +19,13 @@ RUNTIME_PATH = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+AUDITOR_PATH = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "audit_answer.py"
+)
 
 
 def load_json(path):
@@ -28,6 +35,15 @@ def load_json(path):
 def load_runtime():
     spec = importlib.util.spec_from_file_location(
         "liuhui_diagnostic_answer_runtime", RUNTIME_PATH
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_answer_auditor():
+    spec = importlib.util.spec_from_file_location(
+        "liuhui_diagnostic_answer_auditor", AUDITOR_PATH
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -144,6 +160,13 @@ def continuation_case_mismatches(context, case):
         mismatches.append("original_query")
     if not context["query"].startswith(case["original_query"]):
         mismatches.append("effective_query_preserves_original")
+    expected_query_units = expected.get("query_units")
+    if (
+        expected_query_units is not None
+        and context["question_interpretation"]["query_units"]
+        != expected_query_units
+    ):
+        mismatches.append("query_units")
     for text in expected.get("effective_query_excludes", []):
         if text in context["query"]:
             mismatches.append(f"effective_query_excludes:{text}")
@@ -181,6 +204,24 @@ def continuation_case_mismatches(context, case):
         != expected.get("do_not_claim_unique_cause")
     ):
         mismatches.append("do_not_claim_unique_cause")
+    selected_evidence_ids = {
+        str(item["evidence_id"]) for item in context["selected_videos"]
+    }
+    required_evidence_ids = set(
+        expected.get("required_selected_evidence_ids", [])
+    )
+    if not required_evidence_ids.issubset(selected_evidence_ids):
+        mismatches.append("required_selected_evidence_ids")
+    forbidden_evidence_ids = set(
+        expected.get("forbidden_selected_evidence_ids", [])
+    )
+    if forbidden_evidence_ids & selected_evidence_ids:
+        mismatches.append("forbidden_selected_evidence_ids")
+    if (
+        not expected.get("allow_empty_evidence", False)
+        and not selected_evidence_ids
+    ):
+        mismatches.append("selected_evidence_empty")
     selected = {item["label"] for item in context["selected_videos"]}
     for claim in context["claim_evidence_map"]:
         if not set(claim["eligible_video_labels"]).issubset(selected):
@@ -209,6 +250,7 @@ def evaluate(
             }
         )
     continuation_payload = load_json(continuation_cases_path)
+    auditor = load_answer_auditor()
     for case in continuation_payload["cases"]:
         first_context = runtime.prepare_answer_context(
             case["original_query"], local_personalization=False
@@ -220,12 +262,25 @@ def evaluate(
             clarification_answers=case.get("answers"),
         )
         mismatches = continuation_case_mismatches(context, case)
+        gold_answer = case.get("gold_answer", "")
+        answer_audit = None
+        if not gold_answer.strip():
+            mismatches.append("gold_answer_missing")
+        else:
+            answer_audit = auditor.audit_answer(
+                case["original_query"], context, gold_answer
+            )
+            mismatches.extend(
+                f'gold_answer:{item["code"]}'
+                for item in answer_audit["violations"]
+            )
         results.append(
             {
                 "case_id": case["case_id"],
                 "query": case["original_query"],
                 "matched": not mismatches,
                 "mismatches": mismatches,
+                "answer_audit": answer_audit,
             }
         )
     passed = sum(item["matched"] for item in results)

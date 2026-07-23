@@ -466,6 +466,20 @@ def planned_queries(search_module, plan, original_query, rules=None):
     return list(dict.fromkeys(constrained_queries))
 
 
+def continuation_query_plan(search_module, effective_query, continuation):
+    effective_plan = search_module.plan_query(effective_query)
+    if continuation is None:
+        return effective_plan, effective_query
+
+    original_query = continuation["original_query"]
+    plan = search_module.plan_query(original_query)
+    effective_intent = effective_plan["retrieval_guidance"]["intent_frame"]
+    plan["answer_guidance"] = effective_plan["answer_guidance"]
+    plan["retrieval_guidance"]["intent_frame"] = effective_intent
+    plan["query_expansion"]["intent_frame"] = effective_intent
+    return plan, original_query
+
+
 def topic_navigation(navigation_module, query, limit=5):
     graph = json.loads(navigation_module.TOPIC_MAP.read_text(encoding="utf-8"))
     practice_rules = json.loads(
@@ -939,6 +953,28 @@ def _query_constraints_from_text(
                 values.discard(value)
         if values:
             constraints[axis["name"]] = sorted(values)
+    for implication in rules.get("query_constraint_implications", []):
+        if any(
+            axis_name in constraints
+            for axis_name in implication.get("only_if_axes_missing", [])
+        ):
+            continue
+        if not all(
+            search_module.normalize(term) in normalized_query
+            for term in implication.get("all_terms", [])
+        ):
+            continue
+        any_terms = implication.get("any_terms", [])
+        if any_terms and not any(
+            search_module.normalize(term) in normalized_query
+            for term in any_terms
+        ):
+            continue
+        for axis_name, values in implication.get(
+            "derived_constraints", {}
+        ).items():
+            if axis_name not in constraints:
+                constraints[axis_name] = sorted(set(values))
     if (
         constraints.get("serve_role") == ["receive"]
         and constraints.get("technique_variant") == ["net_push"]
@@ -3657,7 +3693,9 @@ def prepare_answer_context(
     if not 1 <= segment_limit <= 12:
         raise ValueError("segment_limit must be between 1 and 12")
 
-    plan = search_module.plan_query(query)
+    plan, retrieval_base_query = continuation_query_plan(
+        search_module, query, continuation
+    )
     intent_frame = plan["retrieval_guidance"]["intent_frame"]
     positive_query = intent_frame.get("positive_query", query)
     actor_query = intent_frame.get("actor_query", positive_query)
@@ -3665,14 +3703,16 @@ def prepare_answer_context(
     knowledge, retrieval_index, retrieval_rules = search_module.load_resources()
     reviewed_priorities = reviewed_evidence_priorities(
         search_module,
-        query,
+        retrieval_base_query,
         plan,
         retrieval_index,
         retrieval_rules,
         rules,
     )
     navigation = None
-    retrieval_queries = planned_queries(search_module, plan, query, rules)
+    retrieval_queries = planned_queries(
+        search_module, plan, retrieval_base_query, rules
+    )
     use_topic_navigation = plan["retrieval_guidance"].get(
         "use_topic_navigation"
     )
@@ -3687,7 +3727,7 @@ def prepare_answer_context(
         }
     )
     if use_topic_navigation or needs_practice_context:
-        navigation = topic_navigation(navigation_module, query)
+        navigation = topic_navigation(navigation_module, retrieval_base_query)
     if use_topic_navigation:
         retrieval_queries.extend(navigation["suggested_search_queries"][:3])
         retrieval_queries = list(dict.fromkeys(retrieval_queries))

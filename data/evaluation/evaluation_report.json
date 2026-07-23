@@ -4,9 +4,9 @@
   "development_version": "1.5.0-dev.1",
   "baseline_version": "v1.4.0",
   "build": {
-    "id": "7821ab7a8ec9c174",
-    "inputs_sha256": "e1988bd07d9babba3df10f35def71c9657f0f9dd65add7bc74b7ebeb65839063",
-    "runtime_sha256": "812eaa75c48eaa636e64057344731ad0dce97ec562dd0255368c017864e2d453"
+    "id": "8a99a2096b507c1d",
+    "inputs_sha256": "fcfc8be8ffe652c45dcb5bb75379f66c3cebb17abeda797bf13dd8c8f09fad28",
+    "runtime_sha256": "666c962e1d569d0124803336cdaa542c9e0f1fd9b381c5cf7b91d2e44c9088db"
   },
   "summary": {
     "status": "pass",
@@ -81,7 +81,7 @@
       "candidate_recall": 1.0,
       "primary_top_k": 0.9629629629629629,
       "mean_reciprocal_rank": 0.7492504409171076,
-      "mean_ndcg_at_k": 0.8653850127849113,
+      "mean_ndcg_at_k": 0.8655857023927824,
       "mean_known_precision_at_k": 0.5921052631578947,
       "average_review_candidate_count": 12.24561403508772,
       "hard_negative_count": 193,
@@ -352,7 +352,7 @@
     },
     {
       "metric": "retrieval.mean_ndcg_at_k",
-      "current": 0.8653850127849113,
+      "current": 0.8655857023927824,
       "baseline": 0.8653850127849113,
       "direction": "at_least",
       "tolerance": 0,
