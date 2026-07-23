@@ -164,6 +164,7 @@ PYTHONPATH=scripts python3 -m unittest discover -s scripts -p 'test_*.py'
 ```bash
 python3 scripts/evaluate_answer_quality.py
 python3 scripts/evaluate_answer_context.py
+python3 scripts/evaluate_answer_audit.py
 python3 scripts/evaluate_diagnostic_answer_contract.py
 python3 scripts/evaluate_forward_test_results.py
 python3 scripts/evaluate_query_understanding.py
@@ -274,7 +275,9 @@ output/                          知识图谱、审核报告和可视化产物
 - `references/retrieval-index.json`：高召回检索索引。
 - `references/answer-selection-rules.json`：意图边界、条件轴和候选选择规则。
 - `references/diagnostic-answer-rules.json`：症状、假设、澄清、逐条证据与完备性规则。
+- `references/answer-audit-rules.json`：最终答案的证据、置信度、分支、完备性和引用门禁。
 - `scripts/prepare_answer_context.py`：唯一的问答上下文入口。
+- `scripts/audit_answer.py`：发送前的最终答案审计入口。
 
 ## 技术栈与边界
 

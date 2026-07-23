@@ -4,14 +4,14 @@
   "development_version": "1.5.0-dev.1",
   "baseline_version": "v1.4.0",
   "build": {
-    "id": "f399538effb0f394",
-    "inputs_sha256": "f182fc8cf67ccc534bb8c8ec351b837cbd0e87b4f20c0ed86dd3eeba8df245f5",
-    "runtime_sha256": "7eab9a20b209bf283649168960b2061c35c927c2c89e8ec073b311353a9e431c"
+    "id": "c32a8e22895aeaf1",
+    "inputs_sha256": "e7796fe89b6873519318a82d04984e18955543c25f64c3b9bf080da44029d629",
+    "runtime_sha256": "9f4ccaa22dd6a4c7f6e06ba58d52568e3f57496af4236fea86af97910160f787"
   },
   "summary": {
     "status": "pass",
-    "suites": 9,
-    "baseline_metrics": 41,
+    "suites": 10,
+    "baseline_metrics": 44,
     "regressions": 0
   },
   "evaluations": {
@@ -65,6 +65,14 @@
       "cases": 10,
       "passed": 10,
       "accuracy": 1.0
+    },
+    "answer_audit": {
+      "cases": 9,
+      "passed": 9,
+      "accuracy": 1.0,
+      "expected_violations": 8,
+      "expected_violations_detected": 8,
+      "violation_detection_rate": 1.0
     },
     "retrieval": {
       "cases": 57,
@@ -280,6 +288,30 @@
     },
     {
       "metric": "diagnostic_answer_contract.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.cases",
+      "current": 9,
+      "baseline": 9,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.violation_detection_rate",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",

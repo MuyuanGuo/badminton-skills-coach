@@ -3720,6 +3720,12 @@ def prepare_answer_context(
                 "不得添加本轮 selected_videos 中不存在的 V 标签。",
                 "同一对话中的后续反馈必须绑定原问题、完整回答、精确 V 映射和用户原话，再按 feedback-workflow.md 解析与确认。",
             ],
+            "final_audit": {
+                "required_for": ["diagnostic_answer", "multi_claim_answer"],
+                "command": "python3 scripts/audit_answer.py \"用户的完整原问题\" --context context.json --answer answer.md",
+                "pass_condition": "passed is true; never edit the prepared context to make a draft pass",
+                "scope": "deterministic known-contract gate, not proof that every semantic error is absent",
+            },
         },
         "source_handling": {
             "untrusted_content_guard": rules["untrusted_content_guard"],

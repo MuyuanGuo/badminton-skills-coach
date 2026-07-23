@@ -23,6 +23,7 @@ jobs:
           python -m py_compile \
             scripts/apply_visual_review_notes.py \
             scripts/apply_answer_quality_review_notes.py \
+            scripts/audit_answer.py \
             scripts/batch_transcribe_directory.py \
             scripts/build_answer_quality_review_queue.py \
             scripts/build_manifest.py \
@@ -39,6 +40,7 @@ jobs:
             scripts/doctor.py \
             scripts/evaluate_answer_policy.py \
             scripts/evaluate_answer_context.py \
+            scripts/evaluate_answer_audit.py \
             scripts/evaluate_answer_quality.py \
             scripts/evaluate_diagnostic_answer_contract.py \
             scripts/evaluate_feedback_signals.py \
@@ -67,6 +69,7 @@ jobs:
             scripts/test_douyin_snapshot_validation.py \
             scripts/test_douyin_transactions.py \
             scripts/test_douyin_update_state.py \
+            scripts/test_answer_audit.py \
             scripts/test_diagnostic_answer_contract.py \
             scripts/test_doctor.py \
             scripts/test_answer_context.py \
@@ -101,6 +104,7 @@ jobs:
             skills/liuhui-badminton-coach/scripts/feedback.py \
             skills/liuhui-badminton-coach/scripts/doctor.py \
             skills/liuhui-badminton-coach/scripts/install.py \
+            skills/liuhui-badminton-coach/scripts/audit_answer.py \
             skills/liuhui-badminton-coach/scripts/prepare_answer_context.py \
             skills/liuhui-badminton-coach/scripts/search_knowledge.py
 
@@ -111,6 +115,7 @@ jobs:
           python scripts/test_douyin_snapshot_validation.py
           python scripts/test_douyin_transactions.py
           python scripts/test_douyin_update_state.py
+          python scripts/test_answer_audit.py
           python scripts/test_diagnostic_answer_contract.py
           python scripts/test_doctor.py
           python scripts/test_answer_context.py
@@ -140,6 +145,7 @@ jobs:
           python scripts/test_visual_review_workflow.py
           python scripts/test_video_comprehension.py
           python scripts/evaluate_diagnostic_answer_contract.py
+          python scripts/evaluate_answer_audit.py
           python scripts/generate_evaluation_report.py --check
           python scripts/evaluate_feedback_signals.py
           python scripts/build_manifest.py --check
