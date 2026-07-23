@@ -220,6 +220,7 @@ def evaluate(
     retrieval_index_path=RETRIEVAL_INDEX_PATH,
     root=ROOT,
     run_retrieval_roundtrip=True,
+    run_semantic_probes=True,
     require_raw_transcripts=False,
     answer_cases_path=ANSWER_CASES_PATH,
     semantic_top_k=12,
@@ -254,9 +255,11 @@ def evaluate(
     semantic_primary_top_k = 0
     hard_negative_total = 0
     hard_negative_top_k_violations = []
-    if run_retrieval_roundtrip:
+    search_module = None
+    if run_retrieval_roundtrip or run_semantic_probes:
         search_module = load_search_module()
         runtime_knowledge, runtime_index, runtime_rules = search_module.load_resources()
+    if run_retrieval_roundtrip:
         ready_ids = [video["video_id"] for video in ready_videos]
         lookup = search_module.lookup_videos(
             ready_ids, local_personalization=False
@@ -275,6 +278,7 @@ def evaluate(
                 continue
             runtime_lookup_count += 1
 
+    if run_semantic_probes:
         answer_registry = load_json(answer_cases_path)
         for case in answer_registry.get("cases", []):
             gold = case.get("gold", {})
@@ -348,18 +352,18 @@ def evaluate(
         ),
         "independent_probe_cases": (
             len(load_json(answer_cases_path).get("cases", []))
-            if run_retrieval_roundtrip
+            if run_semantic_probes
             else 0
         ),
         "independent_probe_expected_videos": semantic_expected,
         "independent_probe_candidate_recall": (
             semantic_recalled / max(1, semantic_expected)
-            if run_retrieval_roundtrip
+            if run_semantic_probes
             else None
         ),
         "independent_probe_primary_top_k": (
             semantic_primary_top_k / max(1, semantic_primary_cases)
-            if run_retrieval_roundtrip
+            if run_semantic_probes
             else None
         ),
         "hard_negative_count": hard_negative_total,
@@ -404,6 +408,7 @@ def main():
         args.knowledge,
         args.retrieval_index,
         run_retrieval_roundtrip=not args.skip_retrieval_roundtrip,
+        run_semantic_probes=not args.skip_retrieval_roundtrip,
         require_raw_transcripts=args.require_raw_transcripts,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))

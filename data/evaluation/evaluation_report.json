@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "project": "badminton-skills-coach",
+  "development_version": "1.4.0",
+  "baseline_version": "v1.4.0",
+  "build": {
+    "id": "bd55ff5746e26c68",
+    "inputs_sha256": "42991cda1ed4292eeab16d10653bae2733a19fa1145c0dfdaecd873f771b5264",
+    "runtime_sha256": "751ef158ecc5eccc5fc96bc21e03e50837375aaf9cf53cda946fd54f264cb624"
+  },
+  "summary": {
+    "status": "pass",
+    "suites": 8,
+    "baseline_metrics": 39,
+    "regressions": 0
+  },
+  "evaluations": {
+    "answer_policy": {
+      "cases": 21,
+      "correct": 21,
+      "accuracy": 1.0,
+      "mode_contracts_complete": true,
+      "global_contract_complete": true
+    },
+    "answer_context": {
+      "cases": 57,
+      "expected_videos": 173,
+      "candidate_recall": 1.0,
+      "selected_video_recall": 1.0,
+      "primary_selected_rate": 1.0,
+      "answer_mode_accuracy": 1.0,
+      "context_evidence_coverage": 1.0,
+      "hard_negative_selected_violations": 0,
+      "selection_truncated_cases": 0
+    },
+    "answer_quality": {
+      "cases": 57,
+      "status_counts": {
+        "maintainer_reviewed": 57
+      },
+      "regression_ready": 57,
+      "pending_review": 0,
+      "answers_supplied": 57,
+      "snapshot_coverage": 1.0,
+      "passed": 57,
+      "automatic_pass_rate": 1.0,
+      "critical_snapshot_requirements": 3,
+      "missing_critical_case_ids": []
+    },
+    "query_equivalence": {
+      "families": 2,
+      "variants": 12,
+      "negative_controls": 8,
+      "passed_families": 2,
+      "failed_families": []
+    },
+    "query_understanding": {
+      "cases": 143,
+      "reviewed_cases": 57,
+      "adversarial_cases": 86,
+      "passed": 143,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "cases": 57,
+      "expected_videos": 173,
+      "found_videos": 173,
+      "candidate_recall": 1.0,
+      "primary_top_k": 0.9629629629629629,
+      "mean_reciprocal_rank": 0.7492504409171076,
+      "mean_ndcg_at_k": 0.8653850127849113,
+      "mean_known_precision_at_k": 0.5921052631578947,
+      "average_review_candidate_count": 12.24561403508772,
+      "hard_negative_count": 193,
+      "hard_negative_top_k_violations": 0,
+      "hard_negative_review_violations": 0,
+      "top_k": 12
+    },
+    "video_comprehension": {
+      "ready_videos": 353,
+      "understood_videos": 353,
+      "understanding_coverage": 1.0,
+      "transcript_backed": 334,
+      "automatic_transcript": 328,
+      "reviewed_transcript": 6,
+      "visual_review_fallback": 19,
+      "runtime_lookup_coverage": 1.0,
+      "failure_count": 0
+    },
+    "forward_tests": {
+      "critical_cases": 3,
+      "blind_passes": 3,
+      "unseen_rounds": 3,
+      "unseen_cases": 12,
+      "consecutive_passes": 3,
+      "failed": []
+    }
+  },
+  "baseline_comparison": [
+    {
+      "metric": "answer_policy.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_policy.cases",
+      "current": 21,
+      "baseline": 21,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_policy.mode_contracts_complete",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_policy.global_contract_complete",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.candidate_recall",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.cases",
+      "current": 57,
+      "baseline": 57,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.selected_video_recall",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.primary_selected_rate",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.answer_mode_accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.context_evidence_coverage",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_context.hard_negative_selected_violations",
+      "current": 0,
+      "baseline": 0,
+      "direction": "at_most",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_quality.regression_ready",
+      "current": 57,
+      "baseline": 57,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_quality.snapshot_coverage",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_quality.automatic_pass_rate",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_quality.passed",
+      "current": 57,
+      "baseline": 57,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_quality.missing_critical_case_ids",
+      "current": [],
+      "baseline": [],
+      "direction": "equal",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "query_equivalence.failed_families",
+      "current": [],
+      "baseline": [],
+      "direction": "equal",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "query_equivalence.families",
+      "current": 2,
+      "baseline": 2,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "query_equivalence.passed_families",
+      "current": 2,
+      "baseline": 2,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "query_understanding.cases",
+      "current": 143,
+      "baseline": 143,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "query_understanding.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.candidate_recall",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.cases",
+      "current": 57,
+      "baseline": 57,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.primary_top_k",
+      "current": 0.9629629629629629,
+      "baseline": 0.9629629629629629,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.mean_reciprocal_rank",
+      "current": 0.7492504409171076,
+      "baseline": 0.7492504409171076,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.mean_ndcg_at_k",
+      "current": 0.8653850127849113,
+      "baseline": 0.8653850127849113,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.average_review_candidate_count",
+      "current": 12.24561403508772,
+      "baseline": 12.24561403508772,
+      "direction": "at_most",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.hard_negative_top_k_violations",
+      "current": 0,
+      "baseline": 0,
+      "direction": "at_most",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "retrieval.hard_negative_review_violations",
+      "current": 0,
+      "baseline": 0,
+      "direction": "at_most",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "video_comprehension.ready_videos",
+      "current": 353,
+      "baseline": 353,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "video_comprehension.understanding_coverage",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "video_comprehension.transcript_backed",
+      "current": 334,
+      "baseline": 334,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "video_comprehension.runtime_lookup_coverage",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "video_comprehension.failure_count",
+      "current": 0,
+      "baseline": 0,
+      "direction": "at_most",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "forward_tests.blind_passes",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "forward_tests.unseen_rounds",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "forward_tests.unseen_cases",
+      "current": 12,
+      "baseline": 12,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "forward_tests.consecutive_passes",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "forward_tests.failed",
+      "current": [],
+      "baseline": [],
+      "direction": "equal",
+      "tolerance": 0,
+      "passed": true
+    }
+  ]
+}

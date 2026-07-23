@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Deterministic evaluation report for Badminton Skills Coach.">
+  <title>Evaluation Report | Badminton Skills Coach</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --bg:#090d0c; --panel:#111816; --ink:#f3f6f4; --muted:#a7b0ac; --line:rgba(255,255,255,.12); --mint:#79dbc5; --yellow:#f3dc55; }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--bg); line-height:1.55; } a { color:var(--mint); } .shell { width:min(1080px,calc(100% - 32px)); margin:auto; }
+    header { border-bottom:1px solid var(--line); background:#0d1311; } nav { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:20px; } nav a { text-decoration:none; font-weight:750; }
+    main { padding:64px 0 80px; } .eyebrow { color:var(--mint); font:800 12px/1.2 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.12em; } h1 { max-width:780px; margin:14px 0 18px; font-size:clamp(38px,7vw,72px); line-height:1.02; letter-spacing:0; } .lede { max-width:760px; color:var(--muted); font-size:18px; }
+    .summary { display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 62px; border-block:1px solid var(--line); } .summary div { padding:22px 18px; border-right:1px solid var(--line); } .summary div:last-child { border:0; } .summary strong,.summary span { display:block; } .summary strong { font-size:28px; } .summary span { color:var(--muted); font-size:13px; }
+    h2 { margin:54px 0 18px; font-size:28px; letter-spacing:0; } .table-wrap { overflow-x:auto; border:1px solid var(--line); border-radius:8px; } table { width:100%; border-collapse:collapse; background:var(--panel); } th,td { padding:17px 18px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; } tr:last-child th,tr:last-child td { border-bottom:0; } td.value { font:750 15px/1 ui-monospace,monospace; } .status { display:inline-block; min-width:54px; padding:5px 8px; border-radius:4px; text-align:center; font:800 11px/1 ui-monospace,monospace; } .pass { color:#07110e; background:var(--mint); } .fail { color:#1a1400; background:var(--yellow); }
+    .provenance { display:grid; grid-template-columns:1fr 1fr; gap:12px; } .provenance div { padding:18px; border-left:3px solid var(--mint); background:var(--panel); } code { color:#d8e3df; overflow-wrap:anywhere; } footer { padding:26px 0; color:var(--muted); border-top:1px solid var(--line); font-size:13px; }
+    @media(max-width:700px) { main { padding-top:42px; } .summary { grid-template-columns:1fr 1fr; } .summary div:nth-child(2) { border-right:0; } .summary div:nth-child(-n+2) { border-bottom:1px solid var(--line); } .provenance { grid-template-columns:1fr; } .table-wrap { overflow:visible; border:0; } table,tbody,tr,th,td { display:block; } thead { display:none; } tbody tr { display:grid; grid-template-columns:1fr auto; gap:8px 16px; margin-bottom:10px; padding:16px; border:1px solid var(--line); border-radius:8px; } tbody th,tbody td { padding:0; border:0; white-space:normal; } tbody th { grid-column:1; grid-row:1; } tbody td:nth-of-type(1) { grid-column:1; grid-row:2; color:var(--muted); } tbody td:nth-of-type(2) { grid-column:2; grid-row:2; } tbody td:nth-of-type(3) { grid-column:2; grid-row:1; } }
+  </style>
+</head>
+<body>
+  <header><nav class="shell"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/develop/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
+  <main class="shell">
+    <p class="eyebrow">EvalOps / build bd55ff5746e26c68</p>
+    <h1>Evidence quality, measured against a released baseline.</h1>
+    <p class="lede">This deterministic report compares the 1.4.0 runtime with the versioned v1.4.0 baseline. It covers the complete path from query interpretation to reviewed answers and blind forward tests.</p>
+    <section class="summary" aria-label="Evaluation summary">
+      <div><strong>PASS</strong><span>Regression gate</span></div>
+      <div><strong>353</strong><span>Ready videos</span></div>
+      <div><strong>57/57</strong><span>Reviewed snapshots</span></div>
+      <div><strong>0</strong><span>Hard-negative violations</span></div>
+    </section>
+    <h2>Evaluation suites</h2>
+    <div class="table-wrap"><table><thead><tr><th>Suite</th><th>Featured metric</th><th>Current</th><th>Gate</th></tr></thead><tbody><tr><th scope="row">Answer policy</th><td>Mode accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer context</th><td>Selected-video recall</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer snapshots</th><td>Snapshot pass rate</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query equivalence</th><td>Families passed</td><td class="value">2</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query understanding</th><td>Intent accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Evidence retrieval</th><td>nDCG@12</td><td class="value">86.5%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Video comprehension</th><td>Evidence coverage</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Forward tests</th><td>Consecutive rounds</td><td class="value">3</td><td><span class="status pass">PASS</span></td></tr></tbody></table></div>
+    <h2>Coverage at a glance</h2>
+    <div class="provenance">
+      <div><strong>143/143</strong><br><span>query-understanding cases passed, including 86 adversarial cases</span></div>
+      <div><strong>173/173</strong><br><span>expected evidence videos reached the candidate set</span></div>
+      <div><strong>334</strong><br><span>transcript-backed videos, plus 19 reviewed visual fallbacks</span></div>
+      <div><strong>39</strong><br><span>versioned metrics enforced by the regression gate</span></div>
+    </div>
+    <h2>Reproducibility</h2>
+    <p>Input SHA-256<br><code>42991cda1ed4292eeab16d10653bae2733a19fa1145c0dfdaecd873f771b5264</code></p>
+    <p>Runtime SHA-256<br><code>751ef158ecc5eccc5fc96bc21e03e50837375aaf9cf53cda946fd54f264cb624</code></p>
+  </main>
+  <footer><div class="shell">Generated from committed artifacts. No wall-clock timestamp or external service is used.</div></footer>
+</body>
+</html>

@@ -137,6 +137,23 @@ class SearchKnowledgeTests(unittest.TestCase):
             "effective_ranking_score", candidate["score_breakdown"]
         )
 
+    def test_candidate_sort_uses_video_id_as_stable_tie_breaker(self):
+        rules = self.search_module.load_resources()[2]
+        candidates = [
+            {
+                "video_id": video_id,
+                "score": 1.0,
+                "relevance_tier": "direct",
+                "title": "相同标题",
+            }
+            for video_id in ("2", "1")
+        ]
+        ranked = sorted(
+            candidates,
+            key=lambda item: self.search_module.candidate_sort_key(item, rules),
+        )
+        self.assertEqual([item["video_id"] for item in ranked], ["1", "2"])
+
     def test_point_smash_expands_to_direct_mechanics_evidence(self):
         payload = self.search_module.search(
             "点杀怎么打",

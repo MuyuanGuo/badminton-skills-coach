@@ -57,6 +57,8 @@ json_paths = [
     "data/douyin_video_index.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/evaluation_baselines.json",
+    "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",

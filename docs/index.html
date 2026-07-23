@@ -28,6 +28,7 @@
         <a href="#pipeline">工作方式</a>
         <a href="#install">安装</a>
         <a href="#quality">质量基线</a>
+        <a href="./evaluation/">评估报告</a>
         <a class="language-link" href="./en/" lang="en">EN</a>
       </nav>
     </div>
@@ -38,7 +39,7 @@
       <div class="court-lines" aria-hidden="true"></div>
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="status-dot"></span> 稳定版 v1.3.0 · 公开可安装</p>
+          <p class="eyebrow"><span class="status-dot"></span> 稳定版 v1.4.0 · 公开可安装</p>
           <h1>不只给建议，<br><em>还告诉你证据在哪里。</em></h1>
           <p class="lede">面向 Codex 的羽毛球教练 Skill。它把公开视频整理成可检索、可引用、可回归验证的训练建议，并为关键结论提供视频、时间戳和适用边界。</p>
           <div class="hero-actions">
@@ -138,13 +139,13 @@
         </div>
         <div class="code-panel">
           <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制</button></div>
-          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/liuhui-badminton-coach-1.3.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.3.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.3.0/SHA256SUMS.txt \
+          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/liuhui-badminton-coach-1.4.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.4.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.3.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.4.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
           <div class="code-footer">随后运行 doctor 并重新启动 Codex</div>
         </div>
@@ -156,7 +157,7 @@ python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
         <div class="section-heading">
           <p class="eyebrow">QUALITY CONTRACT</p>
           <h2>数字有边界，答案也应该有</h2>
-          <p>这些指标描述当前语料和回归集，不表示所有自然语言问题都已经被人工测试。</p>
+          <p>这些指标描述当前语料和回归集，不表示所有自然语言问题都已经被人工测试。<a href="./evaluation/">查看完整的版本化评估报告</a>。</p>
         </div>
         <div class="quality-grid">
           <article><span class="quality-icon">A</span><h3>来源忠实</h3><p>具体技术结论必须落到教学笔记或带时间戳的证据窗口。</p></article>

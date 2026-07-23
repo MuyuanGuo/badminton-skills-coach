@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -176,6 +177,61 @@ class VideoComprehensionTests(unittest.TestCase):
             transcript_ngram_sizes=sizes,
         )
         self.assertIn("runtime_transcript_index_mismatch", audit["failures"])
+
+    def test_runtime_lookup_can_run_without_duplicate_semantic_probes(self):
+        video = {
+            "video_id": "7000000000000000003",
+            "processing_status": "ready",
+            "confidence": "visual_reviewed",
+            "teaching_note": {
+                "topic": "步法",
+                "review_summary": "人工确认的步法示范。",
+                "visual_review_evidence": [
+                    {
+                        "timestamp": "visual_review_no_timestamp",
+                        "text": "人工确认的步法示范。",
+                    }
+                ],
+            },
+        }
+        fake_search = SimpleNamespace(
+            load_resources=lambda: ({}, {}, {}),
+            lookup_videos=lambda video_ids, local_personalization=False: {
+                "results": [
+                    {
+                        "video_id": video_ids[0],
+                        "teaching_note": {"summary": "人工确认的步法示范。"},
+                    }
+                ]
+            },
+        )
+        original_loader = self.module.load_search_module
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            knowledge_path = root / "knowledge.json"
+            index_path = root / "index.json"
+            knowledge_path.write_text(
+                json.dumps({"videos": [video]}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            index_path.write_text(
+                json.dumps({"videos": [{"video_id": video["video_id"]}]}),
+                encoding="utf-8",
+            )
+            try:
+                self.module.load_search_module = lambda: fake_search
+                result = self.module.evaluate(
+                    knowledge_path,
+                    index_path,
+                    root=root,
+                    run_retrieval_roundtrip=True,
+                    run_semantic_probes=False,
+                )
+            finally:
+                self.module.load_search_module = original_loader
+        self.assertEqual(result["runtime_lookup_coverage"], 1.0)
+        self.assertEqual(result["independent_probe_cases"], 0)
+        self.assertIsNone(result["independent_probe_candidate_recall"])
 
 
 if __name__ == "__main__":
