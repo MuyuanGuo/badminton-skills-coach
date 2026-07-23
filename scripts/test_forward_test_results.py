@@ -108,6 +108,15 @@ class ForwardTestResultTests(unittest.TestCase):
         self.assertEqual(summary["unseen_rounds"], 3)
         self.assertEqual(summary["unseen_cases"], 12)
 
+    def test_continuation_original_queries_are_not_unseen(self):
+        known = self.module.registered_queries(
+            {"cases": []},
+            {"cases": []},
+            {"cases": []},
+            {"cases": [{"original_query": "多轮原问题"}]},
+        )
+        self.assertIn(self.module.normalize_query("多轮原问题"), known)
+
     def test_stale_runtime_fingerprint_fails(self):
         result, critical, cases, query_cases = self.fixtures()
         with self.assertRaisesRegex(

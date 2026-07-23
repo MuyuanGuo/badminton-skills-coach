@@ -9,6 +9,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "data" / "evaluation" / "diagnostic_answer_cases.json"
+CONTINUATION_CASES_PATH = (
+    ROOT / "data" / "evaluation" / "diagnostic_answer_continuation_cases.json"
+)
 RUNTIME_PATH = (
     ROOT
     / "skills"
@@ -133,7 +136,62 @@ def case_mismatches(context, expected):
     return mismatches
 
 
-def evaluate(cases_path=CASES_PATH):
+def continuation_case_mismatches(context, case):
+    expected = case["expected"]
+    mismatches = []
+    state = context["clarification_state"]
+    if state["original_query"] != case["original_query"]:
+        mismatches.append("original_query")
+    if not context["query"].startswith(case["original_query"]):
+        mismatches.append("effective_query_preserves_original")
+    for text in expected.get("effective_query_excludes", []):
+        if text in context["query"]:
+            mismatches.append(f"effective_query_excludes:{text}")
+    for axis, values in expected.get("constraints", {}).items():
+        if context["question_interpretation"]["constraints"].get(axis) != values:
+            mismatches.append(f"constraints:{axis}")
+    hypotheses = {
+        item["text"] for item in context["diagnostic_model"]["user_hypotheses"]
+    }
+    if not set(expected.get("hypotheses_contains", [])).issubset(hypotheses):
+        mismatches.append("hypotheses_contains")
+    branch_axes = {
+        item["axis"]
+        for item in context["diagnostic_model"]["material_branches"]
+    }
+    if set(expected.get("branch_axes_excludes", [])) & branch_axes:
+        mismatches.append("branch_axes_excludes")
+    resolved_ids = [
+        item["question_id"] for item in state["resolved_answers"]
+    ]
+    if resolved_ids != expected.get("resolved_question_ids", resolved_ids):
+        mismatches.append("resolved_question_ids")
+    if state["pending_question_ids"] != expected.get(
+        "pending_question_ids", state["pending_question_ids"]
+    ):
+        mismatches.append("pending_question_ids")
+    expected_chain = expected.get("event_chain")
+    if expected_chain is not None and (
+        context["question_interpretation"]["actor_context"]["event_chain"]
+        != expected_chain
+    ):
+        mismatches.append("event_chain")
+    if (
+        context["diagnostic_model"]["do_not_claim_unique_cause"]
+        != expected.get("do_not_claim_unique_cause")
+    ):
+        mismatches.append("do_not_claim_unique_cause")
+    selected = {item["label"] for item in context["selected_videos"]}
+    for claim in context["claim_evidence_map"]:
+        if not set(claim["eligible_video_labels"]).issubset(selected):
+            mismatches.append(f'claim_allowlist:{claim["claim_id"]}')
+    return mismatches
+
+
+def evaluate(
+    cases_path=CASES_PATH,
+    continuation_cases_path=CONTINUATION_CASES_PATH,
+):
     payload = load_json(cases_path)
     runtime = load_runtime()
     results = []
@@ -150,6 +208,26 @@ def evaluate(cases_path=CASES_PATH):
                 "mismatches": mismatches,
             }
         )
+    continuation_payload = load_json(continuation_cases_path)
+    for case in continuation_payload["cases"]:
+        first_context = runtime.prepare_answer_context(
+            case["original_query"], local_personalization=False
+        )
+        context = runtime.prepare_answer_context(
+            case["reply"],
+            local_personalization=False,
+            continue_from=first_context,
+            clarification_answers=case.get("answers"),
+        )
+        mismatches = continuation_case_mismatches(context, case)
+        results.append(
+            {
+                "case_id": case["case_id"],
+                "query": case["original_query"],
+                "matched": not mismatches,
+                "mismatches": mismatches,
+            }
+        )
     passed = sum(item["matched"] for item in results)
     return {
         "cases": len(results),
@@ -162,8 +240,13 @@ def evaluate(cases_path=CASES_PATH):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
+    parser.add_argument(
+        "--continuation-cases",
+        type=Path,
+        default=CONTINUATION_CASES_PATH,
+    )
     args = parser.parse_args()
-    result = evaluate(args.cases)
+    result = evaluate(args.cases, args.continuation_cases)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["passed"] != result["cases"]:
         raise SystemExit("Diagnostic answer contract regression")

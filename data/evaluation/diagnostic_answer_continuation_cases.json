@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "description": "Maintained multi-turn cases for clarification binding, diagnosis closure, and evidence replanning.",
+  "cases": [
+    {
+      "case_id": "DAC-MT001",
+      "original_query": "我杀球后经常来不及上网，是不是步法太慢？",
+      "reply": "双打，落地后停在原地，上一拍是重杀直线",
+      "answers": {
+        "clarify.branch.discipline": "双打",
+        "clarify.mechanism.movement_transition": "落地后重心停在原地",
+        "clarify.mechanism.shot_choice_and_recovery_time": "上一拍是重杀，走直线"
+      },
+      "expected": {
+        "constraints": {"discipline": ["doubles"], "shot_direction": ["straight"]},
+        "hypotheses_contains": ["步法太慢"],
+        "branch_axes_excludes": ["discipline"],
+        "resolved_question_ids": [
+          "clarify.branch.discipline",
+          "clarify.mechanism.movement_transition",
+          "clarify.mechanism.shot_choice_and_recovery_time"
+        ],
+        "pending_question_ids": [],
+        "effective_query_excludes": ["单打还是双打", "重杀、轻杀还是软压"],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT002",
+      "original_query": "后场被动来不及架拍怎么把球打到底线",
+      "reply": "发生在反手侧",
+      "answers": {"clarify.branch.stroke_side": "反手侧"},
+      "expected": {
+        "constraints": {"stroke_side": ["backhand"], "pressure_state": ["passive"]},
+        "branch_axes_excludes": ["stroke_side"],
+        "resolved_question_ids": ["clarify.branch.stroke_side"],
+        "pending_question_ids": [
+          "clarify.mechanism.preparation_timing"
+        ],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT003",
+      "original_query": "我杀球后对手挡网，我总来不及上网，是不是第一拍杀太重？",
+      "reply": "双打，杀球落地后重心停在原地",
+      "answers": {
+        "clarify.branch.discipline": "双打",
+        "clarify.mechanism.movement_transition": "杀球落地后重心停在原地"
+      },
+      "expected": {
+        "constraints": {"discipline": ["doubles"]},
+        "hypotheses_contains": ["第一拍杀太重"],
+        "event_chain": [
+          {"actor": "player", "role": "prior_action", "term": "杀球"},
+          {"actor": "opponent", "role": "response", "term": "挡网"},
+          {"actor": "player", "role": "target_action", "term": "杀上网"}
+        ],
+        "pending_question_ids": [],
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT004",
+      "original_query": "双打接杀挡网总冒高，是拍面还是击球点问题？",
+      "reply": "球的最高点在对方场区",
+      "expected": {
+        "constraints": {"discipline": ["doubles"]},
+        "hypotheses_contains": ["拍面", "击球点"],
+        "resolved_question_ids": ["clarify.mechanism.trajectory_control"],
+        "pending_question_ids": [],
+        "do_not_claim_unique_cause": true
+      }
+    }
+  ]
+}

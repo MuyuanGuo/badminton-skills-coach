@@ -62,6 +62,7 @@ json_paths = [
     "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
+    "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",

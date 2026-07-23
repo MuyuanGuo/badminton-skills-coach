@@ -1,13 +1,13 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "4c913520fefa52ea9ab69390e1c493fb84bd4a45ed00fdefd18a22f920c32eb5",
+  "runtime_fingerprint": "c2bf09cc444df63dfe87d1989de0f5212a5182be13a99fca154dea294dc6b0f4",
   "runtime_revalidation": {
     "tested_at": "2026-07-23",
     "validation_mode": "same_agent_structural_audit",
     "reviewer": "Codex current-task regression audit",
     "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
-    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and maps all four required evidence IDs across the question and distance-mechanism claims. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, and keep the singles/doubles and user-video diagnostic boundaries. The added final-answer auditor is an output gate and does not alter those retrieval or interpretation results; its own nine gold cases cover citation, confidence, completeness, branch, and boundary failures."
+    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and retains all four required evidence IDs. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, preserve the player-opponent event chain, and keep the singles/doubles and user-video diagnostic boundaries. Clarification state remains additive and reruns retrieval after an answer without changing these first-turn interpretation, evidence, or confidence results. Racket-face and trajectory prompts now ask separately for the launch direction and highest-point location, include their diagnostic purpose, and no longer describe an impossible post-net rise. Four maintained multi-turn gold cases cover branch closure, answer binding, actor preservation, and evidence replanning."
   },
   "results": [
     {

@@ -67,6 +67,60 @@ class SkillPortabilityTests(unittest.TestCase):
             self.assertTrue(context_payload["selected_videos"])
             self.assertEqual(context_payload["selected_videos"][0]["label"], "V1")
 
+            clarification_context = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        installed_skill
+                        / "scripts"
+                        / "prepare_answer_context.py"
+                    ),
+                    "双打接杀挡网总冒高，是拍面还是击球点问题？",
+                    "--max-videos",
+                    "2",
+                    "--no-local-personalization",
+                ],
+                cwd=external_workdir,
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            clarification_context_path = external_workdir / "context.json"
+            clarification_context_path.write_text(
+                clarification_context.stdout, encoding="utf-8"
+            )
+            continued = subprocess.run(
+                [
+                    sys.executable,
+                    str(
+                        installed_skill
+                        / "scripts"
+                        / "prepare_answer_context.py"
+                    ),
+                    "球的最高点在对方场区",
+                    "--continue-from",
+                    str(clarification_context_path),
+                    "--max-videos",
+                    "2",
+                    "--no-local-personalization",
+                ],
+                cwd=external_workdir,
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            continued_payload = json.loads(continued.stdout)
+            self.assertEqual(
+                continued_payload["clarification_state"]["original_query"],
+                "双打接杀挡网总冒高，是拍面还是击球点问题？",
+            )
+            self.assertEqual(
+                continued_payload["clarification_state"][
+                    "pending_question_ids"
+                ],
+                [],
+            )
+
             audit_context_path = external_workdir / "audit-context.json"
             audit_answer_path = external_workdir / "audit-answer.md"
             audit_context_path.write_text(
