@@ -100,8 +100,9 @@
         "observed_symptoms_contains": ["出界"],
         "constraints": {"stroke_side": ["forehand"]},
         "hypotheses": [
-          {"text": "拍面", "status": "conditional", "evidence_ids": ["7112628690395106560"]}
+          {"text": "拍面", "status": "unverified", "evidence_ids": []}
         ],
+        "query_claim_excluded_evidence_ids": ["7112628690395106560"],
         "clarification_action": "answer_conditionally",
         "do_not_claim_unique_cause": true
       }

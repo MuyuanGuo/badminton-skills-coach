@@ -82,6 +82,7 @@ def rule_artifacts():
         "config/knowledge_quality_rules.json",
         "config/practice_plan_rules.json",
         "config/retrieval_rules.json",
+        "config/reviewed_evidence_atoms.json",
         "config/reviewed_evidence_signals.json",
     ]
     rules = []

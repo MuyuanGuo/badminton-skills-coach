@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "holdout_id": "answer-quality-holdout-2026-07",
+  "frozen_at": "2026-07-23",
+  "development_use_forbidden": true,
+  "provenance": "Curated user-like questions reserved for end-to-end branch comparison; not copied into deterministic rule gold cases.",
+  "cases": [
+    {
+      "case_id": "PBH001",
+      "query": "我在后场正手被动时总把过渡球打到半场，对手直接扑死，我应该先改脚步还是出手选择？"
+    },
+    {
+      "case_id": "PBH002",
+      "query": "双打我接发推后场后总被抓下一拍，是站位退得慢还是线路问题？"
+    },
+    {
+      "case_id": "PBH003",
+      "query": "反手抽挡连续两三拍后拍面越来越开，球开始往上飘，怎么排查？"
+    },
+    {
+      "case_id": "PBH004",
+      "query": "单打吊球后我总被对方推后场打穿，是回中方向错了还是吊球质量不够？"
+    },
+    {
+      "case_id": "PBH005",
+      "query": "对手用平高压我头顶区时，我转身后总只剩下手球，应该看判断、启动还是架拍？"
+    },
+    {
+      "case_id": "PBH006",
+      "query": "混双女方在后场被连续压制时，什么时候该软压跟进，什么时候该继续留在后场？"
+    },
+    {
+      "case_id": "PBH007",
+      "query": "我正手发网前球经常过高，但反手发球正常，这两种发球能共用同一个拍面检查方法吗？"
+    },
+    {
+      "case_id": "PBH008",
+      "query": "杀球落地后我已经向前了，还是赶不上对手挡网，问题还可能在哪一拍？"
+    }
+  ]
+}

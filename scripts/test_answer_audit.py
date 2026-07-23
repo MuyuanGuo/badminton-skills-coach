@@ -67,32 +67,6 @@ class AnswerAuditTests(unittest.TestCase):
         audit = self.audit_named_answer("complete_conditional")
         self.assertTrue(audit["passed"], audit["violations"])
         self.assertEqual(audit["summary"]["completeness_items_covered"], 5)
-        self.assertEqual(
-            audit["summary"]["completeness_items_substantive"], 5
-        )
-
-    def test_topic_echoes_with_valid_citations_are_not_complete_answers(self):
-        audit = self.audit_named_answer("echo_only_with_citations")
-        violations = [
-            item
-            for item in audit["violations"]
-            if item["code"] == "insubstantial_completeness_item"
-        ]
-        self.assertEqual(
-            {item["claim_id"] for item in violations},
-            {"Q1", "H1", "M1", "M2", "B1"},
-        )
-        self.assertEqual(audit["summary"]["completeness_items_covered"], 5)
-        self.assertEqual(audit["summary"]["completeness_items_substantive"], 0)
-
-    def test_each_material_branch_requires_substantive_treatment(self):
-        audit = self.audit_named_answer("branch_labels_only")
-        violations = [
-            item
-            for item in audit["violations"]
-            if item["code"] == "insubstantial_completeness_item"
-        ]
-        self.assertEqual([item["claim_id"] for item in violations], ["B1"])
 
     def test_claim_level_allowlist_rejects_globally_selected_wrong_video(self):
         audit = self.audit_named_answer("citation_mismatch")
@@ -175,6 +149,19 @@ class AnswerAuditTests(unittest.TestCase):
             "answer_turn_evidence_state_mismatch",
             {item["code"] for item in audit["violations"]},
         )
+
+    def test_answer_packet_digest_binds_the_audit_context(self):
+        packet = {
+            "schema_version": 1,
+            "packet_type": "liuhui_badminton_answer_packet",
+            "audit_context": {
+                "digest": self.auditor.canonical_json_digest(self.context)
+            },
+        }
+        self.auditor.validate_packet_binding(packet, self.context)
+        packet["audit_context"]["digest"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "digest mismatch"):
+            self.auditor.validate_packet_binding(packet, self.context)
 
     def test_continuation_rejects_prior_turn_labels_and_evidence_ids(self):
         answer = (

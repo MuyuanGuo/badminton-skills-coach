@@ -95,14 +95,16 @@ flowchart TD
 
 ### 问答编排
 
-每个问题只从一次 `prepare_answer_context.py` 结果开始回答，按以下顺序读取：
+每个问题只运行一次 `prepare_answer_context.py --answer-packet --audit-context context.json`。回答模型读取紧凑 `answer_packet`，完整上下文只用于最终审计和检索诊断；两者由 canonical JSON SHA-256 绑定。紧凑包删除检索评分、匹配词和重复策略文本，但不减少内部召回候选。
+
+按以下顺序读取：
 
 1. `question_interpretation`：确认正向意图、排除项、症状、事件链和拆分问题。
 2. `boundary`：先声明证据边界和适用条件。
-3. `answer_guidance`：决定文字和视频的分配方式。
-4. `feedback_guidance`：只把已确认反馈用于排序和重新规划，不把反馈当作教学事实。
-5. `selected_videos`：这是唯一可以引用的视频集合。
-6. `answer_contract`：按当前回答动态生成 `V1...Vn` 反馈提示。
+3. `answer_plan`：已评审范围只允许转述选中的证据原子；未覆盖范围保留 claim 级证据兼容模式，不得补入通用常识。
+4. `claim_evidence_map` 与 `completeness_contract`：限定逐结论引文、置信上限和不得遗漏的分支。
+5. `selected_videos`：这是唯一可以引用的视频集合，紧凑包只保留回答所需证据窗口。
+6. `feedback_prompt`：按当前回答动态生成 `V1...Vn` 反馈提示。
 
 这套边界专门防止“反手被动高远”召回正手内容、把发球问题交给后场击球视频，或把“杀球后来不及上网”降级成无关的泛网前步法。
 

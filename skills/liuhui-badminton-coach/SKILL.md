@@ -22,7 +22,7 @@ Resolve the Skill root as the directory containing this `SKILL.md`. Run bundled 
 For every new coaching question, run exactly one answer-context command first:
 
 ```bash
-python3 scripts/prepare_answer_context.py "用户的完整原问题"
+python3 scripts/prepare_answer_context.py "用户的完整原问题" --answer-packet --audit-context context.json > answer-packet.json
 ```
 
 This command performs intent preservation, boundary detection, topic navigation when needed, multi-query exhaustive recall, candidate merging, scenario-conflict filtering, finalist selection, stable `V1...Vn` labeling, and timestamped evidence lookup. Do not replace it with an unaudited top-k search.
@@ -30,28 +30,30 @@ This command performs intent preservation, boundary detection, topic navigation 
 If the next user turn answers a pending clarification, do not treat the short reply as a new question. Continue from the exact prior context with exactly one command:
 
 ```bash
-python3 scripts/prepare_answer_context.py "用户本轮完整回复" --continue-from context.json
+python3 scripts/prepare_answer_context.py "用户本轮完整回复" --continue-from context.json --answer-packet --audit-context next-context.json > answer-packet.json
 ```
 
 Natural free text is accepted only when exactly one question is pending and the reply contains a relevant answer cue. When multiple questions are pending, bind every supplied answer to its stable `question_id` in a JSON object and add `--clarification-answers answers.json`. It is valid to answer only some pending questions. Never guess a binding for an irrelevant, inconclusive, or ambiguous reply.
 
-Read `answer_turn_contract` after every turn. Use its `original_query` when auditing, acknowledge every `resolved_clarifications` answer in the response body, never repeat a question listed by `resolved_question_ids_must_not_be_reasked`, and ask every `pending_clarifications` item once with its stated `purpose` preserved in your reasoning. Its evidence digest binds the answer to the freshly generated `selected_videos` and `claim_evidence_map`. The top-level `query` is only the effective merged query used to rerun the full planner, retrieval, selection, and evidence mapping; it is not a replacement for the preserved original wording. Never reuse the prior turn's selected videos or claim mappings. Text clarification can narrow a branch or report an observation, but only the user's continuous action video can confirm a unique physical cause.
+Compose from `answer-packet.json`; keep `context.json` only as the authoritative final-audit input. The packet's `audit_context.digest` binds it to that full context. Read `answer_turn` after every turn: use `query.original` when auditing, acknowledge every resolved answer, never repeat a resolved question ID, and ask every pending clarification once with its purpose preserved. Never reuse a prior turn's videos, claims, packet, or context. Text clarification can narrow a branch or report an observation, but only the user's continuous action video can confirm a unique physical cause.
+
+The runtime applies `feedback_guidance` before producing the packet. `global_promoted_feedback` and `local_accepted_feedback` may affect ranking and presentation, but they are never teaching evidence and do not belong in the answer-facing token payload.
 
 Read the result in this order:
 
 1. `question_interpretation`: verify the positive intent, exclusions, literal symptoms, scenario, requested output, and split query units. Never silently answer a nearby question.
 2. `diagnostic_model`: distinguish reported symptoms, the user's hypotheses, source-supported mechanisms, and material scenario branches. A user hypothesis is never a confirmed cause. Without the user's continuous movement video, keep causes conditional or unverified.
 3. `clarification_decision`: `answer_now` directly; `answer_conditionally` gives the useful scoped answer now and asks only the returned focused `clarification_requests`; `ask_first` asks before choosing a materially different branch. Never ask more than its `question_limit`, preserve each returned `question_id` for the next turn, and use `purpose` to verify that the question is physically coherent and materially useful before asking it.
-4. `answer_turn_contract`: preserve every resolved clarification in the prose, ask every still-pending question, never re-ask a resolved `question_id`, and use only the evidence state generated for this turn.
+4. `answer_turn`: preserve every resolved clarification in the prose, ask every still-pending question, and never re-ask a resolved `question_id`.
 5. `boundary`: state its `required_statement` before coaching when present.
-6. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
-7. `completeness_contract`: substantively answer every `must_answer` item, keep every `conditional` branch conditional, and explicitly resolve or name every `unresolved` gap. Repeating an item or branch label is not coverage; each material branch needs its own conclusion, condition, or evidence boundary. Complete means no necessary branch is silently omitted, not a longer answer.
-8. `answer_guidance`: apply `text_primary`, `balanced`, or `video_primary` without treating text and video as alternatives.
-9. `feedback_guidance`: use `global_promoted_feedback` and accepted `local_accepted_feedback` only for ranking, presentation, re-planning, or source re-checks. Feedback is not teaching evidence.
-10. `selected_videos`: this is the global citation allowlist. Read each teaching note and query-matched transcript window, but cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
-11. `selection`, `answer_contract`, and `source_handling`: follow them literally. If `selection_truncated` is true and the question genuinely requires a complete survey, rerun with `--max-videos 40`; otherwise do not restore rejected candidates.
+6. `answer_plan`: in `reviewed_atoms_closed` mode, verbalize technical conclusions only from `selected_evidence_atoms`; preserve every atom condition and confidence ceiling. Unknown atom IDs and generic badminton knowledge are forbidden. In `claim_evidence_fallback` mode, use only the returned claim-scoped source evidence; this compatibility mode remains until that scope is reviewed into atoms.
+7. `claim_evidence_map`: this is the per-claim citation allowlist and confidence ceiling. A label allowed for one claim does not automatically support another claim.
+8. `completeness_contract`: cover every `must_answer` item, keep every `conditional` branch conditional, and explicitly name every `unresolved` gap. Complete means no necessary branch is silently omitted, not a longer answer.
+9. `answer_guidance`: apply its `text_primary`, `balanced`, or `video_primary` mode and compact obligations without treating text and video as alternatives.
+10. `selected_videos`: this is the global citation allowlist. Use only its compact `evidence_windows`, and cite a video for a claim only when `claim_evidence_map` also maps it to that claim.
+11. `feedback_prompt`: output it exactly at the end.
 
-For a diagnostic or other multi-claim answer, save the prepared context and final draft, then run `scripts/audit_answer.py` before sending it. A nonzero exit means the draft still violates the evidence, confidence, completeness, branch, boundary, or citation contract; revise and rerun until `passed` is true. The auditor is a deterministic safety gate, not proof that every possible semantic error has been found.
+For a diagnostic or other multi-claim answer, save the packet, full context, and final draft, then run `python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --packet answer-packet.json --answer answer.md` before sending it. A nonzero exit means the draft or packet binding violates the known contract; revise and rerun until `passed` is true. The auditor is a deterministic safety gate, not proof that every possible semantic error has been found.
 
 For retrieval diagnosis only, rerun with `--include-rejected`. The rejected list is audit data, not an alternate evidence pool. Use `scripts/search_knowledge.py --plan-only`, its `retrieval_guidance`, or manual manifest pagination only when debugging the orchestrator.
 
@@ -121,7 +123,7 @@ If the user wants public sharing, require a separately approved sanitized questi
 
 If personalization should be disabled, rerun the answer context with `--no-local-personalization`. Public promoted signals remain; local accepted signals are ignored.
 
-End every answer with the exact `answer_contract.feedback_prompt`, using only labels that exist in that answer. When both labels exist, it resembles: `反馈可直接回复：V1 最有价值；V2 不相关；第 2 点结论不对；回答漏了“……”；你理解错了，我真正问的是“……”。` Omit unavailable video clauses.
+End every answer with the exact packet `feedback_prompt`, using only labels that exist in that answer. When both labels exist, it resembles: `反馈可直接回复：V1 最有价值；V2 不相关；第 2 点结论不对；回答漏了“……”；你理解错了，我真正问的是“……”。` Omit unavailable video clauses.
 
 ## Resources
 
@@ -129,6 +131,7 @@ End every answer with the exact `answer_contract.feedback_prompt`, using only la
 - `references/retrieval-index.json` and `references/retrieval-rules.json`: ready-video high-recall index and terminology rules.
 - `references/answer-selection-rules.json`: deterministic boundary and finalist rules.
 - `references/diagnostic-answer-rules.json`: deterministic symptom, hypothesis, clarification, claim-evidence, and completeness rules.
+- `references/reviewed-evidence-atoms.json`: maintainer-reviewed verbalizable claims with scope, conditions, confidence ceilings, evidence IDs, and exact windows.
 - `references/reviewed-evidence-signals.json`: generated query-scoped ranking signals from the reviewed answer-quality registry; never an override for source or scenario conflicts.
 - `references/build-manifest.json`: corpus counts, latest ready video, rule versions, link integrity, and release-file hashes.
 - `references/answer-modality-rules.json`: text/video allocation.

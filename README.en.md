@@ -92,6 +92,8 @@ flowchart TD
 
 The runtime entry point is `skills/liuhui-badminton-coach/scripts/prepare_answer_context.py`. The repository also contains source processing, evaluation, installation, feedback, packaging, and reproducibility tooling.
 
+Normal answer generation uses `--answer-packet --audit-context context.json`. The model reads the compact packet while the complete context remains authoritative for final audit. A canonical JSON SHA-256 binds the two. The compact packet removes retrieval scores and repeated policy prose without reducing internal candidate recall; reviewed scopes use a closed evidence-atom composer contract.
+
 ## Development and verification
 
 Start contributions from `develop` and target pull requests back to `develop`. See [CONTRIBUTING.md](CONTRIBUTING.md) for data, privacy, test, and release rules.

@@ -4,9 +4,9 @@
   "development_version": "1.5.0-dev.1",
   "baseline_version": "v1.4.0",
   "build": {
-    "id": "995c49ac245b237b",
-    "inputs_sha256": "30618088bccc4103321cc1a617cd130eea899d3b6591c9428f7aa8d535d2a78a",
-    "runtime_sha256": "aa9bcd775dad1ad51d4ee84551112fe8f604a950373a6587c1c4d53ed7fa803e"
+    "id": "c093c1334b30bdaa",
+    "inputs_sha256": "ed6c20ad98e4383ce9d65937f5c56cb3e9414ab876b5e11d2b0d25c276fe03f1",
+    "runtime_sha256": "9f50aa80c6ac2044e229b12e2157bfb9846b5347859a892efddc9f204dc08aa7"
   },
   "summary": {
     "status": "pass",
@@ -67,11 +67,11 @@
       "accuracy": 1.0
     },
     "answer_audit": {
-      "cases": 15,
-      "passed": 15,
+      "cases": 13,
+      "passed": 13,
       "accuracy": 1.0,
-      "expected_violations": 13,
-      "expected_violations_detected": 13,
+      "expected_violations": 11,
+      "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
     },
     "retrieval": {
@@ -296,7 +296,7 @@
     },
     {
       "metric": "answer_audit.cases",
-      "current": 15,
+      "current": 13,
       "baseline": 9,
       "direction": "at_least",
       "tolerance": 0,

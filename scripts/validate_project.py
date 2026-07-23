@@ -58,6 +58,7 @@ json_paths = [
     "data/evaluation/answer_audit_cases.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/answer_packet_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
@@ -69,6 +70,7 @@ json_paths = [
     "data/evaluation/feedback_relevance_cases.json",
     "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
+    "data/evaluation/paired_blind_holdout.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -90,6 +92,7 @@ json_paths = [
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
+    "skills/liuhui-badminton-coach/references/reviewed-evidence-atoms.json",
     "skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]

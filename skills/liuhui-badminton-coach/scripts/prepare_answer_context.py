@@ -15,8 +15,11 @@ SELECTION_RULES_PATH = ROOT / "references" / "answer-selection-rules.json"
 RETRIEVAL_RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 REVIEWED_EVIDENCE_PATH = ROOT / "references" / "reviewed-evidence-signals.json"
 DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
+EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 1
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
+ANSWER_PACKET_SCHEMA_VERSION = 1
+ANSWER_PLAN_SCHEMA_VERSION = 1
 
 
 def load_sibling(name, filename):
@@ -55,6 +58,21 @@ def load_reviewed_evidence_signals():
 
 def load_diagnostic_rules():
     return json.loads(DIAGNOSTIC_RULES_PATH.read_text(encoding="utf-8"))
+
+
+def load_reviewed_evidence_atoms():
+    payload = json.loads(EVIDENCE_ATOMS_PATH.read_text(encoding="utf-8"))
+    if payload.get("schema_version") != 1:
+        raise ValueError("unsupported reviewed evidence atom schema_version")
+    atoms = payload.get("atoms")
+    if not isinstance(atoms, list):
+        raise ValueError("reviewed evidence atoms must be a list")
+    atom_ids = [atom.get("atom_id") for atom in atoms]
+    if any(not atom_id for atom_id in atom_ids) or len(atom_ids) != len(
+        set(atom_ids)
+    ):
+        raise ValueError("reviewed evidence atom IDs must be present and unique")
+    return atoms
 
 
 def canonical_json_digest(payload):
@@ -3164,6 +3182,25 @@ def claim_scope_directness(video, diagnostic_rules):
     return "partial"
 
 
+def has_requested_action_scope_support(video, query_constraints, diagnostic_rules):
+    requested_axes = [
+        axis
+        for axis in diagnostic_rules.get("claim_action_scope_axes", [])
+        if query_constraints.get(axis)
+    ]
+    if not requested_axes:
+        return True
+    supported_matches = set(
+        diagnostic_rules.get(
+            "claim_action_scope_support_matches", ["exact", "partial_support"]
+        )
+    )
+    return any(
+        video.get("constraint_match", {}).get(axis) in supported_matches
+        for axis in requested_axes
+    )
+
+
 def claim_evidence_entry(video, directness, reason):
     return {
         "label": video["label"],
@@ -3191,7 +3228,11 @@ def confidence_ceiling(evidence_entries, selected_by_label):
     return "low"
 
 
-def query_unit_evidence(video, strategy, diagnostic_rules):
+def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
+    if not has_requested_action_scope_support(
+        video, query_constraints, diagnostic_rules
+    ):
+        return None
     scope_directness = claim_scope_directness(video, diagnostic_rules)
     if scope_directness == "incompatible":
         return None
@@ -3223,10 +3264,18 @@ def query_unit_evidence(video, strategy, diagnostic_rules):
 
 
 def mechanism_evidence(
-    search_module, mechanism, selected_videos, diagnostic_rules
+    search_module,
+    mechanism,
+    selected_videos,
+    query_constraints,
+    diagnostic_rules,
 ):
     matched = []
     for video in selected_videos:
+        if not has_requested_action_scope_support(
+            video, query_constraints, diagnostic_rules
+        ):
+            continue
         evidence_text = selected_video_evidence_text(search_module, video)
         terms = [
             term
@@ -3346,6 +3395,7 @@ def build_diagnostic_contract(
                 evidence := query_unit_evidence(
                     video,
                     question_interpretation["strategy"],
+                    question_interpretation["constraints"],
                     diagnostic_rules,
                 )
             )
@@ -3380,7 +3430,11 @@ def build_diagnostic_contract(
         )
         evidence_entries = (
             mechanism_evidence(
-                search_module, mechanism, selected_videos, diagnostic_rules
+                search_module,
+                mechanism,
+                selected_videos,
+                question_interpretation["constraints"],
+                diagnostic_rules,
             )
             if mechanism
             else []
@@ -3426,7 +3480,11 @@ def build_diagnostic_contract(
         ):
             continue
         evidence_entries = mechanism_evidence(
-            search_module, mechanism, selected_videos, diagnostic_rules
+            search_module,
+            mechanism,
+            selected_videos,
+            question_interpretation["constraints"],
+            diagnostic_rules,
         )
         if not evidence_entries:
             continue
@@ -4149,6 +4207,9 @@ def prepare_answer_context(
         context, continuation
     )
     context["answer_turn_contract"] = build_answer_turn_contract(context)
+    context["answer_plan"] = build_closed_answer_plan(
+        context, load_reviewed_evidence_atoms()
+    )
     if include_rejected:
         context["rejected_candidates"] = [
             {
@@ -4180,6 +4241,229 @@ def prepare_answer_context(
     return context
 
 
+def atom_scope_matches(atom, constraints):
+    for axis, required_values in atom.get("scope", {}).items():
+        if not set(required_values).issubset(set(constraints.get(axis, []))):
+            return False
+    return True
+
+
+def atom_window_is_reviewed(atom, selected_video):
+    available = {
+        (item.get("timestamp"), item.get("text"))
+        for item in selected_video.get("teaching_note", {}).get("evidence", [])
+    }
+    return all(
+        (window.get("timestamp"), window.get("text")) in available
+        for window in atom.get("evidence_windows", [])
+    )
+
+
+def build_closed_answer_plan(context, atoms):
+    constraints = context["question_interpretation"].get("constraints", {})
+    selected_by_id = {
+        item["evidence_id"]: item for item in context.get("selected_videos", [])
+    }
+    selected_atoms = []
+    directives = []
+    for claim in context.get("claim_evidence_map", []):
+        eligible_ids = {item["evidence_id"] for item in claim.get("evidence", [])}
+        matches = []
+        for atom in atoms:
+            evidence_id = atom.get("evidence_id")
+            if (
+                atom.get("claim_kind") != claim.get("kind")
+                or atom.get("canonical_claim") != claim.get("text")
+                or evidence_id not in eligible_ids
+                or evidence_id not in selected_by_id
+                or not atom_scope_matches(atom, constraints)
+            ):
+                continue
+            if not atom_window_is_reviewed(atom, selected_by_id[evidence_id]):
+                raise ValueError(
+                    f"reviewed evidence atom {atom['atom_id']} has a stale evidence window"
+                )
+            planned_atom = dict(atom)
+            planned_atom["video_label"] = selected_by_id[evidence_id]["label"]
+            matches.append(planned_atom)
+            selected_atoms.append(planned_atom)
+        if matches:
+            mode = "compose_from_reviewed_atoms"
+        elif claim.get("status") in {"unsupported", "unverified"}:
+            mode = "state_evidence_gap"
+        else:
+            mode = "contract_only_no_new_technical_detail"
+        directives.append(
+            {
+                "claim_id": claim["claim_id"],
+                "status": claim["status"],
+                "mode": mode,
+                "atom_ids": [item["atom_id"] for item in matches],
+                "confidence_ceiling": claim["confidence_ceiling"],
+            }
+        )
+    selected_atoms.sort(key=lambda item: item["atom_id"])
+    if selected_atoms:
+        technical_claim_policy = "selected_reviewed_atoms_only"
+        planner_mode = "reviewed_atoms_closed"
+    else:
+        technical_claim_policy = "claim_scoped_source_evidence_only"
+        planner_mode = "claim_evidence_fallback"
+        for directive, claim in zip(directives, context["claim_evidence_map"]):
+            if claim.get("evidence"):
+                directive["mode"] = "compose_from_claim_scoped_source"
+    return {
+        "schema_version": ANSWER_PLAN_SCHEMA_VERSION,
+        "mode": planner_mode,
+        "selected_evidence_atoms": selected_atoms,
+        "claim_directives": directives,
+        "composer_contract": {
+            "technical_claim_policy": technical_claim_policy,
+            "allowed_atom_ids": [item["atom_id"] for item in selected_atoms],
+            "unknown_atom_ids_forbidden": True,
+            "uncovered_claim_policy": "state_the_evidence_gap_or_limit_the_answer_to_the_nontechnical_contract",
+            "generic_badminton_knowledge_as_source_forbidden": True,
+            "conditions_and_confidence_ceilings_must_be_preserved": True,
+        },
+    }
+
+
+def compact_interpretation(interpretation):
+    return {
+        key: interpretation[key]
+        for key in (
+            "intent_frame",
+            "constraints",
+            "actor_context",
+            "ambiguities",
+            "terminology_corrections",
+            "technique_definitions",
+            "query_units",
+            "clarification_policy",
+        )
+        if key in interpretation
+    }
+
+
+def compact_answer_guidance(guidance):
+    return {
+        key: guidance[key]
+        for key in (
+            "mode",
+            "label",
+            "text_obligations",
+            "video_obligations",
+            "global_obligations",
+        )
+        if key in guidance
+    }
+
+
+def compact_video(video, planned_atoms, include_fallback_windows):
+    windows = []
+    seen = set()
+    for atom in planned_atoms:
+        if atom["evidence_id"] != video["evidence_id"]:
+            continue
+        for window in atom.get("evidence_windows", []):
+            key = (window["timestamp"], window["text"])
+            if key not in seen:
+                windows.append(window)
+                seen.add(key)
+    if include_fallback_windows:
+        source_windows = list(
+            video.get("teaching_note", {}).get("evidence", [])
+        ) + list(video.get("transcript_evidence", []))
+        for source_window in source_windows:
+            timestamp = source_window.get("timestamp")
+            text = source_window.get("text")
+            key = (timestamp, text)
+            if timestamp and text and key not in seen:
+                windows.append({"timestamp": timestamp, "text": text})
+                seen.add(key)
+    return {
+        key: video.get(key)
+        for key in (
+            "label",
+            "role",
+            "video_id",
+            "evidence_id",
+            "source_type",
+            "parent_source_id",
+            "clip_start_seconds",
+            "clip_end_seconds",
+            "title",
+            "url",
+            "confidence",
+            "claim_scope_policy",
+            "additional_scope_requires_conditioning",
+        )
+    } | {"evidence_windows": windows}
+
+
+def build_answer_packet(context, audit_context_reference=None):
+    digest = canonical_json_digest(context)
+    plan = context["answer_plan"]
+    turn = context["answer_turn_contract"]
+    packet = {
+        "schema_version": ANSWER_PACKET_SCHEMA_VERSION,
+        "packet_type": "liuhui_badminton_answer_packet",
+        "audit_context": {
+            "digest_algorithm": "sha256_canonical_json",
+            "digest": digest,
+            "reference": (
+                str(audit_context_reference) if audit_context_reference else None
+            ),
+        },
+        "query": {
+            "original": turn["original_query"],
+            "effective": turn["effective_query"],
+            "turn_number": turn["turn_number"],
+        },
+        "question_interpretation": compact_interpretation(
+            context["question_interpretation"]
+        ),
+        "boundary": context["boundary"],
+        "diagnostic_model": context["diagnostic_model"],
+        "clarification_decision": context["clarification_decision"],
+        "answer_turn": {
+            "resolved_clarifications": turn["resolved_clarifications"],
+            "pending_clarifications": turn["pending_clarifications"],
+            "resolved_question_ids_must_not_be_reasked": turn[
+                "resolved_question_ids_must_not_be_reasked"
+            ],
+        },
+        "claim_evidence_map": context["claim_evidence_map"],
+        "completeness_contract": context["completeness_contract"],
+        "answer_plan": plan,
+        "answer_guidance": compact_answer_guidance(context["answer_guidance"]),
+        "selected_videos": [
+            compact_video(video, plan["selected_evidence_atoms"], False)
+            if plan["mode"] == "reviewed_atoms_closed"
+            else compact_video(video, [], True)
+            for video in context["selected_videos"]
+        ],
+        "feedback_prompt": context["answer_contract"]["feedback_prompt"],
+    }
+    return packet
+
+
+def validate_answer_packet(packet, context):
+    if packet.get("schema_version") != ANSWER_PACKET_SCHEMA_VERSION:
+        raise ValueError("unsupported answer_packet schema_version")
+    if packet.get("packet_type") != "liuhui_badminton_answer_packet":
+        raise ValueError("invalid answer_packet type")
+    expected_digest = canonical_json_digest(context)
+    if packet.get("audit_context", {}).get("digest") != expected_digest:
+        raise ValueError("answer_packet audit context digest mismatch")
+    expected = build_answer_packet(
+        context, packet.get("audit_context", {}).get("reference")
+    )
+    if packet != expected:
+        raise ValueError("answer_packet projection does not match audit context")
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Prepare evidence-ready context for one Liu Hui coaching answer."
@@ -4204,7 +4488,19 @@ def main():
         action="store_true",
         help="Include rejected finalist candidates and machine-readable reasons.",
     )
+    parser.add_argument(
+        "--answer-packet",
+        action="store_true",
+        help="Print the compact answer-facing packet instead of the audit context.",
+    )
+    parser.add_argument(
+        "--audit-context",
+        type=Path,
+        help="Write the complete authoritative context to this path.",
+    )
     args = parser.parse_args()
+    if args.answer_packet and not args.audit_context:
+        parser.error("--answer-packet requires --audit-context")
     try:
         previous_context = (
             json.loads(args.continue_from.read_text(encoding="utf-8"))
@@ -4228,7 +4524,17 @@ def main():
         )
     except (OSError, json.JSONDecodeError, ValueError) as error:
         raise SystemExit(str(error)) from error
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    if args.audit_context:
+        args.audit_context.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    output = (
+        build_answer_packet(payload, args.audit_context)
+        if args.answer_packet
+        else payload
+    )
+    print(json.dumps(output, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

@@ -51,6 +51,22 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
             hypotheses["击球点"]["eligible_video_labels"],
         )
 
+    def test_mechanism_claim_requires_requested_action_scope(self):
+        runtime = self.module.load_runtime()
+        context = runtime.prepare_answer_context(
+            "我正手高远总出界但反手正常，是不是拍面问题？",
+            local_personalization=False,
+        )
+        hypothesis = self.module.hypothesis_by_text(context)["拍面"]
+        self.assertEqual(hypothesis["status"], "unverified")
+        self.assertEqual(hypothesis["eligible_video_labels"], [])
+        claim_ids = {
+            item["evidence_id"]
+            for claim in context["claim_evidence_map"]
+            for item in claim["evidence"]
+        }
+        self.assertNotIn("7112628690395106560", claim_ids)
+
     def test_claim_maps_are_subsets_of_the_selected_allowlist(self):
         runtime = self.module.load_runtime()
         context = runtime.prepare_answer_context(
