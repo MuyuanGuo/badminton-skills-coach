@@ -95,6 +95,32 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_precomputed_evaluations_require_current_fingerprints(self):
+        committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
+        payload = {
+            "schema_version": self.module.EVALUATION_RESULTS_SCHEMA_VERSION,
+            "build": self.module.fingerprint_paths(),
+            "evaluations": committed,
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            path = Path(directory) / "evaluations.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            self.assertEqual(
+                self.module.load_evaluation_results(path),
+                committed,
+            )
+            payload["build"]["runtime_sha256"] = "0" * 64
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "current inputs and runtime"):
+                self.module.load_evaluation_results(path)
+
+    def test_build_report_does_not_recollect_precomputed_evaluations(self):
+        committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
+        with mock.patch.object(self.module, "collect_evaluations") as collect:
+            report = self.module.build_report(evaluations=committed)
+        collect.assert_not_called()
+        self.assertEqual(report["evaluations"], committed)
+
     def test_rendered_html_exposes_summary_and_hashes(self):
         report = {
             "development_version": "1.4.0-dev.1",

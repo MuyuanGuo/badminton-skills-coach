@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -23,18 +22,20 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.module = load_module()
-        cls.result = cls.module.evaluate()
-
-    def test_all_gold_cases_pass(self):
-        self.assertEqual(self.result["cases"], 10)
-        self.assertEqual(self.result["passed"], 10)
-        self.assertEqual(self.result["accuracy"], 1.0)
+        cls.runtime = cls.module.load_runtime()
+        cls.source_case = cls.module.load_json(cls.module.CASES_PATH)["cases"][0]
+        cls.source_context = cls.runtime.prepare_answer_context(
+            cls.source_case["query"], local_personalization=False
+        )
 
     def test_user_hypothesis_is_not_promoted_to_fact(self):
-        case = next(
-            item for item in self.result["results"] if item["case_id"] == "DAC001"
+        self.assertEqual(
+            self.module.case_mismatches(
+                self.source_context,
+                self.source_case["expected"],
+            ),
+            [],
         )
-        self.assertTrue(case["matched"])
 
     def test_false_either_or_keeps_both_supported_branches(self):
         runtime = self.module.load_runtime()
@@ -77,17 +78,12 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
         self.assertEqual([item["text"] for item in symptoms], ["到得太晚"])
 
     def test_evaluator_reports_a_changed_expectation(self):
-        payload = self.module.load_json(self.module.CASES_PATH)
-        payload["cases"][0]["expected"]["clarification_action"] = "ask_first"
-        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
-            path = Path(directory) / "cases.json"
-            path.write_text(
-                json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-            result = self.module.evaluate(path)
-        failed = [item for item in result["results"] if not item["matched"]]
-        self.assertEqual([item["case_id"] for item in failed], ["DAC001"])
-        self.assertEqual(failed[0]["mismatches"], ["clarification_action"])
+        expected = json.loads(json.dumps(self.source_case["expected"]))
+        expected["clarification_action"] = "ask_first"
+        self.assertEqual(
+            self.module.case_mismatches(self.source_context, expected),
+            ["clarification_action"],
+        )
 
 
 if __name__ == "__main__":

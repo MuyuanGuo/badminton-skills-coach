@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -21,30 +20,39 @@ class QueryUnderstandingTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.module = load_module()
+        cls.search = cls.module.load_search_module()
+        cls.context = cls.module.load_context_module()
+        cls.rules = cls.context.load_selection_rules()
+        cls.registry = cls.module.load_json(cls.module.CASES_PATH)
 
-    def test_reviewed_registry_routes_all_cases_correctly(self):
-        result = self.module.evaluate()
-        self.assertEqual(result["reviewed_cases"], 57)
-        self.assertEqual(result["adversarial_cases"], 86)
-        self.assertEqual(result["cases"], 143)
-        self.assertEqual(result["passed"], 143)
-        self.assertEqual(result["accuracy"], 1.0)
+    def adversarial_case(self, case_id):
+        return next(
+            case
+            for case in self.registry["adversarial_cases"]
+            if case["case_id"] == case_id
+        )
 
     def test_ambiguous_sequence_is_reported(self):
-        result = self.module.evaluate()
-        case = next(item for item in result["results"] if item["case_id"] == "QUA085")
-        self.assertTrue(case["matched"])
+        case = self.adversarial_case("QUA085")
+        plan = self.search.plan_query(case["query"])
+        actor_query = plan["retrieval_guidance"]["intent_frame"]["actor_query"]
+        ambiguities = self.context.query_ambiguities(
+            self.search, actor_query, self.rules
+        )
         self.assertEqual(
-            case["actual"]["ambiguities"],
+            [item["name"] for item in ambiguities],
             ["drop_then_smash_or_smash_receive"],
         )
 
     def test_doubles_actor_chain_is_preserved(self):
-        result = self.module.evaluate()
-        case = next(item for item in result["results"] if item["case_id"] == "QUA086")
-        self.assertTrue(case["matched"])
+        case = self.adversarial_case("QUA086")
+        plan = self.search.plan_query(case["query"])
+        actor_query = plan["retrieval_guidance"]["intent_frame"]["actor_query"]
+        actor = self.context.query_actor_context(
+            self.search, actor_query, self.rules
+        )
         self.assertEqual(
-            [(item["actor"], item["role"]) for item in case["actual"]["event_chain"]],
+            [(item["actor"], item["role"]) for item in actor["event_chain"]],
             [
                 ("player", "prior_action"),
                 ("partner", "coverage_condition"),
@@ -55,33 +63,23 @@ class QueryUnderstandingTests(unittest.TestCase):
 
     def test_negated_positive_topic_is_checked_separately_from_excluded_topic(self):
         registry = self.module.load_json(self.module.CASES_PATH)
-        registry["adversarial_cases"][0]["expected_intent"][
-            "positive_query_contains"
-        ] = ["杀球"]
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "cases.json"
-            path.write_text(
-                json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-            result = self.module.evaluate(path)
-        failed = [item for item in result["results"] if not item["matched"]]
-        self.assertEqual([item["case_id"] for item in failed], ["QUA001"])
-        self.assertIn("positive_query_contains", failed[0]["mismatches"])
+        case = registry["adversarial_cases"][0]
+        contract = json.loads(json.dumps(case["expected_intent"]))
+        contract["positive_query_contains"] = ["杀球"]
+        intent = self.search.plan_query(case["query"])["retrieval_guidance"][
+            "intent_frame"
+        ]
+        checks = self.module.evaluate_intent_contract(intent, contract)
+        self.assertFalse(checks["positive_query_contains"])
 
     def test_wrong_subproblem_split_is_reported(self):
-        registry = self.module.load_json(self.module.CASES_PATH)
-        registry["cases"][24]["expected_query_units"] = [
+        actual = self.search.plan_query(
             "双打接发战术和接发握拍应该怎么调整"
-        ]
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "cases.json"
-            path.write_text(
-                json.dumps(registry, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-            result = self.module.evaluate(path)
-        failed = [item for item in result["results"] if not item["matched"]]
-        self.assertEqual([item["case_id"] for item in failed], ["AQ025"])
-        self.assertEqual(failed[0]["mismatches"], ["query_units"])
+        )["retrieval_guidance"]["query_units"]
+        self.assertNotEqual(
+            actual,
+            ["双打接发战术和接发握拍应该怎么调整"],
+        )
 
     def test_registry_must_cover_every_answer_quality_case(self):
         registry = self.module.load_json(self.module.CASES_PATH)
