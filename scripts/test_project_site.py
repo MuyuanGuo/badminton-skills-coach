@@ -93,6 +93,14 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn("./evaluation/", chinese)
         self.assertIn("../evaluation/", english)
 
+    def test_reviewed_answer_has_accessible_evidence_tabs(self):
+        for page in [DOCS / "index.html", DOCS / "en" / "index.html"]:
+            content = page.read_text(encoding="utf-8")
+            self.assertEqual(content.count('data-evidence-tab="'), 2, page)
+            self.assertIn('role="tablist"', content, page)
+            self.assertIn('id="evidence-one" role="tabpanel"', content, page)
+            self.assertIn('id="evidence-two" role="tabpanel"', content, page)
+
 
 if __name__ == "__main__":
     unittest.main()
