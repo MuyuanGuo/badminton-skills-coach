@@ -1,7 +1,7 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "5ffc366f9f3276e61d8b9077c24cdbe269d1e4e3106177ea3e8e13fb6ea451e8",
+  "runtime_fingerprint": "0a653c542753460db6df6e4cf22376e6013149455e9a3fcab0ed8c7406a54aa1",
   "runtime_revalidation": {
     "tested_at": "2026-07-24",
     "validation_mode": "same_agent_structural_audit",

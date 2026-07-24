@@ -36,7 +36,7 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="release-line"><span>稳定版 v1.4.0</span><span>公开可安装</span></p>
+          <p class="release-line"><span>稳定版 v1.5.0</span><span>公开可安装</span></p>
           <h1><span>羽毛球</span><span>技能教练</span></h1>
           <p class="hero-thesis">每个具体建议，都应该经得起回看。</p>
           <p class="lede">面向 Codex 的中文羽毛球教练 Skill。它从 353 条教学视频中寻找答案，把动作建议连回原视频、准确时间码和适用场景。</p>
@@ -111,7 +111,7 @@
     <section class="section install-section" id="install">
       <div class="shell install-grid">
         <div class="install-copy">
-          <p class="eyebrow">安装 v1.4.0</p>
+          <p class="eyebrow">安装 v1.5.0</p>
           <h2>把证据教练装进 Codex。</h2>
           <p>安装器会先运行 doctor，再原子替换旧版本。完成后重新启动 Codex。</p>
           <dl class="requirements">
@@ -122,13 +122,13 @@
         </div>
         <div class="code-panel">
           <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制命令</button></div>
-          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/liuhui-badminton-coach-1.4.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.4.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/SHA256SUMS.txt \
+          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.5.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.4.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
           <div class="code-footer"><span>SHA-256 已发布</span><span>完成后重启 Codex</span></div>
         </div>

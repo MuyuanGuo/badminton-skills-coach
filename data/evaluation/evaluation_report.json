@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "1.5.0-dev.1",
-  "baseline_version": "v1.4.0",
+  "development_version": "1.5.0",
+  "baseline_version": "v1.5.0",
   "build": {
-    "id": "89ded40acc714231",
-    "inputs_sha256": "5851154d3373f925dc7dbff9868acc31d774b023a8b7e25ab649a6dcf8d381ce",
-    "runtime_sha256": "b2500dd329f1648f25434e21622a2e83e96b632c54612fd0cdb970cf3907acf3"
+    "id": "c06c9913945acbed",
+    "inputs_sha256": "3c40d9dd357760680ad1a1a70697f1e3361eb842115d6ceaadfed27fff96c722",
+    "runtime_sha256": "32b784f5d661bc735f43db4a5b5511d5ef940d8fe2c0f75dbe39df0ad3e0d2b8"
   },
   "summary": {
     "status": "pass",
@@ -281,7 +281,7 @@
     {
       "metric": "diagnostic_answer_contract.cases",
       "current": 14,
-      "baseline": 10,
+      "baseline": 14,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -297,7 +297,7 @@
     {
       "metric": "answer_audit.cases",
       "current": 13,
-      "baseline": 9,
+      "baseline": 13,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -353,7 +353,7 @@
     {
       "metric": "retrieval.mean_ndcg_at_k",
       "current": 0.8643728349002483,
-      "baseline": 0.8653850127849113,
+      "baseline": 0.8643728349002483,
       "direction": "at_least",
       "tolerance": 0.002,
       "passed": true
@@ -361,7 +361,7 @@
     {
       "metric": "retrieval.average_review_candidate_count",
       "current": 12.298245614035087,
-      "baseline": 12.24561403508772,
+      "baseline": 12.298245614035087,
       "direction": "at_most",
       "tolerance": 0.1,
       "passed": true
@@ -385,7 +385,7 @@
     {
       "metric": "video_comprehension.ready_videos",
       "current": 354,
-      "baseline": 353,
+      "baseline": 354,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -401,7 +401,7 @@
     {
       "metric": "video_comprehension.transcript_backed",
       "current": 335,
-      "baseline": 334,
+      "baseline": 335,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -433,7 +433,7 @@
     {
       "metric": "forward_tests.unseen_rounds",
       "current": 6,
-      "baseline": 3,
+      "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -441,7 +441,7 @@
     {
       "metric": "forward_tests.unseen_cases",
       "current": 24,
-      "baseline": 12,
+      "baseline": 24,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -449,7 +449,7 @@
     {
       "metric": "forward_tests.consecutive_passes",
       "current": 6,
-      "baseline": 3,
+      "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true

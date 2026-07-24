@@ -28,7 +28,7 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="release-line"><span>Stable v1.4.0</span><span>Ready to install</span></p>
+          <p class="release-line"><span>Stable v1.5.0</span><span>Ready to install</span></p>
           <h1><span>Badminton</span><span>Skills Coach</span></h1>
           <p class="hero-thesis">Every specific claim should survive a replay.</p>
           <p class="lede">A Codex Skill that searches 353 Chinese badminton teaching videos and connects each answer to the original video, exact timestamps, and scenario boundaries.</p>
@@ -73,14 +73,14 @@
 
     <section class="section install-section" id="install">
       <div class="shell install-grid">
-        <div class="install-copy"><p class="eyebrow">Install v1.4.0</p><h2>Put the evidence coach in Codex.</h2><p>The installer runs its own doctor check, then atomically replaces an older version. Restart Codex when it finishes.</p><dl class="requirements"><div><dt>Runtime</dt><dd>Python 3.10+</dd></div><div><dt>API key</dt><dd>Not required</dd></div><div><dt>Original media</dt><dd>Not distributed</dd></div></dl></div>
-        <div class="code-panel"><div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">Copy command</button></div><pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/liuhui-badminton-coach-1.4.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.4.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/SHA256SUMS.txt \
+        <div class="install-copy"><p class="eyebrow">Install v1.5.0</p><h2>Put the evidence coach in Codex.</h2><p>The installer runs its own doctor check, then atomically replaces an older version. Restart Codex when it finishes.</p><dl class="requirements"><div><dt>Runtime</dt><dd>Python 3.10+</dd></div><div><dt>API key</dt><dd>Not required</dd></div><div><dt>Original media</dt><dd>Not distributed</dd></div></dl></div>
+        <div class="code-panel"><div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">Copy command</button></div><pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.5.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.4.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre><div class="code-footer"><span>SHA-256 published</span><span>Restart Codex when done</span></div></div>
       </div>
     </section>
