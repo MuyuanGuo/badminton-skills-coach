@@ -1,13 +1,13 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "d3d04e22010beacff8fe4b8b0d0fe071d482795b1ae5d8aac68229caf9db5e0d",
+  "runtime_fingerprint": "248f82bfd5a55bca58a73dc7ff99aabf7eee625d23f977822f8cf7fc8401c997",
   "runtime_revalidation": {
     "tested_at": "2026-07-23",
     "validation_mode": "same_agent_structural_audit",
     "reviewer": "Codex current-task regression audit",
     "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
-    "notes": "AQ055 still resolves incoming forecourt shots to forward movement and retains all four required evidence IDs. AQ056 and AQ057 still resolve to kill-to-net, retain all four required evidence IDs, preserve the player-opponent event chain, and keep the singles/doubles and user-video diagnostic boundaries. The answer auditor now distinguishes substantive coverage from topic repetition: a required item needs a conclusion or evidence boundary, and each material branch needs separate treatment. Fifteen answer-audit gold cases pass, including failures for citation-complete topic echoes and branch-label-only answers. This additive final-answer gate does not change historical blind answers, query interpretation, retrieval, selection, or claim-evidence mappings."
+    "notes": "The current context runtime was rerun for all 3 historical critical prompts and all 24 unseen structural-audit prompts after splitting fixed Skill instructions from the fallback-only evidence scope guide. Every recorded evidence ID remained selected (27/27 cases, 0 missing). The 54 answer-context regressions, 17 portability/package/manifest tests, and compact-packet contract also pass. This same-task structural revalidation does not turn the historical answers into new blind generations and does not claim an independent answer-quality comparison."
   },
   "results": [
     {

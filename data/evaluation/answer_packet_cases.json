@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "maximum_skill_instruction_bytes": 12000,
   "minimum_average_byte_reduction": 0.5,
   "minimum_case_byte_reduction": 0.45,
   "cases": [

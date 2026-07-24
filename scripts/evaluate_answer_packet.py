@@ -16,6 +16,7 @@ RUNTIME_PATH = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+SKILL_PATH = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 
 
 def load_runtime():
@@ -38,6 +39,7 @@ def evaluate(cases_path=CASES_PATH):
     if registry.get("schema_version") != 1:
         raise ValueError("unsupported answer packet case schema_version")
     runtime = load_runtime()
+    skill_instruction_bytes = len(SKILL_PATH.read_bytes())
     results = []
     for case in registry["cases"]:
         context = runtime.prepare_answer_context(
@@ -63,13 +65,18 @@ def evaluate(cases_path=CASES_PATH):
     average = sum(item["byte_reduction"] for item in results) / len(results)
     minimum = min(item["byte_reduction"] for item in results)
     passed = (
-        average >= registry["minimum_average_byte_reduction"]
+        skill_instruction_bytes <= registry["maximum_skill_instruction_bytes"]
+        and average >= registry["minimum_average_byte_reduction"]
         and minimum >= registry["minimum_case_byte_reduction"]
     )
     return {
         "schema_version": 1,
         "cases": len(results),
         "passed": passed,
+        "skill_instruction_bytes": skill_instruction_bytes,
+        "maximum_skill_instruction_bytes": registry[
+            "maximum_skill_instruction_bytes"
+        ],
         "average_byte_reduction": round(average, 6),
         "minimum_byte_reduction": round(minimum, 6),
         "results": results,
