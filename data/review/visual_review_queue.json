@@ -1,7 +1,7 @@
 {
   "version": "visual-review-queue-v1",
   "source": "data/knowledge/douyin_knowledge_base.json",
-  "source_updated_at": "2026-07-22T00:07:06.843715+00:00",
+  "source_updated_at": "2026-07-24T04:38:09.993679+00:00",
   "topic_index": "data/knowledge/topic_index.json",
   "total_pending": 0,
   "status_counts": {

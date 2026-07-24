@@ -1,13 +1,13 @@
 {
   "version": 3,
   "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "248f82bfd5a55bca58a73dc7ff99aabf7eee625d23f977822f8cf7fc8401c997",
+  "runtime_fingerprint": "5ffc366f9f3276e61d8b9077c24cdbe269d1e4e3106177ea3e8e13fb6ea451e8",
   "runtime_revalidation": {
-    "tested_at": "2026-07-23",
+    "tested_at": "2026-07-24",
     "validation_mode": "same_agent_structural_audit",
     "reviewer": "Codex current-task regression audit",
     "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
-    "notes": "The current context runtime was rerun for all 3 historical critical prompts and all 24 unseen structural-audit prompts after splitting fixed Skill instructions from the fallback-only evidence scope guide. Every recorded evidence ID remained selected (27/27 cases, 0 missing). The 54 answer-context regressions, 17 portability/package/manifest tests, and compact-packet contract also pass. This same-task structural revalidation does not turn the historical answers into new blind generations and does not claim an independent answer-quality comparison."
+    "notes": "The current context runtime was rerun for all 3 historical critical prompts and all 24 unseen structural-audit prompts after adding the latest reviewed teaching video, correcting five clear automatic-transcript homophone errors, and rebuilding the Skill references. Every recorded evidence ID remained selected (27/27 cases, 0 missing); supplemental candidates did not displace the recorded evidence. The 342-unit-test suite, 57 answer-context cases, 57 retrieval cases, query-equivalence controls, and answer-audit gates pass with full recall and zero hard-negative violations. This same-task structural revalidation does not turn the historical answers into new blind generations and does not claim an independent answer-quality comparison."
   },
   "results": [
     {
