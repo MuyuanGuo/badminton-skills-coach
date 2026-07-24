@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "description": "Deterministic final-answer checks for evidence scope, diagnostic certainty, completeness, and citation integrity.",
+  "claim_match_threshold": 0.34,
+  "boundary_match_threshold": 0.45,
+  "resolved_clarification_match_threshold": 0.8,
+  "reasked_question_match_threshold": 0.9,
+  "required_clarification_match_threshold": 0.8,
+  "conditional_markers": [
+    "如果",
+    "若",
+    "可能",
+    "可以先排查",
+    "取决于",
+    "在.*情况下",
+    "需要确认",
+    "尚不能",
+    "暂时不能",
+    "无法确认",
+    "不能确认",
+    "未确认",
+    "没有证据"
+  ],
+  "uncertainty_markers": [
+    "可能",
+    "尚不能",
+    "暂时不能",
+    "无法确认",
+    "不能确认",
+    "未确认",
+    "不一定",
+    "不能说明",
+    "没有证据",
+    "仅凭文字"
+  ],
+  "hard_certainty_markers": [
+    "一定",
+    "肯定",
+    "必然",
+    "就是.*原因",
+    "唯一原因",
+    "根因就是",
+    "可以确定",
+    "已经确认",
+    "证明了"
+  ],
+  "universal_markers": [
+    "任何人",
+    "所有人",
+    "所有情况",
+    "无论.*都",
+    "任何时候",
+    "完全适用",
+    "普遍适用"
+  ],
+  "unique_cause_boundary_patterns": [
+    "仅凭文字.*(?:无法|不能|不足以).*确认",
+    "(?:无法|不能).*确认.*(?:唯一|具体|实际).*(?:原因|问题)",
+    "需要.*(?:连续)?动作视频.*确认",
+    "未观察.*动作.*(?:无法|不能).*归因"
+  ],
+  "clarification_markers": [
+    "请补充",
+    "请说明",
+    "需要确认",
+    "还要确认",
+    "请提供",
+    "能否提供",
+    "这是单打还是双打",
+    "？",
+    "?"
+  ],
+  "limited_scope_fragments": [
+    "component",
+    "specific_scope_only",
+    "not_full_question_proof",
+    "not_unrestricted"
+  ],
+  "claim_marker_pattern": "\\[(?P<claim_id>[QHMB][1-9]\\d*)\\]",
+  "video_label_pattern": "(?<![A-Za-z0-9])V(?P<number>[1-9]\\d*)(?![A-Za-z0-9])",
+  "evidence_id_pattern": "(?<!\\d)\\d{18,20}(?!\\d)",
+  "coverage_stop_phrases": [
+    "我",
+    "你",
+    "的",
+    "了",
+    "是",
+    "还是",
+    "是不是",
+    "怎么",
+    "怎样",
+    "应该",
+    "经常",
+    "问题",
+    "原因"
+  ]
+}

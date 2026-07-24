@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "description": "Maintainer-reviewed claim atoms that the answer composer may verbalize without inventing new technical detail.",
+  "atoms": [
+    {
+      "atom_id": "EA-KTN-TRANSITION-001",
+      "canonical_claim": "上一拍后的重心与衔接路线",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "smash_to_net_transition",
+      "scope": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "conditions": ["杀上网会带来由后向前的惯性", "线路选择必须结合该前冲状态"],
+      "verbalizable_claim": "杀上网本身会带来由后向前的惯性，衔接线路需要把这项惯性算进去。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7092959332047785250",
+      "evidence_windows": [
+        {
+          "timestamp": "01:18-01:31",
+          "text": "由于杀上网自身带了一个很强的从后向前的惯性一旦推球被抓 会直接陷入到对手的防守反击当中那么不同的陷入选择一定会产生不同的结果"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-KTN-SHOT-CHOICE-001",
+      "canonical_claim": "上一拍球路与留给衔接的时间",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "soft_pressure_then_follow",
+      "scope": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "conditions": ["位置不好时", "全力杀球会缩短下一拍准备时间"],
+      "verbalizable_claim": "位置不好时全力杀球会让球更快回来并使脚下脱节；软压可以在保持下压的同时给下一拍衔接留出时间。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7093706918492917033",
+      "evidence_windows": [
+        {
+          "timestamp": "00:52-01:00",
+          "text": "来 试试位置不好时全力杀球球过去的快回来也快 会让我们脚下脱节"
+        },
+        {
+          "timestamp": "01:01-01:07",
+          "text": "我们使用软压打跟进的方式可以让我们在保证下压的同时下一排更好行阶"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-NET-BLOCK-FACE-001",
+      "canonical_claim": "拍面",
+      "claim_kind": "user_hypothesis",
+      "actor": "player",
+      "action": "doubles_net_block",
+      "scope": {
+        "discipline": ["doubles"],
+        "shot_family": ["net_shot"]
+      },
+      "conditions": ["下手挡网", "拿点较低时需要调整手臂使拍面对准目标方向"],
+      "verbalizable_claim": "拍面方向可能影响挡网出球，但只能在触球高度和目标方向明确后作条件判断。",
+      "confidence_ceiling": "low",
+      "evidence_id": "7524557392328461627",
+      "evidence_windows": [
+        {
+          "timestamp": "01:08-01:15",
+          "text": "如果我拿得点高我会拿拍面对准这颗羽毛球进行挥动如果你拿得点低一些"
+        },
+        {
+          "timestamp": "01:15-01:23",
+          "text": "把手臂转一点把拍面对准参照物对着这个方向再去做挥动"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-NET-BLOCK-CONTACT-001",
+      "canonical_claim": "击球点",
+      "claim_kind": "user_hypothesis",
+      "actor": "player",
+      "action": "doubles_net_block",
+      "scope": {
+        "discipline": ["doubles"],
+        "shot_family": ["net_shot"]
+      },
+      "conditions": ["下手挡网", "拿点高低会改变拍面调整方式"],
+      "verbalizable_claim": "击球点高低会改变挡网时的拍面调整方式，因此它可能与冒高有关，但不是仅凭文字就能确认的唯一原因。",
+      "confidence_ceiling": "low",
+      "evidence_id": "7524557392328461627",
+      "evidence_windows": [
+        {
+          "timestamp": "01:08-01:15",
+          "text": "如果我拿得点高我会拿拍面对准这颗羽毛球进行挥动如果你拿得点低一些"
+        },
+        {
+          "timestamp": "01:15-01:23",
+          "text": "把手臂转一点把拍面对准参照物对着这个方向再去做挥动"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-NET-BLOCK-TRAJECTORY-001",
+      "canonical_claim": "出球弧线与过网最高点",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "doubles_net_block",
+      "scope": {
+        "discipline": ["doubles"],
+        "shot_family": ["net_shot"]
+      },
+      "conditions": ["挡网弧线控制", "需要观察整段飞行弧线"],
+      "verbalizable_claim": "挡网弧线的最高点应靠近球网上方；需要观察最高点位置才能判断是否出球过高。",
+      "confidence_ceiling": "low",
+      "evidence_id": "7524557392328461627",
+      "evidence_windows": [
+        {
+          "timestamp": "02:53-02:59",
+          "text": "这个是不是一个抛物线让这个抛物线的最高点在网袋上就完美了"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-PASSIVE-CLEAR-PREP-001",
+      "canonical_claim": "判断、启动与架拍时机",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "passive_rearcourt_clear",
+      "scope": {
+        "court_zone": ["rearcourt"],
+        "pressure_state": ["passive"],
+        "shot_family": ["clear"]
+      },
+      "conditions": ["进入被动后", "没有正常主动球的完整架拍时间"],
+      "verbalizable_claim": "进入后场被动后，应更早组织球拍位置；极度被动时不能照搬主动球的完整架拍。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7558912953539071292",
+      "evidence_windows": [
+        {
+          "timestamp": "00:27-00:40",
+          "text": "判断进入被动后，应让球拍先从下方偷到身后，再从后方向上击球。"
+        },
+        {
+          "timestamp": "01:54-02:03",
+          "text": "训练重点是更早击球；晚点问题不能靠加大动作补救。"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-PASSIVE-CLEAR-SWING-001",
+      "canonical_claim": "挥拍幅度与力量使用",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "passive_rearcourt_clear",
+      "scope": {
+        "court_zone": ["rearcourt"],
+        "pressure_state": ["passive"],
+        "shot_family": ["clear"]
+      },
+      "conditions": ["击球点后移", "被动程度增加"],
+      "verbalizable_claim": "越被动、击球点越靠后，越不能靠继续放大挥拍幅度解决；应把力量用在挥拍速度上。",
+      "confidence_ceiling": "low",
+      "evidence_id": "7153445193713290511",
+      "evidence_windows": [
+        {
+          "timestamp": "00:58-01:03",
+          "text": "我就应该挥到这里呀你这个挥拍应该随着你的被动和击球点的后移"
+        },
+        {
+          "timestamp": "01:09-01:12",
+          "text": "因为我更被动了我不能让我的挥拍变得动作更大"
+        }
+      ]
+    }
+  ]
+}

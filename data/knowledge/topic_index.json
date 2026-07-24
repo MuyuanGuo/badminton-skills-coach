@@ -4,19 +4,19 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-22T00:07:06.843715+00:00",
-  "video_count": 408,
-  "indexable_video_count": 353,
-  "assigned_video_count": 353,
+  "source_updated_at": "2026-07-24T04:38:09.993679+00:00",
+  "video_count": 409,
+  "indexable_video_count": 354,
+  "assigned_video_count": 354,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 93,
-  "multi_topic_video_count": 147,
+  "multi_topic_video_count": 148,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 102,
+      "video_count": 103,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -435,11 +435,12 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7093706918492917033",
+            "7665812689277115897",
             "7115241358255803683",
             "7306709804234444072",
             "7214304020775652620",
@@ -460,6 +461,22 @@
                 "title": 2,
                 "focus": 1,
                 "evidence": 1
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "7665812689277115897",
+              "title": "1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊",
+              "url": "https://www.douyin.com/video/7665812689277115897",
+              "category": "",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "1038 劈吊进阶 压腕加速",
+              "score": 15,
+              "match_basis": {
+                "title": 2,
+                "focus": 1,
+                "evidence": 0
               },
               "assignment_method": "rule_match"
             },
@@ -503,22 +520,6 @@
               "confidence": "visual_reviewed",
               "processing_status": "ready",
               "topic": "动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的",
-              "score": 9,
-              "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 0
-              },
-              "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "7520190707093654844",
-              "title": "吊球 最普通的东西都是最需要基本功的，大家以为会了的，其实可能只是能打而已",
-              "url": "https://www.douyin.com/video/7520190707093654844",
-              "category": "后场技术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "吊球 最普通的东西都是最需要基本功的",
               "score": 9,
               "match_basis": {
                 "title": 1,
@@ -2397,7 +2398,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 128,
+      "video_count": 129,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -2639,8 +2640,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 45,
-          "ready_count": 45,
+          "video_count": 46,
+          "ready_count": 46,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7052600326116887812",
@@ -2658,6 +2659,7 @@
             "7151961376448138531",
             "7146762792438074665",
             "7289635377009151247",
+            "7665812689277115897",
             "7522041413614816570",
             "7587362379455778097",
             "7075515778073709824",

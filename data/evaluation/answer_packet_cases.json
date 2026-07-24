@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "maximum_skill_instruction_bytes": 12000,
+  "minimum_average_byte_reduction": 0.5,
+  "minimum_case_byte_reduction": 0.45,
+  "cases": [
+    {
+      "case_id": "AP001",
+      "query": "我杀球后经常来不及上网，是不是步法太慢？"
+    },
+    {
+      "case_id": "AP002",
+      "query": "双打接杀挡网总冒高，是拍面还是击球点问题？"
+    },
+    {
+      "case_id": "AP003",
+      "query": "后场被动来不及架拍怎么把球打到底线"
+    }
+  ]
+}

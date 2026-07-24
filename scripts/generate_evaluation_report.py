@@ -10,8 +10,10 @@ import sys
 from pathlib import Path
 
 import evaluate_answer_context
+import evaluate_answer_audit
 import evaluate_answer_policy
 import evaluate_answer_quality
+import evaluate_diagnostic_answer_contract
 import evaluate_forward_test_results
 import evaluate_query_equivalence
 import evaluate_query_understanding
@@ -23,11 +25,26 @@ ROOT = Path(__file__).resolve().parents[1]
 BASELINE_PATH = ROOT / "data" / "evaluation" / "evaluation_baselines.json"
 REPORT_PATH = ROOT / "data" / "evaluation" / "evaluation_report.json"
 HTML_PATH = ROOT / "docs" / "evaluation" / "index.html"
+EVALUATION_RESULTS_SCHEMA_VERSION = 1
+EVALUATION_SUITES = {
+    "answer_policy",
+    "answer_context",
+    "answer_quality",
+    "query_equivalence",
+    "query_understanding",
+    "diagnostic_answer_contract",
+    "answer_audit",
+    "retrieval",
+    "video_comprehension",
+    "forward_tests",
+}
 CORE_EVALUATORS = (
     "build_douyin_knowledge.py",
+    "evaluate_answer_audit.py",
     "evaluate_answer_context.py",
     "evaluate_answer_policy.py",
     "evaluate_answer_quality.py",
+    "evaluate_diagnostic_answer_contract.py",
     "evaluate_forward_test_results.py",
     "evaluate_query_equivalence.py",
     "evaluate_query_understanding.py",
@@ -35,13 +52,18 @@ CORE_EVALUATORS = (
     "evaluate_video_comprehension.py",
 )
 EVALUATION_INPUTS = (
+    "config/answer_audit_rules.json",
     "config/answer_quality_rules.json",
+    "config/diagnostic_answer_rules.json",
     "config/feedback_rules.json",
     "config/knowledge_quality_rules.json",
+    "data/evaluation/answer_audit_cases.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/diagnostic_answer_cases.json",
+    "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/query_equivalence_cases.json",
@@ -147,12 +169,20 @@ def collect_evaluations(root=ROOT):
             root / "data/evaluation/query_understanding_cases.json"
         ),
         forward_fingerprint,
+        evaluate_forward_test_results.load_json(
+            root / "data/evaluation/diagnostic_answer_cases.json"
+        ),
+        evaluate_forward_test_results.load_json(
+            root / "data/evaluation/diagnostic_answer_continuation_cases.json"
+        ),
     )
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
     equivalence = evaluate_query_equivalence.evaluate()
     understanding = evaluate_query_understanding.evaluate()
+    diagnostic = evaluate_diagnostic_answer_contract.evaluate()
+    answer_audit = evaluate_answer_audit.evaluate()
     retrieval = evaluate_retrieval.evaluate(12)
     comprehension = evaluate_video_comprehension.evaluate(
         run_retrieval_roundtrip=True,
@@ -213,6 +243,21 @@ def collect_evaluations(root=ROOT):
                 "adversarial_cases",
                 "passed",
                 "accuracy",
+            )
+        },
+        "diagnostic_answer_contract": {
+            key: diagnostic[key]
+            for key in ("cases", "passed", "accuracy")
+        },
+        "answer_audit": {
+            key: answer_audit[key]
+            for key in (
+                "cases",
+                "passed",
+                "accuracy",
+                "expected_violations",
+                "expected_violations_detected",
+                "violation_detection_rate",
             )
         },
         "retrieval": {
@@ -296,14 +341,27 @@ def compare_baseline(evaluations, baseline):
     return comparisons
 
 
-def build_report(root=ROOT):
+def load_evaluation_results(path, root=ROOT):
+    payload = load_json(path)
+    if payload.get("schema_version") != EVALUATION_RESULTS_SCHEMA_VERSION:
+        raise ValueError("evaluation results schema version is unsupported")
+    expected_fingerprints = fingerprint_paths(root)
+    if payload.get("build") != expected_fingerprints:
+        raise ValueError("evaluation results do not match the current inputs and runtime")
+    evaluations = payload.get("evaluations")
+    if not isinstance(evaluations, dict) or set(evaluations) != EVALUATION_SUITES:
+        raise ValueError("evaluation results do not contain the required suites")
+    return evaluations
+
+
+def build_report(root=ROOT, evaluations=None):
     root = Path(root)
     versions = load_json(root / "config/feedback_rules.json")
     baselines = load_json(root / "data/evaluation/evaluation_baselines.json")
     stable_version = versions["stable_version"]
     baseline_key = f"v{stable_version}"
     baseline = baselines["baselines"][baseline_key]
-    evaluations = collect_evaluations(root)
+    evaluations = evaluations if evaluations is not None else collect_evaluations(root)
     comparisons = compare_baseline(evaluations, baseline)
     regressions = [item for item in comparisons if not item["passed"]]
     fingerprints = fingerprint_paths(root)
@@ -355,6 +413,8 @@ def render_html(report):
         "answer_quality": "Answer snapshots",
         "query_equivalence": "Query equivalence",
         "query_understanding": "Query understanding",
+        "diagnostic_answer_contract": "Diagnostic answer contract",
+        "answer_audit": "Final-answer audit",
         "retrieval": "Evidence retrieval",
         "video_comprehension": "Video comprehension",
         "forward_tests": "Forward tests",
@@ -365,6 +425,8 @@ def render_html(report):
         "answer_quality": ("automatic_pass_rate", "Snapshot pass rate"),
         "query_equivalence": ("passed_families", "Families passed"),
         "query_understanding": ("accuracy", "Intent accuracy"),
+        "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
+        "answer_audit": ("violation_detection_rate", "Violation detection"),
         "retrieval": ("mean_ndcg_at_k", "nDCG@12"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
@@ -445,9 +507,17 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--write", action="store_true", help="Update committed reports.")
     mode.add_argument("--check", action="store_true", help="Fail when reports are stale.")
+    parser.add_argument(
+        "--evaluations",
+        type=Path,
+        help="Read precomputed evaluator results instead of running evaluators.",
+    )
     args = parser.parse_args()
 
-    report = build_report()
+    evaluations = (
+        load_evaluation_results(args.evaluations) if args.evaluations else None
+    )
+    report = build_report(evaluations=evaluations)
     report_content = json_bytes(report)
     html_content = render_html(report)
     if args.write:

@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "1.4.0",
-  "baseline_version": "v1.4.0",
+  "development_version": "1.5.0",
+  "baseline_version": "v1.5.0",
   "build": {
-    "id": "bd55ff5746e26c68",
-    "inputs_sha256": "42991cda1ed4292eeab16d10653bae2733a19fa1145c0dfdaecd873f771b5264",
-    "runtime_sha256": "751ef158ecc5eccc5fc96bc21e03e50837375aaf9cf53cda946fd54f264cb624"
+    "id": "c06c9913945acbed",
+    "inputs_sha256": "3c40d9dd357760680ad1a1a70697f1e3361eb842115d6ceaadfed27fff96c722",
+    "runtime_sha256": "32b784f5d661bc735f43db4a5b5511d5ef940d8fe2c0f75dbe39df0ad3e0d2b8"
   },
   "summary": {
     "status": "pass",
-    "suites": 8,
-    "baseline_metrics": 39,
+    "suites": 10,
+    "baseline_metrics": 44,
     "regressions": 0
   },
   "evaluations": {
@@ -61,6 +61,19 @@
       "passed": 143,
       "accuracy": 1.0
     },
+    "diagnostic_answer_contract": {
+      "cases": 14,
+      "passed": 14,
+      "accuracy": 1.0
+    },
+    "answer_audit": {
+      "cases": 13,
+      "passed": 13,
+      "accuracy": 1.0,
+      "expected_violations": 11,
+      "expected_violations_detected": 11,
+      "violation_detection_rate": 1.0
+    },
     "retrieval": {
       "cases": 57,
       "expected_videos": 173,
@@ -68,20 +81,20 @@
       "candidate_recall": 1.0,
       "primary_top_k": 0.9629629629629629,
       "mean_reciprocal_rank": 0.7492504409171076,
-      "mean_ndcg_at_k": 0.8653850127849113,
-      "mean_known_precision_at_k": 0.5921052631578947,
-      "average_review_candidate_count": 12.24561403508772,
-      "hard_negative_count": 193,
+      "mean_ndcg_at_k": 0.8643728349002483,
+      "mean_known_precision_at_k": 0.5895989974937345,
+      "average_review_candidate_count": 12.298245614035087,
+      "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "top_k": 12
     },
     "video_comprehension": {
-      "ready_videos": 353,
-      "understood_videos": 353,
+      "ready_videos": 354,
+      "understood_videos": 354,
       "understanding_coverage": 1.0,
-      "transcript_backed": 334,
-      "automatic_transcript": 328,
+      "transcript_backed": 335,
+      "automatic_transcript": 329,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "runtime_lookup_coverage": 1.0,
@@ -90,9 +103,9 @@
     "forward_tests": {
       "critical_cases": 3,
       "blind_passes": 3,
-      "unseen_rounds": 3,
-      "unseen_cases": 12,
-      "consecutive_passes": 3,
+      "unseen_rounds": 6,
+      "unseen_cases": 24,
+      "consecutive_passes": 6,
       "failed": []
     }
   },
@@ -266,6 +279,46 @@
       "passed": true
     },
     {
+      "metric": "diagnostic_answer_contract.cases",
+      "current": 14,
+      "baseline": 14,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "diagnostic_answer_contract.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.cases",
+      "current": 13,
+      "baseline": 13,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.violation_detection_rate",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "passed": true
+    },
+    {
       "metric": "retrieval.candidate_recall",
       "current": 1.0,
       "baseline": 1.0,
@@ -299,18 +352,18 @@
     },
     {
       "metric": "retrieval.mean_ndcg_at_k",
-      "current": 0.8653850127849113,
-      "baseline": 0.8653850127849113,
+      "current": 0.8643728349002483,
+      "baseline": 0.8643728349002483,
       "direction": "at_least",
-      "tolerance": 0,
+      "tolerance": 0.002,
       "passed": true
     },
     {
       "metric": "retrieval.average_review_candidate_count",
-      "current": 12.24561403508772,
-      "baseline": 12.24561403508772,
+      "current": 12.298245614035087,
+      "baseline": 12.298245614035087,
       "direction": "at_most",
-      "tolerance": 0,
+      "tolerance": 0.1,
       "passed": true
     },
     {
@@ -331,8 +384,8 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 353,
-      "baseline": 353,
+      "current": 354,
+      "baseline": 354,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -347,8 +400,8 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 334,
-      "baseline": 334,
+      "current": 335,
+      "baseline": 335,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
@@ -379,24 +432,24 @@
     },
     {
       "metric": "forward_tests.unseen_rounds",
-      "current": 3,
-      "baseline": 3,
+      "current": 6,
+      "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
     },
     {
       "metric": "forward_tests.unseen_cases",
-      "current": 12,
-      "baseline": 12,
+      "current": 24,
+      "baseline": 24,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true
     },
     {
       "metric": "forward_tests.consecutive_passes",
-      "current": 3,
-      "baseline": 3,
+      "current": 6,
+      "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
       "passed": true

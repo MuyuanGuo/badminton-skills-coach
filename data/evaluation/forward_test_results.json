@@ -1,7 +1,14 @@
 {
   "version": 3,
-  "description": "Auditable critical-answer forward tests plus three consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
-  "runtime_fingerprint": "a25e31fd2e4a15e879c5299f4b3835a2b8f363f73d67d0d8a2136cad9aec370c",
+  "description": "Auditable critical-answer forward tests plus six consecutive unseen-prompt structural audit rounds against the current packaged Skill runtime.",
+  "runtime_fingerprint": "0a653c542753460db6df6e4cf22376e6013149455e9a3fcab0ed8c7406a54aa1",
+  "runtime_revalidation": {
+    "tested_at": "2026-07-24",
+    "validation_mode": "same_agent_structural_audit",
+    "reviewer": "Codex current-task regression audit",
+    "independence_disclosure": "The three historical critical answers remain blind fresh-task artifacts. This runtime revalidation checked their current interpretation, required evidence selection, claim mapping, and boundaries in the same task; it is not a new blind or independent answer generation.",
+    "notes": "The current context runtime was rerun for all 3 historical critical prompts and all 24 unseen structural-audit prompts after adding the latest reviewed teaching video, correcting five clear automatic-transcript homophone errors, and rebuilding the Skill references. Every recorded evidence ID remained selected (27/27 cases, 0 missing); supplemental candidates did not displace the recorded evidence. The 342-unit-test suite, 57 answer-context cases, 57 retrieval cases, query-equivalence controls, and answer-audit gates pass with full recall and zero hard-negative violations. This same-task structural revalidation does not turn the historical answers into new blind generations and does not claim an independent answer-quality comparison."
+  },
   "results": [
     {
       "case_id": "AQ055",
@@ -457,6 +464,180 @@
             }
           ],
           "review_notes": "答案先明确仅演示并承诺以后教学的片段不能单独证明完整手法，再只从当前直接教学段落提炼锁腕、向上削击和避免额外手指手腕发力；不把单个片段宣称为完整课程，也保留正反手和前场范围。"
+        }
+      ]
+    },
+    {
+      "round_id": "I4",
+      "sequence": 4,
+      "tested_at": "2026-07-22",
+      "validation_mode": "same_agent_structural_audit",
+      "reviewer": "Codex same-task diagnostic structural audit",
+      "independence_disclosure": "These four prompts were absent from the answer-quality, query-understanding, and diagnostic gold registries when tested. They were generated and reviewed by the same agent, so this is a structural forward audit rather than independent human or subagent validation.",
+      "verdict": "pass",
+      "cases": [
+        {
+          "case_id": "I4-01",
+          "query": "双打接杀挡网总下网，是拍面朝向还是触球高度的问题？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "保留双打接杀挡网和下网症状，将拍面朝向与触球高度拆成两个候选原因，而不是强制二选一。",
+          "selected_evidence": [
+            {"evidence_id": "7524557392328461627", "relevance": "直接讨论下手挡网的拍面对准、拿点高低和弧线控制。"}
+          ],
+          "review_notes": "两个候选原因都只作为条件机制；答案必须用同一来源给出拍面与击球点的观察方法，并明确文字不能确认用户的唯一原因。"
+        },
+        {
+          "case_id": "I4-02",
+          "query": "我杀球后脚下脱节，是第一拍杀太重还是落地重心不对？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "将脚下脱节识别为杀球后的连续衔接症状，并把第一拍选择与落地重心保留为待验证分支。",
+          "selected_evidence": [
+            {"evidence_id": "7093706918492917033", "relevance": "直接支持位置不好时全力杀导致回球过快和脚下脱节，以及软压争取衔接时间。"}
+          ],
+          "review_notes": "来源能直接支持第一拍球速与衔接时间机制，但不能观察用户落地重心；答案应先给有证据的球路排查，再请求连续动作视频确认身体原因。"
+        },
+        {
+          "case_id": "I4-03",
+          "query": "反手被动高远总不到位，是架拍晚还是挥拍太大？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "锁定反手、被动和高远范围，保留架拍时机与挥拍幅度两个诊断分支。",
+          "selected_evidence": [
+            {"evidence_id": "7546109410041908538", "relevance": "直接支持反手被动高远的低框架、击球点与准备位置。"},
+            {"evidence_id": "7293716793221205283", "relevance": "支持被动击球点变化时动作和大臂幅度随之变化。"}
+          ],
+          "review_notes": "答案不能把主动前点动作或更大幅度当成统一修复；必须按被动击球点和可用时间解释，并把用户实际问题保持为未确认。"
+        },
+        {
+          "case_id": "I4-04",
+          "query": "跳杀落地后连续进攻总断，是起跳落点、身体重心还是步法衔接的问题？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "识别跳杀后的连续进攻中断，并把起跳落点、身体重心和步法衔接完整拆为三个用户假设。",
+          "selected_evidence": [
+            {"evidence_id": "7561558424342056250", "relevance": "直接覆盖女性跳杀及连续进攻示范，但不足以诊断用户个人中断原因。"}
+          ],
+          "review_notes": "三项原因均保持未验证；答案可给视频观察重点，但必须明确知识库没有足够直接证据确认哪一项造成用户问题。"
+        }
+      ]
+    },
+    {
+      "round_id": "I5",
+      "sequence": 5,
+      "tested_at": "2026-07-22",
+      "validation_mode": "same_agent_structural_audit",
+      "reviewer": "Codex same-task diagnostic structural audit",
+      "independence_disclosure": "These four prompts were absent from all maintained question registries when tested. The same agent reviewed them after implementing the contract, so the audit checks generalization and scope behavior but is not independent blind validation.",
+      "verdict": "pass",
+      "cases": [
+        {
+          "case_id": "I5-01",
+          "query": "正手后场被动时挥拍越大越好吗？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "锁定正手、后场和被动状态，将问题识别为挥拍幅度与力量使用判断。",
+          "selected_evidence": [
+            {"evidence_id": "7153445193713290511", "relevance": "直接说明被动状态不能继续加大挥拍，应把力量用于挥拍速度并随击球点调整结束位置。"}
+          ],
+          "review_notes": "能够直接否定越大越好的泛化前提，并给出被动程度和击球点改变时的条件，不借用反手来源证明正手完整动作。"
+        },
+        {
+          "case_id": "I5-02",
+          "query": "杀上网在单打和混双能不能用同一套跑法？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "同时保留单打和混双条件以及杀上网命名序列，要求比较而非给出无条件通用跑法。",
+          "selected_evidence": [
+            {"evidence_id": "7065157571816000809", "relevance": "支持只考虑向前衔接时的交叉步，但明确不是所有方向覆盖的通则。"},
+            {"evidence_id": "7087759120761228578", "relevance": "直接支持混双女选手杀上网后由男搭档覆盖后场的条件。"}
+          ],
+          "review_notes": "答案必须分开无其他覆盖任务的交叉步与混双搭档覆盖，不能把混双轮转概括为单打规则。"
+        },
+        {
+          "case_id": "I5-03",
+          "query": "反手高远出界时，先检查击球点还是只减力？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "保持反手高远和出界症状，将击球点检查作为有证据分支，把只减力保留为未被来源证明的替代方案。",
+          "selected_evidence": [
+            {"evidence_id": "7296314453379910947", "relevance": "直接支持击球点变化会改变身体姿态和动作幅度。"},
+            {"evidence_id": "7075515778073709824", "relevance": "支持反手被动击球点与动作选择的对应关系。"}
+          ],
+          "review_notes": "检索中的挡斜线出界视频未进入该问题的逐条证据映射；答案不得用它诊断反手高远，也不得把减力当成唯一修复。"
+        },
+        {
+          "case_id": "I5-04",
+          "query": "双打接发推球老出界，动作要缩小还是改握拍？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "锁定双打、接发、网前推球和出界症状，要求比较动作幅度与握拍调整。",
+          "selected_evidence": [
+            {"evidence_id": "7131178146023427328", "relevance": "直接支持接发推球动作缩小及其对后续搓勾威胁的影响。"}
+          ],
+          "review_notes": "现有直接证据支持动作缩小，不足以证明用户必须改握拍；答案应明确这一证据差异并避免补写无来源的握拍诊断。"
+        }
+      ]
+    },
+    {
+      "round_id": "I6",
+      "sequence": 6,
+      "tested_at": "2026-07-22",
+      "validation_mode": "same_agent_structural_audit",
+      "reviewer": "Codex same-task diagnostic structural audit",
+      "independence_disclosure": "These four prompts were new to all maintained registries at execution time and stress-tested negation, incoming-shot inference, event chains, and multi-cause evidence. They were reviewed by the implementing agent and are not independent human validation.",
+      "verdict": "pass",
+      "cases": [
+        {
+          "case_id": "I6-01",
+          "query": "对手吊短我到得太晚，是启动慢还是最后一步太大？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "将吊短识别为对手来球条件，把真正目标恢复为向前启动和上网步法，并保留启动与最后落步两个用户假设。",
+          "selected_evidence": [
+            {"evidence_id": "7353467942706695458", "relevance": "直接支持不同距离下并步、垫步与蹬跨步的连续组合。"},
+            {"evidence_id": "7406541084219821312", "relevance": "支持正手网前不同距离的第一步和收步调整。"},
+            {"evidence_id": "7642648621985030138", "relevance": "支持启动快、最后一步按实际落点调整的节奏。"},
+            {"evidence_id": "7099644893269839144", "relevance": "支持较远位置向前移动时加入垫步以减少碎步和惯性。"}
+          ],
+          "review_notes": "四条来源均已分配到问题或向前距离机制；答案可给排查顺序，但不得仅凭文字确认是启动还是最后一步造成。"
+        },
+        {
+          "case_id": "I6-02",
+          "query": "杀球后对方挡网，我总跟不上，应该改杀球选择还是只练速度？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "保留球员杀球、对手挡网和球员跟不上三步事件链，目标仍是杀上网而不是泛步法速度。",
+          "selected_evidence": [
+            {"evidence_id": "7065157571816000809", "relevance": "支持只考虑向前衔接时的交叉步。"},
+            {"evidence_id": "7093706918492917033", "relevance": "直接支持全力杀造成脚下脱节以及软压争取下一拍时间。"},
+            {"evidence_id": "7092959332047785250", "relevance": "支持杀上网的前冲惯性和中路第二拍处理边界。"},
+            {"evidence_id": "7087759120761228578", "relevance": "补充混双搭档覆盖后场时的杀上网条件。"}
+          ],
+          "review_notes": "答案需优先解释第一拍选择与衔接路线，不能把只练速度当成已证实结论；混双来源必须保留搭档覆盖条件。"
+        },
+        {
+          "case_id": "I6-03",
+          "query": "我的接杀挡网不会冒高，却老是过不了网，是不是出手太轻？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "正确排除被否定的冒高症状，保留过不了网的实际失败，并把出手太轻记录为未验证用户假设。",
+          "selected_evidence": [
+            {"evidence_id": "7524557392328461627", "relevance": "直接支持挡网的拍面对准、拿点高低、精细送拍与过网弧线。"}
+          ],
+          "review_notes": "答案不能把不会冒高反向写成冒高，也不能直接确认力量太小；应使用来源给出拍面、拿点和最高点的观察检查。"
+        },
+        {
+          "case_id": "I6-04",
+          "query": "双打接杀挡网总冒高，拍面方向和击球高度要怎么一起检查？",
+          "verdict": "pass",
+          "reviewed_dimensions": ["question_interpretation", "evidence_selection", "answer_boundaries", "actionability"],
+          "question_interpretation_summary": "锁定双打接杀挡网冒高，要求同时解释拍面方向、击球高度和弧线，而不是遗漏其中一项。",
+          "selected_evidence": [
+            {"evidence_id": "7524557392328461627", "relevance": "同一直接来源同时覆盖高低拿点下的拍面对准和最高点位于网带附近的弧线目标。"}
+          ],
+          "review_notes": "逐条证据映射同时覆盖拍面与弧线机制；答案仍应将其作为排查条件，并要求用户动作视频确认个人原因。"
         }
       ]
     }

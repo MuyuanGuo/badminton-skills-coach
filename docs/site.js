@@ -12,3 +12,26 @@ document.querySelectorAll("[data-copy-target]").forEach((button) => {
     }
   });
 });
+
+document.querySelectorAll("[data-evidence-tab]").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    const tablist = tab.closest("[role='tablist']");
+    if (!tablist) return;
+    tablist.querySelectorAll("[data-evidence-tab]").forEach((candidate) => {
+      const selected = candidate === tab;
+      candidate.setAttribute("aria-selected", String(selected));
+      const panel = document.getElementById(candidate.dataset.evidenceTab);
+      if (panel) panel.hidden = !selected;
+    });
+  });
+
+  tab.addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    const tabs = [...tab.closest("[role='tablist']").querySelectorAll("[data-evidence-tab]")];
+    const offset = event.key === "ArrowRight" ? 1 : -1;
+    const next = tabs[(tabs.indexOf(tab) + offset + tabs.length) % tabs.length];
+    event.preventDefault();
+    next.focus();
+    next.click();
+  });
+});

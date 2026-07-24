@@ -15,6 +15,7 @@ from project_artifacts import (
     skill_reference_mismatches,
     validate_evidence_records,
 )
+from run_ci_tests import test_groups
 from update_readme_status import (
     update_agent_metadata_text,
     update_readme_text,
@@ -27,21 +28,20 @@ ROOT = Path(__file__).resolve().parents[1]
 workflow_text = (ROOT / ".github" / "workflows" / "validate.yml").read_text(
     encoding="utf-8"
 )
-for test_path in sorted((ROOT / "scripts").glob("test_*.py")):
-    relative_test_path = str(test_path.relative_to(ROOT))
-    if f"python {relative_test_path}" not in workflow_text:
-        raise SystemExit(f"Regression test is not executed by CI: {relative_test_path}")
-for compiled_helper in [
-    "scripts/media_assets.py",
-    "scripts/project_artifacts.py",
-    "scripts/package_skill_release.py",
-]:
-    if compiled_helper not in workflow_text:
-        raise SystemExit(f"Core helper is not compiled by CI: {compiled_helper}")
+for group in test_groups():
+    if f"python scripts/run_ci_tests.py {group}" not in workflow_text:
+        raise SystemExit(f"CI does not execute the {group} test group")
+compile_command = (
+    "python -m compileall -q scripts skills/liuhui-badminton-coach/scripts"
+)
+if compile_command not in workflow_text:
+    raise SystemExit("CI does not compile all Python source directories")
 
 json_paths = [
+    "config/answer_audit_rules.json",
     "config/answer_modality_rules.json",
     "config/answer_selection_rules.json",
+    "config/diagnostic_answer_rules.json",
     "config/answer_quality_rules.json",
     "config/douyin_classification_rules.json",
     "config/douyin_source.json",
@@ -55,17 +55,22 @@ json_paths = [
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
     "data/douyin_video_index.json",
+    "data/evaluation/answer_audit_cases.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
+    "data/evaluation/answer_packet_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/diagnostic_answer_cases.json",
+    "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
     "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
+    "data/evaluation/paired_blind_holdout.json",
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -76,8 +81,10 @@ json_paths = [
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
+    "skills/liuhui-badminton-coach/references/answer-audit-rules.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
+    "skills/liuhui-badminton-coach/references/diagnostic-answer-rules.json",
     "skills/liuhui-badminton-coach/references/build-manifest.json",
     "skills/liuhui-badminton-coach/references/practice-plan-rules.json",
     "skills/liuhui-badminton-coach/references/feedback-rules.json",
@@ -85,6 +92,7 @@ json_paths = [
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
+    "skills/liuhui-badminton-coach/references/reviewed-evidence-atoms.json",
     "skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json",
     "skills/liuhui-badminton-coach/references/topic-map.json",
 ]
@@ -109,6 +117,11 @@ for runtime_file in [
     / "liuhui-badminton-coach"
     / "scripts"
     / "prepare_answer_context.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "audit_answer.py",
 ]:
     if not runtime_file.exists():
         raise SystemExit(f"Runtime setup file is missing: {runtime_file.relative_to(ROOT)}")

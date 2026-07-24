@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Badminton Skills Coach｜证据驱动的羽毛球教练 Skill</title>
+  <title>Badminton Skills Coach｜可核对证据的羽毛球教练 Skill</title>
   <meta name="description" content="把刘辉羽毛球公开教学视频变成可检索、可引用、可回归验证的 Codex Skill，提供视频、时间戳与证据边界。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Badminton Skills Coach">
@@ -20,166 +20,139 @@
   <header class="site-header">
     <div class="shell nav-wrap">
       <a class="brand" href="#top" aria-label="Badminton Skills Coach 首页">
-        <span class="brand-mark" aria-hidden="true">B</span>
+        <span class="brand-mark" aria-hidden="true">BSC</span>
         <span><strong>Badminton Skills Coach</strong><small>Evidence before advice</small></span>
       </a>
       <nav aria-label="主要导航">
-        <a href="#example">回答示例</a>
-        <a href="#pipeline">工作方式</a>
+        <a href="#method">证据流程</a>
         <a href="#install">安装</a>
-        <a href="#quality">质量基线</a>
         <a href="./evaluation/">评估报告</a>
-        <a class="language-link" href="./en/" lang="en">EN</a>
+        <a class="language-link" href="./en/" lang="en">English</a>
       </nav>
     </div>
   </header>
 
   <main id="main">
     <section class="hero" id="top">
-      <div class="court-lines" aria-hidden="true"></div>
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="status-dot"></span> 稳定版 v1.4.0 · 公开可安装</p>
-          <h1>不只给建议，<br><em>还告诉你证据在哪里。</em></h1>
-          <p class="lede">面向 Codex 的羽毛球教练 Skill。它把公开视频整理成可检索、可引用、可回归验证的训练建议，并为关键结论提供视频、时间戳和适用边界。</p>
+          <p class="release-line"><span>稳定版 v1.5.0</span><span>公开可安装</span></p>
+          <h1><span>羽毛球</span><span>技能教练</span></h1>
+          <p class="hero-thesis">每个具体建议，都应该经得起回看。</p>
+          <p class="lede">面向 Codex 的中文羽毛球教练 Skill。它从 353 条教学视频中寻找答案，把动作建议连回原视频、准确时间码和适用场景。</p>
           <div class="hero-actions">
-            <a class="button primary" href="#install">安装最新版</a>
-            <a class="button secondary" href="#example">先看一次回答</a>
-          </div>
-          <p class="microcopy">Python 3.10+ · 无需 API Key · 不包含原始媒体</p>
-        </div>
-        <div class="hero-visual">
-          <img src="./assets/social-preview.jpg" width="1280" height="640" alt="Badminton Skills Coach 分享图：球场、羽毛球与球拍">
-          <div class="floating-card evidence-card">
-            <span>证据窗口</span>
-            <strong>00:27–00:40</strong>
-            <small>从下方到身后的引拍路线</small>
-          </div>
-          <div class="floating-card boundary-card">
-            <span>场景边界</span>
-            <strong>正手 ≠ 反手</strong>
+            <a class="button primary" href="#install">安装稳定版</a>
+            <a class="text-link" href="./evaluation/">查看评估结果 <span aria-hidden="true">→</span></a>
           </div>
         </div>
+
+        <article class="review-desk" aria-labelledby="review-title">
+          <div class="desk-bar">
+            <span>审核回答 / AQ001</span>
+            <span class="verified">已核对</span>
+          </div>
+          <div class="review-body">
+            <p class="question-label">球员问题</p>
+            <h2 id="review-title">后场被动来不及架拍，怎么把球打到底线？</h2>
+            <p class="answer-summary">不要强求主动球的大架拍。拍子更早从身体下方让到身后；击球点越低、越靠后，准备与挥拍幅度越要缩短。</p>
+            <div class="evidence-stage">
+              <div class="video-frame" aria-hidden="true">
+                <img src="./assets/social-preview.jpg" width="1280" height="640" alt="">
+                <span class="frame-code">V1 · 7558912953539071292</span>
+              </div>
+              <div class="timeline" aria-label="视频证据时间轴">
+                <div class="timeline-track" aria-hidden="true"><span></span></div>
+                <div class="time-tabs" role="tablist" aria-label="选择证据片段">
+                  <button type="button" role="tab" aria-selected="true" aria-controls="evidence-one" id="time-one" data-evidence-tab="evidence-one"><strong>00:27–00:40</strong><span>引拍路线</span></button>
+                  <button type="button" role="tab" aria-selected="false" aria-controls="evidence-two" id="time-two" data-evidence-tab="evidence-two"><strong>01:54–02:03</strong><span>提前击球</span></button>
+                </div>
+              </div>
+              <div class="evidence-note" id="evidence-one" role="tabpanel" aria-labelledby="time-one">
+                <span>证据 01</span><p>被动过渡时，球拍从身体下方更早让到身后，保留短促加速空间。</p>
+              </div>
+              <div class="evidence-note" id="evidence-two" role="tabpanel" aria-labelledby="time-two" hidden>
+                <span>证据 02</span><p>来球继续压深时，把接触点前移；不要用更大的动作补偿更晚的击球。</p>
+              </div>
+            </div>
+          </div>
+          <footer class="desk-footer">
+            <span>场景：正手头顶 · 后场 · 被动</span>
+            <a href="https://www.douyin.com/video/7558912953539071292" rel="noopener noreferrer">打开来源视频 <span aria-hidden="true">↗</span></a>
+          </footer>
+        </article>
       </div>
     </section>
 
-    <section class="metrics" aria-label="项目规模">
-      <div class="shell metric-grid">
-        <div><strong>353</strong><span>条可用教学视频</span></div>
-        <div><strong>334</strong><span>条转写证据</span></div>
-        <div><strong>57/57</strong><span>维护者审核回答</span></div>
-        <div><strong>0</strong><span>当前硬负例误选</span></div>
+    <section class="metrics" aria-label="项目质量基线">
+      <div class="shell metric-row">
+        <p><strong>353</strong><span>条可用教学视频</span></p>
+        <p><strong>334</strong><span>条转写证据</span></p>
+        <p><strong>57 / 57</strong><span>维护者审核回答</span></p>
+        <p><strong>0</strong><span>当前硬负例误选</span></p>
       </div>
     </section>
 
-    <section class="section" id="example">
-      <div class="shell">
-        <div class="section-heading">
-          <p class="eyebrow">REVIEWED ANSWER</p>
-          <h2>一次回答，四层可核对</h2>
-          <p>下面是审核用例 AQ001 的精简展示。完整评测保存原问题、回答、视频映射、必答点与禁用结论。</p>
+    <section class="section method-section" id="method">
+      <div class="shell split-heading">
+        <div>
+          <p class="eyebrow">从视频到回答</p>
+          <h2>先约束检索，<br>再组织建议。</h2>
         </div>
-        <div class="question-card">
-          <span class="card-label">用户问题</span>
-          <p>后场被动来不及架拍，怎么把球打到底线？</p>
-        </div>
-        <div class="answer-grid">
-          <article class="answer-card accent-mint">
-            <span class="step">01</span>
-            <h3>先判断边界</h3>
-            <p>真正被动时，不强求主动球的大架拍和完整侧身；正手头顶与反手需要分开处理。</p>
-          </article>
-          <article class="answer-card accent-yellow">
-            <span class="step">02</span>
-            <h3>再给动作线索</h3>
-            <p>拍子更早从身体下方让到身后。击球点越低、越靠后，准备和挥拍幅度也要缩短。</p>
-          </article>
-          <article class="answer-card accent-white">
-            <span class="step">03</span>
-            <h3>转成训练任务</h3>
-            <p>从无球转换开始，再逐渐增加喂球深度；每球只检查判断、框架和缩短后的拍速。</p>
-          </article>
-          <article class="answer-card video-proof">
-            <span class="step">04</span>
-            <h3>指出证据位置</h3>
-            <p><strong>00:27–00:40</strong> 看从下方到身后的路线；<strong>01:54–02:03</strong> 看提前击球。</p>
-            <a href="https://www.douyin.com/video/7558912953539071292" rel="noopener noreferrer">打开来源视频 ↗</a>
-          </article>
-        </div>
+        <p>系统不会只凭关键词挑一条“看起来相关”的视频。场区、正反手、单双打、主动被动和角色关系都参与筛选，确认过的错误会进入回归测试。</p>
       </div>
-    </section>
-
-    <section class="section pipeline-section" id="pipeline">
-      <div class="shell">
-        <div class="section-heading compact">
-          <p class="eyebrow">FROM VIDEO TO ANSWER</p>
-          <h2>先建立证据，再生成答案</h2>
-        </div>
-        <ol class="pipeline">
-          <li><span>01</span><strong>发现与分类</strong><p>增量观察公开视频，区分教学、广告与非教学内容。</p></li>
-          <li><span>02</span><strong>转写与复核</strong><p>优先使用可定位转写；语音不可靠时使用人工视觉摘要。</p></li>
-          <li><span>03</span><strong>索引与边界</strong><p>建立主题、场区、角色、主动被动和动作关系。</p></li>
-          <li><span>04</span><strong>召回与冲突过滤</strong><p>广泛找候选，再排除相邻动作、错误场景和硬负例。</p></li>
-          <li><span>05</span><strong>回答与反馈</strong><p>输出可审计引用；确认后的错误进入回归评测。</p></li>
-        </ol>
+      <div class="shell process-table" role="list" aria-label="证据处理流程">
+        <article role="listitem"><span class="process-index">01</span><h3>发现与分类</h3><p>持续收集公开视频，分开教学、广告和非教学内容。</p><small>PUBLIC VIDEO</small></article>
+        <article role="listitem"><span class="process-index">02</span><h3>转写与复核</h3><p>优先保留可定位转写；语音不可靠时使用人工视觉摘要。</p><small>LOCATABLE NOTES</small></article>
+        <article role="listitem"><span class="process-index">03</span><h3>场景过滤</h3><p>广泛召回候选，再排除相邻动作、错误场景与硬负例。</p><small>BOUNDARY CHECK</small></article>
+        <article role="listitem"><span class="process-index">04</span><h3>回答与回归</h3><p>输出视频和时间码；核证后的反馈变成长期测试。</p><small>CITABLE ANSWER</small></article>
       </div>
     </section>
 
     <section class="section install-section" id="install">
       <div class="shell install-grid">
-        <div>
-          <p class="eyebrow">QUICK START</p>
-          <h2>安装稳定版</h2>
+        <div class="install-copy">
+          <p class="eyebrow">安装 v1.5.0</p>
+          <h2>把证据教练装进 Codex。</h2>
           <p>安装器会先运行 doctor，再原子替换旧版本。完成后重新启动 Codex。</p>
-          <ul class="check-list">
-            <li>Python 3.10 或更新版本</li>
-            <li>无需 OpenAI API Key</li>
-            <li>无需安装转写依赖</li>
-          </ul>
+          <dl class="requirements">
+            <div><dt>运行环境</dt><dd>Python 3.10+</dd></div>
+            <div><dt>API Key</dt><dd>不需要</dd></div>
+            <div><dt>原始媒体</dt><dd>不随包分发</dd></div>
+          </dl>
         </div>
         <div class="code-panel">
-          <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制</button></div>
-          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/liuhui-badminton-coach-1.4.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.4.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/SHA256SUMS.txt \
+          <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制命令</button></div>
+          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.5.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.4.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
-          <div class="code-footer">随后运行 doctor 并重新启动 Codex</div>
+          <div class="code-footer"><span>SHA-256 已发布</span><span>完成后重启 Codex</span></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="quality">
-      <div class="shell">
-        <div class="section-heading">
-          <p class="eyebrow">QUALITY CONTRACT</p>
-          <h2>数字有边界，答案也应该有</h2>
-          <p>这些指标描述当前语料和回归集，不表示所有自然语言问题都已经被人工测试。<a href="./evaluation/">查看完整的版本化评估报告</a>。</p>
-        </div>
-        <div class="quality-grid">
-          <article><span class="quality-icon">A</span><h3>来源忠实</h3><p>具体技术结论必须落到教学笔记或带时间戳的证据窗口。</p></article>
-          <article><span class="quality-icon">B</span><h3>场景不串线</h3><p>正反手、前后场、单双打、主动被动和角色关系分别约束。</p></article>
-          <article><span class="quality-icon">C</span><h3>反馈不当事实</h3><p>反馈先经人工核证，再用于排序、回归和通用机制修复。</p></article>
-          <article><span class="quality-icon">D</span><h3>发布可验证</h3><p>正式包提供 SHA-256、CycloneDX SBOM 与 GitHub 构建证明。</p></article>
+    <section class="section quality-section" id="quality">
+      <div class="shell quality-layout">
+        <div class="quality-title"><p class="eyebrow">质量边界</p><h2>知道什么，<br>也说明不知道什么。</h2></div>
+        <div class="quality-list">
+          <article><span>01</span><div><h3>结论必须落到来源</h3><p>具体技术判断需要教学笔记或带时间码的证据窗口。</p></div></article>
+          <article><span>02</span><div><h3>相邻动作不互相替代</h3><p>正反手、前后场、单双打与主动被动分别约束。</p></div></article>
+          <article><span>03</span><div><h3>反馈先核证再生效</h3><p>用户反馈不会直接变成事实，确认后才进入排序与回归。</p></div></article>
+          <article><span>04</span><div><h3>发布物可以独立验证</h3><p>稳定版包含 SHA-256、CycloneDX SBOM 与构建证明。</p></div></article>
         </div>
       </div>
-    </section>
-
-    <section class="final-cta">
-      <div class="shell final-card">
-        <div><p class="eyebrow">READY TO TRY</p><h2>带着一个真实问题开始。</h2><p>描述水平、单双打、来球、场区、当前处理和具体症状，剩下的交给证据系统。</p></div>
-        <div class="final-actions"><a class="button primary" href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">下载最新版</a><a class="button secondary" href="https://github.com/MuyuanGuo/badminton-skills-coach">查看源码</a></div>
-      </div>
+      <div class="shell evaluation-link"><p>当前数字描述已审核语料与回归集，不代表每种自然语言问题都经过人工测试。</p><a href="./evaluation/">查看完整评估报告 <span aria-hidden="true">→</span></a></div>
     </section>
   </main>
 
-  <footer>
+  <footer class="site-footer">
     <div class="shell footer-grid">
       <div><strong>Badminton Skills Coach</strong><p>独立的证据型知识工程项目，不代表刘辉本人或其背书。</p></div>
-      <div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/NOTICE">内容边界</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.md">安全策略</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/discussions">Discussions</a></div>
+      <div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">下载最新版</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach">GitHub</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/NOTICE">内容边界</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.md">安全策略</a></div>
     </div>
   </footer>
   <script src="./site.js"></script>

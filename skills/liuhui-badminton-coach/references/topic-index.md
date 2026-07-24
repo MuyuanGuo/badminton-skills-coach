@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `408`
-- Assigned videos: `353`
-- Multi-topic videos: `147`
+- Videos: `409`
+- Assigned videos: `354`
+- Multi-topic videos: `148`
 
 ## How To Use
 
@@ -20,7 +20,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `102`
+- Matched videos: `103`
 
 - **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
@@ -40,12 +40,12 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
   - 被动高远 别说这样容易抡大臂，不这样偷出来时间抢架拍位置也是个输，真被动就没时间侧身，没时间架拍，没空间做正常架拍了，所以大家总说职业选手不架拍，其实架了，只不过没做那么主动的架拍罢了 [ready] https://www.douyin.com/video/7558912953539071292
   - 架拍的选择 在两个极端架拍的中间位置，就是最普通的架拍！没有绝对的对错，符合场景，符合自己的情况就是对！ [ready] https://www.douyin.com/video/7658231159860261361
-- **吊球与劈吊**: `6` videos, `6` ready, `0` needs visual review.
+- **吊球与劈吊**: `7` videos, `7` ready, `0` needs visual review.
   Keywords: 吊球, 劈吊, 滑板, 软压
   Representative videos:
   - 软压还包括点杀，远网吊球等等 [ready] https://www.douyin.com/video/7093706918492917033
+  - 1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊 [ready] https://www.douyin.com/video/7665812689277115897
   - 吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反 [ready] https://www.douyin.com/video/7115241358255803683
-  - 这样削球是最稳定的劈吊 [ready] https://www.douyin.com/video/7306709804234444072
 - **正反手过渡**: `4` videos, `4` ready, `0` needs visual review.
   Keywords: 过渡球, 过度球, 过渡动作, 正手过渡, 反手过渡, 正反手过渡, 过渡击球点, 过渡基础
   Representative videos:
@@ -188,7 +188,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `128`
+- Matched videos: `129`
 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -202,7 +202,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready] https://www.douyin.com/video/7494729488699559225
   - 爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调 [ready] https://www.douyin.com/video/7492357671853526329
   - 学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率 [ready] https://www.douyin.com/video/7057722299855801641
-- **小臂旋转与手腕**: `45` videos, `45` ready, `0` needs visual review.
+- **小臂旋转与手腕**: `46` videos, `46` ready, `0` needs visual review.
   Keywords: 内旋, 外旋, 小臂旋转, 手腕
   Representative videos:
   - 00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋 [ready] https://www.douyin.com/video/7052600326116887812

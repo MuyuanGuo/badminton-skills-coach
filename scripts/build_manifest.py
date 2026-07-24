@@ -73,13 +73,16 @@ def skill_artifacts():
 
 def rule_artifacts():
     paths = [
+        "config/answer_audit_rules.json",
         "config/answer_modality_rules.json",
         "config/answer_selection_rules.json",
+        "config/diagnostic_answer_rules.json",
         "config/douyin_classification_rules.json",
         "config/feedback_rules.json",
         "config/knowledge_quality_rules.json",
         "config/practice_plan_rules.json",
         "config/retrieval_rules.json",
+        "config/reviewed_evidence_atoms.json",
         "config/reviewed_evidence_signals.json",
     ]
     rules = []

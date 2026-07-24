@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "description": "Maintained multi-turn cases for clarification binding, diagnosis closure, and evidence replanning.",
+  "cases": [
+    {
+      "case_id": "DAC-MT001",
+      "original_query": "我杀球后经常来不及上网，是不是步法太慢？",
+      "reply": "双打，落地后停在原地，上一拍是重杀直线",
+      "answers": {
+        "clarify.branch.discipline": "双打",
+        "clarify.mechanism.movement_transition": "落地后重心停在原地",
+        "clarify.mechanism.shot_choice_and_recovery_time": "上一拍是重杀，走直线"
+      },
+      "gold_answer": "**直接回答**\n你已经补充：这是双打；落地后重心停在原地；上一拍是重杀，走直线。\n[Q1] 对于“我杀球后经常来不及上网，是不是步法太慢？”，当前知识库没有同时符合“双打、重杀直线、杀上网”的可靠直接证据，因此本轮不能引用视频作答，也不能把旧轮的斜线或中路杀上网来源拿来证明直线重杀。\n[H1] “步法太慢”目前仍无法确认。仅凭文字无法确认唯一原因，需要包含杀球、落地和第一步衔接的连续动作视频才能归因。\n**置信边界**\n你的补充是已记录的自述，不是已经通过画面验证的动作事实；当前能确定的是证据缺口，而不是具体原因。\n反馈可直接回复：第 2 点结论不对；回答漏了‘……’；你理解错了，我真正问的是‘……’。",
+      "expected": {
+        "query_units": ["我杀球后经常来不及上网，是不是步法太慢？"],
+        "constraints": {"discipline": ["doubles"], "shot_direction": ["straight"]},
+        "hypotheses_contains": ["步法太慢"],
+        "branch_axes_excludes": ["discipline"],
+        "resolved_question_ids": [
+          "clarify.branch.discipline",
+          "clarify.mechanism.movement_transition",
+          "clarify.mechanism.shot_choice_and_recovery_time"
+        ],
+        "pending_question_ids": [],
+        "effective_query_excludes": ["单打还是双打", "重杀、轻杀还是软压"],
+        "required_selected_evidence_ids": [],
+        "forbidden_selected_evidence_ids": [
+          "7065157571816000809",
+          "7087759120761228578",
+          "7092959332047785250",
+          "7093706918492917033"
+        ],
+        "allow_empty_evidence": true,
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT002",
+      "original_query": "后场被动来不及架拍怎么把球打到底线",
+      "reply": "发生在反手侧",
+      "answers": {"clarify.branch.stroke_side": "反手侧"},
+      "gold_answer": "**直接回答**\n你已经补充：发生在反手侧。\n[Q1] 对“后场被动来不及架拍怎么把球打到底线”，如果确认是反手侧，可以先检查两点：反手被动时架拍位置要随较低、较后的击球点降低；同时应先具备主动反手高远的基本发力，再处理被动球。[V1]\n[M1] “判断、启动与架拍时机”仍只能作为排查分支：如果意识到来球时球拍还在身体前方，就可能是准备过程占掉了挥拍时间。[V1]\n仅凭文字无法确认唯一原因。\n请继续补充：你意识到来球时，球拍还在身体前方、已经到身后，还是已经开始向前挥？这会缩小证据支持的排查范围。\n**核心视频与观看重点**\nV1｜证据 ID：7546109410041908538。重点看 01:02-01:10 架拍和击球位置如何契合，以及反手被动高远的前置基础。\nhttps://www.douyin.com/video/7546109410041908538\n反馈可直接回复：V1 最有价值；V5 不相关；第 2 点结论不对；回答漏了‘……’；你理解错了，我真正问的是‘……’。",
+      "expected": {
+        "query_units": ["后场被动来不及架拍怎么把球打到底线"],
+        "constraints": {
+          "stroke_side": ["backhand"],
+          "shot_family": ["clear"],
+          "pressure_state": ["passive"]
+        },
+        "branch_axes_excludes": ["stroke_side"],
+        "resolved_question_ids": ["clarify.branch.stroke_side"],
+        "pending_question_ids": [
+          "clarify.mechanism.preparation_timing"
+        ],
+        "required_selected_evidence_ids": [
+          "7546109410041908538",
+          "7109288333884329231"
+        ],
+        "forbidden_selected_evidence_ids": [
+          "7215787369381858599",
+          "7560064232592493882"
+        ],
+        "allow_empty_evidence": false,
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT003",
+      "original_query": "我杀球后对手挡网，我总来不及上网，是不是第一拍杀太重？",
+      "reply": "双打，杀球落地后重心停在原地",
+      "answers": {
+        "clarify.branch.discipline": "双打",
+        "clarify.mechanism.movement_transition": "杀球落地后重心停在原地"
+      },
+      "gold_answer": "**直接回答**\n你已经补充：这是双打，杀球落地后重心停在原地。\n[Q1] 对“我杀球后对手挡网，我总来不及上网，是不是第一拍杀太重？”，如果是来源展示的斜线或中路杀上网场景，杀完后人可以直接向前走，并在对手击球前完成前取位。[V1]\n[H1] “第一拍杀太重”可能影响衔接时间，但目前不能确认它就是你的具体原因；来源没有证明所有重杀都会导致来不及上网。[V1]\n[M1] 你报告的“上一拍后的重心与衔接路线”是落地后停在原地，这可能与来源展示的杀后直接向前不同，可以作为优先核对分支，但自述不能替代动作观察。[V1]\n**置信边界**\n仅凭文字无法确认唯一原因，需要包含杀球、落地、对手挡网和第一步的连续动作视频才能归因。\n**核心视频与观看重点**\nV1｜证据 ID：7087759120761228578。重点看 00:54-01:13 的斜线或中路杀上网、前取位与搭档直线覆盖条件。\nhttps://www.douyin.com/video/7087759120761228578\n反馈可直接回复：V1 最有价值；第 2 点结论不对；回答漏了‘……’；你理解错了，我真正问的是‘……’。",
+      "expected": {
+        "query_units": ["我杀球后对手挡网，我总来不及上网，是不是第一拍杀太重？"],
+        "constraints": {"discipline": ["doubles"]},
+        "hypotheses_contains": ["第一拍杀太重"],
+        "event_chain": [
+          {"actor": "player", "role": "prior_action", "term": "杀球"},
+          {"actor": "opponent", "role": "response", "term": "挡网"},
+          {"actor": "player", "role": "target_action", "term": "杀上网"}
+        ],
+        "pending_question_ids": [],
+        "required_selected_evidence_ids": ["7087759120761228578"],
+        "forbidden_selected_evidence_ids": [],
+        "allow_empty_evidence": false,
+        "do_not_claim_unique_cause": true
+      }
+    },
+    {
+      "case_id": "DAC-MT004",
+      "original_query": "双打接杀挡网总冒高，是拍面还是击球点问题？",
+      "reply": "球的最高点在对方场区",
+      "gold_answer": "**直接回答**\n你已经补充：球的最高点在对方场区。\n[Q1] 对“双打接杀挡网总冒高，是拍面还是击球点问题？”，当前知识库没有能把这个轨迹现象直接归因到拍面或击球点的可靠证据，因此本轮不引用视频，也不沿用澄清前的候选来源。\n[H1] “拍面”目前无法确认，球的最高点位置不能单独证明击球瞬间的拍面状态。\n[H2] “击球点”目前也无法确认，同一轨迹描述不足以区分击球点、拍面或来球条件。\n**置信边界**\n仅凭文字无法确认唯一原因，需要能看到来球、击球瞬间和出球轨迹的连续动作视频；当前能确定的是证据缺口，不是二选一的结论。\n反馈可直接回复：第 2 点结论不对；回答漏了‘……’；你理解错了，我真正问的是‘……’。",
+      "expected": {
+        "query_units": ["双打接杀挡网总冒高，是拍面还是击球点问题？"],
+        "constraints": {"discipline": ["doubles"]},
+        "hypotheses_contains": ["拍面", "击球点"],
+        "resolved_question_ids": ["clarify.mechanism.trajectory_control"],
+        "pending_question_ids": [],
+        "required_selected_evidence_ids": [],
+        "forbidden_selected_evidence_ids": ["7524557392328461627"],
+        "allow_empty_evidence": true,
+        "do_not_claim_unique_cause": true
+      }
+    }
+  ]
+}

@@ -4,145 +4,133 @@ on:
   push:
     branches: [main, develop]
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read
 
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
 jobs:
-  validate:
+  static-and-unit:
+    name: Static and unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-python@v7
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
 
       - name: Compile Python sources
-        run: |
-          python -m py_compile \
-            scripts/apply_visual_review_notes.py \
-            scripts/apply_answer_quality_review_notes.py \
-            scripts/batch_transcribe_directory.py \
-            scripts/build_answer_quality_review_queue.py \
-            scripts/build_manifest.py \
-            scripts/build_douyin_knowledge.py \
-            scripts/build_retrieval_index.py \
-            scripts/build_reviewed_evidence_signals.py \
-            scripts/build_topic_index.py \
-            scripts/build_visual_review_queue.py \
-            scripts/check_douyin_updates.py \
-            scripts/check_maintenance_health.py \
-            scripts/check_video_links.py \
-            scripts/download_douyin_browser_batch.py \
-            scripts/douyin_pipeline.py \
-            scripts/doctor.py \
-            scripts/evaluate_answer_policy.py \
-            scripts/evaluate_answer_context.py \
-            scripts/evaluate_answer_quality.py \
-            scripts/evaluate_feedback_signals.py \
-            scripts/evaluate_forward_test_results.py \
-            scripts/evaluate_query_equivalence.py \
-            scripts/evaluate_query_understanding.py \
-            scripts/evaluate_retrieval.py \
-            scripts/evaluate_video_comprehension.py \
-            scripts/generate_evaluation_report.py \
-            scripts/generate_knowledge_graph.py \
-            scripts/generate_release_sbom.py \
-            scripts/init_douyin_queue.py \
-            scripts/install_skill.py \
-            scripts/media_assets.py \
-            scripts/monitor_douyin_updates.py \
-            scripts/package_skill_release.py \
-            scripts/prepare_douyin_media_batch.py \
-            scripts/project_artifacts.py \
-            scripts/reclassify_douyin_catalog.py \
-            scripts/promote_feedback.py \
-            scripts/process_douyin_ready_batch.py \
-            scripts/report_pipeline_status.py \
-            scripts/run_full_update_pipeline.py \
-            scripts/test_douyin_pipeline.py \
-            scripts/test_douyin_browser_download.py \
-            scripts/test_douyin_snapshot_validation.py \
-            scripts/test_douyin_transactions.py \
-            scripts/test_douyin_update_state.py \
-            scripts/test_doctor.py \
-            scripts/test_answer_context.py \
-            scripts/test_build_reproducibility.py \
-            scripts/test_classification_migration.py \
-            scripts/test_answer_quality.py \
-            scripts/test_feedback_pipeline.py \
-            scripts/test_feedback_personalization.py \
-            scripts/test_feedback_promotion.py \
-            scripts/test_forward_test_results.py \
-            scripts/test_evaluation_report.py \
-            scripts/test_knowledge_quality.py \
-            scripts/test_maintenance_health.py \
-            scripts/test_knowledge_graph_html.py \
-            scripts/test_media_assets.py \
-            scripts/test_project_artifacts.py \
-            scripts/test_project_site.py \
-            scripts/test_public_feedback_e2e.py \
-            scripts/test_query_equivalence.py \
-            scripts/test_query_understanding.py \
-            scripts/test_release_package.py \
-            scripts/test_repository_links.py \
-            scripts/test_search_knowledge.py \
-            scripts/test_skill_portability.py \
-            scripts/test_transcription_recovery.py \
-            scripts/test_topic_navigation.py \
-            scripts/test_visual_review_workflow.py \
-            scripts/test_video_comprehension.py \
-            scripts/transcribe_video.py \
-            scripts/update_readme_status.py \
-            skills/liuhui-badminton-coach/scripts/navigate_topics.py \
-            skills/liuhui-badminton-coach/scripts/feedback.py \
-            skills/liuhui-badminton-coach/scripts/doctor.py \
-            skills/liuhui-badminton-coach/scripts/install.py \
-            skills/liuhui-badminton-coach/scripts/prepare_answer_context.py \
-            skills/liuhui-badminton-coach/scripts/search_knowledge.py
+        run: python -m compileall -q scripts skills/liuhui-badminton-coach/scripts
 
-      - name: Run regression tests
+      - name: Run fast tests
+        run: python scripts/run_ci_tests.py fast
+
+  core-evaluations:
+    name: Core evaluations (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: quality-report
+            kind: evaluations
+            shard_index: 0
+          - name: answer-context-1
+            kind: context
+            shard_index: 0
+          - name: answer-context-2
+            kind: context
+            shard_index: 1
+          - name: answer-context-3
+            kind: context
+            shard_index: 2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Collect core evaluations once
+        if: matrix.kind == 'evaluations'
+        run: python scripts/collect_evaluation_results.py --output "$RUNNER_TEMP/core-evaluations.json"
+
+      - name: Check deterministic evaluation report
+        if: matrix.kind == 'evaluations'
+        run: python scripts/generate_evaluation_report.py --check --evaluations "$RUNNER_TEMP/core-evaluations.json"
+
+      - name: Evaluate feedback signals
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_feedback_signals.py
+
+      - name: Validate compact answer packets
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_answer_packet.py
+
+      - name: Run answer-context regression shard
+        if: matrix.kind == 'context'
+        run: >-
+          python scripts/run_ci_tests.py context
+          --shard-index ${{ matrix.shard_index }}
+          --shard-count 3
+
+  artifact-validation:
+    name: Artifact validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Run artifact tests
+        run: python scripts/run_ci_tests.py artifacts
+
+      - name: Check generated manifest
+        run: python scripts/build_manifest.py --check
+
+      - name: Check committed video links
+        run: python scripts/check_video_links.py
+
+      - name: Run DOM regression tests
         run: |
-          python scripts/test_douyin_pipeline.py
-          python scripts/test_douyin_browser_download.py
-          python scripts/test_douyin_snapshot_validation.py
-          python scripts/test_douyin_transactions.py
-          python scripts/test_douyin_update_state.py
-          python scripts/test_doctor.py
-          python scripts/test_answer_context.py
-          python scripts/test_build_reproducibility.py
-          python scripts/test_classification_migration.py
-          python scripts/test_answer_quality.py
-          python scripts/test_feedback_pipeline.py
-          python scripts/test_feedback_personalization.py
-          python scripts/test_feedback_promotion.py
-          python scripts/test_forward_test_results.py
-          python scripts/test_evaluation_report.py
-          python scripts/test_knowledge_quality.py
-          python scripts/test_maintenance_health.py
-          python scripts/test_knowledge_graph_html.py
-          python scripts/test_media_assets.py
-          python scripts/test_project_artifacts.py
-          python scripts/test_project_site.py
-          python scripts/test_public_feedback_e2e.py
-          python scripts/test_query_equivalence.py
-          python scripts/test_query_understanding.py
-          python scripts/test_release_package.py
-          python scripts/test_repository_links.py
-          python scripts/test_search_knowledge.py
-          python scripts/test_skill_portability.py
-          python scripts/test_transcription_recovery.py
-          python scripts/test_topic_navigation.py
-          python scripts/test_visual_review_workflow.py
-          python scripts/test_video_comprehension.py
-          python scripts/generate_evaluation_report.py --check
-          python scripts/evaluate_feedback_signals.py
-          python scripts/build_manifest.py --check
-          python scripts/check_video_links.py
           node scripts/test_douyin_profile_snapshot_dom.mjs
           node scripts/test_douyin_video_media_assets_dom.mjs
           node scripts/test_export_douyin_cookies_cdp.mjs
 
       - name: Validate repository artifacts
         run: python scripts/validate_project.py
+
+  validate:
+    name: validate
+    if: always()
+    needs:
+      - static-and-unit
+      - core-evaluations
+      - artifact-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every validation group to pass
+        env:
+          STATIC_RESULT: ${{ needs.static-and-unit.result }}
+          CORE_RESULT: ${{ needs.core-evaluations.result }}
+          ARTIFACT_RESULT: ${{ needs.artifact-validation.result }}
+        run: |
+          for result in "$STATIC_RESULT" "$CORE_RESULT" "$ARTIFACT_RESULT"; do
+            case "$result" in
+              success|skipped) ;;
+              *) echo "Validation dependency finished with: $result" >&2; exit 1 ;;
+            esac
+          done

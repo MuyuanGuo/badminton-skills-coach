@@ -51,13 +51,13 @@ These numbers describe the current reviewed corpus and evaluation set. They are 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
 ```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/liuhui-badminton-coach-1.4.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.4.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.4.0/SHA256SUMS.txt \
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
+  -o /tmp/liuhui-badminton-coach-1.5.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.4.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ```
 
@@ -91,6 +91,8 @@ flowchart TD
 ```
 
 The runtime entry point is `skills/liuhui-badminton-coach/scripts/prepare_answer_context.py`. The repository also contains source processing, evaluation, installation, feedback, packaging, and reproducibility tooling.
+
+Normal answer generation uses `--answer-packet --audit-context context.json`. The model reads the compact packet while the complete context remains authoritative for final audit. A canonical JSON SHA-256 binds the two. The compact packet removes retrieval scores and repeated policy prose without reducing internal candidate recall; reviewed scopes use a closed evidence-atom composer contract.
 
 ## Development and verification
 

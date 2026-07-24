@@ -97,9 +97,9 @@
   "reception_symptom_implications": [
     {
       "name": "late_to_forecourt_incoming_shot",
-      "symptom_terms": ["来不及", "接不到", "够不到", "够不着", "赶不上", "赶不到", "到不了", "上不去", "太慢", "上网慢", "上得慢"],
+      "symptom_terms": ["来不及", "接不到", "够不到", "够不着", "赶不上", "赶不到", "到不了", "到得太晚", "太晚", "上不去", "太慢", "上网慢", "上得慢"],
       "incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球", "网前"],
-      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "赶不到", "够不到", "够不着", "到不了", "上不去"],
+      "response_terms": ["接", "上去", "上网", "上前", "上得快", "启动", "赶不上", "赶不到", "到得太晚", "太晚", "够不到", "够不着", "到不了", "上不去"],
       "implicit_response_incoming_terms": ["网前小球", "前场小球", "网前反手球", "反手网前球", "网前正手球", "正手网前球", "网前球", "吊到网前", "吊到前场", "吊网前", "网前吊球", "吊短", "吊球", "放网", "小球"],
       "prior_action_suffixes": ["后", "以后", "之后", "完"],
       "player_action_prefixes_by_incoming_term": {
@@ -117,7 +117,7 @@
       "name": "kill_to_net_interrupted_sequence",
       "canonical_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
       "before_terms": ["杀球", "扣杀", "杀完球", "杀完"],
-      "after_terms": ["上网", "上去", "冲上去", "冲不上去", "跟上网前", "跟到网前", "跟上前场", "跟到前场", "跟不上前场", "冲到前场"],
+      "after_terms": ["上网", "上去", "冲上去", "冲不上去", "赶到网前", "赶不到网前", "跟上网前", "跟到网前", "跟上前场", "跟到前场", "跟不上前场", "冲到前场"],
       "max_gap_characters": 12,
       "opponent_response_groups": [
         {
@@ -137,7 +137,7 @@
       },
       "requested_action_scopes": ["kill_to_net_sequence"],
       "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
-      "symptom_terms": ["来不及", "赶不上", "跟不上", "太慢", "衔接慢", "回不去", "冲不上去", "跟不上前场"],
+      "symptom_terms": ["来不及", "赶不上", "赶不到", "跟不上", "太慢", "衔接慢", "回不去", "冲不上去", "跟不上前场"],
       "reason": "球员先杀球、对手回网前或远网、球员再描述上网或回动困难，仍属于杀上网事件链；主体切换、连接词和到位症状不得切断序列。"
     }
   ],
@@ -334,7 +334,11 @@
         "forehand": ["正手", "正手位", "头顶区"],
         "backhand": ["反手", "反手位", "反拍"]
       },
-      "mixed_terms": ["正反手", "正手和反手", "正手与反手"]
+      "mixed_terms": ["正反手", "正手和反手", "正手与反手"],
+      "query_value_suppressions": {
+        "forehand": ["正手正常", "正手没问题", "正手没事"],
+        "backhand": ["反手正常", "反手没问题", "反手没事"]
+      }
     },
     {
       "name": "shot_family",
@@ -412,6 +416,7 @@
         "封网": ["forecourt", "midcourt"]
       },
       "query_value_suppressions": {
+        "forecourt": ["赶不到网前", "赶到网前", "跟不上网前", "跟到网前"],
         "rearcourt": ["发后场", "偷后场", "发高远"]
       },
       "query_target_prefixes": ["打到", "吊到", "吊", "推到", "推", "挑到", "挑", "放到", "压到", "送到", "拨到", "落到", "落在", "发", "偷"]
@@ -475,9 +480,9 @@
       "label": "项目",
       "values": {
         "singles": ["单打"],
-        "doubles": ["双打"]
+        "doubles": ["双打", "混双", "女双", "男双"]
       },
-      "mixed_terms": ["单双打", "单打和双打", "单打与双打"]
+      "mixed_terms": ["单双打", "单打和双打", "单打与双打", "单打和混双", "单打与混双"]
     },
     {
       "name": "serve_role",
@@ -593,6 +598,15 @@
       "name": "trajectory_or_landing",
       "query_terms": ["落点", "更尖", "尖球", "杀得尖", "靠后", "更深", "落得深", "长杀", "短杀"],
       "source_terms": ["落点", "更尖", "杀得尖", "尖", "靠后", "长杀", "短杀", "下压不如跳杀"]
+    }
+  ],
+  "query_constraint_implications": [
+    {
+      "name": "passive_rearcourt_to_baseline_is_clear",
+      "all_terms": ["后场", "被动"],
+      "any_terms": ["打到底线", "回到底线", "回球到底线"],
+      "only_if_axes_missing": ["shot_family"],
+      "derived_constraints": {"shot_family": ["clear"]}
     }
   ],
   "required_constraint_support_conditions": [

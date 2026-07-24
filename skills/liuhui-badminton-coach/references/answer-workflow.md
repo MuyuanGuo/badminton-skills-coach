@@ -6,12 +6,41 @@ Read this file for complex answers, learning paths, practice plans, feedback han
 
 Start from `scripts/prepare_answer_context.py`, not an improvised keyword search.
 
+Use `--answer-packet --audit-context context.json` for normal answer generation. Compose from the compact packet and retain the complete context only for final audit and retrieval diagnosis. The packet is valid only when its canonical SHA-256 digest matches the full context. Do not copy fields between packets or edit a full context to make a draft pass.
+
 - Preserve the user's original wording, literal symptom, exclusions, discipline, court position, stroke side, level, and desired output.
 - For `split_multi_issue`, answer every query unit separately before merging repeated conclusions and videos.
 - For `topic_first_systematic`, use `topic_navigation.matches`, `learning_path`, and focused evidence together. The topic map itself is not proof.
 - For `literal_symptom_first`, distinguish evidence that directly covers the symptom from related mechanisms. Do not declare one cause without the user's movement video.
 - For `boundary_first`, state the boundary before any relevant coaching material.
 - Ask one concise clarification only when different answers would be materially correct under different scenarios. Otherwise state the assumption.
+
+## Clarification Continuation
+
+Treat a reply to `clarification_decision.clarification_requests` as a continuation of the preserved original problem, not as an independent query. Pass the user's complete raw reply through `--continue-from` with the exact prior context JSON. If exactly one question is pending, the runtime may bind a relevant natural-language reply automatically. If several are pending, supply `--clarification-answers` with an object whose keys are the returned stable `question_id` values; partial answers are allowed.
+
+The continuation state keeps the original query, raw user turns, question-bound answers, pending request semantics, and a consistency digest. The top-level `query` is a neutral, labeled merge used for a fresh full retrieval and evidence pass. Do not copy prior `selected_videos`, V labels, or claim mappings into the new turn. Reject an empty reply, an unknown or duplicate question ID, a stale or modified state, and a natural reply that does not resolve the sole pending question.
+
+After continuation, use `diagnostic_model.clarification_observations` as user-reported text, not independently observed movement. A supplied singles/doubles or forehand/backhand answer may close that scenario branch and change eligible evidence. A description such as “落地后重心停在原地” may prioritize a source-backed check, but must not remove `unique_cause_confirmation_requires_user_video` or turn a possible mechanism into a confirmed cause.
+
+Use `answer_turn_contract` as the handoff between context generation, answer composition, and final audit. Its `original_query` is the only valid question argument for `audit_answer.py`; `effective_query` is retrieval input, not replacement wording. Explicitly acknowledge every resolved answer, do not repeat any resolved question, and include every pending question rather than using a generic “请补充”. Each pending request must retain a non-empty `purpose`. The contract's evidence state and digest must match this turn's `selected_videos` and `claim_evidence_map`, so a prior turn's V labels and evidence IDs are never valid by inheritance.
+
+The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
+
+## Diagnostic Contract
+
+Read the diagnostic fields before composing prose:
+
+- `diagnostic_model.observed_symptoms` contains what the user reported, not an independently observed fact.
+- `clarification_observations` contains focused details supplied in later text turns. Preserve them, but keep their `reported_not_video_verified` boundary.
+- `user_hypotheses` preserves causes proposed by the user. `unverified` means no selected evidence verifies the proposal; `conditional` means a source supports it as a possible mechanism, not that it caused this user's error.
+- `supported_mechanisms` lists evidence-backed checks worth explaining. Present them as branches to verify, ordered by claim directness, never as a bag of generic possible causes.
+- `material_branches` preserves conditions such as forehand/backhand or singles/doubles when they change the correct answer. Cover each evidenced branch until clarified.
+- `clarification_decision.action: answer_conditionally` means answer the supported scope now and then ask only the returned focused questions. Do not withhold useful evidence while waiting for a movement video.
+- `claim_evidence_map` narrows `selected_videos` per claim. Cite only its mapped labels for that claim and stay at or below its `confidence_ceiling`.
+- `completeness_contract` is the final checklist. A complete answer addresses every required item, preserves conditional branches, and names unresolved evidence gaps. Extra length does not repair a missing branch, and deterministic coverage checks do not prove that the prose is semantically correct.
+
+For a reported technical failure, separate four layers in the answer: the symptom, the user's proposed explanation, source-supported mechanisms, and what can only be verified from the user's continuous preparation-to-recovery video. Never claim one unique physical cause from text alone.
 
 ## Text And Video Modes
 
@@ -53,13 +82,21 @@ Still give purpose, a small set of reliable observation points, common errors, a
 Use the following order, omitting only sections that truly do not apply:
 
 1. **直接回答**: answer the actual question and identify the situation.
-2. **文字解释**: synthesize all distinct supported points; do not copy transcripts line by line.
+2. **文字解释**: synthesize all distinct supported points; for diagnosis, distinguish verified source mechanisms from the user's still-unverified cause and give observable checks. Do not copy transcripts line by line.
 3. **适用边界**: state conditions that change the advice.
 4. **核心视频与观看重点**: strongest one to three evidence items, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
 5. **完整相关视频**: every other selected worthwhile video, grouped by subtopic when long. Reuse labels and do not repeat URLs.
 6. **置信边界**: separate source-backed facts, reasonable synthesis, and what requires watching the source or the user's own video.
 
 One claim may cite at most three strongest sources. A video URL appears once in the answer. A `V` label maps to one video for that answer turn and is never recycled for another video.
+
+Before sending a diagnostic or other multi-claim answer, run the bundled final-answer auditor with the exact original question, the unmodified context JSON, and the final draft:
+
+```bash
+python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --answer answer.md
+```
+
+Revise every reported error and rerun until `passed` is true. Do not weaken the context or edit its claim mappings to make a draft pass. This deterministic audit catches known contract violations; it does not replace source reading or human judgment.
 
 ## Systematic Learning
 

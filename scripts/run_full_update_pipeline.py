@@ -35,6 +35,8 @@ def validation_commands():
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
         [sys.executable, "scripts/evaluate_answer_policy.py"],
         [sys.executable, "scripts/evaluate_answer_context.py"],
+        [sys.executable, "scripts/evaluate_answer_audit.py"],
+        [sys.executable, "scripts/evaluate_diagnostic_answer_contract.py"],
         [
             sys.executable,
             "scripts/evaluate_answer_quality.py",

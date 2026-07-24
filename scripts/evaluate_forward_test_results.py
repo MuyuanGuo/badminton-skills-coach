@@ -13,6 +13,10 @@ RESULTS_PATH = ROOT / "data" / "evaluation" / "forward_test_results.json"
 CRITICAL_PATH = ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
 CASES_PATH = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
 QUERY_CASES_PATH = ROOT / "data" / "evaluation" / "query_understanding_cases.json"
+DIAGNOSTIC_CASES_PATH = ROOT / "data" / "evaluation" / "diagnostic_answer_cases.json"
+CONTINUATION_CASES_PATH = (
+    ROOT / "data" / "evaluation" / "diagnostic_answer_continuation_cases.json"
+)
 SKILL_ROOT = Path("skills/liuhui-badminton-coach")
 MIN_CONSECUTIVE_UNSEEN_ROUNDS = 3
 MIN_CASES_PER_UNSEEN_ROUND = 4
@@ -55,7 +59,12 @@ def normalize_query(query):
     return re.sub(r"[^0-9a-z\u4e00-\u9fff]+", "", query.casefold())
 
 
-def registered_queries(cases_payload, query_cases_payload):
+def registered_queries(
+    cases_payload,
+    query_cases_payload,
+    diagnostic_cases_payload=None,
+    continuation_cases_payload=None,
+):
     queries = {
         normalize_query(case["query"])
         for case in cases_payload.get("cases", [])
@@ -65,6 +74,16 @@ def registered_queries(cases_payload, query_cases_payload):
         normalize_query(case["query"])
         for case in query_cases_payload.get("cases", [])
         if case.get("query")
+    )
+    queries.update(
+        normalize_query(case["query"])
+        for case in (diagnostic_cases_payload or {}).get("cases", [])
+        if case.get("query")
+    )
+    queries.update(
+        normalize_query(case["original_query"])
+        for case in (continuation_cases_payload or {}).get("cases", [])
+        if case.get("original_query")
     )
     return queries
 
@@ -181,7 +200,13 @@ def validate_unseen_rounds(rounds, known_queries):
 
 
 def validate_forward_results(
-    payload, critical_payload, cases_payload, query_cases_payload, fingerprint
+    payload,
+    critical_payload,
+    cases_payload,
+    query_cases_payload,
+    fingerprint,
+    diagnostic_cases_payload=None,
+    continuation_cases_payload=None,
 ):
     if payload.get("version") != 3:
         raise ForwardTestValidationError("Forward-test result version is unsupported")
@@ -259,7 +284,12 @@ def validate_forward_results(
         )
     unseen_summary = validate_unseen_rounds(
         payload.get("unseen_rounds", []),
-        registered_queries(cases_payload, query_cases_payload),
+        registered_queries(
+            cases_payload,
+            query_cases_payload,
+            diagnostic_cases_payload,
+            continuation_cases_payload,
+        ),
     )
     return {
         "runtime_fingerprint": fingerprint,
@@ -287,6 +317,8 @@ def main():
         load_json(CASES_PATH),
         load_json(QUERY_CASES_PATH),
         fingerprint,
+        load_json(DIAGNOSTIC_CASES_PATH),
+        load_json(CONTINUATION_CASES_PATH),
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

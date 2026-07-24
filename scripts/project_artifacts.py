@@ -36,8 +36,20 @@ SKILL_REFERENCE_PATHS = (
         Path("skills/liuhui-badminton-coach/references/answer-selection-rules.json"),
     ),
     (
+        Path("config/diagnostic_answer_rules.json"),
+        Path("skills/liuhui-badminton-coach/references/diagnostic-answer-rules.json"),
+    ),
+    (
+        Path("config/answer_audit_rules.json"),
+        Path("skills/liuhui-badminton-coach/references/answer-audit-rules.json"),
+    ),
+    (
         Path("config/reviewed_evidence_signals.json"),
         Path("skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json"),
+    ),
+    (
+        Path("config/reviewed_evidence_atoms.json"),
+        Path("skills/liuhui-badminton-coach/references/reviewed-evidence-atoms.json"),
     ),
     (
         Path("config/practice_plan_rules.json"),

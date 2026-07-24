@@ -1,0 +1,142 @@
+{
+  "version": 4,
+  "description": "Deterministic rules for separating observed symptoms, user hypotheses, source-supported diagnostic branches, clarification needs, and claim-level evidence.",
+  "hypothesis_patterns": [
+    {
+      "type": "single_cause_question",
+      "pattern": "是不是(?P<hypothesis>[^，,。？?！!]+)"
+    },
+    {
+      "type": "alternative_cause_question",
+      "pattern": "是(?P<left>[^，,。？?！!]+?)还是(?P<right>[^，,。？?！!]+?)(?:问题|的原因|导致的)?(?:[？?！!]|$)"
+    }
+  ],
+  "symptom_terms": [
+    "来不及",
+    "到得太晚",
+    "太晚",
+    "冒高",
+    "出界",
+    "下网",
+    "不到位",
+    "打不远",
+    "接不到",
+    "跟不上",
+    "慢",
+    "脱节",
+    "失误",
+    "不稳",
+    "没力量",
+    "没球速",
+    "回不去",
+    "站不住"
+  ],
+  "mechanisms": [
+    {
+      "id": "racket_face_control",
+      "label": "拍面方向与控制",
+      "query_terms": ["拍面"],
+      "evidence_terms": ["拍面对准", "拍面向上", "拍面", "转一点"],
+      "observation_question": "请回看触球瞬间：拍面是明显朝上，还是接近竖直？球刚离开拍面时，是陡着向上，还是比较平地向前？",
+      "observation_purpose": "用于判断球是否在离拍时就带有过大的向上角度，从而决定是否优先检查拍面角度；不能单凭这项观察确认唯一原因。",
+      "answer_cues": ["明显朝上", "接近竖直", "陡着向上", "平地向前", "比较平"]
+    },
+    {
+      "id": "contact_point",
+      "label": "击球点的高度与前后位置",
+      "query_terms": ["击球点", "触球点", "触球高度", "拿点", "点低", "点高", "出界"],
+      "evidence_terms": ["击球点", "触球点", "拿点高", "拿得点高", "拿得点低", "点再往自己", "位置和框架一定要契合"],
+      "observation_question": "触球时，球是在身前、体侧，还是已经落到身后？和这项动作正常的击球点相比，位置是偏高、差不多，还是偏低？",
+      "answer_cues": ["身前", "体侧", "身后", "偏高", "差不多", "偏低"]
+    },
+    {
+      "id": "footwork_speed",
+      "label": "步法移动速度",
+      "query_terms": ["步法太慢", "脚下太慢", "移动太慢", "跑得慢"],
+      "evidence_terms": ["步法太慢", "脚下太慢", "移动速度慢", "跑得慢"],
+      "observation_question": "你是第一步没启动，还是已经启动但最后一步仍到不了位？",
+      "answer_cues": ["第一步", "没启动", "最后一步", "到不了位"]
+    },
+    {
+      "id": "preparation_timing",
+      "label": "判断、启动与架拍时机",
+      "query_terms": ["来不及", "架拍", "架拍晚", "准备", "慢", "太晚"],
+      "evidence_terms": ["没时间架拍", "没有架拍", "架拍就得放下来", "偷出来时间", "更早击球", "节约出挥拍的时间", "快速的组织框架", "准备动作不能占用全部时间", "给挥拍留出时间"],
+      "observation_question": "你意识到来球时，球拍还在身体前方、已经到身后，还是已经开始向前挥？",
+      "answer_cues": ["身体前方", "身后", "开始向前挥", "已经挥拍"]
+    },
+    {
+      "id": "movement_transition",
+      "label": "上一拍后的重心与衔接路线",
+      "query_terms": ["杀上网", "杀球后", "上网", "回位", "脱节"],
+      "evidence_terms": ["从后向前的惯性", "杀完球之后人直接向前走", "杀完上网", "顺势前跟", "交叉步", "脚下脱节", "下一拍更好"],
+      "observation_question": "杀球落地后重心是在向前、停在原地，还是先向后或向侧面回收？",
+      "answer_cues": ["向前", "原地", "向后", "侧面", "回收"]
+    },
+    {
+      "id": "forward_movement_distance",
+      "label": "向前距离与步法组合",
+      "query_terms": ["网前", "前场", "上网", "赶不到", "够不到", "到得太晚"],
+      "evidence_terms": ["快速并步", "并步", "垫步", "蹬跨步", "根据距离", "距离比较远", "最后一步"],
+      "observation_question": "从准备位置到击球点大约需要几步，问题发生在启动、途中调整还是最后落步？",
+      "answer_cues": ["一步", "两步", "三步", "启动", "途中", "最后落步"]
+    },
+    {
+      "id": "shot_choice_and_recovery_time",
+      "label": "上一拍球路与留给衔接的时间",
+      "query_terms": ["杀上网", "杀球后", "来不及上网", "脱节", "杀太重", "第一拍杀太重", "重杀"],
+      "evidence_terms": ["位置不好时全力杀球", "球过去的快回来也快", "软压打跟进", "轻杀打先机", "斜线或者中路的杀上网"],
+      "observation_question": "出现问题时上一拍是重杀、轻杀还是软压，落点走直线、中路还是斜线？",
+      "answer_cues": ["重杀", "轻杀", "软压", "直线", "中路", "斜线"]
+    },
+    {
+      "id": "swing_size_and_force",
+      "label": "挥拍幅度与力量使用",
+      "query_terms": ["出界", "打不远", "没力量", "被动", "发力", "挥拍太大", "动作太大", "动作不够大"],
+      "evidence_terms": ["不能让我的挥拍变得动作更大", "力量使用在挥拍的速度", "挥拍幅度", "动作的大小"],
+      "observation_question": "失误时是挥拍幅度明显变大，还是动作很短但出球仍然过长？",
+      "answer_cues": ["幅度", "变大", "动作很短", "过长"]
+    },
+    {
+      "id": "trajectory_control",
+      "label": "出球弧线与过网最高点",
+      "query_terms": ["冒高", "贴网", "弧线", "落点"],
+      "evidence_terms": ["抛物线的最高点在网袋上", "最高点在网", "落点固定好", "贴网"],
+      "observation_question": "请看整段飞行弧线：球的最高点是在本方场区、球网上方，还是对方场区？",
+      "observation_purpose": "用于判断弧线最高点是否过晚、过网余量是否过大，从而决定是否优先检查出球弧线；不能单凭这项观察确认唯一原因。",
+      "answer_cues": ["本方场区", "球网上方", "对方场区", "最高点"]
+    }
+  ],
+  "material_branch_axes": {
+    "stroke_side": {
+      "label": "正手或反手",
+      "query_label": "击球侧",
+      "question": "这个后场被动球发生在正手侧还是反手侧？",
+      "trigger_terms": ["后场", "被动", "高远"],
+      "values": {
+        "forehand": "正手分支",
+        "backhand": "反手分支"
+      }
+    },
+    "discipline": {
+      "label": "单打或双打",
+      "query_label": "比赛项目",
+      "question": "这是单打还是双打场景？双打时搭档的后场覆盖会改变杀上网选择。",
+      "trigger_terms": ["杀上网", "杀球后", "上网"],
+      "values": {
+        "singles": "单打分支",
+        "doubles": "双打分支"
+      }
+    }
+  },
+  "required_context_by_technique": {
+    "kill_to_net": ["discipline"]
+  },
+  "strong_scope_axes": ["stroke_side", "shot_family", "technique_variant", "discipline", "serve_role", "pressure_state"],
+  "weak_constraint_matches": ["unspecified_support", "incidental_support"],
+  "claim_action_scope_axes": ["shot_family", "technique_variant", "serve_role", "pressure_state", "tactical_phase"],
+  "claim_action_scope_support_matches": ["exact", "partial_support"],
+  "max_evidence_per_claim": 3,
+  "max_clarification_questions": 3,
+  "max_clarification_turns": 8
+}
