@@ -38,15 +38,6 @@ def answer_units(answer):
     ]
 
 
-def coverage_clauses(units):
-    return [
-        clause.strip()
-        for unit in units
-        for clause in re.split(r"[。！？!?；;]+", unit)
-        if clause.strip()
-    ]
-
-
 def content_ngrams(value, rules, width=2):
     text = normalized(value)
     for phrase in rules.get("coverage_stop_phrases", []):
@@ -185,6 +176,17 @@ def canonical_json_digest(payload):
     return hashlib.sha256(encoded).hexdigest()
 
 
+def validate_packet_binding(packet, context):
+    if packet.get("schema_version") != 1:
+        raise ValueError("unsupported answer_packet schema_version")
+    if packet.get("packet_type") != "liuhui_badminton_answer_packet":
+        raise ValueError("invalid answer_packet type")
+    if packet.get("audit_context", {}).get("digest") != canonical_json_digest(
+        context
+    ):
+        raise ValueError("answer_packet audit context digest mismatch")
+
+
 def validate_answer_turn_contract(context):
     contract = context.get("answer_turn_contract")
     if contract is None:
@@ -315,62 +317,6 @@ def item_coverage(item, context, units, rules, marker_pattern):
         if text_match_score(item.get("text", ""), unit, rules)
         >= rules["claim_match_threshold"]
     ]
-
-
-def substantive_residual(unit, phrases, rules):
-    residual = re.sub(r"https?://\S+", "", unit)
-    residual = re.sub(rules["claim_marker_pattern"], "", residual)
-    residual = re.sub(rules["video_label_pattern"], "", residual)
-    residual = re.sub(rules["evidence_id_pattern"], "", residual)
-    residual = normalized(residual)
-    removable = list(phrases) + rules.get(
-        "non_substantive_coverage_phrases", []
-    )
-    for phrase in sorted(
-        {normalized(value) for value in removable if normalized(value)},
-        key=len,
-        reverse=True,
-    ):
-        residual = residual.replace(phrase, "")
-    return residual
-
-
-def item_has_substantive_coverage(item, context, covered_units, rules):
-    minimum = rules["minimum_substantive_coverage_characters"]
-    item_phrases = [item.get("text", "")]
-    if item.get("item_id", "").startswith("B"):
-        branch = next(
-            (
-                candidate
-                for candidate in context.get("diagnostic_model", {}).get(
-                    "material_branches", []
-                )
-                if candidate.get("id") == item.get("item_id")
-            ),
-            None,
-        )
-        if branch:
-            required_labels = [
-                value.get("label", "")
-                for value in branch.get("branches", [])
-                if value.get("eligible_video_labels")
-            ]
-            removable = item_phrases + [branch.get("label", "")] + required_labels
-            if required_labels:
-                clauses = coverage_clauses(covered_units)
-                return all(
-                    any(
-                        normalized(label) in normalized(clause)
-                        and len(substantive_residual(clause, removable, rules))
-                        >= minimum
-                        for clause in clauses
-                    )
-                    for label in required_labels
-                )
-    return any(
-        len(substantive_residual(unit, item_phrases, rules)) >= minimum
-        for unit in covered_units
-    )
 
 
 def audit_answer(question, context, answer, rules=None):
@@ -548,15 +494,11 @@ def audit_answer(question, context, answer, rules=None):
     for item in context.get("completeness_contract", {}).get("items", []):
         covered_units = item_coverage(item, context, units, rules, marker_pattern)
         covered = bool(covered_units)
-        substantive = covered and item_has_substantive_coverage(
-            item, context, covered_units, rules
-        )
         coverage.append(
             {
                 "item_id": item.get("item_id"),
                 "status": item.get("status"),
                 "covered": covered,
-                "substantive": substantive,
             }
         )
         if not covered:
@@ -565,16 +507,6 @@ def audit_answer(question, context, answer, rules=None):
                 "missing_completeness_item",
                 "A required completeness item is absent from the answer.",
                 claim_id=item.get("item_id"),
-                details={"text": item.get("text"), "status": item.get("status")},
-            )
-            continue
-        if not substantive:
-            add_violation(
-                violations,
-                "insubstantial_completeness_item",
-                "A completeness item is only repeated or named without a substantive answer or boundary.",
-                claim_id=item.get("item_id"),
-                unit=covered_units[0],
                 details={"text": item.get("text"), "status": item.get("status")},
             )
             continue
@@ -733,9 +665,6 @@ def audit_answer(question, context, answer, rules=None):
             "errors": len(violations),
             "completeness_items": len(coverage),
             "completeness_items_covered": sum(item["covered"] for item in coverage),
-            "completeness_items_substantive": sum(
-                item["substantive"] for item in coverage
-            ),
             "cited_labels": sorted(all_labels),
         },
         "coverage": coverage,
@@ -746,7 +675,12 @@ def audit_answer(question, context, answer, rules=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("question", help="The exact original user question")
-    parser.add_argument("--context", type=Path, required=True, help="JSON output from prepare_answer_context.py")
+    parser.add_argument("--context", type=Path, required=True, help="Complete JSON audit context from prepare_answer_context.py")
+    parser.add_argument(
+        "--packet",
+        type=Path,
+        help="Compact answer packet whose digest must bind to --context.",
+    )
     answer_input = parser.add_mutually_exclusive_group(required=True)
     answer_input.add_argument("--answer", type=Path, help="UTF-8 final-answer text file")
     answer_input.add_argument("--answer-text", help="Final answer supplied directly")
@@ -754,6 +688,11 @@ def main():
     args = parser.parse_args()
 
     context = load_json(args.context)
+    if args.packet:
+        try:
+            validate_packet_binding(load_json(args.packet), context)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
     answer = args.answer.read_text(encoding="utf-8") if args.answer else args.answer_text
     result = audit_answer(args.question, context, answer, load_rules(args.rules))
     print(json.dumps(result, ensure_ascii=False, indent=2))

@@ -2,17 +2,17 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-22T00:07:06.843715+00:00",
-  "video_count": 408,
-  "indexable_video_count": 353,
-  "assigned_video_count": 353,
-  "multi_topic_video_count": 147,
+  "source_updated_at": "2026-07-24T04:38:09.993679+00:00",
+  "video_count": 409,
+  "indexable_video_count": 354,
+  "assigned_video_count": 354,
+  "multi_topic_video_count": 148,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 102,
+      "video_count": 103,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -150,8 +150,8 @@
             "滑板",
             "软压"
           ],
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -164,21 +164,21 @@
               "score": 16
             },
             {
+              "video_id": "7665812689277115897",
+              "title": "1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊",
+              "url": "https://www.douyin.com/video/7665812689277115897",
+              "confidence": "medium",
+              "category": "",
+              "duration_seconds": 56.4,
+              "score": 15
+            },
+            {
               "video_id": "7115241358255803683",
               "title": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
               "url": "https://www.douyin.com/video/7115241358255803683",
               "confidence": "visual_reviewed",
               "category": "后场技术",
               "duration_seconds": 33.5,
-              "score": 11
-            },
-            {
-              "video_id": "7306709804234444072",
-              "title": "这样削球是最稳定的劈吊",
-              "url": "https://www.douyin.com/video/7306709804234444072",
-              "confidence": "medium",
-              "category": "训练与纠错",
-              "duration_seconds": 72.1,
               "score": 11
             }
           ]
@@ -980,7 +980,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 128,
+      "video_count": 129,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1074,8 +1074,8 @@
             "小臂旋转",
             "手腕"
           ],
-          "video_count": 45,
-          "ready_count": 45,
+          "video_count": 46,
+          "ready_count": 46,
           "is_fallback": false,
           "representative_videos": [
             {

@@ -28,6 +28,23 @@
 
 新失败类型没有现成门禁时，先扩展评测方法，再修改运行时规则。不要用上层模型偶然答对来掩盖错误的底层意图或证据上下文。
 
+`main` 与 `develop` 的最终回答质量必须通过 `scripts/paired_blind_evaluation.py` 做成对盲评，不能用确定性中间指标代替。冻结问题位于 `data/evaluation/paired_blind_holdout.json`，不得复制到规则 gold 或用于调参。两份答案运行记录必须覆盖同一 holdout、使用相同模型与生成参数，并分别记录 commit SHA。`prepare` 会随机化 A/B、单独输出映射密钥和人工评审模板；评审者在不知道分支身份时按真实问题理解、事实正确性、来源蕴含、重要遗漏、无依据结论和清晰度打分，之后才可用 `score` 解盲。映射密钥和未脱敏评审记录不要提交到仓库。
+
+```bash
+python3 scripts/paired_blind_evaluation.py prepare \
+  --main-answers /private/path/main-answers.json \
+  --develop-answers /private/path/develop-answers.json \
+  --seed "private-random-seed" \
+  --pairs /private/path/blinded-pairs.json \
+  --key /private/path/branch-key.json \
+  --review-template /private/path/reviews.json
+
+python3 scripts/paired_blind_evaluation.py score \
+  --pairs /private/path/blinded-pairs.json \
+  --key /private/path/branch-key.json \
+  --reviews /private/path/reviews.json
+```
+
 至少运行与你改动相关的测试。提交完整流水线或共享逻辑改动时，运行：
 
 ```bash

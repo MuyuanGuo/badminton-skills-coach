@@ -72,6 +72,10 @@ jobs:
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_feedback_signals.py
 
+      - name: Validate compact answer packets
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_answer_packet.py
+
       - name: Run answer-context regression shard
         if: matrix.kind == 'context'
         run: >-

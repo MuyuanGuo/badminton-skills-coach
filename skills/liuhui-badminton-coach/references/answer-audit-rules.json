@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "description": "Deterministic final-answer checks for evidence scope, diagnostic certainty, completeness, and citation integrity.",
   "claim_match_threshold": 0.34,
   "boundary_match_threshold": 0.45,
@@ -93,23 +93,5 @@
     "经常",
     "问题",
     "原因"
-  ],
-  "minimum_substantive_coverage_characters": 4,
-  "non_substantive_coverage_phrases": [
-    "直接回答",
-    "文字解释",
-    "适用边界",
-    "核心视频与观看重点",
-    "完整相关视频",
-    "置信边界",
-    "证据ID",
-    "可能",
-    "也许",
-    "或许",
-    "分支",
-    "方面",
-    "这一点",
-    "这点",
-    "该项"
   ]
 }

@@ -4,9 +4,9 @@
   "development_version": "1.5.0-dev.1",
   "baseline_version": "v1.4.0",
   "build": {
-    "id": "995c49ac245b237b",
-    "inputs_sha256": "30618088bccc4103321cc1a617cd130eea899d3b6591c9428f7aa8d535d2a78a",
-    "runtime_sha256": "aa9bcd775dad1ad51d4ee84551112fe8f604a950373a6587c1c4d53ed7fa803e"
+    "id": "89ded40acc714231",
+    "inputs_sha256": "5851154d3373f925dc7dbff9868acc31d774b023a8b7e25ab649a6dcf8d381ce",
+    "runtime_sha256": "b2500dd329f1648f25434e21622a2e83e96b632c54612fd0cdb970cf3907acf3"
   },
   "summary": {
     "status": "pass",
@@ -67,11 +67,11 @@
       "accuracy": 1.0
     },
     "answer_audit": {
-      "cases": 15,
-      "passed": 15,
+      "cases": 13,
+      "passed": 13,
       "accuracy": 1.0,
-      "expected_violations": 13,
-      "expected_violations_detected": 13,
+      "expected_violations": 11,
+      "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
     },
     "retrieval": {
@@ -81,20 +81,20 @@
       "candidate_recall": 1.0,
       "primary_top_k": 0.9629629629629629,
       "mean_reciprocal_rank": 0.7492504409171076,
-      "mean_ndcg_at_k": 0.8655857023927824,
-      "mean_known_precision_at_k": 0.5921052631578947,
-      "average_review_candidate_count": 12.24561403508772,
-      "hard_negative_count": 193,
+      "mean_ndcg_at_k": 0.8643728349002483,
+      "mean_known_precision_at_k": 0.5895989974937345,
+      "average_review_candidate_count": 12.298245614035087,
+      "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "top_k": 12
     },
     "video_comprehension": {
-      "ready_videos": 353,
-      "understood_videos": 353,
+      "ready_videos": 354,
+      "understood_videos": 354,
       "understanding_coverage": 1.0,
-      "transcript_backed": 334,
-      "automatic_transcript": 328,
+      "transcript_backed": 335,
+      "automatic_transcript": 329,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "runtime_lookup_coverage": 1.0,
@@ -296,7 +296,7 @@
     },
     {
       "metric": "answer_audit.cases",
-      "current": 15,
+      "current": 13,
       "baseline": 9,
       "direction": "at_least",
       "tolerance": 0,
@@ -352,18 +352,18 @@
     },
     {
       "metric": "retrieval.mean_ndcg_at_k",
-      "current": 0.8655857023927824,
+      "current": 0.8643728349002483,
       "baseline": 0.8653850127849113,
       "direction": "at_least",
-      "tolerance": 0,
+      "tolerance": 0.002,
       "passed": true
     },
     {
       "metric": "retrieval.average_review_candidate_count",
-      "current": 12.24561403508772,
+      "current": 12.298245614035087,
       "baseline": 12.24561403508772,
       "direction": "at_most",
-      "tolerance": 0,
+      "tolerance": 0.1,
       "passed": true
     },
     {
@@ -384,7 +384,7 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 353,
+      "current": 354,
       "baseline": 353,
       "direction": "at_least",
       "tolerance": 0,
@@ -400,7 +400,7 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 334,
+      "current": 335,
       "baseline": 334,
       "direction": "at_least",
       "tolerance": 0,

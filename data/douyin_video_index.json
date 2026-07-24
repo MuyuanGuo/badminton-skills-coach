@@ -2,10 +2,17 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-07-21T19:20:40.025131+00:00",
-  "collected_unique_links": 474,
+  "collected_at": "2026-07-24T04:12:46.181639+00:00",
+  "collected_unique_links": 475,
   "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7665812689277115897",
+      "url": "https://www.douyin.com/video/7665812689277115897",
+      "title": "1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "teaching_candidate": "unknown",
+      "raw_text": "1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球"
+    },
     {
       "video_id": "7664908274752137146",
       "url": "https://www.douyin.com/video/7664908274752137146",

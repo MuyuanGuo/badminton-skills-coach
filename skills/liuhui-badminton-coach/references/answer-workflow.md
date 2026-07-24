@@ -6,6 +6,8 @@ Read this file for complex answers, learning paths, practice plans, feedback han
 
 Start from `scripts/prepare_answer_context.py`, not an improvised keyword search.
 
+Use `--answer-packet --audit-context context.json` for normal answer generation. Compose from the compact packet and retain the complete context only for final audit and retrieval diagnosis. The packet is valid only when its canonical SHA-256 digest matches the full context. Do not copy fields between packets or edit a full context to make a draft pass.
+
 - Preserve the user's original wording, literal symptom, exclusions, discipline, court position, stroke side, level, and desired output.
 - For `split_multi_issue`, answer every query unit separately before merging repeated conclusions and videos.
 - For `topic_first_systematic`, use `topic_navigation.matches`, `learning_path`, and focused evidence together. The topic map itself is not proof.
@@ -23,6 +25,8 @@ After continuation, use `diagnostic_model.clarification_observations` as user-re
 
 Use `answer_turn_contract` as the handoff between context generation, answer composition, and final audit. Its `original_query` is the only valid question argument for `audit_answer.py`; `effective_query` is retrieval input, not replacement wording. Explicitly acknowledge every resolved answer, do not repeat any resolved question, and include every pending question rather than using a generic “请补充”. Each pending request must retain a non-empty `purpose`. The contract's evidence state and digest must match this turn's `selected_videos` and `claim_evidence_map`, so a prior turn's V labels and evidence IDs are never valid by inheritance.
 
+The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
+
 ## Diagnostic Contract
 
 Read the diagnostic fields before composing prose:
@@ -34,7 +38,7 @@ Read the diagnostic fields before composing prose:
 - `material_branches` preserves conditions such as forehand/backhand or singles/doubles when they change the correct answer. Cover each evidenced branch until clarified.
 - `clarification_decision.action: answer_conditionally` means answer the supported scope now and then ask only the returned focused questions. Do not withhold useful evidence while waiting for a movement video.
 - `claim_evidence_map` narrows `selected_videos` per claim. Cite only its mapped labels for that claim and stay at or below its `confidence_ceiling`.
-- `completeness_contract` is the final checklist. A complete answer substantively addresses every required item, preserves conditional branches, and names unresolved evidence gaps. Merely repeating an item or listing branch labels is not coverage; each material branch needs its own conclusion, condition, or evidence boundary, and extra length does not repair a missing branch.
+- `completeness_contract` is the final checklist. A complete answer addresses every required item, preserves conditional branches, and names unresolved evidence gaps. Extra length does not repair a missing branch, and deterministic coverage checks do not prove that the prose is semantically correct.
 
 For a reported technical failure, separate four layers in the answer: the symptom, the user's proposed explanation, source-supported mechanisms, and what can only be verified from the user's continuous preparation-to-recovery video. Never claim one unique physical cause from text alone.
 

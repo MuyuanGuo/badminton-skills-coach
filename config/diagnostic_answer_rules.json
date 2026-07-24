@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "description": "Deterministic rules for separating observed symptoms, user hypotheses, source-supported diagnostic branches, clarification needs, and claim-level evidence.",
   "hypothesis_patterns": [
     {
@@ -134,6 +134,8 @@
   },
   "strong_scope_axes": ["stroke_side", "shot_family", "technique_variant", "discipline", "serve_role", "pressure_state"],
   "weak_constraint_matches": ["unspecified_support", "incidental_support"],
+  "claim_action_scope_axes": ["shot_family", "technique_variant", "serve_role", "pressure_state", "tactical_phase"],
+  "claim_action_scope_support_matches": ["exact", "partial_support"],
   "max_evidence_per_claim": 3,
   "max_clarification_questions": 3,
   "max_clarification_turns": 8
