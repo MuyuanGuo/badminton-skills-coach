@@ -62,6 +62,7 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Metric | Current baseline |
 | --- | ---: |
 | Processed public videos | 475 |
+| Bilibili provenance-isolation pilot | 20: 9 Liu Hui candidates, 9 original/unknown, 2 excluded; 0 auto-admitted |
 | Ready teaching videos | 354 |
 | Transcript-backed evidence | 335 |
 | Reviewed visual-summary fallbacks | 19 |
@@ -82,7 +83,9 @@ See the reproducible [evaluation report](https://muyuanguo.github.io/badminton-s
 
 ```mermaid
 flowchart TD
-    A["Incremental Douyin observation"] --> B["Classification ledger and processing queue"]
+    A1["Incremental Douyin observation"] --> B["Source ledger and processing queue"]
+    A2["Incremental 大G羽毛球 Bilibili observation"] --> O["Liu Hui origin isolation and verification"]
+    O --> B
     B --> C["Media and metadata validation"]
     B --> D["Transcript or visual review"]
     C --> E["Structured knowledge base"]
@@ -122,12 +125,16 @@ query
 ### Data and evidence layers
 
 - `data/knowledge/douyin_knowledge_base.json`: complete build artifact and processing state.
+- `data/bilibili_video_index.json`: Bilibili metadata index for the 大G羽毛球 space.
+- `data/processing/bilibili_origin_review_queue.json`: quarantined candidates that may be Liu Hui teaching clips; metadata candidates never enter the evidence pool directly.
 - `references/knowledge-base.json`: compact runtime evidence shipped with the Skill.
 - `retrieval-index.json`: retrieval data without full transcript bodies.
 - `reviewed-evidence-atoms.json`: closed, reviewed claims for covered scopes.
 - Original media, full transcripts, temporary CDN URLs, cookies, and local feedback stay out of Git.
 
 `automatic_transcript`, `reviewed_transcript`, and `visual_reviewed` keep provenance explicit. Automated ASR is not mislabeled as human-reviewed fact, and synthesized principles are not presented as verbatim source claims.
+
+The Bilibili path separates teaching value from content origin. Teaching cards that explicitly name Liu Hui become candidates only; teaching videos without an origin signal are isolated as uploader-original or unknown-origin content. Bilibili SEO descriptions append the uploader biography and related-video titles, so the classifier explicitly forbids them as origin evidence. A record can proceed to media extraction, transcription, and knowledge construction only after independent origin verification and cross-platform duplicate checking.
 
 ### Answer contract
 
@@ -150,7 +157,7 @@ Local feedback remains on the user’s machine by default. Public feedback requi
 
 ```text
 incremental observation
-  -> classification and deduplication
+  -> source classification and cross-platform deduplication
   -> download/transcription
   -> evidence-quality checks
   -> knowledge and index rebuild

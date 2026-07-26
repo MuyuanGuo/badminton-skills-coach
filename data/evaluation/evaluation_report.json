@@ -4,9 +4,9 @@
   "development_version": "2.0.0-dev.1",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "366ceab1a8c39f70",
+    "id": "23008b5c88afa82a",
     "inputs_sha256": "fde889033bcfa901e3952b0cddfeec9a63eba410a2da03dd7d9660e991261156",
-    "runtime_sha256": "c35ad32ffa2ec1718fbdc67e54fa9167b2625b185e920dac40fe1962a1d8fa8f"
+    "runtime_sha256": "149639502b35e2440ba614557ecff1a2c54f1f8691bcb7a4082e1a5f807c73fe"
   },
   "summary": {
     "status": "pass",
@@ -157,7 +157,7 @@
       "runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
       "runtime_fingerprint_scope": "answer_semantics",
       "reviewed_artifact_runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
-      "current_artifact_runtime_fingerprint": "0fa92849bfbb41114e9d7d36d92b35767cc894e03efd2d4607ce4e0d2a2ef224",
+      "current_artifact_runtime_fingerprint": "e8c0fe656e84f9b1577673c20e9dd0ee6b93f9ac923b07786609c73a2bb6b270",
       "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
