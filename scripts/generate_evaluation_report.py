@@ -15,9 +15,11 @@ import evaluate_answer_policy
 import evaluate_answer_quality
 import evaluate_diagnostic_answer_contract
 import evaluate_forward_test_results
+import evaluate_feedback_lifecycle
 import evaluate_query_equivalence
 import evaluate_query_understanding
 import evaluate_retrieval
+import evaluate_metamorphic_robustness
 import evaluate_video_comprehension
 import validate_live_generation_results
 
@@ -35,7 +37,9 @@ EVALUATION_SUITES = {
     "query_understanding",
     "diagnostic_answer_contract",
     "answer_audit",
+    "feedback_lifecycle",
     "retrieval",
+    "metamorphic_robustness",
     "video_comprehension",
     "forward_tests",
     "live_generation",
@@ -48,9 +52,11 @@ CORE_EVALUATORS = (
     "evaluate_answer_quality.py",
     "evaluate_diagnostic_answer_contract.py",
     "evaluate_forward_test_results.py",
+    "evaluate_feedback_lifecycle.py",
     "evaluate_query_equivalence.py",
     "evaluate_query_understanding.py",
     "evaluate_retrieval.py",
+    "evaluate_metamorphic_robustness.py",
     "evaluate_video_comprehension.py",
     "validate_live_generation_results.py",
 )
@@ -201,7 +207,9 @@ def collect_evaluations(root=ROOT):
     understanding = evaluate_query_understanding.evaluate()
     diagnostic = evaluate_diagnostic_answer_contract.evaluate()
     answer_audit = evaluate_answer_audit.evaluate()
+    feedback_lifecycle = evaluate_feedback_lifecycle.evaluate()
     retrieval = evaluate_retrieval.evaluate(12)
+    metamorphic = evaluate_metamorphic_robustness.evaluate()
     comprehension = evaluate_video_comprehension.evaluate(
         run_retrieval_roundtrip=True,
         run_semantic_probes=False,
@@ -280,6 +288,21 @@ def collect_evaluations(root=ROOT):
                 "violation_detection_rate",
             )
         },
+        "feedback_lifecycle": {
+            key: feedback_lifecycle[key]
+            for key in (
+                "status",
+                "queue_statuses",
+                "promoted_signals",
+                "promoted_regression_cases",
+                "adversarial_contract_checks",
+                "adversarial_contracts_passed",
+                "contract_accuracy",
+                "leaked_private_fields",
+                "signals_missing_reverified_provenance",
+                "failures",
+            )
+        },
         "retrieval": {
             key: retrieval[key]
             for key in (
@@ -298,6 +321,18 @@ def collect_evaluations(root=ROOT):
                 "top_k",
             )
         },
+        "metamorphic_robustness": {
+            key: metamorphic[key]
+            for key in (
+                "base_cases",
+                "variants",
+                "case_types",
+                "passed",
+                "pass_rate",
+                "failure_taxonomy",
+                "failed",
+            )
+        },
         "video_comprehension": {
             key: comprehension[key]
             for key in (
@@ -308,6 +343,8 @@ def collect_evaluations(root=ROOT):
                 "automatic_transcript",
                 "reviewed_transcript",
                 "visual_review_fallback",
+                "evidence_provenance",
+                "automated_review_backlog",
                 "runtime_lookup_coverage",
                 "failure_count",
             )
@@ -454,7 +491,9 @@ def render_html(report):
         "query_understanding": "Query understanding",
         "diagnostic_answer_contract": "Diagnostic answer contract",
         "answer_audit": "Final-answer audit",
+        "feedback_lifecycle": "Feedback lifecycle",
         "retrieval": "Evidence retrieval",
+        "metamorphic_robustness": "Metamorphic robustness",
         "video_comprehension": "Video comprehension",
         "forward_tests": "Historical generation reviews",
         "live_generation": "Current-runtime generations",
@@ -467,7 +506,9 @@ def render_html(report):
         "query_understanding": ("accuracy", "Intent accuracy"),
         "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
         "answer_audit": ("violation_detection_rate", "Violation detection"),
+        "feedback_lifecycle": ("contract_accuracy", "Feedback contracts"),
         "retrieval": ("mean_ndcg_at_k", "nDCG@12"),
+        "metamorphic_robustness": ("pass_rate", "Harmless variants passed"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
         "live_generation": ("minimum_manual_score", "Minimum review score"),

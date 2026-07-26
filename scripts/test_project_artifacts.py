@@ -253,6 +253,20 @@ class ProjectArtifactsTests(unittest.TestCase):
             self.assertEqual(len(changed), len(self.module.SKILL_REFERENCE_PATHS))
             self.assertEqual(self.module.skill_reference_mismatches(root), [])
 
+    def test_artifact_rollback_guard_restores_changed_and_new_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            existing = root / "existing.json"
+            created = root / "created.json"
+            existing.write_text("before", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "injected build failure"):
+                with self.module.artifact_rollback_guard([existing, created]):
+                    existing.write_text("after", encoding="utf-8")
+                    created.write_text("temporary", encoding="utf-8")
+                    raise RuntimeError("injected build failure")
+            self.assertEqual(existing.read_text(encoding="utf-8"), "before")
+            self.assertFalse(created.exists())
+
     def test_packaged_knowledge_removes_unbundled_transcript_paths(self):
         source = json.dumps(
             {
@@ -315,6 +329,19 @@ class ProjectArtifactsTests(unittest.TestCase):
                 "scripts/evaluate_forward_test_results.py" in command
                 for command in commands
             )
+        )
+        for required_gate in (
+            "scripts/evaluate_feedback_lifecycle.py",
+            "scripts/evaluate_metamorphic_robustness.py",
+            "scripts/benchmark_runtime.py",
+        ):
+            self.assertTrue(
+                any(required_gate in command for command in commands),
+                required_gate,
+            )
+        self.assertIn(
+            self.update_pipeline.IMPACT_REPORT_PATH,
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
         )
 
 

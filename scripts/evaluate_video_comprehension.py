@@ -93,6 +93,58 @@ def transcript_text(payload):
     ).strip()
 
 
+def evidence_provenance_metrics(videos, quality_rules):
+    transcript_items = 0
+    timestamped_transcript_items = 0
+    visual_observations = 0
+    synthesized_principles = 0
+    noncanonical_terms = Counter()
+    canonicalization = quality_rules.get("asr_canonicalization", {})
+    for video in videos:
+        note = video.get("teaching_note") or {}
+        for field in TRANSCRIPT_EVIDENCE_FIELDS:
+            for item in note.get(field, []) or []:
+                if not isinstance(item, dict) or not str(item.get("text", "")).strip():
+                    continue
+                transcript_items += 1
+                if str(item.get("timestamp", "")).strip():
+                    timestamped_transcript_items += 1
+        visual_observations += len(
+            [
+                item
+                for item in note.get("visual_review_evidence", []) or []
+                if isinstance(item, dict) and str(item.get("text", "")).strip()
+            ]
+        )
+        synthesized_principles += len(
+            [
+                item
+                for item in note.get("principles", []) or []
+                if isinstance(item, dict) and str(item.get("text", "")).strip()
+            ]
+        )
+        transcript = "".join(
+            str(segment.get("text", ""))
+            for segment in video.get("transcript_segments", []) or []
+            if isinstance(segment, dict)
+        )
+        for noncanonical in canonicalization:
+            occurrences = transcript.count(noncanonical)
+            if occurrences:
+                noncanonical_terms[noncanonical] += occurrences
+    return {
+        "transcript_evidence_items": transcript_items,
+        "timestamped_transcript_evidence_items": timestamped_transcript_items,
+        "transcript_timestamp_coverage": (
+            timestamped_transcript_items / max(1, transcript_items)
+        ),
+        "reviewed_visual_observation_items": visual_observations,
+        "synthesized_principle_items": synthesized_principles,
+        "noncanonical_asr_occurrence_count": sum(noncanonical_terms.values()),
+        "noncanonical_asr_terms": dict(sorted(noncanonical_terms.items())),
+    }
+
+
 def audit_video_content(
     video,
     root=ROOT,
@@ -345,6 +397,13 @@ def evaluate(
                 )
 
     source_counts = Counter(audit["source_kind"] for audit in audits)
+    quality_rules = load_json(QUALITY_RULES_PATH)
+    provenance = evidence_provenance_metrics(ready_videos, quality_rules)
+    pending_statuses = Counter(
+        video.get("processing_status")
+        for video in knowledge["videos"]
+        if video.get("processing_status") in {"needs_visual_review", "needs_correction"}
+    )
     raw_transcript_counts = Counter(
         audit["raw_transcript_status"]
         for audit in audits
@@ -364,6 +423,8 @@ def evaluate(
         "automatic_transcript": source_counts["automatic_transcript"],
         "reviewed_transcript": source_counts["reviewed_transcript"],
         "visual_review_fallback": source_counts["visual_review"],
+        "evidence_provenance": provenance,
+        "automated_review_backlog": dict(sorted(pending_statuses.items())),
         "raw_transcript_requirement_enabled": require_raw_transcripts,
         "raw_transcript_files_verified": raw_transcript_counts["verified"],
         "raw_transcript_files_unavailable": raw_transcript_counts["unavailable"],
@@ -420,6 +481,8 @@ def main():
     parser.add_argument("--min-independent-probe-recall", type=float, default=1.0)
     parser.add_argument("--min-primary-top-k", type=float, default=0.85)
     parser.add_argument("--max-hard-negative-top-k-violations", type=int)
+    parser.add_argument("--min-transcript-timestamp-coverage", type=float, default=1.0)
+    parser.add_argument("--max-noncanonical-asr-occurrences", type=int, default=0)
     parser.add_argument("--skip-retrieval-roundtrip", action="store_true")
     parser.add_argument(
         "--require-raw-transcripts",
@@ -450,6 +513,17 @@ def main():
             f"{result['understanding_coverage']:.3f} is below "
             f"{args.min_understanding_coverage:.3f}"
         )
+    provenance = result["evidence_provenance"]
+    if (
+        provenance["transcript_timestamp_coverage"]
+        < args.min_transcript_timestamp_coverage
+    ):
+        raise SystemExit("Transcript evidence timestamp coverage is below the threshold")
+    if (
+        provenance["noncanonical_asr_occurrence_count"]
+        > args.max_noncanonical_asr_occurrences
+    ):
+        raise SystemExit("Runtime transcript evidence contains noncanonical ASR terms")
     if not args.skip_retrieval_roundtrip:
         if result["runtime_lookup_coverage"] < args.min_runtime_lookup_coverage:
             raise SystemExit("Runtime lookup coverage is below the required threshold")

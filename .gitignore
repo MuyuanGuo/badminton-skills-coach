@@ -26,6 +26,7 @@ output/*.inspect.ndjson
 output/*-preview.png
 output/douyin-update-report.json
 output/douyin-monitor-state.json
+output/update-impact-report.json
 
 # Unavailable legacy iCloud placeholders superseded by current artifacts
 data/video_sources.csv

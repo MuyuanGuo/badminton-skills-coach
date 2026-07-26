@@ -5,6 +5,7 @@ import json
 import os
 import re
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -364,6 +365,30 @@ def atomic_write_bundle(payloads, replace_func=os.replace):
 
 def atomic_write_text(path, text):
     atomic_write_bundle({Path(path): text.encode("utf-8")})
+
+
+@contextmanager
+def artifact_rollback_guard(paths):
+    """Restore a declared artifact set when a multi-command build fails."""
+
+    normalized = tuple(dict.fromkeys(Path(path) for path in paths))
+    originals = {
+        path: path.read_bytes() if path.exists() else None for path in normalized
+    }
+    try:
+        yield
+    except Exception:
+        restore_payloads = {
+            path: content
+            for path, content in originals.items()
+            if content is not None
+        }
+        if restore_payloads:
+            atomic_write_bundle(restore_payloads)
+        for path, content in originals.items():
+            if content is None:
+                path.unlink(missing_ok=True)
+        raise
 
 
 def skill_reference_bytes(source_relative, source_bytes):

@@ -52,6 +52,7 @@ python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
 python3 scripts/evaluate_query_equivalence.py
+python3 scripts/evaluate_metamorphic_robustness.py
 python3 scripts/evaluate_answer_quality.py \
   --answers data/evaluation/answer_quality_answers.json \
   --min-approved 57 \
@@ -60,10 +61,18 @@ python3 scripts/evaluate_answer_quality.py \
   --require-complete-answer-coverage \
   --require-critical-answer-coverage \
   --require-manual-review
-python3 scripts/evaluate_forward_test_results.py
+python3 scripts/evaluate_feedback_lifecycle.py
+python3 scripts/evaluate_forward_test_results.py  # historical records only
+python3 scripts/validate_live_generation_results.py
 python3 scripts/evaluate_retrieval.py
+python3 scripts/benchmark_runtime.py
 python3 scripts/validate_project.py
 ```
+
+`run_full_update_pipeline.py` wraps generated artifacts in a rollback guard and
+writes `output/update-impact-report.json` only after every gate succeeds. Review
+that local report for video-status, retrieval-ID, queue, and build-ID changes
+before publishing an update.
 
 Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再始终使用项目虚拟
 环境运行系统校验器，避免误用不含维护依赖的系统 Python：

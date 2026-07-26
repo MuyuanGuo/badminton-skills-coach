@@ -233,6 +233,35 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertEqual(result["independent_probe_cases"], 0)
         self.assertIsNone(result["independent_probe_candidate_recall"])
 
+    def test_evidence_provenance_separates_source_and_synthesis(self):
+        transcript = self.transcript_video("")
+        transcript["teaching_note"]["principles"] = [
+            {"timestamp": "00:01-00:03", "text": "优先准备快线路"}
+        ]
+        visual = {
+            "video_id": "7000000000000000002",
+            "processing_status": "ready",
+            "confidence": "visual_reviewed",
+            "transcript_segments": [],
+            "teaching_note": {
+                "visual_review_evidence": [
+                    {
+                        "timestamp": "visual_review_no_timestamp",
+                        "text": "动作画面显示向前启动。",
+                    }
+                ]
+            },
+        }
+        metrics = self.module.evidence_provenance_metrics(
+            [transcript, visual],
+            {"asr_canonicalization": {"架盘": "架拍"}},
+        )
+        self.assertEqual(metrics["transcript_evidence_items"], 1)
+        self.assertEqual(metrics["transcript_timestamp_coverage"], 1.0)
+        self.assertEqual(metrics["reviewed_visual_observation_items"], 1)
+        self.assertEqual(metrics["synthesized_principle_items"], 1)
+        self.assertEqual(metrics["noncanonical_asr_occurrence_count"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

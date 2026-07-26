@@ -312,6 +312,14 @@ def main():
     )
     parser.add_argument("--results", type=Path, default=RESULTS_PATH)
     parser.add_argument("--print-fingerprint", action="store_true")
+    parser.add_argument(
+        "--require-current-runtime",
+        action="store_true",
+        help=(
+            "Require the historical result fingerprint to match the current Skill. "
+            "Release gating should normally use validate_live_generation_results.py."
+        ),
+    )
     args = parser.parse_args()
     fingerprint = runtime_fingerprint()
     if args.print_fingerprint:
@@ -325,6 +333,7 @@ def main():
         fingerprint,
         load_json(DIAGNOSTIC_CASES_PATH),
         load_json(CONTINUATION_CASES_PATH),
+        require_current_runtime=args.require_current_runtime,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

@@ -168,10 +168,13 @@ python3 scripts/evaluate_answer_quality.py
 python3 scripts/evaluate_answer_context.py
 python3 scripts/evaluate_answer_audit.py
 python3 scripts/evaluate_diagnostic_answer_contract.py
-python3 scripts/evaluate_forward_test_results.py
+python3 scripts/evaluate_feedback_lifecycle.py
+python3 scripts/evaluate_metamorphic_robustness.py
+python3 scripts/evaluate_forward_test_results.py  # 校验历史盲测记录；不冒充当前运行时结果
 python3 scripts/validate_live_generation_results.py  # Release 前的当前模型生成与独立复核门禁
 python3 scripts/evaluate_query_understanding.py
 python3 scripts/evaluate_query_equivalence.py
+python3 scripts/benchmark_runtime.py
 ```
 
 完整构建与验证：
@@ -180,6 +183,10 @@ python3 scripts/evaluate_query_equivalence.py
 python3 scripts/run_full_update_pipeline.py
 python3 scripts/validate_project.py
 ```
+
+完整更新管线会在成功时写出 `output/update-impact-report.json`，记录知识库、
+检索索引、队列和视频状态的前后差异；任何构建或门禁失败都会自动恢复本次
+运行触及的生成产物。该报告是本地运行记录，不纳入版本控制。
 
 每次质量迭代都要同时检查：
 

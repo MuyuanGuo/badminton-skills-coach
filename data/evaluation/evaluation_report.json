@@ -4,13 +4,13 @@
   "development_version": "1.5.0",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "4f7c0b83fdd6da7f",
+    "id": "d36fe7f41cb5229d",
     "inputs_sha256": "f506dfee4a68b0c4b0c0b3b5dee6d9a54404faa45738ab3ab7b804602ef0fa5b",
-    "runtime_sha256": "8e625082bf972d15e0d2b04561d887f40f2371370b129c659a5ecc483eb20560"
+    "runtime_sha256": "b94bc74aa5464befd31508a34f2b9759f9b90706920d42221b7c2c4d87cade48"
   },
   "summary": {
     "status": "pass",
-    "suites": 11,
+    "suites": 13,
     "baseline_metrics": 44,
     "regressions": 0
   },
@@ -76,6 +76,18 @@
       "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
     },
+    "feedback_lifecycle": {
+      "status": "pass",
+      "queue_statuses": 5,
+      "promoted_signals": 0,
+      "promoted_regression_cases": 0,
+      "adversarial_contract_checks": 7,
+      "adversarial_contracts_passed": 7,
+      "contract_accuracy": 1.0,
+      "leaked_private_fields": [],
+      "signals_missing_reverified_provenance": [],
+      "failures": []
+    },
     "retrieval": {
       "cases": 57,
       "expected_videos": 173,
@@ -91,6 +103,21 @@
       "hard_negative_review_violations": 0,
       "top_k": 12
     },
+    "metamorphic_robustness": {
+      "base_cases": 15,
+      "variants": 30,
+      "case_types": {
+        "diagnosis": 3,
+        "evidence_boundary": 3,
+        "tactics": 3,
+        "technical_action": 3,
+        "training_plan": 3
+      },
+      "passed": 30,
+      "pass_rate": 1.0,
+      "failure_taxonomy": {},
+      "failed": []
+    },
     "video_comprehension": {
       "ready_videos": 354,
       "understood_videos": 354,
@@ -99,6 +126,16 @@
       "automatic_transcript": 329,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
+      "evidence_provenance": {
+        "transcript_evidence_items": 2857,
+        "timestamped_transcript_evidence_items": 2857,
+        "transcript_timestamp_coverage": 1.0,
+        "reviewed_visual_observation_items": 19,
+        "synthesized_principle_items": 15,
+        "noncanonical_asr_occurrence_count": 0,
+        "noncanonical_asr_terms": {}
+      },
+      "automated_review_backlog": {},
       "runtime_lookup_coverage": 1.0,
       "failure_count": 0
     },

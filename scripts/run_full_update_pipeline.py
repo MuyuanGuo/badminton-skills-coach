@@ -6,10 +6,44 @@ import subprocess
 import sys
 from pathlib import Path
 
-from project_artifacts import sync_skill_references
+from build_update_impact_report import (
+    DEFAULT_OUTPUT as IMPACT_REPORT_PATH,
+    snapshot as impact_snapshot,
+    write_report as write_impact_report,
+)
+from project_artifacts import (
+    SKILL_REFERENCE_PATHS,
+    artifact_rollback_guard,
+    sync_skill_references,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+UPDATE_ARTIFACT_PATHS = (
+    ROOT / "data/knowledge/douyin_knowledge_base.json",
+    ROOT / "data/knowledge/topic_index.json",
+    ROOT / "data/knowledge/retrieval_index.json",
+    ROOT / "data/knowledge/knowledge_graph_summary.json",
+    ROOT / "data/knowledge/build_manifest.json",
+    ROOT / "data/review/visual_review_queue.json",
+    ROOT / "config/reviewed_evidence_signals.json",
+    ROOT / "output/visual_review_queue.md",
+    ROOT / "output/liuhui-full-knowledge-map.drawio",
+    ROOT / "output/liuhui-knowledge-map.mmd",
+    ROOT / "output/liuhui-knowledge-map.html",
+    ROOT / "output/answer_quality_review_queue.md",
+    ROOT / "README.md",
+    ROOT / "README.en.md",
+    ROOT / "docs/index.html",
+    ROOT / "docs/en/index.html",
+    ROOT / "skills/liuhui-badminton-coach/SKILL.md",
+    ROOT / "skills/liuhui-badminton-coach/agents/openai.yaml",
+    IMPACT_REPORT_PATH,
+    *(
+        ROOT / destination
+        for _, destination in SKILL_REFERENCE_PATHS
+    ),
+)
 
 
 def run(command, *, env=None):
@@ -53,9 +87,12 @@ def validation_commands():
             "--require-manual-review",
         ],
         [sys.executable, "scripts/evaluate_feedback_signals.py"],
+        [sys.executable, "scripts/evaluate_feedback_lifecycle.py"],
         [sys.executable, "scripts/evaluate_query_understanding.py"],
         [sys.executable, "scripts/evaluate_query_equivalence.py"],
+        [sys.executable, "scripts/evaluate_metamorphic_robustness.py"],
         [sys.executable, "scripts/evaluate_retrieval.py"],
+        [sys.executable, "scripts/benchmark_runtime.py"],
         [sys.executable, "scripts/evaluate_forward_test_results.py"],
         [
             sys.executable,
@@ -72,40 +109,44 @@ def validation_commands():
 
 
 def rebuild_and_validate():
-    for command in build_commands():
-        run(command)
-    changed_references = sync_skill_references()
-    print(
-        json.dumps(
-            {"synchronized_skill_references": changed_references},
-            ensure_ascii=False,
+    before = impact_snapshot()
+    with artifact_rollback_guard(UPDATE_ARTIFACT_PATHS):
+        for command in build_commands():
+            run(command)
+        changed_references = sync_skill_references()
+        print(
+            json.dumps(
+                {"synchronized_skill_references": changed_references},
+                ensure_ascii=False,
+            )
         )
-    )
-    run([sys.executable, "scripts/update_readme_status.py"])
-    run([sys.executable, "scripts/build_manifest.py"])
+        run([sys.executable, "scripts/update_readme_status.py"])
+        run([sys.executable, "scripts/build_manifest.py"])
 
-    test_environment = dict(os.environ)
-    existing_pythonpath = test_environment.get("PYTHONPATH")
-    test_environment["PYTHONPATH"] = os.pathsep.join(
-        value
-        for value in [str(ROOT / "scripts"), existing_pythonpath]
-        if value
-    )
-    run(
-        [
-            sys.executable,
-            "-m",
-            "unittest",
-            "discover",
-            "-s",
-            "scripts",
-            "-p",
-            "test_*.py",
-        ],
-        env=test_environment,
-    )
-    for command in validation_commands():
-        run(command)
+        test_environment = dict(os.environ)
+        existing_pythonpath = test_environment.get("PYTHONPATH")
+        test_environment["PYTHONPATH"] = os.pathsep.join(
+            value
+            for value in [str(ROOT / "scripts"), existing_pythonpath]
+            if value
+        )
+        run(
+            [
+                sys.executable,
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "scripts",
+                "-p",
+                "test_*.py",
+            ],
+            env=test_environment,
+        )
+        for command in validation_commands():
+            run(command)
+        impact = write_impact_report(before, impact_snapshot())
+        print(json.dumps({"update_impact": impact}, ensure_ascii=False))
     return changed_references
 
 

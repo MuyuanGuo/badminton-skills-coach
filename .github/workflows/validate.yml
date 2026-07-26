@@ -76,6 +76,18 @@ jobs:
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_feedback_signals.py
 
+      - name: Audit feedback lifecycle
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_feedback_lifecycle.py
+
+      - name: Evaluate metamorphic robustness
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_metamorphic_robustness.py
+
+      - name: Enforce runtime performance budgets
+        if: matrix.kind == 'evaluations'
+        run: python scripts/benchmark_runtime.py
+
       - name: Validate compact answer packets
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_answer_packet.py

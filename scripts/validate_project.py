@@ -36,6 +36,13 @@ compile_command = (
 )
 if compile_command not in workflow_text:
     raise SystemExit("CI does not compile all Python source directories")
+for required_ci_command in [
+    "python scripts/evaluate_feedback_lifecycle.py",
+    "python scripts/evaluate_metamorphic_robustness.py",
+    "python scripts/benchmark_runtime.py",
+]:
+    if required_ci_command not in workflow_text:
+        raise SystemExit(f"CI is missing required quality gate: {required_ci_command}")
 
 json_paths = [
     "config/answer_audit_rules.json",
@@ -50,6 +57,7 @@ json_paths = [
     "config/knowledge_quality_rules.json",
     "config/practice_plan_rules.json",
     "config/retrieval_rules.json",
+    "config/runtime_performance_budgets.json",
     "config/reviewed_evidence_signals.json",
     "data/knowledge/build_manifest.json",
     "data/douyin_teaching_filtered.json",

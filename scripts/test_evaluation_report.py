@@ -148,12 +148,14 @@ class EvaluationReportTests(unittest.TestCase):
                 },
                 "diagnostic_answer_contract": {"accuracy": 1.0},
                 "answer_audit": {"violation_detection_rate": 1.0},
+                "feedback_lifecycle": {"contract_accuracy": 1.0},
                 "retrieval": {
                     "mean_ndcg_at_k": 0.86,
                     "hard_negative_top_k_violations": 0,
                     "found_videos": 173,
                     "expected_videos": 173,
                 },
+                "metamorphic_robustness": {"pass_rate": 1.0},
                 "video_comprehension": {
                     "understanding_coverage": 1.0,
                     "ready_videos": 353,
@@ -173,7 +175,9 @@ class EvaluationReportTests(unittest.TestCase):
                     "query_understanding",
                     "diagnostic_answer_contract",
                     "answer_audit",
+                    "feedback_lifecycle",
                     "retrieval",
+                    "metamorphic_robustness",
                     "video_comprehension",
                     "forward_tests",
                     "live_generation",
@@ -185,7 +189,7 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertIn("abc123", page)
         self.assertIn("a" * 64, page)
         self.assertIn("57/57", page)
-        self.assertEqual(page.count(">PASS<"), 12)
+        self.assertEqual(page.count(">PASS<"), 14)
         self.assertIn("tbody td:nth-of-type(3)", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):
