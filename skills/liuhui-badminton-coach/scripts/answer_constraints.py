@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Compatibility facade for answer scope and candidate-selection policies."""
+
+import importlib.util
+from pathlib import Path
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+def _load(name, filename):
+    spec = importlib.util.spec_from_file_location(name, SCRIPT_DIR / filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_scope = _load("liuhui_answer_scope", "answer_scope.py")
+_candidate = _load(
+    "liuhui_answer_candidate_selection",
+    "answer_candidate_selection.py",
+)
+structured_video_text = _scope.structured_video_text
+structured_constraint_text = _scope.structured_constraint_text
+axis_values = _scope.axis_values
+query_axis_values = _scope.query_axis_values
+source_axis_values = _scope.source_axis_values
+_query_actor_marker_suppressed = _scope._query_actor_marker_suppressed
+_query_actor_parser_parts = _scope._query_actor_parser_parts
+_query_actor_segments = _scope._query_actor_segments
+query_actor_text = _scope.query_actor_text
+_segment_requests_answer = _scope._segment_requests_answer
+query_target_actor = _scope.query_target_actor
+_query_constraints_from_text = _scope._query_constraints_from_text
+_action_sequence_implication = _scope._action_sequence_implication
+_reception_symptom_implication = _scope._reception_symptom_implication
+_query_target_action_context = _scope._query_target_action_context
+query_actor_context = _scope.query_actor_context
+query_constraints = _scope.query_constraints
+query_ambiguities = _scope.query_ambiguities
+query_terminology_corrections = _scope.query_terminology_corrections
+requested_technique_definitions = _scope.requested_technique_definitions
+explicit_constraint_terms = _scope.explicit_constraint_terms
+primary_video_constraint_text = _scope.primary_video_constraint_text
+video_constraint_scope = _scope.video_constraint_scope
+constraint_decision = _scope.constraint_decision
+required_constraint_support_failures = _scope.required_constraint_support_failures
+named_technique_comparison_focus_failures = _scope.named_technique_comparison_focus_failures
+unrequested_specific_scope = _scope.unrequested_specific_scope
+unrequested_ranking_scope = _scope.unrequested_ranking_scope
+non_target_actor_condition_failures = _scope.non_target_actor_condition_failures
+partner_context_rank = _scope.partner_context_rank
+derived_player_constraint_failures = _scope.derived_player_constraint_failures
+requested_action_scope_failures = _scope.requested_action_scope_failures
+is_direct_question_match = _candidate.is_direct_question_match
+term_matches_concept = _candidate.term_matches_concept
+substantive_instruction_text = _scope.substantive_instruction_text
+has_instructional_evidence = _candidate.has_instructional_evidence
+match_has_substantive_concept_evidence = _candidate.match_has_substantive_concept_evidence
+required_relationship_group = _candidate.required_relationship_group
+video_supports_relationship = _candidate.video_supports_relationship
+required_focus_groups = _candidate.required_focus_groups
+text_supports_focus_group = _candidate.text_supports_focus_group
+video_supports_required_focus = _candidate.video_supports_required_focus
+primary_reviewed_focus_text = _candidate.primary_reviewed_focus_text
+entry_focus_requirements = _candidate.entry_focus_requirements
+entry_focus_match = _candidate.entry_focus_match
+symptom_decision = _candidate.symptom_decision
+match_has_full_concept_coverage = _candidate.match_has_full_concept_coverage
+match_passes_direct_threshold = _candidate.match_passes_direct_threshold
+match_passes_expansion_threshold = _candidate.match_passes_expansion_threshold
+match_passes_component_threshold = _candidate.match_passes_component_threshold
+concept_decision = _candidate.concept_decision
+selection_decision = _candidate.selection_decision
+selected_sort_key = _candidate.selected_sort_key
+entry_is_core = _candidate.entry_is_core
+entry_claim_scope_policy = _candidate.entry_claim_scope_policy
+question_concept_anchors = _candidate.question_concept_anchors
+entry_question_concept_coverage = _candidate.entry_question_concept_coverage
+diversify_support_entries = _candidate.diversify_support_entries

@@ -26,6 +26,8 @@ class DoctorAndInstallerTests(unittest.TestCase):
         checks = self.doctor.skill_checks(SKILL_ROOT, run_smoke=True)
         result = self.doctor.summarize("skill", checks)
         self.assertTrue(result["ok"])
+        self.assertEqual(result["version"]["installed_version"], "1.5.0")
+        self.assertRegex(result["version"]["build_id"], r"^[0-9a-f]{64}$")
         self.assertFalse(result["api_key_required"])
         self.assertEqual(result["summary"]["failed"], 0)
 

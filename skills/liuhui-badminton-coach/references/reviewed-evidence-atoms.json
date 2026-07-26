@@ -4,6 +4,149 @@
   "description": "Maintainer-reviewed claim atoms that the answer composer may verbalize without inventing new technical detail.",
   "atoms": [
     {
+      "atom_id": "EA-FORWARD-START-001",
+      "canonical_claim": "前场来球来不及到位",
+      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "forehand_forecourt_start",
+      "scope": {},
+      "conditions": ["正手前场向右前方启动", "仅覆盖该方向的启动动作"],
+      "verbalizable_claim": "正手前场向右前方启动时，先开腿，把左腿放到左后方形成蹬地空间，再由左腿向前蹬出第一步。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7406541084219821312",
+      "evidence_windows": [
+        {
+          "timestamp": "00:14-00:19",
+          "text": "那么首先我们在一个准备状态下我们需要先开腿如果把我的正下方当做我的"
+        },
+        {
+          "timestamp": "00:19-00:24",
+          "text": "这个人的重心的经典我首先要把我的左腿伸到足够的左后方"
+        },
+        {
+          "timestamp": "00:29-00:33",
+          "text": "这样开腿的动作然后开始左腿把力向前登出第一步"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-FORWARD-LONG-PAD-001",
+      "canonical_claim": "前场来球来不及到位",
+      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "long_distance_forecourt_movement",
+      "scope": {},
+      "conditions": ["向前距离较长", "全程小碎步会增加步数"],
+      "verbalizable_claim": "向前距离较长时不要全程用小碎步；途中加入垫步可以少走一步，并减小继续前冲的惯性。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7099644893269839144",
+      "evidence_windows": [
+        {
+          "timestamp": "00:05-00:11",
+          "text": "你看你 你这么小那么上一个斜线 斜线长7米那你全是小岁步怎么行呢"
+        },
+        {
+          "timestamp": "01:10-01:17",
+          "text": "那么有这个垫步不只可以让我们的步子少卖一步还可以让我们的惯性变得更小"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-FORWARD-RHYTHM-001",
+      "canonical_claim": "前场来球来不及到位",
+      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "forecourt_running_rhythm",
+      "scope": {},
+      "conditions": ["追前场来球", "最后确认步仍需根据来球调整"],
+      "verbalizable_claim": "追前场球时第一启动可以快，但最后一个确认步不能预设死，要保留根据来球继续调整的余地。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7642648621985030138",
+      "evidence_windows": [
+        {
+          "timestamp": "01:21-01:25",
+          "text": "我们刚开始去追球的时候你记得第一个启动都是快在追的过程中"
+        },
+        {
+          "timestamp": "01:25-01:32",
+          "text": "尤其是最后一个确认步上是一定不能带着先入为主的思想的是必须带着一定的调整"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-FORWARD-LANDING-001",
+      "canonical_claim": "向前距离与步法组合",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "forward_reception_movement",
+      "scope": {},
+      "conditions": ["正手向前步法的最后一步"],
+      "verbalizable_claim": "正手向前步法的最后一步要落稳，重心不要越过前脚膝盖，并让前脚膝盖和脚尖外摆。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7353467942706695458",
+      "evidence_windows": [
+        {
+          "timestamp": "01:16-01:22",
+          "text": "最后一步要落稳重心不要超过前脚的膝盖前脚的膝盖和脚尖都要外摆"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-KTN-CROSS-STEP-001",
+      "canonical_claim": "杀球后衔接上网来不及",
+      "claim_aliases": [
+        "杀球后来不及上网",
+        "杀球后被对手挡网，我总是来不及上去怎么办"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "smash_to_net_transition",
+      "scope": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "conditions": ["已经决定杀球后只向前衔接", "不覆盖需要停步、回收或转守的其他选择"],
+      "verbalizable_claim": "如果这一拍已经决定杀球后只向前衔接，视觉复核来源展示的核心步法是交叉步。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7065157571816000809",
+      "evidence_windows": [
+        {
+          "timestamp": "visual_review_no_timestamp",
+          "text": "纯动作示范，演示杀球后只考虑衔接上网，不考虑其他可能性的步伐，就是交叉步。"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-KTN-DOUBLES-COVER-001",
+      "canonical_claim": "单打或双打：双打分支",
+      "claim_kind": "material_branch",
+      "actor": "player",
+      "action": "mixed_doubles_smash_to_net_rotation",
+      "scope": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "conditions": ["混双女选手在后场", "男队友能够覆盖剩余后场"],
+      "verbalizable_claim": "在混双女选手后场打斜线或中路杀上网时，可以杀后直接向前，但前提是男队友覆盖剩余后场；这个条件不能推广成单打或所有双打的固定做法。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7087759120761228578",
+      "evidence_windows": [
+        {
+          "timestamp": "00:54-01:02",
+          "text": "我们很难组织有效的防守反击方法3 我们打一个斜线或者中路的杀上网杀完球之后人直接向前走"
+        },
+        {
+          "timestamp": "01:07-01:13",
+          "text": "我们看此时对手这个球如果他抽挑直线的话那么我们的队友就在直线上"
+        }
+      ]
+    },
+    {
       "atom_id": "EA-KTN-TRANSITION-001",
       "canonical_claim": "上一拍后的重心与衔接路线",
       "claim_kind": "supported_mechanism",
@@ -14,11 +157,19 @@
         "technique_variant": ["kill_to_net"],
         "tactical_phase": ["attack"]
       },
-      "conditions": ["杀上网会带来由后向前的惯性", "线路选择必须结合该前冲状态"],
-      "verbalizable_claim": "杀上网本身会带来由后向前的惯性，衔接线路需要把这项惯性算进去。",
+      "conditions": ["杀上网会带来由后向前的惯性", "到中路后线路选择必须结合自己与对手的位置"],
+      "verbalizable_claim": "杀上网本身会带来由后向前的惯性；到中路后，衔接线路要结合自己与对手的位置选择，不能把前冲当成不分情形的固定线路。",
       "confidence_ceiling": "moderate",
       "evidence_id": "7092959332047785250",
       "evidence_windows": [
+        {
+          "timestamp": "00:09-00:19",
+          "text": "来 过来看好了 这边是刚你进攻防那么你现在是一个杀上网 在一个中路拿球的状态"
+        },
+        {
+          "timestamp": "01:00-01:15",
+          "text": "就算它能拦到 你人就在这个场地的左侧 对不对好 再试一试这条线路 单独打这个分球来 就打这个套路 杀完上网直接分边"
+        },
         {
           "timestamp": "01:18-01:31",
           "text": "由于杀上网自身带了一个很强的从后向前的惯性一旦推球被抓 会直接陷入到对手的防守反击当中那么不同的陷入选择一定会产生不同的结果"
@@ -171,6 +322,128 @@
         {
           "timestamp": "01:09-01:12",
           "text": "因为我更被动了我不能让我的挥拍变得动作更大"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-RACKET-FACE-CONTROL-001",
+      "canonical_claim": "拍面方向与控制",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "racket_face_control",
+      "scope": {},
+      "conditions": [
+        "需要先区分握拍、拍面朝向与手腕补偿",
+        "不同击球位置仍需按具体球路调整"
+      ],
+      "verbalizable_claim": "先让虎口与拍面方向对应，并通过变换握拍角度获得目标拍面；不要在已经失去击球位置后只靠掰手腕补偿。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7146762792438074665",
+      "evidence_windows": [
+        {
+          "timestamp": "00:05-00:14",
+          "text": "还要捐手腕去打正确的做法是变好球拍去活手腕的角度这样可以不捐手腕的情况下"
+        },
+        {
+          "timestamp": "00:19-00:27",
+          "text": "我们看到运动员的虎口已经对准了拍面方向我们再通过激完球之后定格来看一下"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-FORWARD-FOOTWORK-DISTANCE-001",
+      "canonical_claim": "向前距离与步法组合",
+      "claim_kind": "supported_mechanism",
+      "actor": "player",
+      "action": "forward_reception_movement",
+      "scope": {},
+      "conditions": [
+        "向前距离较短时可用快速并步",
+        "距离较远时需要组合并步、垫步与蹬跨步"
+      ],
+      "verbalizable_claim": "向前距离较短时可以用快速并步；距离变远时，应把并步、垫步和蹬跨步组合起来，而不是全程用碎步。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7353467942706695458",
+      "evidence_windows": [
+        {
+          "timestamp": "00:10-00:17",
+          "text": "也就是说当我离往前并不太远的时候我可以使用一个快速的并步来进行上网"
+        },
+        {
+          "timestamp": "00:34-00:43",
+          "text": "也就是说我们的正手往前无论是主动还是被动的步法就能变快好了 我们合理地利用并步和垫步以及登跨步"
+        },
+        {
+          "timestamp": "00:43-00:50",
+          "text": "组成一个距离非常远速度很快的正手往前步法首先我们先做启动 开合"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-PASSIVE-CLEAR-FOREHAND-BRANCH-001",
+      "canonical_claim": "正手或反手：正手分支",
+      "claim_kind": "material_branch",
+      "actor": "player",
+      "action": "passive_rearcourt_clear",
+      "scope": {
+        "court_zone": [
+          "rearcourt"
+        ],
+        "pressure_state": [
+          "passive"
+        ]
+      },
+      "conditions": [
+        "仅用于正手被动后场分支",
+        "不得套用为反手专项动作"
+      ],
+      "verbalizable_claim": "正手被动后场要让球拍更早从下方到身后，少做完整侧身并提前击球；不能照搬主动球的完整引拍和随挥。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7558912953539071292",
+      "evidence_windows": [
+        {
+          "timestamp": "00:27-00:40",
+          "text": "判断进入被动后，应让球拍先从下方偷到身后，再从后方向上击球。"
+        },
+        {
+          "timestamp": "01:25-01:45",
+          "text": "极度被动时不必强行完整侧身，否则容易后仰并失去回动能力。"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-PASSIVE-CLEAR-BACKHAND-BRANCH-001",
+      "canonical_claim": "正手或反手：反手分支",
+      "claim_kind": "material_branch",
+      "actor": "player",
+      "action": "passive_rearcourt_clear",
+      "scope": {
+        "court_zone": [
+          "rearcourt"
+        ],
+        "pressure_state": [
+          "passive"
+        ]
+      },
+      "conditions": [
+        "仅用于反手被动后场分支",
+        "架拍高度随被动程度降低"
+      ],
+      "verbalizable_claim": "反手进入更被动的点位后，身体姿态和引拍位置都要降低，架拍也随之降低；仍要用蹬地、腰腹和快速出手组织发力。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7109288333884329231",
+      "evidence_windows": [
+        {
+          "timestamp": "00:32-00:42",
+          "text": "随着点位的更加被动首先我人的姿态更低了注意我引拍的位置也发生了变化"
+        },
+        {
+          "timestamp": "00:42-00:47",
+          "text": "引拍的姿态低伴随着架拍也一定会低那么我要为我的提走"
+        },
+        {
+          "timestamp": "00:55-00:59",
+          "text": "迅速脚登地引动腰腹出引肘尽管被动"
         }
       ]
     }

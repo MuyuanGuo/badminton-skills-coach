@@ -23,3 +23,29 @@ jobs:
           python scripts/check_maintenance_health.py \
             --github-summary \
             --fail-on overdue
+
+      - name: Sample live Douyin link reachability
+        run: >-
+          python scripts/check_video_links.py
+          --network
+          --sample-size 12
+          --timeout 15
+          --output "$RUNNER_TEMP/video-link-health.json"
+
+      - name: Publish link-monitor summary
+        env:
+          LINK_REPORT: ${{ runner.temp }}/video-link-health.json
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          import os
+          from pathlib import Path
+          report = json.loads(Path(os.environ["LINK_REPORT"]).read_text())
+          print("## Live video-link sample")
+          print(f"- Sampled: {report['sample_size']}")
+          print(f"- Reachable: {report['sample_size'] - report['network_failures']}")
+          print(f"- Failed signals: {report['network_failures']}")
+          for item in report["network_checks"]:
+              state = "reachable" if item["reachable"] else "signal failed"
+              print(f"- `{item['video_id']}`: {state} ({item['http_status']})")
+          PY

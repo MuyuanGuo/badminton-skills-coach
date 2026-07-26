@@ -29,6 +29,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Require current independently reviewed model generations
+        run: python scripts/validate_live_generation_results.py
+
       - name: Package archive and generate SBOM
         env:
           RELEASE_TAG: ${{ github.ref_name }}

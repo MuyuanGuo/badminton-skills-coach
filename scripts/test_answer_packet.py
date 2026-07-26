@@ -69,6 +69,16 @@ class AnswerPacketTests(unittest.TestCase):
         )
         self.assertTrue(plan["composer_contract"]["unknown_atom_ids_forbidden"])
 
+    def test_reviewed_question_atom_aliases_are_matched(self):
+        context = self.runtime.prepare_answer_context(
+            "杀球后来不及上网",
+            local_personalization=False,
+        )
+        selected = {
+            item["atom_id"] for item in context["answer_plan"]["selected_evidence_atoms"]
+        }
+        self.assertIn("EA-KTN-CROSS-STEP-001", selected)
+
     def test_unatomized_scope_keeps_claim_scoped_source_evidence(self):
         context = copy.deepcopy(self.context)
         context["answer_plan"] = self.runtime.build_closed_answer_plan(context, [])
@@ -81,6 +91,12 @@ class AnswerPacketTests(unittest.TestCase):
         self.assertTrue(
             any(video["evidence_windows"] for video in packet["selected_videos"])
         )
+        self.assertTrue(
+            all(
+                len(video["evidence_windows"]) <= 4
+                for video in packet["selected_videos"]
+            )
+        )
 
     def test_packet_omits_retrieval_diagnostics_and_repeated_policy(self):
         encoded = json.dumps(self.packet, ensure_ascii=False)
@@ -90,6 +106,29 @@ class AnswerPacketTests(unittest.TestCase):
         full_size = len(json.dumps(self.context, ensure_ascii=False).encode("utf-8"))
         packet_size = len(encoded.encode("utf-8"))
         self.assertLessEqual(packet_size / full_size, 0.5)
+
+    def test_packet_exposes_exactly_claim_mapped_videos(self):
+        mapped_labels = {
+            evidence["label"]
+            for claim in self.packet["claim_evidence_map"]
+            for evidence in claim.get("evidence", [])
+        }
+        packet_labels = {
+            video["label"] for video in self.packet["selected_videos"]
+        }
+        self.assertEqual(packet_labels, mapped_labels)
+        self.assertEqual(
+            set(self.context["answer_visible_video_labels"]),
+            mapped_labels,
+        )
+
+    def test_compact_videos_omit_redundant_douyin_identity_and_nulls(self):
+        for video in self.packet["selected_videos"]:
+            self.assertNotIn("video_id", video)
+            self.assertNotIn("source_type", video)
+            self.assertNotIn("parent_source_id", video)
+            self.assertNotIn("clip_start_seconds", video)
+            self.assertNotIn("clip_end_seconds", video)
 
     def test_cli_writes_full_context_and_prints_packet(self):
         with tempfile.TemporaryDirectory() as directory:

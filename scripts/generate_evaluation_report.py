@@ -19,6 +19,7 @@ import evaluate_query_equivalence
 import evaluate_query_understanding
 import evaluate_retrieval
 import evaluate_video_comprehension
+import validate_live_generation_results
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +38,7 @@ EVALUATION_SUITES = {
     "retrieval",
     "video_comprehension",
     "forward_tests",
+    "live_generation",
 }
 CORE_EVALUATORS = (
     "build_douyin_knowledge.py",
@@ -50,6 +52,7 @@ CORE_EVALUATORS = (
     "evaluate_query_understanding.py",
     "evaluate_retrieval.py",
     "evaluate_video_comprehension.py",
+    "validate_live_generation_results.py",
 )
 EVALUATION_INPUTS = (
     "config/answer_audit_rules.json",
@@ -66,6 +69,7 @@ EVALUATION_INPUTS = (
     "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/forward_test_results.json",
+    "data/evaluation/live_generation_results.json",
     "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
     "data/knowledge/douyin_knowledge_base.json",
@@ -175,7 +179,21 @@ def collect_evaluations(root=ROOT):
         evaluate_forward_test_results.load_json(
             root / "data/evaluation/diagnostic_answer_continuation_cases.json"
         ),
+        require_current_runtime=False,
     )
+    live_payload = validate_live_generation_results.load_json(
+        root / "data/evaluation/live_generation_results.json"
+    )
+    live_result = validate_live_generation_results.validate_results(
+        live_payload,
+        root=root,
+        rerun_runtime=True,
+    )
+    live_scores = [
+        score
+        for item in live_payload["cases"]
+        for score in item["manual_scores"].values()
+    ]
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
@@ -212,6 +230,8 @@ def collect_evaluations(root=ROOT):
             )
         },
         "answer_quality": {
+            "measurement_type": "reviewed_static_answer_snapshots",
+            "current_model_generation_claimed": False,
             **registry_result,
             **{
                 key: answers_result[key]
@@ -295,6 +315,9 @@ def collect_evaluations(root=ROOT):
         "forward_tests": {
             key: forward_result[key]
             for key in (
+                "measurement_type",
+                "current_runtime_match",
+                "current_runtime_generation_claimed",
                 "critical_cases",
                 "blind_passes",
                 "unseen_rounds",
@@ -302,6 +325,22 @@ def collect_evaluations(root=ROOT):
                 "consecutive_passes",
                 "failed",
             )
+        },
+        "live_generation": {
+            "measurement_type": "current_runtime_generation_review",
+            "current_runtime_match": True,
+            "current_runtime_generation_claimed": True,
+            "runtime_fingerprint": live_result["runtime_fingerprint"],
+            "critical_cases": live_result["critical_cases"],
+            "independently_reviewed": live_result["independently_reviewed"],
+            "passed": len(live_payload["cases"]),
+            "minimum_manual_score": min(live_scores),
+            "failed": [],
+            "generator": {
+                key: live_payload["generator"][key]
+                for key in ("provider", "model", "model_version")
+            },
+            "reviewer": live_payload["review"]["reviewer"],
         },
     }
 
@@ -417,7 +456,8 @@ def render_html(report):
         "answer_audit": "Final-answer audit",
         "retrieval": "Evidence retrieval",
         "video_comprehension": "Video comprehension",
-        "forward_tests": "Forward tests",
+        "forward_tests": "Historical generation reviews",
+        "live_generation": "Current-runtime generations",
     }
     featured = {
         "answer_policy": ("accuracy", "Mode accuracy"),
@@ -430,6 +470,7 @@ def render_html(report):
         "retrieval": ("mean_ndcg_at_k", "nDCG@12"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
+        "live_generation": ("minimum_manual_score", "Minimum review score"),
     }
     rows = []
     comparisons_by_suite = {}
@@ -467,7 +508,7 @@ def render_html(report):
   <main class="shell">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. It covers the complete path from query interpretation to reviewed answers and blind forward tests.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Static snapshots and historical blind generations remain labeled as such; the current-runtime suite contains freshly generated answers that passed independent review and runtime-bound audits.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

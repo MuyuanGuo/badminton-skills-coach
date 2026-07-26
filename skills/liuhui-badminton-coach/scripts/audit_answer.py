@@ -65,8 +65,16 @@ def text_match_score(needle, haystack, rules):
 def selected_video_maps(context):
     by_label = {}
     by_evidence_id = {}
+    visible_labels = set(
+        context.get(
+            "answer_visible_video_labels",
+            [item.get("label") for item in context.get("selected_videos", [])],
+        )
+    )
     for video in context.get("selected_videos", []):
         label = video.get("label")
+        if label not in visible_labels:
+            continue
         evidence_id = str(video.get("evidence_id", video.get("video_id", "")))
         canonical_url = video.get("canonical_url") or video.get("url")
         if label:
@@ -185,6 +193,17 @@ def validate_packet_binding(packet, context):
         context
     ):
         raise ValueError("answer_packet audit context digest mismatch")
+    visible_labels = set(
+        context.get(
+            "answer_visible_video_labels",
+            [item.get("label") for item in context.get("selected_videos", [])],
+        )
+    )
+    packet_labels = {
+        item.get("label") for item in packet.get("selected_videos", [])
+    }
+    if packet_labels != visible_labels:
+        raise ValueError("answer_packet videos do not match the answer-visible labels")
 
 
 def validate_answer_turn_contract(context):
@@ -437,9 +456,16 @@ def audit_answer(question, context, answer, rules=None):
             if claim.get("status") not in {"supported", "conditional"}:
                 continue
             ceiling = claim.get("confidence_ceiling", "none")
-            assertion_rank = 3 if certainty_pattern.search(unit) else (
-                1 if conditional_pattern.search(unit) else 2
-            )
+            if uncertainty_pattern.search(unit):
+                # Negated certainty such as “不能确认唯一原因” is an
+                # uncertainty boundary, not a hard-certainty assertion.
+                assertion_rank = 1
+            elif certainty_pattern.search(unit):
+                assertion_rank = 3
+            elif conditional_pattern.search(unit):
+                assertion_rank = 1
+            else:
+                assertion_rank = 2
             if assertion_rank > CONFIDENCE_RANK.get(ceiling, 0):
                 add_violation(
                     violations,
@@ -679,7 +705,8 @@ def main():
     parser.add_argument(
         "--packet",
         type=Path,
-        help="Compact answer packet whose digest must bind to --context.",
+        required=True,
+        help="Compact answer packet whose digest and visible evidence must bind to --context.",
     )
     answer_input = parser.add_mutually_exclusive_group(required=True)
     answer_input.add_argument("--answer", type=Path, help="UTF-8 final-answer text file")
@@ -688,11 +715,10 @@ def main():
     args = parser.parse_args()
 
     context = load_json(args.context)
-    if args.packet:
-        try:
-            validate_packet_binding(load_json(args.packet), context)
-        except ValueError as error:
-            raise SystemExit(str(error)) from error
+    try:
+        validate_packet_binding(load_json(args.packet), context)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     answer = args.answer.read_text(encoding="utf-8") if args.answer else args.answer_text
     result = audit_answer(args.question, context, answer, load_rules(args.rules))
     print(json.dumps(result, ensure_ascii=False, indent=2))

@@ -4,13 +4,13 @@
   "development_version": "1.5.0",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "c06c9913945acbed",
-    "inputs_sha256": "3c40d9dd357760680ad1a1a70697f1e3361eb842115d6ceaadfed27fff96c722",
-    "runtime_sha256": "32b784f5d661bc735f43db4a5b5511d5ef940d8fe2c0f75dbe39df0ad3e0d2b8"
+    "id": "f828e92a4d96455a",
+    "inputs_sha256": "a1027f0c62264ab58d2864544f60c5240fa09f2cce0f899317d8eea5a20487ee",
+    "runtime_sha256": "dc4260ea58a9b824b987d58567c428f063461c98366b3577bfadc8ea19d1dc51"
   },
   "summary": {
     "status": "pass",
-    "suites": 10,
+    "suites": 11,
     "baseline_metrics": 44,
     "regressions": 0
   },
@@ -34,6 +34,8 @@
       "selection_truncated_cases": 0
     },
     "answer_quality": {
+      "measurement_type": "reviewed_static_answer_snapshots",
+      "current_model_generation_claimed": false,
       "cases": 57,
       "status_counts": {
         "maintainer_reviewed": 57
@@ -101,12 +103,32 @@
       "failure_count": 0
     },
     "forward_tests": {
+      "measurement_type": "historical_generation_review",
+      "current_runtime_match": false,
+      "current_runtime_generation_claimed": false,
       "critical_cases": 3,
       "blind_passes": 3,
       "unseen_rounds": 6,
       "unseen_cases": 24,
       "consecutive_passes": 6,
       "failed": []
+    },
+    "live_generation": {
+      "measurement_type": "current_runtime_generation_review",
+      "current_runtime_match": true,
+      "current_runtime_generation_claimed": true,
+      "runtime_fingerprint": "d171a38dd1c9329624d3a55c37057845e5508fd1861526023e4a35ba015b7357",
+      "critical_cases": 3,
+      "independently_reviewed": 3,
+      "passed": 3,
+      "minimum_manual_score": 4,
+      "failed": [],
+      "generator": {
+        "provider": "OpenAI",
+        "model": "Codex",
+        "model_version": "GPT-5"
+      },
+      "reviewer": "independent_live_answer_reviewer"
     }
   },
   "baseline_comparison": [

@@ -1,0 +1,5 @@
+# Optional maintainer tooling only; the installed Skill runtime uses the standard library.
+faster-whisper>=1.2.1,<2
+certifi>=2026.6.17
+PyYAML>=6.0.3,<7
+yt-dlp>=2026.7.4,<2027

@@ -50,6 +50,11 @@ class SearchKnowledgeTests(unittest.TestCase):
         second_ids = {item["video_id"] for item in second["candidate_manifest"]}
         self.assertFalse(first_ids & second_ids)
 
+    def test_selection_policy_is_a_leaf_not_the_context_facade(self):
+        module = self.search_module.load_selection_module()
+        self.assertEqual(Path(module.__file__).name, "answer_selection_policy.py")
+        self.assertNotEqual(Path(module.__file__).name, "prepare_answer_context.py")
+
     def test_balanced_mode_stops_at_its_cap_while_exhaustive_continues(self):
         query = "网前框架怎么做才不会身体僵硬"
         balanced = self.search_module.search(
@@ -337,7 +342,7 @@ class SearchKnowledgeTests(unittest.TestCase):
         )
         result = payload["results"][0]
         self.assertIn("debug_retrieval_index", result)
-        self.assertIn("transcript_ngrams", result["debug_retrieval_index"])
+        self.assertIn("ngram_counts", result["debug_retrieval_index"])
         self.assertIn("debug_ranked_candidate", result)
         self.assertIn("debug_stored_teaching_note", result)
 
@@ -591,6 +596,29 @@ class SearchKnowledgeTests(unittest.TestCase):
         )
         self.assertNotIn("category", rules["field_weights"])
 
+    def test_retrieval_index_uses_compact_inverted_ngram_postings(self):
+        _, retrieval_index, _ = self.search_module.load_resources()
+        self.assertEqual(
+            retrieval_index["inverted_index_schema"],
+            "parallel_ngram_vocabulary_postings_v1",
+        )
+        self.assertEqual(
+            len(retrieval_index["ngram_vocabulary"]),
+            len(retrieval_index["ngram_postings"]),
+        )
+        self.assertEqual(
+            retrieval_index["ngram_vocabulary"],
+            sorted(retrieval_index["ngram_vocabulary"]),
+        )
+        self.assertTrue(
+            all("ngram_counts" in record for record in retrieval_index["videos"])
+        )
+        self.assertTrue(
+            all(
+                "transcript_ngrams" not in record
+                for record in retrieval_index["videos"]
+            )
+        )
     def test_visual_reviewed_records_exclude_failed_automatic_transcripts(self):
         knowledge, retrieval_index, _ = self.search_module.load_resources()
         records = {item["video_id"]: item for item in retrieval_index["videos"]}
@@ -613,7 +641,9 @@ class SearchKnowledgeTests(unittest.TestCase):
         for video in visual:
             with self.subTest(video_id=video["video_id"]):
                 self.assertEqual(video["transcript_segments"], [])
-                self.assertEqual(records[video["video_id"]]["transcript_ngrams"], [])
+                self.assertEqual(
+                    records[video["video_id"]]["ngram_counts"]["transcript"], 0
+                )
                 self.assertFalse(
                     {"key_evidence", "error_evidence", "action_cues"}
                     & set(video["teaching_note"])

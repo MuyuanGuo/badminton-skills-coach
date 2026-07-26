@@ -2,7 +2,7 @@
 import hashlib
 import json
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
@@ -89,6 +89,9 @@ def build_index(knowledge, topic_index, rules):
     term_document_frequency = Counter()
     field_length_totals = Counter()
     missing_runtime_segments = []
+    ngram_posting_masks = defaultdict(dict)
+    term_postings = defaultdict(list)
+    topic_postings = defaultdict(list)
     for video in knowledge["videos"]:
         if video["processing_status"] != "ready":
             continue
@@ -124,6 +127,25 @@ def build_index(knowledge, topic_index, rules):
             if video["video_id"] in topic["video_ids"]:
                 matched_topics.append(topic["topic_id"])
                 topic_counts[topic["topic_id"]] += 1
+        record_index = len(records)
+        channel_ngrams = {
+            "title": hashed_ngrams(
+                video.get("retrieval_title") or video["title"], sizes
+            ),
+            "teaching_note": hashed_ngrams(
+                flatten(searchable_teaching_note(video["teaching_note"])), sizes
+            ),
+            "transcript": hashed_ngrams(full_text, sizes),
+        }
+        for mask, channel in [(1, "title"), (2, "teaching_note"), (4, "transcript")]:
+            for gram in channel_ngrams[channel]:
+                ngram_posting_masks[gram][record_index] = (
+                    ngram_posting_masks[gram].get(record_index, 0) | mask
+                )
+        for term in matched_terms:
+            term_postings[term].append(record_index)
+        for topic_id in matched_topics:
+            topic_postings[topic_id].append(record_index)
         records.append(
             {
                 "video_id": video["video_id"],
@@ -139,17 +161,10 @@ def build_index(knowledge, topic_index, rules):
                     field: len(text) for field, text in field_text.items()
                 },
                 "field_term_frequencies": field_term_frequencies,
-                "title_ngrams": sorted(
-                    hashed_ngrams(
-                        video.get("retrieval_title") or video["title"], sizes
-                    )
-                ),
-                "teaching_note_ngrams": sorted(
-                    hashed_ngrams(
-                        flatten(searchable_teaching_note(video["teaching_note"])), sizes
-                    )
-                ),
-                "transcript_ngrams": sorted(hashed_ngrams(full_text, sizes)),
+                "ngram_counts": {
+                    channel: len(grams)
+                    for channel, grams in channel_ngrams.items()
+                },
             }
         )
 
@@ -159,6 +174,7 @@ def build_index(knowledge, topic_index, rules):
             + ", ".join(missing_runtime_segments)
         )
 
+    ngram_vocabulary = sorted(ngram_posting_masks)
     return {
         "version": rules["version"],
         "source": str(KNOWLEDGE_PATH.relative_to(ROOT)),
@@ -174,6 +190,19 @@ def build_index(knowledge, topic_index, rules):
         "evidence_fields": ["title", "teaching_note", "transcript"],
         "screening_fields_excluded": ["category", "tags"],
         "transcript_ngram_sizes": sizes,
+        "inverted_index_schema": "parallel_ngram_vocabulary_postings_v1",
+        "ngram_vocabulary": ngram_vocabulary,
+        "ngram_postings": [
+            sorted(ngram_posting_masks[gram].items())
+            for gram in ngram_vocabulary
+        ],
+        "term_postings": {
+            term: indexes for term, indexes in sorted(term_postings.items())
+        },
+        "topic_postings": {
+            topic_id: indexes
+            for topic_id, indexes in sorted(topic_postings.items())
+        },
         "topics": [
             {
                 **{key: value for key, value in topic.items() if key != "video_ids"},

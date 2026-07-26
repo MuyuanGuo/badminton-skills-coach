@@ -6,15 +6,32 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 MINIMUM_PYTHON = (3, 10)
+LATEST_RELEASE_URL = (
+    "https://api.github.com/repos/MuyuanGuo/badminton-skills-coach/releases/latest"
+)
 REQUIRED_SKILL_FILES = [
     "SKILL.md",
     "scripts/audit_answer.py",
+    "scripts/answer_candidate_selection.py",
+    "scripts/answer_constraints.py",
+    "scripts/answer_continuation.py",
+    "scripts/answer_packet.py",
+    "scripts/answer_retrieval_plan.py",
+    "scripts/answer_scope.py",
+    "scripts/answer_selection_policy.py",
+    "scripts/diagnostic_contract.py",
+    "scripts/feedback_ranking.py",
     "scripts/prepare_answer_context.py",
+    "scripts/query_planning.py",
+    "scripts/retrieval_projection.py",
+    "scripts/retrieval_ranking.py",
     "scripts/search_knowledge.py",
     "scripts/navigate_topics.py",
     "scripts/feedback.py",
@@ -307,7 +324,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             "transcription_python",
             python_path is not None,
             str(python_path) if python_path else "not found",
-            "Create .venv and install requirements-transcription.txt, or set LIUHUI_TRANSCRIPTION_PYTHON.",
+            "Create .venv and install the pinned requirements-transcription.txt, or set LIUHUI_TRANSCRIPTION_PYTHON.",
         )
     )
     faster_whisper_ok = False
@@ -425,13 +442,84 @@ def maintainer_checks(repo_root, transcription=False, override=None):
     return checks
 
 
-def summarize(profile, checks):
+def installed_version_metadata(skill_root=SKILL_ROOT):
+    skill_root = Path(skill_root)
+    feedback = json.loads(
+        (skill_root / "references" / "feedback-rules.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    manifest = json.loads(
+        (skill_root / "references" / "build-manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    return {
+        "installed_version": feedback.get("skill_version"),
+        "stable_version_at_build": feedback.get("stable_version"),
+        "channel": feedback.get("channel"),
+        "build_id": manifest.get("build_id"),
+    }
+
+
+def latest_release_check(installed_version, timeout=10):
+    request = urllib.request.Request(
+        LATEST_RELEASE_URL,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "BadmintonSkillsCoachDoctor/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            latest = json.loads(response.read().decode("utf-8"))["tag_name"].removeprefix(
+                "v"
+            )
+    except (
+        OSError,
+        KeyError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        urllib.error.URLError,
+    ) as error:
+        return check(
+            "latest_release",
+            False,
+            f"could not query latest release: {error}",
+            "Check the Releases page when network access is available.",
+            required=False,
+        )
+    current = latest == installed_version
+    return check(
+        "latest_release",
+        current,
+        (
+            f"installed={installed_version}, latest={latest}"
+            if current
+            else f"update available: installed={installed_version}, latest={latest}"
+        ),
+        "Install the latest signed release archive and rerun doctor.py.",
+        required=False,
+    )
+
+
+def summarize(profile, checks, skill_root=SKILL_ROOT):
     failures = [item for item in checks if item["status"] == "fail"]
     warnings = [item for item in checks if item["status"] == "warn"]
+    try:
+        version = installed_version_metadata(skill_root)
+    except (OSError, KeyError, json.JSONDecodeError):
+        version = {
+            "installed_version": None,
+            "stable_version_at_build": None,
+            "channel": None,
+            "build_id": None,
+        }
     return {
         "profile": profile,
         "ok": not failures,
         "api_key_required": False,
+        "version": version,
         "checks": checks,
         "summary": {
             "passed": sum(item["status"] == "pass" for item in checks),
@@ -454,6 +542,11 @@ def main(default_profile="skill"):
     parser.add_argument("--repo-root", type=Path)
     parser.add_argument("--transcription-python", type=Path)
     parser.add_argument("--no-smoke", action="store_true")
+    parser.add_argument(
+        "--check-update",
+        action="store_true",
+        help="Compare the installed version with the latest GitHub release.",
+    )
     args = parser.parse_args()
 
     repo_root = (args.repo_root or args.skill_root.resolve().parents[1]).resolve()
@@ -472,7 +565,10 @@ def main(default_profile="skill"):
         )
     elif args.profile == "transcription":
         checks.extend(transcription_checks(repo_root, args.transcription_python))
-    result = summarize(args.profile, checks)
+    if args.check_update:
+        installed = installed_version_metadata(args.skill_root)["installed_version"]
+        checks.append(latest_release_check(installed))
+    result = summarize(args.profile, checks, args.skill_root)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["ok"] else 1
 

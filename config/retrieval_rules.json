@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v25",
+  "version": "retrieval-v26",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,

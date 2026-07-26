@@ -8,6 +8,9 @@ from project_artifacts import atomic_write_bundle, derive_project_status
 
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
+README_EN = ROOT / "README.en.md"
+DOCS_ZH = ROOT / "docs" / "index.html"
+DOCS_EN = ROOT / "docs" / "en" / "index.html"
 SKILL = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 AGENT_METADATA = (
     ROOT / "skills" / "liuhui-badminton-coach" / "agents" / "openai.yaml"
@@ -226,7 +229,79 @@ def update_technical_readme_text(
         updated, count = re.subn(pattern, replacement, updated, flags=re.MULTILINE)
         if count > 1:
             raise ValueError(f"Technical README metric matched {count} times: {pattern}")
+    updated = replace_optional(
+        updated,
+        r"^- `references/knowledge-base\.json`：\d+ 条可用教学证据。$",
+        f"- `references/knowledge-base.json`：{ready_count} 条可用教学证据。",
+        "README knowledge resource count",
+    )
     return updated
+
+
+def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
+    status = derive_project_status(video_index, teaching_filter, knowledge)
+    evidence = evidence_counts(knowledge)
+    replacements = {
+        r"^\| Processed public videos \| \d+ \|$": (
+            f"| Processed public videos | {status['public_videos_collected']} |"
+        ),
+        r"^\| Ready teaching videos \| \d+ \|$": (
+            f"| Ready teaching videos | {status['ready_teaching_videos']} |"
+        ),
+        r"^\| Transcript-backed evidence \| \d+ \|$": (
+            f"| Transcript-backed evidence | {evidence['transcript']} |"
+        ),
+        r"^\| Reviewed visual-summary fallbacks \| \d+ \|$": (
+            f"| Reviewed visual-summary fallbacks | {evidence['visual']} |"
+        ),
+    }
+    updated = readme
+    for pattern, replacement in replacements.items():
+        updated = replace_one(
+            updated, pattern, replacement, "English README evidence baseline"
+        )
+    return updated
+
+
+def update_site_status_text(page, knowledge, language):
+    evidence = evidence_counts(knowledge)
+    if language == "zh":
+        page = replace_one(
+            page,
+            r"(它从 )\d+( 条教学视频中寻找答案)",
+            rf"\g<1>{evidence['ready']}\g<2>",
+            "Chinese site lede count",
+        )
+        page = replace_one(
+            page,
+            r"(<strong>)\d+(</strong><span>条可用教学视频</span>)",
+            rf"\g<1>{evidence['ready']}\g<2>",
+            "Chinese site metric count",
+        )
+        return replace_one(
+            page,
+            r"(<strong>)\d+(</strong><span>条转写证据</span>)",
+            rf"\g<1>{evidence['transcript']}\g<2>",
+            "Chinese site transcript count",
+        )
+    page = replace_one(
+        page,
+        r"(searches )\d+( Chinese badminton teaching videos)",
+        rf"\g<1>{evidence['ready']}\g<2>",
+        "English site lede count",
+    )
+    page = replace_one(
+        page,
+        r"(<strong>)\d+(</strong><span>ready teaching videos</span>)",
+        rf"\g<1>{evidence['ready']}\g<2>",
+        "English site ready count",
+    )
+    return replace_one(
+        page,
+        r"(<strong>)\d+(</strong><span>transcript-backed sources</span>)",
+        rf"\g<1>{evidence['transcript']}\g<2>",
+        "English site transcript count",
+    )
 
 
 def update_skill_status_text(skill, knowledge):
@@ -282,24 +357,37 @@ def update_agent_metadata_text(metadata, knowledge):
 
 def main():
     readme = README.read_text(encoding="utf-8")
+    readme_en = README_EN.read_text(encoding="utf-8")
+    docs_zh = DOCS_ZH.read_text(encoding="utf-8")
+    docs_en = DOCS_EN.read_text(encoding="utf-8")
     skill = SKILL.read_text(encoding="utf-8")
     agent_metadata = AGENT_METADATA.read_text(encoding="utf-8")
     knowledge = load_json(KNOWLEDGE)
+    video_index = load_json(VIDEO_INDEX)
+    teaching_filter = load_json(TEACHING_FILTER)
     updated = update_readme_text(
         readme,
-        load_json(VIDEO_INDEX),
-        load_json(TEACHING_FILTER),
+        video_index,
+        teaching_filter,
         knowledge,
         load_json(FEEDBACK_SIGNALS),
         load_json(ANSWER_CASES),
         load_json(QUEUE),
     )
+    updated_en = update_english_readme_text(
+        readme_en, video_index, teaching_filter, knowledge
+    )
+    updated_docs_zh = update_site_status_text(docs_zh, knowledge, "zh")
+    updated_docs_en = update_site_status_text(docs_en, knowledge, "en")
     updated_skill = update_skill_status_text(skill, knowledge)
     updated_agent_metadata = update_agent_metadata_text(agent_metadata, knowledge)
     changed = {
         path: text
         for path, text, original in [
             (README, updated, readme),
+            (README_EN, updated_en, readme_en),
+            (DOCS_ZH, updated_docs_zh, docs_zh),
+            (DOCS_EN, updated_docs_en, docs_en),
             (SKILL, updated_skill, skill),
             (AGENT_METADATA, updated_agent_metadata, agent_metadata),
         ]

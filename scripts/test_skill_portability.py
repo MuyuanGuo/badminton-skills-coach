@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import hashlib
 import shutil
 import subprocess
 import sys
@@ -122,16 +123,36 @@ class SkillPortabilityTests(unittest.TestCase):
             )
 
             audit_context_path = external_workdir / "audit-context.json"
+            audit_packet_path = external_workdir / "answer-packet.json"
             audit_answer_path = external_workdir / "audit-answer.md"
+            audit_context = {
+                "query": "测试问题",
+                "boundary": {"type": "none", "required_statement": None},
+                "diagnostic_model": {"do_not_claim_unique_cause": False},
+                "clarification_decision": {"action": "answer_now", "questions": []},
+                "claim_evidence_map": [],
+                "completeness_contract": {"items": []},
+                "selected_videos": [],
+                "answer_visible_video_labels": [],
+            }
             audit_context_path.write_text(
+                json.dumps(audit_context, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            digest = hashlib.sha256(
+                json.dumps(
+                    audit_context,
+                    ensure_ascii=False,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest()
+            audit_packet_path.write_text(
                 json.dumps(
                     {
-                        "query": "测试问题",
-                        "boundary": {"type": "none", "required_statement": None},
-                        "diagnostic_model": {"do_not_claim_unique_cause": False},
-                        "clarification_decision": {"action": "answer_now", "questions": []},
-                        "claim_evidence_map": [],
-                        "completeness_contract": {"items": []},
+                        "schema_version": 1,
+                        "packet_type": "liuhui_badminton_answer_packet",
+                        "audit_context": {"digest": digest},
                         "selected_videos": [],
                     },
                     ensure_ascii=False,
@@ -146,6 +167,8 @@ class SkillPortabilityTests(unittest.TestCase):
                     "测试问题",
                     "--context",
                     str(audit_context_path),
+                    "--packet",
+                    str(audit_packet_path),
                     "--answer",
                     str(audit_answer_path),
                 ],

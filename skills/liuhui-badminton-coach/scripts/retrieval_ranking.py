@@ -1,0 +1,767 @@
+#!/usr/bin/env python3
+"""Candidate scoring, evidence tiers, review budgets, and retrieval policy."""
+
+import math
+from collections import Counter
+from types import SimpleNamespace
+
+def searchable_teaching_note(note):
+    return {
+        key: value
+        for key, value in note.items()
+        if key != "coverage_evidence"
+    }
+
+def field_values(video):
+    return {
+        "title": video.get("retrieval_title") or video["title"],
+        "teaching_note": flatten(searchable_teaching_note(video["teaching_note"])),
+    }
+
+
+def match_fields(video, term_weights, field_weights):
+    matched_fields = {}
+    matched_terms = set()
+    score = 0.0
+    for field, value in field_values(video).items():
+        normalized_value = normalize(value)
+        field_terms = []
+        for term, weight in term_weights.items():
+            normalized_term = normalize(term)
+            if normalized_term and normalized_term in normalized_value:
+                occurrences = min(normalized_value.count(normalized_term), 3)
+                score += weight * field_weights[field] * occurrences
+                matched_terms.add(term)
+                field_terms.append(term)
+        if field_terms:
+            matched_fields[field] = sorted(set(field_terms))
+    return score, sorted(matched_terms), matched_fields
+
+
+def dynamic_term_statistics(knowledge, terms):
+    terms = {term for term in terms if normalize(term)}
+    document_frequency = Counter()
+    by_video = {}
+    if not terms:
+        return document_frequency, by_video
+    for video in knowledge["videos"]:
+        if video.get("processing_status") != "ready":
+            continue
+        field_text = {
+            "title": normalize(video.get("retrieval_title") or video["title"]),
+            "teaching_note": normalize(
+                flatten(searchable_teaching_note(video["teaching_note"]))
+            ),
+            "transcript": normalize(
+                "".join(
+                    segment.get("text", "")
+                    for segment in video.get("transcript_segments", [])
+                )
+            ),
+        }
+        video_frequencies = {}
+        video_terms = set()
+        for field, text_value in field_text.items():
+            frequencies = {
+                term: text_value.count(normalize(term))
+                for term in terms
+                if normalize(term) in text_value
+            }
+            if frequencies:
+                video_frequencies[field] = frequencies
+                video_terms.update(frequencies)
+        if video_frequencies:
+            by_video[video["video_id"]] = video_frequencies
+            document_frequency.update(video_terms)
+    return document_frequency, by_video
+
+
+def bm25_record_fields(
+    record,
+    term_weights,
+    retrieval_index,
+    rules,
+    dynamic_document_frequency=None,
+    dynamic_field_frequencies=None,
+):
+    document_count = max(1, retrieval_index["indexable_video_count"])
+    document_frequency = dict(retrieval_index.get("term_document_frequency", {}))
+    document_frequency.update(dynamic_document_frequency or {})
+    average_lengths = retrieval_index.get("average_field_lengths", {})
+    k1 = rules["retrieval"].get("bm25_k1", 1.2)
+    b = rules["retrieval"].get("bm25_b", 0.75)
+    matched_fields = {}
+    matched_terms = set()
+    score = 0.0
+    for field, field_weight in rules["field_weights"].items():
+        frequencies = record.get("field_term_frequencies", {}).get(field, {})
+        frequencies = {
+            **frequencies,
+            **(dynamic_field_frequencies or {}).get(field, {}),
+        }
+        document_length = record.get("field_lengths", {}).get(field, 0)
+        average_length = max(1.0, average_lengths.get(field, 1.0))
+        field_matches = []
+        for term, query_weight in term_weights.items():
+            frequency = frequencies.get(term, 0)
+            if frequency <= 0:
+                continue
+            frequency = min(frequency, 8)
+            frequency_normalized = (
+                frequency * (k1 + 1)
+                / (
+                    frequency
+                    + k1 * (1 - b + b * document_length / average_length)
+                )
+            )
+            df = document_frequency.get(term, 0)
+            inverse_frequency = math.log(
+                1 + (document_count - df + 0.5) / (df + 0.5)
+            )
+            score += (
+                query_weight
+                * field_weight
+                * inverse_frequency
+                * frequency_normalized
+            )
+            matched_terms.add(term)
+            field_matches.append(term)
+        if field_matches:
+            matched_fields[field] = sorted(field_matches)
+    return score, sorted(matched_terms), matched_fields
+
+
+def choose_tier(
+    original_matches,
+    matched_concepts,
+    query_concept_count,
+    expanded_matches,
+    matched_topics,
+    ngram_match,
+    title_concept_count,
+    title_matches,
+    required_intent_count,
+    matched_required_intent_count,
+):
+    if required_intent_count > matched_required_intent_count:
+        return "semantic_lead" if ngram_match else "topic_related"
+
+    required_concepts = min(2, query_concept_count) if query_concept_count else 0
+    if query_concept_count and title_concept_count >= required_concepts:
+        return "direct"
+    if not query_concept_count and set(title_matches) & set(original_matches):
+        return "direct"
+    if query_concept_count and len(matched_concepts) >= required_concepts:
+        return "strong_related"
+    if title_matches:
+        return "strong_related"
+    if len(original_matches) >= max(1, required_concepts):
+        return "strong_related"
+    if expanded_matches and matched_topics:
+        return "topic_related"
+    if expanded_matches:
+        return "topic_related"
+    if matched_topics:
+        return "topic_related"
+    if ngram_match:
+        return "semantic_lead"
+    return None
+
+
+def candidate_sort_key(candidate, rules):
+    tier_bonus = rules["retrieval"]["tier_score_bonus"]
+    intent_penalty = (
+        candidate.get("required_intent_miss_count", 0)
+        * rules["retrieval"]["required_intent_miss_penalty"]
+    )
+    ranking_score = (
+        candidate["score"]
+        + tier_bonus[candidate["relevance_tier"]]
+        - intent_penalty
+        - candidate.get("excluded_query_penalty", 0)
+    )
+    return (
+        -ranking_score,
+        TIER_ORDER[candidate["relevance_tier"]],
+        candidate["title"],
+        candidate["video_id"],
+    )
+
+
+def refresh_score_breakdown(candidate, rules):
+    """Keep the displayed score explanation aligned with the actual sort key."""
+
+    breakdown = dict(candidate.get("score_breakdown") or {})
+    feedback_delta = (candidate.get("feedback_adjustment") or {}).get(
+        "score_delta", 0.0
+    )
+    tier_bonus = rules["retrieval"]["tier_score_bonus"][
+        candidate["relevance_tier"]
+    ]
+    required_intent_penalty = (
+        candidate.get("required_intent_miss_count", 0)
+        * rules["retrieval"]["required_intent_miss_penalty"]
+    )
+    excluded_query_penalty = candidate.get("excluded_query_penalty", 0.0)
+    breakdown.update(
+        {
+            "feedback_adjustment": round(feedback_delta, 4),
+            "score_after_feedback": round(candidate["score"], 4),
+            "tier_bonus": round(tier_bonus, 4),
+            "required_intent_penalty": round(required_intent_penalty, 4),
+            "excluded_query_penalty": round(excluded_query_penalty, 4),
+            "effective_ranking_score": round(
+                candidate["score"]
+                + tier_bonus
+                - required_intent_penalty
+                - excluded_query_penalty,
+                4,
+            ),
+        }
+    )
+    candidate["score_breakdown"] = breakdown
+
+
+def assign_review_budget(ranked, query_concept_count, rules):
+    retrieval = rules["retrieval"]
+    limit = (
+        retrieval["single_concept_review_limit"]
+        if query_concept_count <= 1
+        else retrieval["multi_concept_review_limit"]
+    )
+    review_rank = 0
+    for candidate in ranked:
+        candidate.setdefault(
+            "intrinsic_relevance_tier", candidate["relevance_tier"]
+        )
+        if candidate.get("retrieval_policy_eligible") is False:
+            candidate["review_rank"] = None
+            candidate["within_review_budget"] = False
+            candidate["review_priority"] = "policy_rejected"
+            continue
+        if candidate["relevance_tier"] not in {"direct", "strong_related"}:
+            candidate["review_rank"] = None
+            candidate["within_review_budget"] = False
+            candidate["review_priority"] = "recall_safeguard"
+            continue
+        review_rank += 1
+        candidate["review_rank"] = review_rank
+        candidate["within_review_budget"] = review_rank <= limit
+        candidate["review_priority"] = (
+            "priority_review" if review_rank <= limit else "deferred_review"
+        )
+
+
+def apply_structured_query_expansion(query, expansion, selection_module, rules):
+    actor_query = expansion["intent_frame"].get(
+        "actor_query", expansion["positive_query"]
+    )
+    actor_context = selection_module.query_actor_context(
+        SimpleNamespace(normalize=normalize), actor_query, rules
+    )
+    derived_terms = (
+        actor_context.get("derived_search_terms", [])
+        if actor_context.get("inferred_target_action")
+        else []
+    )
+    for term in derived_terms:
+        expansion["term_weights"][term] = max(
+            expansion["term_weights"].get(term, 0), 3.5
+        )
+        if term not in expansion["synonym_terms"]:
+            expansion["synonym_terms"].append(term)
+    expansion["synonym_terms"].sort()
+    expansion["structured_query_context"] = {
+        "target_actor": actor_context["target_actor"],
+        "target_action_query": actor_context["target_action_query"],
+        "requested_action_scopes": actor_context["requested_action_scopes"],
+        "derived_search_terms": derived_terms,
+        "event_chain": actor_context.get("event_chain", []),
+    }
+    return actor_context
+
+
+def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
+    expansion = expand_query(query, retrieval_index, rules)
+    selection_module, selection_rules = load_selection_policy()
+    apply_structured_query_expansion(
+        query, expansion, selection_module, selection_rules
+    )
+    boundary = selection_module.classify_boundary(
+        expansion["positive_query"], selection_rules
+    )
+    if boundary["type"] != "none":
+        # Boundary language is an answer constraint, not a technical focus signal.
+        expansion["focus_shards"] = []
+    prepared_index = prepared_retrieval_index(retrieval_index)
+    records = prepared_index["records"]
+    topic_ids = {item["topic_id"] for item in expansion["matched_topics"]}
+    original_terms = set(expansion["original_terms"])
+    equivalent_terms = set(expansion["synonym_terms"])
+    expanded_terms = set(expansion["term_weights"])
+    matched_groups = expansion["matched_synonym_groups"]
+    required_intents = expansion["matched_required_intents"]
+    topic_details_by_id = {
+        item["topic_id"]: {
+            "topic_id": item["topic_id"],
+            "category": item["category"],
+            "subtopic": item["subtopic"],
+            "query_match_reasons": item["reasons"],
+        }
+        for item in expansion["matched_topics"]
+    }
+
+    cleaned_query = expansion["positive_query"]
+    for phrase in rules["stop_phrases"]:
+        cleaned_query = cleaned_query.replace(phrase, " ")
+    query_grams = hashed_ngrams(
+        cleaned_query,
+        retrieval_index["transcript_ngram_sizes"],
+    )
+    min_shared = rules["retrieval"]["transcript_ngram_min_shared"]
+    min_coverage = rules["retrieval"]["transcript_ngram_min_query_coverage"]
+    query_gram_document_frequency, query_gram_matches = inverted_ngram_matches(
+        retrieval_index, query_grams
+    )
+    query_gram_weights = {
+        gram: math.log(
+            1
+            + (retrieval_index["indexable_video_count"] + 1)
+            / (query_gram_document_frequency.get(gram, 0) + 1)
+        )
+        for gram in query_grams
+    }
+    total_query_gram_weight = sum(query_gram_weights.values())
+    dynamic_terms = set(expansion["term_weights"]) - set(
+        retrieval_index.get("term_document_frequency", {})
+    )
+    dynamic_document_frequency, dynamic_frequencies_by_video = (
+        dynamic_term_statistics(knowledge, dynamic_terms)
+    )
+    candidate_ids = inverted_candidate_ids(
+        retrieval_index, expansion, query_grams
+    )
+    empty_channel_matches = {
+        "title": set(),
+        "teaching_note": set(),
+        "transcript": set(),
+    }
+
+    ranked = []
+    for video in knowledge["videos"]:
+        if video["processing_status"] in {"not_teaching", "low_value"}:
+            continue
+        record = records.get(video["video_id"])
+        if not record:
+            continue
+        if candidate_ids is not None and video["video_id"] not in candidate_ids:
+            continue
+        field_score, field_terms, matched_fields = bm25_record_fields(
+            record,
+            expansion["term_weights"],
+            retrieval_index,
+            rules,
+            dynamic_document_frequency=dynamic_document_frequency,
+            dynamic_field_frequencies=dynamic_frequencies_by_video.get(
+                video["video_id"], {}
+            ),
+        )
+        transcript_terms = set(record["lexicon_terms"]) & expanded_terms
+        matched_topic_ids = sorted(set(record["topic_ids"]) & topic_ids)
+        topic_score = len(matched_topic_ids) * 2.0
+        title_focus_length = max(
+            [
+                len(normalize(term))
+                for term in matched_fields.get("title", [])
+                if term in expansion["focus_shards"]
+            ]
+            or [0]
+        )
+        note_focus_length = max(
+            [
+                len(normalize(term))
+                for term in matched_fields.get("teaching_note", [])
+                if term in expansion["focus_shards"]
+            ]
+            or [0]
+        )
+        focus_score = (
+            min(title_focus_length, 3)
+            * rules["retrieval"].get(
+                "exact_focus_title_bonus_per_character", 0
+            )
+            + min(note_focus_length, 3)
+            * rules["retrieval"].get("exact_focus_note_bonus_per_character", 0)
+        )
+
+        channel_shared_grams = query_gram_matches.get(
+            video["video_id"], empty_channel_matches
+        )
+        channel_ngram_coverage = {
+            channel: (
+                sum(query_gram_weights[gram] for gram in shared)
+                / max(1.0, total_query_gram_weight)
+            )
+            for channel, shared in channel_shared_grams.items()
+        }
+        shared_grams = set().union(*channel_shared_grams.values())
+        ngram_coverage = max(channel_ngram_coverage.values(), default=0.0)
+        required_shared = 1 if len(query_grams) <= 2 else min_shared
+        ngram_match = (
+            len(shared_grams) >= required_shared and ngram_coverage >= min_coverage
+        )
+        ngram_score = (
+            channel_ngram_coverage["title"] * 24
+            + channel_ngram_coverage["teaching_note"] * 14
+            + channel_ngram_coverage["transcript"] * 8
+            if ngram_match
+            else 0.0
+        )
+
+        if mode == "keyword":
+            ngram_match = False
+            ngram_score = 0.0
+        elif mode == "semantic":
+            field_score = 0.0
+            topic_score = 0.0
+            matched_fields = {}
+            field_terms = []
+            transcript_terms = set()
+            matched_topic_ids = []
+
+        original_matches = sorted(
+            (set(field_terms) | transcript_terms) & original_terms
+        )
+        equivalent_matches = sorted(
+            ((set(field_terms) | transcript_terms) & equivalent_terms)
+            - set(original_matches)
+        )
+        direct_matches = sorted(set(original_matches) | set(equivalent_matches))
+        expanded_matches = sorted(set(field_terms) | transcript_terms)
+        candidate_lexicon_terms = set(record["lexicon_terms"]) | set(field_terms)
+        matched_concepts = sorted(
+            {
+                group[0]
+                for group in matched_groups
+                if any(term in candidate_lexicon_terms for term in group)
+            }
+        )
+        structured_terms = set(matched_fields.get("title", [])) | set(
+            matched_fields.get("teaching_note", [])
+        )
+        matched_structured_concepts = sorted(
+            {
+                group[0]
+                for group in matched_groups
+                if any(term in structured_terms for term in group)
+            }
+        )
+        title_terms = set(matched_fields.get("title", []))
+        strong_title_related = {
+            term
+            for term in title_terms
+            if any(
+                item["term"] == term and item["weight"] >= 0.45
+                for item in expansion["related_terms"]
+            )
+        }
+        title_concepts = {
+            group[0]
+            for group in matched_groups
+            if any(term in title_terms for term in group)
+        }
+        matched_required_intents = sorted(
+            intent["name"]
+            for intent in required_intents
+            if any(term in expanded_matches for term in intent["terms"])
+        )
+        candidate_searchable = normalize(
+            flatten(
+                {
+                    "title": video["title"],
+                    "teaching_note": video["teaching_note"],
+                }
+            )
+        )
+        excluded_matches = sorted(
+            term
+            for term in expansion["intent_frame"]["excluded_terms"]
+            if normalize(term)
+            and (
+                normalize(term) in candidate_searchable
+                or term in set(record["lexicon_terms"])
+            )
+        )
+        excluded_seed_matches = sorted(
+            term
+            for term in expansion["intent_frame"]["excluded_seed_terms"]
+            if normalize(term)
+            and (
+                normalize(term) in candidate_searchable
+                or term in set(record["lexicon_terms"])
+            )
+        )
+        expanded_only_matches = set(excluded_matches) - set(excluded_seed_matches)
+        excluded_query_penalty = (
+            min(3, len(excluded_seed_matches))
+            * rules["retrieval"].get("excluded_query_term_penalty", 0)
+            + min(3, len(expanded_only_matches))
+            * rules["retrieval"].get("excluded_related_term_penalty", 0)
+        )
+        if (
+            topic_ids
+            and not matched_topic_ids
+            and len(matched_concepts) < 2
+            and len(original_matches) < 2
+            and not equivalent_matches
+            and not strong_title_related
+            and not ngram_match
+        ):
+            continue
+        tier = choose_tier(
+            direct_matches,
+            matched_concepts,
+            len(matched_groups),
+            expanded_matches,
+            matched_topic_ids,
+            ngram_match,
+            len(title_concepts),
+            sorted(title_terms),
+            len(required_intents),
+            len(matched_required_intents),
+        )
+        if not tier:
+            continue
+
+        channels = []
+        if matched_fields:
+            channels.append("structured_fields")
+        if transcript_terms:
+            channels.append("full_transcript_lexicon")
+        if matched_topic_ids:
+            channels.append("full_topic_membership")
+        if channel_shared_grams["title"]:
+            channels.append("title_ngram")
+        if channel_shared_grams["teaching_note"]:
+            channels.append("teaching_note_ngram")
+        if channel_shared_grams["transcript"]:
+            channels.append("full_transcript_ngram")
+
+        score = (
+            field_score
+            + topic_score
+            + ngram_score
+            + focus_score
+            + len(matched_concepts) * 4.0
+        )
+        evidence_quality_bonus = rules["retrieval"].get(
+            "evidence_quality_bonus", {}
+        ).get(
+            video["confidence"], 0.0
+        )
+        score += evidence_quality_bonus
+        candidate = {
+                "score": round(score, 4),
+                "relevance_tier": tier,
+                "intrinsic_relevance_tier": tier,
+                "retrieval_channels": channels,
+                "matched_query_concepts": matched_concepts,
+                "matched_structured_query_concepts": (
+                    matched_structured_concepts
+                ),
+                "matched_original_terms": original_matches,
+                "matched_equivalent_terms": equivalent_matches,
+                "matched_terms": expanded_matches,
+                "matched_fields": matched_fields,
+                "matched_topics": matched_topic_ids,
+                "matched_topic_details": [
+                    topic_details_by_id[topic_id]
+                    for topic_id in matched_topic_ids
+                    if topic_id in topic_details_by_id
+                ],
+                "matched_required_intents": matched_required_intents,
+                "required_intent_miss_count": (
+                    len(required_intents) - len(matched_required_intents)
+                ),
+                "matched_excluded_terms": excluded_matches,
+                "matched_excluded_seed_terms": excluded_seed_matches,
+                "excluded_query_penalty": excluded_query_penalty,
+                "transcript_ngram_coverage": round(ngram_coverage, 4),
+                "ngram_match": ngram_match,
+                "ngram_coverage_by_field": {
+                    field: round(value, 4)
+                    for field, value in channel_ngram_coverage.items()
+                },
+                "score_breakdown": {
+                    "structured_field_score": round(field_score, 4),
+                    "topic_score": round(topic_score, 4),
+                    "ngram_score": round(ngram_score, 4),
+                    "exact_focus_score": round(focus_score, 4),
+                    "matched_concept_score": round(
+                        len(matched_concepts) * 4.0, 4
+                    ),
+                    "evidence_quality_bonus": round(evidence_quality_bonus, 4),
+                    "base_score_before_feedback": round(score, 4),
+                },
+                "video_id": video["video_id"],
+                "title": video["title"],
+                "category": video["category"],
+                "confidence": video["confidence"],
+                "processing_status": video["processing_status"],
+                "url": video["url"],
+            }
+        refresh_score_breakdown(candidate, rules)
+        ranked.append(candidate)
+
+    ranked.sort(key=lambda item: candidate_sort_key(item, rules))
+    assign_review_budget(ranked, len(matched_groups), rules)
+    return ranked, expansion
+
+
+def apply_retrieval_policy(
+    query,
+    ranked,
+    expansion,
+    knowledge,
+    retrieval_guidance,
+    retrieval_rules,
+):
+    """Partition surfaced evidence from exhaustive recall without deleting it."""
+
+    selection_module, selection_rules = load_selection_policy()
+    boundary = selection_module.classify_boundary(
+        expansion["positive_query"], selection_rules
+    )
+    plan = {
+        "query": query,
+        "query_expansion": {
+            key: value for key, value in expansion.items() if key != "term_weights"
+        },
+        "retrieval_guidance": retrieval_guidance,
+    }
+    policy_api = SimpleNamespace(normalize=normalize, flatten=flatten)
+    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    rejected_counts = Counter()
+    requested_constraints = selection_module.query_constraints(
+        policy_api, expansion["positive_query"], selection_rules
+    )
+    actor_context = selection_module.query_actor_context(
+        policy_api, expansion["positive_query"], selection_rules
+    )
+
+    for candidate in ranked:
+        video = videos[candidate["video_id"]]
+        reasons = []
+        if boundary["type"] == "pain_or_injury":
+            reasons.append("medical_boundary_has_no_direct_safety_evidence")
+        elif boundary["type"] == "endorsement_or_authorship":
+            reasons.append("identity_boundary_does_not_need_teaching_video")
+        elif (
+            boundary["type"] == "insufficient_observation"
+            and "唯一原因" in boundary.get("matched_terms", [])
+        ):
+            reasons.append("unique_cause_cannot_be_established_without_observation")
+        elif (
+            boundary["type"] == "purchase_advice"
+            and video.get("category")
+            not in selection_rules["purchase_allowed_categories"]
+        ):
+            reasons.append("purchase_query_requires_equipment_evidence")
+
+        if not reasons:
+            constraint_scope = _VIDEO_CONSTRAINT_SCOPE_CACHE.get(
+                candidate["video_id"]
+            )
+            if constraint_scope is None:
+                constraint_scope = selection_module.video_constraint_scope(
+                    policy_api, video, selection_rules
+                )
+                _VIDEO_CONSTRAINT_SCOPE_CACHE[candidate["video_id"]] = (
+                    constraint_scope
+                )
+            (
+                allowed,
+                failures,
+                policy_requested_constraints,
+                _,
+                constraint_matches,
+            ) = selection_module.constraint_decision(
+                policy_api,
+                query,
+                plan,
+                video,
+                selection_rules,
+                requested=requested_constraints,
+                scope=constraint_scope,
+            )
+            if not allowed:
+                reasons.extend(failures)
+            else:
+                reasons.extend(
+                    selection_module.required_constraint_support_failures(
+                        policy_requested_constraints,
+                        constraint_matches,
+                        selection_rules,
+                    )
+                )
+            if not reasons and actor_context.get("inferred_target_action"):
+                reasons.extend(
+                    selection_module.requested_action_scope_failures(
+                        policy_api,
+                        actor_context,
+                        video,
+                        selection_rules,
+                    )
+                )
+
+        title_normalized = normalize(video.get("title", ""))
+        if not reasons and any(
+            normalize(term) in title_normalized
+            for term in selection_rules["incomplete_fragment_terms"]
+        ):
+            reasons.append("incomplete_series_fragment")
+
+        structured = selection_module.structured_video_text(policy_api, video)
+        positive_query = expansion["positive_query"]
+        if (
+            not reasons
+            and expansion["intent_frame"].get("requested_output") == "comparison"
+            and "被动" in positive_query
+            and normalize("被动") not in structured
+        ):
+            reasons.append("comparison_missing_passive_scenario")
+        if (
+            not reasons
+            and "姿势" in positive_query
+            and "被动" not in positive_query
+            and normalize("被动") in title_normalized
+        ):
+            reasons.append("basic_form_query_conflicts_with_passive_variant")
+
+        eligible = not reasons
+        candidate["retrieval_policy_eligible"] = eligible
+        candidate["retrieval_policy_reasons"] = reasons
+        rejected_counts.update(reasons)
+
+    ranked.sort(
+        key=lambda item: (
+            0 if item["retrieval_policy_eligible"] else 1,
+            candidate_sort_key(item, retrieval_rules),
+        )
+    )
+    assign_review_budget(
+        ranked,
+        len(expansion["matched_synonym_groups"]),
+        retrieval_rules,
+    )
+    return ranked, {
+        "boundary_type": boundary["type"],
+        "eligible_candidate_count": sum(
+            item["retrieval_policy_eligible"] for item in ranked
+        ),
+        "rejected_candidate_count": sum(
+            not item["retrieval_policy_eligible"] for item in ranked
+        ),
+        "rejection_reason_counts": dict(sorted(rejected_counts.items())),
+        "exhaustive_candidates_preserved": True,
+    }

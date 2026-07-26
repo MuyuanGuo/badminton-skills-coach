@@ -207,10 +207,12 @@ def validate_forward_results(
     fingerprint,
     diagnostic_cases_payload=None,
     continuation_cases_payload=None,
+    require_current_runtime=True,
 ):
     if payload.get("version") != 3:
         raise ForwardTestValidationError("Forward-test result version is unsupported")
-    if payload.get("runtime_fingerprint") != fingerprint:
+    runtime_matches = payload.get("runtime_fingerprint") == fingerprint
+    if require_current_runtime and not runtime_matches:
         raise ForwardTestValidationError(
             "Forward-test results are stale for the current Skill runtime"
         )
@@ -292,7 +294,11 @@ def validate_forward_results(
         ),
     )
     return {
-        "runtime_fingerprint": fingerprint,
+        "recorded_runtime_fingerprint": payload.get("runtime_fingerprint"),
+        "current_runtime_fingerprint": fingerprint,
+        "current_runtime_match": runtime_matches,
+        "measurement_type": "historical_generation_review",
+        "current_runtime_generation_claimed": False,
         "critical_cases": len(critical_ids),
         "blind_passes": len(results),
         "failed": [],
@@ -302,7 +308,7 @@ def validate_forward_results(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate blind forward tests for the current Skill runtime."
+        description="Validate historical blind forward tests; current-runtime release generations use validate_live_generation_results.py."
     )
     parser.add_argument("--results", type=Path, default=RESULTS_PATH)
     parser.add_argument("--print-fingerprint", action="store_true")

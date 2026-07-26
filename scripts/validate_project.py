@@ -121,6 +121,61 @@ for runtime_file in [
     / "skills"
     / "liuhui-badminton-coach"
     / "scripts"
+    / "answer_constraints.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "answer_scope.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "answer_retrieval_plan.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "answer_candidate_selection.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "answer_selection_policy.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "answer_continuation.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "diagnostic_contract.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "query_planning.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "feedback_ranking.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "retrieval_projection.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "retrieval_ranking.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
     / "audit_answer.py",
 ]:
     if not runtime_file.exists():
@@ -848,12 +903,16 @@ allowed_retrieval_video_fields = {
     "lexicon_terms",
     "field_lengths",
     "field_term_frequencies",
-    "title_ngrams",
-    "teaching_note_ngrams",
-    "transcript_ngrams",
+    "ngram_counts",
 }
 if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index["videos"]):
     raise SystemExit("Retrieval index video records contain unexpected fields")
+if retrieval_index.get("inverted_index_schema") != "parallel_ngram_vocabulary_postings_v1":
+    raise SystemExit("Retrieval index does not use the expected inverted-index schema")
+if len(retrieval_index.get("ngram_vocabulary", [])) != len(
+    retrieval_index.get("ngram_postings", [])
+):
+    raise SystemExit("Retrieval inverted-index vocabulary/postings lengths differ")
 ready_video_ids = {
     video["video_id"]
     for video in douyin_knowledge["videos"]

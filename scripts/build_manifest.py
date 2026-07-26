@@ -165,6 +165,14 @@ def build_manifest_payload():
             },
         },
         "rules": rule_artifacts(),
+        "release_legal_artifacts": [
+            {
+                "path": relative,
+                "bytes": (ROOT / relative).stat().st_size,
+                "sha256": sha256_file(ROOT / relative),
+            }
+            for relative in ["LICENSE", "NOTICE"]
+        ],
         "link_integrity": link_integrity(video_index, knowledge),
         "skill_artifacts": skill_artifacts(),
         "reproducibility": {

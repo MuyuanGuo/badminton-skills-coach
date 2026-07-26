@@ -161,6 +161,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "visual_review_fallback": 19,
                 },
                 "forward_tests": {"consecutive_passes": 3},
+                "live_generation": {"minimum_manual_score": 4},
             },
             "baseline_comparison": [
                 {"metric": f"{suite}.metric", "passed": True}
@@ -175,6 +176,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "retrieval",
                     "video_comprehension",
                     "forward_tests",
+                    "live_generation",
                 )
             ],
         }
@@ -183,7 +185,7 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertIn("abc123", page)
         self.assertIn("a" * 64, page)
         self.assertIn("57/57", page)
-        self.assertEqual(page.count(">PASS<"), 11)
+        self.assertEqual(page.count(">PASS<"), 12)
         self.assertIn("tbody td:nth-of-type(3)", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):

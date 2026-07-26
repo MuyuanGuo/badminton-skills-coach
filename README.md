@@ -169,6 +169,7 @@ python3 scripts/evaluate_answer_context.py
 python3 scripts/evaluate_answer_audit.py
 python3 scripts/evaluate_diagnostic_answer_contract.py
 python3 scripts/evaluate_forward_test_results.py
+python3 scripts/validate_live_generation_results.py  # Release 前的当前模型生成与独立复核门禁
 python3 scripts/evaluate_query_understanding.py
 python3 scripts/evaluate_query_equivalence.py
 ```
@@ -272,7 +273,7 @@ output/                          知识图谱、审核报告和可视化产物
 核心运行时文件：
 
 - `SKILL.md`：回答规范、证据边界和反馈协议。
-- `references/knowledge-base.json`：353 条可用教学证据。
+- `references/knowledge-base.json`：354 条可用教学证据。
 - `references/retrieval-index.json`：高召回检索索引。
 - `references/answer-selection-rules.json`：意图边界、条件轴和候选选择规则。
 - `references/diagnostic-answer-rules.json`：症状、假设、澄清、逐条证据与完备性规则。

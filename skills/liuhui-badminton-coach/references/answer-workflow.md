@@ -93,7 +93,7 @@ One claim may cite at most three strongest sources. A video URL appears once in 
 Before sending a diagnostic or other multi-claim answer, run the bundled final-answer auditor with the exact original question, the unmodified context JSON, and the final draft:
 
 ```bash
-python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --answer answer.md
+python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --packet answer-packet.json --answer answer.md
 ```
 
 Revise every reported error and rerun until `passed` is true. Do not weaken the context or edit its claim mappings to make a draft pass. This deterministic audit catches known contract violations; it does not replace source reading or human judgment.

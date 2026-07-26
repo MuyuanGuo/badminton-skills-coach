@@ -37,9 +37,9 @@ The full reviewed answer also separates forehand overhead and backhand branches,
 
 | Metric | Current baseline |
 | --- | ---: |
-| Processed public videos | 474 |
-| Ready teaching videos | 353 |
-| Transcript-backed evidence | 334 |
+| Processed public videos | 475 |
+| Ready teaching videos | 354 |
+| Transcript-backed evidence | 335 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Hard-negative selections in the current regression set | 0 |

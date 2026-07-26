@@ -23,6 +23,35 @@ class AnswerContextTests(unittest.TestCase):
         cls.context_module = cls.module.load_context_module()
         cls.selection_rules = cls.context_module.load_selection_rules()
 
+    def test_retrieval_query_budget_preserves_required_units_and_hard_limit(self):
+        original = "原始问题"
+        units = [f"必要问题{i}" for i in range(30)]
+        queries = [original, *units, *(f"扩展问题{i}" for i in range(40))]
+        plan = {"retrieval_guidance": {"query_units": units}}
+        selected, metadata = self.context_module.budget_retrieval_queries(
+            self.search_module,
+            queries,
+            plan,
+            original,
+            {"retrieval_query_budget": 24, "retrieval_query_hard_limit": 48},
+        )
+        self.assertEqual(len(selected), 31)
+        self.assertEqual(selected[0], original)
+        self.assertTrue(set(units).issubset(selected))
+        self.assertTrue(metadata["truncated"])
+        self.assertEqual(metadata["missing_required_units"], [])
+
+        too_many_units = [f"必要分支{i}" for i in range(60)]
+        selected, metadata = self.context_module.budget_retrieval_queries(
+            self.search_module,
+            [original, *too_many_units],
+            {"retrieval_guidance": {"query_units": too_many_units}},
+            original,
+            {"retrieval_query_budget": 24, "retrieval_query_hard_limit": 48},
+        )
+        self.assertEqual(len(selected), 48)
+        self.assertEqual(len(metadata["missing_required_units"]), 13)
+
     def constraint_decision(self, query, title):
         video = {
             "video_id": "7000000000000000001",
@@ -152,7 +181,10 @@ class AnswerContextTests(unittest.TestCase):
         )
         multiple_prompt = multiple["answer_contract"]["feedback_prompt"]
         self.assertIn("V1 最有价值", multiple_prompt)
-        self.assertIn("V2 不相关", multiple_prompt)
+        if len(multiple["answer_visible_video_labels"]) > 1:
+            self.assertIn("V2 不相关", multiple_prompt)
+        else:
+            self.assertNotIn("V2", multiple_prompt)
         self.assertNotIn("V3", multiple_prompt)
 
         single = self.context_module.prepare_answer_context(

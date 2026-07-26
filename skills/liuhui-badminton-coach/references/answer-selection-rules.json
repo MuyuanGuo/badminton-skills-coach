@@ -1,5 +1,5 @@
 {
-  "version": 37,
+  "version": 38,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -20,6 +20,8 @@
     }
   },
   "default_max_selected_videos": 16,
+  "retrieval_query_budget": 24,
+  "retrieval_query_hard_limit": 48,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
   "supporting_video_limits_by_technique_variant": {

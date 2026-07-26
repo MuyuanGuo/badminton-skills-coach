@@ -98,6 +98,7 @@ def audit_video_content(
     root=ROOT,
     indexed_video_ids=None,
     index_record=None,
+    indexed_transcript_ngrams=None,
     transcript_ngram_sizes=(2, 3),
     require_raw_transcript=False,
 ):
@@ -126,7 +127,12 @@ def audit_video_content(
             failures.append("missing_visual_review_evidence")
         if video.get("transcript_segments"):
             failures.append("visual_review_contains_transcript_segments")
-        if index_record is not None and index_record.get("transcript_ngrams"):
+        transcript_index = (
+            indexed_transcript_ngrams
+            if indexed_transcript_ngrams is not None
+            else set((index_record or {}).get("transcript_ngrams", []))
+        )
+        if index_record is not None and transcript_index:
             failures.append("visual_review_contains_transcript_index")
     else:
         quality = video.get("quality") or {}
@@ -162,7 +168,11 @@ def audit_video_content(
             expected_ngrams = hashed_ngrams(
                 bundled_transcript, transcript_ngram_sizes
             )
-            actual_ngrams = set(index_record.get("transcript_ngrams", []))
+            actual_ngrams = (
+                indexed_transcript_ngrams
+                if indexed_transcript_ngrams is not None
+                else set(index_record.get("transcript_ngrams", []))
+            )
             if expected_ngrams != actual_ngrams:
                 failures.append("runtime_transcript_index_mismatch")
             expected_length = len(normalize_index_text(bundled_transcript))
@@ -233,6 +243,19 @@ def evaluate(
     index_by_id = {
         record["video_id"]: record for record in retrieval_index.get("videos", [])
     }
+    transcript_ngrams_by_id = None
+    if retrieval_index.get("ngram_vocabulary") is not None:
+        transcript_ngrams_by_id = {
+            record["video_id"]: set() for record in retrieval_index["videos"]
+        }
+        video_ids = [record["video_id"] for record in retrieval_index["videos"]]
+        for gram, postings in zip(
+            retrieval_index["ngram_vocabulary"],
+            retrieval_index["ngram_postings"],
+        ):
+            for record_index, channel_mask in postings:
+                if channel_mask & 4:
+                    transcript_ngrams_by_id[video_ids[record_index]].add(gram)
     indexed_video_ids = set(index_by_id)
     ngram_sizes = retrieval_index.get("transcript_ngram_sizes", [2, 3])
     audits = [
@@ -241,6 +264,11 @@ def evaluate(
             root=root,
             indexed_video_ids=indexed_video_ids,
             index_record=index_by_id.get(video["video_id"]),
+            indexed_transcript_ngrams=(
+                transcript_ngrams_by_id.get(video["video_id"])
+                if transcript_ngrams_by_id is not None
+                else None
+            ),
             transcript_ngram_sizes=ngram_sizes,
             require_raw_transcript=require_raw_transcripts,
         )

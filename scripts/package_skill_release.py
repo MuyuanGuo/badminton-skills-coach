@@ -19,16 +19,86 @@ FIXED_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 SKIPPED_NAMES = {".DS_Store", "__pycache__"}
 VERSION_PATTERN = re.compile(r"v?\d+\.\d+\.\d+(?:-dev\.\d+)?")
 FEEDBACK_RULES_PATH = ROOT / "config" / "feedback_rules.json"
+SKILL_RELEASE_PATHS = {
+    "SKILL.md",
+    "agents/openai.yaml",
+    "references/answer-audit-rules.json",
+    "references/answer-modality-rules.json",
+    "references/answer-selection-rules.json",
+    "references/answer-workflow.md",
+    "references/build-manifest.json",
+    "references/diagnostic-answer-rules.json",
+    "references/evidence-scope-guide.md",
+    "references/feedback-rules.json",
+    "references/feedback-signals.json",
+    "references/feedback-workflow.md",
+    "references/knowledge-base.json",
+    "references/practice-plan-rules.json",
+    "references/practice-plan-template.md",
+    "references/retrieval-index.json",
+    "references/retrieval-rules.json",
+    "references/reviewed-evidence-atoms.json",
+    "references/reviewed-evidence-signals.json",
+    "references/topic-index.md",
+    "references/topic-map.json",
+    "scripts/audit_answer.py",
+    "scripts/answer_candidate_selection.py",
+    "scripts/answer_constraints.py",
+    "scripts/answer_continuation.py",
+    "scripts/answer_packet.py",
+    "scripts/answer_retrieval_plan.py",
+    "scripts/answer_scope.py",
+    "scripts/answer_selection_policy.py",
+    "scripts/diagnostic_contract.py",
+    "scripts/doctor.py",
+    "scripts/feedback.py",
+    "scripts/feedback_ranking.py",
+    "scripts/install.py",
+    "scripts/navigate_topics.py",
+    "scripts/prepare_answer_context.py",
+    "scripts/query_planning.py",
+    "scripts/retrieval_projection.py",
+    "scripts/retrieval_ranking.py",
+    "scripts/search_knowledge.py",
+}
+ROOT_RELEASE_PATHS = {"LICENSE", "NOTICE"}
 
 
 def release_files():
-    return [
-        path
-        for path in sorted(SKILL_ROOT.rglob("*"))
+    discovered = {
+        path.relative_to(SKILL_ROOT).as_posix()
+        for path in SKILL_ROOT.rglob("*")
         if path.is_file()
-        and not any(part in SKIPPED_NAMES for part in path.relative_to(SKILL_ROOT).parts)
+        and not any(
+            part in SKIPPED_NAMES for part in path.relative_to(SKILL_ROOT).parts
+        )
         and path.suffix not in {".pyc", ".pyo"}
+    }
+    unexpected = sorted(discovered - SKILL_RELEASE_PATHS)
+    missing = sorted(SKILL_RELEASE_PATHS - discovered)
+    missing_root = sorted(
+        relative for relative in ROOT_RELEASE_PATHS if not (ROOT / relative).is_file()
+    )
+    if unexpected or missing or missing_root:
+        details = []
+        if unexpected:
+            details.append("unexpected Skill files: " + ", ".join(unexpected))
+        if missing:
+            details.append("missing allowlisted Skill files: " + ", ".join(missing))
+        if missing_root:
+            details.append("missing legal files: " + ", ".join(missing_root))
+        raise ValueError("; ".join(details))
+    return [
+        *(SKILL_ROOT / relative for relative in sorted(SKILL_RELEASE_PATHS)),
+        *(ROOT / relative for relative in sorted(ROOT_RELEASE_PATHS)),
     ]
+
+
+def archive_relative_path(path):
+    path = Path(path)
+    if path.parent == ROOT and path.name in ROOT_RELEASE_PATHS:
+        return Path(path.name)
+    return path.relative_to(SKILL_ROOT)
 
 
 def archive_name(version):
@@ -70,7 +140,7 @@ def package_skill(version, output_dir):
             compresslevel=9,
         ) as archive:
             for path in files:
-                relative = path.relative_to(SKILL_ROOT)
+                relative = archive_relative_path(path)
                 info = zipfile.ZipInfo(
                     f"{ARCHIVE_ROOT}/{relative.as_posix()}",
                     date_time=FIXED_TIMESTAMP,
