@@ -40,6 +40,7 @@ for required_ci_command in [
     "python scripts/evaluate_feedback_lifecycle.py",
     "python scripts/evaluate_metamorphic_robustness.py",
     "python scripts/benchmark_runtime.py",
+    "node scripts/test_bilibili_profile_snapshot_dom.mjs",
 ]:
     if required_ci_command not in workflow_text:
         raise SystemExit(f"CI is missing required quality gate: {required_ci_command}")
@@ -52,6 +53,8 @@ json_paths = [
     "config/answer_quality_rules.json",
     "config/douyin_classification_rules.json",
     "config/douyin_source.json",
+    "config/bilibili_classification_rules.json",
+    "config/bilibili_source.json",
     "config/feedback_rules.json",
     "config/feedback_signals.json",
     "config/knowledge_quality_rules.json",
@@ -63,6 +66,8 @@ json_paths = [
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
     "data/douyin_video_index.json",
+    "data/bilibili_classification_ledger.json",
+    "data/bilibili_video_index.json",
     "data/evaluation/answer_audit_cases.json",
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
@@ -89,6 +94,7 @@ json_paths = [
     "data/review/visual_review_queue.json",
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
+    "data/processing/bilibili_origin_review_queue.json",
     "skills/liuhui-badminton-coach/references/answer-audit-rules.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
@@ -108,6 +114,29 @@ for relative_path in json_paths:
     path = ROOT / relative_path
     with path.open(encoding="utf-8") as file:
         json.load(file)
+
+bilibili_source = json.loads(
+    (ROOT / "config" / "bilibili_source.json").read_text(encoding="utf-8")
+)
+if (
+    bilibili_source.get("profile_id") != "1423436652"
+    or bilibili_source.get("platform") != "bilibili"
+    or bilibili_source.get("admission_policy", {}).get(
+        "metadata_candidates_enter_knowledge_base"
+    )
+    is not False
+):
+    raise SystemExit("Bilibili source or admission policy is unsafe")
+for relative_path, collection_key in [
+    ("data/bilibili_video_index.json", "videos"),
+    ("data/bilibili_classification_ledger.json", "videos"),
+    ("data/processing/bilibili_origin_review_queue.json", "items"),
+]:
+    payload = json.loads((ROOT / relative_path).read_text(encoding="utf-8"))
+    if payload.get("platform") != "bilibili":
+        raise SystemExit(f"Bilibili artifact has wrong platform: {relative_path}")
+    if not isinstance(payload.get(collection_key), list):
+        raise SystemExit(f"Bilibili artifact has invalid records: {relative_path}")
 if not (ROOT / "scripts" / "apply_answer_quality_review_notes.py").exists():
     raise SystemExit("Answer quality review application script is missing")
 for runtime_file in [

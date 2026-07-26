@@ -122,6 +122,7 @@ jobs:
 
       - name: Run DOM regression tests
         run: |
+          node scripts/test_bilibili_profile_snapshot_dom.mjs
           node scripts/test_douyin_profile_snapshot_dom.mjs
           node scripts/test_douyin_video_media_assets_dom.mjs
           node scripts/test_export_douyin_cookies_cdp.mjs
