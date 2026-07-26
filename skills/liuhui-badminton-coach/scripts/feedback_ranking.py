@@ -498,10 +498,18 @@ def apply_feedback_layers(
     retrieval_rules,
     local_personalization=True,
     feedback_dir=None,
+    global_feedback_loader=None,
+    local_feedback_loader=None,
 ):
+    global_feedback_loader = (
+        global_feedback_loader or load_global_feedback_records
+    )
+    local_feedback_loader = (
+        local_feedback_loader or load_local_feedback_records
+    )
     feedback_rules = load_feedback_rules()
     current_signature = feedback_signature(query, expansion)
-    global_records, global_stats = load_global_feedback_records()
+    global_records, global_stats = global_feedback_loader()
     (
         global_adjustments,
         global_matches,
@@ -519,7 +527,7 @@ def apply_feedback_layers(
         global_records, "global", global_strict_matches
     )
     if local_personalization:
-        local_records, local_stats = load_local_feedback_records(feedback_dir)
+        local_records, local_stats = local_feedback_loader(feedback_dir)
         (
             local_adjustments,
             local_matches,

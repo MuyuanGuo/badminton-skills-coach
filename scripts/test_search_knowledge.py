@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
@@ -54,6 +55,46 @@ class SearchKnowledgeTests(unittest.TestCase):
         module = self.search_module.load_selection_module()
         self.assertEqual(Path(module.__file__).name, "answer_selection_policy.py")
         self.assertNotEqual(Path(module.__file__).name, "prepare_answer_context.py")
+
+    def test_feedback_loader_override_flows_through_facade(self):
+        cases = json.loads(
+            (
+                ROOT
+                / "data"
+                / "evaluation"
+                / "feedback_relevance_cases.json"
+            ).read_text(encoding="utf-8")
+        )
+        fixture = cases["adversarial_cases"][0]
+        signal = fixture["signal"]
+        check = fixture["checks"][0]
+        original_loader = self.search_module.load_global_feedback_records
+        self.search_module.load_global_feedback_records = lambda: (
+            [signal],
+            {"signal_count": 1, "updated_at": "test-fixture"},
+        )
+        try:
+            payload = self.search_module.search(
+                check["query"],
+                manifest_limit=None,
+                local_personalization=False,
+            )
+        finally:
+            self.search_module.load_global_feedback_records = original_loader
+
+        self.assertIn(
+            signal["signal_id"],
+            payload["feedback_guidance"]["global"]["matched_signal_ids"],
+        )
+        manifest = {
+            item["video_id"]: item
+            for item in payload["candidate_manifest"]
+        }
+        for video_id in check["expected_positive_video_ids"]:
+            self.assertGreater(
+                manifest[video_id]["feedback_adjustment"]["global_delta"],
+                0,
+            )
 
     def test_balanced_mode_stops_at_its_cap_while_exhaustive_continues(self):
         query = "网前框架怎么做才不会身体僵硬"

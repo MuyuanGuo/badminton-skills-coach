@@ -509,7 +509,30 @@ build_feedback_adjustments = _feedback_ranking.build_feedback_adjustments
 matched_feedback_corrections = _feedback_ranking.matched_feedback_corrections
 local_answer_preferences = _feedback_ranking.local_answer_preferences
 feedback_only_candidate = _feedback_ranking.feedback_only_candidate
-apply_feedback_layers = _feedback_ranking.apply_feedback_layers
+
+
+def apply_feedback_layers(
+    query,
+    ranked,
+    expansion,
+    knowledge,
+    retrieval_index,
+    retrieval_rules,
+    local_personalization=True,
+    feedback_dir=None,
+):
+    return _feedback_ranking.apply_feedback_layers(
+        query,
+        ranked,
+        expansion,
+        knowledge,
+        retrieval_index,
+        retrieval_rules,
+        local_personalization=local_personalization,
+        feedback_dir=feedback_dir,
+        global_feedback_loader=load_global_feedback_records,
+        local_feedback_loader=load_local_feedback_records,
+    )
 
 _retrieval_projection = load_component(
     "liuhui_retrieval_projection", "retrieval_projection.py"
