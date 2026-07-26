@@ -8,7 +8,10 @@ import json
 import re
 from pathlib import Path
 
-from evaluate_forward_test_results import runtime_fingerprint
+from evaluate_forward_test_results import (
+    answer_runtime_fingerprint,
+    runtime_fingerprint,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,19 +56,21 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
     expected_top_level = {
         "schema_version",
         "runtime_fingerprint",
+        "answer_runtime_fingerprint",
         "generated_at",
         "generator",
         "review",
         "cases",
     }
-    if set(payload) != expected_top_level or payload.get("schema_version") != 1:
+    if set(payload) != expected_top_level or payload.get("schema_version") != 2:
         raise LiveGenerationValidationError(
             "Live-generation results have an unsupported schema"
         )
-    current_fingerprint = runtime_fingerprint(root)
-    if payload["runtime_fingerprint"] != current_fingerprint:
+    current_artifact_fingerprint = runtime_fingerprint(root)
+    current_answer_fingerprint = answer_runtime_fingerprint(root)
+    if payload["answer_runtime_fingerprint"] != current_answer_fingerprint:
         raise LiveGenerationValidationError(
-            "Live-generation results are stale for the current Skill runtime"
+            "Live-generation results are stale for the current answer runtime"
         )
     if not DATE_PATTERN.fullmatch(payload.get("generated_at", "")):
         raise LiveGenerationValidationError("generated_at must use YYYY-MM-DD")
@@ -165,7 +170,12 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         )
     return {
         "status": "pass",
-        "runtime_fingerprint": current_fingerprint,
+        "runtime_fingerprint": current_answer_fingerprint,
+        "reviewed_artifact_runtime_fingerprint": payload["runtime_fingerprint"],
+        "current_artifact_runtime_fingerprint": current_artifact_fingerprint,
+        "artifact_runtime_match": (
+            payload["runtime_fingerprint"] == current_artifact_fingerprint
+        ),
         "critical_cases": len(required_ids),
         "independently_reviewed": len(cases),
         "current_runtime_audits_rerun": rerun_runtime,

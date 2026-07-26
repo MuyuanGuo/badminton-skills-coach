@@ -1,6 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
+  "answer_runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
   "generated_at": "2026-07-26",
   "generator": {
     "provider": "OpenAI",

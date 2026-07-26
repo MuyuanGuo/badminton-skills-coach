@@ -1138,6 +1138,7 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
+readme_en_text = (ROOT / "README.en.md").read_text(encoding="utf-8")
 version_contracts = ["releases/latest"]
 if release_channel == "development":
     version_contracts.extend(
@@ -1150,6 +1151,14 @@ if release_channel == "development":
             "- 发布状态：`unreleased`",
         ]
     )
+    english_version_contracts = [
+        "You are viewing the `develop` branch",
+        f"current development version is **{skill_version}**",
+        "release status is **unreleased**",
+        "- Current branch: `develop`",
+        f"- Current development version: `{skill_version}`",
+        "- Release status: `unreleased`",
+    ]
 else:
     version_contracts.extend(
         [
@@ -1158,9 +1167,15 @@ else:
             f"releases/tag/v{stable_version}",
         ]
     )
+    english_version_contracts = []
 for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")
+for version_contract in english_version_contracts:
+    if version_contract not in readme_en_text:
+        raise SystemExit(
+            f"English README version metadata is stale: {version_contract}"
+        )
 docs_pages = [
     (ROOT / "docs" / "index.html", f"稳定版 v{stable_version}"),
     (ROOT / "docs" / "en" / "index.html", f"Stable v{stable_version}"),
