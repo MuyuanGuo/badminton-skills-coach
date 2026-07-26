@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-07-24T04:12:53.333863+00:00",
+  "generated_at": "2026-07-26T20:52:41.377463+00:00",
   "source": "data/douyin_video_index.json",
   "classification_rules": {
     "version": 3,
@@ -20,7 +20,7 @@
       "raw_text": "1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
       "author_status": "主页最新作品区发现",
       "decision": "保留：教学",
-      "decision_reason": "主页正文明确为劈吊进阶专项教学，包含压腕加速、锁腕控力与转着击等动作要点。",
+      "decision_reason": "历史转写已通过教学证据门槛，标题规则不得单独推翻",
       "primary_category": "",
       "tags": "",
       "classification_rules_version": 3,
@@ -36,9 +36,9 @@
       },
       "automatic_decision": "待复核：仅通用教学标签",
       "automatic_decision_reason": "只有通用教学标签，正文未发现明确技术、训练方法或战术信息",
-      "previous_decision": "new_discovery",
-      "migration_action": "manual_review_keep",
-      "classified_at": "2026-07-24T04:12:46.181639+00:00"
+      "previous_decision": "保留：教学",
+      "migration_action": "preserve_transcript_backed_teaching",
+      "classified_at": "2026-07-26T20:52:41.377463+00:00"
     },
     {
       "video_id": "7664908274752137146",

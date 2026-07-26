@@ -388,6 +388,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7060717442825309480",
                 "7344186576013905187",
                 "7511934047901846841",
+                "bilibili:BV1tw411U7PV",
             },
         )
         self.assertFalse(
@@ -1815,7 +1816,9 @@ class AnswerContextTests(unittest.TestCase):
             "7060717442825309480",
             "7499776424493075772",
             "7098897570482670888",
-            "7535400692573211962",
+            "bilibili:BV1tw411U7PV",
+            "bilibili:BV1aw411179M",
+            "bilibili:BV1TT411r7Ft",
         ]:
             self.assertEqual(
                 backhand_by_id[video_id]["claim_scope_policy"],

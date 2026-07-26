@@ -95,7 +95,7 @@ python3 scripts/search_knowledge.py "用户问题" --no-local-personalization
 
 ## GitHub feedback
 
-Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Require a sanitized original question, sanitized complete answer or exact error excerpt, and a concrete error or omission. Ask users to paste video IDs or Douyin links, not only local `V` labels.
+Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Require a sanitized original question, sanitized complete answer or exact error excerpt, and a concrete error or omission. Ask users to paste stable evidence IDs or canonical Douyin/Bilibili links, not only local `V` labels.
 
 To share an accepted local record, first ask the user to provide or approve a sanitized public version of the question. After separate public-sharing consent, generate a GitHub Issue body:
 

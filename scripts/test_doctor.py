@@ -52,6 +52,8 @@ class DoctorAndInstallerTests(unittest.TestCase):
         )
         names = [item["name"] for item in checks]
         self.assertEqual(len(names), len(set(names)))
+        self.assertIn("pyyaml", names)
+        self.assertIn("yt_dlp", names)
 
     def test_atomic_installer_replaces_stale_files_and_runs_doctor(self):
         with tempfile.TemporaryDirectory() as temporary:

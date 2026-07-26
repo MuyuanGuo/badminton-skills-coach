@@ -74,6 +74,22 @@ class FeedbackPipelineTests(unittest.TestCase):
         )
         self.assertTrue(saved_path.exists())
 
+    def test_bilibili_urls_and_mapping_specs_use_stable_evidence_ids(self):
+        self.assertEqual(
+            self.feedback.extract_video_ids(
+                "见 https://www.bilibili.com/video/BV16G411y7Rs/"
+            ),
+            ["bilibili:BV16G411y7Rs"],
+        )
+        self.assertEqual(
+            self.feedback.parse_video_spec("V1=BV16G411y7Rs"),
+            ("V1", "bilibili:BV16G411y7Rs"),
+        )
+        self.assertIn(
+            "https://www.bilibili.com/video/BV16G411y7Rs/",
+            self.feedback.github_video_lines(["bilibili:BV16G411y7Rs"]),
+        )
+
     def test_answer_context_rejects_gaps_and_duplicate_video_ids(self):
         with self.assertRaisesRegex(ValueError, "exact Skill answer text"):
             self.feedback.create_answer_context(

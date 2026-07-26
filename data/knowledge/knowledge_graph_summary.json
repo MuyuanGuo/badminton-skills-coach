@@ -1,18 +1,18 @@
 {
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
-  "scope": "刘辉羽毛球抖音教学视频",
-  "source_updated_at": "2026-07-24T04:38:09.993679+00:00",
-  "video_count": 409,
-  "indexable_video_count": 354,
-  "assigned_video_count": 354,
-  "multi_topic_video_count": 148,
+  "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
+  "source_updated_at": "2026-07-26T20:58:26.319902+00:00",
+  "video_count": 418,
+  "indexable_video_count": 363,
+  "assigned_video_count": 363,
+  "multi_topic_video_count": 154,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 103,
+      "video_count": 110,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -24,8 +24,8 @@
             "高远",
             "底线"
           ],
-          "video_count": 22,
-          "ready_count": 22,
+          "video_count": 24,
+          "ready_count": 24,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -66,8 +66,8 @@
             "突击",
             "扣杀"
           ],
-          "video_count": 39,
-          "ready_count": 39,
+          "video_count": 40,
+          "ready_count": 40,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -80,21 +80,21 @@
               "score": 42
             },
             {
+              "video_id": "bilibili:BV1vx4y1A71t",
+              "title": "杀球压不下去？刘辉教练教你杀球如何下压技巧",
+              "url": "https://www.bilibili.com/video/BV1vx4y1A71t/",
+              "confidence": "medium",
+              "category": "后场技术",
+              "duration_seconds": 202.9,
+              "score": 21
+            },
+            {
               "video_id": "7567155406117533051",
               "title": "不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人…",
               "url": "https://www.douyin.com/video/7567155406117533051",
               "confidence": "visual_reviewed",
               "category": "后场技术",
               "duration_seconds": 61.6,
-              "score": 15
-            },
-            {
-              "video_id": "7659991105622862457",
-              "title": "重杀框架 可以和期一起看，不同的框架可以决定不同的杀球",
-              "url": "https://www.douyin.com/video/7659991105622862457",
-              "confidence": "medium",
-              "category": "后场技术",
-              "duration_seconds": 129.7,
               "score": 15
             }
           ]
@@ -150,8 +150,8 @@
             "滑板",
             "软压"
           ],
-          "video_count": 7,
-          "ready_count": 7,
+          "video_count": 8,
+          "ready_count": 8,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -195,10 +195,19 @@
             "过渡击球点",
             "过渡基础"
           ],
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "is_fallback": false,
           "representative_videos": [
+            {
+              "video_id": "bilibili:BV1tw411U7PV",
+              "title": "【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿",
+              "url": "https://www.bilibili.com/video/BV1tw411U7PV/",
+              "confidence": "medium",
+              "category": "后场技术",
+              "duration_seconds": 512.3,
+              "score": 18
+            },
             {
               "video_id": "7515625891511995706",
               "title": "正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法",
@@ -216,15 +225,6 @@
               "category": "握拍与基本动作",
               "duration_seconds": 97.3,
               "score": 10
-            },
-            {
-              "video_id": "7393550140465777960",
-              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
-              "url": "https://www.douyin.com/video/7393550140465777960",
-              "confidence": "medium",
-              "category": "握拍与基本动作",
-              "duration_seconds": 125.7,
-              "score": 9
             }
           ]
         },
@@ -272,10 +272,19 @@
         {
           "name": "后场综合待细分",
           "keywords": [],
-          "video_count": 3,
-          "ready_count": 3,
+          "video_count": 5,
+          "ready_count": 5,
           "is_fallback": true,
           "representative_videos": [
+            {
+              "video_id": "bilibili:BV16G411y7Rs",
+              "title": "保姆级反手发力课！刘辉教练教你为什么捏两窄边更高级？陈雨菲经典名场面再现 反手过度斜线 今日份一亿",
+              "url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+              "confidence": "medium",
+              "category": "后场技术",
+              "duration_seconds": 887.8,
+              "score": 0
+            },
             {
               "video_id": "7054395778814561575",
               "title": "做两期前后场一致性的视频，你们知道用的都是那种技术嘛？后面有入门讲解，教学后期出，或者直播的时候讲吧，东西…",
@@ -286,21 +295,12 @@
               "score": 0
             },
             {
-              "video_id": "7418417650264558848",
-              "title": "被人教学鞭打发力 受益匪浅",
-              "url": "https://www.douyin.com/video/7418417650264558848",
+              "video_id": "bilibili:BV1TT411r7Ft",
+              "title": "羽毛球反手怎么打？保姆级教学来啦！刘辉教练教你羽毛球反手被动球如何处理！",
+              "url": "https://www.bilibili.com/video/BV1TT411r7Ft/",
               "confidence": "medium",
               "category": "后场技术",
-              "duration_seconds": 50.5,
-              "score": 0
-            },
-            {
-              "video_id": "7153445193713290511",
-              "title": "被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度",
-              "url": "https://www.douyin.com/video/7153445193713290511",
-              "confidence": "medium",
-              "category": "后场技术",
-              "duration_seconds": 120.5,
+              "duration_seconds": 583.5,
               "score": 0
             }
           ]
@@ -738,7 +738,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 40,
+      "video_count": 41,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -748,10 +748,19 @@
             "起动",
             "第一步"
           ],
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 14,
+          "ready_count": 14,
           "is_fallback": false,
           "representative_videos": [
+            {
+              "video_id": "bilibili:BV12N411v7qo",
+              "title": "【高阶】启动总是反应不过来往哪蹬地？刘辉教练教你如何判断启动方向 教学演练球路 不看又错过一个亿",
+              "url": "https://www.bilibili.com/video/BV12N411v7qo/",
+              "confidence": "medium",
+              "category": "步法与移动",
+              "duration_seconds": 538.2,
+              "score": 26
+            },
             {
               "video_id": "7056244399390412064",
               "title": "分解步法种类繁多，这是练启动有代表性的，一轮一口气做完，做3组。我肯定是没做到10秒钟，要不视频太长😓",
@@ -769,15 +778,6 @@
               "category": "步法与移动",
               "duration_seconds": 43.1,
               "score": 9
-            },
-            {
-              "video_id": "7083684012513840424",
-              "title": "各位想在天上飞，得先学会交叉步贴地飞哦😂",
-              "url": "https://www.douyin.com/video/7083684012513840424",
-              "confidence": "medium",
-              "category": "步法与移动",
-              "duration_seconds": 79.9,
-              "score": 7
             }
           ]
         },
@@ -980,7 +980,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 129,
+      "video_count": 133,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1033,8 +1033,8 @@
             "转髋",
             "身体旋转"
           ],
-          "video_count": 20,
-          "ready_count": 20,
+          "video_count": 21,
+          "ready_count": 21,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1074,8 +1074,8 @@
             "小臂旋转",
             "手腕"
           ],
-          "video_count": 46,
-          "ready_count": 46,
+          "video_count": 47,
+          "ready_count": 47,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1115,8 +1115,8 @@
             "击球点",
             "高点"
           ],
-          "video_count": 26,
-          "ready_count": 26,
+          "video_count": 28,
+          "ready_count": 28,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1159,8 +1159,8 @@
             "全程",
             "大臂"
           ],
-          "video_count": 42,
-          "ready_count": 42,
+          "video_count": 44,
+          "ready_count": 44,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1234,7 +1234,7 @@
       "name": "握拍与拍面",
       "description": "正反手握拍、握拍转换、手指发力和拍面控制。",
       "discipline": "general",
-      "video_count": 30,
+      "video_count": 33,
       "subtopics": [
         {
           "name": "正手握拍",
@@ -1282,10 +1282,20 @@
             "反手握拍",
             "拇指握拍"
           ],
-          "video_count": 0,
-          "ready_count": 0,
+          "video_count": 1,
+          "ready_count": 1,
           "is_fallback": false,
-          "representative_videos": []
+          "representative_videos": [
+            {
+              "video_id": "bilibili:BV1tw411U7PV",
+              "title": "【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿",
+              "url": "https://www.bilibili.com/video/BV1tw411U7PV/",
+              "confidence": "medium",
+              "category": "后场技术",
+              "duration_seconds": 512.3,
+              "score": 9
+            }
+          ]
         },
         {
           "name": "握拍转换与微调",
@@ -1295,8 +1305,8 @@
             "握拍微调",
             "灵活握拍"
           ],
-          "video_count": 5,
-          "ready_count": 5,
+          "video_count": 6,
+          "ready_count": 6,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1318,13 +1328,13 @@
               "score": 9
             },
             {
-              "video_id": "7052912740955999499",
-              "title": "反手负角度勾球，拇指食指捏住球拍两侧窄面，未来3期视频讲变拍",
-              "url": "https://www.douyin.com/video/7052912740955999499",
+              "video_id": "bilibili:BV1aw411179M",
+              "title": "什么是反手万能握拍？刘辉教练教你反手各种回球握拍和超厉害的快速变拍技巧",
+              "url": "https://www.bilibili.com/video/BV1aw411179M/",
               "confidence": "medium",
-              "category": "网前技术",
-              "duration_seconds": 40.6,
-              "score": 6
+              "category": "后场技术",
+              "duration_seconds": 855.4,
+              "score": 9
             }
           ]
         },
@@ -1335,8 +1345,8 @@
             "拍型",
             "拍面角度"
           ],
-          "video_count": 14,
-          "ready_count": 14,
+          "video_count": 15,
+          "ready_count": 15,
           "is_fallback": false,
           "representative_videos": [
             {

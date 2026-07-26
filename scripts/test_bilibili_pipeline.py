@@ -97,6 +97,70 @@ class BilibiliPipelineTests(unittest.TestCase):
         )
         self.assertEqual(matches[0]["video_id"], "1")
 
+    def test_download_metadata_requires_uploader_text_tag_and_duration(self):
+        processor = load("process_bilibili_candidates")
+        valid = {
+            "id": "BV16G411y7Rs",
+            "uploader": "大G羽毛球",
+            "uploader_id": "1423436652",
+            "title": "刘辉教练教你反手发力",
+            "description": "直播教学切片",
+            "tags": ["刘辉", "刘辉羽毛球", "羽毛球教学"],
+            "duration": 300.0,
+            "webpage_url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+        }
+        result = processor.verify_metadata(valid, "BV16G411y7Rs")
+        self.assertEqual(result["status"], "verified_liuhui_clip")
+        for field in ["uploader_profile_matches", "publisher_text_names_liuhui",
+                      "dedicated_origin_tag", "duration_valid"]:
+            self.assertTrue(result["signals"][field])
+
+        for key, bad_value in [
+            ("uploader_id", "other"),
+            ("title", "反手发力教学"),
+            ("tags", ["羽毛球教学"]),
+            ("duration", 0),
+        ]:
+            invalid = {**valid, key: bad_value}
+            if key == "title":
+                invalid["description"] = "直播教学切片"
+            self.assertEqual(
+                processor.verify_metadata(invalid, "BV16G411y7Rs")["status"],
+                "verification_failed",
+            )
+        previous = {**result, "verified_at": "2026-07-26T00:00:00+00:00"}
+        refreshed = {**result, "verified_at": "2026-07-27T00:00:00+00:00"}
+        self.assertEqual(
+            processor.preserve_verification_timestamp(previous, refreshed)[
+                "verified_at"
+            ],
+            previous["verified_at"],
+        )
+
+    def test_transcript_duplicate_gate_requires_high_similarity_and_duration(self):
+        builder = load("build_bilibili_knowledge")
+        source = "反手发力动作要领需要放松握拍击球前加速" * 12
+        douyin = {
+            "videos": [{
+                "video_id": "100000000000000001",
+                "source_type": "douyin_video",
+                "processing_status": "ready",
+                "duration_seconds": 100,
+                "transcript_segments": [{"text": source}],
+            }]
+        }
+        index = builder.build_douyin_shingle_index(douyin)
+        duplicate = builder.duplicate_candidates(
+            [{"text": source}], 102, index
+        )
+        self.assertEqual(duplicate[0]["evidence_id"], "100000000000000001")
+        distinct = builder.duplicate_candidates(
+            [{"text": "双打接发站位与封网轮转完全不同的教学内容" * 12}],
+            102,
+            index,
+        )
+        self.assertEqual(distinct, [])
+
 
 if __name__ == "__main__":
     unittest.main()

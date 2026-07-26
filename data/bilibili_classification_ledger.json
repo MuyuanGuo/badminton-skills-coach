@@ -1,7 +1,7 @@
 {
   "version": 1,
   "platform": "bilibili",
-  "updated_at": "2026-07-26T19:40:55.295020+00:00",
+  "updated_at": "2026-07-26T20:00:03.366143+00:00",
   "counts": {
     "excluded_creator_original_or_unknown": 9,
     "candidate_liuhui_teaching": 9,
@@ -42,7 +42,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -54,7 +54,42 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:11.806734+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "【高阶】启动总是反应不过来往哪蹬地？刘辉教练教你如何判断启动方向 教学演练球路 不看又错过一个亿",
+          "description": "【高阶】启动总是反应不过来往哪蹬地？刘辉教练教你如何判断启动方向 教学演练球路 不看又错过一个亿",
+          "tags": [
+            "体育",
+            "体育频道集结令",
+            "刘辉",
+            "发现《木》",
+            "启动步",
+            "步伐",
+            "步法",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 538.192,
+          "upload_date": "20230904"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV16G411y7Rs",
@@ -66,7 +101,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -78,7 +113,44 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:19.722521+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "保姆级反手发力课！刘辉教练教你为什么捏两窄边更高级？陈雨菲经典名场面再现 反手过度斜线 今日份一亿",
+          "description": "保姆级反手发力课！刘辉教练教你为什么捏两窄边更高级？陈雨菲经典名场面再现 反手过度斜线 答应我评论区只聊球 学会的评论区打卡哦",
+          "tags": [
+            "体育",
+            "刘辉",
+            "刘辉羽毛球",
+            "反手",
+            "反手发力",
+            "反手握拍",
+            "发力",
+            "发现《木》",
+            "羽毛球",
+            "羽毛球教学",
+            "运动"
+          ],
+          "duration_seconds": 887.792,
+          "upload_date": "20231021"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1Ai756oEbD",
@@ -210,7 +282,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -222,7 +294,39 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:27.466131+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "羽毛球反手怎么打？保姆级教学来啦！刘辉教练教你羽毛球反手被动球如何处理！",
+          "description": "",
+          "tags": [
+            "刘辉",
+            "反手",
+            "教学",
+            "羽毛球",
+            "羽毛球教学",
+            "被动"
+          ],
+          "duration_seconds": 583.47,
+          "upload_date": "20230321"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1WoRXB4Es5",
@@ -258,7 +362,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -270,7 +374,42 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:39.857935+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "什么是反手万能握拍？刘辉教练教你反手各种回球握拍和超厉害的快速变拍技巧",
+          "description": "什么是反手万能握拍？刘辉教练教你反手各种回球握拍和超厉害的快速变拍技巧",
+          "tags": [
+            "e人i人的度假方式",
+            "刘辉",
+            "反手",
+            "反手握拍",
+            "反手过渡球",
+            "反手高远球",
+            "秋日运动季",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 855.424,
+          "upload_date": "20230930"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1es4y1K7PV",
@@ -282,7 +421,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -294,7 +433,38 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:46.696865+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "高远球改动作为什么总是改不过来？刘辉教练教你高远球改动作你只需要知道这三点（一）",
+          "description": "",
+          "tags": [
+            "刘辉",
+            "发现《木》",
+            "羽毛球",
+            "羽毛球教学",
+            "高远球"
+          ],
+          "duration_seconds": 235.96,
+          "upload_date": "20230411"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1gGojBBEQD",
@@ -378,7 +548,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -390,7 +560,41 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:58:55.024096+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "什么是切腰？刘辉教练教你羽毛球正反手切腰技巧 完整教学 价值一亿 不看可又亏了",
+          "description": "什么是切腰？刘辉教练教你正反手切腰技巧 完整教学 价值一亿 不看可又亏了",
+          "tags": [
+            "体育",
+            "切腰",
+            "刘辉",
+            "单打",
+            "双打",
+            "反手切腰",
+            "发现《木》",
+            "羽毛球"
+          ],
+          "duration_seconds": 763.658,
+          "upload_date": "20230928"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1tM4y1B7z8",
@@ -402,7 +606,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -414,7 +618,37 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:59:43.956727+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "单打制胜唯一法宝 刘辉教练教你羽毛球单打核心思路#羽毛球 #羽毛球教学",
+          "description": "",
+          "tags": [
+            "刘辉",
+            "单打",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 274.412,
+          "upload_date": "20230322"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1tw411U7PV",
@@ -426,7 +660,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -438,7 +672,42 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:59:51.632667+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿",
+          "description": "【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿",
+          "tags": [
+            "体育",
+            "体育频道集结令",
+            "刘辉",
+            "反手",
+            "反手握拍",
+            "反手过渡",
+            "发现《木》",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 512.278,
+          "upload_date": "20230908"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1vx4y1A71t",
@@ -450,7 +719,7 @@
       "source_platform": "bilibili",
       "uploader_profile_id": "1423436652",
       "origin_status": "origin_verification_pending",
-      "knowledge_admission_eligible": false,
+      "knowledge_admission_eligible": true,
       "decision": "candidate_liuhui_teaching",
       "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
       "classification_signals": {
@@ -462,7 +731,37 @@
       },
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
-      "possible_douyin_duplicates": []
+      "possible_douyin_duplicates": [],
+      "origin_verification": {
+        "status": "verified_liuhui_clip",
+        "methods": [
+          "verified_uploader_profile",
+          "publisher_origin_annotation"
+        ],
+        "verified_at": "2026-07-26T19:59:58.004136+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": true,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "杀球压不下去？刘辉教练教你杀球如何下压技巧",
+          "description": "",
+          "tags": [
+            "刘辉",
+            "杀球",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 202.941,
+          "upload_date": "20230324"
+        }
+      }
     },
     {
       "video_id": "bilibili:BV1yiR9BfEpb",

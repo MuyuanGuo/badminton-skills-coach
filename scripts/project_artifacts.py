@@ -166,6 +166,23 @@ def validate_evidence_records(records, label="Knowledge base"):
                 raise ArtifactConsistencyError(
                     f"{label} Douyin evidence {evidence_id!r} is not canonical"
                 )
+        if source_type == "bilibili_video":
+            source_video_id = str(record.get("source_video_id") or "")
+            expected_evidence_id = f"bilibili:{source_video_id}"
+            expected_url = f"https://www.bilibili.com/video/{source_video_id}/"
+            if (
+                not re.fullmatch(r"BV[0-9A-Za-z]{10}", source_video_id)
+                or evidence_id != expected_evidence_id
+                or record.get("video_id") != expected_evidence_id
+                or canonical_url != expected_url
+                or record.get("url") != expected_url
+                or record.get("uploader_profile_id") != "1423436652"
+                or parent_source_id is not None
+                or start is not None
+            ):
+                raise ArtifactConsistencyError(
+                    f"{label} Bilibili evidence {evidence_id!r} is not canonical"
+                )
         evidence_ids.append(evidence_id)
     if len(evidence_ids) != len(set(evidence_ids)):
         raise ArtifactConsistencyError(f"{label} contains duplicate evidence IDs")
@@ -203,7 +220,31 @@ def derive_project_status(video_index, teaching_filter, knowledge):
     teaching_ids = _record_ids(
         teaching_filter.get("videos", []), "Teaching-filter output"
     )
-    knowledge_ids = _record_ids(knowledge.get("videos", []), "Knowledge base")
+    knowledge_records = knowledge.get("videos", [])
+    has_evidence_schema = all(
+        all(
+            field in record
+            for field in [
+                "evidence_id",
+                "source_type",
+                "canonical_url",
+                "parent_source_id",
+                "clip_start_seconds",
+                "clip_end_seconds",
+            ]
+        )
+        for record in knowledge_records
+    )
+    knowledge_ids = (
+        validate_evidence_records(knowledge_records, "Knowledge base")
+        if has_evidence_schema
+        else _record_ids(knowledge_records, "Knowledge base")
+    )
+    douyin_knowledge_ids = [
+        str(record["video_id"])
+        for record in knowledge_records
+        if record.get("source_type", "douyin_video") == "douyin_video"
+    ]
 
     counts = teaching_filter.get("counts", {})
     collected = len(index_ids)
@@ -230,7 +271,7 @@ def derive_project_status(video_index, teaching_filter, knowledge):
 
     index_id_set = set(index_ids)
     teaching_id_set = set(teaching_ids)
-    knowledge_id_set = set(knowledge_ids)
+    knowledge_id_set = set(douyin_knowledge_ids)
     if not teaching_id_set.issubset(index_id_set):
         raise ArtifactConsistencyError(
             "Teaching-filter output references videos missing from the index"
@@ -242,20 +283,24 @@ def derive_project_status(video_index, teaching_filter, knowledge):
 
     status_counts = {status: 0 for status in sorted(ALLOWED_KNOWLEDGE_STATUSES)}
     ready_by_id = {}
-    for video in knowledge.get("videos", []):
+    douyin_status_counts = {status: 0 for status in sorted(ALLOWED_KNOWLEDGE_STATUSES)}
+    for video in knowledge_records:
         status = video.get("processing_status")
         if status not in ALLOWED_KNOWLEDGE_STATUSES:
             raise ArtifactConsistencyError(
                 f"Knowledge video {video['video_id']} has unknown status: {status!r}"
             )
         status_counts[status] += 1
+        if video.get("source_type", "douyin_video") == "douyin_video":
+            douyin_status_counts[status] += 1
         if status in READY_STATUSES:
             ready_by_id[str(video["video_id"])] = video
 
     ready = sum(status_counts[status] for status in READY_STATUSES)
     ready_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in READY_STATUSES
     }
     if not ready_ids.issubset(teaching_id_set):
@@ -264,12 +309,14 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         )
     knowledge_pending_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in PENDING_KNOWLEDGE_STATUSES
     }
     knowledge_excluded_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in EXCLUDED_KNOWLEDGE_STATUSES
     }
     knowledge_pending = len(knowledge_pending_ids & teaching_id_set)
@@ -279,7 +326,10 @@ def derive_project_status(video_index, teaching_filter, knowledge):
     excluded = pre_pipeline_excluded + post_pipeline_excluded
     pending = filter_review + pipeline_pending + knowledge_pending
 
-    if collected != ready + pending + excluded:
+    douyin_ready = sum(
+        douyin_status_counts[status] for status in READY_STATUSES
+    )
+    if collected != douyin_ready + pending + excluded:
         raise ArtifactConsistencyError(
             "Collected videos do not equal ready plus pending plus excluded videos"
         )
@@ -300,6 +350,10 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         "excluded_non_teaching_ads_equipment": excluded,
         "pending_human_review_or_processing": pending,
         "ready_teaching_videos": ready,
+        "ready_source_counts": {
+            "douyin_video": douyin_ready,
+            "other_sources": ready - douyin_ready,
+        },
         "processed_pipeline_videos": len(knowledge_ids),
         "kept_teaching_candidates": kept_teaching,
         "pre_pipeline_excluded": pre_pipeline_excluded,

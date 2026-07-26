@@ -329,25 +329,35 @@ def transcription_checks(repo_root, override=None, include_curl=True):
     )
     faster_whisper_ok = False
     if python_path:
-        completed = subprocess.run(
-            [
-                str(python_path),
-                "-c",
-                "import faster_whisper; print(getattr(faster_whisper, '__version__', 'installed'))",
-            ],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        checks.append(
-            check(
-                "faster_whisper",
-                completed.returncode == 0,
-                completed.stdout.strip() or completed.stderr.strip()[-600:],
-                f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+        dependency_results = {}
+        for check_name, module_name in [
+            ("faster_whisper", "faster_whisper"),
+            ("pyyaml", "yaml"),
+            ("yt_dlp", "yt_dlp"),
+        ]:
+            completed = subprocess.run(
+                [
+                    str(python_path),
+                    "-c",
+                    (
+                        f"import {module_name} as dependency; "
+                        "print(getattr(dependency, '__version__', 'installed'))"
+                    ),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
             )
-        )
-        faster_whisper_ok = completed.returncode == 0
+            dependency_results[check_name] = completed.returncode == 0
+            checks.append(
+                check(
+                    check_name,
+                    completed.returncode == 0,
+                    completed.stdout.strip() or completed.stderr.strip()[-600:],
+                    f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+                )
+            )
+        faster_whisper_ok = dependency_results["faster_whisper"]
         browser_completed = subprocess.run(
             [
                 str(python_path),

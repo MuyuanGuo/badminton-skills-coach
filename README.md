@@ -61,21 +61,21 @@
 
 | 指标 | 当前值 | 约束 |
 | --- | ---: | --- |
-| 已处理公开视频 | 475 | 来源处理记录，不等同于全部教学内容 |
-| B 站来源隔离试点 | 20 | 9 条刘辉候选、9 条原创/来源不明、2 条排除；0 条自动入库 |
-| 可用于回答的教学视频 | 354 | 仅 `processing_status: ready` 进入证据池 |
-| 转写证据 | 335 | 2,857/2,857 条转写证据包含时间戳 |
+| 已处理公开视频 | 495 | 来源处理记录，不等同于全部教学内容 |
+| B 站来源隔离试点 | 20 | 9 条通过来源与证据门禁进入回答池、11 条原创/来源不明或非教学内容被隔离 |
+| 可用于回答的教学视频 | 363 | 仅 `processing_status: ready` 进入证据池 |
+| 转写证据 | 344 | 2,962/2,962 条转写证据包含时间戳 |
 | 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
 | 回答质量黄金用例 | 57/57 | 覆盖文本、边界、视频与禁用结论 |
 | 查询理解 | 143/143 | 当前结构化意图回归集 |
 | 语言变体稳健性 | 30/30 | 5 类问题、15 个基础案例 |
 | 硬负例误选 | 0 | 当前回归集共 194 个硬负例 |
-| 当前运行时生成审计 | 3/3 | 与历史盲测分开标注 |
+| 最近一次独立人工生成审计 | 3/3 | 新运行时尚待独立人工复核，不冒充当前结果 |
 | 公共反馈信号 | 0 | 机器闭环已就绪，不虚构真实用户数据 |
 
-性能门禁使用 5 类问题的平衡样本，限制模块加载、查询规划、搜索、回答上下文和峰值内存。最近一次本地验收中，搜索 P95 为 `67.65 ms`、回答上下文 P95 为 `576.79 ms`、峰值追踪内存为 `73.18 MB`，回答包平均缩减 `71.17%`。这些是开发环境测量，不是跨机器性能承诺。
+性能门禁使用 5 类问题的平衡样本，限制模块加载、查询规划、搜索、回答上下文和峰值内存。最近一次本地验收中，搜索 P95 为 `77.75 ms`、回答上下文 P95 为 `712.04 ms`、峰值追踪内存为 `80.15 MB`，回答包平均缩减 `71.22%`。这些是开发环境测量，不是跨机器性能承诺。
 
-完整、可复现的当前结果见 [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/)。
+最近一次完成人工独立复核的生成式评测快照见 [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/)；本分支当前的确定性回归与性能结果以上述本地门禁为准，新运行时的生成式审计仍需独立人工复核。
 
 ## 系统架构
 
@@ -122,9 +122,11 @@ query
 
 ### 数据与证据分层
 
-- `data/knowledge/douyin_knowledge_base.json`：完整构建产物与视频处理状态。
+- `data/knowledge/douyin_knowledge_base.json`：兼容旧路径的多来源统一知识库与视频处理状态。
+- `data/knowledge/bilibili_knowledge_base.json`：通过来源核验、转写质量和跨平台去重门禁的 B 站构建产物。
 - `data/bilibili_video_index.json`：大G羽毛球主页的 B 站元数据索引。
-- `data/processing/bilibili_origin_review_queue.json`：只保存可能属于刘辉教学切片的隔离候选；元数据候选不会直接进入证据池。
+- `data/processing/bilibili_origin_review_queue.json`：保存尚未通过独立来源核验的隔离候选；元数据候选不会直接进入证据池。
+- `data/processing/bilibili_queue.json`：已通过来源门禁的媒体、转写和知识构建状态。
 - `references/knowledge-base.json`：随 Skill 发布的运行时证据副本。
 - `retrieval-index.json`：不包含完整转写正文的紧凑索引。
 - `reviewed-evidence-atoms.json`：已审核范围的封闭结论与证据单元。
@@ -186,6 +188,12 @@ python3 scripts/run_ci_tests.py artifacts
 python3 scripts/run_ci_tests.py context
 python3 scripts/run_full_update_pipeline.py
 ```
+
+新增 B 站证据时，先刷新元数据索引并审核分类规则；随后由
+`process_bilibili_candidates.py` 独立核验发布者资料、正文来源标注和专用标签，
+再下载音轨。转写完成后，`finalize_bilibili_transcripts.py` 会校验媒体哈希，
+`build_bilibili_knowledge.py` 执行质量门禁与跨平台重复检查。完整更新管线负责将
+通过门禁的记录并入统一知识库并重建所有运行时索引。
 
 完整管线成功时写出本地 `output/update-impact-report.json`；失败时自动回滚生成产物。
 

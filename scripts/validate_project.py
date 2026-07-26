@@ -7,6 +7,7 @@ from pathlib import Path
 
 from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
 from build_manifest import manifest_bytes
+from bilibili_pipeline import load_rules as load_bilibili_rules
 from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
 from media_assets import load_media_policy
 from project_artifacts import (
@@ -87,6 +88,7 @@ json_paths = [
     "data/evaluation/retrieval_cases.json",
     "data/knowledge/pilot_teaching_notes.json",
     "data/knowledge/douyin_knowledge_base.json",
+    "data/knowledge/bilibili_knowledge_base.json",
     "data/knowledge/retrieval_index.json",
     "data/knowledge/topic_index.json",
     "data/knowledge/knowledge_graph_summary.json",
@@ -95,6 +97,7 @@ json_paths = [
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
     "data/processing/bilibili_origin_review_queue.json",
+    "data/processing/bilibili_queue.json",
     "skills/liuhui-badminton-coach/references/answer-audit-rules.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
@@ -137,6 +140,34 @@ for relative_path, collection_key in [
         raise SystemExit(f"Bilibili artifact has wrong platform: {relative_path}")
     if not isinstance(payload.get(collection_key), list):
         raise SystemExit(f"Bilibili artifact has invalid records: {relative_path}")
+bilibili_rules = load_bilibili_rules()
+bilibili_ledger = json.loads(
+    (ROOT / "data" / "bilibili_classification_ledger.json").read_text(
+        encoding="utf-8"
+    )
+)
+bilibili_review = json.loads(
+    (ROOT / "data" / "processing" / "bilibili_origin_review_queue.json").read_text(
+        encoding="utf-8"
+    )
+)
+eligible_bilibili_ids = {
+    item["bvid"]
+    for item in bilibili_ledger["videos"]
+    if item.get("knowledge_admission_eligible")
+}
+if any(
+    item.get("classification_rules_hash")
+    != bilibili_rules["_identity"]["sha256"]
+    or item.get("classification_rules_version")
+    != bilibili_rules["_identity"]["version"]
+    for item in bilibili_ledger["videos"]
+):
+    raise SystemExit("Bilibili ledger contains stale classification metadata")
+if eligible_bilibili_ids & {
+    item["bvid"] for item in bilibili_review["items"]
+}:
+    raise SystemExit("Verified Bilibili evidence remains in the origin review queue")
 if not (ROOT / "scripts" / "apply_answer_quality_review_notes.py").exists():
     raise SystemExit("Answer quality review application script is missing")
 for runtime_file in [
@@ -291,6 +322,24 @@ queue = json.loads(
     (ROOT / "data" / "processing" / "douyin_queue.json").read_text(encoding="utf-8")
 )
 validate_queue_statuses(queue["items"])
+bilibili_queue = json.loads(
+    (ROOT / "data" / "processing" / "bilibili_queue.json").read_text(encoding="utf-8")
+)
+validate_queue_statuses(bilibili_queue["items"])
+if {item["video_id"] for item in bilibili_queue["items"]} != eligible_bilibili_ids:
+    raise SystemExit("Bilibili processing queue does not match verified candidates")
+if sum(bilibili_queue.get("counts", {}).values()) != len(bilibili_queue["items"]):
+    raise SystemExit("Bilibili queue counts do not sum to the queue length")
+for item in bilibili_queue["items"]:
+    if item.get("platform") != "bilibili":
+        raise SystemExit(f"Bilibili queue item has wrong platform: {item['video_id']}")
+    if item.get("status") == "transcribed" and item.get("media_path") is not None:
+        raise SystemExit(
+            f"Transcribed Bilibili item retains temporary media: {item['video_id']}"
+        )
+    verification = item.get("origin_verification") or {}
+    if verification.get("status") != "verified_liuhui_clip":
+        raise SystemExit(f"Bilibili queue item is not origin-verified: {item['video_id']}")
 if len(queue["items"]) < 405:
     raise SystemExit(f"Expected at least 405 teaching videos in queue, found {len(queue['items'])}")
 if sum(queue["counts"].values()) != len(queue["items"]):
@@ -883,8 +932,18 @@ for video in douyin_knowledge["videos"]:
         or not video["quality"]["automatic_evidence"]["passed"]
     ):
         raise SystemExit(f"Automatic ready video failed quality gates: {video['video_id']}")
+    source_queue = (
+        bilibili_queue["items"]
+        if video.get("source_type") == "bilibili_video"
+        else queue["items"]
+    )
+    source_video_id = (
+        video.get("source_video_id")
+        if video.get("source_type") == "bilibili_video"
+        else video["video_id"]
+    )
     queue_item = next(
-        item for item in queue["items"] if item["video_id"] == video["video_id"]
+        item for item in source_queue if item["video_id"] == source_video_id
     )
     if video.get("classification", {}).get("decision") != queue_item.get(
         "classification_decision"

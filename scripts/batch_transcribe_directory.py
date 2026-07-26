@@ -226,11 +226,17 @@ def transcribe_directory(
     queue_path=None,
     model_name="small",
     model_factory=default_model_factory,
+    video_ids=None,
 ):
     media_dir = media_dir.resolve()
     output_dir = output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
-    files = sorted(file for file in media_dir.iterdir() if file.suffix.lower() in MEDIA_SUFFIXES)
+    requested = set(video_ids or [])
+    files = sorted(
+        file for file in media_dir.iterdir()
+        if file.suffix.lower() in MEDIA_SUFFIXES
+        and (not requested or file.stem in requested)
+    )
 
     queue = json.loads(queue_path.read_text(encoding="utf-8")) if queue_path else None
     queue_items = {item["video_id"]: item for item in queue["items"]} if queue else {}
@@ -340,6 +346,7 @@ def main():
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--queue", type=Path)
     parser.add_argument("--model", default="small")
+    parser.add_argument("--video-id", action="append", default=[])
     args = parser.parse_args()
 
     result = transcribe_directory(
@@ -347,6 +354,7 @@ def main():
         args.output_dir,
         queue_path=args.queue,
         model_name=args.model,
+        video_ids=args.video_id,
     )
     print(json.dumps(result, ensure_ascii=False), flush=True)
     return 1 if result["failed_video_ids"] else 0

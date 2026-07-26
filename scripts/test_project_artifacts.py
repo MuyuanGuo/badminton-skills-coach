@@ -125,10 +125,11 @@ class ProjectArtifactsTests(unittest.TestCase):
         self.assertEqual(status["excluded_non_teaching_ads_equipment"], 3)
         self.assertEqual(
             status["public_videos_collected"],
-            status["ready_teaching_videos"]
+            status["ready_source_counts"]["douyin_video"]
             + status["pending_human_review_or_processing"]
             + status["excluded_non_teaching_ads_equipment"],
         )
+        self.assertEqual(status["ready_source_counts"]["other_sources"], 0)
 
     def test_noncanonical_public_video_link_is_rejected(self):
         index, teaching, knowledge = self.fixture()
@@ -154,6 +155,24 @@ class ProjectArtifactsTests(unittest.TestCase):
                 }
             ]
         )
+        self.assertEqual(result, [evidence_id])
+
+    def test_source_neutral_evidence_accepts_canonical_bilibili_video(self):
+        evidence_id = "bilibili:BV16G411y7Rs"
+        result = self.module.validate_evidence_records([
+            {
+                "video_id": evidence_id,
+                "evidence_id": evidence_id,
+                "source_type": "bilibili_video",
+                "canonical_url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+                "url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+                "source_video_id": "BV16G411y7Rs",
+                "uploader_profile_id": "1423436652",
+                "parent_source_id": None,
+                "clip_start_seconds": None,
+                "clip_end_seconds": None,
+            }
+        ])
         self.assertEqual(result, [evidence_id])
 
     def test_source_neutral_clip_requires_parent_and_complete_range(self):
@@ -190,10 +209,11 @@ class ProjectArtifactsTests(unittest.TestCase):
         )
         self.assertEqual(
             status["public_videos_collected"],
-            status["ready_teaching_videos"]
+            status["ready_source_counts"]["douyin_video"]
             + status["pending_human_review_or_processing"]
             + status["excluded_non_teaching_ads_equipment"],
         )
+        self.assertEqual(status["ready_source_counts"]["other_sources"], 9)
 
     def test_reference_sync_rolls_back_after_partial_failure(self):
         with tempfile.TemporaryDirectory() as directory:
