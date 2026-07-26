@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -116,6 +118,60 @@ class ForwardTestResultTests(unittest.TestCase):
             {"cases": [{"original_query": "多轮原问题"}]},
         )
         self.assertIn(self.module.normalize_query("多轮原问题"), known)
+
+    def test_answer_runtime_fingerprint_ignores_release_only_metadata(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            skill = (
+                Path(temporary)
+                / "skills"
+                / "liuhui-badminton-coach"
+            )
+            references = skill / "references"
+            scripts = skill / "scripts"
+            references.mkdir(parents=True)
+            scripts.mkdir()
+            (skill / "SKILL.md").write_text("answer instructions", encoding="utf-8")
+            (scripts / "runtime.py").write_text("VALUE = 1\n", encoding="utf-8")
+            feedback = {
+                "version": 3,
+                "skill_version": "1.5.0",
+                "channel": "stable",
+                "stable_version": "1.5.0",
+                "behavior": ["keep"],
+            }
+            (references / "feedback-rules.json").write_text(
+                json.dumps(feedback),
+                encoding="utf-8",
+            )
+            (references / "build-manifest.json").write_text(
+                '{"build_id":"old"}',
+                encoding="utf-8",
+            )
+            first = self.module.answer_runtime_fingerprint(temporary)
+            feedback.update(
+                {
+                    "skill_version": "2.0.0-dev.1",
+                    "channel": "development",
+                }
+            )
+            (references / "feedback-rules.json").write_text(
+                json.dumps(feedback),
+                encoding="utf-8",
+            )
+            (references / "build-manifest.json").write_text(
+                '{"build_id":"new"}',
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                first,
+                self.module.answer_runtime_fingerprint(temporary),
+            )
+
+            (scripts / "runtime.py").write_text("VALUE = 2\n", encoding="utf-8")
+            self.assertNotEqual(
+                first,
+                self.module.answer_runtime_fingerprint(temporary),
+            )
 
     def test_stale_runtime_fingerprint_fails(self):
         result, critical, cases, query_cases = self.fixtures()

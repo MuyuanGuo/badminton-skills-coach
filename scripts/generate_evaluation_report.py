@@ -364,10 +364,18 @@ def collect_evaluations(root=ROOT):
             )
         },
         "live_generation": {
-            "measurement_type": "current_runtime_generation_review",
+            "measurement_type": "current_answer_runtime_generation_review",
             "current_runtime_match": True,
             "current_runtime_generation_claimed": True,
             "runtime_fingerprint": live_result["runtime_fingerprint"],
+            "runtime_fingerprint_scope": "answer_semantics",
+            "reviewed_artifact_runtime_fingerprint": (
+                live_result["reviewed_artifact_runtime_fingerprint"]
+            ),
+            "current_artifact_runtime_fingerprint": (
+                live_result["current_artifact_runtime_fingerprint"]
+            ),
+            "artifact_runtime_match": live_result["artifact_runtime_match"],
             "critical_cases": live_result["critical_cases"],
             "independently_reviewed": live_result["independently_reviewed"],
             "passed": len(live_payload["cases"]),
@@ -549,7 +557,7 @@ def render_html(report):
   <main class="shell">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Static snapshots and historical blind generations remain labeled as such; the current-runtime suite contains freshly generated answers that passed independent review and runtime-bound audits.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Static snapshots and historical blind generations remain labeled as such; the live-generation suite is bound to the current answer-semantic fingerprint and reruns runtime audits without treating release-only metadata as answer behavior.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

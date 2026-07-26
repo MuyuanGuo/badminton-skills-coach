@@ -18,6 +18,15 @@ CONTINUATION_CASES_PATH = (
     ROOT / "data" / "evaluation" / "diagnostic_answer_continuation_cases.json"
 )
 SKILL_ROOT = Path("skills/liuhui-badminton-coach")
+ANSWER_RUNTIME_EXCLUDED = {
+    Path("agents/openai.yaml"),
+    Path("references/build-manifest.json"),
+}
+VERSION_ONLY_FEEDBACK_FIELDS = {
+    "skill_version",
+    "channel",
+    "stable_version",
+}
 MIN_CONSECUTIVE_UNSEEN_ROUNDS = 3
 MIN_CASES_PER_UNSEEN_ROUND = 4
 REQUIRED_REVIEW_DIMENSIONS = {
@@ -51,6 +60,41 @@ def runtime_fingerprint(root=ROOT):
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
         digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def answer_runtime_fingerprint(root=ROOT):
+    """Hash answer semantics while excluding release-only Skill metadata."""
+
+    digest = hashlib.sha256()
+    root = Path(root)
+    skill_root = root / SKILL_ROOT
+    paths = sorted(
+        path
+        for path in skill_root.rglob("*")
+        if path.is_file()
+        and "__pycache__" not in path.parts
+        and path.suffix not in {".pyc", ".pyo"}
+        and path.relative_to(skill_root) not in ANSWER_RUNTIME_EXCLUDED
+    )
+    for path in paths:
+        relative_to_skill = path.relative_to(skill_root)
+        relative = path.relative_to(root).as_posix()
+        content = path.read_bytes()
+        if relative_to_skill == Path("references/feedback-rules.json"):
+            payload = json.loads(content)
+            for field in VERSION_ONLY_FEEDBACK_FIELDS:
+                payload.pop(field, None)
+            content = json.dumps(
+                payload,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(content)
         digest.update(b"\0")
     return digest.hexdigest()
 

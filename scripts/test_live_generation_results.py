@@ -42,8 +42,9 @@ class LiveGenerationResultTests(unittest.TestCase):
                 }
             )
         return {
-            "schema_version": 1,
-            "runtime_fingerprint": "current",
+            "schema_version": 2,
+            "runtime_fingerprint": "reviewed-artifact",
+            "answer_runtime_fingerprint": "current-answer",
             "generated_at": "2026-07-26",
             "generator": {
                 "provider": "test",
@@ -62,16 +63,25 @@ class LiveGenerationResultTests(unittest.TestCase):
     def test_valid_independently_reviewed_fixture_passes(self):
         payload = self.fixture()
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current"
+            self.module, "runtime_fingerprint", return_value="current-artifact"
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="current-answer",
         ):
             result = self.module.validate_results(payload, rerun_runtime=False)
         self.assertEqual(result["status"], "pass")
         self.assertEqual(result["critical_cases"], 3)
+        self.assertFalse(result["artifact_runtime_match"])
 
     def test_stale_runtime_is_rejected(self):
         payload = self.fixture()
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="new-runtime"
+            self.module, "runtime_fingerprint", return_value="current-artifact"
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="new-answer-runtime",
         ), self.assertRaisesRegex(
             self.module.LiveGenerationValidationError, "stale"
         ):
@@ -81,7 +91,11 @@ class LiveGenerationResultTests(unittest.TestCase):
         payload = self.fixture()
         payload["review"]["reviewer"] = payload["generator"]["task_id"]
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current"
+            self.module, "runtime_fingerprint", return_value="current-artifact"
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="current-answer",
         ), self.assertRaisesRegex(
             self.module.LiveGenerationValidationError, "independent"
         ):
@@ -92,7 +106,11 @@ class LiveGenerationResultTests(unittest.TestCase):
         payload["cases"][0]["answer_text"] += " changed"
         payload["cases"][1]["manual_scores"]["technical_correctness"] = 3
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current"
+            self.module, "runtime_fingerprint", return_value="current-artifact"
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="current-answer",
         ), self.assertRaisesRegex(
             self.module.LiveGenerationValidationError,
             "answer_digest_mismatch.*manual_quality_below_threshold",

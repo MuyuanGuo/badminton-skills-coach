@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "1.5.0",
+  "development_version": "2.0.0-dev.1",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "d36fe7f41cb5229d",
-    "inputs_sha256": "f506dfee4a68b0c4b0c0b3b5dee6d9a54404faa45738ab3ab7b804602ef0fa5b",
-    "runtime_sha256": "b94bc74aa5464befd31508a34f2b9759f9b90706920d42221b7c2c4d87cade48"
+    "id": "366ceab1a8c39f70",
+    "inputs_sha256": "fde889033bcfa901e3952b0cddfeec9a63eba410a2da03dd7d9660e991261156",
+    "runtime_sha256": "c35ad32ffa2ec1718fbdc67e54fa9167b2625b185e920dac40fe1962a1d8fa8f"
   },
   "summary": {
     "status": "pass",
@@ -151,10 +151,14 @@
       "failed": []
     },
     "live_generation": {
-      "measurement_type": "current_runtime_generation_review",
+      "measurement_type": "current_answer_runtime_generation_review",
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
-      "runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
+      "runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
+      "runtime_fingerprint_scope": "answer_semantics",
+      "reviewed_artifact_runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
+      "current_artifact_runtime_fingerprint": "0fa92849bfbb41114e9d7d36d92b35767cc894e03efd2d4607ce4e0d2a2ef224",
+      "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
       "passed": 3,
