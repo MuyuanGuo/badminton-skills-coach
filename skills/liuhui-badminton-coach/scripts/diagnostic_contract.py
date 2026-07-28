@@ -161,6 +161,71 @@ def claim_evidence_entry(video, directness, reason):
         "reason": reason,
     }
 
+
+def query_window_support(video):
+    """Return claim-level support from query-ranked source windows."""
+
+    best = {
+        "rank": 0,
+        "score": 0.0,
+        "matched_term_count": 0,
+        "query_ngram_coverage": 0.0,
+        "exact_query_match": False,
+    }
+    for window in video.get("transcript_evidence", []):
+        matched_count = len(window.get("matched_terms") or [])
+        coverage = float(window.get("query_ngram_coverage") or 0)
+        exact = bool(window.get("exact_query_match"))
+        rank = (
+            4
+            if exact
+            else 3
+            if coverage >= 0.25 or (matched_count >= 3 and coverage >= 0.1)
+            else 2
+            if matched_count >= 2
+            else 1
+            if matched_count >= 1 and coverage >= 0.15
+            else 0
+        )
+        candidate = {
+            "rank": rank,
+            "score": float(window.get("score") or 0),
+            "matched_term_count": matched_count,
+            "query_ngram_coverage": coverage,
+            "exact_query_match": exact,
+        }
+        if (
+            candidate["rank"],
+            candidate["score"],
+            candidate["query_ngram_coverage"],
+        ) > (
+            best["rank"],
+            best["score"],
+            best["query_ngram_coverage"],
+        ):
+            best = candidate
+    if (
+        best["rank"] < 2
+        and video.get("reviewed_evidence_rank", 2) <= 1
+    ):
+        best = {
+            **best,
+            "rank": 2,
+            "reviewed_evidence_fallback": True,
+        }
+    if (
+        best["rank"] < 2
+        and video.get("source_type") != "bilibili_video"
+        and video.get("teaching_note", {}).get("evidence")
+    ):
+        best = {
+            **best,
+            "rank": 2,
+            "legacy_source_fallback": True,
+        }
+    return best
+
+
 def confidence_ceiling(evidence_entries, selected_by_label):
     if not evidence_entries:
         return "none"
@@ -190,6 +255,9 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
     symptom = video.get("symptom_match")
     if concept == "none" and symptom in {"none", "not_required"}:
         return None
+    window_support = query_window_support(video)
+    if window_support["rank"] < 2:
+        return None
     if (
         scope_directness == "exact"
         and concept in {"exact_question", "exact_query_unit"}
@@ -210,7 +278,13 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
             else "supports only a component or mechanism of the question"
         )
     )
-    return claim_evidence_entry(video, directness, reason)
+    evidence = claim_evidence_entry(video, directness, reason)
+    evidence["window_support"] = {
+        **window_support,
+        "primary_query_score": float(video.get("primary_query_score") or 0),
+        "best_retrieval_rank": video.get("best_retrieval_rank"),
+    }
+    return evidence
 
 
 def mechanism_evidence(
@@ -353,7 +427,28 @@ def build_diagnostic_contract(
                 unit in video.get("matched_query_units", [])
                 or len(query_units) == 1
             )
-        ][: diagnostic_rules.get("max_evidence_per_claim", 3)]
+        ]
+        directness_rank = {"direct": 0, "scoped": 1, "component": 2}
+        evidence_entries.sort(
+            key=lambda item: (
+                -int(
+                    bool(
+                        item["window_support"].get(
+                            "reviewed_evidence_fallback"
+                        )
+                    )
+                ),
+                -item["window_support"]["rank"],
+                directness_rank[item["directness"]],
+                -item["window_support"]["primary_query_score"],
+                item["window_support"].get("best_retrieval_rank") or 10**6,
+                -item["window_support"]["score"],
+                item["label"],
+            )
+        )
+        evidence_entries = evidence_entries[
+            : diagnostic_rules.get("max_evidence_per_claim", 3)
+        ]
         claim_map.append(
             {
                 "claim_id": f"Q{len(claim_map) + 1}",

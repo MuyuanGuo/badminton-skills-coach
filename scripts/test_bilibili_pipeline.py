@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import importlib.util
+import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,8 +65,13 @@ class BilibiliPipelineTests(unittest.TestCase):
         item = self.classify("刘辉教练教你反手万能握拍")
         item["origin_verification"] = {
             "status": "verified_liuhui_clip",
-            "methods": ["verified_collection_membership"],
+            "methods": ["publisher_origin_annotation"],
             "verified_at": "2026-07-26T00:00:00+00:00",
+            "signals": {
+                "uploader_profile_matches": True,
+                "publisher_text_names_liuhui": True,
+                "dedicated_origin_tag": True,
+            },
         }
         self.assertTrue(self.pipeline.may_enter_knowledge_base(item))
 
@@ -79,12 +86,66 @@ class BilibiliPipelineTests(unittest.TestCase):
             "profile_url": "https://space.bilibili.com/1423436652",
             "collected_at": (now - timedelta(hours=1)).isoformat(),
             "collected_unique_links": 2,
-            "videos": [{}, {}],
+            "videos": [
+                {"bvid": "BV16G411y7Rs"},
+                {"bvid": "BV1aw411179M"},
+            ],
         }
         result = self.updates.validate_snapshot(payload, source, now)
         self.assertEqual(result["observed"], 2)
         payload["profile_id"] = "other"
         with self.assertRaisesRegex(ValueError, "configured"):
+            self.updates.validate_snapshot(payload, source, now)
+
+    def test_full_snapshot_requires_contiguous_hashed_pages_and_exact_total(self):
+        now = datetime(2026, 7, 26, tzinfo=timezone.utc)
+        source = {
+            "profile_id": "1423436652",
+            "snapshot": {"max_age_hours": 24, "min_observed_links": 2},
+        }
+        payload = {
+            "profile_id": "1423436652",
+            "profile_url": "https://space.bilibili.com/1423436652",
+            "collected_at": (now - timedelta(hours=1)).isoformat(),
+            "collected_unique_links": 2,
+            "full_profile_archive": True,
+            "profile_reported_video_count": 2,
+            "profile_pages_complete": True,
+            "profile_pages": [
+                {
+                    "page": 1,
+                    "count": 2,
+                    "first_bvid": "BV16G411y7Rs",
+                    "last_bvid": "BV1aw411179M",
+                    "bvid_sha256": "a" * 64,
+                    "sorted_bvid_sha256": self.updates.page_bvid_content_sha256(
+                        ["BV16G411y7Rs", "BV1aw411179M"]
+                    ),
+                }
+            ],
+            "coverage": {
+                "profile_pages": 1,
+                "profile_reported_video_count": 2,
+                "profile_collected_count": 2,
+                "profile_unique_videos": 2,
+            },
+            "videos": [
+                {"bvid": "BV16G411y7Rs", "profile_page": 1},
+                {"bvid": "BV1aw411179M", "profile_page": 1},
+            ],
+        }
+        result = self.updates.validate_snapshot(payload, source, now)
+        self.assertTrue(result["full_profile_archive"])
+        payload["profile_pages"][0]["sorted_bvid_sha256"] = "b" * 64
+        with self.assertRaisesRegex(ValueError, "content hash"):
+            self.updates.validate_snapshot(payload, source, now)
+        payload["profile_pages"][0][
+            "sorted_bvid_sha256"
+        ] = self.updates.page_bvid_content_sha256(
+            ["BV16G411y7Rs", "BV1aw411179M"]
+        )
+        payload["profile_reported_video_count"] = 3
+        with self.assertRaisesRegex(ValueError, "profile video count"):
             self.updates.validate_snapshot(payload, source, now)
 
     def test_cross_platform_dedupe_uses_inverted_index(self):
@@ -136,6 +197,47 @@ class BilibiliPipelineTests(unittest.TestCase):
             ],
             previous["verified_at"],
         )
+        self.assertNotIn("worstaudio", processor.ydl_options()["format"])
+        self.assertEqual(
+            processor.classify_error(
+                "Unable to download webpage: nodename nor servname provided"
+            ),
+            ("temporary_network", True),
+        )
+
+    def test_media_completion_ignores_part_and_quarantines_broken_final(self):
+        processor = load("process_bilibili_candidates")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            broken = root / "BV16G411y7Rs.m4a"
+            broken.write_bytes(b"x" * 8192)
+            partial = root / "BV16G411y7Rs.m4a.part"
+            partial.write_bytes(b"x" * 8192)
+            with (
+                mock.patch.object(processor, "RAW_ROOT", root),
+                mock.patch.object(
+                    processor,
+                    "validate_media",
+                    side_effect=RuntimeError("broken"),
+                ),
+                mock.patch.object(
+                    processor,
+                    "inspect_media_content",
+                    side_effect=RuntimeError("still broken"),
+                ),
+            ):
+                media, validation = processor.completed_media(
+                    "BV16G411y7Rs"
+                )
+            self.assertIsNone(media)
+            self.assertIsNone(validation)
+            self.assertFalse(broken.exists())
+            self.assertTrue(partial.exists())
+            self.assertTrue(any((root / "quarantine").iterdir()))
+
+    def test_webm_is_transcribable(self):
+        transcriber = load("batch_transcribe_directory")
+        self.assertIn(".webm", transcriber.MEDIA_SUFFIXES)
 
     def test_transcript_duplicate_gate_requires_high_similarity_and_duration(self):
         builder = load("build_bilibili_knowledge")
@@ -160,6 +262,21 @@ class BilibiliPipelineTests(unittest.TestCase):
             index,
         )
         self.assertEqual(distinct, [])
+        builder.add_to_shingle_index(
+            index,
+            "bilibili:BV1aw411179M",
+            [{"text": "单打接发站位与封网轮转完全不同的教学内容" * 12}],
+            102,
+        )
+        same_bilibili = builder.duplicate_candidates(
+            [{"text": "单打接发站位与封网轮转完全不同的教学内容" * 12}],
+            101,
+            index,
+        )
+        self.assertEqual(
+            same_bilibili[0]["evidence_id"],
+            "bilibili:BV1aw411179M",
+        )
 
 
 if __name__ == "__main__":

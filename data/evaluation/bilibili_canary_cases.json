@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "description": "Automatic Bilibili source canaries. They prove retrieval and packet wiring, not human-judged coaching semantics.",
+  "cases": [
+    {
+      "id": "bili-start-direction",
+      "query": "启动总是反应不过来，怎么判断往哪蹬地？",
+      "expected_evidence_id": "bilibili:BV12N411v7qo"
+    },
+    {
+      "id": "bili-backhand-narrow-edge",
+      "query": "反手发力为什么要捏两个窄边？",
+      "expected_evidence_id": "bilibili:BV16G411y7Rs"
+    },
+    {
+      "id": "bili-passive-backhand",
+      "query": "反手被动球应该怎么处理？",
+      "expected_evidence_id": "bilibili:BV1TT411r7Ft"
+    },
+    {
+      "id": "bili-universal-backhand-grip",
+      "query": "反手万能握拍怎么快速变拍？",
+      "expected_evidence_id": "bilibili:BV1aw411179M"
+    },
+    {
+      "id": "bili-clear-correction",
+      "query": "高远球改动作为什么总是改不过来？",
+      "expected_evidence_id": "bilibili:BV1es4y1K7PV"
+    },
+    {
+      "id": "bili-waist-cut",
+      "query": "正反手切腰技巧是什么？",
+      "expected_evidence_id": "bilibili:BV1t94y1a7La"
+    },
+    {
+      "id": "bili-singles-core",
+      "query": "羽毛球单打制胜的核心思路是什么？",
+      "expected_evidence_id": "bilibili:BV1tM4y1B7z8"
+    },
+    {
+      "id": "bili-backhand-transition",
+      "query": "反手过渡球的高级握拍技巧是什么？",
+      "expected_evidence_id": "bilibili:BV1tw411U7PV"
+    },
+    {
+      "id": "bili-smash-angle",
+      "query": "杀球压不下去，怎么让杀球下压？",
+      "expected_evidence_id": "bilibili:BV1vx4y1A71t"
+    }
+  ],
+  "thresholds": {
+    "retrieval_top_k": 3,
+    "minimum_claim_window_rank": 2,
+    "maximum_packet_bytes": 16384
+  }
+}

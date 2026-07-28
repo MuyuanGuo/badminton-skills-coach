@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
 import unittest
 from pathlib import Path
 
@@ -62,7 +63,23 @@ class RetrievalEvaluationTests(unittest.TestCase):
         self.assertEqual(stable["candidate_recall"], 1.0)
         self.assertEqual(stable["hard_negative_top_k_violations"], 0)
         self.assertGreater(stable["mean_ndcg_at_k"], result["mean_ndcg_at_k"])
-        self.assertEqual(exposure["candidate_videos"], 9)
+        knowledge = json.loads(
+            (
+                ROOT
+                / "data"
+                / "knowledge"
+                / "douyin_knowledge_base.json"
+            ).read_text(encoding="utf-8")
+        )
+        expected_new_source_videos = sum(
+            video.get("processing_status") == "ready"
+            and video.get("retrieval_cohort") == "automatic_expansion"
+            for video in knowledge["videos"]
+        )
+        self.assertEqual(
+            exposure["candidate_videos"],
+            expected_new_source_videos,
+        )
         self.assertLessEqual(exposure["top_k_rate"], 0.05)
         self.assertLessEqual(exposure["max_top_k_per_case"], 3)
 

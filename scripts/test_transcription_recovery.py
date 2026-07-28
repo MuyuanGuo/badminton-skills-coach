@@ -4,7 +4,10 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
+import report_pipeline_status
+import batch_transcribe_directory as transcriber
 from batch_transcribe_directory import (
     media_fingerprint,
     transcribe_directory,
@@ -23,6 +26,11 @@ class FakeModel:
             duration=2.0,
         )
         return iter(segments), info
+
+
+class FailingModel:
+    def transcribe(self, _media, **_kwargs):
+        raise RuntimeError("decoder exploded")
 
 
 def queue_payload(video_id, media_path, status="downloaded"):
@@ -155,10 +163,269 @@ class TranscriptionRecoveryTests(unittest.TestCase):
             )
             item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
             self.assertEqual(result["failed_video_ids"], ["789"])
-            self.assertEqual(item["status"], "transcription_failed")
-            self.assertEqual(item["transcription_attempts"], 1)
-            self.assertEqual(item["error_stage"], "transcription")
+            self.assertEqual(item["status"], "downloaded")
+            self.assertEqual(item["attempts"], 0)
+            self.assertIsNone(item["error"])
+            self.assertEqual(result["batch_error"], "model unavailable")
             self.assertFalse((output_dir / "789.json").exists())
+
+    def test_item_failure_has_finite_retries_then_is_quarantined(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            (media_dir / "bounded.m4a").write_bytes(b"broken audio")
+            queue_path = root / "queue.json"
+            queue_path.write_text(
+                json.dumps(
+                    queue_payload("bounded", "media/bounded.m4a"),
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            results = []
+            for _ in range(3):
+                results.append(
+                    transcribe_directory(
+                        media_dir,
+                        output_dir,
+                        queue_path=queue_path,
+                        model_factory=lambda _name: FailingModel(),
+                    )
+                )
+            item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
+
+            self.assertEqual(results[0]["retryable_failed_video_ids"], ["bounded"])
+            self.assertEqual(results[1]["retryable_failed_video_ids"], ["bounded"])
+            self.assertEqual(results[2]["quarantined_video_ids"], ["bounded"])
+            self.assertEqual(results[2]["retryable_failed_video_ids"], [])
+            self.assertEqual(item["status"], "transcription_quarantined")
+            self.assertEqual(item["transcription_retry_attempts"], 3)
+            self.assertEqual(item["transcription_attempts"], 3)
+            self.assertFalse(item["transcription_retryable"])
+            self.assertIsNotNone(item["transcription_isolated_at"])
+
+            skipped = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_factory=lambda _name: (_ for _ in ()).throw(
+                    AssertionError("isolated media must not load the model")
+                ),
+            )
+            self.assertEqual(skipped["attempted"], 0)
+            self.assertEqual(skipped["quarantined_video_ids"], ["bounded"])
+
+    def test_force_explicitly_recovers_a_quarantined_item(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            media = media_dir / "recoverable.m4a"
+            media.write_bytes(b"audio")
+            queue = queue_payload(
+                "recoverable",
+                "media/recoverable.m4a",
+                status="transcription_quarantined",
+            )
+            queue["items"][0].update(
+                {
+                    "transcription_attempts": 3,
+                    "transcription_retry_attempts": 3,
+                    "transcription_retryable": False,
+                    "transcription_isolated_at": "2026-07-28T00:00:00+00:00",
+                }
+            )
+            queue_path = root / "queue.json"
+            queue_path.write_text(
+                json.dumps(queue, ensure_ascii=False),
+                encoding="utf-8",
+            )
+
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_factory=lambda _name: FakeModel(),
+                video_ids=["recoverable"],
+                force=True,
+            )
+            item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
+
+            self.assertEqual(result["transcribed"], 1)
+            self.assertEqual(item["status"], "transcribed")
+            self.assertEqual(item["transcription_retry_attempts"], 0)
+            self.assertEqual(item["transcription_force_recoveries"], 1)
+            self.assertEqual(item["transcription_attempts"], 3)
+
+    def test_legacy_failure_at_limit_is_quarantined_without_an_extra_attempt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            (media_dir / "legacy.m4a").write_bytes(b"broken audio")
+            queue = queue_payload(
+                "legacy",
+                "media/legacy.m4a",
+                status="transcription_failed",
+            )
+            queue["items"][0]["transcription_attempts"] = 3
+            queue_path = root / "queue.json"
+            queue_path.write_text(json.dumps(queue), encoding="utf-8")
+
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_factory=lambda _name: (_ for _ in ()).throw(
+                    AssertionError("exhausted legacy failure must not load the model")
+                ),
+            )
+            item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
+
+            self.assertEqual(result["attempted"], 0)
+            self.assertEqual(result["quarantined_video_ids"], ["legacy"])
+            self.assertEqual(item["status"], "transcription_quarantined")
+            self.assertEqual(item["transcription_retry_attempts"], 3)
+            self.assertEqual(item["transcription_attempts"], 3)
+
+    def test_cli_treats_terminal_quarantine_as_handled(self):
+        result = {
+            "failed_video_ids": ["isolated"],
+            "retryable_failed_video_ids": [],
+            "quarantined_video_ids": ["isolated"],
+        }
+        with (
+            mock.patch.object(transcriber, "transcribe_directory", return_value=result),
+            mock.patch(
+                "sys.argv",
+                [
+                    "batch_transcribe_directory.py",
+                    "/tmp/media",
+                    "--output-dir",
+                    "/tmp/output",
+                ],
+            ),
+        ):
+            exit_code = transcriber.main()
+        self.assertEqual(exit_code, 0)
+
+    def test_bilibili_status_counts_transcription_quarantine_as_terminal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            archive_path = root / "archive.json"
+            ledger_path = root / "ledger.json"
+            queue_path = root / "queue.json"
+            knowledge_path = root / "knowledge.json"
+            archive_path.write_text(
+                json.dumps(
+                    {
+                        "coverage": {
+                            "full_profile_archive": True,
+                            "profile_unique_videos": 1,
+                        },
+                        "videos": [{"bvid": "BV16G411y7Rs"}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            ledger_path.write_text(
+                json.dumps(
+                    {
+                        "counts": {"candidate_liuhui_teaching": 1},
+                        "videos": [
+                            {
+                                "bvid": "BV16G411y7Rs",
+                                "decision": "candidate_liuhui_teaching",
+                                "processing_state": {
+                                    "stage": "downloaded",
+                                    "terminal": False,
+                                },
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "counts": {"transcription_quarantined": 1},
+                        "items": [
+                            {
+                                "video_id": "BV16G411y7Rs",
+                                "status": "transcription_quarantined",
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path.write_text(
+                json.dumps(
+                    {
+                        "knowledge_counts": {"videos": 1, "low_value": 1},
+                        "videos": [
+                            {
+                                "source_video_id": "BV16G411y7Rs",
+                                "processing_status": "low_value",
+                                "automatic_admission": {
+                                    "disposition": (
+                                        "quarantined_transcription_retry_exhausted"
+                                    )
+                                },
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with (
+                mock.patch.object(
+                    report_pipeline_status,
+                    "BILIBILI_ARCHIVE_PATH",
+                    archive_path,
+                ),
+                mock.patch.object(
+                    report_pipeline_status,
+                    "BILIBILI_LEDGER_PATH",
+                    ledger_path,
+                ),
+                mock.patch.object(
+                    report_pipeline_status,
+                    "BILIBILI_QUEUE_PATH",
+                    queue_path,
+                ),
+                mock.patch.object(
+                    report_pipeline_status,
+                    "BILIBILI_KNOWLEDGE_PATH",
+                    knowledge_path,
+                ),
+                mock.patch.object(
+                    report_pipeline_status,
+                    "BUILD_MANIFEST_PATH",
+                    root / "missing-build.json",
+                ),
+                mock.patch.object(
+                    report_pipeline_status,
+                    "INSTALLED_MANIFEST_PATH",
+                    root / "missing-installed.json",
+                ),
+            ):
+                status = report_pipeline_status.bilibili_status()
+
+            self.assertTrue(status["all_videos_terminal"])
+            self.assertEqual(status["terminal_videos"], 1)
+            self.assertEqual(status["pending_videos"], 0)
+            self.assertEqual(
+                status["stage_counts"],
+                {"transcription_quarantined": 1},
+            )
 
     def test_changed_media_invalidates_a_completed_transcript(self):
         with tempfile.TemporaryDirectory() as directory:

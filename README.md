@@ -56,16 +56,16 @@
 
 ### Token 与运行时成本
 
-模型只读取回答需要的紧凑证据包，不读取完整检索诊断、重复策略和全部候选。当前预算要求每个回答包相对完整上下文至少缩减 50%，同时保持内部召回与最终审计所需数据不变。
+模型只读取回答需要的紧凑证据包，不读取完整检索诊断、重复策略和全部候选。证据窗口在包内只存一次，claim、atom 和视频通过 `window_id` 引用；当前预算同时要求相对完整上下文至少缩减 50%、P95 不超过 12 KiB、单包不超过 16 KiB。
 
 ## 可验证结果
 
 | 指标 | 当前值 | 约束 |
 | --- | ---: | --- |
-| 已处理公开视频 | 495 | 来源处理记录，不等同于全部教学内容 |
-| B 站来源隔离试点 | 20 | 9 条通过来源与证据门禁进入回答池、11 条原创/来源不明或非教学内容被隔离 |
-| 可用于回答的教学视频 | 363 | 仅 `processing_status: ready` 进入证据池 |
-| 转写证据 | 344 | 2,962/2,962 条转写证据包含时间戳 |
+| 已处理公开视频 | 1242 | 来源处理记录，不等同于全部教学内容 |
+| B 站全量来源归档 | 767 | 57 条进入回答池、710 条自动隔离、0 条待处理 |
+| 可用于回答的教学视频 | 411 | 仅 `processing_status: ready` 进入证据池 |
+| 转写证据 | 392 | 3,527/3,527 条转写证据包含时间戳 |
 | 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
 | 回答质量黄金用例 | 57/57 | 覆盖文本、边界、视频与禁用结论 |
 | 查询理解 | 143/143 | 当前结构化意图回归集 |
@@ -83,13 +83,14 @@
 ```mermaid
 flowchart TD
     A1["抖音主页增量观察"] --> B["来源分类台账与处理队列"]
-    A2["B站大G羽毛球增量观察"] --> O["刘辉来源隔离与验证"]
+    A2["B站主页20页全量归档<br/>767条与逐页内容哈希"] --> O["教学价值与刘辉来源双门禁"]
     O --> B
-    B --> C["媒体与元数据核验"]
-    B --> D["转写或视觉复核"]
-    C --> E["结构化知识库"]
-    D --> E
-    E --> F["主题图谱与检索索引"]
+    B --> C["媒体完整解码、时长与SHA-256"]
+    C --> D["确定性ASR"]
+    D --> P["转写配方、ASR质量、标题正文与重复门禁"]
+    P --> E["结构化知识库（含隔离审计记录）"]
+    E --> R["仅ready进入运行时证据池"]
+    R --> F["45秒 chunk-first 检索<br/>跨来源内容簇与cluster-aware DF"]
     Q["用户自然语言问题"] --> G["意图、角色与场景解析"]
     G --> H["多查询召回"]
     F --> H
@@ -101,6 +102,8 @@ flowchart TD
     M --> N["隐私、来源与回归核证"]
     N --> F
 ```
+
+新增转写不会写入模型权重或成为 Codex 的会话记忆。它只有依次通过来源核验、媒体完整性、转写配方与 ASR 质量、标题正文一致性、证据抽取和去重，成为 `processing_status: ready` 的知识记录，再通过索引、回归、canary 与回答包预算验证并安装到 Skill 后，才可能因为相关 chunk 在当前问题中被选中而影响回答。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。
 
 运行时主路径：
 
@@ -126,7 +129,7 @@ query
 - `data/knowledge/douyin_knowledge_base.json`：兼容旧路径的多来源统一知识库与视频处理状态。
 - `data/knowledge/bilibili_knowledge_base.json`：通过来源核验、转写质量和跨平台去重门禁的 B 站构建产物。
 - `data/bilibili_video_index.json`：大G羽毛球主页的 B 站元数据索引。
-- `data/processing/bilibili_origin_review_queue.json`：保存尚未通过独立来源核验的隔离候选；元数据候选不会直接进入证据池。
+- `data/processing/bilibili_origin_review_queue.json`：保存尚未通过自动来源门的隔离候选；它是机器审计台账，不要求真人逐条处理。
 - `data/processing/bilibili_queue.json`：已通过来源门禁的媒体、转写和知识构建状态。
 - `references/knowledge-base.json`：随 Skill 发布的运行时证据副本。
 - `retrieval-index.json`：不包含完整转写正文的紧凑索引。
@@ -135,7 +138,9 @@ query
 
 `automatic_transcript`、`reviewed_transcript` 和 `visual_reviewed` 明确区分证据来源。自动转写不会被标记成人工事实；综合原则也不会伪装成视频逐字原话。
 
-B 站接入额外区分“教学价值”和“内容来源”。主页卡片明确出现“刘辉/刘辉教练”的教学视频只会成为候选；没有来源信号的教学视频按 UP 主原创或来源不明隔离。B 站页面的 SEO description 会拼入作者简介和相关视频，因此被明确禁止作为来源确认依据。只有通过独立来源验证并完成跨平台重复检查的条目，才可进入后续媒体、转写和知识构建流程。
+B 站接入额外区分“教学价值”和“内容来源”。主页卡片明确出现“刘辉/刘辉教练”的教学视频只会成为候选；没有来源信号的教学视频按 UP 主原创或来源不明隔离。B 站页面的 SEO description 会拼入作者简介和相关视频，因此被明确禁止作为来源证据。无人模式只放行“上传者身份、发布者正文点名刘辉、专用来源标签、有效媒体元数据”同时成立的多信号记录；这属于可审计的发布者声明级证据，不冒充独立版权鉴定。任何冲突或不足都进入终态隔离，不进入回答池。
+
+单条记录未通过来源、转写、标题正文、自动证据或重复门禁时，会保留审计状态但保持非 `ready`，且不向运行时打包转写段。跨产物不变量、稳定语料回归或发布门失败时才回滚本轮生成产物。两类失败都不会静默进入检索或回答池，也不会被伪装成必须由真人清理的积压。
 
 ### 回答契约
 
@@ -190,13 +195,15 @@ python3 scripts/run_ci_tests.py context
 python3 scripts/run_full_update_pipeline.py
 ```
 
-新增 B 站证据时，先刷新元数据索引并审核分类规则；随后由
-`process_bilibili_candidates.py` 独立核验发布者资料、正文来源标注和专用标签，
-再下载音轨。转写完成后，`finalize_bilibili_transcripts.py` 会校验媒体哈希，
-`build_bilibili_knowledge.py` 执行质量门禁与跨平台重复检查。完整更新管线负责将
-通过门禁的记录并入统一知识库并重建所有运行时索引。
+新增 B 站证据使用 `run_bilibili_update_pipeline.py` 作为可恢复单入口。全量归档必须对账主页总数、连续页、逐页 BVID 内容哈希；下载只有在 PyAV 完整解码、时长和 SHA-256 全部通过后才进入转写。转写按单视频 checkpoint，随后执行按时长缩放的 ASR 质量门、标题正文一致性、B-B/B-抖音去重、45 秒 chunk 构建、机械 wiring canary、旧语料回归、性能和回答包预算。单条失败会保留 checkpoint 并按策略重试或终态隔离；生成级门禁失败会回滚本轮生成产物。
 
-完整管线成功时写出本地 `output/update-impact-report.json`；失败时自动回滚生成产物。
+中断后不要手工拼接子命令；重复运行同一条完整恢复命令即可跳过有效 checkpoint，并且只有全量终态、构建与验证都成功后才安装：
+
+```bash
+python3 scripts/run_bilibili_update_pipeline.py --install
+```
+
+完整发布阶段成功时写出本地 `output/update-impact-report.json`；发布阶段失败时自动回滚生成产物。
 
 ## 如何快速评审这个项目
 
@@ -233,6 +240,6 @@ output/                          知识图谱、审核队列与本地影响报�
 
 ## 技术栈与边界
 
-Python 3、Codex Skills、JSON 规则与构建产物、faster-whisper、Chrome DevTools Protocol、yt-dlp、Node.js、Draw.io/Mermaid 和 GitHub Actions。
+Python 3、Codex Skills、JSON 规则与构建产物、faster-whisper、PyAV、yt-dlp、Chrome DevTools Protocol、BM25/字符 n-gram、SimHash/Jaccard 内容聚类、Node.js、Draw.io/Mermaid 和 GitHub Actions。
 
 原创软件与自动化采用 [MIT License](LICENSE)。第三方视频、音频、创作者名称、标题、缩略图、转写及其他来源内容不包含在 MIT 授权中，详见 [NOTICE](NOTICE)。安全策略见 [SECURITY.md](SECURITY.md)，构建验证见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。

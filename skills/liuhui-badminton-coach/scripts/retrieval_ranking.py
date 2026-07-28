@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Candidate scoring, evidence tiers, review budgets, and retrieval policy."""
 
+import bisect
 import math
 from collections import Counter
 from types import SimpleNamespace
@@ -38,27 +39,63 @@ def match_fields(video, term_weights, field_weights):
     return score, sorted(matched_terms), matched_fields
 
 
-def dynamic_term_statistics(knowledge, terms):
+def dynamic_term_statistics(
+    knowledge,
+    terms,
+    transcript_excluded_video_ids=None,
+    include_field_document_frequency=False,
+    retrieval_cohort=None,
+):
     terms = {term for term in terms if normalize(term)}
+    transcript_excluded_video_ids = set(
+        transcript_excluded_video_ids or ()
+    )
     document_frequency = Counter()
+    field_document_frequency = Counter()
     by_video = {}
     if not terms:
+        if include_field_document_frequency:
+            return (
+                document_frequency,
+                by_video,
+                {
+                    field: Counter()
+                    for field in (
+                        "title",
+                        "teaching_note",
+                        "transcript",
+                    )
+                },
+            )
         return document_frequency, by_video
     for video in knowledge["videos"]:
         if video.get("processing_status") != "ready":
             continue
+        if (
+            retrieval_cohort is not None
+            and video.get("retrieval_cohort", "stable_baseline")
+            != retrieval_cohort
+        ):
+            continue
         field_text = {
             "title": normalize(video.get("retrieval_title") or video["title"]),
-            "teaching_note": normalize(
-                flatten(searchable_teaching_note(video["teaching_note"]))
+            "teaching_note": (
+                ""
+                if video["video_id"] in transcript_excluded_video_ids
+                else normalize(
+                    flatten(
+                        searchable_teaching_note(video["teaching_note"])
+                    )
+                )
             ),
-            "transcript": normalize(
+        }
+        if video["video_id"] not in transcript_excluded_video_ids:
+            field_text["transcript"] = normalize(
                 "".join(
                     segment.get("text", "")
                     for segment in video.get("transcript_segments", [])
                 )
-            ),
-        }
+            )
         video_frequencies = {}
         video_terms = set()
         for field, text_value in field_text.items():
@@ -70,9 +107,32 @@ def dynamic_term_statistics(knowledge, terms):
             if frequencies:
                 video_frequencies[field] = frequencies
                 video_terms.update(frequencies)
+                field_document_frequency.update(
+                    (field, term) for term in frequencies
+                )
         if video_frequencies:
             by_video[video["video_id"]] = video_frequencies
             document_frequency.update(video_terms)
+    if include_field_document_frequency:
+        return (
+            document_frequency,
+            by_video,
+            {
+                field: Counter(
+                    {
+                        term: count
+                        for (term_field, term), count
+                        in field_document_frequency.items()
+                        if term_field == field
+                    }
+                )
+                for field in (
+                    "title",
+                    "teaching_note",
+                    "transcript",
+                )
+            },
+        )
     return document_frequency, by_video
 
 
@@ -82,18 +142,94 @@ def bm25_record_fields(
     retrieval_index,
     rules,
     dynamic_document_frequency=None,
+    dynamic_field_document_frequency=None,
     dynamic_field_frequencies=None,
+    excluded_fields=None,
 ):
-    document_count = max(1, retrieval_index["indexable_video_count"])
-    document_frequency = dict(retrieval_index.get("term_document_frequency", {}))
-    document_frequency.update(dynamic_document_frequency or {})
-    average_lengths = retrieval_index.get("average_field_lengths", {})
+    excluded_fields = set(excluded_fields or ())
+    stable_cohort = (
+        record.get("retrieval_cohort", "stable_baseline")
+        == "stable_baseline"
+        and retrieval_index.get("stable_field_document_counts")
+    )
+    legacy_document_count = max(
+        1,
+        int(
+            retrieval_index.get(
+                (
+                    "stable_indexable_video_count"
+                    if stable_cohort
+                    else "indexable_video_count"
+                ),
+                retrieval_index["indexable_video_count"],
+            )
+        ),
+    )
+    legacy_document_frequency = dict(
+        retrieval_index.get(
+            (
+                "stable_term_document_frequency"
+                if stable_cohort
+                else "term_document_frequency"
+            ),
+            retrieval_index.get("term_document_frequency", {}),
+        )
+    )
+    legacy_document_frequency.update(dynamic_document_frequency or {})
+    field_document_counts = retrieval_index.get(
+        (
+            "stable_field_document_counts"
+            if stable_cohort
+            else "field_document_counts"
+        ),
+        {},
+    )
+    field_document_frequency = retrieval_index.get(
+        (
+            "stable_field_term_document_frequency"
+            if stable_cohort
+            else "field_term_document_frequency"
+        ),
+        {},
+    )
+    average_lengths = retrieval_index.get(
+        (
+            "stable_average_field_lengths"
+            if stable_cohort
+            else "average_field_lengths"
+        ),
+        {},
+    )
     k1 = rules["retrieval"].get("bm25_k1", 1.2)
     b = rules["retrieval"].get("bm25_b", 0.75)
     matched_fields = {}
     matched_terms = set()
     score = 0.0
     for field, field_weight in rules["field_weights"].items():
+        if field in excluded_fields:
+            continue
+        if stable_cohort:
+            # Stable records retain the pre-expansion global-DF scorer. The
+            # dedicated stable statistics make its scores invariant as new
+            # automatic sources are appended, while automatic expansion
+            # records use the more selective field-specific model below.
+            document_count = legacy_document_count
+            document_frequency = legacy_document_frequency
+        else:
+            document_count = max(
+                1,
+                int(
+                    field_document_counts.get(
+                        field,
+                        legacy_document_count,
+                    )
+                ),
+            )
+            document_frequency = {
+                **legacy_document_frequency,
+                **field_document_frequency.get(field, {}),
+                **(dynamic_field_document_frequency or {}).get(field, {}),
+            }
         frequencies = record.get("field_term_frequencies", {}).get(field, {})
         frequencies = {
             **frequencies,
@@ -129,6 +265,290 @@ def bm25_record_fields(
         if field_matches:
             matched_fields[field] = sorted(field_matches)
     return score, sorted(matched_terms), matched_fields
+
+
+def chunk_first_config(retrieval_index):
+    chunk_index = retrieval_index.get("chunk_index") or {}
+    config = chunk_index.get("config") or {}
+    return {
+        "enabled": bool(chunk_index.get("chunks")),
+        "source_allowlist": set(
+            config.get("source_allowlist") or ["bilibili_video"]
+        ),
+        "legacy_fallback": bool(config.get("legacy_fallback", True)),
+        "second_cluster_weight": float(
+            config.get("second_cluster_weight", 0.15)
+        ),
+    }
+
+
+def chunk_gram_postings(chunk_index, gram):
+    vocabulary = chunk_index.get("ngram_vocabulary") or []
+    postings = chunk_index.get("ngram_postings") or []
+    position = bisect.bisect_left(vocabulary, gram)
+    if position >= len(vocabulary) or vocabulary[position] != gram:
+        return []
+    return postings[position]
+
+
+def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
+    """Rank transcript chunks and aggregate at most two distinct clusters/video."""
+
+    chunk_index = retrieval_index.get("chunk_index") or {}
+    chunks = chunk_index.get("chunks") or []
+    if not chunks:
+        return {}
+    records = retrieval_index["videos"]
+    config = chunk_first_config(retrieval_index)
+    prepared_chunk = prepared_retrieval_index(retrieval_index).get(
+        "chunk", {}
+    )
+    allowed_chunk_indexes = prepared_chunk.get(
+        "cluster_indexes", frozenset()
+    )
+    if not allowed_chunk_indexes:
+        return {}
+
+    term_weights = expansion["term_weights"]
+    candidate_indexes = set()
+    for term in term_weights:
+        candidate_indexes.update(
+            index
+            for index in chunk_index.get("term_postings", {}).get(term, [])
+            if index in allowed_chunk_indexes
+        )
+    query_postings = {}
+    for gram in query_grams:
+        indexes = [
+            index
+            for index in chunk_gram_postings(chunk_index, gram)
+            if index in allowed_chunk_indexes
+        ]
+        query_postings[gram] = set(indexes)
+        candidate_indexes.update(indexes)
+    if not candidate_indexes:
+        return {}
+
+    cluster_count = max(1, int(chunk_index.get("cluster_count") or 0))
+    stable_cluster_count = max(
+        1,
+        int(
+            chunk_index.get(
+                "stable_cluster_count", cluster_count
+            )
+            or 0
+        ),
+    )
+    average_length = max(
+        1.0, float(chunk_index.get("average_chunk_length") or 1.0)
+    )
+    stable_average_length = max(
+        1.0,
+        float(
+            chunk_index.get(
+                "stable_average_chunk_length", average_length
+            )
+            or 1.0
+        ),
+    )
+    term_df = chunk_index.get("term_cluster_document_frequency") or {}
+    stable_term_df = (
+        chunk_index.get("stable_term_cluster_document_frequency")
+        or term_df
+    )
+    k1 = rules["retrieval"].get("bm25_k1", 1.2)
+    b = rules["retrieval"].get("bm25_b", 0.75)
+    transcript_weight = rules["field_weights"]["transcript"]
+    min_shared = rules["retrieval"]["transcript_ngram_min_shared"]
+    min_coverage = rules["retrieval"]["transcript_ngram_min_query_coverage"]
+
+    gram_cluster_df = {}
+    gram_weights = {}
+    stable_gram_cluster_df = {}
+    stable_gram_weights = {}
+    for gram, indexes in query_postings.items():
+        cluster_ids = {chunks[index]["cluster_id"] for index in indexes}
+        gram_cluster_df[gram] = len(cluster_ids)
+        gram_weights[gram] = math.log(
+            1
+            + (cluster_count + 1)
+            / (gram_cluster_df[gram] + 1)
+        )
+        stable_cluster_ids = {
+            chunks[index]["stable_cluster_id"]
+            for index in indexes
+            if chunks[index].get("stable_cluster_id")
+        }
+        stable_gram_cluster_df[gram] = len(stable_cluster_ids)
+        stable_gram_weights[gram] = math.log(
+            1
+            + (stable_cluster_count + 1)
+            / (stable_gram_cluster_df[gram] + 1)
+        )
+    total_gram_weight = sum(gram_weights.values())
+    stable_total_gram_weight = sum(stable_gram_weights.values())
+    matches_by_video = {}
+    for chunk_index_value in sorted(candidate_indexes):
+        chunk = chunks[chunk_index_value]
+        record = records[chunk["video_index"]]
+        stable_chunk = (
+            record.get("retrieval_cohort", "stable_baseline")
+            == "stable_baseline"
+            and chunk.get("stable_cluster_id")
+        )
+        active_cluster_count = (
+            stable_cluster_count if stable_chunk else cluster_count
+        )
+        active_average_length = (
+            stable_average_length if stable_chunk else average_length
+        )
+        active_term_df = stable_term_df if stable_chunk else term_df
+        active_gram_weights = (
+            stable_gram_weights if stable_chunk else gram_weights
+        )
+        active_total_gram_weight = (
+            stable_total_gram_weight
+            if stable_chunk
+            else total_gram_weight
+        )
+        frequencies = chunk.get("field_term_frequencies") or {}
+        matched_terms = []
+        bm25_score = 0.0
+        for term, query_weight in term_weights.items():
+            frequency = min(8, int(frequencies.get(term) or 0))
+            if frequency <= 0:
+                continue
+            normalized_frequency = (
+                frequency
+                * (k1 + 1)
+                / (
+                    frequency
+                    + k1
+                    * (
+                        1
+                        - b
+                        + b
+                        * chunk["normalized_length"]
+                        / active_average_length
+                    )
+                )
+            )
+            df = int(active_term_df.get(term) or 0)
+            inverse_frequency = math.log(
+                1
+                + (
+                    active_cluster_count - df + 0.5
+                )
+                / (df + 0.5)
+            )
+            bm25_score += (
+                query_weight
+                * transcript_weight
+                * inverse_frequency
+                * normalized_frequency
+            )
+            matched_terms.append(term)
+
+        shared_grams = {
+            gram
+            for gram, indexes in query_postings.items()
+            if chunk_index_value in indexes
+        }
+        coverage = (
+            sum(
+                active_gram_weights[gram] for gram in shared_grams
+            )
+            / max(1.0, active_total_gram_weight)
+        )
+        required_shared = 1 if len(query_grams) <= 2 else min_shared
+        ngram_match = (
+            len(shared_grams) >= required_shared and coverage >= min_coverage
+        )
+        ngram_score = coverage * 8 if ngram_match else 0.0
+        total_score = bm25_score + ngram_score
+        if total_score <= 0:
+            continue
+        video_id = record["video_id"]
+        matches_by_video.setdefault(video_id, []).append(
+            {
+                "chunk_id": chunk["chunk_id"],
+                "cluster_id": (
+                    chunk["stable_cluster_id"]
+                    if stable_chunk
+                    else chunk["cluster_id"]
+                ),
+                "score": total_score,
+                "bm25_score": bm25_score,
+                "ngram_score": ngram_score,
+                "ngram_coverage": coverage,
+                "shared_grams": shared_grams,
+                "matched_terms": set(matched_terms),
+                "start_segment": chunk["start_segment"],
+                "end_segment": chunk["end_segment"],
+                "start_ms": chunk["start_ms"],
+                "end_ms": chunk["end_ms"],
+            }
+        )
+
+    aggregated = {}
+    for video_id, matches in matches_by_video.items():
+        matches.sort(
+            key=lambda item: (
+                -item["score"],
+                item["chunk_id"],
+            )
+        )
+        selected = [matches[0]]
+        second = next(
+            (
+                item
+                for item in matches[1:]
+                if item["cluster_id"] != matches[0]["cluster_id"]
+            ),
+            None,
+        )
+        if second is not None:
+            selected.append(second)
+        second_weight = config["second_cluster_weight"]
+        aggregated[video_id] = {
+            "best_chunk_id": selected[0]["chunk_id"],
+            "matched_chunk_ids": [item["chunk_id"] for item in selected],
+            "matched_cluster_ids": [item["cluster_id"] for item in selected],
+            "chunk_hints": [
+                {
+                    key: item[key]
+                    for key in (
+                        "chunk_id",
+                        "cluster_id",
+                        "start_segment",
+                        "end_segment",
+                        "start_ms",
+                        "end_ms",
+                    )
+                }
+                for item in selected
+            ],
+            "bm25_score": selected[0]["bm25_score"]
+            + (
+                second_weight * selected[1]["bm25_score"]
+                if len(selected) > 1
+                else 0.0
+            ),
+            "ngram_score": selected[0]["ngram_score"]
+            + (
+                second_weight * selected[1]["ngram_score"]
+                if len(selected) > 1
+                else 0.0
+            ),
+            "ngram_coverage": selected[0]["ngram_coverage"],
+            "shared_grams": set().union(
+                *(item["shared_grams"] for item in selected)
+            ),
+            "matched_terms": set().union(
+                *(item["matched_terms"] for item in selected)
+            ),
+        }
+    return aggregated
 
 
 def choose_tier(
@@ -174,11 +594,19 @@ def candidate_sort_key(candidate, rules):
         candidate.get("required_intent_miss_count", 0)
         * rules["retrieval"]["required_intent_miss_penalty"]
     )
+    cohort_penalty = (
+        rules["retrieval"].get(
+            "automatic_expansion_score_penalty", 0.0
+        )
+        if candidate.get("retrieval_cohort") == "automatic_expansion"
+        else 0.0
+    )
     ranking_score = (
         candidate["score"]
         + tier_bonus[candidate["relevance_tier"]]
         - intent_penalty
         - candidate.get("excluded_query_penalty", 0)
+        - cohort_penalty
     )
     return (
         -ranking_score,
@@ -203,6 +631,13 @@ def refresh_score_breakdown(candidate, rules):
         * rules["retrieval"]["required_intent_miss_penalty"]
     )
     excluded_query_penalty = candidate.get("excluded_query_penalty", 0.0)
+    cohort_penalty = (
+        rules["retrieval"].get(
+            "automatic_expansion_score_penalty", 0.0
+        )
+        if candidate.get("retrieval_cohort") == "automatic_expansion"
+        else 0.0
+    )
     breakdown.update(
         {
             "feedback_adjustment": round(feedback_delta, 4),
@@ -210,11 +645,15 @@ def refresh_score_breakdown(candidate, rules):
             "tier_bonus": round(tier_bonus, 4),
             "required_intent_penalty": round(required_intent_penalty, 4),
             "excluded_query_penalty": round(excluded_query_penalty, 4),
+            "automatic_expansion_score_penalty": round(
+                cohort_penalty, 4
+            ),
             "effective_ranking_score": round(
                 candidate["score"]
                 + tier_bonus
                 - required_intent_penalty
-                - excluded_query_penalty,
+                - excluded_query_penalty
+                - cohort_penalty,
                 4,
             ),
         }
@@ -332,15 +771,87 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         for gram in query_grams
     }
     total_query_gram_weight = sum(query_gram_weights.values())
+    stable_query_gram_document_frequency = Counter(
+        {
+            gram: sum(
+                any(
+                    gram in channel_grams
+                    for channel_grams in matches.values()
+                )
+                and records[video_id].get(
+                    "retrieval_cohort", "stable_baseline"
+                )
+                == "stable_baseline"
+                for video_id, matches in query_gram_matches.items()
+            )
+            for gram in query_grams
+        }
+    )
+    stable_document_count = max(
+        1,
+        int(
+            retrieval_index.get(
+                "stable_indexable_video_count",
+                retrieval_index["indexable_video_count"],
+            )
+        ),
+    )
+    stable_query_gram_weights = {
+        gram: math.log(
+            1
+            + (stable_document_count + 1)
+            / (stable_query_gram_document_frequency.get(gram, 0) + 1)
+        )
+        for gram in query_grams
+    }
+    stable_total_query_gram_weight = sum(
+        stable_query_gram_weights.values()
+    )
+    chunk_scores = chunk_query_scores(
+        retrieval_index,
+        expansion,
+        query_grams,
+        rules,
+    )
+    chunk_config = chunk_first_config(retrieval_index)
+    chunk_indexed_video_ids = set(
+        prepared_retrieval_index(retrieval_index)
+        .get("chunk", {})
+        .get("indexed_video_ids", ())
+    )
     dynamic_terms = set(expansion["term_weights"]) - set(
         retrieval_index.get("term_document_frequency", {})
     )
-    dynamic_document_frequency, dynamic_frequencies_by_video = (
-        dynamic_term_statistics(knowledge, dynamic_terms)
+    (
+        dynamic_document_frequency,
+        dynamic_frequencies_by_video,
+        dynamic_field_document_frequency,
+    ) = (
+        dynamic_term_statistics(
+            knowledge,
+            dynamic_terms,
+            transcript_excluded_video_ids=chunk_indexed_video_ids,
+            include_field_document_frequency=True,
+        )
+    )
+    (
+        stable_dynamic_document_frequency,
+        stable_dynamic_frequencies_by_video,
+        stable_dynamic_field_document_frequency,
+    ) = (
+        dynamic_term_statistics(
+            knowledge,
+            dynamic_terms,
+            transcript_excluded_video_ids=chunk_indexed_video_ids,
+            include_field_document_frequency=True,
+            retrieval_cohort="stable_baseline",
+        )
     )
     candidate_ids = inverted_candidate_ids(
         retrieval_index, expansion, query_grams
     )
+    if candidate_ids is not None:
+        candidate_ids.update(chunk_scores)
     empty_channel_matches = {
         "title": set(),
         "teaching_note": set(),
@@ -356,17 +867,45 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             continue
         if candidate_ids is not None and video["video_id"] not in candidate_ids:
             continue
+        use_chunk_transcript = (
+            chunk_config["enabled"]
+            and video.get("source_type") in chunk_config["source_allowlist"]
+            and video["video_id"] in chunk_indexed_video_ids
+        )
+        chunk_match = chunk_scores.get(video["video_id"])
+        stable_record = (
+            record.get("retrieval_cohort", "stable_baseline")
+            == "stable_baseline"
+        )
         field_score, field_terms, matched_fields = bm25_record_fields(
             record,
             expansion["term_weights"],
             retrieval_index,
             rules,
-            dynamic_document_frequency=dynamic_document_frequency,
-            dynamic_field_frequencies=dynamic_frequencies_by_video.get(
-                video["video_id"], {}
+            dynamic_document_frequency=(
+                stable_dynamic_document_frequency
+                if stable_record
+                else dynamic_document_frequency
             ),
+            dynamic_field_document_frequency=(
+                stable_dynamic_field_document_frequency
+                if stable_record
+                else dynamic_field_document_frequency
+            ),
+            dynamic_field_frequencies=(
+                stable_dynamic_frequencies_by_video
+                if stable_record
+                else dynamic_frequencies_by_video
+            ).get(video["video_id"], {}),
+            excluded_fields={"transcript"} if use_chunk_transcript else None,
         )
-        transcript_terms = set(record["lexicon_terms"]) & expanded_terms
+        if use_chunk_transcript:
+            transcript_terms = set(
+                (chunk_match or {}).get("matched_terms", set())
+            ) & expanded_terms
+            field_score += float((chunk_match or {}).get("bm25_score") or 0)
+        else:
+            transcript_terms = set(record["lexicon_terms"]) & expanded_terms
         matched_topic_ids = sorted(set(record["topic_ids"]) & topic_ids)
         topic_score = len(matched_topic_ids) * 2.0
         title_focus_length = max(
@@ -394,13 +933,35 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             * rules["retrieval"].get("exact_focus_note_bonus_per_character", 0)
         )
 
-        channel_shared_grams = query_gram_matches.get(
-            video["video_id"], empty_channel_matches
+        channel_shared_grams = {
+            key: set(value)
+            for key, value in query_gram_matches.get(
+                video["video_id"], empty_channel_matches
+            ).items()
+        }
+        if use_chunk_transcript:
+            channel_shared_grams["transcript"] = set(
+                (chunk_match or {}).get("shared_grams", set())
+            )
+        active_query_gram_weights = (
+            stable_query_gram_weights
+            if record.get("retrieval_cohort", "stable_baseline")
+            == "stable_baseline"
+            else query_gram_weights
+        )
+        active_total_query_gram_weight = (
+            stable_total_query_gram_weight
+            if record.get("retrieval_cohort", "stable_baseline")
+            == "stable_baseline"
+            else total_query_gram_weight
         )
         channel_ngram_coverage = {
             channel: (
-                sum(query_gram_weights[gram] for gram in shared)
-                / max(1.0, total_query_gram_weight)
+                sum(
+                    active_query_gram_weights[gram]
+                    for gram in shared
+                )
+                / max(1.0, active_total_query_gram_weight)
             )
             for channel, shared in channel_shared_grams.items()
         }
@@ -410,13 +971,27 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         ngram_match = (
             len(shared_grams) >= required_shared and ngram_coverage >= min_coverage
         )
-        ngram_score = (
-            channel_ngram_coverage["title"] * 24
-            + channel_ngram_coverage["teaching_note"] * 14
-            + channel_ngram_coverage["transcript"] * 8
-            if ngram_match
-            else 0.0
-        )
+        if use_chunk_transcript:
+            structured_ngram_score = (
+                channel_ngram_coverage["title"] * 24
+                + channel_ngram_coverage["teaching_note"] * 14
+                if ngram_match
+                else 0.0
+            )
+            ngram_score = structured_ngram_score + float(
+                (chunk_match or {}).get("ngram_score") or 0
+            )
+            ngram_match = ngram_match or bool(
+                (chunk_match or {}).get("ngram_score")
+            )
+        else:
+            ngram_score = (
+                channel_ngram_coverage["title"] * 24
+                + channel_ngram_coverage["teaching_note"] * 14
+                + channel_ngram_coverage["transcript"] * 8
+                if ngram_match
+                else 0.0
+            )
 
         if mode == "keyword":
             ngram_match = False
@@ -438,7 +1013,11 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         )
         direct_matches = sorted(set(original_matches) | set(equivalent_matches))
         expanded_matches = sorted(set(field_terms) | transcript_terms)
-        candidate_lexicon_terms = set(record["lexicon_terms"]) | set(field_terms)
+        candidate_lexicon_terms = (
+            set(transcript_terms) | set(field_terms)
+            if use_chunk_transcript
+            else set(record["lexicon_terms"]) | set(field_terms)
+        )
         matched_concepts = sorted(
             {
                 group[0]
@@ -489,7 +1068,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             if normalize(term)
             and (
                 normalize(term) in candidate_searchable
-                or term in set(record["lexicon_terms"])
+                or term in candidate_lexicon_terms
             )
         )
         excluded_seed_matches = sorted(
@@ -498,7 +1077,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             if normalize(term)
             and (
                 normalize(term) in candidate_searchable
-                or term in set(record["lexicon_terms"])
+                or term in candidate_lexicon_terms
             )
         )
         expanded_only_matches = set(excluded_matches) - set(excluded_seed_matches)
@@ -537,7 +1116,11 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         if matched_fields:
             channels.append("structured_fields")
         if transcript_terms:
-            channels.append("full_transcript_lexicon")
+            channels.append(
+                "chunk_transcript_lexicon"
+                if use_chunk_transcript
+                else "full_transcript_lexicon"
+            )
         if matched_topic_ids:
             channels.append("full_topic_membership")
         if channel_shared_grams["title"]:
@@ -545,7 +1128,11 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         if channel_shared_grams["teaching_note"]:
             channels.append("teaching_note_ngram")
         if channel_shared_grams["transcript"]:
-            channels.append("full_transcript_ngram")
+            channels.append(
+                "chunk_transcript_ngram"
+                if use_chunk_transcript
+                else "full_transcript_ngram"
+            )
 
         score = (
             field_score
@@ -562,6 +1149,9 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         score += evidence_quality_bonus
         candidate = {
                 "score": round(score, 4),
+                "retrieval_cohort": record.get(
+                    "retrieval_cohort", "stable_baseline"
+                ),
                 "relevance_tier": tier,
                 "intrinsic_relevance_tier": tier,
                 "retrieval_channels": channels,
@@ -609,6 +1199,45 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
                 "confidence": video["confidence"],
                 "processing_status": video["processing_status"],
                 "url": video["url"],
+                "transcript_retrieval": (
+                    {
+                        "mode": "chunk_first",
+                        "best_chunk_id": chunk_match.get("best_chunk_id"),
+                        "matched_chunk_ids": chunk_match.get(
+                            "matched_chunk_ids", []
+                        ),
+                        "matched_cluster_ids": chunk_match.get(
+                            "matched_cluster_ids", []
+                        ),
+                        "chunk_hints": chunk_match.get("chunk_hints", []),
+                    }
+                    if use_chunk_transcript and chunk_match
+                    else {
+                        "mode": (
+                            "chunk_first_no_match"
+                            if use_chunk_transcript
+                            else "legacy_video"
+                        ),
+                        **(
+                            {
+                                "best_chunk_id": chunk_match.get(
+                                    "best_chunk_id"
+                                ),
+                                "matched_chunk_ids": chunk_match.get(
+                                    "matched_chunk_ids", []
+                                ),
+                                "matched_cluster_ids": chunk_match.get(
+                                    "matched_cluster_ids", []
+                                ),
+                                "chunk_hints": chunk_match.get(
+                                    "chunk_hints", []
+                                ),
+                            }
+                            if chunk_match
+                            else {}
+                        ),
+                    }
+                ),
             }
         refresh_score_breakdown(candidate, rules)
         ranked.append(candidate)
@@ -653,6 +1282,13 @@ def apply_retrieval_policy(
         video = videos[candidate["video_id"]]
         reasons = []
         if boundary["type"] == "pain_or_injury":
+            # A technique match is not direct medical evidence. Preserve the
+            # candidate for exhaustive audit, but never label generic coaching
+            # footage as intrinsically direct for a pain/injury question.
+            if candidate["relevance_tier"] == "direct":
+                candidate["relevance_tier"] = "strong_related"
+                candidate["intrinsic_relevance_tier"] = "strong_related"
+                refresh_score_breakdown(candidate, retrieval_rules)
             reasons.append("medical_boundary_has_no_direct_safety_evidence")
         elif boundary["type"] == "endorsement_or_authorship":
             reasons.append("identity_boundary_does_not_need_teaching_video")

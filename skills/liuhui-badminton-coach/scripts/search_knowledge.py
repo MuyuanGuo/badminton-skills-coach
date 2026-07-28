@@ -58,9 +58,68 @@ def flatten(value):
     return str(value or "")
 
 
+CHINESE_VARIANTS = str.maketrans(
+    {
+        "後": "后",
+        "場": "场",
+        "動": "动",
+        "發": "发",
+        "無": "无",
+        "願": "愿",
+        "這": "这",
+        "個": "个",
+        "來": "来",
+        "麼": "么",
+        "們": "们",
+        "線": "线",
+        "轉": "转",
+        "頂": "顶",
+        "軸": "轴",
+        "裡": "里",
+        "擊": "击",
+        "盤": "盘",
+        "隨": "随",
+        "隱": "隐",
+        "繼": "继",
+        "續": "续",
+        "變": "变",
+        "順": "顺",
+        "實": "实",
+        "話": "话",
+        "學": "学",
+        "習": "习",
+        "會": "会",
+        "處": "处",
+        "標": "标",
+        "準": "准",
+        "運": "运",
+        "員": "员",
+        "對": "对",
+        "還": "还",
+        "從": "从",
+        "種": "种",
+        "進": "进",
+        "階": "阶",
+        "單": "单",
+        "雙": "双",
+        "網": "网",
+        "體": "体",
+        "術": "术",
+        "區": "区",
+        "應": "应",
+        "讓": "让",
+        "過": "过",
+        "遠": "远",
+        "邊": "边",
+        "壓": "压",
+    }
+)
+
+
 @lru_cache(maxsize=16384)
 def normalize(text):
-    return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", text.lower()))
+    normalized = str(text).lower().translate(CHINESE_VARIANTS)
+    return "".join(re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", normalized))
 
 
 def load_json_snapshot(path):
@@ -235,12 +294,48 @@ def load_resources():
 def prepared_retrieval_index(retrieval_index):
     cache_key = id(retrieval_index)
     cached = _PREPARED_RETRIEVAL_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
+    if cached is not None and cached[0] is retrieval_index:
+        return cached[1]
     records = retrieval_index["videos"]
     prepared = {
         "records": {item["video_id"]: item for item in records},
         "video_ids": [item["video_id"] for item in records],
+    }
+    chunk_index = retrieval_index.get("chunk_index") or {}
+    chunk_config = chunk_index.get("config") or {}
+    chunk_allowed_sources = set(
+        chunk_config.get("source_allowlist") or ["bilibili_video"]
+    )
+    chunk_cluster_sources = set(
+        chunk_config.get("cluster_source_allowlist")
+        or chunk_allowed_sources
+    )
+    chunks = chunk_index.get("chunks") or []
+    cluster_chunk_indexes = frozenset(
+        index
+        for index, chunk in enumerate(chunks)
+        if isinstance(chunk.get("video_index"), int)
+        and 0 <= chunk["video_index"] < len(records)
+        and records[chunk["video_index"]].get("source_type")
+        in chunk_cluster_sources
+    )
+    scoring_chunk_indexes = frozenset(
+        index
+        for index in cluster_chunk_indexes
+        if records[chunks[index]["video_index"]].get("source_type")
+        in chunk_allowed_sources
+    )
+    prepared["chunk"] = {
+        "cluster_indexes": cluster_chunk_indexes,
+        "scoring_indexes": scoring_chunk_indexes,
+        "clustered_video_ids": {
+            records[chunks[index]["video_index"]]["video_id"]
+            for index in cluster_chunk_indexes
+        },
+        "indexed_video_ids": {
+            records[chunks[index]["video_index"]]["video_id"]
+            for index in scoring_chunk_indexes
+        },
     }
     if "ngram_vocabulary" not in retrieval_index:
         prepared["forward_gram_sets"] = {
@@ -252,7 +347,10 @@ def prepared_retrieval_index(retrieval_index):
             for item in records
         }
     _PREPARED_RETRIEVAL_CACHE.clear()
-    _PREPARED_RETRIEVAL_CACHE[cache_key] = prepared
+    _PREPARED_RETRIEVAL_CACHE[cache_key] = (
+        retrieval_index,
+        prepared,
+    )
     return prepared
 
 
@@ -547,6 +645,60 @@ rank_transcript_evidence = _retrieval_projection.rank_transcript_evidence
 compact_lookup_feedback = _retrieval_projection.compact_lookup_feedback
 
 
+def primary_content_cluster_id(candidate):
+    cluster_ids = query_content_cluster_ids(candidate)
+    return str(cluster_ids[0]) if cluster_ids else None
+
+
+def query_content_cluster_ids(candidate):
+    retrieval = candidate.get("transcript_retrieval") or {}
+    return list(
+        dict.fromkeys(
+            str(cluster_id)
+            for cluster_id in retrieval.get("matched_cluster_ids", [])
+            if str(cluster_id)
+        )
+    )
+
+
+def cap_content_clusters(
+    items,
+    *,
+    limit=None,
+    candidate_getter=None,
+):
+    """Keep the highest-ranked item per query-relevant content cluster."""
+
+    candidate_getter = candidate_getter or (lambda item: item)
+    if limit is not None and limit <= 0:
+        return [], []
+    kept = []
+    suppressed = []
+    representatives = {}
+    covered_cluster_ids = set()
+    for item in items:
+        candidate = candidate_getter(item)
+        cluster_ids = set(query_content_cluster_ids(candidate))
+        if cluster_ids and cluster_ids.issubset(covered_cluster_ids):
+            cluster_id = primary_content_cluster_id(candidate)
+            suppressed.append(
+                {
+                    "item": item,
+                    "cluster_id": cluster_id,
+                    "cluster_ids": sorted(cluster_ids),
+                    "representative": representatives[cluster_id],
+                }
+            )
+            continue
+        kept.append(item)
+        for cluster_id in cluster_ids:
+            representatives.setdefault(cluster_id, item)
+        covered_cluster_ids.update(cluster_ids)
+        if limit is not None and len(kept) >= limit:
+            break
+    return kept, suppressed
+
+
 def search(
     query,
     limit=12,
@@ -600,6 +752,10 @@ def search(
     eligible_ranked = [
         item for item in ranked if item["retrieval_policy_eligible"]
     ]
+    surfaced_ranked, cluster_suppressed_results = cap_content_clusters(
+        eligible_ranked,
+        limit=limit,
+    )
     accessible_candidate_count = (
         len(ranked)
         if recall_mode == "exhaustive"
@@ -681,6 +837,9 @@ def search(
             "candidate_count": len(ranked),
             "eligible_candidate_count": len(eligible_ranked),
             "policy_rejected_candidate_count": len(ranked) - len(eligible_ranked),
+            "content_cluster_suppressed_result_count": len(
+                cluster_suppressed_results
+            ),
             "accessible_candidate_count": accessible_candidate_count,
             "candidate_manifest_count": len(manifest),
             "default_manifest_limit_applied": default_manifest_limit_applied,
@@ -718,7 +877,7 @@ def search(
         },
         "results": [
             ranked_result(item, videos[item["video_id"]])
-            for item in (eligible_ranked[:limit] if manifest_offset == 0 else [])
+            for item in (surfaced_ranked if manifest_offset == 0 else [])
         ],
         "candidate_manifest": [compact_candidate(item) for item in manifest],
     }
@@ -732,6 +891,7 @@ def lookup_videos(
     debug=False,
     segment_limit=6,
     include_query_match=True,
+    chunk_hints_by_video=None,
 ):
     knowledge, retrieval_index, rules = load_resources()
     videos = {video["video_id"]: video for video in knowledge["videos"]}
@@ -791,6 +951,7 @@ def lookup_videos(
                 query,
                 expansion,
                 limit=segment_limit,
+                chunk_hints=(chunk_hints_by_video or {}).get(video_id),
             ),
             "retrieval_summary": {
                 "topic_ids": record.get("topic_ids", []),

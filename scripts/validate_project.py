@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
+from evaluate_answer_packet import load_case_registry as load_answer_packet_case_registry
 from build_manifest import manifest_bytes
 from bilibili_pipeline import load_rules as load_bilibili_rules
 from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
@@ -41,6 +42,10 @@ for required_ci_command in [
     "python scripts/evaluate_feedback_lifecycle.py",
     "python scripts/evaluate_metamorphic_robustness.py",
     "python scripts/benchmark_runtime.py",
+    "python scripts/evaluate_answer_packet.py",
+    "python scripts/evaluate_bilibili_canaries.py",
+    "python scripts/generate_bilibili_wiring_canaries.py",
+    "python scripts/evaluate_bilibili_wiring_canaries.py",
     "node scripts/test_bilibili_profile_snapshot_dom.mjs",
 ]:
     if required_ci_command not in workflow_text:
@@ -73,6 +78,8 @@ json_paths = [
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/answer_packet_cases.json",
+    "data/evaluation/bilibili_canary_cases.json",
+    "data/evaluation/bilibili_mechanical_canary.schema.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/evaluation_report.json",
     "data/evaluation/critical_answer_snapshots.json",
@@ -117,6 +124,10 @@ for relative_path in json_paths:
     path = ROOT / relative_path
     with path.open(encoding="utf-8") as file:
         json.load(file)
+
+load_answer_packet_case_registry(
+    ROOT / "data" / "evaluation" / "answer_packet_cases.json"
+)
 
 bilibili_source = json.loads(
     (ROOT / "config" / "bilibili_source.json").read_text(encoding="utf-8")
@@ -925,11 +936,18 @@ knowledge_quality_rules = json.loads(
 if douyin_knowledge.get("quality_rules_version") != knowledge_quality_rules["version"]:
     raise SystemExit("Knowledge base quality rules version is stale")
 for video in douyin_knowledge["videos"]:
-    if set(video.get("quality", {})) != {"transcript", "automatic_evidence"}:
+    expected_quality_fields = {"transcript", "automatic_evidence"}
+    if video.get("source_type") == "bilibili_video":
+        expected_quality_fields.add("source_content_safety")
+    if set(video.get("quality", {})) != expected_quality_fields:
         raise SystemExit(f"Knowledge quality audit is missing for {video['video_id']}")
     if video["confidence"] == "medium" and (
         not video["quality"]["transcript"]["passed"]
         or not video["quality"]["automatic_evidence"]["passed"]
+        or (
+            video.get("source_type") == "bilibili_video"
+            and not video["quality"]["source_content_safety"]["passed"]
+        )
     ):
         raise SystemExit(f"Automatic ready video failed quality gates: {video['video_id']}")
     source_queue = (
@@ -991,6 +1009,7 @@ allowed_retrieval_video_fields = {
     "video_id",
     "evidence_id",
     "source_type",
+    "retrieval_cohort",
     "canonical_url",
     "parent_source_id",
     "clip_start_seconds",
@@ -1003,6 +1022,27 @@ allowed_retrieval_video_fields = {
 }
 if any(set(video) != allowed_retrieval_video_fields for video in retrieval_index["videos"]):
     raise SystemExit("Retrieval index video records contain unexpected fields")
+allowed_retrieval_cohorts = {"stable_baseline", "automatic_expansion"}
+if any(
+    video.get("retrieval_cohort") not in allowed_retrieval_cohorts
+    for video in retrieval_index["videos"]
+):
+    raise SystemExit("Retrieval index video record has an invalid cohort")
+knowledge_cohort_by_id = {
+    video["video_id"]: video.get("retrieval_cohort", "stable_baseline")
+    for video in douyin_knowledge["videos"]
+    if video["processing_status"] == "ready"
+}
+if any(
+    video["retrieval_cohort"] != knowledge_cohort_by_id.get(video["video_id"])
+    for video in retrieval_index["videos"]
+):
+    raise SystemExit("Retrieval index cohort is stale relative to the knowledge base")
+if retrieval_index.get("stable_indexable_video_count") != sum(
+    video["retrieval_cohort"] == "stable_baseline"
+    for video in retrieval_index["videos"]
+):
+    raise SystemExit("Retrieval stable cohort count is inconsistent")
 if retrieval_index.get("inverted_index_schema") != "parallel_ngram_vocabulary_postings_v1":
     raise SystemExit("Retrieval index does not use the expected inverted-index schema")
 if len(retrieval_index.get("ngram_vocabulary", [])) != len(

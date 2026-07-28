@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/bilibili-mechanical-canary-v1.json",
+  "title": "Bilibili mechanical wiring canary registry",
+  "description": "Automatically generated retrieval and packet wiring checks. This schema explicitly forbids representing the cases as human-reviewed semantic gold.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "measurement_type",
+    "semantic_gold",
+    "description",
+    "source",
+    "thresholds",
+    "case_count",
+    "excluded_count",
+    "cases",
+    "exclusions"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "measurement_type": {
+      "const": "mechanical_wiring_canary_not_semantic_gold"
+    },
+    "semantic_gold": {"const": false},
+    "description": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["knowledge_sha256", "retrieval_index_sha256"],
+      "properties": {
+        "knowledge_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "retrieval_index_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retrieval_top_k",
+        "maximum_packet_bytes",
+        "maximum_top_k_results_per_cluster",
+        "maximum_packet_videos_per_cluster"
+      ],
+      "properties": {
+        "retrieval_top_k": {"type": "integer", "minimum": 1},
+        "maximum_packet_bytes": {"type": "integer", "minimum": 1},
+        "maximum_top_k_results_per_cluster": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maximum_packet_videos_per_cluster": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "case_count": {"type": "integer", "minimum": 0},
+    "excluded_count": {"type": "integer", "minimum": 0},
+    "cases": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "reason", "blocking"],
+        "properties": {
+          "evidence_id": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1},
+          "blocking": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "measurement_type",
+        "semantic_gold",
+        "admission_state",
+        "query",
+        "query_derivation",
+        "expected_evidence_id",
+        "supported_title_terms",
+        "transcript_sha256",
+        "transcript_anchor",
+        "expected_chunk_ids",
+        "expected_cluster_ids",
+        "case_sha256"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "measurement_type": {
+          "const": "mechanical_wiring_canary_not_semantic_gold"
+        },
+        "semantic_gold": {"const": false},
+        "admission_state": {"enum": ["ready", "shadow"]},
+        "query": {"type": "string", "minLength": 1},
+        "query_derivation": {
+          "const": "cleaned_retrieval_title_with_transcript_supported_terms"
+        },
+        "expected_evidence_id": {"type": "string", "minLength": 1},
+        "supported_title_terms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "transcript_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "transcript_anchor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start_segment",
+            "end_segment",
+            "start_seconds",
+            "end_seconds",
+            "text_sha256",
+            "matched_terms"
+          ],
+          "properties": {
+            "start_segment": {"type": "integer", "minimum": 0},
+            "end_segment": {"type": "integer", "minimum": 1},
+            "start_seconds": {"type": "number", "minimum": 0},
+            "end_seconds": {"type": "number", "minimum": 0},
+            "text_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "matched_terms": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "expected_chunk_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "expected_cluster_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "case_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

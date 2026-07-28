@@ -84,6 +84,304 @@ def nearest_existing_parent(path):
     return candidate
 
 
+def validate_chunk_index(knowledge, retrieval):
+    chunk_index = retrieval.get("chunk_index")
+    if not chunk_index:
+        return []
+    errors = []
+    records = retrieval.get("videos") or []
+    chunks = chunk_index.get("chunks") or []
+    config = chunk_index.get("config") or {}
+    source_allowlist = set(
+        config.get("cluster_source_allowlist")
+        or config.get("source_allowlist")
+        or ["bilibili_video"]
+    )
+    knowledge_by_id = {
+        str(video.get("video_id")): video
+        for video in knowledge.get("videos", [])
+    }
+    ranges_by_video = {}
+    chunk_ids = []
+    for chunk_position, chunk in enumerate(chunks):
+        video_index = chunk.get("video_index")
+        if not isinstance(video_index, int) or not 0 <= video_index < len(records):
+            errors.append(f"chunk[{chunk_position}].video_index")
+            continue
+        video_id = str(records[video_index].get("video_id"))
+        video = knowledge_by_id.get(video_id)
+        if video is None:
+            errors.append(f"chunk[{chunk_position}].missing_video")
+            continue
+        if video.get("source_type") not in source_allowlist:
+            errors.append(f"chunk[{chunk_position}].source_type")
+        segments = (video or {}).get("transcript_segments") or []
+        start = chunk.get("start_segment")
+        end = chunk.get("end_segment")
+        if (
+            not isinstance(start, int)
+            or not isinstance(end, int)
+            or not 0 <= start < end <= len(segments)
+        ):
+            errors.append(f"chunk[{chunk_position}].segment_range")
+            continue
+        raw_text = "".join(
+            str(item.get("text") or "") for item in segments[start:end]
+        )
+        if hashlib.sha256(raw_text.encode("utf-8")).hexdigest() != chunk.get(
+            "text_sha256"
+        ):
+            errors.append(f"chunk[{chunk_position}].text_sha256")
+        start_ms = chunk.get("start_ms")
+        end_ms = chunk.get("end_ms")
+        if (
+            not isinstance(start_ms, int)
+            or not isinstance(end_ms, int)
+            or start_ms < 0
+            or end_ms < start_ms
+        ):
+            errors.append(f"chunk[{chunk_position}].time_range")
+        else:
+            try:
+                expected_start_ms = max(
+                    0,
+                    round(
+                        float(segments[start].get("start") or 0.0) * 1000
+                    ),
+                )
+                expected_end_ms = max(
+                    expected_start_ms,
+                    round(
+                        float(
+                            segments[end - 1].get("end")
+                            or segments[end - 1].get("start")
+                            or 0.0
+                        )
+                        * 1000
+                    ),
+                )
+            except (TypeError, ValueError):
+                expected_start_ms = expected_end_ms = None
+            if expected_start_ms is None or (
+                start_ms != expected_start_ms
+                or end_ms != expected_end_ms
+            ):
+                errors.append(f"chunk[{chunk_position}].time_alignment")
+        if not chunk.get("cluster_id"):
+            errors.append(f"chunk[{chunk_position}].cluster_id")
+        chunk_ids.append(chunk.get("chunk_id"))
+        ranges_by_video.setdefault(video_id, []).append((start, end))
+
+    if len(chunk_ids) != len(set(chunk_ids)) or any(
+        not isinstance(chunk_id, str) or not chunk_id
+        for chunk_id in chunk_ids
+    ):
+        errors.append("chunk_ids")
+
+    expected_indexed_video_ids = {
+        str(record.get("video_id"))
+        for record in records
+        if record.get("source_type") in source_allowlist
+        and (
+            knowledge_by_id.get(str(record.get("video_id"))) or {}
+        ).get("transcript_segments")
+    }
+    for video_id in sorted(expected_indexed_video_ids):
+        segments = (knowledge_by_id.get(video_id) or {}).get(
+            "transcript_segments"
+        ) or []
+        if not segments:
+            continue
+        ranges = sorted(ranges_by_video.get(video_id, []))
+        if (
+            not ranges
+            or ranges[0][0] != 0
+            or ranges[-1][1] != len(segments)
+            or any(
+                left[1] != right[0]
+                for left, right in zip(ranges, ranges[1:])
+            )
+        ):
+            errors.append(f"chunk_coverage:{video_id}")
+
+    def validate_postings(name, postings):
+        for key, indexes in postings.items():
+            if (
+                indexes != sorted(set(indexes))
+                or any(
+                    not isinstance(index, int)
+                    or not 0 <= index < len(chunks)
+                    for index in indexes
+                )
+            ):
+                errors.append(f"{name}:{key}")
+
+    validate_postings(
+        "chunk_term_postings", chunk_index.get("term_postings") or {}
+    )
+    expected_term_postings = {}
+    for index, chunk in enumerate(chunks):
+        for term in (chunk.get("field_term_frequencies") or {}):
+            expected_term_postings.setdefault(term, []).append(index)
+    if (chunk_index.get("term_postings") or {}) != expected_term_postings:
+        errors.append("chunk_term_postings_content")
+    vocabulary = chunk_index.get("ngram_vocabulary") or []
+    ngram_postings = chunk_index.get("ngram_postings") or []
+    if vocabulary != sorted(set(vocabulary)) or len(vocabulary) != len(
+        ngram_postings
+    ):
+        errors.append("chunk_ngram_vocabulary")
+    else:
+        validate_postings(
+            "chunk_ngram_postings",
+            {
+                gram: indexes
+                for gram, indexes in zip(vocabulary, ngram_postings)
+            },
+        )
+    cluster_ids = {chunk.get("cluster_id") for chunk in chunks}
+    if chunk_index.get("chunk_count") != len(chunks):
+        errors.append("chunk_count")
+    if chunk_index.get("cluster_count") != len(cluster_ids):
+        errors.append("chunk_cluster_count")
+    expected_average_length = round(
+        sum(
+            int(chunk.get("normalized_length") or 0)
+            for chunk in chunks
+        )
+        / max(1, len(chunks)),
+        4,
+    )
+    if chunk_index.get("average_chunk_length") != expected_average_length:
+        errors.append("chunk_average_length")
+    term_postings = chunk_index.get("term_postings") or {}
+    term_cluster_df = (
+        chunk_index.get("term_cluster_document_frequency") or {}
+    )
+    if set(term_postings) != set(term_cluster_df):
+        errors.append("chunk_term_cluster_df_keys")
+    for term, postings in term_postings.items():
+        cluster_df = term_cluster_df.get(term)
+        expected = len({chunks[index]["cluster_id"] for index in postings})
+        if cluster_df != expected or cluster_df > len(postings):
+            errors.append(f"chunk_term_cluster_df:{term}")
+
+    stable_chunk_indexes = [
+        index
+        for index, chunk in enumerate(chunks)
+        if records[chunk["video_index"]].get(
+            "retrieval_cohort", "stable_baseline"
+        )
+        == "stable_baseline"
+    ]
+    for index, chunk in enumerate(chunks):
+        stable = index in stable_chunk_indexes
+        if stable != bool(chunk.get("stable_cluster_id")):
+            errors.append(f"chunk[{index}].stable_cluster_id")
+    stable_cluster_ids = {
+        chunks[index]["stable_cluster_id"]
+        for index in stable_chunk_indexes
+    }
+    if chunk_index.get("stable_cluster_count") != len(stable_cluster_ids):
+        errors.append("chunk_stable_cluster_count")
+    expected_stable_average = round(
+        sum(
+            int(chunks[index].get("normalized_length") or 0)
+            for index in stable_chunk_indexes
+        )
+        / max(1, len(stable_chunk_indexes)),
+        4,
+    )
+    if (
+        chunk_index.get("stable_average_chunk_length")
+        != expected_stable_average
+    ):
+        errors.append("chunk_stable_average_length")
+    expected_stable_term_df = {}
+    for term, postings in term_postings.items():
+        stable_clusters = {
+            chunks[index]["stable_cluster_id"]
+            for index in postings
+            if index in stable_chunk_indexes
+        }
+        if stable_clusters:
+            expected_stable_term_df[term] = len(stable_clusters)
+    if (
+        chunk_index.get("stable_term_cluster_document_frequency") or {}
+    ) != expected_stable_term_df:
+        errors.append("chunk_stable_term_cluster_df")
+    return sorted(set(errors))
+
+
+def validate_retrieval_cohorts(retrieval):
+    records = retrieval.get("videos") or []
+    errors = []
+    allowed = {"stable_baseline", "automatic_expansion"}
+    invalid = [
+        str(record.get("video_id"))
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline") not in allowed
+    ]
+    if invalid:
+        errors.append("invalid_cohort:" + ",".join(invalid[:8]))
+    stable_records = [
+        record
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline")
+        == "stable_baseline"
+    ]
+    if retrieval.get("stable_indexable_video_count") != len(stable_records):
+        errors.append("stable_indexable_video_count")
+    expected_term_df = {}
+    for record in stable_records:
+        for term in record.get("lexicon_terms", []):
+            expected_term_df[term] = expected_term_df.get(term, 0) + 1
+    if retrieval.get("stable_term_document_frequency") != dict(
+        sorted(expected_term_df.items())
+    ):
+        errors.append("stable_term_document_frequency")
+
+    fields = ("title", "teaching_note", "transcript")
+    expected_counts = {
+        field: sum(
+            int(record.get("field_lengths", {}).get(field) or 0) > 0
+            for record in stable_records
+        )
+        for field in fields
+    }
+    if retrieval.get("stable_field_document_counts") != expected_counts:
+        errors.append("stable_field_document_counts")
+    expected_df = {}
+    for field in fields:
+        frequencies = {}
+        for record in stable_records:
+            for term in (
+                record.get("field_term_frequencies", {})
+                .get(field, {})
+            ):
+                frequencies[term] = frequencies.get(term, 0) + 1
+        expected_df[field] = dict(sorted(frequencies.items()))
+    if (
+        retrieval.get("stable_field_term_document_frequency")
+        != expected_df
+    ):
+        errors.append("stable_field_term_document_frequency")
+    expected_average = {
+        field: round(
+            sum(
+                int(record.get("field_lengths", {}).get(field) or 0)
+                for record in stable_records
+            )
+            / max(1, len(stable_records)),
+            4,
+        )
+        for field in fields
+    }
+    if retrieval.get("stable_average_field_lengths") != expected_average:
+        errors.append("stable_average_field_lengths")
+    return errors
+
+
 def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
     skill_root = Path(skill_root).resolve()
     checks = [
@@ -143,6 +441,39 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             aligned,
             detail,
             "Reinstall a release whose knowledge base and retrieval index were packaged together.",
+        )
+    )
+    chunk_errors = (
+        validate_chunk_index(knowledge, retrieval)
+        if aligned and retrieval.get("chunk_index")
+        else []
+    )
+    checks.append(
+        check(
+            "chunk_index",
+            not chunk_errors,
+            (
+                f"chunks={retrieval['chunk_index'].get('chunk_count')}, "
+                f"clusters={retrieval['chunk_index'].get('cluster_count')}"
+                if retrieval.get("chunk_index") and not chunk_errors
+                else "legacy retrieval index; chunk-first fallback remains available"
+                if not retrieval.get("chunk_index")
+                else "; ".join(chunk_errors[:12])
+            ),
+            "Rebuild and reinstall the Skill so chunk postings match the bundled transcript segments.",
+        )
+    )
+    cohort_errors = validate_retrieval_cohorts(retrieval) if aligned else []
+    checks.append(
+        check(
+            "retrieval_cohorts",
+            not cohort_errors,
+            (
+                "stable and automatic expansion statistics are aligned"
+                if not cohort_errors
+                else "; ".join(cohort_errors[:12])
+            ),
+            "Rebuild and reinstall the Skill so cohort statistics match the bundled retrieval records.",
         )
     )
 

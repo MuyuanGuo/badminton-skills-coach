@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v26",
+  "version": "retrieval-v27",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -185,6 +185,7 @@
     }
   ],
   "retrieval": {
+    "automatic_expansion_score_penalty": 96.0,
     "max_topics": 6,
     "topic_min_score": 8,
     "topic_relative_score": 0.4,
@@ -208,7 +209,7 @@
     "exact_focus_title_bonus_per_character": 33,
     "exact_focus_note_bonus_per_character": 8,
     "tier_score_bonus": {
-      "direct": 12,
+      "direct": 13,
       "strong_related": 6,
       "topic_related": 1,
       "semantic_lead": 0

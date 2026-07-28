@@ -4,11 +4,19 @@
 import argparse
 import importlib.util
 import json
+import math
+import time
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = ROOT / "data" / "evaluation" / "answer_packet_cases.json"
+ANSWER_QUALITY_CASES_PATH = (
+    ROOT / "data" / "evaluation" / "answer_quality_cases.json"
+)
+ANSWER_QUALITY_CASES_REFERENCE = "data/evaluation/answer_quality_cases.json"
+MEASUREMENT_SCOPE = "answer_packet_projection_size_and_construction"
+REQUIRED_MINIMUM_CASE_COUNT = 20
 RUNTIME_PATH = (
     ROOT
     / "skills"
@@ -34,28 +42,188 @@ def encoded_size(payload):
     )
 
 
-def evaluate(cases_path=CASES_PATH):
-    registry = json.loads(Path(cases_path).read_text(encoding="utf-8"))
+def nearest_rank_percentile(values, percentile):
+    if not values:
+        raise ValueError("cannot summarize an empty measurement set")
+    ordered = sorted(values)
+    return ordered[max(0, math.ceil(len(ordered) * percentile) - 1)]
+
+
+def measurement_summary(values):
+    if not values:
+        raise ValueError("cannot summarize an empty measurement set")
+    return {
+        "n": len(values),
+        "max": max(values),
+        "p95": nearest_rank_percentile(values, 0.95),
+    }
+
+
+def resolve_case_registry(registry, source_registry):
+    expected_registry_fields = {
+        "schema_version",
+        "measurement_scope",
+        "query_source_registry",
+        "minimum_case_count",
+        "maximum_skill_instruction_bytes",
+        "maximum_answer_packet_bytes",
+        "maximum_p95_answer_packet_bytes",
+        "minimum_average_byte_reduction",
+        "minimum_case_byte_reduction",
+        "cases",
+    }
+    if set(registry) != expected_registry_fields:
+        raise ValueError("answer packet registry contains unexpected fields")
     if registry.get("schema_version") != 1:
         raise ValueError("unsupported answer packet case schema_version")
+    if registry.get("measurement_scope") != MEASUREMENT_SCOPE:
+        raise ValueError("answer packet measurement_scope is invalid")
+    if (
+        registry.get("query_source_registry")
+        != ANSWER_QUALITY_CASES_REFERENCE
+    ):
+        raise ValueError("answer packet query source registry is invalid")
+
+    minimum_case_count = registry.get("minimum_case_count")
+    if (
+        not isinstance(minimum_case_count, int)
+        or isinstance(minimum_case_count, bool)
+        or minimum_case_count < REQUIRED_MINIMUM_CASE_COUNT
+    ):
+        raise ValueError(
+            "answer packet minimum_case_count must be at least "
+            f"{REQUIRED_MINIMUM_CASE_COUNT}"
+        )
+
+    cases = registry.get("cases")
+    if not isinstance(cases, list) or len(cases) < minimum_case_count:
+        raise ValueError(
+            "answer packet registry has fewer cases than minimum_case_count"
+        )
+    if source_registry.get("version") != 1:
+        raise ValueError("unsupported answer quality case schema version")
+    source_cases = {
+        case["case_id"]: case for case in source_registry.get("cases", [])
+    }
+
+    resolved = []
+    case_ids = []
+    source_case_ids = []
+    for case in cases:
+        if not isinstance(case, dict) or set(case) != {
+            "case_id",
+            "source_case_id",
+        }:
+            raise ValueError(
+                "answer packet cases must contain only case_id and source_case_id"
+            )
+        case_id = case["case_id"]
+        source_case_id = case["source_case_id"]
+        if (
+            not isinstance(case_id, str)
+            or not case_id
+            or not isinstance(source_case_id, str)
+            or not source_case_id
+        ):
+            raise ValueError("answer packet case IDs must be non-empty strings")
+        source_case = source_cases.get(source_case_id)
+        if source_case is None:
+            raise ValueError(
+                f"answer packet case {case_id} has an unknown source case"
+            )
+        review = source_case.get("review", {})
+        if (
+            review.get("status") != "maintainer_reviewed"
+            or review.get("maintainer_decision") != "approved"
+        ):
+            raise ValueError(
+                f"answer packet case {case_id} is not maintainer-approved"
+            )
+        query = source_case.get("query")
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError(
+                f"answer packet source case {source_case_id} has an empty query"
+            )
+        case_ids.append(case_id)
+        source_case_ids.append(source_case_id)
+        resolved.append(
+            {
+                "case_id": case_id,
+                "source_case_id": source_case_id,
+                "query": query,
+            }
+        )
+
+    if len(case_ids) != len(set(case_ids)):
+        raise ValueError("answer packet case IDs must be unique")
+    if len(source_case_ids) != len(set(source_case_ids)):
+        raise ValueError("answer packet source case IDs must be unique")
+
+    positive_limits = [
+        "maximum_skill_instruction_bytes",
+        "maximum_answer_packet_bytes",
+        "maximum_p95_answer_packet_bytes",
+    ]
+    if any(
+        not isinstance(registry.get(field), int)
+        or isinstance(registry.get(field), bool)
+        or registry[field] <= 0
+        for field in positive_limits
+    ):
+        raise ValueError("answer packet byte limits must be positive integers")
+    if (
+        registry["maximum_p95_answer_packet_bytes"]
+        > registry["maximum_answer_packet_bytes"]
+    ):
+        raise ValueError("answer packet P95 limit cannot exceed the hard cap")
+    for field in [
+        "minimum_average_byte_reduction",
+        "minimum_case_byte_reduction",
+    ]:
+        value = registry.get(field)
+        if (
+            not isinstance(value, (int, float))
+            or isinstance(value, bool)
+            or not 0 <= value <= 1
+        ):
+            raise ValueError(
+                f"answer packet threshold {field} must be between zero and one"
+            )
+    return resolved
+
+
+def load_case_registry(cases_path=CASES_PATH):
+    registry = json.loads(Path(cases_path).read_text(encoding="utf-8"))
+    source_registry = json.loads(
+        ANSWER_QUALITY_CASES_PATH.read_text(encoding="utf-8")
+    )
+    return registry, resolve_case_registry(registry, source_registry)
+
+
+def evaluate(cases_path=CASES_PATH):
+    registry, cases = load_case_registry(cases_path)
     runtime = load_runtime()
     skill_instruction_bytes = len(SKILL_PATH.read_bytes())
     results = []
-    for case in registry["cases"]:
+    for case in cases:
+        started = time.perf_counter()
         context = runtime.prepare_answer_context(
             case["query"], local_personalization=False
         )
         packet = runtime.build_answer_packet(context, "context.json")
         runtime.validate_answer_packet(packet, context)
+        construction_ms = (time.perf_counter() - started) * 1000
         full_bytes = encoded_size(context)
         packet_bytes = encoded_size(packet)
         reduction = 1 - packet_bytes / full_bytes
         results.append(
             {
                 "case_id": case["case_id"],
+                "source_case_id": case["source_case_id"],
                 "full_context_bytes": full_bytes,
                 "answer_packet_bytes": packet_bytes,
                 "byte_reduction": round(reduction, 6),
+                "construction_ms": round(construction_ms, 3),
                 "reviewed_atom_count": len(
                     packet["answer_plan"]["selected_evidence_atoms"]
                 ),
@@ -64,19 +232,53 @@ def evaluate(cases_path=CASES_PATH):
         )
     average = sum(item["byte_reduction"] for item in results) / len(results)
     minimum = min(item["byte_reduction"] for item in results)
+    packet_measurements = measurement_summary(
+        [item["answer_packet_bytes"] for item in results]
+    )
+    construction_measurements = measurement_summary(
+        [item["construction_ms"] for item in results]
+    )
+    minimum_case_count = registry["minimum_case_count"]
+    hard_cap = registry["maximum_answer_packet_bytes"]
+    p95_cap = registry["maximum_p95_answer_packet_bytes"]
+    sample_count_passed = packet_measurements["n"] >= minimum_case_count
+    hard_cap_passed = packet_measurements["max"] <= hard_cap
+    p95_passed = packet_measurements["p95"] <= p95_cap
     passed = (
         skill_instruction_bytes <= registry["maximum_skill_instruction_bytes"]
+        and sample_count_passed
+        and hard_cap_passed
+        and p95_passed
         and average >= registry["minimum_average_byte_reduction"]
         and minimum >= registry["minimum_case_byte_reduction"]
     )
     return {
         "schema_version": 1,
+        "measurement_scope": registry["measurement_scope"],
+        "n": packet_measurements["n"],
         "cases": len(results),
         "passed": passed,
+        "sample_count_passed": sample_count_passed,
+        "hard_cap_passed": hard_cap_passed,
+        "p95_passed": p95_passed,
+        "minimum_case_count": minimum_case_count,
         "skill_instruction_bytes": skill_instruction_bytes,
         "maximum_skill_instruction_bytes": registry[
             "maximum_skill_instruction_bytes"
         ],
+        "answer_packet_hard_cap_bytes": hard_cap,
+        "maximum_answer_packet_bytes": registry[
+            "maximum_answer_packet_bytes"
+        ],
+        "maximum_p95_answer_packet_bytes": registry[
+            "maximum_p95_answer_packet_bytes"
+        ],
+        "answer_packet_maximum_bytes": packet_measurements["max"],
+        "answer_packet_p95_bytes": packet_measurements["p95"],
+        "construction_maximum_ms": round(
+            construction_measurements["max"], 3
+        ),
+        "construction_p95_ms": round(construction_measurements["p95"], 3),
         "average_byte_reduction": round(average, 6),
         "minimum_byte_reduction": round(minimum, 6),
         "results": results,

@@ -18,6 +18,7 @@ data/processing/.douyin-update-transaction.json
 data/processing/.douyin-update-transaction.staged/
 data/processing/.bilibili-media-transaction.json
 data/processing/.bilibili-media-transaction.staged/
+data/processing/.bilibili-pipeline.lock
 output/classification-drift-report.json
 data/feedback/
 .feedback/

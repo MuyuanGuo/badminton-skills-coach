@@ -134,6 +134,33 @@ def link_integrity(video_index, knowledge, bilibili_index=None):
     }
 
 
+def bilibili_corpus_partition(bilibili_index, bilibili_ledger, bilibili_records):
+    ready = sum(
+        item.get("processing_status") == "ready" for item in bilibili_records
+    )
+    post_excluded = sum(
+        item.get("processing_status") in {"not_teaching", "low_value"}
+        for item in bilibili_records
+    )
+    knowledge_ids = {item.get("evidence_id") for item in bilibili_records}
+    pre_excluded = sum(
+        bool((item.get("processing_state") or {}).get("terminal"))
+        and item.get("video_id") not in knowledge_ids
+        for item in bilibili_ledger["videos"]
+    )
+    return {
+        "ready": ready,
+        "post_excluded": post_excluded,
+        "pre_excluded": pre_excluded,
+        "pending": (
+            len(bilibili_index["videos"])
+            - ready
+            - post_excluded
+            - pre_excluded
+        ),
+    }
+
+
 def build_manifest_payload():
     video_index = load_json("data/douyin_video_index.json")
     bilibili_index = load_json("data/bilibili_video_index.json")
@@ -150,22 +177,10 @@ def build_manifest_payload():
         item for item in knowledge["videos"]
         if item.get("source_type") == "bilibili_video"
     ]
-    bilibili_ready = sum(
-        item.get("processing_status") == "ready" for item in bilibili_records
-    )
-    bilibili_post_excluded = sum(
-        item.get("processing_status") in {"not_teaching", "low_value"}
-        for item in bilibili_records
-    )
-    bilibili_pre_excluded = sum(
-        str(item.get("decision") or "").startswith("excluded_")
-        for item in bilibili_ledger["videos"]
-    )
-    bilibili_pending = (
-        len(bilibili_index["videos"])
-        - bilibili_ready
-        - bilibili_post_excluded
-        - bilibili_pre_excluded
+    bilibili_partition = bilibili_corpus_partition(
+        bilibili_index,
+        bilibili_ledger,
+        bilibili_records,
     )
     payload = {
         "schema_version": 1,
@@ -184,12 +199,13 @@ def build_manifest_payload():
             "transcript_backed_ready_count": len(ready) - visual,
             "visual_reviewed_ready_count": visual,
             "pending_count": (
-                status["pending_human_review_or_processing"] + bilibili_pending
+                status["pending_human_review_or_processing"]
+                + bilibili_partition["pending"]
             ),
             "excluded_count": (
                 status["excluded_non_teaching_ads_equipment"]
-                + bilibili_pre_excluded
-                + bilibili_post_excluded
+                + bilibili_partition["pre_excluded"]
+                + bilibili_partition["post_excluded"]
             ),
             "source_counts": {
                 "douyin_video": sum(
