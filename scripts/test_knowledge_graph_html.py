@@ -68,15 +68,26 @@ class KnowledgeGraphHtmlTests(unittest.TestCase):
         self.assertIn("Content-Security-Policy", rendered)
         self.assertIn("safeVideoUrl", rendered)
 
-    def test_only_canonical_matching_douyin_urls_are_accepted(self):
+    def test_only_canonical_matching_source_urls_are_accepted(self):
         good = "https://www.douyin.com/video/123456789012345678"
         self.assertEqual(
             self.module.validate_video_url(good, "123456789012345678"), good
+        )
+        bilibili = "https://www.bilibili.com/video/BV1vx4y1A71t/"
+        self.assertEqual(
+            self.module.validate_video_url(
+                bilibili,
+                "bilibili:BV1vx4y1A71t",
+                "bilibili_video",
+                "BV1vx4y1A71t",
+            ),
+            bilibili,
         )
         for unsafe in [
             "javascript:alert(1)",
             "https://evil.example/video/123456789012345678",
             "https://www.douyin.com/video/123456789012345678?redirect=evil",
+            "https://www.bilibili.com/video/BV1vx4y1A71t/?redirect=evil",
         ]:
             with self.subTest(url=unsafe):
                 with self.assertRaises(ValueError):

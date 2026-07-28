@@ -45,6 +45,7 @@ The evaluation surface covers:
 
 - Query interpretation, action scope, actor relationships, and clarification continuity.
 - Candidate recall, finalist selection, primary-source coverage, and hard-negative exclusion.
+- Multi-source growth uses dual-track retrieval evaluation: the all-source production rank is observed as-is, while a stable-source view remains comparable with the released baseline; unjudged new-source exposure has a separate anti-flood budget.
 - Claim-level evidence, confidence boundaries, answer completeness, and citation consistency.
 - Metamorphic language robustness, feedback-transfer privacy, historical blind tests, and current-runtime generation review.
 - Latency, peak memory, and answer-packet size budgets.
@@ -61,23 +62,23 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 
 | Metric | Current baseline |
 | --- | ---: |
-| Processed public videos | 475 |
-| Bilibili provenance-isolation pilot | 20: 9 Liu Hui candidates, 9 original/unknown, 2 excluded; 0 auto-admitted |
-| Ready teaching videos | 354 |
-| Transcript-backed evidence | 335 |
+| Processed public videos | 495 |
+| Bilibili provenance-isolation pilot | 20: 9 admitted after origin and evidence gates; 11 original/unknown or non-teaching videos isolated |
+| Ready teaching videos | 363 |
+| Transcript-backed evidence | 344 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Query-understanding cases | 143/143 |
 | Metamorphic language variants | 30/30 |
 | Hard-negative selections | 0 of 194 |
-| Current-runtime generation reviews | 3/3 |
+| Latest independently reviewed generations | 3/3; new runtime review pending |
 | Promoted public feedback signals | 0 |
 
-All 2,857 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
+All 2,962 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
 
-The balanced performance gate covers five question types. In the latest local acceptance run, search P95 was `67.65 ms`, answer-context P95 was `576.79 ms`, traced peak memory was `73.18 MB`, and the answer packet averaged a `71.17%` reduction. These are development-machine measurements, not cross-platform performance promises.
+The balanced performance gate covers five question types. In the latest local acceptance run, search P95 was `77.75 ms`, answer-context P95 was `712.04 ms`, traced peak memory was `80.15 MB`, and the answer packet averaged a `71.22%` reduction. These are development-machine measurements, not cross-platform performance promises.
 
-See the reproducible [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/) for the complete current result.
+See the [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/) for the latest generation snapshot with completed independent human review. The deterministic regression and performance gates above describe this branch; generation review for the new runtime remains pending independent human review.
 
 ## Architecture
 
@@ -124,9 +125,11 @@ query
 
 ### Data and evidence layers
 
-- `data/knowledge/douyin_knowledge_base.json`: complete build artifact and processing state.
+- `data/knowledge/douyin_knowledge_base.json`: backward-compatible path for the unified multi-source knowledge base and processing state.
+- `data/knowledge/bilibili_knowledge_base.json`: Bilibili build output admitted through origin, transcript-quality, and cross-platform duplicate gates.
 - `data/bilibili_video_index.json`: Bilibili metadata index for the 大G羽毛球 space.
-- `data/processing/bilibili_origin_review_queue.json`: quarantined candidates that may be Liu Hui teaching clips; metadata candidates never enter the evidence pool directly.
+- `data/processing/bilibili_origin_review_queue.json`: quarantined candidates that have not passed independent origin verification; metadata candidates never enter the evidence pool directly.
+- `data/processing/bilibili_queue.json`: media, transcription, and knowledge-build state for records that passed the origin gate.
 - `references/knowledge-base.json`: compact runtime evidence shipped with the Skill.
 - `retrieval-index.json`: retrieval data without full transcript bodies.
 - `reviewed-evidence-atoms.json`: closed, reviewed claims for covered scopes.
@@ -188,6 +191,14 @@ python3 scripts/run_ci_tests.py artifacts
 python3 scripts/run_ci_tests.py context
 python3 scripts/run_full_update_pipeline.py
 ```
+
+When adding Bilibili evidence, refresh the metadata index and review the classification
+rules first. `process_bilibili_candidates.py` then independently verifies the uploader
+profile, publisher-authored origin text, and dedicated origin tags before downloading
+audio. After transcription, `finalize_bilibili_transcripts.py` validates media hashes
+and `build_bilibili_knowledge.py` applies evidence-quality and cross-platform duplicate
+gates. The full update pipeline merges admitted records into the unified knowledge base
+and rebuilds every runtime index.
 
 A successful full pipeline writes local `output/update-impact-report.json`; a failed run restores generated artifacts.
 

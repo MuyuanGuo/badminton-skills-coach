@@ -25,6 +25,7 @@
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
   "supporting_video_limits_by_technique_variant": {
+    "drop_reverse_slice": 0,
     "smash_heavy": 5
   },
   "default_segment_limit": 4,

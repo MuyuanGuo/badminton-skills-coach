@@ -17,7 +17,12 @@ from build_retrieval_index import (
     TOPIC_INDEX_PATH,
     build_index,
 )
-from check_video_links import INDEX_PATH, deterministic_sample, syntax_check
+from check_video_links import (
+    BILIBILI_INDEX_PATH,
+    INDEX_PATH,
+    deterministic_sample,
+    syntax_check,
+)
 
 
 class BuildReproducibilityTests(unittest.TestCase):
@@ -53,7 +58,10 @@ class BuildReproducibilityTests(unittest.TestCase):
         self.assertEqual(RETRIEVAL_OUTPUT_PATH.read_bytes(), rebuilt_bytes)
 
     def test_link_sampling_is_deterministic_and_syntax_is_canonical(self):
-        videos = json.loads(INDEX_PATH.read_text(encoding="utf-8"))["videos"]
+        videos = (
+            json.loads(INDEX_PATH.read_text(encoding="utf-8"))["videos"]
+            + json.loads(BILIBILI_INDEX_PATH.read_text(encoding="utf-8"))["videos"]
+        )
         first = deterministic_sample(videos, 5)
         second = deterministic_sample(videos, 5)
         self.assertEqual(first, second)

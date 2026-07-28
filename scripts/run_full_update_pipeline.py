@@ -20,6 +20,7 @@ from project_artifacts import (
 
 ROOT = Path(__file__).resolve().parents[1]
 UPDATE_ARTIFACT_PATHS = (
+    ROOT / "data/knowledge/bilibili_knowledge_base.json",
     ROOT / "data/knowledge/douyin_knowledge_base.json",
     ROOT / "data/knowledge/topic_index.json",
     ROOT / "data/knowledge/retrieval_index.json",
@@ -54,6 +55,7 @@ def run(command, *, env=None):
 
 def build_commands():
     return [
+        [sys.executable, "scripts/build_bilibili_knowledge.py"],
         [sys.executable, "scripts/build_douyin_knowledge.py"],
         [sys.executable, "scripts/build_topic_index.py"],
         [sys.executable, "scripts/build_retrieval_index.py"],

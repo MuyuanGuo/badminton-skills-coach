@@ -15,6 +15,7 @@ CURATED_PATH = ROOT / "data" / "knowledge" / "pilot_teaching_notes.json"
 REVIEW_ANNOTATIONS_PATH = ROOT / "data" / "review" / "visual_review_annotations.json"
 QUALITY_RULES_PATH = ROOT / "config" / "knowledge_quality_rules.json"
 OUTPUT_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
+BILIBILI_KNOWLEDGE_PATH = ROOT / "data" / "knowledge" / "bilibili_knowledge_base.json"
 
 
 def timestamp(seconds):
@@ -592,6 +593,46 @@ def reconcile_updated_at(candidate, existing=None, now=None):
     return candidate, True
 
 
+def merge_bilibili_knowledge(douyin, bilibili):
+    if not bilibili:
+        return douyin
+    merged = copy.deepcopy(douyin)
+    merged["scope"] = "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）"
+    merged["videos"] = douyin["videos"] + bilibili.get("videos", [])
+    status_counts = {}
+    for record in merged["videos"]:
+        status = record["processing_status"]
+        status_counts[status] = status_counts.get(status, 0) + 1
+    merged["source_queue_counts"] = {
+        "douyin": douyin.get("queue_counts", {}),
+        "bilibili": bilibili.get("queue_counts", {}),
+    }
+    merged["source_counts"] = {
+        source: sum(
+            item.get("source_type") == source for item in merged["videos"]
+        )
+        for source in ["douyin_video", "bilibili_video"]
+    }
+    merged["knowledge_counts"] = {
+        "videos": len(merged["videos"]),
+        **status_counts,
+        "curated": sum(item["confidence"] == "curated" for item in merged["videos"]),
+        "visual_reviewed": sum(
+            item["confidence"] == "visual_reviewed" for item in merged["videos"]
+        ),
+        "reviewed_transcript": sum(
+            item["confidence"] == "reviewed_transcript" for item in merged["videos"]
+        ),
+        "transcript_segment_videos": sum(
+            bool(item.get("transcript_segments")) for item in merged["videos"]
+        ),
+        "transcript_segments": sum(
+            len(item.get("transcript_segments") or []) for item in merged["videos"]
+        ),
+    }
+    return merged
+
+
 def main():
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     curated_data = json.loads(CURATED_PATH.read_text(encoding="utf-8"))
@@ -605,6 +646,12 @@ def main():
     output = build_knowledge(
         queue, curated_data, review_annotations_data, transcripts, rules
     )
+    bilibili = (
+        json.loads(BILIBILI_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
+        if BILIBILI_KNOWLEDGE_PATH.exists()
+        else None
+    )
+    output = merge_bilibili_knowledge(output, bilibili)
     existing = (
         json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
         if OUTPUT_PATH.exists()

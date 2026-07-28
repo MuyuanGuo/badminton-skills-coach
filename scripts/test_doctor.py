@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import importlib.util
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,10 +51,32 @@ class DoctorAndInstallerTests(unittest.TestCase):
     def test_all_profile_has_unique_check_names(self):
         checks = self.doctor.skill_checks(SKILL_ROOT, run_smoke=False)
         checks.extend(
-            self.doctor.maintainer_checks(ROOT, transcription=True)
+            self.doctor.maintainer_checks(
+                ROOT,
+                transcription=True,
+                override=Path(sys.executable),
+            )
         )
         names = [item["name"] for item in checks]
         self.assertEqual(len(names), len(set(names)))
+        self.assertIn("pyyaml", names)
+        self.assertIn("yt_dlp", names)
+
+    def test_diagnostic_subprocess_timeout_becomes_a_failure_result(self):
+        with mock.patch.object(
+            self.doctor.subprocess,
+            "run",
+            side_effect=subprocess.TimeoutExpired(["slow"], 1),
+        ):
+            result = self.doctor.run_diagnostic_command(
+                ["slow"],
+                timeout=1,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 124)
+        self.assertIn("timed out after 1 seconds", result.stderr)
 
     def test_atomic_installer_replaces_stale_files_and_runs_doctor(self):
         with tempfile.TemporaryDirectory() as temporary:

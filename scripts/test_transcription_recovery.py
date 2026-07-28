@@ -41,6 +41,27 @@ def queue_payload(video_id, media_path, status="downloaded"):
 
 
 class TranscriptionRecoveryTests(unittest.TestCase):
+    def test_video_id_filter_limits_the_batch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            (media_dir / "selected.m4a").write_bytes(b"selected audio")
+            (media_dir / "ignored.m4a").write_bytes(b"ignored audio")
+
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                model_factory=lambda _name: FakeModel(),
+                video_ids=["selected"],
+            )
+
+            self.assertEqual(result["media_files"], 1)
+            self.assertEqual(result["transcribed"], 1)
+            self.assertTrue((output_dir / "selected.json").exists())
+            self.assertFalse((output_dir / "ignored.json").exists())
+
     def test_valid_json_repairs_sidecars_without_loading_model(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

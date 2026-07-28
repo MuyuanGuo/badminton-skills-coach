@@ -17,6 +17,9 @@ SUMMARY_OUTPUT = ROOT / "data" / "knowledge" / "knowledge_graph_summary.json"
 DOUYIN_VIDEO_URL_PATTERN = re.compile(
     r"https://www\.douyin\.com/video/(?P<video_id>\d{18,20})"
 )
+BILIBILI_VIDEO_URL_PATTERN = re.compile(
+    r"https://www\.bilibili\.com/video/(?P<video_id>BV[0-9A-Za-z]{10})/"
+)
 
 
 def shorten(text, length=48):
@@ -31,12 +34,20 @@ def node_id(prefix, value):
     return f"{prefix}-{slug[:40]}"
 
 
-def validate_video_url(url, video_id=None):
-    match = DOUYIN_VIDEO_URL_PATTERN.fullmatch(str(url))
+def validate_video_url(url, video_id=None, source_type=None, source_video_id=None):
+    pattern = (
+        BILIBILI_VIDEO_URL_PATTERN
+        if source_type == "bilibili_video"
+        else DOUYIN_VIDEO_URL_PATTERN
+    )
+    match = pattern.fullmatch(str(url))
     if not match:
-        raise ValueError(f"Unsafe or non-canonical Douyin video URL: {url}")
-    if video_id and match.group("video_id") != str(video_id):
-        raise ValueError(f"Douyin URL does not match video ID {video_id}: {url}")
+        raise ValueError(f"Unsafe or non-canonical source video URL: {url}")
+    expected_id = (
+        source_video_id if source_type == "bilibili_video" else video_id
+    )
+    if expected_id and match.group("video_id") != str(expected_id):
+        raise ValueError(f"Source URL does not match video ID {expected_id}: {url}")
     return str(url)
 
 
@@ -66,7 +77,12 @@ def load_graph():
                     {
                         "video_id": video["video_id"],
                         "title": shorten(video["title"], 54),
-                        "url": validate_video_url(video["url"], video["video_id"]),
+                        "url": validate_video_url(
+                            video["url"],
+                            video["video_id"],
+                            source_video.get("source_type"),
+                            source_video.get("source_video_id"),
+                        ),
                         "confidence": video["confidence"],
                         "category": video["category"],
                         "duration_seconds": source_video.get("duration_seconds"),
@@ -468,12 +484,13 @@ def render_html(graph):
     function safeVideoUrl(value) {{
       try {{
         const url = new URL(value);
-        if (
-          url.origin !== "https://www.douyin.com" ||
-          !new RegExp("^/video/\\\\d{{18,20}}$").test(url.pathname) ||
-          url.search ||
-          url.hash
-        ) return null;
+        const isDouyin =
+          url.origin === "https://www.douyin.com" &&
+          new RegExp("^/video/\\\\d{{18,20}}$").test(url.pathname);
+        const isBilibili =
+          url.origin === "https://www.bilibili.com" &&
+          new RegExp("^/video/BV[0-9A-Za-z]{{10}}/$").test(url.pathname);
+        if ((!isDouyin && !isBilibili) || url.search || url.hash) return null;
         return url.href;
       }} catch (_error) {{
         return null;

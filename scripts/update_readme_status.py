@@ -16,6 +16,8 @@ AGENT_METADATA = (
     ROOT / "skills" / "liuhui-badminton-coach" / "agents" / "openai.yaml"
 )
 VIDEO_INDEX = ROOT / "data" / "douyin_video_index.json"
+BILIBILI_INDEX = ROOT / "data" / "bilibili_video_index.json"
+BILIBILI_LEDGER = ROOT / "data" / "bilibili_classification_ledger.json"
 TEACHING_FILTER = ROOT / "data" / "douyin_teaching_filtered.json"
 KNOWLEDGE = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 FEEDBACK_SIGNALS = ROOT / "config" / "feedback_signals.json"
@@ -48,11 +50,17 @@ def evidence_counts(knowledge):
         if video["processing_status"] == "ready"
     ]
     visual = sum(video.get("confidence") == "visual_reviewed" for video in ready)
+    transcript_items = sum(
+        len((video.get("teaching_note") or {}).get(field) or [])
+        for video in ready
+        for field in ("key_evidence", "error_evidence", "action_cues")
+    )
     return {
         "processed": len(knowledge["videos"]),
         "ready": len(ready),
         "transcript": len(ready) - visual,
         "visual": visual,
+        "transcript_items": transcript_items,
         "pending_visual": sum(
             video["processing_status"]
             in {"needs_visual_review", "needs_correction"}
@@ -210,8 +218,22 @@ def update_technical_readme_text(
         for video in knowledge.get("videos", [])
         if video.get("processing_status") == "ready"
     ]
+    evidence = evidence_counts(knowledge)
     visual = sum(video.get("confidence") == "visual_reviewed" for video in ready)
-    processed = status["public_videos_collected"]
+    bilibili_index = load_json(BILIBILI_INDEX) if BILIBILI_INDEX.exists() else {"videos": []}
+    bilibili_ledger = load_json(BILIBILI_LEDGER) if BILIBILI_LEDGER.exists() else {"videos": []}
+    bilibili_records = [
+        video for video in knowledge.get("videos", [])
+        if video.get("source_type") == "bilibili_video"
+    ]
+    bilibili_ready = sum(
+        video.get("processing_status") == "ready" for video in bilibili_records
+    )
+    bilibili_excluded = sum(
+        str(video.get("decision") or "").startswith("excluded_")
+        for video in bilibili_ledger["videos"]
+    )
+    processed = status["public_videos_collected"] + len(bilibili_index["videos"])
     ready_count = status["ready_teaching_videos"]
     transcript = len(ready) - visual
     feedback_count = len(feedback_signals.get("signals", []))
@@ -219,10 +241,19 @@ def update_technical_readme_text(
     replacements = {
         r"^\| 已处理公开视频 \| \d+ \|": f"| 已处理公开视频 | {processed} |",
         r"^\| 可用于回答的教学视频 \| \d+ \|": f"| 可用于回答的教学视频 | {ready_count} |",
-        r"^\| 转写证据 \| \d+ \|": f"| 转写证据 | {transcript} |",
+        r"^\| 转写证据 \|.*$": (
+            f"| 转写证据 | {transcript} | "
+            f"{evidence['transcript_items']:,}/{evidence['transcript_items']:,} "
+            "条转写证据包含时间戳 |"
+        ),
         r"^\| 视觉复核兜底 \| \d+ \|": f"| 视觉复核兜底 | {visual} |",
         r"^\| 回答质量黄金用例 \| \d+/\d+ \|": f"| 回答质量黄金用例 | {answer_count}/{answer_count} |",
         r"^\| 公共反馈信号 \| \d+ \|": f"| 公共反馈信号 | {feedback_count} |",
+        r"^\| B 站来源隔离试点 \|.*$": (
+            f"| B 站来源隔离试点 | {len(bilibili_index['videos'])} | "
+            f"{bilibili_ready} 条通过来源与证据门禁进入回答池、"
+            f"{bilibili_excluded} 条原创/来源不明或非教学内容被隔离 |"
+        ),
     }
     updated = readme
     for pattern, replacement in replacements.items():
@@ -241,9 +272,21 @@ def update_technical_readme_text(
 def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
     status = derive_project_status(video_index, teaching_filter, knowledge)
     evidence = evidence_counts(knowledge)
+    bilibili_index = load_json(BILIBILI_INDEX) if BILIBILI_INDEX.exists() else {"videos": []}
+    bilibili_ledger = load_json(BILIBILI_LEDGER) if BILIBILI_LEDGER.exists() else {"videos": []}
+    bilibili_ready = sum(
+        video.get("source_type") == "bilibili_video"
+        and video.get("processing_status") == "ready"
+        for video in knowledge.get("videos", [])
+    )
+    bilibili_excluded = sum(
+        str(video.get("decision") or "").startswith("excluded_")
+        for video in bilibili_ledger["videos"]
+    )
     replacements = {
         r"^\| Processed public videos \| \d+ \|$": (
-            f"| Processed public videos | {status['public_videos_collected']} |"
+            f"| Processed public videos | "
+            f"{status['public_videos_collected'] + len(bilibili_index['videos'])} |"
         ),
         r"^\| Ready teaching videos \| \d+ \|$": (
             f"| Ready teaching videos | {status['ready_teaching_videos']} |"
@@ -254,12 +297,27 @@ def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
         r"^\| Reviewed visual-summary fallbacks \| \d+ \|$": (
             f"| Reviewed visual-summary fallbacks | {evidence['visual']} |"
         ),
+        r"^\| Bilibili provenance-isolation pilot \|.*$": (
+            f"| Bilibili provenance-isolation pilot | "
+            f"{len(bilibili_index['videos'])}: {bilibili_ready} admitted after "
+            f"origin and evidence gates; {bilibili_excluded} original/unknown "
+            f"or non-teaching videos isolated |"
+        ),
     }
     updated = readme
     for pattern, replacement in replacements.items():
         updated = replace_one(
             updated, pattern, replacement, "English README evidence baseline"
         )
+    updated = replace_one(
+        updated,
+        r"^All [\d,]+ transcript evidence items have timestamps\.",
+        (
+            f"All {evidence['transcript_items']:,} transcript evidence items "
+            "have timestamps."
+        ),
+        "English README transcript evidence count",
+    )
     return updated
 
 
@@ -308,14 +366,14 @@ def update_skill_status_text(skill, knowledge):
     counts = evidence_counts(knowledge)
     skill = replace_one(
         skill,
-        r"full \d+-video processed knowledge base",
-        f"full {counts['processed']}-video processed knowledge base",
+        r"full \d+-video processed (?:multi-source )?knowledge base",
+        f"full {counts['processed']}-video processed multi-source knowledge base",
         "Skill frontmatter processed count",
     )
     skill = replace_one(
         skill,
-        r"including \d+ ready teaching videos\.",
-        f"including {counts['ready']} ready teaching videos.",
+        r"^(description: .*including )\d+( ready teaching videos)",
+        rf"\g<1>{counts['ready']}\g<2>",
         "Skill frontmatter count",
     )
     skill = replace_one(

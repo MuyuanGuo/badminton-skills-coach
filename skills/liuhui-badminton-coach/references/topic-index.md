@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `409`
-- Assigned videos: `354`
-- Multi-topic videos: `148`
+- Videos: `418`
+- Assigned videos: `363`
+- Multi-topic videos: `154`
 
 ## How To Use
 
@@ -20,50 +20,50 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `103`
+- Matched videos: `110`
 
-- **被动后场与高远**: `22` videos, `22` ready, `0` needs visual review.
+- **被动后场与高远**: `24` videos, `24` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
   Representative videos:
   - 反手被动高远 虽然被动，但是放松发力更重要，别说示范的球不到位，也打出界一米了，主要是在底线摄像机放不下了 [ready] https://www.douyin.com/video/7546109410041908538
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手高远球 提供一个训练方法，方法不唯一 [ready] https://www.douyin.com/video/7541623926234811705
-- **杀球与突击**: `39` videos, `39` ready, `0` needs visual review.
+- **杀球与突击**: `40` videos, `40` ready, `0` needs visual review.
   Keywords: 杀球, 重杀, 点杀, 突击, 扣杀
   Representative videos:
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready] https://www.douyin.com/video/7659348110628345210
+  - 杀球压不下去？刘辉教练教你杀球如何下压技巧 [ready] https://www.bilibili.com/video/BV1vx4y1A71t/
   - 不同杀球 给大家解释为什么每个运动员动作不一样，其实在我的视角里，都是脚蹬地开始发力传递到球拍，但是每个人有差异，比如有的胳膊有劲儿，有的腰腹有劲儿，有的手腕有劲儿，通过漫长的训练，无意识的找到最适合自己发力配比，所以大家学习也得根据自己情况来 [ready] https://www.douyin.com/video/7567155406117533051
-  - 重杀框架 可以和期一起看，不同的框架可以决定不同的杀球 [ready] https://www.douyin.com/video/7659991105622862457
 - **架拍与后场框架**: `41` videos, `41` ready, `0` needs visual review.
   Keywords: 架拍, 顶肘, 引拍, 抬拍, 举拍, 框架
   Representative videos:
   - 后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及 [ready] https://www.douyin.com/video/7589749293205363633
   - 被动高远 别说这样容易抡大臂，不这样偷出来时间抢架拍位置也是个输，真被动就没时间侧身，没时间架拍，没空间做正常架拍了，所以大家总说职业选手不架拍，其实架了，只不过没做那么主动的架拍罢了 [ready] https://www.douyin.com/video/7558912953539071292
   - 架拍的选择 在两个极端架拍的中间位置，就是最普通的架拍！没有绝对的对错，符合场景，符合自己的情况就是对！ [ready] https://www.douyin.com/video/7658231159860261361
-- **吊球与劈吊**: `7` videos, `7` ready, `0` needs visual review.
+- **吊球与劈吊**: `8` videos, `8` ready, `0` needs visual review.
   Keywords: 吊球, 劈吊, 滑板, 软压
   Representative videos:
   - 软压还包括点杀，远网吊球等等 [ready] https://www.douyin.com/video/7093706918492917033
   - 1038 劈吊进阶 压腕加速，锁腕控力，转着击加大包切效果可重劈吊 [ready] https://www.douyin.com/video/7665812689277115897
   - 吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反 [ready] https://www.douyin.com/video/7115241358255803683
-- **正反手过渡**: `4` videos, `4` ready, `0` needs visual review.
+- **正反手过渡**: `5` videos, `5` ready, `0` needs visual review.
   Keywords: 过渡球, 过度球, 过渡动作, 正手过渡, 反手过渡, 正反手过渡, 过渡击球点, 过渡基础
   Representative videos:
+  - 【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿 [ready] https://www.bilibili.com/video/BV1tw411U7PV/
   - 正反手过渡 先掌握核心技术，剩下的靠自己也是不错的方法 [ready] https://www.douyin.com/video/7515625891511995706
   - 过渡击球点 简单来说就是放在外侧击球 [ready] https://www.douyin.com/video/7563513758061114875
-  - 日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度 [ready] https://www.douyin.com/video/7393550140465777960
 - **反手后场**: `9` videos, `9` ready, `0` needs visual review.
   Keywords: 反手高远, 反手后场, 反手杀球, 反拍
   Representative videos:
   - 反手高远 这个大臂啊，用的越精炼越好，越多越完蛋 [ready] https://www.douyin.com/video/7535400692573211962
   - 反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果 [ready] https://www.douyin.com/video/7550305145877155131
   - 反手高远球 提供一个训练方法，方法不唯一 [ready] https://www.douyin.com/video/7541623926234811705
-- **后场综合待细分**: `3` videos, `3` ready, `0` needs visual review.
+- **后场综合待细分**: `5` videos, `5` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
+  - 保姆级反手发力课！刘辉教练教你为什么捏两窄边更高级？陈雨菲经典名场面再现 反手过度斜线 今日份一亿 [ready] https://www.bilibili.com/video/BV16G411y7Rs/
   - 做两期前后场一致性的视频，你们知道用的都是那种技术嘛？后面有入门讲解，教学后期出，或者直播的时候讲吧，东西太多了，下期网前 [ready] https://www.douyin.com/video/7054395778814561575
-  - 被人教学鞭打发力 受益匪浅 [ready] https://www.douyin.com/video/7418417650264558848
-  - 被动肯定要发力，但是要把力量使用在挥拍的速度上，而不是动作的幅度 [ready] https://www.douyin.com/video/7153445193713290511
+  - 羽毛球反手怎么打？保姆级教学来啦！刘辉教练教你羽毛球反手被动球如何处理！ [ready] https://www.bilibili.com/video/BV1TT411r7Ft/
 
 ### 网前技术
 
@@ -146,14 +146,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 启动、回动、不同步型、重心与场区移动。
 
-- Matched videos: `40`
+- Matched videos: `41`
 
-- **启动与预动**: `13` videos, `13` ready, `0` needs visual review.
+- **启动与预动**: `14` videos, `14` ready, `0` needs visual review.
   Keywords: 启动, 预动, 起动, 第一步
   Representative videos:
+  - 【高阶】启动总是反应不过来往哪蹬地？刘辉教练教你如何判断启动方向 教学演练球路 不看又错过一个亿 [ready] https://www.bilibili.com/video/BV12N411v7qo/
   - 分解步法种类繁多，这是练启动有代表性的，一轮一口气做完，做3组。我肯定是没做到10秒钟，要不视频太长😓 [ready] https://www.douyin.com/video/7056244399390412064
   - 被动也可以用这样的启动方式连接后交叉步 [ready] https://www.douyin.com/video/7309303794733485327
-  - 各位想在天上飞，得先学会交叉步贴地飞哦😂 [ready] https://www.douyin.com/video/7083684012513840424
 - **回动与下一拍**: `17` videos, `17` ready, `0` needs visual review.
   Keywords: 回动, 回位, 还原, 下一拍, 衔接
   Representative videos:
@@ -188,7 +188,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `129`
+- Matched videos: `133`
 
 - **放松、传导与爆发**: `12` videos, `12` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -196,25 +196,25 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 一定要3集看完再去练啊😂霸王杀就是尽可能的让动作最高效，爆发力最大化，出手快动作小，易衔接，重心摇摆小等特点，注意从引拍到击球为旋转发力，击球到动作结束为旋转卸力 [ready] https://www.douyin.com/video/7067722128413543680
   - 腰腹的使用是小而快的爆发力，不要转的太狠太大 [ready] https://www.douyin.com/video/7084422988291935523
   - 放松发力 真挑出来的底线球，不放松做力传导杀是不行的，现在没人愿意学这些了 [ready] https://www.douyin.com/video/7552759261840952636
-- **腰腹、核心与转体**: `20` videos, `20` ready, `0` needs visual review.
+- **腰腹、核心与转体**: `21` videos, `21` ready, `0` needs visual review.
   Keywords: 腰腹, 核心, 转体, 转髋, 身体旋转
   Representative videos:
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready] https://www.douyin.com/video/7494729488699559225
   - 爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调 [ready] https://www.douyin.com/video/7492357671853526329
   - 学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率 [ready] https://www.douyin.com/video/7057722299855801641
-- **小臂旋转与手腕**: `46` videos, `46` ready, `0` needs visual review.
+- **小臂旋转与手腕**: `47` videos, `47` ready, `0` needs visual review.
   Keywords: 内旋, 外旋, 小臂旋转, 手腕
   Representative videos:
   - 00:00 / 00:47 后场发力下集，由下到上一步一步带动全身协调发力，发力为外旋，不会伤手腕，伤手腕说明没外旋 [ready] https://www.douyin.com/video/7052600326116887812
   - 发力细节 每个人的情况不一样，我告诉抡大臂的人要用小臂，告诉内旋挥不正的人压手腕，不过他 但凡能做对一点，就总让我想起一位故人 [ready] https://www.douyin.com/video/7570301879545426171
   - 双打防守进阶 外旋是大臂带动小臂的必然动作，用手指发力也可以，但是非常考验力量 [ready] https://www.douyin.com/video/7414339897990843663
-- **击球空间与发力点**: `26` videos, `26` ready, `0` needs visual review.
+- **击球空间与发力点**: `28` videos, `28` ready, `0` needs visual review.
   Keywords: 贴球, 发力空间, 击球点, 高点
   Representative videos:
   - 注意击球点要在起跳的高点击，而不是向上的过程中，45度起跳是更容易的起跳杀球，视频中的侧身跳杀对身体要求更多，腿有伤，大家忽略高度😂 [ready] https://www.douyin.com/video/7055491154288102667
   - 压球新讲 就算追求贴球发力，也得是建立在能把动作做完的基础上贴，怕打不到球也会本能的把球拍接近球而失去发力空间，这都是不对的 [ready] https://www.douyin.com/video/7440406891664133428
   - 动作，击球点，握拍，步法，对于反手滑板这种难度高的动作都不是最重要的，必会的决心才是最重要的 [ready] https://www.douyin.com/video/7214304020775652620
-- **挥拍路径**: `42` videos, `42` ready, `0` needs visual review.
+- **挥拍路径**: `44` videos, `44` ready, `0` needs visual review.
   Keywords: 挥拍路径, 基础挥拍, 随挥, 随摆, 半程, 全程, 大臂
   Representative videos:
   - 不用管身高，网带能卡住大臂就行在哪卡都可以，用网带辅助不依赖大臂挥下去 [ready] https://www.douyin.com/video/7322291358931127592
@@ -231,7 +231,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 正反手握拍、握拍转换、手指发力和拍面控制。
 
-- Matched videos: `30`
+- Matched videos: `33`
 
 - **正手握拍**: `8` videos, `8` ready, `0` needs visual review.
   Keywords: 正手握拍, 半拳式, 虎口
@@ -239,15 +239,17 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 半拳式握拍是发力必备的握拍，没有半拳式，基本出现不了鞭甩，因为大拇指会卡住 [ready] https://www.douyin.com/video/7086276287681137961
   - 握拍从准备握拍，向右旋转直至虎口对着正拍面，或接近正拍面 [ready] https://www.douyin.com/video/7146762792438074665
   - 别在说我不发初级教学啦，方法简单高效，刚好虎口对的拍框内侧，快发给你的伙伴们看吧 [ready] https://www.douyin.com/video/7211705676840602918
-- **反手握拍**: `0` videos, `0` ready, `0` needs visual review.
+- **反手握拍**: `1` videos, `1` ready, `0` needs visual review.
   Keywords: 反手握拍, 拇指握拍
-- **握拍转换与微调**: `5` videos, `5` ready, `0` needs visual review.
+  Representative videos:
+  - 【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿 [ready] https://www.bilibili.com/video/BV1tw411U7PV/
+- **握拍转换与微调**: `6` videos, `6` ready, `0` needs visual review.
   Keywords: 握拍转换, 变拍, 握拍微调, 灵活握拍
   Representative videos:
   - 握拍微调 抽挡反手为主，尽量不做正反手转换 [ready] https://www.douyin.com/video/7447084061371272507
   - 跳出束缚，灵活握拍 [ready] https://www.douyin.com/video/7150847019320429839
-  - 反手负角度勾球，拇指食指捏住球拍两侧窄面，未来3期视频讲变拍 [ready] https://www.douyin.com/video/7052912740955999499
-- **拍面控制**: `14` videos, `14` ready, `0` needs visual review.
+  - 什么是反手万能握拍？刘辉教练教你反手各种回球握拍和超厉害的快速变拍技巧 [ready] https://www.bilibili.com/video/BV1aw411179M/
+- **拍面控制**: `15` videos, `15` ready, `0` needs visual review.
   Keywords: 拍面, 拍型, 拍面角度
   Representative videos:
   - 握拍从准备握拍，向右旋转直至虎口对着正拍面，或接近正拍面 [ready] https://www.douyin.com/video/7146762792438074665

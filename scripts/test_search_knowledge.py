@@ -1041,6 +1041,7 @@ class SearchKnowledgeTests(unittest.TestCase):
                 "7060717442825309480",
                 "7344186576013905187",
                 "7511934047901846841",
+                "bilibili:BV1tw411U7PV",
             },
         )
         manifest = {
