@@ -211,13 +211,19 @@ class BilibiliPipelineTests(unittest.TestCase):
             root = Path(directory)
             broken = root / "BV16G411y7Rs.m4a"
             broken.write_bytes(b"x" * 8192)
-            (root / "BV16G411y7Rs.m4a.part").write_bytes(b"x" * 8192)
+            partial = root / "BV16G411y7Rs.m4a.part"
+            partial.write_bytes(b"x" * 8192)
             with (
                 mock.patch.object(processor, "RAW_ROOT", root),
                 mock.patch.object(
                     processor,
                     "validate_media",
                     side_effect=RuntimeError("broken"),
+                ),
+                mock.patch.object(
+                    processor,
+                    "inspect_media_content",
+                    side_effect=RuntimeError("still broken"),
                 ),
             ):
                 media, validation = processor.completed_media(
@@ -226,6 +232,7 @@ class BilibiliPipelineTests(unittest.TestCase):
             self.assertIsNone(media)
             self.assertIsNone(validation)
             self.assertFalse(broken.exists())
+            self.assertTrue(partial.exists())
             self.assertTrue(any((root / "quarantine").iterdir()))
 
     def test_webm_is_transcribable(self):
