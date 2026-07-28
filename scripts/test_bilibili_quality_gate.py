@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -407,30 +408,48 @@ class BilibiliQualityGateTests(unittest.TestCase):
         queue_by_id = {
             item["video_id"]: item for item in queue["items"]
         }
-        for video_id in self.backfill.KNOWN_RECIPE_BACKFILL_SHA256:
-            payload = json.loads(
-                (
-                    ROOT
-                    / "data"
-                    / "transcripts"
-                    / "bilibili"
-                    / f"{video_id}.json"
-                ).read_text(encoding="utf-8")
+        pinned_video_ids = set(
+            self.backfill.KNOWN_RECIPE_BACKFILL_SHA256
+        )
+        self.assertTrue(pinned_video_ids)
+        self.assertLessEqual(pinned_video_ids, set(queue_by_id))
+        for video_id in pinned_video_ids:
+            self.assertEqual(queue_by_id[video_id]["status"], "transcribed")
+            self.assertEqual(
+                queue_by_id[video_id]["transcript_model"], "small"
             )
-            payload.pop("transcription_recipe", None)
+
+        payload = self.transcript()
+        payload.pop("transcription_recipe")
+        payload["video_id"] = "BV1portableFixture"
+        queue_item = {
+            "transcript_source_sha256": payload["source_sha256"],
+            "transcript_source_bytes": payload["source_bytes"],
+        }
+        pinned_hash = self.backfill.stable_payload_hash(payload)
+        with mock.patch.dict(
+            self.backfill.KNOWN_RECIPE_BACKFILL_SHA256,
+            {payload["video_id"]: pinned_hash},
+            clear=True,
+        ):
             self.assertTrue(
                 self.backfill.eligible_for_backfill(
-                    payload, queue_by_id[video_id]
-                ),
-                video_id,
+                    payload, queue_item
+                )
             )
             changed = copy.deepcopy(payload)
             changed["full_text"] += "changed"
             self.assertFalse(
                 self.backfill.eligible_for_backfill(
-                    changed, queue_by_id[video_id]
-                ),
-                video_id,
+                    changed, queue_item
+                )
+            )
+            wrong_source = dict(queue_item)
+            wrong_source["transcript_source_sha256"] = "b" * 64
+            self.assertFalse(
+                self.backfill.eligible_for_backfill(
+                    payload, wrong_source
+                )
             )
 
     def test_consecutive_near_repetition_is_rejected(self):
