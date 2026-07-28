@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+from contextlib import contextmanager
 import importlib.util
 import json
 import math
+import os
 from pathlib import Path
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +18,15 @@ SEARCH_PATH = (
     / "scripts"
     / "search_knowledge.py"
 )
+REGRESSION_SOURCE_TYPES = ("douyin_video",)
+
+
+def ensure_deterministic_hash_seed():
+    if os.environ.get("PYTHONHASHSEED") == "0":
+        return
+    environment = dict(os.environ)
+    environment["PYTHONHASHSEED"] = "0"
+    os.execvpe(sys.executable, [sys.executable, *sys.argv], environment)
 
 
 def load_search_module():
@@ -53,9 +65,122 @@ def exhaustive_candidate_ids(search_module, case, primary_payload, top_k):
     return candidate_ids
 
 
-def evaluate(top_k, cases_path=CASES_PATH):
-    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
-    search_module = load_search_module()
+def project_retrieval_index(retrieval_index, allowed_video_ids):
+    """Project an inverted index without rebuilding text-derived features."""
+
+    allowed_video_ids = set(allowed_video_ids)
+    old_records = retrieval_index["videos"]
+    retained_old_indexes = [
+        index
+        for index, record in enumerate(old_records)
+        if record["video_id"] in allowed_video_ids
+    ]
+    old_to_new = {
+        old_index: new_index
+        for new_index, old_index in enumerate(retained_old_indexes)
+    }
+    records = [old_records[index] for index in retained_old_indexes]
+
+    vocabulary = []
+    ngram_postings = []
+    for gram, postings in zip(
+        retrieval_index["ngram_vocabulary"],
+        retrieval_index["ngram_postings"],
+    ):
+        projected = [
+            [old_to_new[old_index], channel_mask]
+            for old_index, channel_mask in postings
+            if old_index in old_to_new
+        ]
+        if projected:
+            vocabulary.append(gram)
+            ngram_postings.append(projected)
+
+    def project_named_postings(postings):
+        return {
+            name: [
+                old_to_new[old_index]
+                for old_index in indexes
+                if old_index in old_to_new
+            ]
+            for name, indexes in postings.items()
+            if any(old_index in old_to_new for old_index in indexes)
+        }
+
+    term_postings = project_named_postings(
+        retrieval_index.get("term_postings", {})
+    )
+    topic_postings = project_named_postings(
+        retrieval_index.get("topic_postings", {})
+    )
+    field_length_totals = {
+        field: sum(record["field_lengths"].get(field, 0) for record in records)
+        for field in retrieval_index["evidence_fields"]
+    }
+    projected = dict(retrieval_index)
+    projected.update(
+        {
+            "indexable_video_count": len(records),
+            "term_document_frequency": {
+                term: len(indexes) for term, indexes in term_postings.items()
+            },
+            "average_field_lengths": {
+                field: round(total / max(1, len(records)), 4)
+                for field, total in field_length_totals.items()
+            },
+            "ngram_vocabulary": vocabulary,
+            "ngram_postings": ngram_postings,
+            "term_postings": term_postings,
+            "topic_postings": topic_postings,
+            "topics": [
+                {
+                    **topic,
+                    "video_count": len(
+                        topic_postings.get(topic["topic_id"], [])
+                    ),
+                }
+                for topic in retrieval_index["topics"]
+            ],
+            "videos": records,
+        }
+    )
+    return projected
+
+
+@contextmanager
+def source_scoped_search(search_module, source_types):
+    original_resources = search_module.load_resources()
+    knowledge, retrieval_index, rules = original_resources
+    source_types = set(source_types)
+    videos = [
+        video
+        for video in knowledge["videos"]
+        if video.get("source_type") in source_types
+    ]
+    video_ids = {video["video_id"] for video in videos}
+    scoped_knowledge = {**knowledge, "videos": videos}
+    scoped_index = project_retrieval_index(retrieval_index, video_ids)
+    search_module._RESOURCE_CACHE = (scoped_knowledge, scoped_index, rules)
+    search_module._PREPARED_RETRIEVAL_CACHE.clear()
+    search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.clear()
+    try:
+        yield video_ids
+    finally:
+        search_module._RESOURCE_CACHE = original_resources
+        search_module._PREPARED_RETRIEVAL_CACHE.clear()
+        search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.clear()
+
+
+def evaluate_view(
+    top_k,
+    cases,
+    search_module,
+    judged_video_ids=None,
+    unjudged_new_source_ids=None,
+):
+    filter_judgments = judged_video_ids is not None
+    judged_video_ids = set(judged_video_ids or ())
+    unjudged_new_source_ids = set(unjudged_new_source_ids or ())
     expected_total = 0
     found_total = 0
     primary_top_k = 0
@@ -68,6 +193,10 @@ def evaluate(top_k, cases_path=CASES_PATH):
     hard_negative_total = 0
     hard_negative_top_k_violations = 0
     hard_negative_review_violations = 0
+    unjudged_new_source_top_k_total = 0
+    unjudged_new_source_review_total = 0
+    max_unjudged_new_source_top_k = 0
+    max_unjudged_new_source_review = 0
     case_results = []
     for case in cases:
         payload = search_module.search(
@@ -83,9 +212,21 @@ def evaluate(top_k, cases_path=CASES_PATH):
         )
         top_ids = [item["video_id"] for item in payload["results"]]
         gold = case["gold"]
-        expected = gold["required_video_ids"]
-        primary = gold["primary_video_ids"]
-        irrelevant = set(gold["irrelevant_video_ids"])
+        expected = [
+            video_id
+            for video_id in gold["required_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        ]
+        primary = [
+            video_id
+            for video_id in gold["primary_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        ]
+        irrelevant = {
+            video_id
+            for video_id in gold["irrelevant_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        }
         found = [video_id for video_id in expected if video_id in recall_candidate_ids]
         missing = [video_id for video_id in expected if video_id not in recall_candidate_ids]
         primary_ranks = [
@@ -132,9 +273,19 @@ def evaluate(top_k, cases_path=CASES_PATH):
         }
         negative_top = irrelevant & set(top_ids)
         negative_review = irrelevant & review_ids
+        unjudged_new_top = unjudged_new_source_ids & set(top_ids)
+        unjudged_new_review = unjudged_new_source_ids & review_ids
         hard_negative_total += len(irrelevant)
         hard_negative_top_k_violations += len(negative_top)
         hard_negative_review_violations += len(negative_review)
+        unjudged_new_source_top_k_total += len(unjudged_new_top)
+        unjudged_new_source_review_total += len(unjudged_new_review)
+        max_unjudged_new_source_top_k = max(
+            max_unjudged_new_source_top_k, len(unjudged_new_top)
+        )
+        max_unjudged_new_source_review = max(
+            max_unjudged_new_source_review, len(unjudged_new_review)
+        )
         case_results.append(
             {
                 "case_id": case["case_id"],
@@ -147,6 +298,12 @@ def evaluate(top_k, cases_path=CASES_PATH):
                 "review_candidate_count": review_candidate_count,
                 "irrelevant_top_k_video_ids": sorted(negative_top),
                 "irrelevant_review_video_ids": sorted(negative_review),
+                "unjudged_new_source_top_k_video_ids": sorted(
+                    unjudged_new_top
+                ),
+                "unjudged_new_source_review_video_ids": sorted(
+                    unjudged_new_review
+                ),
             }
         )
     return {
@@ -164,12 +321,95 @@ def evaluate(top_k, cases_path=CASES_PATH):
         "hard_negative_count": hard_negative_total,
         "hard_negative_top_k_violations": hard_negative_top_k_violations,
         "hard_negative_review_violations": hard_negative_review_violations,
+        "unjudged_new_source_exposure": {
+            "candidate_videos": len(unjudged_new_source_ids),
+            "top_k_count": unjudged_new_source_top_k_total,
+            "top_k_rate": (
+                unjudged_new_source_top_k_total
+                / max(1, len(cases) * top_k)
+            ),
+            "max_top_k_per_case": max_unjudged_new_source_top_k,
+            "review_count": unjudged_new_source_review_total,
+            "review_rate": (
+                unjudged_new_source_review_total
+                / max(1, review_candidate_total)
+            ),
+            "max_review_per_case": max_unjudged_new_source_review,
+        },
         "top_k": top_k,
         "case_results": case_results,
     }
 
 
+def evaluate(top_k, cases_path=CASES_PATH):
+    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
+    search_module = load_search_module()
+    knowledge, _, _ = search_module.load_resources()
+    all_judged_ids = {
+        video_id
+        for case in cases
+        for field in (
+            "required_video_ids",
+            "primary_video_ids",
+            "irrelevant_video_ids",
+        )
+        for video_id in case["gold"][field]
+    }
+    new_source_ids = {
+        video["video_id"]
+        for video in knowledge["videos"]
+        if video.get("source_type") not in REGRESSION_SOURCE_TYPES
+        and video.get("processing_status") == "ready"
+    }
+    production = evaluate_view(
+        top_k,
+        cases,
+        search_module,
+        unjudged_new_source_ids=new_source_ids - all_judged_ids,
+    )
+    with source_scoped_search(
+        search_module, REGRESSION_SOURCE_TYPES
+    ) as regression_video_ids:
+        regression = evaluate_view(
+            top_k,
+            cases,
+            search_module,
+            judged_video_ids=regression_video_ids,
+        )
+
+    production["evaluation_views"] = {
+        "production": {
+            "source_scope": "all_admitted_sources",
+            "ranking_metrics": "informational_when_gold_judgments_are_incomplete",
+        },
+        "stable_regression": {
+            "source_types": list(REGRESSION_SOURCE_TYPES),
+            "purpose": "apples_to_apples_retrieval_regression",
+        },
+    }
+    production["stable_regression"] = {
+        key: regression[key]
+        for key in (
+            "cases",
+            "expected_videos",
+            "found_videos",
+            "candidate_recall",
+            "primary_top_k",
+            "mean_reciprocal_rank",
+            "mean_ndcg_at_k",
+            "mean_known_precision_at_k",
+            "average_review_candidate_count",
+            "hard_negative_count",
+            "hard_negative_top_k_violations",
+            "hard_negative_review_violations",
+            "top_k",
+        )
+    }
+    return production
+
+
 def main():
+    ensure_deterministic_hash_seed()
     parser = argparse.ArgumentParser(description="Evaluate high-recall Skill retrieval.")
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--top-k", type=int, default=12)

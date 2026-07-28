@@ -45,6 +45,7 @@ The evaluation surface covers:
 
 - Query interpretation, action scope, actor relationships, and clarification continuity.
 - Candidate recall, finalist selection, primary-source coverage, and hard-negative exclusion.
+- Multi-source growth uses dual-track retrieval evaluation: the all-source production rank is observed as-is, while a stable-source view remains comparable with the released baseline; unjudged new-source exposure has a separate anti-flood budget.
 - Claim-level evidence, confidence boundaries, answer completeness, and citation consistency.
 - Metamorphic language robustness, feedback-transfer privacy, historical blind tests, and current-runtime generation review.
 - Latency, peak memory, and answer-packet size budgets.

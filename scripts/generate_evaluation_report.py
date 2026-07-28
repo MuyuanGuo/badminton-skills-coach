@@ -127,6 +127,72 @@ def fingerprint_paths(root=ROOT):
     }
 
 
+def summarize_generation_review(live_payload, root=ROOT):
+    """Report review freshness without weakening the strict release validator."""
+
+    root = Path(root)
+    snapshot = validate_live_generation_results.inspect_review_snapshot(
+        live_payload, root=root
+    )
+    current = snapshot["current_runtime_match"]
+    validated = (
+        validate_live_generation_results.validate_results(
+            live_payload,
+            root=root,
+            rerun_runtime=True,
+        )
+        if current
+        else snapshot
+    )
+    live_scores = [
+        score
+        for item in live_payload["cases"]
+        for score in item["manual_scores"].values()
+    ]
+    return {
+        "measurement_type": (
+            "current_answer_runtime_generation_review"
+            if current
+            else "historical_generation_review"
+        ),
+        "review_status": "current_reviewed" if current else "historical_stale",
+        "snapshot_integrity_status": snapshot["status"],
+        "current_runtime_match": current,
+        "current_runtime_generation_claimed": current,
+        "release_eligible": current,
+        "runtime_fingerprint": snapshot[
+            "current_answer_runtime_fingerprint"
+        ],
+        "runtime_fingerprint_scope": "answer_semantics",
+        "reviewed_answer_runtime_fingerprint": snapshot[
+            "reviewed_answer_runtime_fingerprint"
+        ],
+        "current_answer_runtime_fingerprint": snapshot[
+            "current_answer_runtime_fingerprint"
+        ],
+        "reviewed_artifact_runtime_fingerprint": snapshot[
+            "reviewed_artifact_runtime_fingerprint"
+        ],
+        "current_artifact_runtime_fingerprint": snapshot[
+            "current_artifact_runtime_fingerprint"
+        ],
+        "artifact_runtime_match": snapshot["artifact_runtime_match"],
+        "critical_cases": snapshot["critical_cases"],
+        "independently_reviewed": snapshot["independently_reviewed"],
+        "current_runtime_audits_rerun": validated[
+            "current_runtime_audits_rerun"
+        ],
+        "passed": len(live_payload["cases"]),
+        "minimum_manual_score": min(live_scores),
+        "failed": [],
+        "generator": {
+            key: live_payload["generator"][key]
+            for key in ("provider", "model", "model_version")
+        },
+        "reviewer": live_payload["review"]["reviewer"],
+    }
+
+
 def collect_evaluations(root=ROOT):
     root = Path(root)
     registry = evaluate_answer_quality.load_json(
@@ -190,16 +256,7 @@ def collect_evaluations(root=ROOT):
     live_payload = validate_live_generation_results.load_json(
         root / "data/evaluation/live_generation_results.json"
     )
-    live_result = validate_live_generation_results.validate_results(
-        live_payload,
-        root=root,
-        rerun_runtime=True,
-    )
-    live_scores = [
-        score
-        for item in live_payload["cases"]
-        for score in item["manual_scores"].values()
-    ]
+    live_result = summarize_generation_review(live_payload, root=root)
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
@@ -318,6 +375,9 @@ def collect_evaluations(root=ROOT):
                 "hard_negative_count",
                 "hard_negative_top_k_violations",
                 "hard_negative_review_violations",
+                "unjudged_new_source_exposure",
+                "evaluation_views",
+                "stable_regression",
                 "top_k",
             )
         },
@@ -363,30 +423,7 @@ def collect_evaluations(root=ROOT):
                 "failed",
             )
         },
-        "live_generation": {
-            "measurement_type": "current_answer_runtime_generation_review",
-            "current_runtime_match": True,
-            "current_runtime_generation_claimed": True,
-            "runtime_fingerprint": live_result["runtime_fingerprint"],
-            "runtime_fingerprint_scope": "answer_semantics",
-            "reviewed_artifact_runtime_fingerprint": (
-                live_result["reviewed_artifact_runtime_fingerprint"]
-            ),
-            "current_artifact_runtime_fingerprint": (
-                live_result["current_artifact_runtime_fingerprint"]
-            ),
-            "artifact_runtime_match": live_result["artifact_runtime_match"],
-            "critical_cases": live_result["critical_cases"],
-            "independently_reviewed": live_result["independently_reviewed"],
-            "passed": len(live_payload["cases"]),
-            "minimum_manual_score": min(live_scores),
-            "failed": [],
-            "generator": {
-                key: live_payload["generator"][key]
-                for key in ("provider", "model", "model_version")
-            },
-            "reviewer": live_payload["review"]["reviewer"],
-        },
+        "live_generation": live_result,
     }
 
 
@@ -504,7 +541,13 @@ def render_html(report):
         "metamorphic_robustness": "Metamorphic robustness",
         "video_comprehension": "Video comprehension",
         "forward_tests": "Historical generation reviews",
-        "live_generation": "Current-runtime generations",
+        "live_generation": (
+            "Current-runtime generations"
+            if evaluations["live_generation"].get(
+                "current_runtime_generation_claimed"
+            )
+            else "Historical generation review"
+        ),
     }
     featured = {
         "answer_policy": ("accuracy", "Mode accuracy"),
@@ -515,7 +558,10 @@ def render_html(report):
         "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
         "answer_audit": ("violation_detection_rate", "Violation detection"),
         "feedback_lifecycle": ("contract_accuracy", "Feedback contracts"),
-        "retrieval": ("mean_ndcg_at_k", "nDCG@12"),
+        "retrieval": (
+            "stable_regression.mean_ndcg_at_k",
+            "Stable-view nDCG@12",
+        ),
         "metamorphic_robustness": ("pass_rate", "Harmless variants passed"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
@@ -527,11 +573,24 @@ def render_html(report):
         comparisons_by_suite.setdefault(item["metric"].split(".")[0], []).append(item)
     for suite, metrics in evaluations.items():
         key, label = featured[suite]
-        status = all(item["passed"] for item in comparisons_by_suite.get(suite, []))
+        featured_value = metric_value(metrics, key)
+        historical_review = (
+            suite == "live_generation"
+            and not metrics.get("current_runtime_generation_claimed", True)
+        )
+        status = all(
+            item["passed"] for item in comparisons_by_suite.get(suite, [])
+        )
+        status_class = (
+            "review" if historical_review else "pass" if status else "fail"
+        )
+        status_text = (
+            "REVIEW" if historical_review else "PASS" if status else "FAIL"
+        )
         rows.append(
             f'<tr><th scope="row">{suite_names[suite]}</th>'
-            f'<td>{html.escape(label)}</td><td class="value">{html.escape(display_value(metrics[key]))}</td>'
-            f'<td><span class="status {"pass" if status else "fail"}">{"PASS" if status else "FAIL"}</span></td></tr>'
+            f'<td>{html.escape(label)}</td><td class="value">{html.escape(display_value(featured_value))}</td>'
+            f'<td><span class="status {status_class}">{status_text}</span></td></tr>'
         )
     status = report["summary"]["status"]
     return f'''<!doctype html>
@@ -547,7 +606,7 @@ def render_html(report):
     header {{ border-bottom:1px solid var(--line); background:#0d1311; }} nav {{ min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:20px; }} nav a {{ text-decoration:none; font-weight:750; }}
     main {{ padding:64px 0 80px; }} .eyebrow {{ color:var(--mint); font:800 12px/1.2 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.12em; }} h1 {{ max-width:780px; margin:14px 0 18px; font-size:clamp(38px,7vw,72px); line-height:1.02; letter-spacing:0; }} .lede {{ max-width:760px; color:var(--muted); font-size:18px; }}
     .summary {{ display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 62px; border-block:1px solid var(--line); }} .summary div {{ padding:22px 18px; border-right:1px solid var(--line); }} .summary div:last-child {{ border:0; }} .summary strong,.summary span {{ display:block; }} .summary strong {{ font-size:28px; }} .summary span {{ color:var(--muted); font-size:13px; }}
-    h2 {{ margin:54px 0 18px; font-size:28px; letter-spacing:0; }} .table-wrap {{ overflow-x:auto; border:1px solid var(--line); border-radius:8px; }} table {{ width:100%; border-collapse:collapse; background:var(--panel); }} th,td {{ padding:17px 18px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }} tr:last-child th,tr:last-child td {{ border-bottom:0; }} td.value {{ font:750 15px/1 ui-monospace,monospace; }} .status {{ display:inline-block; min-width:54px; padding:5px 8px; border-radius:4px; text-align:center; font:800 11px/1 ui-monospace,monospace; }} .pass {{ color:#07110e; background:var(--mint); }} .fail {{ color:#1a1400; background:var(--yellow); }}
+    h2 {{ margin:54px 0 18px; font-size:28px; letter-spacing:0; }} .table-wrap {{ overflow-x:auto; border:1px solid var(--line); border-radius:8px; }} table {{ width:100%; border-collapse:collapse; background:var(--panel); }} th,td {{ padding:17px 18px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }} tr:last-child th,tr:last-child td {{ border-bottom:0; }} td.value {{ font:750 15px/1 ui-monospace,monospace; }} .status {{ display:inline-block; min-width:54px; padding:5px 8px; border-radius:4px; text-align:center; font:800 11px/1 ui-monospace,monospace; }} .pass {{ color:#07110e; background:var(--mint); }} .fail,.review {{ color:#1a1400; background:var(--yellow); }}
     .provenance {{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }} .provenance div {{ padding:18px; border-left:3px solid var(--mint); background:var(--panel); }} code {{ color:#d8e3df; overflow-wrap:anywhere; }} footer {{ padding:26px 0; color:var(--muted); border-top:1px solid var(--line); font-size:13px; }}
     @media(max-width:700px) {{ main {{ padding-top:42px; }} .summary {{ grid-template-columns:1fr 1fr; }} .summary div:nth-child(2) {{ border-right:0; }} .summary div:nth-child(-n+2) {{ border-bottom:1px solid var(--line); }} .provenance {{ grid-template-columns:1fr; }} .table-wrap {{ overflow:visible; border:0; }} table,tbody,tr,th,td {{ display:block; }} thead {{ display:none; }} tbody tr {{ display:grid; grid-template-columns:1fr auto; gap:8px 16px; margin-bottom:10px; padding:16px; border:1px solid var(--line); border-radius:8px; }} tbody th,tbody td {{ padding:0; border:0; white-space:normal; }} tbody th {{ grid-column:1; grid-row:1; }} tbody td:nth-of-type(1) {{ grid-column:1; grid-row:2; color:var(--muted); }} tbody td:nth-of-type(2) {{ grid-column:2; grid-row:2; }} tbody td:nth-of-type(3) {{ grid-column:2; grid-row:1; }} }}
   </style>
@@ -557,7 +616,7 @@ def render_html(report):
   <main class="shell">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Static snapshots and historical blind generations remain labeled as such; the live-generation suite is bound to the current answer-semantic fingerprint and reruns runtime audits without treating release-only metadata as answer behavior.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

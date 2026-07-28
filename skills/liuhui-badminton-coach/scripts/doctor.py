@@ -48,9 +48,23 @@ REQUIRED_SKILL_FILES = [
     "references/feedback-signals.json",
     "references/topic-map.json",
 ]
+DEPENDENCY_CHECK_TIMEOUT_SECONDS = 30
+MODEL_CHECK_TIMEOUT_SECONDS = 60
 JSON_SKILL_FILES = [
     path for path in REQUIRED_SKILL_FILES if path.endswith(".json")
 ]
+
+
+def run_diagnostic_command(command, *, timeout, **kwargs):
+    try:
+        return subprocess.run(command, timeout=timeout, **kwargs)
+    except subprocess.TimeoutExpired:
+        return subprocess.CompletedProcess(
+            command,
+            124,
+            stdout="",
+            stderr=f"diagnostic timed out after {timeout} seconds",
+        )
 
 
 def check(name, ok, detail, remediation=None, required=True):
@@ -223,7 +237,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
     )
 
     if run_smoke and not missing and not json_errors:
-        completed = subprocess.run(
+        completed = run_diagnostic_command(
             [
                 sys.executable,
                 str(skill_root / "scripts" / "search_knowledge.py"),
@@ -235,6 +249,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         smoke_ok = completed.returncode == 0
         if smoke_ok:
@@ -250,7 +265,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
                 "Run search_knowledge.py directly to inspect the reported error.",
             )
         )
-        context_completed = subprocess.run(
+        context_completed = run_diagnostic_command(
             [
                 sys.executable,
                 str(skill_root / "scripts" / "prepare_answer_context.py"),
@@ -263,6 +278,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         context_ok = context_completed.returncode == 0
         if context_ok:
@@ -335,7 +351,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             ("pyyaml", "yaml"),
             ("yt_dlp", "yt_dlp"),
         ]:
-            completed = subprocess.run(
+            completed = run_diagnostic_command(
                 [
                     str(python_path),
                     "-c",
@@ -347,6 +363,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                 text=True,
                 capture_output=True,
                 check=False,
+                timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
             )
             dependency_results[check_name] = completed.returncode == 0
             checks.append(
@@ -358,7 +375,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                 )
             )
         faster_whisper_ok = dependency_results["faster_whisper"]
-        browser_completed = subprocess.run(
+        browser_completed = run_diagnostic_command(
             [
                 str(python_path),
                 "scripts/download_douyin_browser_batch.py",
@@ -369,6 +386,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         checks.append(
             check(
@@ -383,7 +401,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             )
         )
     if python_path and faster_whisper_ok:
-        model_completed = subprocess.run(
+        model_completed = run_diagnostic_command(
             [
                 str(python_path),
                 "-c",
@@ -397,6 +415,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=MODEL_CHECK_TIMEOUT_SECONDS,
         )
         checks.append(
             check(

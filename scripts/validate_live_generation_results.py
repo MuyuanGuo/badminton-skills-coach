@@ -51,7 +51,9 @@ def answer_digest(answer):
     return hashlib.sha256(answer.encode("utf-8")).hexdigest()
 
 
-def validate_results(payload, root=ROOT, rerun_runtime=True):
+def inspect_review_snapshot(payload, root=ROOT):
+    """Validate immutable review evidence without claiming runtime freshness."""
+
     root = Path(root)
     expected_top_level = {
         "schema_version",
@@ -68,10 +70,6 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         )
     current_artifact_fingerprint = runtime_fingerprint(root)
     current_answer_fingerprint = answer_runtime_fingerprint(root)
-    if payload["answer_runtime_fingerprint"] != current_answer_fingerprint:
-        raise LiveGenerationValidationError(
-            "Live-generation results are stale for the current answer runtime"
-        )
     if not DATE_PATTERN.fullmatch(payload.get("generated_at", "")):
         raise LiveGenerationValidationError("generated_at must use YYYY-MM-DD")
     generator = payload.get("generator")
@@ -118,8 +116,6 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
             "Live-generation cases must exactly cover the critical release set"
         )
 
-    context_module = load_module("live_generation_context", root / CONTEXT_SCRIPT.relative_to(ROOT))
-    audit_module = load_module("live_generation_audit", root / AUDIT_SCRIPT.relative_to(ROOT))
     failures = []
     for item in cases:
         if set(item) != {
@@ -155,22 +151,19 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
             failures.append(f"{case_id}:manual_quality_below_threshold")
         if item.get("verdict") != "pass":
             failures.append(f"{case_id}:verdict_not_pass")
-        if rerun_runtime and expected:
-            context = context_module.prepare_answer_context(
-                expected["query"], local_personalization=False
-            )
-            packet = context_module.build_answer_packet(context)
-            context_module.validate_answer_packet(packet, context)
-            audit = audit_module.audit_answer(expected["query"], context, answer)
-            if not audit["passed"]:
-                failures.append(f"{case_id}:current_runtime_audit_failed")
     if failures:
         raise LiveGenerationValidationError(
             "Live-generation release gate failed: " + ", ".join(failures)
         )
     return {
-        "status": "pass",
-        "runtime_fingerprint": current_answer_fingerprint,
+        "status": "valid_review_snapshot",
+        "current_runtime_match": (
+            payload["answer_runtime_fingerprint"] == current_answer_fingerprint
+        ),
+        "reviewed_answer_runtime_fingerprint": payload[
+            "answer_runtime_fingerprint"
+        ],
+        "current_answer_runtime_fingerprint": current_answer_fingerprint,
         "reviewed_artifact_runtime_fingerprint": payload["runtime_fingerprint"],
         "current_artifact_runtime_fingerprint": current_artifact_fingerprint,
         "artifact_runtime_match": (
@@ -178,6 +171,57 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         ),
         "critical_cases": len(required_ids),
         "independently_reviewed": len(cases),
+        "current_runtime_audits_rerun": False,
+    }
+
+
+def validate_results(payload, root=ROOT, rerun_runtime=True):
+    """Fail closed unless independent review belongs to the current runtime."""
+
+    root = Path(root)
+    snapshot = inspect_review_snapshot(payload, root=root)
+    if not snapshot["current_runtime_match"]:
+        raise LiveGenerationValidationError(
+            "Live-generation results are stale for the current answer runtime"
+        )
+
+    if rerun_runtime:
+        registry = {
+            case["case_id"]: case
+            for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
+        }
+        context_module = load_module(
+            "live_generation_context", root / CONTEXT_SCRIPT.relative_to(ROOT)
+        )
+        audit_module = load_module(
+            "live_generation_audit", root / AUDIT_SCRIPT.relative_to(ROOT)
+        )
+        failures = []
+        for item in payload["cases"]:
+            expected = registry[item["case_id"]]
+            context = context_module.prepare_answer_context(
+                expected["query"], local_personalization=False
+            )
+            packet = context_module.build_answer_packet(context)
+            context_module.validate_answer_packet(packet, context)
+            audit = audit_module.audit_answer(
+                expected["query"], context, item["answer_text"]
+            )
+            if not audit["passed"]:
+                failures.append(
+                    f"{item['case_id']}:current_runtime_audit_failed"
+                )
+        if failures:
+            raise LiveGenerationValidationError(
+                "Live-generation release gate failed: " + ", ".join(failures)
+            )
+
+    return {
+        **snapshot,
+        "status": "pass",
+        "runtime_fingerprint": snapshot["current_answer_runtime_fingerprint"],
+        "current_runtime_match": True,
+        "release_eligible": True,
         "current_runtime_audits_rerun": rerun_runtime,
     }
 

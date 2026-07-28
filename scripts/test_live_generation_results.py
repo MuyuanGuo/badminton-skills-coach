@@ -73,6 +73,7 @@ class LiveGenerationResultTests(unittest.TestCase):
         self.assertEqual(result["status"], "pass")
         self.assertEqual(result["critical_cases"], 3)
         self.assertFalse(result["artifact_runtime_match"])
+        self.assertTrue(result["release_eligible"])
 
     def test_stale_runtime_is_rejected(self):
         payload = self.fixture()
@@ -86,6 +87,27 @@ class LiveGenerationResultTests(unittest.TestCase):
             self.module.LiveGenerationValidationError, "stale"
         ):
             self.module.validate_results(payload, rerun_runtime=False)
+
+    def test_stale_snapshot_integrity_is_preserved_without_current_claim(self):
+        payload = self.fixture()
+        with mock.patch.object(
+            self.module, "runtime_fingerprint", return_value="current-artifact"
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="new-answer-runtime",
+        ):
+            result = self.module.inspect_review_snapshot(payload)
+        self.assertEqual(result["status"], "valid_review_snapshot")
+        self.assertFalse(result["current_runtime_match"])
+        self.assertEqual(
+            result["reviewed_answer_runtime_fingerprint"], "current-answer"
+        )
+        self.assertEqual(
+            result["current_answer_runtime_fingerprint"],
+            "new-answer-runtime",
+        )
+        self.assertFalse(result["current_runtime_audits_rerun"])
 
     def test_same_generator_and_reviewer_is_rejected(self):
         payload = self.fixture()

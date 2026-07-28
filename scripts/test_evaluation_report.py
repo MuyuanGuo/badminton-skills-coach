@@ -121,6 +121,44 @@ class EvaluationReportTests(unittest.TestCase):
         collect.assert_not_called()
         self.assertEqual(report["evaluations"], committed)
 
+    def test_historical_generation_summary_never_runs_current_runtime_audit(self):
+        payload = {
+            "cases": [{"manual_scores": {"quality": 4}}],
+            "generator": {
+                "provider": "test",
+                "model": "test",
+                "model_version": "1",
+            },
+            "review": {"reviewer": "independent"},
+        }
+        snapshot = {
+            "status": "valid_review_snapshot",
+            "current_runtime_match": False,
+            "reviewed_answer_runtime_fingerprint": "reviewed-answer",
+            "current_answer_runtime_fingerprint": "current-answer",
+            "reviewed_artifact_runtime_fingerprint": "reviewed-artifact",
+            "current_artifact_runtime_fingerprint": "current-artifact",
+            "artifact_runtime_match": False,
+            "critical_cases": 1,
+            "independently_reviewed": 1,
+            "current_runtime_audits_rerun": False,
+        }
+        with mock.patch.object(
+            self.module.validate_live_generation_results,
+            "inspect_review_snapshot",
+            return_value=snapshot,
+        ), mock.patch.object(
+            self.module.validate_live_generation_results,
+            "validate_results",
+        ) as strict:
+            summary = self.module.summarize_generation_review(payload)
+        strict.assert_not_called()
+        self.assertEqual(summary["measurement_type"], "historical_generation_review")
+        self.assertEqual(summary["review_status"], "historical_stale")
+        self.assertFalse(summary["current_runtime_generation_claimed"])
+        self.assertFalse(summary["release_eligible"])
+        self.assertFalse(summary["current_runtime_audits_rerun"])
+
     def test_rendered_html_exposes_summary_and_hashes(self):
         report = {
             "development_version": "1.4.0-dev.1",
@@ -151,6 +189,7 @@ class EvaluationReportTests(unittest.TestCase):
                 "feedback_lifecycle": {"contract_accuracy": 1.0},
                 "retrieval": {
                     "mean_ndcg_at_k": 0.86,
+                    "stable_regression": {"mean_ndcg_at_k": 0.86},
                     "hard_negative_top_k_violations": 0,
                     "found_videos": 173,
                     "expected_videos": 173,
@@ -191,6 +230,15 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertIn("57/57", page)
         self.assertEqual(page.count(">PASS<"), 14)
         self.assertIn("tbody td:nth-of-type(3)", page)
+
+    def test_rendered_html_labels_stale_generation_review_as_informational(self):
+        report = self.module.load_json(self.module.REPORT_PATH)
+        report["evaluations"]["live_generation"][
+            "current_runtime_generation_claimed"
+        ] = False
+        page = self.module.render_html(report).decode("utf-8")
+        self.assertIn("Historical generation review", page)
+        self.assertIn(">REVIEW<", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:
