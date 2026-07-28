@@ -1,7 +1,7 @@
 {
   "version": 1,
   "platform": "bilibili",
-  "updated_at": "2026-07-28T07:37:31.910998+00:00",
+  "updated_at": "2026-07-28T20:39:07.074215+00:00",
   "counts": {
     "excluded_creator_original_or_unknown": 494,
     "candidate_liuhui_teaching": 99,
@@ -2179,7 +2179,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1
@@ -2268,7 +2268,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1,
@@ -2896,7 +2896,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1
@@ -3231,7 +3231,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1
@@ -3922,7 +3922,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1
@@ -10486,7 +10486,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -10765,7 +10765,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition": 1
@@ -11512,7 +11512,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -11936,7 +11936,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -12689,7 +12689,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -14961,7 +14961,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -15195,7 +15195,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -15880,7 +15880,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -16359,7 +16359,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -17175,7 +17175,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -18418,7 +18418,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -18890,7 +18890,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -19657,7 +19657,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -20185,7 +20185,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -20518,7 +20518,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -21241,7 +21241,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -22744,7 +22744,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -22824,7 +22824,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -24882,7 +24882,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -24967,7 +24967,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -26227,7 +26227,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -28359,7 +28359,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {
           "acquisition_failed": 1,
@@ -28545,7 +28545,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -28777,7 +28777,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -29253,7 +29253,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -29383,7 +29383,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -29756,7 +29756,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -30181,7 +30181,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -31321,7 +31321,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -31749,7 +31749,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -33227,7 +33227,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -33853,7 +33853,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -34382,7 +34382,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -36753,7 +36753,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -36837,7 +36837,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -37946,7 +37946,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -39283,7 +39283,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -39367,7 +39367,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -39698,7 +39698,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -40206,7 +40206,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,
@@ -40537,7 +40537,7 @@
       "classification_rules_version": 1,
       "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
       "processing_state": {
-        "stage": "downloaded",
+        "stage": "transcribed",
         "terminal": false,
         "attempts_by_stage": {},
         "next_retry_at": null,

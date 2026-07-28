@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -157,6 +158,119 @@ class BilibiliPipelineTests(unittest.TestCase):
             "刘辉教练反手万能握拍技巧", postings, titles, threshold=0.3
         )
         self.assertEqual(matches[0]["video_id"], "1")
+
+    def test_identical_snapshot_replay_preserves_updated_at(self):
+        old = {
+            "version": 1,
+            "updated_at": "2026-07-28T10:00:00+00:00",
+            "videos": [{"video_id": "bilibili:BV16G411y7Rs"}],
+        }
+        replay = {
+            **old,
+            "updated_at": "2026-07-28T11:00:00+00:00",
+        }
+        result = self.updates.stabilize_updated_at(
+            old,
+            replay,
+            "2026-07-28T12:00:00+00:00",
+        )
+        self.assertEqual(result, old)
+
+    def test_changed_snapshot_uses_deterministic_observation_time(self):
+        old = {
+            "version": 1,
+            "updated_at": "2026-07-28T10:00:00+00:00",
+            "videos": [{"video_id": "bilibili:BV16G411y7Rs"}],
+        }
+        changed = {
+            **old,
+            "videos": [
+                *old["videos"],
+                {"video_id": "bilibili:BV1aw411179M"},
+            ],
+        }
+        observed_at = "2026-07-28T12:00:00+00:00"
+        result = self.updates.stabilize_updated_at(
+            old,
+            changed,
+            observed_at,
+        )
+        self.assertEqual(result["updated_at"], observed_at)
+        self.assertEqual(result["videos"], changed["videos"])
+
+    def test_processing_persist_does_not_touch_unchanged_queue_timestamps(self):
+        processor = load("process_bilibili_candidates")
+        old_at = "2026-07-28T10:00:00+00:00"
+        changed_at = "2026-07-28T12:00:00+00:00"
+        ledger = {
+            "version": 1,
+            "platform": "bilibili",
+            "updated_at": old_at,
+            "counts": {"candidate_liuhui_teaching": 1},
+            "videos": [
+                {
+                    "video_id": "bilibili:BV16G411y7Rs",
+                    "decision": "candidate_liuhui_teaching",
+                    "knowledge_admission_eligible": True,
+                    "processing_state": {"stage": "downloaded"},
+                }
+            ],
+        }
+        queue = {
+            "version": 1,
+            "platform": "bilibili",
+            "updated_at": old_at,
+            "counts": {"transcribed": 1},
+            "items": [
+                {
+                    "video_id": "BV16G411y7Rs",
+                    "status": "transcribed",
+                }
+            ],
+        }
+        review = {
+            "version": 1,
+            "platform": "bilibili",
+            "updated_at": old_at,
+            "counts": {},
+            "items": [],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = {
+                "LEDGER_PATH": root / "ledger.json",
+                "QUEUE_PATH": root / "queue.json",
+                "REVIEW_PATH": root / "review.json",
+                "TRANSACTION_PATH": root / "transaction.json",
+            }
+            for name, payload in [
+                ("LEDGER_PATH", ledger),
+                ("QUEUE_PATH", queue),
+                ("REVIEW_PATH", review),
+            ]:
+                paths[name].write_text(
+                    json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+            changed_ledger = json.loads(json.dumps(ledger))
+            changed_ledger["videos"][0]["processing_state"]["stage"] = "transcribed"
+            with (
+                mock.patch.multiple(processor, **paths),
+                mock.patch.object(processor, "now_iso", return_value=changed_at),
+            ):
+                processor.persist(changed_ledger, queue)
+            persisted_ledger = json.loads(
+                paths["LEDGER_PATH"].read_text(encoding="utf-8")
+            )
+            persisted_queue = json.loads(
+                paths["QUEUE_PATH"].read_text(encoding="utf-8")
+            )
+            persisted_review = json.loads(
+                paths["REVIEW_PATH"].read_text(encoding="utf-8")
+            )
+        self.assertEqual(persisted_ledger["updated_at"], changed_at)
+        self.assertEqual(persisted_queue["updated_at"], old_at)
+        self.assertEqual(persisted_review["updated_at"], old_at)
 
     def test_download_metadata_requires_uploader_text_tag_and_duration(self):
         processor = load("process_bilibili_candidates")
