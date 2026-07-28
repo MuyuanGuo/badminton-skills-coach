@@ -10,7 +10,11 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from bilibili_pipeline import acquire_bilibili_pipeline_lock, may_enter_knowledge_base
+from bilibili_pipeline import (
+    acquire_bilibili_pipeline_lock,
+    may_enter_knowledge_base,
+    stabilize_updated_at,
+)
 from douyin_pipeline import commit_json_transaction, now_iso
 
 
@@ -347,9 +351,11 @@ def queue_item(record, verification, media, media_validation):
 
 
 def persist(ledger, queue):
-    ledger["updated_at"] = now_iso()
+    current_ledger = load_json(LEDGER_PATH)
+    current_queue = load_json(QUEUE_PATH)
+    current_review = load_json(REVIEW_PATH) if REVIEW_PATH.exists() else {}
+    changed_at = now_iso()
     ledger["counts"] = dict(Counter(item["decision"] for item in ledger["videos"]))
-    queue["updated_at"] = now_iso()
     queue["counts"] = dict(Counter(item["status"] for item in queue["items"]))
     review_items = [
         item for item in ledger["videos"]
@@ -359,10 +365,13 @@ def persist(ledger, queue):
     review = {
         "version": 1,
         "platform": "bilibili",
-        "updated_at": now_iso(),
+        "updated_at": changed_at,
         "counts": dict(Counter(item["decision"] for item in review_items)),
         "items": review_items,
     }
+    ledger = stabilize_updated_at(current_ledger, ledger, changed_at)
+    queue = stabilize_updated_at(current_queue, queue, changed_at)
+    review = stabilize_updated_at(current_review, review, changed_at)
     commit_json_transaction(
         {LEDGER_PATH: ledger, QUEUE_PATH: queue, REVIEW_PATH: review},
         TRANSACTION_PATH,

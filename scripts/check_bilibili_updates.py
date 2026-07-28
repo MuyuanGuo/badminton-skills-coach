@@ -16,8 +16,9 @@ from bilibili_pipeline import (
     load_rules,
     may_enter_knowledge_base,
     normalize_video,
+    stabilize_updated_at,
 )
-from douyin_pipeline import commit_json_transaction, now_iso
+from douyin_pipeline import commit_json_transaction
 from project_artifacts import atomic_write_text
 
 
@@ -257,11 +258,11 @@ def build_payloads(snapshot):
         )
         classified.append(result)
 
-    applied_at = now_iso()
     observed_at = parse_iso_datetime(snapshot["collected_at"]).isoformat()
     full_archive = bool(snapshot.get("full_profile_archive"))
     old_index = load_json(INDEX_PATH)
     old_ledger = load_json(LEDGER_PATH)
+    old_review = load_json(REVIEW_PATH)
     by_id = {item["video_id"]: item for item in old_index["videos"]}
     for item in normalized:
         existing = by_id.get(item["video_id"]) or {}
@@ -297,25 +298,38 @@ def build_payloads(snapshot):
         if item["decision"] == "candidate_liuhui_teaching"
         and not item["knowledge_admission_eligible"]
     ]
-    return {
-        INDEX_PATH: {
+    index_payload = stabilize_updated_at(
+        old_index,
+        {
             **old_index,
-            "updated_at": applied_at,
             "videos": sorted(by_id.values(), key=lambda item: item["video_id"]),
         },
-        LEDGER_PATH: {
+        observed_at,
+    )
+    ledger_payload = stabilize_updated_at(
+        old_ledger,
+        {
             **old_ledger,
-            "updated_at": applied_at,
             "counts": dict(Counter(item["decision"] for item in ledger_items)),
             "videos": ledger_items,
         },
-        REVIEW_PATH: {
+        observed_at,
+    )
+    review_payload = stabilize_updated_at(
+        old_review,
+        {
             "version": 1,
             "platform": "bilibili",
-            "updated_at": applied_at,
+            "updated_at": observed_at,
             "counts": dict(Counter(item["decision"] for item in review_items)),
             "items": review_items,
         },
+        observed_at,
+    )
+    return {
+        INDEX_PATH: index_payload,
+        LEDGER_PATH: ledger_payload,
+        REVIEW_PATH: review_payload,
     }
 
 

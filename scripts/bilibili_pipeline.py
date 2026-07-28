@@ -17,6 +17,23 @@ PIPELINE_LOCK_OWNER_ENV = "BSC_BILIBILI_PIPELINE_LOCK_HELD"
 BVID_PATTERN = re.compile(r"BV[0-9A-Za-z]{10}")
 
 
+def stabilize_updated_at(old_payload, new_payload, changed_at):
+    """Preserve timestamps when a durable payload has no semantic change."""
+
+    old_semantic = {
+        key: value for key, value in old_payload.items() if key != "updated_at"
+    }
+    new_semantic = {
+        key: value for key, value in new_payload.items() if key != "updated_at"
+    }
+    updated_at = (
+        old_payload.get("updated_at")
+        if old_semantic == new_semantic and old_payload.get("updated_at")
+        else changed_at
+    )
+    return {**new_payload, "updated_at": updated_at}
+
+
 def acquire_bilibili_pipeline_lock():
     """Prevent concurrent whole-file writers from losing Bilibili state."""
 
