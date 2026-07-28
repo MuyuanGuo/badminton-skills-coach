@@ -53,6 +53,8 @@ def compact_candidate(candidate):
             "仅保留在穷举召回清单，不能作为当前问题证据："
             + "、".join(candidate.get("retrieval_policy_reasons", []))
         )
+    if candidate.get("transcript_retrieval", {}).get("mode") == "chunk_first":
+        why_retrieved.append("B站长转写按相关片段命中")
     result = {
         "video_id": candidate["video_id"],
         "title": candidate["title"],
@@ -65,6 +67,9 @@ def compact_candidate(candidate):
         "category": candidate["category"],
         "confidence": candidate["confidence"],
         "processing_status": candidate["processing_status"],
+        "retrieval_cohort": candidate.get(
+            "retrieval_cohort", "stable_baseline"
+        ),
         "retrieval_channels": candidate.get("retrieval_channels", []),
         "matched_query_concepts": candidate["matched_query_concepts"],
         "matched_structured_query_concepts": candidate.get(
@@ -88,6 +93,9 @@ def compact_candidate(candidate):
             "ngram_coverage_by_field", {}
         ),
         "score_breakdown": candidate.get("score_breakdown", {}),
+        "transcript_retrieval": candidate.get(
+            "transcript_retrieval", {"mode": "legacy_video"}
+        ),
         "retrieval_policy_eligible": candidate.get(
             "retrieval_policy_eligible", True
         ),
@@ -155,7 +163,14 @@ def compact_teaching_note(note):
         item["roles"].sort()
     return {"summary": summary, "evidence": evidence}
 
-def rank_transcript_evidence(video, query, expansion, limit=6, context_radius=2):
+def rank_transcript_evidence(
+    video,
+    query,
+    expansion,
+    limit=6,
+    context_radius=2,
+    chunk_hints=None,
+):
     """Return query-matched timestamped transcript windows from one finalist video."""
 
     segments = video.get("transcript_segments") or []
@@ -165,7 +180,73 @@ def rank_transcript_evidence(video, query, expansion, limit=6, context_radius=2)
     query_grams = character_grams(query)
     term_weights = expansion.get("term_weights", {}) if expansion else {}
     scored = []
-    for index in range(len(segments)):
+    candidate_indexes = set(range(len(segments)))
+    if chunk_hints:
+        candidate_indexes = {
+            index
+            for hint in chunk_hints
+            for index in range(
+                max(0, int(hint.get("start_segment", 0)) - context_radius),
+                min(
+                    len(segments),
+                    int(hint.get("end_segment", len(segments)))
+                    + context_radius,
+                ),
+            )
+        }
+        hinted_text = normalize(
+            "".join(
+                str(segments[index].get("text") or "")
+                for index in sorted(candidate_indexes)
+            )
+        )
+        original_terms = list(
+            dict.fromkeys(
+                term
+                for term in (expansion or {}).get("original_terms", [])
+                if normalize(term)
+            )
+        )
+        unmet_terms = [
+            term
+            for term in original_terms
+            if normalize(term) not in hinted_text
+        ]
+        if unmet_terms:
+            normalized_segments = [
+                normalize(segment.get("text") or "")
+                for segment in segments
+            ]
+            for term in unmet_terms:
+                normalized_term = normalize(term)
+                fallback_centers = []
+                for index, normalized_segment in enumerate(
+                    normalized_segments
+                ):
+                    adjacent = (
+                        normalized_segment
+                        + (
+                            normalized_segments[index + 1]
+                            if index + 1 < len(normalized_segments)
+                            else ""
+                        )
+                    )
+                    if normalized_term not in adjacent:
+                        continue
+                    fallback_centers.append(index)
+                    if len(fallback_centers) == 2:
+                        break
+                for center in fallback_centers:
+                    candidate_indexes.update(
+                        range(
+                            max(0, center - context_radius),
+                            min(
+                                len(segments),
+                                center + context_radius + 2,
+                            ),
+                        )
+                    )
+    for index in sorted(candidate_indexes):
         start_index = max(0, index - context_radius)
         end_index = min(len(segments), index + context_radius + 1)
         window = segments[start_index:end_index]

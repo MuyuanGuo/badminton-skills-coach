@@ -1,20 +1,93 @@
 {
   "schema_version": 1,
+  "measurement_scope": "answer_packet_projection_size_and_construction",
+  "query_source_registry": "data/evaluation/answer_quality_cases.json",
+  "minimum_case_count": 20,
   "maximum_skill_instruction_bytes": 12000,
+  "maximum_answer_packet_bytes": 16384,
+  "maximum_p95_answer_packet_bytes": 12288,
   "minimum_average_byte_reduction": 0.5,
   "minimum_case_byte_reduction": 0.45,
   "cases": [
     {
-      "case_id": "AP001",
-      "query": "我杀球后经常来不及上网，是不是步法太慢？"
+      "case_id": "AP-AQ001",
+      "source_case_id": "AQ001"
     },
     {
-      "case_id": "AP002",
-      "query": "双打接杀挡网总冒高，是拍面还是击球点问题？"
+      "case_id": "AP-AQ002",
+      "source_case_id": "AQ002"
     },
     {
-      "case_id": "AP003",
-      "query": "后场被动来不及架拍怎么把球打到底线"
+      "case_id": "AP-AQ003",
+      "source_case_id": "AQ003"
+    },
+    {
+      "case_id": "AP-AQ004",
+      "source_case_id": "AQ004"
+    },
+    {
+      "case_id": "AP-AQ005",
+      "source_case_id": "AQ005"
+    },
+    {
+      "case_id": "AP-AQ006",
+      "source_case_id": "AQ006"
+    },
+    {
+      "case_id": "AP-AQ007",
+      "source_case_id": "AQ007"
+    },
+    {
+      "case_id": "AP-AQ008",
+      "source_case_id": "AQ008"
+    },
+    {
+      "case_id": "AP-AQ009",
+      "source_case_id": "AQ009"
+    },
+    {
+      "case_id": "AP-AQ010",
+      "source_case_id": "AQ010"
+    },
+    {
+      "case_id": "AP-AQ011",
+      "source_case_id": "AQ011"
+    },
+    {
+      "case_id": "AP-AQ012",
+      "source_case_id": "AQ012"
+    },
+    {
+      "case_id": "AP-AQ013",
+      "source_case_id": "AQ013"
+    },
+    {
+      "case_id": "AP-AQ014",
+      "source_case_id": "AQ014"
+    },
+    {
+      "case_id": "AP-AQ015",
+      "source_case_id": "AQ015"
+    },
+    {
+      "case_id": "AP-AQ016",
+      "source_case_id": "AQ016"
+    },
+    {
+      "case_id": "AP-AQ025",
+      "source_case_id": "AQ025"
+    },
+    {
+      "case_id": "AP-AQ026",
+      "source_case_id": "AQ026"
+    },
+    {
+      "case_id": "AP-AQ027",
+      "source_case_id": "AQ027"
+    },
+    {
+      "case_id": "AP-AQ030",
+      "source_case_id": "AQ030"
     }
   ]
 }

@@ -117,16 +117,226 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
         field: sum(record["field_lengths"].get(field, 0) for record in records)
         for field in retrieval_index["evidence_fields"]
     }
+    field_document_counts = {
+        field: sum(
+            record["field_lengths"].get(field, 0) > 0
+            for record in records
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    field_term_document_frequency = {
+        field: dict(
+            sorted(
+                {
+                    term: sum(
+                        term
+                        in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                        for record in records
+                    )
+                    for term in {
+                        term
+                        for record in records
+                        for term in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                    }
+                }.items()
+            )
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    stable_records = [
+        record
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline")
+        == "stable_baseline"
+    ]
+    stable_term_document_frequency = {
+        term: sum(
+            term in record.get("lexicon_terms", [])
+            for record in stable_records
+        )
+        for term in {
+            term
+            for record in stable_records
+            for term in record.get("lexicon_terms", [])
+        }
+    }
+    stable_field_document_counts = {
+        field: sum(
+            record["field_lengths"].get(field, 0) > 0
+            for record in stable_records
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    stable_field_term_document_frequency = {
+        field: dict(
+            sorted(
+                {
+                    term: sum(
+                        term
+                        in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                        for record in stable_records
+                    )
+                    for term in {
+                        term
+                        for record in stable_records
+                        for term in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                    }
+                }.items()
+            )
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    projected_chunk_index = None
+    source_chunk_index = retrieval_index.get("chunk_index")
+    if source_chunk_index:
+        retained_chunk_indexes = [
+            index
+            for index, chunk in enumerate(source_chunk_index.get("chunks", []))
+            if chunk.get("video_index") in old_to_new
+        ]
+        old_chunk_to_new = {
+            old_index: new_index
+            for new_index, old_index in enumerate(retained_chunk_indexes)
+        }
+        chunks = [
+            {
+                **source_chunk_index["chunks"][old_index],
+                "video_index": old_to_new[
+                    source_chunk_index["chunks"][old_index]["video_index"]
+                ],
+            }
+            for old_index in retained_chunk_indexes
+        ]
+        chunk_term_postings = {
+            term: [
+                old_chunk_to_new[index]
+                for index in indexes
+                if index in old_chunk_to_new
+            ]
+            for term, indexes in source_chunk_index.get(
+                "term_postings", {}
+            ).items()
+        }
+        chunk_term_postings = {
+            term: indexes
+            for term, indexes in chunk_term_postings.items()
+            if indexes
+        }
+        chunk_vocabulary = []
+        chunk_ngram_postings = []
+        for gram, indexes in zip(
+            source_chunk_index.get("ngram_vocabulary", []),
+            source_chunk_index.get("ngram_postings", []),
+        ):
+            projected_indexes = [
+                old_chunk_to_new[index]
+                for index in indexes
+                if index in old_chunk_to_new
+            ]
+            if projected_indexes:
+                chunk_vocabulary.append(gram)
+                chunk_ngram_postings.append(projected_indexes)
+        cluster_ids = {chunk["cluster_id"] for chunk in chunks}
+        stable_chunks = [
+            chunk
+            for chunk in chunks
+            if chunk.get("stable_cluster_id")
+            and records[chunk["video_index"]].get(
+                "retrieval_cohort", "stable_baseline"
+            )
+            == "stable_baseline"
+        ]
+        stable_cluster_ids = {
+            chunk["stable_cluster_id"] for chunk in stable_chunks
+        }
+        projected_chunk_index = {
+            **source_chunk_index,
+            "chunk_count": len(chunks),
+            "cluster_count": len(cluster_ids),
+            "stable_cluster_count": len(stable_cluster_ids),
+            "average_chunk_length": round(
+                sum(chunk["normalized_length"] for chunk in chunks)
+                / max(1, len(chunks)),
+                4,
+            ),
+            "stable_average_chunk_length": round(
+                sum(
+                    chunk["normalized_length"]
+                    for chunk in stable_chunks
+                )
+                / max(1, len(stable_chunks)),
+                4,
+            ),
+            "term_cluster_document_frequency": {
+                term: len(
+                    {
+                        chunks[index]["cluster_id"]
+                        for index in indexes
+                    }
+                )
+                for term, indexes in chunk_term_postings.items()
+            },
+            "stable_term_cluster_document_frequency": {
+                term: len(
+                    {
+                        chunks[index]["stable_cluster_id"]
+                        for index in indexes
+                        if chunks[index].get("stable_cluster_id")
+                    }
+                )
+                for term, indexes in chunk_term_postings.items()
+            },
+            "term_postings": chunk_term_postings,
+            "ngram_vocabulary": chunk_vocabulary,
+            "ngram_postings": chunk_ngram_postings,
+            "chunks": chunks,
+        }
     projected = dict(retrieval_index)
     projected.update(
         {
             "indexable_video_count": len(records),
+            "stable_indexable_video_count": len(stable_records),
             "term_document_frequency": {
                 term: len(indexes) for term, indexes in term_postings.items()
             },
+            "stable_term_document_frequency": dict(
+                sorted(stable_term_document_frequency.items())
+            ),
+            "field_document_counts": field_document_counts,
+            "field_term_document_frequency": (
+                field_term_document_frequency
+            ),
+            "stable_field_document_counts": (
+                stable_field_document_counts
+            ),
+            "stable_field_term_document_frequency": (
+                stable_field_term_document_frequency
+            ),
             "average_field_lengths": {
-                field: round(total / max(1, len(records)), 4)
+                field: round(
+                    total / max(1, field_document_counts[field]),
+                    4,
+                )
                 for field, total in field_length_totals.items()
+            },
+            "stable_average_field_lengths": {
+                field: round(
+                    sum(
+                        record["field_lengths"].get(field, 0)
+                        for record in stable_records
+                    )
+                    / max(1, len(stable_records)),
+                    4,
+                )
+                for field in retrieval_index["evidence_fields"]
             },
             "ngram_vocabulary": vocabulary,
             "ngram_postings": ngram_postings,
@@ -144,6 +354,8 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
             "videos": records,
         }
     )
+    if projected_chunk_index is not None:
+        projected["chunk_index"] = projected_chunk_index
     return projected
 
 
@@ -358,7 +570,7 @@ def evaluate(top_k, cases_path=CASES_PATH):
     new_source_ids = {
         video["video_id"]
         for video in knowledge["videos"]
-        if video.get("source_type") not in REGRESSION_SOURCE_TYPES
+        if video.get("retrieval_cohort") == "automatic_expansion"
         and video.get("processing_status") == "ready"
     }
     production = evaluate_view(

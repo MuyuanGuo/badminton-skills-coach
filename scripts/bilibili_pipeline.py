@@ -3,13 +3,36 @@
 
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
+
+import fcntl
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES_PATH = ROOT / "config" / "bilibili_classification_rules.json"
+PIPELINE_LOCK_PATH = ROOT / "data" / "processing" / ".bilibili-pipeline.lock"
+PIPELINE_LOCK_OWNER_ENV = "BSC_BILIBILI_PIPELINE_LOCK_HELD"
 BVID_PATTERN = re.compile(r"BV[0-9A-Za-z]{10}")
+
+
+def acquire_bilibili_pipeline_lock():
+    """Prevent concurrent whole-file writers from losing Bilibili state."""
+
+    if os.environ.get(PIPELINE_LOCK_OWNER_ENV) == "1":
+        return None
+    PIPELINE_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    handle = PIPELINE_LOCK_PATH.open("a+", encoding="utf-8")
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        handle.close()
+        raise RuntimeError(
+            "Another Bilibili pipeline writer holds "
+            f"{PIPELINE_LOCK_PATH.relative_to(ROOT)}"
+        )
+    return handle
 
 
 def rules_identity(payload):
@@ -61,6 +84,11 @@ def normalize_video(item):
         "tags": [str(tag).strip() for tag in tags if str(tag).strip()],
         "source_platform": "bilibili",
         "uploader_profile_id": str(item.get("uploader_profile_id") or ""),
+        "published_at_text": str(item.get("published_at_text") or ""),
+        "duration_text": str(item.get("duration_text") or ""),
+        "profile_page": item.get("profile_page"),
+        "collection_memberships": list(item.get("collection_memberships") or []),
+        "discovery_evidence": dict(item.get("discovery_evidence") or {}),
     }
 
 
@@ -95,22 +123,46 @@ def classify_video(video, rules):
         "classification_signals": signals,
         "classification_rules_version": rules["_identity"]["version"],
         "classification_rules_hash": rules["_identity"]["sha256"],
+        "processing_state": {
+            "stage": (
+                "metadata_pending"
+                if decision == "candidate_liuhui_teaching"
+                else {
+                    "excluded_creator_original_or_unknown":
+                        "quarantined_origin_unknown",
+                    "excluded_non_teaching": "excluded_non_teaching",
+                    "review_pending": "quarantined_origin_unknown",
+                }[decision]
+            ),
+            "terminal": decision != "candidate_liuhui_teaching",
+            "attempts_by_stage": {},
+            "next_retry_at": None,
+            "last_error_class": None,
+            "last_error_at": None,
+        },
     }
 
 
 def may_enter_knowledge_base(item):
-    """Return true only after independent provenance verification."""
+    """Return true only after a documented, auditable provenance decision."""
 
     verification = item.get("origin_verification") or {}
     methods = set(verification.get("methods") or [])
-    allowed_methods = {
-        "verified_collection_membership",
+    signals = verification.get("signals") or {}
+    independent_methods = {
+        "cross_platform_content_match",
         "direct_video_content_review",
-        "publisher_origin_annotation",
+        "verified_source_watermark",
     }
+    publisher_declared = (
+        "publisher_origin_annotation" in methods
+        and signals.get("uploader_profile_matches") is True
+        and signals.get("publisher_text_names_liuhui") is True
+        and signals.get("dedicated_origin_tag") is True
+    )
     return (
         item.get("decision") == "candidate_liuhui_teaching"
         and verification.get("status") == "verified_liuhui_clip"
-        and len(methods & allowed_methods) >= 1
+        and (bool(methods & independent_methods) or publisher_declared)
         and bool(verification.get("verified_at"))
     )

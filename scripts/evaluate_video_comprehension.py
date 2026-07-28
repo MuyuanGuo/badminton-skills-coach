@@ -9,6 +9,7 @@ from pathlib import Path
 
 from evaluate_answer_context import planned_queries
 from build_douyin_knowledge import canonicalize_asr_text
+from build_retrieval_index import normalize as normalize_retrieval_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,9 +47,12 @@ def normalize_text(value):
 
 
 def normalize_index_text(value):
-    return "".join(
-        re.findall(r"[\u4e00-\u9fff]+|[a-z0-9]+", str(value or "").lower())
-    )
+    # Keep the independent audit byte-for-byte aligned with the production
+    # retrieval normalizer, including its Traditional -> Simplified mapping.
+    # A second, almost-equivalent normalizer caused valid index records to be
+    # reported as corrupt whenever a newly supported character variant
+    # appeared in the corpus.
+    return normalize_retrieval_text(value)
 
 
 def ngram_hash(value):
@@ -62,6 +66,122 @@ def hashed_ngrams(text, sizes):
         for size in sizes
         for index in range(len(normalized) - size + 1)
     }
+
+
+def append_failure(failures, failure):
+    if failure not in failures:
+        failures.append(failure)
+
+
+def audit_chunk_first_index(
+    video,
+    segments,
+    index_record,
+    indexed_transcript_ngrams,
+    chunks,
+    indexed_chunk_ngrams,
+    chunk_lexicon,
+    transcript_ngram_sizes,
+):
+    """Verify a chunk-first transcript without expecting video-level postings.
+
+    Chunk-first sources deliberately keep their video-level transcript channel
+    empty. Their complete transcript is represented by a gap-free partition of
+    runtime segments in ``chunk_index``. This audit reconstructs every chunk
+    from those segments and independently verifies the fields used at search
+    time, so changing the storage model does not weaken the release gate.
+    """
+
+    failures = []
+    actual_video_ngrams = (
+        indexed_transcript_ngrams
+        if indexed_transcript_ngrams is not None
+        else set((index_record or {}).get("transcript_ngrams", []))
+    )
+    if actual_video_ngrams:
+        append_failure(failures, "chunk_first_video_transcript_index_not_empty")
+    if (index_record or {}).get("field_lengths", {}).get("transcript") != 0:
+        append_failure(failures, "chunk_first_video_transcript_length_not_zero")
+
+    ordered_chunks = sorted(
+        chunks or [],
+        key=lambda item: (
+            item.get("start_segment", -1),
+            item.get("end_segment", -1),
+            item.get("chunk_id", ""),
+        ),
+    )
+    if not ordered_chunks:
+        append_failure(failures, "missing_runtime_chunk_index")
+        return failures
+
+    cursor = 0
+    seen_chunk_ids = set()
+    for chunk in ordered_chunks:
+        chunk_id = str(chunk.get("chunk_id", ""))
+        start = chunk.get("start_segment")
+        end = chunk.get("end_segment")
+        if (
+            not chunk_id
+            or chunk_id in seen_chunk_ids
+            or not isinstance(start, int)
+            or not isinstance(end, int)
+            or start != cursor
+            or end <= start
+            or end > len(segments)
+        ):
+            append_failure(failures, "runtime_chunk_partition_mismatch")
+            continue
+        seen_chunk_ids.add(chunk_id)
+        cursor = end
+
+        selected = segments[start:end]
+        raw_text = "".join(str(item.get("text") or "") for item in selected)
+        normalized_text = normalize_index_text(raw_text)
+        expected_start_ms = max(
+            0, round(float(selected[0].get("start") or 0.0) * 1000)
+        )
+        expected_end_ms = max(
+            expected_start_ms,
+            round(
+                float(
+                    selected[-1].get("end")
+                    or selected[-1].get("start")
+                    or 0.0
+                )
+                * 1000
+            ),
+        )
+        if (
+            chunk.get("start_ms") != expected_start_ms
+            or chunk.get("end_ms") != expected_end_ms
+        ):
+            append_failure(failures, "runtime_chunk_timestamp_mismatch")
+        if chunk.get("normalized_length") != len(normalized_text):
+            append_failure(failures, "runtime_chunk_length_mismatch")
+        if chunk.get("text_sha256") != hashlib.sha256(
+            raw_text.encode("utf-8")
+        ).hexdigest():
+            append_failure(failures, "runtime_chunk_text_hash_mismatch")
+
+        expected_frequencies = {
+            term: normalized_text.count(normalize_index_text(term))
+            for term in chunk_lexicon or ()
+            if normalize_index_text(term) in normalized_text
+        }
+        if chunk.get("field_term_frequencies", {}) != expected_frequencies:
+            append_failure(failures, "runtime_chunk_term_index_mismatch")
+
+        expected_ngrams = hashed_ngrams(
+            normalized_text, transcript_ngram_sizes
+        )
+        actual_chunk_ngrams = (indexed_chunk_ngrams or {}).get(chunk_id)
+        if actual_chunk_ngrams is None or expected_ngrams != actual_chunk_ngrams:
+            append_failure(failures, "runtime_chunk_ngram_index_mismatch")
+
+    if cursor != len(segments):
+        append_failure(failures, "runtime_chunk_partition_mismatch")
+    return failures
 
 
 def note_evidence(note, fields=ALL_EVIDENCE_FIELDS):
@@ -151,6 +271,10 @@ def audit_video_content(
     indexed_video_ids=None,
     index_record=None,
     indexed_transcript_ngrams=None,
+    chunk_first_sources=(),
+    chunks=None,
+    indexed_chunk_ngrams=None,
+    chunk_lexicon=(),
     transcript_ngram_sizes=(2, 3),
     require_raw_transcript=False,
 ):
@@ -216,7 +340,23 @@ def audit_video_content(
             for segment in segments
             if isinstance(segment, dict)
         )
-        if index_record is not None:
+        chunk_first_transcript = video.get("source_type") in set(
+            chunk_first_sources or ()
+        )
+        if index_record is not None and chunk_first_transcript:
+            failures.extend(
+                audit_chunk_first_index(
+                    video,
+                    segments,
+                    index_record,
+                    indexed_transcript_ngrams,
+                    chunks,
+                    indexed_chunk_ngrams,
+                    chunk_lexicon,
+                    transcript_ngram_sizes,
+                )
+            )
+        elif index_record is not None:
             expected_ngrams = hashed_ngrams(
                 bundled_transcript, transcript_ngram_sizes
             )
@@ -310,6 +450,35 @@ def evaluate(
                     transcript_ngrams_by_id[video_ids[record_index]].add(gram)
     indexed_video_ids = set(index_by_id)
     ngram_sizes = retrieval_index.get("transcript_ngram_sizes", [2, 3])
+    chunk_index = retrieval_index.get("chunk_index") or {}
+    chunk_first_sources = set(
+        (chunk_index.get("config") or {}).get("source_allowlist", [])
+    )
+    chunks = chunk_index.get("chunks") or []
+    chunks_by_video_id = {video_id: [] for video_id in indexed_video_ids}
+    index_video_ids = [
+        record["video_id"] for record in retrieval_index.get("videos", [])
+    ]
+    for chunk in chunks:
+        video_index = chunk.get("video_index")
+        if isinstance(video_index, int) and 0 <= video_index < len(index_video_ids):
+            chunks_by_video_id[index_video_ids[video_index]].append(chunk)
+    indexed_chunk_ngrams = {
+        str(chunk.get("chunk_id", "")): set() for chunk in chunks
+    }
+    chunk_vocabulary = chunk_index.get("ngram_vocabulary") or []
+    chunk_postings = chunk_index.get("ngram_postings") or []
+    if len(chunk_vocabulary) != len(chunk_postings):
+        raise ValueError("Chunk n-gram vocabulary/postings length mismatch")
+    for gram, postings in zip(chunk_vocabulary, chunk_postings):
+        for chunk_position in postings:
+            if isinstance(chunk_position, int) and 0 <= chunk_position < len(chunks):
+                indexed_chunk_ngrams[str(chunks[chunk_position]["chunk_id"])].add(
+                    gram
+                )
+    chunk_lexicon = set(
+        (chunk_index.get("term_cluster_document_frequency") or {}).keys()
+    )
     audits = [
         audit_video_content(
             video,
@@ -321,6 +490,10 @@ def evaluate(
                 if transcript_ngrams_by_id is not None
                 else None
             ),
+            chunk_first_sources=chunk_first_sources,
+            chunks=chunks_by_video_id.get(video["video_id"], []),
+            indexed_chunk_ngrams=indexed_chunk_ngrams,
+            chunk_lexicon=chunk_lexicon,
             transcript_ngram_sizes=ngram_sizes,
             require_raw_transcript=require_raw_transcripts,
         )

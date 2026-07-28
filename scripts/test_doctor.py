@@ -83,12 +83,80 @@ class DoctorAndInstallerTests(unittest.TestCase):
             destination = Path(temporary) / "skills" / "liuhui-badminton-coach"
             destination.mkdir(parents=True)
             (destination / "stale-file.txt").write_text("old", encoding="utf-8")
-            result = self.installer.install_skill(SKILL_ROOT, destination)
+            build_id = self.installer.source_build_id(SKILL_ROOT)
+            result = self.installer.install_skill(
+                SKILL_ROOT,
+                destination,
+                expected_build_id=build_id,
+            )
             self.assertEqual(result["status"], "installed")
+            self.assertEqual(result["build_id"], build_id)
             self.assertTrue(result["stale_files_removed"])
             self.assertFalse((destination / "stale-file.txt").exists())
             self.assertTrue((destination / "scripts" / "doctor.py").exists())
             self.assertEqual(result["doctor"]["failed"], 0)
+
+    def test_expected_build_id_mismatch_refuses_install_without_writing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary) / "skills" / "liuhui-badminton-coach"
+            with self.assertRaisesRegex(ValueError, "changed after validation"):
+                self.installer.install_skill(
+                    SKILL_ROOT,
+                    destination,
+                    expected_build_id="0" * 64,
+                )
+            self.assertFalse(destination.exists())
+
+    def test_keyboard_interrupt_during_swap_restores_old_install(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary) / "skills" / "liuhui-badminton-coach"
+            destination.mkdir(parents=True)
+            marker = destination / "old-install.txt"
+            marker.write_text("keep me", encoding="utf-8")
+            build_id = self.installer.source_build_id(SKILL_ROOT)
+            doctor_result = {
+                "version": {"build_id": build_id},
+                "summary": {"failed": 0},
+            }
+            real_replace = self.installer.os.replace
+            replace_count = 0
+
+            def interrupt_new_install(source, target):
+                nonlocal replace_count
+                replace_count += 1
+                if replace_count == 2:
+                    raise KeyboardInterrupt()
+                real_replace(source, target)
+
+            with (
+                mock.patch.object(
+                    self.installer,
+                    "run_doctor",
+                    return_value=doctor_result,
+                ),
+                mock.patch.object(
+                    self.installer.os,
+                    "replace",
+                    side_effect=interrupt_new_install,
+                ),
+                self.assertRaises(KeyboardInterrupt),
+            ):
+                self.installer.install_skill(
+                    SKILL_ROOT,
+                    destination,
+                    expected_build_id=build_id,
+                )
+            self.assertEqual(marker.read_text(encoding="utf-8"), "keep me")
+            self.assertFalse((destination / "scripts" / "doctor.py").exists())
+
+    def test_concurrent_install_lock_refuses_second_writer(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary) / "skills" / "liuhui-badminton-coach"
+            destination.parent.mkdir(parents=True)
+            with self.installer.installation_lock(destination):
+                with self.assertRaisesRegex(ValueError, "Another install"):
+                    self.installer.install_skill(SKILL_ROOT, destination)
+            self.assertFalse(destination.exists())
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -213,7 +214,21 @@ class ProjectArtifactsTests(unittest.TestCase):
             + status["pending_human_review_or_processing"]
             + status["excluded_non_teaching_ads_equipment"],
         )
-        self.assertEqual(status["ready_source_counts"]["other_sources"], 9)
+        bilibili_knowledge = json.loads(
+            (
+                ROOT
+                / "data"
+                / "knowledge"
+                / "bilibili_knowledge_base.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            status["ready_source_counts"]["other_sources"],
+            sum(
+                video.get("processing_status") == "ready"
+                for video in bilibili_knowledge["videos"]
+            ),
+        )
 
     def test_reference_sync_rolls_back_after_partial_failure(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -286,6 +301,85 @@ class ProjectArtifactsTests(unittest.TestCase):
                     raise RuntimeError("injected build failure")
             self.assertEqual(existing.read_text(encoding="utf-8"), "before")
             self.assertFalse(created.exists())
+
+    def test_artifact_rollback_guard_restores_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            existing = root / "existing.json"
+            created = root / "created.json"
+            existing.write_text("before", encoding="utf-8")
+            with self.assertRaises(KeyboardInterrupt):
+                with self.module.artifact_rollback_guard([existing, created]):
+                    existing.write_text("after", encoding="utf-8")
+                    created.write_text("temporary", encoding="utf-8")
+                    raise KeyboardInterrupt()
+            self.assertEqual(existing.read_text(encoding="utf-8"), "before")
+            self.assertFalse(created.exists())
+
+    def test_atomic_write_bundle_rolls_back_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.json"
+            second = root / "second.json"
+            first.write_bytes(b"old-first")
+            second.write_bytes(b"old-second")
+            replace_count = 0
+
+            def interrupt_second_replace(source, destination):
+                nonlocal replace_count
+                replace_count += 1
+                if replace_count == 2:
+                    raise KeyboardInterrupt()
+                os.replace(source, destination)
+
+            with self.assertRaises(KeyboardInterrupt):
+                self.module.atomic_write_bundle(
+                    {
+                        first: b"new-first",
+                        second: b"new-second",
+                    },
+                    replace_func=interrupt_second_replace,
+                )
+            self.assertEqual(first.read_bytes(), b"old-first")
+            self.assertEqual(second.read_bytes(), b"old-second")
+
+    def test_atomic_write_bundle_cleans_staging_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.json"
+            second = root / "second.json"
+            first.write_bytes(b"old-first")
+            second.write_bytes(b"old-second")
+            real_stage = self.module._stage_bytes
+            stage_count = 0
+
+            def interrupt_second_stage(path, data):
+                nonlocal stage_count
+                stage_count += 1
+                if stage_count == 2:
+                    raise KeyboardInterrupt()
+                return real_stage(path, data)
+
+            with (
+                mock.patch.object(
+                    self.module,
+                    "_stage_bytes",
+                    side_effect=interrupt_second_stage,
+                ),
+                self.assertRaises(KeyboardInterrupt),
+            ):
+                self.module.atomic_write_bundle(
+                    {
+                        first: b"new-first",
+                        second: b"new-second",
+                    }
+                )
+            self.assertEqual(first.read_bytes(), b"old-first")
+            self.assertEqual(second.read_bytes(), b"old-second")
+            self.assertEqual(
+                sorted(path.name for path in root.iterdir()),
+                ["first.json", "second.json"],
+            )
 
     def test_packaged_knowledge_removes_unbundled_transcript_paths(self):
         source = json.dumps(
@@ -363,6 +457,32 @@ class ProjectArtifactsTests(unittest.TestCase):
             self.update_pipeline.IMPACT_REPORT_PATH,
             self.update_pipeline.UPDATE_ARTIFACT_PATHS,
         )
+        self.assertIn(
+            ROOT
+            / "skills/liuhui-badminton-coach/references/topic-index.md",
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
+
+    def test_full_update_pipeline_writes_exact_build_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest_path = root / "data/knowledge/build_manifest.json"
+            manifest_path.parent.mkdir(parents=True)
+            build_id = "a" * 64
+            manifest_path.write_text(
+                json.dumps({"build_id": build_id}),
+                encoding="utf-8",
+            )
+            receipt = root / "receipt.json"
+            with mock.patch.object(self.update_pipeline, "ROOT", root):
+                returned = self.update_pipeline.write_validation_receipt(
+                    receipt
+                )
+            self.assertEqual(returned, build_id)
+            self.assertEqual(
+                json.loads(receipt.read_text(encoding="utf-8")),
+                {"schema_version": 1, "build_id": build_id},
+            )
 
 
 if __name__ == "__main__":

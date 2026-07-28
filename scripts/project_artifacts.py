@@ -385,7 +385,7 @@ def _stage_bytes(path, data):
         mode = path.stat().st_mode & 0o777 if path.exists() else 0o644
         temporary_path.chmod(mode)
         return temporary_path
-    except Exception:
+    except BaseException:
         temporary_path.unlink(missing_ok=True)
         raise
 
@@ -397,13 +397,15 @@ def atomic_write_bundle(payloads, replace_func=os.replace):
     originals = {
         path: path.read_bytes() if path.exists() else None for path in normalized
     }
-    staged = {path: _stage_bytes(path, data) for path, data in normalized.items()}
+    staged = {}
     replaced = []
     try:
+        for path, data in normalized.items():
+            staged[path] = _stage_bytes(path, data)
         for path, temporary_path in staged.items():
             replace_func(temporary_path, path)
             replaced.append(path)
-    except Exception:
+    except BaseException:
         for path in reversed(replaced):
             original = originals[path]
             if original is None:
@@ -431,7 +433,7 @@ def artifact_rollback_guard(paths):
     }
     try:
         yield
-    except Exception:
+    except BaseException:
         restore_payloads = {
             path: content
             for path, content in originals.items()

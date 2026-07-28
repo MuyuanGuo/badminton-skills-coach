@@ -678,6 +678,11 @@ def selected_sort_key(entry, rules=None):
         "none": 6,
     }.get(entry.get("symptom_match", "not_required"), 6)
     reviewed_evidence_rank = entry.get("reviewed_evidence_rank", 2)
+    retrieval_cohort_rank = (
+        1
+        if candidate.get("retrieval_cohort") == "automatic_expansion"
+        else 0
+    )
     direct_terms = {
         search_term
         for search_term in (
@@ -736,6 +741,7 @@ def selected_sort_key(entry, rules=None):
         entry.get("actor_context_rank", 2),
         symptom_match_rank,
         reviewed_evidence_rank,
+        retrieval_cohort_rank,
         unrequested_value_priority,
         -exact_constraint_count,
         mixed_constraint_count,

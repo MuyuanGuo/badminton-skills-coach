@@ -226,6 +226,79 @@ def answer_visible_video_labels(claim_evidence_map):
     return labels
 
 
+def automatic_expansion_variant_failure(
+    search_module,
+    video,
+    entry,
+    requested_constraints,
+    constraint_match,
+    rules,
+):
+    """Fail closed when a named variant is absent from retrieved B chunks."""
+
+    if video.get("retrieval_cohort") != "automatic_expansion":
+        return None
+    requested_variants = requested_constraints.get(
+        "technique_variant", []
+    )
+    if not requested_variants:
+        return None
+    if constraint_match.get("technique_variant") not in {
+        "exact",
+        "mixed_support",
+    }:
+        return "automatic_expansion_named_variant_not_exact"
+    variant_axis = next(
+        (
+            axis
+            for axis in rules.get("constraint_axes", [])
+            if axis.get("name") == "technique_variant"
+        ),
+        None,
+    )
+    if not variant_axis:
+        return "automatic_expansion_named_variant_rules_missing"
+    variant_terms = [
+        term
+        for variant in requested_variants
+        for term in variant_axis.get("values", {}).get(variant, [])
+    ]
+    hints = (
+        entry.get("candidate", {})
+        .get("transcript_retrieval", {})
+        .get("chunk_hints", [])
+    )
+    segments = video.get("transcript_segments") or []
+    if hints:
+        segment_indexes = {
+            index
+            for hint in hints
+            for index in range(
+                max(0, int(hint.get("start_segment", 0))),
+                min(
+                    len(segments),
+                    int(hint.get("end_segment", len(segments))),
+                ),
+            )
+        }
+        evidence_text = "".join(
+            str(segments[index].get("text") or "")
+            for index in sorted(segment_indexes)
+        )
+    else:
+        evidence_text = "".join(
+            str(segment.get("text") or "") for segment in segments
+        )
+    normalized_evidence = search_module.normalize(evidence_text)
+    if not any(
+        search_module.normalize(term) in normalized_evidence
+        for term in variant_terms
+        if search_module.normalize(term)
+    ):
+        return "automatic_expansion_named_variant_missing_from_query_chunks"
+    return None
+
+
 def prepare_answer_context(
     query,
     max_videos=None,
@@ -454,6 +527,17 @@ def prepare_answer_context(
                     else "matched_requested_action_scope_support_only"
                 )
             ]
+        variant_failure = automatic_expansion_variant_failure(
+            search_module,
+            video,
+            entry,
+            requested_constraints,
+            constraint_result[4],
+            rules,
+        )
+        if variant_failure:
+            keep = False
+            reasons = [variant_failure]
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )
@@ -514,6 +598,19 @@ def prepare_answer_context(
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=lambda entry: selected_sort_key(entry, rules))
+    accepted, cluster_duplicates = search_module.cap_content_clusters(
+        accepted,
+        candidate_getter=lambda entry: entry["candidate"],
+    )
+    rejected.extend(
+        {
+            **duplicate["item"],
+            "selection_reasons": ["content_cluster_duplicate"],
+            "duplicate_of_video_id": duplicate["representative"]["video_id"],
+            "duplicate_content_cluster_id": duplicate["cluster_id"],
+        }
+        for duplicate in cluster_duplicates
+    )
     exact_entries = [
         entry
         for entry in accepted
@@ -527,6 +624,12 @@ def prepare_answer_context(
             "supporting_video_limits_by_technique_variant", {}
         ).get(requested_variants[0], support_limit)
     support_limit = min(support_limit, max_videos)
+    if explicit_max_videos and not exact_entries:
+        # An explicit evidence budget should remain usable when the corpus has
+        # no exact/core source. Returning only the default supporting cap can
+        # hide a valid response-oriented source even though the caller asked
+        # for a larger bounded set.
+        support_limit = max_videos
     exact_limit = rules.get("max_exact_videos", max_videos)
     if explicit_max_videos:
         exact_limit = (
@@ -572,6 +675,15 @@ def prepare_answer_context(
             feedback_dir=feedback_dir,
             segment_limit=segment_limit,
             include_query_match=False,
+            chunk_hints_by_video={
+                entry["video_id"]: entry["candidate"].get(
+                    "transcript_retrieval", {}
+                ).get("chunk_hints", [])
+                for entry in selected_entries
+                if entry["candidate"].get("transcript_retrieval", {}).get(
+                    "chunk_hints"
+                )
+            },
         )
         if selected_ids
         else {"results": []}
@@ -604,6 +716,11 @@ def prepare_answer_context(
                 "url": evidence["evidence"]["canonical_url"],
                 "category": candidate["category"],
                 "confidence": candidate["confidence"],
+                "primary_query_score": candidate.get("score", 0),
+                "best_retrieval_rank": entry.get("best_rank"),
+                "transcript_retrieval": candidate.get(
+                    "transcript_retrieval", {"mode": "legacy_video"}
+                ),
                 "selection_reasons": entry["selection_reasons"],
                 "constraint_scope": entry["constraint_scope"],
                 "unrequested_constraint_scope": entry[

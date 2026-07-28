@@ -2,8 +2,10 @@
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from build_update_impact_report import (
@@ -11,9 +13,14 @@ from build_update_impact_report import (
     snapshot as impact_snapshot,
     write_report as write_impact_report,
 )
+from bilibili_pipeline import (
+    PIPELINE_LOCK_OWNER_ENV,
+    acquire_bilibili_pipeline_lock,
+)
 from project_artifacts import (
     SKILL_REFERENCE_PATHS,
     artifact_rollback_guard,
+    atomic_write_text,
     sync_skill_references,
 )
 
@@ -23,9 +30,11 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "data/knowledge/bilibili_knowledge_base.json",
     ROOT / "data/knowledge/douyin_knowledge_base.json",
     ROOT / "data/knowledge/topic_index.json",
+    ROOT / "skills/liuhui-badminton-coach/references/topic-index.md",
     ROOT / "data/knowledge/retrieval_index.json",
     ROOT / "data/knowledge/knowledge_graph_summary.json",
     ROOT / "data/knowledge/build_manifest.json",
+    ROOT / "data/evaluation/evaluation_report.json",
     ROOT / "data/review/visual_review_queue.json",
     ROOT / "config/reviewed_evidence_signals.json",
     ROOT / "output/visual_review_queue.md",
@@ -37,6 +46,7 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "README.en.md",
     ROOT / "docs/index.html",
     ROOT / "docs/en/index.html",
+    ROOT / "docs/evaluation/index.html",
     ROOT / "skills/liuhui-badminton-coach/SKILL.md",
     ROOT / "skills/liuhui-badminton-coach/agents/openai.yaml",
     IMPACT_REPORT_PATH,
@@ -68,6 +78,7 @@ def build_commands():
 
 def validation_commands():
     return [
+        [sys.executable, "scripts/evaluate_bilibili_canaries.py"],
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
         [sys.executable, "scripts/evaluate_answer_policy.py"],
         [sys.executable, "scripts/evaluate_answer_context.py"],
@@ -104,6 +115,7 @@ def validation_commands():
         [sys.executable, "scripts/build_manifest.py", "--check"],
         [sys.executable, "scripts/check_video_links.py"],
         ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
+        ["node", "scripts/test_bilibili_profile_snapshot_dom.mjs"],
         ["node", "scripts/test_douyin_video_media_assets_dom.mjs"],
         ["node", "scripts/test_export_douyin_cookies_cdp.mjs"],
         [sys.executable, "scripts/validate_project.py"],
@@ -147,9 +159,70 @@ def rebuild_and_validate():
         )
         for command in validation_commands():
             run(command)
+        with tempfile.TemporaryDirectory(
+            prefix="badminton-evaluations-"
+        ) as directory:
+            wiring_canaries = Path(directory) / "bilibili-wiring-canaries.json"
+            run(
+                [
+                    sys.executable,
+                    "scripts/generate_bilibili_wiring_canaries.py",
+                    "--output",
+                    wiring_canaries,
+                ]
+            )
+            run(
+                [
+                    sys.executable,
+                    "scripts/evaluate_bilibili_wiring_canaries.py",
+                    wiring_canaries,
+                ]
+            )
+            evaluation_results = Path(directory) / "core-evaluations.json"
+            run(
+                [
+                    sys.executable,
+                    "scripts/collect_evaluation_results.py",
+                    "--output",
+                    evaluation_results,
+                ]
+            )
+            run(
+                [
+                    sys.executable,
+                    "scripts/generate_evaluation_report.py",
+                    "--write",
+                    "--evaluations",
+                    evaluation_results,
+                ]
+            )
         impact = write_impact_report(before, impact_snapshot())
         print(json.dumps({"update_impact": impact}, ensure_ascii=False))
     return changed_references
+
+
+def write_validation_receipt(path):
+    manifest = json.loads(
+        (ROOT / "data/knowledge/build_manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    build_id = str(manifest.get("build_id") or "")
+    if not re.fullmatch(r"[0-9a-f]{64}", build_id):
+        raise ValueError("Validated build manifest has no valid build_id")
+    atomic_write_text(
+        Path(path),
+        json.dumps(
+            {
+                "schema_version": 1,
+                "build_id": build_id,
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+        + "\n",
+    )
+    return build_id
 
 
 def main():
@@ -171,9 +244,18 @@ def main():
         help="Limit --auto-download to one queued video ID; repeatable",
     )
     parser.add_argument("--no-push", action="store_true", help="Pass through to process_douyin_ready_batch.py")
+    parser.add_argument(
+        "--validation-receipt",
+        type=Path,
+        help="Write the validated build ID after the complete rebuild succeeds",
+    )
     args = parser.parse_args()
     if args.video_id and not args.auto_download:
         parser.error("--video-id requires --auto-download")
+    if args.batch and args.validation_receipt:
+        parser.error("--validation-receipt requires a complete rebuild")
+    pipeline_lock = acquire_bilibili_pipeline_lock()
+    os.environ[PIPELINE_LOCK_OWNER_ENV] = "1"
 
     if args.snapshot:
         command = [
@@ -201,6 +283,8 @@ def main():
         run(command)
     else:
         rebuild_and_validate()
+        if args.validation_receipt:
+            write_validation_receipt(args.validation_receipt)
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))
 

@@ -1,7 +1,2469 @@
 {
   "version": 1,
   "platform": "bilibili",
-  "updated_at": "2026-07-26T20:00:03.366184+00:00",
-  "counts": {},
-  "items": []
+  "updated_at": "2026-07-28T07:37:31.911331+00:00",
+  "counts": {
+    "candidate_liuhui_teaching": 31
+  },
+  "items": [
+    {
+      "video_id": "bilibili:BV13a4y1q7cB",
+      "bvid": "BV13a4y1q7cB",
+      "url": "https://www.bilibili.com/video/BV13a4y1q7cB/",
+      "title": "怎样让打球动作更好看（1）架拍框架篇！刘辉教练教你专业好看的高远球动作关键点(1)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+      "card_text": "5.0万\n36\n06:06\n怎样让打球动作更好看（1）架拍框架篇！刘辉教练教你专业好看的高远球动作关键点(1)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道\n2024-01-02",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-02",
+      "duration_text": "06:06",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:42:39.901383+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "怎样让打球动作更好看（1）架拍框架篇！刘辉教练教你专业好看的高远球动作关键点(1)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+          "description": "怎样让打球动作更好看（1）架拍！刘辉教练教你专业好看的高远球动作关键点(1)——架拍框架篇！看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "体育",
+            "羽毛球",
+            "羽毛球动作",
+            "羽毛球发力",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 365.714,
+          "upload_date": "20240103"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1764y1A79d",
+      "bvid": "BV1764y1A79d",
+      "url": "https://www.bilibili.com/video/BV1764y1A79d/",
+      "title": "被动了动作变形怎么办？刘辉教练教你一招解决动作变形如何发力！醍醐灌顶！太有用了 有没有！",
+      "card_text": "4.7万\n51\n07:22\n被动了动作变形怎么办？刘辉教练教你一招解决动作变形如何发力！醍醐灌顶！太有用了 有没有！\n2024-01-19",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-19",
+      "duration_text": "07:22",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:43:27.669628+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "被动了动作变形怎么办？刘辉教练教你一招解决动作变形如何发力！醍醐灌顶！太有用了 有没有！",
+          "description": "被动了动作变形怎么办？刘辉教练教你一招解决动作变形如何发力！醍醐灌顶！太有用了 有没有！",
+          "tags": [
+            "动作变形",
+            "发力",
+            "羽毛球",
+            "羽毛球教学",
+            "被动发力"
+          ],
+          "duration_seconds": 441.968,
+          "upload_date": "20240120"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV18KqWYmEx7",
+      "bvid": "BV18KqWYmEx7",
+      "url": "https://www.bilibili.com/video/BV18KqWYmEx7/",
+      "title": "大发力的杀球是什么感觉？刘辉教练教你杀球爆发力训练方法和原理 偷偷说一下这是VIP课的内容",
+      "card_text": "3.8万\n44\n09:00\n大发力的杀球是什么感觉？刘辉教练教你杀球爆发力训练方法和原理 偷偷说一下这是VIP课的内容\n2024-12-08",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-12-08",
+      "duration_text": "09:00",
+      "profile_page": 11,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 6
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 11,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:43:47.932920+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "大发力的杀球是什么感觉？刘辉教练教你杀球爆发力训练方法和原理 偷偷说一下这是VIP课的内容",
+          "description": "大发力的杀球是什么感觉？刘辉教练教你杀球爆发力训练方法和原理 偷偷说一下这是VIP课的内容",
+          "tags": [
+            "2024热门年度盘点",
+            "体育",
+            "发现《怎么办呢》",
+            "我的年度运动记忆",
+            "杀球",
+            "爆发力",
+            "羽毛球发力",
+            "羽毛球教学",
+            "训练方法"
+          ],
+          "duration_seconds": 539.222,
+          "upload_date": "20241209"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV19Q4y1w7oH",
+      "bvid": "BV19Q4y1w7oH",
+      "url": "https://www.bilibili.com/video/BV19Q4y1w7oH/",
+      "title": "退后场斜线步伐怎么跑？刘辉教练教你搓球后斜线退后场步法！",
+      "card_text": "3.2万\n24\n04:28\n退后场斜线步伐怎么跑？刘辉教练教你搓球后斜线退后场步法！\n2024-01-19",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-19",
+      "duration_text": "04:28",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·实战全场步法",
+          "url": "https://space.bilibili.com/1423436652/lists/1738230?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:44:17.123599+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "退后场斜线步伐怎么跑？刘辉教练教你搓球后斜线退后场步法！",
+          "description": "退后场斜线步伐怎么跑？刘辉教练教你搓球后斜线退后场步法！方法不止一种，需要灵活运用",
+          "tags": [
+            "体育",
+            "步伐",
+            "步法",
+            "羽毛球",
+            "羽毛球教学",
+            "运动",
+            "马来步"
+          ],
+          "duration_seconds": 267.958,
+          "upload_date": "20240119"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1AG411X7FR",
+      "bvid": "BV1AG411X7FR",
+      "url": "https://www.bilibili.com/video/BV1AG411X7FR/",
+      "title": "杀球总下网怎么办？刘辉教练教你杀得平和杀得尖怎么控制？杀球四个等级'重快边尖'是什么！",
+      "card_text": "5.2万\n64\n11:34\n杀球总下网怎么办？刘辉教练教你杀得平和杀得尖怎么控制？杀球四个等级'重快边尖'是什么！\n2023-11-15",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2023-11-15",
+      "duration_text": "11:34",
+      "profile_page": 18,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 18,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:44:35.036292+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "杀球总下网怎么办？刘辉教练教你杀得平和杀得尖怎么控制？杀球四个等级'重快边尖'是什么！",
+          "description": "杀球总下网怎么办？刘辉教练教你杀得平和杀得尖怎么控制？杀球四个等级&#39;重快边尖&#39;是什么！",
+          "tags": [
+            "体育",
+            "发现《Better Days (Made Popular By NEIKED, Mae Muller & Polo G) [Karaoke Version]》",
+            "杀球",
+            "羽毛球",
+            "羽毛球教学",
+            "运动"
+          ],
+          "duration_seconds": 693.905,
+          "upload_date": "20231116"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1BV4y1X7Mt",
+      "bvid": "BV1BV4y1X7Mt",
+      "url": "https://www.bilibili.com/video/BV1BV4y1X7Mt/",
+      "title": "羽毛球吊球怎么接？刘辉教练教你网前接吊球步伐技巧",
+      "card_text": "3.1万\n3\n04:11\n羽毛球吊球怎么接？刘辉教练教你网前接吊球步伐技巧\n2023-03-24",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2023-03-24",
+      "duration_text": "04:11",
+      "profile_page": 20,
+      "collection_memberships": [
+        {
+          "name": "合集·网前轻技术和假动作",
+          "url": "https://space.bilibili.com/1423436652/lists/1738235?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 20,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:45:02.106587+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "羽毛球吊球怎么接？刘辉教练教你网前接吊球步伐技巧",
+          "description": "",
+          "tags": [
+            "#羽毛球吊球",
+            "发现《木》",
+            "步伐",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 250.681,
+          "upload_date": "20230324"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1DH4y1277F",
+      "bvid": "BV1DH4y1277F",
+      "url": "https://www.bilibili.com/video/BV1DH4y1277F/",
+      "title": "铜墙铁壁般的的防守是怎么练出来的？刘辉教练揭秘 极度残忍的百拍攻防训练方法 本周最强来了",
+      "card_text": "4.3万\n17\n08:38\n铜墙铁壁般的的防守是怎么练出来的？刘辉教练揭秘 极度残忍的百拍攻防训练方法 本周最强来了\n2023-11-29",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2023-11-29",
+      "duration_text": "08:38",
+      "profile_page": 18,
+      "collection_memberships": [
+        {
+          "name": "合集·单打战术套路和防守",
+          "url": "https://space.bilibili.com/1423436652/lists/1738251?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 18,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:45:30.849442+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "铜墙铁壁般的的防守是怎么练出来的？刘辉教练揭秘 极度残忍的百拍攻防训练方法 本周最强来了",
+          "description": "铜墙铁壁般的的防守是怎么练出来的？刘辉教练揭秘 极度残忍的百拍攻防训练方法 本周最强来了",
+          "tags": [
+            "体育",
+            "发现《木》",
+            "战术",
+            "接杀",
+            "羽毛球",
+            "羽毛球教学",
+            "训练方法",
+            "运动",
+            "防守"
+          ],
+          "duration_seconds": 517.015,
+          "upload_date": "20231130"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1GN4y1H7co",
+      "bvid": "BV1GN4y1H7co",
+      "url": "https://www.bilibili.com/video/BV1GN4y1H7co/",
+      "title": "双打网前一蹲起不来了怎么办？刘辉教练教你正确的双打轮转技巧！轮转是有信号的，看看有哪些信号",
+      "card_text": "2.8万\n88\n05:12\n双打网前一蹲起不来了怎么办？刘辉教练教你正确的双打轮转技巧！轮转是有信号的，看看有哪些信号\n2024-01-21",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-21",
+      "duration_text": "05:12",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·双打战术套路和防守",
+          "url": "https://space.bilibili.com/1423436652/lists/1815219?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:46:25.388665+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "双打网前一蹲起不来了怎么办？刘辉教练教你正确的双打轮转技巧！轮转是有信号的，看看有哪些信号",
+          "description": "双打网前一蹲起不来了怎么办？刘辉教练教你正确的双打轮转技巧！轮转是有信号的，看看有哪些信号",
+          "tags": [
+            "双打轮转",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 311.89,
+          "upload_date": "20240121"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1Ji4y1r7zJ",
+      "bvid": "BV1Ji4y1r7zJ",
+      "url": "https://www.bilibili.com/video/BV1Ji4y1r7zJ/",
+      "title": "怎样让打球动作更好看（2）挥拍发力篇！刘辉教练教你专业好看的高远球动作关键点(2)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+      "card_text": "7.2万\n160\n08:56\n怎样让打球动作更好看（2）挥拍发力篇！刘辉教练教你专业好看的高远球动作关键点(2)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道\n2024-01-03",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-03",
+      "duration_text": "08:56",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:46:54.830654+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "怎样让打球动作更好看（2）挥拍发力篇！刘辉教练教你专业好看的高远球动作关键点(2)看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+          "description": "怎样让打球动作更好看（2）挥拍！刘辉教练教你专业好看的高远球动作关键点(2)——挥拍发力篇！看完让你脱离新手 直接入门 打了几年的老鸟也未必知道",
+          "tags": [
+            "体育",
+            "羽毛球",
+            "羽毛球动作",
+            "羽毛球发力",
+            "羽毛球挥拍",
+            "羽毛球教学",
+            "羽毛球鞭打",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 535.731,
+          "upload_date": "20240104"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1KQ4y137en",
+      "bvid": "BV1KQ4y137en",
+      "url": "https://www.bilibili.com/video/BV1KQ4y137en/",
+      "title": "陶菲克反手过渡球怎么学？刘辉教练教你陶菲克反手和普通反手区别",
+      "card_text": "4.9万\n46\n06:15\n陶菲克反手过渡球怎么学？刘辉教练教你陶菲克反手和普通反手区别\n2023-12-20",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2023-12-20",
+      "duration_text": "06:15",
+      "profile_page": 18,
+      "collection_memberships": [
+        {
+          "name": "合集·反手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1815203?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 18,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:47:11.907130+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "陶菲克反手过渡球怎么学？刘辉教练教你陶菲克反手和普通反手区别",
+          "description": "陶菲克反手过渡球怎么学？刘辉教练教你陶菲克反手和普通反手区别",
+          "tags": [
+            "体育",
+            "反手过渡球",
+            "发现《Better Days (Made Popular By NEIKED, Mae Muller & Polo G) [Karaoke Version]》",
+            "羽毛球",
+            "羽毛球教学",
+            "运动",
+            "陶菲克"
+          ],
+          "duration_seconds": 374.63,
+          "upload_date": "20231221"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1Km411D7aq",
+      "bvid": "BV1Km411D7aq",
+      "url": "https://www.bilibili.com/video/BV1Km411D7aq/",
+      "title": "架拍感觉很累是为什么？刘辉教练自述往事自己第一次训练就哭了！",
+      "card_text": "2.0万\n12\n04:23\n架拍感觉很累是为什么？刘辉教练自述往事自己第一次训练就哭了！\n2024-02-19",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-02-19",
+      "duration_text": "04:23",
+      "profile_page": 16,
+      "collection_memberships": [],
+      "discovery_evidence": {
+        "profile_page": 16,
+        "in_current_profile_archive": true,
+        "in_collection_archive": false
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:47:22.460112+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "架拍感觉很累是为什么？刘辉教练自述往事自己第一次训练就哭了！",
+          "description": "架拍感觉很累是为什么？刘辉教练自述往事自己第一次训练就哭了！",
+          "tags": [
+            "架拍",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 262.849,
+          "upload_date": "20240220"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1MmypBRE8F",
+      "bvid": "BV1MmypBRE8F",
+      "url": "https://www.bilibili.com/video/BV1MmypBRE8F/",
+      "title": "爆改业余遁地炮杀球教学！刘辉教练团高政泽教练的杀球教学哦！价值几亿你说吧！多处细节",
+      "card_text": "3.6万\n55\n21:37\n爆改业余遁地炮杀球教学！刘辉教练团高政泽教练的杀球教学哦！价值几亿你说吧！多处细节\n2025-11-19",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2025-11-19",
+      "duration_text": "21:37",
+      "profile_page": 4,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 9
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 4,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:47:31.393367+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "爆改业余遁地炮杀球教学！刘辉教练团高政泽教练的杀球教学哦！价值几亿你说吧！多处细节",
+          "description": "爆改业余遁地炮杀球教学！刘辉教练团高政泽教练的杀球教学哦！价值几亿你说吧！多处细节",
+          "tags": [
+            "业余羽毛球",
+            "体育",
+            "刘辉教练",
+            "把兴趣玩出名堂",
+            "杀球",
+            "杀球教学",
+            "羽毛球教学",
+            "遁地炮杀球"
+          ],
+          "duration_seconds": 1296.233,
+          "upload_date": "20251120"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1Pi4y1B7NB",
+      "bvid": "BV1Pi4y1B7NB",
+      "url": "https://www.bilibili.com/video/BV1Pi4y1B7NB/",
+      "title": "【进阶】业余混双男战术有哪些？刘辉教练教你混双男选手只考虑这一件事就够了",
+      "card_text": "4.8万\n23\n07:09\n【进阶】业余混双男战术有哪些？刘辉教练教你混双男选手只考虑这一件事就够了\n2024-01-11",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-11",
+      "duration_text": "07:09",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·双打战术套路和防守",
+          "url": "https://space.bilibili.com/1423436652/lists/1815219?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:47:59.553382+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "【进阶】业余混双男战术有哪些？刘辉教练教你混双男选手只考虑这一件事就够了",
+          "description": "【进阶】业余混双男战术有哪些？刘辉教练教你混双男选手只考虑这一件事就够了 绝不是说说这么简单 真正能做到的不多",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "体育",
+            "战术",
+            "混双男",
+            "羽毛球",
+            "羽毛球教学",
+            "运动"
+          ],
+          "duration_seconds": 428.083,
+          "upload_date": "20240111"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1Q2d8YEEcg",
+      "bvid": "BV1Q2d8YEEcg",
+      "url": "https://www.bilibili.com/video/BV1Q2d8YEEcg/",
+      "title": "头顶滑板吊球教学！网红教练小羊同学做客刘辉羽毛球直播间示范滑板动作！一个有球速的滑板吊球",
+      "card_text": "5.5万\n31\n12:17\n头顶滑板吊球教学！网红教练小羊同学做客刘辉羽毛球直播间示范滑板动作！一个有球速的滑板吊球\n2025-04-15",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2025-04-15",
+      "duration_text": "12:17",
+      "profile_page": 9,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 7
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 9,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:48:08.416177+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "头顶滑板吊球教学！网红教练小羊同学做客刘辉羽毛球直播间示范滑板动作！一个有球速的滑板吊球",
+          "description": "头顶滑板吊球教学！网红教练小羊同学做客刘辉羽毛球直播间示范滑板动作！一个有球速的滑板吊球",
+          "tags": [
+            "体育",
+            "吊球",
+            "头顶吊球",
+            "小羊",
+            "滑拍吊球",
+            "滑板吊球",
+            "羽毛球吊球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 736.723,
+          "upload_date": "20250415"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1R2421w7DX",
+      "bvid": "BV1R2421w7DX",
+      "url": "https://www.bilibili.com/video/BV1R2421w7DX/",
+      "title": "为什么正手过渡学不会？刘辉教练教你有了这种感觉才能学会！不看又错过一个亿",
+      "card_text": "3.9万\n26\n07:32\n为什么正手过渡学不会？刘辉教练教你有了这种感觉才能学会！不看又错过一个亿\n2024-01-30",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-30",
+      "duration_text": "07:32",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:48:37.217434+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "为什么正手过渡学不会？刘辉教练教你有了这种感觉才能学会！不看又错过一个亿",
+          "description": "为什么正手过渡学不会？刘辉教练教你有了这种感觉才能学会！不看又错过一个亿",
+          "tags": [
+            "体育运动那些事",
+            "正手过渡",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 451.163,
+          "upload_date": "20240131"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1RV411Q7rL",
+      "bvid": "BV1RV411Q7rL",
+      "url": "https://www.bilibili.com/video/BV1RV411Q7rL/",
+      "title": "为什么林丹打高远球不架拍？刘辉教练教你林丹架拍的秘诀！",
+      "card_text": "12.8万\n47\n04:04\n为什么林丹打高远球不架拍？刘辉教练教你林丹架拍的秘诀！\n2024-01-26",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-26",
+      "duration_text": "04:04",
+      "profile_page": 17,
+      "collection_memberships": [],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": false
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:48:46.124577+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "为什么林丹打高远球不架拍？刘辉教练教你林丹架拍的秘诀！",
+          "description": "为什么林丹打高远球不架拍？刘辉教练教你林丹架拍的秘诀！这也是刘教说过很多遍的问题，继续科普",
+          "tags": [
+            "体育",
+            "体育运动那些事",
+            "林丹",
+            "羽毛球",
+            "羽毛球教学",
+            "高远球"
+          ],
+          "duration_seconds": 243.762,
+          "upload_date": "20240126"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1SK411v7FG",
+      "bvid": "BV1SK411v7FG",
+      "url": "https://www.bilibili.com/video/BV1SK411v7FG/",
+      "title": "单打实战步法重心怎么调配？刘辉教练教你骆建佑重心稳定的步伐秘诀！超级干货 稀缺资源",
+      "card_text": "4.3万\n75\n07:02\n单打实战步法重心怎么调配？刘辉教练教你骆建佑重心稳定的步伐秘诀！超级干货 稀缺资源\n2024-01-12",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-12",
+      "duration_text": "07:02",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·实战全场步法",
+          "url": "https://space.bilibili.com/1423436652/lists/1738230?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:49:04.563099+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "单打实战步法重心怎么调配？刘辉教练教你骆建佑重心稳定的步伐秘诀！超级干货 稀缺资源",
+          "description": "单打实战步法重心怎么调配？刘辉教练教你骆建佑重心稳定的步伐秘诀！超级干货稀缺资源，单打步法进阶必备",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "体育",
+            "单打",
+            "步伐",
+            "步法",
+            "羽毛球",
+            "羽毛球教学",
+            "运动",
+            "重心",
+            "骆建佑"
+          ],
+          "duration_seconds": 421.674,
+          "upload_date": "20240113"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1Se411Y775",
+      "bvid": "BV1Se411Y775",
+      "url": "https://www.bilibili.com/video/BV1Se411Y775/",
+      "title": "单打被快推头顶怎么办？刘辉教练教你如何用超硬反手过渡一招破解！",
+      "card_text": "3.0万\n42\n05:39\n单打被快推头顶怎么办？刘辉教练教你如何用超硬反手过渡一招破解！\n2024-01-26",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-26",
+      "duration_text": "05:39",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·单打战术套路和防守",
+          "url": "https://space.bilibili.com/1423436652/lists/1738251?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:49:15.163108+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "单打被快推头顶怎么办？刘辉教练教你如何用超硬反手过渡一招破解！",
+          "description": "单打被快推头顶怎么办？刘辉教练教你如何用超硬反手过渡一招破解！想学反手过渡的主页查找保姆级反手过渡！超详细教学！",
+          "tags": [
+            "体育运动那些事",
+            "反手",
+            "反手过渡",
+            "球速",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 338.918,
+          "upload_date": "20240127"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1TK4y1B7XQ",
+      "bvid": "BV1TK4y1B7XQ",
+      "url": "https://www.bilibili.com/video/BV1TK4y1B7XQ/",
+      "title": "高远球不够高怎么办？刘辉教练教你高远球提升高度的秘诀！",
+      "card_text": "2.2万\n2\n02:23\n高远球不够高怎么办？刘辉教练教你高远球提升高度的秘诀！\n2024-01-20",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-20",
+      "duration_text": "02:23",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:49:23.917417+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "高远球不够高怎么办？刘辉教练教你高远球提升高度的秘诀！",
+          "description": "高远球不够高怎么办？刘辉教练教你高远球提升高度的秘诀！",
+          "tags": [
+            "羽毛球",
+            "羽毛球教学",
+            "高远球"
+          ],
+          "duration_seconds": 142.43,
+          "upload_date": "20240120"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1ZuxLzQEcW",
+      "bvid": "BV1ZuxLzQEcW",
+      "url": "https://www.bilibili.com/video/BV1ZuxLzQEcW/",
+      "title": "刘辉教练区别于传统羽毛球教学的关键点！刘教自述羽毛教学核心竞争力！",
+      "card_text": "6113\n0\n01:13\n刘辉教练区别于传统羽毛球教学的关键点！刘教自述羽毛教学核心竞争力！\n2025-10-11",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2025-10-11",
+      "duration_text": "01:13",
+      "profile_page": 5,
+      "collection_memberships": [
+        {
+          "name": "合集·刘辉教练直播花絮",
+          "url": "https://space.bilibili.com/1423436652/lists/5307613?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 5,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:50:43.991077+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "刘辉教练区别于传统羽毛球教学的关键点！刘教自述羽毛教学核心竞争力！",
+          "description": "刘辉教练区别于传统羽毛球教学的关键点！刘教自述羽毛教学核心竞争力！",
+          "tags": [
+            "核心竞争力",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 72.539,
+          "upload_date": "20251011"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1a64y1P76h",
+      "bvid": "BV1a64y1P76h",
+      "url": "https://www.bilibili.com/video/BV1a64y1P76h/",
+      "title": "发力时怎样让大臂停住？刘辉教练教你内旋动作原理和训练方法！好不好用自己试下就知道啦",
+      "card_text": "5.5万\n24\n03:26\n发力时怎样让大臂停住？刘辉教练教你内旋动作原理和训练方法！好不好用自己试下就知道啦\n2024-01-25",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-25",
+      "duration_text": "03:26",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:50:52.811086+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "发力时怎样让大臂停住？刘辉教练教你内旋动作原理和训练方法！好不好用自己试下就知道啦",
+          "description": "发力时怎样让大臂停住？刘辉教练教你内旋动作原理和训练方法！好不好用自己试下就知道啦",
+          "tags": [
+            "体育",
+            "发力",
+            "羽毛球",
+            "羽毛球发力",
+            "训练方法"
+          ],
+          "duration_seconds": 205.728,
+          "upload_date": "20240125"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1aT4y187RN",
+      "bvid": "BV1aT4y187RN",
+      "url": "https://www.bilibili.com/video/BV1aT4y187RN/",
+      "title": "后场球怎么做半侧身步法？刘辉教练教你和半侧身最搭的万能步法！别再只会用马来步了，学万能步才是王道！",
+      "card_text": "2.2万\n7\n03:08\n后场球怎么做半侧身步法？刘辉教练教你和半侧身最搭的万能步法！别再只会用马来步了，学万能步才是王道！\n2024-01-14",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-14",
+      "duration_text": "03:08",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·实战全场步法",
+          "url": "https://space.bilibili.com/1423436652/lists/1738230?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:51:03.385423+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "后场球怎么做半侧身步法？刘辉教练教你和半侧身最搭的万能步法！别再只会用马来步了，学万能步才是王道！",
+          "description": "后场球怎么做半侧身步法？刘辉教练教你和半侧身最搭的万能步法！别再只会用马来步了，学万能步才是王道！",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "万能步法",
+            "后场步伐",
+            "步法",
+            "羽毛球",
+            "羽毛球教学",
+            "退后场步法"
+          ],
+          "duration_seconds": 187.849,
+          "upload_date": "20240115"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1eH4y1Y7si",
+      "bvid": "BV1eH4y1Y7si",
+      "url": "https://www.bilibili.com/video/BV1eH4y1Y7si/",
+      "title": "打球总是甩手腕怎么改？刘辉教练教你高远球正确的改动作方法！新手改发力动作必看！",
+      "card_text": "2.7万\n17\n12:36\n打球总是甩手腕怎么改？刘辉教练教你高远球正确的改动作方法！新手改发力动作必看！\n2024-02-05",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-02-05",
+      "duration_text": "12:36",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 3
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:51:39.798778+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "打球总是甩手腕怎么改？刘辉教练教你高远球正确的改动作方法！新手改发力动作必看！",
+          "description": "打球总是甩手腕怎么改？刘辉教练教你高远球正确的改动作方法！新手改发力动作必看！",
+          "tags": [
+            "体育",
+            "发力",
+            "改动作",
+            "新手",
+            "甩手腕",
+            "羽毛球",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 755.438,
+          "upload_date": "20240205"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1hQ4y177QA",
+      "bvid": "BV1hQ4y177QA",
+      "url": "https://www.bilibili.com/video/BV1hQ4y177QA/",
+      "title": "高远球发力是什么感觉？刘辉教练教你羽毛球发力到底靠的是什么？不看又错过一个亿",
+      "card_text": "1.6万\n15\n05:57\n高远球发力是什么感觉？刘辉教练教你羽毛球发力到底靠的是什么？不看又错过一个亿\n2024-01-04",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-04",
+      "duration_text": "05:57",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:51:48.931614+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "高远球发力是什么感觉？刘辉教练教你羽毛球发力到底靠的是什么？不看又错过一个亿",
+          "description": "高远球发力是什么感觉？刘辉教练教你羽毛球发力到底靠的是什么？不看又错过一个亿",
+          "tags": [
+            "体育",
+            "羽毛球",
+            "羽毛球发力",
+            "羽毛球挥拍",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 356.008,
+          "upload_date": "20240105"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1kj411a7yC",
+      "bvid": "BV1kj411a7yC",
+      "url": "https://www.bilibili.com/video/BV1kj411a7yC/",
+      "title": "总被骗启动怎么办？刘辉教练教你打球时一个动作跟上节奏 养成这个意识 你会快很多哦",
+      "card_text": "4.7万\n45\n05:52\n总被骗启动怎么办？刘辉教练教你打球时一个动作跟上节奏 养成这个意识 你会快很多哦\n2023-10-31",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2023-10-31",
+      "duration_text": "05:52",
+      "profile_page": 18,
+      "collection_memberships": [
+        {
+          "name": "合集·实战全场步法",
+          "url": "https://space.bilibili.com/1423436652/lists/1738230?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 18,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:53:04.204222+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "总被骗启动怎么办？刘辉教练教你打球时一个动作跟上节奏 养成这个意识 你会快很多哦",
+          "description": "总被骗启动怎么办？刘辉教练教你打球时一个动作跟上节奏 养成这个意识 你会快很多哦",
+          "tags": [
+            "体育",
+            "体育频道创作打卡",
+            "发现《木》",
+            "启动",
+            "启动步",
+            "羽毛球",
+            "羽毛球教学",
+            "运动"
+          ],
+          "duration_seconds": 351.55,
+          "upload_date": "20231031"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1oC4y1i7Bk",
+      "bvid": "BV1oC4y1i7Bk",
+      "url": "https://www.bilibili.com/video/BV1oC4y1i7Bk/",
+      "title": "高远球动作怎么改？刘辉教练教你改正确动作做好这三点！超级干货，精华都浓缩在这了！",
+      "card_text": "3.7万\n13\n06:53\n高远球动作怎么改？刘辉教练教你改正确动作做好这三点！超级干货，精华都浓缩在这了！\n2024-01-05",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-05",
+      "duration_text": "06:53",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:53:35.003876+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "高远球动作怎么改？刘辉教练教你改正确动作做好这三点！超级干货，精华都浓缩在这了！",
+          "description": "高远球动作怎么改？刘辉教练教你改正确动作做好这三点！超级干货，精华都浓缩在这了！",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "体育",
+            "羽毛球动作",
+            "羽毛球发力",
+            "羽毛球挥拍",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 412.015,
+          "upload_date": "20240105"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1ra4y1q75Z",
+      "bvid": "BV1ra4y1q75Z",
+      "url": "https://www.bilibili.com/video/BV1ra4y1q75Z/",
+      "title": "怎样的发力才会集中？刘辉教练教你集中发力的关键因素！正反手通用。羽毛球很难但有人教你就容易多了！不看又错过一个亿",
+      "card_text": "1.8万\n13\n05:09\n怎样的发力才会集中？刘辉教练教你集中发力的关键因素！正反手通用。羽毛球很难但有人教你就容易多了！不看又错过一个亿\n2024-01-07",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-07",
+      "duration_text": "05:09",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:54:11.939924+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "怎样的发力才会集中？刘辉教练教你集中发力的关键因素！正反手通用。羽毛球很难但有人教你就容易多了！不看又错过一个亿",
+          "description": "怎样的发力才会集中？刘辉教练教你集中发力的关键因素！正反手通用。羽毛球很难但有人教你就容易多了！不看又错过一个亿",
+          "tags": [
+            "2023热门年度盘点",
+            "2023运动记录",
+            "体育",
+            "发力",
+            "羽毛球",
+            "羽毛球动作",
+            "羽毛球发力",
+            "羽毛球挥拍",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 308.825,
+          "upload_date": "20240107"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1rc41147r3",
+      "bvid": "BV1rc41147r3",
+      "url": "https://www.bilibili.com/video/BV1rc41147r3/",
+      "title": "反手发小球太高怎么办？刘辉教练教你反手发贴网球的秘诀！业余初学必看！很多老鸟也不一定发的好",
+      "card_text": "3.6万\n9\n02:35\n反手发小球太高怎么办？刘辉教练教你反手发贴网球的秘诀！业余初学必看！很多老鸟也不一定发的好\n2024-01-15",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-15",
+      "duration_text": "02:35",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·反手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1815203?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:54:20.159031+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "反手发小球太高怎么办？刘辉教练教你反手发贴网球的秘诀！业余初学必看！很多老鸟也不一定发的好",
+          "description": "反手发小球太高怎么办？刘辉教练教你反手发贴网球的秘诀！业余初学必看！很多老鸟也不一定发的好",
+          "tags": [
+            "反手发球",
+            "羽毛球"
+          ],
+          "duration_seconds": 154.04,
+          "upload_date": "20240116"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1tC4y1C77U",
+      "bvid": "BV1tC4y1C77U",
+      "url": "https://www.bilibili.com/video/BV1tC4y1C77U/",
+      "title": "架拍要开肩扩胸吗？刘辉教练教你开肩扩胸对发力的影响！又一次醍醐灌顶，高远球还打不上力的赶紧试试",
+      "card_text": "3.1万\n20\n04:02\n架拍要开肩扩胸吗？刘辉教练教你开肩扩胸对发力的影响！又一次醍醐灌顶，高远球还打不上力的赶紧试试\n2024-01-17",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-17",
+      "duration_text": "04:02",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 2
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:54:28.980820+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "架拍要开肩扩胸吗？刘辉教练教你开肩扩胸对发力的影响！又一次醍醐灌顶，高远球还打不上力的赶紧试试",
+          "description": "架拍要开肩扩胸吗？刘辉教练教你开肩扩胸对发力的影响！又一次醍醐灌顶，高远球还打不上力的赶紧试试",
+          "tags": [
+            "体育",
+            "发力",
+            "架拍",
+            "框架",
+            "爆发力",
+            "羽毛球",
+            "羽毛球教学",
+            "运动",
+            "高远球"
+          ],
+          "duration_seconds": 241.348,
+          "upload_date": "20240118"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1uD421E7Uk",
+      "bvid": "BV1uD421E7Uk",
+      "url": "https://www.bilibili.com/video/BV1uD421E7Uk/",
+      "title": "为什么正手推球发不上力？刘辉教练教你无敌透彻的推球发力技巧！今日一亿你要不要吧",
+      "card_text": "9.7万\n67\n11:06\n为什么正手推球发不上力？刘辉教练教你无敌透彻的推球发力技巧！今日一亿你要不要吧\n2024-03-13",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-03-13",
+      "duration_text": "11:06",
+      "profile_page": 16,
+      "collection_memberships": [
+        {
+          "name": "合集·正手发力",
+          "url": "https://space.bilibili.com/1423436652/lists/1310095?type=season",
+          "page": 3
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 16,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:54:37.680952+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "为什么正手推球发不上力？刘辉教练教你无敌透彻的推球发力技巧！今日一亿你要不要吧",
+          "description": "为什么正手推球发不上力？刘辉教练教你无敌透彻的推球发力技巧！今日一亿你要不要吧",
+          "tags": [
+            "发力",
+            "推球",
+            "潮流运动季",
+            "潮流运动季：踏青开练，怦然新动",
+            "羽毛球",
+            "羽毛球教学"
+          ],
+          "duration_seconds": 665.948,
+          "upload_date": "20240313"
+        }
+      }
+    },
+    {
+      "video_id": "bilibili:BV1yb4y1P7d1",
+      "bvid": "BV1yb4y1P7d1",
+      "url": "https://www.bilibili.com/video/BV1yb4y1P7d1/",
+      "title": "双打被推底线球怎么接？刘辉教练教你根本问题不是你不会接，有没有可能是站错位置了！",
+      "card_text": "4.0万\n52\n05:00\n双打被推底线球怎么接？刘辉教练教你根本问题不是你不会接，有没有可能是站错位置了！\n2024-01-18",
+      "tags": [],
+      "source_platform": "bilibili",
+      "uploader_profile_id": "1423436652",
+      "published_at_text": "2024-01-18",
+      "duration_text": "05:00",
+      "profile_page": 17,
+      "collection_memberships": [
+        {
+          "name": "合集·双打战术套路和防守",
+          "url": "https://space.bilibili.com/1423436652/lists/1815219?type=season",
+          "page": 1
+        }
+      ],
+      "discovery_evidence": {
+        "profile_page": 17,
+        "in_current_profile_archive": true,
+        "in_collection_archive": true
+      },
+      "origin_status": "origin_verification_pending",
+      "knowledge_admission_eligible": false,
+      "decision": "candidate_liuhui_teaching",
+      "decision_reason": "元数据同时包含明确刘辉来源信号和教学信号；等待独立来源验证",
+      "classification_signals": {
+        "liuhui_origin": true,
+        "teaching": true,
+        "non_teaching": false,
+        "medical": false,
+        "promotion": false
+      },
+      "classification_rules_version": 1,
+      "classification_rules_hash": "ca7ed6a4a10be94e7215e51afbf72f42dcf7c4c2ce34155b2fa9c83df8985968",
+      "processing_state": {
+        "stage": "quarantined_origin_unknown",
+        "terminal": true,
+        "attempts_by_stage": {},
+        "next_retry_at": null,
+        "last_error_class": null,
+        "last_error_at": null
+      },
+      "possible_douyin_duplicates": [],
+      "first_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "last_seen_at": "2026-07-28T05:22:53.334000+00:00",
+      "origin_verification": {
+        "status": "verification_failed",
+        "verification_tier": "unverified",
+        "methods": [],
+        "verified_at": "2026-07-28T05:55:42.476413+00:00",
+        "signals": {
+          "video_id_matches": true,
+          "uploader_profile_matches": true,
+          "canonical_url_matches": true,
+          "publisher_text_names_liuhui": true,
+          "dedicated_origin_tag": false,
+          "duration_valid": true
+        },
+        "source_metadata": {
+          "uploader": "大G羽毛球",
+          "uploader_id": "1423436652",
+          "title": "双打被推底线球怎么接？刘辉教练教你根本问题不是你不会接，有没有可能是站错位置了！",
+          "description": "双打被推底线球怎么接？刘辉教练教你根本问题不是你不会接，有没有可能是站错位置了！",
+          "tags": [
+            "体育",
+            "双打",
+            "双打接发球",
+            "羽毛球",
+            "羽毛球教学",
+            "运动"
+          ],
+          "duration_seconds": 299.537,
+          "upload_date": "20240119"
+        }
+      }
+    }
+  ]
 }

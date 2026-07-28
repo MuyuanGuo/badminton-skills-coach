@@ -389,6 +389,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7344186576013905187",
                 "7511934047901846841",
                 "bilibili:BV1tw411U7PV",
+                "bilibili:BV1ba4y1C7E5",
             },
         )
         self.assertFalse(
@@ -1817,7 +1818,6 @@ class AnswerContextTests(unittest.TestCase):
             "7499776424493075772",
             "7098897570482670888",
             "bilibili:BV1tw411U7PV",
-            "bilibili:BV1aw411179M",
             "bilibili:BV1TT411r7Ft",
         ]:
             self.assertEqual(
@@ -2035,6 +2035,8 @@ class AnswerContextTests(unittest.TestCase):
                 "7567155406117533051",
                 "7659991105622862457",
                 "7445495930280856892",
+                "bilibili:BV14m4y1376B",
+                "bilibili:BV1mw41117F1",
             },
         )
         self.assertEqual(
@@ -2139,7 +2141,7 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(
             [item["video_id"] for item in sliced["selected_videos"]],
-            ["7059589039694957864"],
+            ["7059589039694957864", "bilibili:BV14m4y1x7dH"],
         )
         self.assertFalse(
             {
@@ -2176,6 +2178,9 @@ class AnswerContextTests(unittest.TestCase):
             "7606560547489149691",
             "7561558424342056250",
             "7506362888166083897",
+            "bilibili:BV1784y1S7pf",
+            "bilibili:BV1DW4y1A7fx",
+            "bilibili:BV1Rx4y197Aq",
         }
         generic_ids = {
             item["video_id"] for item in generic["selected_videos"]
@@ -2299,7 +2304,10 @@ class AnswerContextTests(unittest.TestCase):
                 "7498295344284093755",
                 "7125615679402724623",
             },
-            "假挑真放怎么做": {"7151961376448138531"},
+            "假挑真放怎么做": {
+                "7151961376448138531",
+                "bilibili:BV1xz4y1M7Lx",
+            },
             "动态低架怎么做": {"7589749293205363633"},
             "远网怎么打": {
                 "7411850466457292084",
@@ -2442,6 +2450,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7068465954270792994",
                 "7068092085533953315",
                 "7067722128413543680",
+                "bilibili:BV1Bi4y1q7eh",
             },
         )
         hard_negatives = {
@@ -2469,11 +2478,15 @@ class AnswerContextTests(unittest.TestCase):
                     "7606412946096327978",
                     "7611635851789771721",
                     "7506362888166083897",
+                    "bilibili:BV14m4y1376B",
                 },
             ),
             "遁地炮怎么打": (
                 "smash_ground_cannon",
-                {"7069575740836023587"},
+                {
+                    "7069575740836023587",
+                    "bilibili:BV1p34y1V7qa",
+                },
             ),
             "定杀怎么打": (
                 "smash_stationary",
@@ -2552,7 +2565,10 @@ class AnswerContextTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     [item["video_id"] for item in payload["selected_videos"]],
-                    ["7069575740836023587"],
+                    [
+                        "7069575740836023587",
+                        "bilibili:BV1p34y1V7qa",
+                    ],
                 )
                 correction = payload["question_interpretation"][
                     "terminology_corrections"

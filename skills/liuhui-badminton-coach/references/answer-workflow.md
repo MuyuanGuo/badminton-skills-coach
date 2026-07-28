@@ -25,7 +25,7 @@ After continuation, use `diagnostic_model.clarification_observations` as user-re
 
 Use `answer_turn_contract` as the handoff between context generation, answer composition, and final audit. Its `original_query` is the only valid question argument for `audit_answer.py`; `effective_query` is retrieval input, not replacement wording. Explicitly acknowledge every resolved answer, do not repeat any resolved question, and include every pending question rather than using a generic “请补充”. Each pending request must retain a non-empty `purpose`. The contract's evidence state and digest must match this turn's `selected_videos` and `claim_evidence_map`, so a prior turn's V labels and evidence IDs are never valid by inheritance.
 
-The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
+The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. Evidence window text is stored once in `evidence_windows`; resolve the `window_ids` on atoms and selected videos through that table. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, referenced evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
 
 ## Diagnostic Contract
 
@@ -59,6 +59,8 @@ Still give purpose, a small set of reliable observation points, common errors, a
 ## Finalist Semantics
 
 `selected_videos` is the citation allowlist. Each item already contains a stable label, role, canonical URL, selection reasons, matched query units, teaching note, and query-matched transcript evidence.
+
+A transcript file on disk is not answer evidence and does not update model memory. Use it only after the validated release has packaged it as `ready` evidence and the current `claim_evidence_map` selects its window; never inspect raw transcripts to repair a missing claim.
 
 - `core` directly supports the complete question or one complete split query unit under exact requested conditions.
 - `supporting` covers a component, generic mechanism, reviewed evidence lead, or retrieval expansion. It cannot silently inherit conditions absent from the source.

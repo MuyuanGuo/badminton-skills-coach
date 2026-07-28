@@ -178,6 +178,90 @@ class VideoComprehensionTests(unittest.TestCase):
         )
         self.assertIn("runtime_transcript_index_mismatch", audit["failures"])
 
+    def test_chunk_first_transcript_must_match_gap_free_chunk_index(self):
+        video = self.transcript_video("")
+        video["source_type"] = "bilibili_video"
+        video["evidence_id"] = "bilibili:BV1test"
+        transcript = "先准备最快的回球线路"
+        sizes = [2, 3]
+        raw_hash = self.module.hashlib.sha256(
+            transcript.encode("utf-8")
+        ).hexdigest()
+        chunk_id = "bilibili:BV1test#t000001000-000003000"
+        record = {
+            "field_lengths": {"transcript": 0},
+            "transcript_ngrams": [],
+        }
+        chunk = {
+            "chunk_id": chunk_id,
+            "start_segment": 0,
+            "end_segment": 1,
+            "start_ms": 1000,
+            "end_ms": 3000,
+            "normalized_length": len(
+                self.module.normalize_index_text(transcript)
+            ),
+            "text_sha256": raw_hash,
+            "field_term_frequencies": {"回球": 1},
+        }
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=record,
+            chunk_first_sources={"bilibili_video"},
+            chunks=[chunk],
+            indexed_chunk_ngrams={
+                chunk_id: self.module.hashed_ngrams(transcript, sizes)
+            },
+            chunk_lexicon={"回球"},
+            transcript_ngram_sizes=sizes,
+        )
+        self.assertFalse(
+            [
+                item
+                for item in audit["failures"]
+                if "chunk" in item or "transcript_index" in item
+            ]
+        )
+
+        chunk["text_sha256"] = "0" * 64
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=record,
+            chunk_first_sources={"bilibili_video"},
+            chunks=[chunk],
+            indexed_chunk_ngrams={
+                chunk_id: self.module.hashed_ngrams(transcript, sizes)
+            },
+            chunk_lexicon={"回球"},
+            transcript_ngram_sizes=sizes,
+        )
+        self.assertIn("runtime_chunk_text_hash_mismatch", audit["failures"])
+
+    def test_chunk_first_transcript_rejects_partition_gap(self):
+        video = self.transcript_video("")
+        video["source_type"] = "bilibili_video"
+        record = {
+            "field_lengths": {"transcript": 0},
+            "transcript_ngrams": [],
+        }
+        chunk = {
+            "chunk_id": "bilibili:BV1test#t000001000-000003000",
+            "start_segment": 1,
+            "end_segment": 2,
+        }
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=record,
+            chunk_first_sources={"bilibili_video"},
+            chunks=[chunk],
+            indexed_chunk_ngrams={},
+            chunk_lexicon=set(),
+        )
+        self.assertIn("runtime_chunk_partition_mismatch", audit["failures"])
+
     def test_runtime_lookup_can_run_without_duplicate_semantic_probes(self):
         video = {
             "video_id": "7000000000000000003",

@@ -1,6 +1,6 @@
 # 回答质量黄金集审核队列
 
-知识库版本：`2026-07-26T20:58:26.319902+00:00`
+知识库版本：`2026-07-28T19:53:44.676631+00:00`
 候选问题：`57`
 可进入自动回归：`57`
 仍待审核：`0`
@@ -137,8 +137,8 @@
 
 ### 机器补充候选
 
-- 机器候选: [杀球压不下去？刘辉教练教你杀球如何下压技巧](https://www.bilibili.com/video/BV1vx4y1A71t/) (`bilibili:BV1vx4y1A71t`)
 - 机器候选: [反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果](https://www.douyin.com/video/7550305145877155131) (`7550305145877155131`)
+- 机器候选: [发力第二集 大家不要错误的去伸胳膊，要学会利用身体去拿高点](https://www.douyin.com/video/7485692231404342586) (`7485692231404342586`)
 
 ### Review notes
 
@@ -320,7 +320,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学](https://www.bilibili.com/video/BV1Ac411q7eJ/) (`bilibili:BV1Ac411q7eJ`)
 
 ### Review notes
 
@@ -519,8 +519,8 @@
 
 ### 机器补充候选
 
-- 机器候选: [【高阶】启动总是反应不过来往哪蹬地？刘辉教练教你如何判断启动方向 教学演练球路 不看又错过一个亿](https://www.bilibili.com/video/BV12N411v7qo/) (`bilibili:BV12N411v7qo`)
 - 机器候选: [并不是说一定要一步回位。而是体现向左回动，左脚的重要性](https://www.douyin.com/video/7059589039694957864) (`7059589039694957864`)
+- 机器候选: [后场就是刻意练的被动步法，不是不积极，主要练回动的节奏感](https://www.douyin.com/video/7280727710740139264) (`7280727710740139264`)
 
 ### Review notes
 
@@ -1665,9 +1665,9 @@
 
 ### 机器补充候选
 
-- 机器候选: [高远球改动作为什么总是改不过来？刘辉教练教你高远球改动作你只需要知道这三点（一）](https://www.bilibili.com/video/BV1es4y1K7PV/) (`bilibili:BV1es4y1K7PV`)
-- 机器候选: [教科书动作教不出高手，但是实战动作可以](https://www.douyin.com/video/7098156298415459599) (`7098156298415459599`)
+- 机器候选: [高远球改动作误区(二)击球点 正确改动作](https://www.bilibili.com/video/BV1NN411m7sh/) (`bilibili:BV1NN411m7sh`)
 - 机器候选: [小孩子和球友正手位大距离位移打高远球，前交叉步的要求更高，后交叉容易，距离相近](https://www.douyin.com/video/7059205903639121187) (`7059205903639121187`)
+- 机器候选: [教科书动作教不出高手，但是实战动作可以](https://www.douyin.com/video/7098156298415459599) (`7098156298415459599`)
 
 ### Review notes
 
@@ -2402,7 +2402,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学](https://www.bilibili.com/video/BV1Ac411q7eJ/) (`bilibili:BV1Ac411q7eJ`)
 
 ### Review notes
 
@@ -3160,7 +3160,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [【高阶】反手过渡球的关键技巧！刘辉教练教你更高级的反手握拍 不看又错过一个亿](https://www.bilibili.com/video/BV1tw411U7PV/) (`bilibili:BV1tw411U7PV`)
+- 机器候选: [反手过渡球的关键技巧！ 更高级的反手握拍 不看又错过一个亿](https://www.bilibili.com/video/BV1tw411U7PV/) (`bilibili:BV1tw411U7PV`)
 
 ### Review notes
 
@@ -3426,7 +3426,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [单打制胜唯一法宝 刘辉教练教你羽毛球单打核心思路](https://www.bilibili.com/video/BV1tM4y1B7z8/) (`bilibili:BV1tM4y1B7z8`)
+- 机器候选: [单打制胜唯一法宝 羽毛球单打核心思路](https://www.bilibili.com/video/BV1tM4y1B7z8/) (`bilibili:BV1tM4y1B7z8`)
 
 ### Review notes
 
@@ -4028,7 +4028,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [你不知道的架拍细节延伸！ 最适合业余球友的架拍方式！进阶霸王杀等多种架拍优势](https://www.bilibili.com/video/BV1Bi4y1q7eh/) (`bilibili:BV1Bi4y1q7eh`)
 
 ### Review notes
 
@@ -4286,7 +4286,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [劈吊球 ！ 重劈，劈吊，劈杀，握拍动作和技巧](https://www.bilibili.com/video/BV14m4y1x7dH/) (`bilibili:BV14m4y1x7dH`)
 
 ### Review notes
 
@@ -4502,7 +4502,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [遁地炮杀球有多重？ 国际女双常用的重杀这样打 一亿来了](https://www.bilibili.com/video/BV1p34y1V7qa/) (`bilibili:BV1p34y1V7qa`)
 
 ### Review notes
 
@@ -5126,7 +5126,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [什么是假挑真放？ 单打关键分用这招是真管用 羽毛球假动作系列](https://www.bilibili.com/video/BV1xz4y1M7Lx/) (`bilibili:BV1xz4y1M7Lx`)
 
 ### Review notes
 

@@ -88,9 +88,25 @@ jobs:
         if: matrix.kind == 'evaluations'
         run: python scripts/benchmark_runtime.py
 
-      - name: Validate compact answer packets
+      - name: Enforce 20-case compact answer-packet gate
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_answer_packet.py
+
+      - name: Validate Bilibili retrieval canaries
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_bilibili_canaries.py
+
+      - name: Generate Bilibili mechanical wiring canaries
+        if: matrix.kind == 'evaluations'
+        run: >-
+          python scripts/generate_bilibili_wiring_canaries.py
+          --output "$RUNNER_TEMP/bilibili-wiring-canaries.json"
+
+      - name: Validate Bilibili mechanical wiring canaries
+        if: matrix.kind == 'evaluations'
+        run: >-
+          python scripts/evaluate_bilibili_wiring_canaries.py
+          "$RUNNER_TEMP/bilibili-wiring-canaries.json"
 
       - name: Run answer-context regression shard
         if: matrix.kind == 'context'

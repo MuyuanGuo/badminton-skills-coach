@@ -4,6 +4,8 @@
 import json
 from itertools import chain
 
+MAX_MERGED_CHUNK_HINTS = 8
+
 def reviewed_evidence_priorities(
     search_module,
     query,
@@ -211,6 +213,64 @@ def topic_navigation(navigation_module, query, limit=5):
     }
 
 
+def merge_transcript_retrieval(
+    preferred,
+    matches,
+    limit=MAX_MERGED_CHUNK_HINTS,
+):
+    preferred = dict(preferred or {})
+    sources = [preferred, *(item or {} for item in matches)]
+    hints = []
+    seen_chunk_ids = set()
+    for source in sources:
+        for hint in source.get("chunk_hints", []):
+            chunk_id = str(hint.get("chunk_id") or "")
+            marker = chunk_id or (
+                int(hint.get("start_segment", 0)),
+                int(hint.get("end_segment", 0)),
+            )
+            if marker in seen_chunk_ids:
+                continue
+            seen_chunk_ids.add(marker)
+            hints.append(dict(hint))
+            if len(hints) >= limit:
+                break
+        if len(hints) >= limit:
+            break
+    chunk_ids = [
+        str(hint["chunk_id"])
+        for hint in hints
+        if hint.get("chunk_id")
+    ]
+    cluster_ids = list(
+        dict.fromkeys(
+            str(hint["cluster_id"])
+            for hint in hints
+            if hint.get("cluster_id")
+        )
+    )
+    if not hints:
+        return preferred
+    return {
+        **preferred,
+        "mode": (
+            "chunk_first"
+            if any(
+                source.get("mode") == "chunk_first"
+                for source in sources
+            )
+            else preferred.get("mode", "legacy_video")
+        ),
+        "best_chunk_id": (
+            preferred.get("best_chunk_id")
+            or (chunk_ids[0] if chunk_ids else None)
+        ),
+        "matched_chunk_ids": chunk_ids,
+        "matched_cluster_ids": cluster_ids,
+        "chunk_hints": hints,
+    }
+
+
 def merge_candidates(payloads, retrieval_queries):
     merged = {}
     for query_index, (query, payload) in enumerate(
@@ -225,7 +285,11 @@ def merge_candidates(payloads, retrieval_queries):
                     "matches": [],
                     "best_rank": rank,
                     "best_query_index": query_index,
+                    "_transcript_retrieval_matches": [],
                 },
+            )
+            entry["_transcript_retrieval_matches"].append(
+                candidate.get("transcript_retrieval") or {}
             )
             entry["matches"].append(
                 {
@@ -272,4 +336,13 @@ def merge_candidates(payloads, retrieval_queries):
                 entry["best_query_index"] = query_index
             else:
                 entry["best_rank"] = min(entry["best_rank"], rank)
+    for entry in merged.values():
+        candidate = entry["candidate"]
+        entry["candidate"] = {
+            **candidate,
+            "transcript_retrieval": merge_transcript_retrieval(
+                candidate.get("transcript_retrieval"),
+                entry.pop("_transcript_retrieval_matches"),
+            ),
+        }
     return merged

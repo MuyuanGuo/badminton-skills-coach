@@ -4,9 +4,9 @@
   "development_version": "2.0.0-dev.1",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "2372b2c3c21c218a",
-    "inputs_sha256": "e1b108e5419c8603da926d2aa9a139ad9cbd58dccff2541a48e1cd3440e01058",
-    "runtime_sha256": "6a3f9272c7dccc37cbe8c83dbd085bcddaf8725664f17f75342ed37b2ed0cd2e"
+    "id": "b9496c2f248d29b1",
+    "inputs_sha256": "5810d05aad2381576e632129d3e80e10194ba4ff4a810f9e7d3eeb96245b0123",
+    "runtime_sha256": "be25b9cce7e178c0218968c1a8c0ba00b1d4fd1c45f6d58f00a14e4f4adcb961"
   },
   "summary": {
     "status": "pass",
@@ -94,21 +94,21 @@
       "found_videos": 173,
       "candidate_recall": 1.0,
       "primary_top_k": 0.9444444444444444,
-      "mean_reciprocal_rank": 0.7397363076284643,
-      "mean_ndcg_at_k": 0.8554392869281306,
-      "mean_known_precision_at_k": 0.576858813700919,
-      "average_review_candidate_count": 12.614035087719298,
+      "mean_reciprocal_rank": 0.7209497806720029,
+      "mean_ndcg_at_k": 0.8409642139272397,
+      "mean_known_precision_at_k": 0.5028265107212476,
+      "average_review_candidate_count": 14.280701754385966,
       "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
-        "candidate_videos": 9,
-        "top_k_count": 17,
-        "top_k_rate": 0.024853801169590642,
-        "max_top_k_per_case": 2,
-        "review_count": 43,
-        "review_rate": 0.059805285118219746,
-        "max_review_per_case": 6
+        "candidate_videos": 48,
+        "top_k_count": 24,
+        "top_k_rate": 0.03508771929824561,
+        "max_top_k_per_case": 3,
+        "review_count": 86,
+        "review_rate": 0.10565110565110565,
+        "max_review_per_case": 12
       },
       "evaluation_views": {
         "production": {
@@ -129,9 +129,9 @@
         "candidate_recall": 1.0,
         "primary_top_k": 0.9629629629629629,
         "mean_reciprocal_rank": 0.7492504409171076,
-        "mean_ndcg_at_k": 0.8643728349002483,
-        "mean_known_precision_at_k": 0.5895989974937345,
-        "average_review_candidate_count": 12.298245614035087,
+        "mean_ndcg_at_k": 0.8639416260380391,
+        "mean_known_precision_at_k": 0.5796574770258981,
+        "average_review_candidate_count": 12.508771929824562,
         "hard_negative_count": 194,
         "hard_negative_top_k_violations": 0,
         "hard_negative_review_violations": 0,
@@ -155,16 +155,16 @@
       "failed": []
     },
     "video_comprehension": {
-      "ready_videos": 363,
-      "understood_videos": 363,
+      "ready_videos": 411,
+      "understood_videos": 411,
       "understanding_coverage": 1.0,
-      "transcript_backed": 344,
-      "automatic_transcript": 338,
+      "transcript_backed": 392,
+      "automatic_transcript": 386,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "evidence_provenance": {
-        "transcript_evidence_items": 2962,
-        "timestamped_transcript_evidence_items": 2962,
+        "transcript_evidence_items": 3527,
+        "timestamped_transcript_evidence_items": 3527,
         "transcript_timestamp_coverage": 1.0,
         "reviewed_visual_observation_items": 19,
         "synthesized_principle_items": 15,
@@ -193,12 +193,12 @@
       "current_runtime_match": false,
       "current_runtime_generation_claimed": false,
       "release_eligible": false,
-      "runtime_fingerprint": "a44213db99b44017c95153bbc085e875f58c43d3d270fe8ff6d8f98f4e507bd9",
+      "runtime_fingerprint": "c41e00a6664950ad88181a7b030b1cec5e6decb42068064da5ab7f0c85ced261",
       "runtime_fingerprint_scope": "answer_semantics",
       "reviewed_answer_runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
-      "current_answer_runtime_fingerprint": "a44213db99b44017c95153bbc085e875f58c43d3d270fe8ff6d8f98f4e507bd9",
+      "current_answer_runtime_fingerprint": "c41e00a6664950ad88181a7b030b1cec5e6decb42068064da5ab7f0c85ced261",
       "reviewed_artifact_runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
-      "current_artifact_runtime_fingerprint": "171e8173d6d7c3d56dbd2d47fef81687732a4aae9320f382e331c2ffd8fd0a11",
+      "current_artifact_runtime_fingerprint": "183f7ef8fe89ce888b9756cc31df0de98c5cd4a24d4eb56d7796b1c534b35bbc",
       "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
@@ -457,7 +457,7 @@
     },
     {
       "metric": "retrieval.stable_regression.mean_ndcg_at_k",
-      "current": 0.8643728349002483,
+      "current": 0.8639416260380391,
       "baseline": 0.8643728349002483,
       "direction": "at_least",
       "tolerance": 0.002,
@@ -465,15 +465,15 @@
     },
     {
       "metric": "retrieval.stable_regression.average_review_candidate_count",
-      "current": 12.298245614035087,
+      "current": 12.508771929824562,
       "baseline": 12.298245614035087,
       "direction": "at_most",
-      "tolerance": 0.1,
+      "tolerance": 0.25,
       "passed": true
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
-      "current": 0.024853801169590642,
+      "current": 0.03508771929824561,
       "baseline": 0.05,
       "direction": "at_most",
       "tolerance": 0,
@@ -481,7 +481,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.max_top_k_per_case",
-      "current": 2,
+      "current": 3,
       "baseline": 3,
       "direction": "at_most",
       "tolerance": 0,
@@ -489,16 +489,16 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.review_rate",
-      "current": 0.059805285118219746,
-      "baseline": 0.1,
+      "current": 0.10565110565110565,
+      "baseline": 0.12,
       "direction": "at_most",
       "tolerance": 0,
       "passed": true
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.max_review_per_case",
-      "current": 6,
-      "baseline": 8,
+      "current": 12,
+      "baseline": 12,
       "direction": "at_most",
       "tolerance": 0,
       "passed": true
@@ -521,7 +521,7 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 363,
+      "current": 411,
       "baseline": 354,
       "direction": "at_least",
       "tolerance": 0,
@@ -537,7 +537,7 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 344,
+      "current": 392,
       "baseline": 335,
       "direction": "at_least",
       "tolerance": 0,

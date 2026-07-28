@@ -229,9 +229,19 @@ def update_technical_readme_text(
     bilibili_ready = sum(
         video.get("processing_status") == "ready" for video in bilibili_records
     )
-    bilibili_excluded = sum(
-        str(video.get("decision") or "").startswith("excluded_")
+    bilibili_knowledge_ids = {
+        video.get("evidence_id") for video in bilibili_records
+    }
+    bilibili_isolated = sum(
+        bool((video.get("processing_state") or {}).get("terminal"))
+        and video.get("video_id") not in bilibili_knowledge_ids
         for video in bilibili_ledger["videos"]
+    ) + sum(
+        video.get("processing_status") != "ready"
+        for video in bilibili_records
+    )
+    bilibili_pending = (
+        len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
     )
     processed = status["public_videos_collected"] + len(bilibili_index["videos"])
     ready_count = status["ready_teaching_videos"]
@@ -249,10 +259,10 @@ def update_technical_readme_text(
         r"^\| 视觉复核兜底 \| \d+ \|": f"| 视觉复核兜底 | {visual} |",
         r"^\| 回答质量黄金用例 \| \d+/\d+ \|": f"| 回答质量黄金用例 | {answer_count}/{answer_count} |",
         r"^\| 公共反馈信号 \| \d+ \|": f"| 公共反馈信号 | {feedback_count} |",
-        r"^\| B 站来源隔离试点 \|.*$": (
-            f"| B 站来源隔离试点 | {len(bilibili_index['videos'])} | "
-            f"{bilibili_ready} 条通过来源与证据门禁进入回答池、"
-            f"{bilibili_excluded} 条原创/来源不明或非教学内容被隔离 |"
+        r"^\| B 站(?:来源隔离试点|全量来源归档) \|.*$": (
+            f"| B 站全量来源归档 | {len(bilibili_index['videos'])} | "
+            f"{bilibili_ready} 条进入回答池、{bilibili_isolated} 条自动隔离、"
+            f"{bilibili_pending} 条待处理 |"
         ),
     }
     updated = readme
@@ -279,9 +289,23 @@ def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
         and video.get("processing_status") == "ready"
         for video in knowledge.get("videos", [])
     )
-    bilibili_excluded = sum(
-        str(video.get("decision") or "").startswith("excluded_")
+    bilibili_records = [
+        video for video in knowledge.get("videos", [])
+        if video.get("source_type") == "bilibili_video"
+    ]
+    bilibili_knowledge_ids = {
+        video.get("evidence_id") for video in bilibili_records
+    }
+    bilibili_isolated = sum(
+        bool((video.get("processing_state") or {}).get("terminal"))
+        and video.get("video_id") not in bilibili_knowledge_ids
         for video in bilibili_ledger["videos"]
+    ) + sum(
+        video.get("processing_status") != "ready"
+        for video in bilibili_records
+    )
+    bilibili_pending = (
+        len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
     )
     replacements = {
         r"^\| Processed public videos \| \d+ \|$": (
@@ -297,11 +321,11 @@ def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
         r"^\| Reviewed visual-summary fallbacks \| \d+ \|$": (
             f"| Reviewed visual-summary fallbacks | {evidence['visual']} |"
         ),
-        r"^\| Bilibili provenance-isolation pilot \|.*$": (
-            f"| Bilibili provenance-isolation pilot | "
-            f"{len(bilibili_index['videos'])}: {bilibili_ready} admitted after "
-            f"origin and evidence gates; {bilibili_excluded} original/unknown "
-            f"or non-teaching videos isolated |"
+        r"^\| Bilibili (?:provenance-isolation pilot|full provenance archive) \|.*$": (
+            f"| Bilibili full provenance archive | "
+            f"{len(bilibili_index['videos'])}: {bilibili_ready} answer-ready, "
+            f"{bilibili_isolated} automatically isolated, "
+            f"{bilibili_pending} pending |"
         ),
     }
     updated = readme
