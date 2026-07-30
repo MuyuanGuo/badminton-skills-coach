@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 3,
   "platform": "bilibili",
   "creator_name": "大G羽毛球",
   "profile_id": "1423436652",
@@ -11,10 +11,17 @@
   },
   "admission_policy": {
     "metadata_candidates_enter_knowledge_base": false,
-    "required_origin_status": "verified_liuhui_clip",
+    "required_origin_statuses": [
+      "verified_liuhui_clip",
+      "verified_collection_policy",
+      "verified_video_policy"
+    ],
     "notes": [
       "该主页同时包含刘辉直播教学切片和 UP 主原创内容。",
-      "标题、标签等元数据只能生成候选项，不能单独证明视频来源。",
+      "用户确认的八个技术合集必须转写并进入知识存储，来源身份必须单独、如实标注。",
+      "用户确认的五个排除合集不得进入下载、转写或知识库。",
+      "用户已逐条确认十五个无合集视频必须转写、九个无合集视频排除；其余四个已有转写继续接受来源与质量门禁。",
+      "无合集视频未经过逐条裁决时，标题、标签等元数据只能生成候选项，不能单独证明视频来源。",
       "B 站 SEO description 会混入作者简介和相关视频，不得作为来源确认字段。"
     ]
   }

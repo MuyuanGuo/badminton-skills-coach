@@ -5,8 +5,10 @@ import argparse
 import copy
 import hashlib
 import json
+import os
 import re
 from collections import Counter
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -15,6 +17,15 @@ from bilibili_pipeline import (
     may_enter_knowledge_base,
     stabilize_updated_at,
 )
+from bilibili_storage import (
+    BILIBILI_MEDIA_CACHE_ENV,
+    bilibili_media_cache_root,
+    lexical_absolute,
+    media_storage_key,
+    media_stem_matches_bvid,
+    queue_media_locator,
+    resolve_queue_media_path,
+)
 from douyin_pipeline import commit_json_transaction, now_iso
 
 
@@ -22,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LEDGER_PATH = ROOT / "data" / "bilibili_classification_ledger.json"
 REVIEW_PATH = ROOT / "data" / "processing" / "bilibili_origin_review_queue.json"
 QUEUE_PATH = ROOT / "data" / "processing" / "bilibili_queue.json"
-RAW_ROOT = ROOT / "data" / "raw_videos" / "bilibili"
+RAW_ROOT = bilibili_media_cache_root(ROOT)
 TRANSACTION_PATH = ROOT / "data" / "processing" / ".bilibili-media-transaction.json"
 EXPECTED_UPLOADER_ID = "1423436652"
 ORIGIN_PATTERN = re.compile(r"刘辉(?:教练|羽毛球)?|辉哥")
@@ -48,7 +59,12 @@ def load_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def verify_metadata(info, expected_bvid):
+def verify_metadata(
+    info,
+    expected_bvid,
+    decision="candidate_liuhui_teaching",
+    policy_basis=None,
+):
     tags = {str(tag).strip() for tag in info.get("tags") or []}
     title = str(info.get("title") or "")
     description = str(info.get("description") or "")
@@ -69,14 +85,60 @@ def verify_metadata(info, expected_bvid):
             and 0 < duration <= 7200
         ),
     }
-    verified = all(signals.values())
+    required_policy = decision == "required_transcription_policy"
+    policy_contract = {
+        "collection": {
+            "status": "verified_collection_policy",
+            "tier": "user_confirmed_collection_policy",
+            "method": "user_confirmed_collection_policy",
+        },
+        "video_override": {
+            "status": "verified_video_policy",
+            "tier": "user_confirmed_video_policy",
+            "method": "user_confirmed_video_policy",
+        },
+    }.get(policy_basis)
+    if required_policy and policy_contract is None:
+        raise ValueError("Required transcription policy is missing its basis")
+    required_signals = {
+        "video_id_matches",
+        "uploader_profile_matches",
+        "canonical_url_matches",
+        "duration_valid",
+    }
+    verified = all(
+        value
+        for name, value in signals.items()
+            if not required_policy or name in required_signals
+    )
     return {
-        "status": "verified_liuhui_clip" if verified else "verification_failed",
-        "verification_tier": "publisher_declared" if verified else "unverified",
-        "methods": [
-            "verified_uploader_profile",
-            "publisher_origin_annotation",
-        ] if verified else [],
+        "status": (
+            policy_contract["status"]
+            if verified and required_policy
+            else "verified_liuhui_clip"
+            if verified
+            else "verification_failed"
+        ),
+        "verification_tier": (
+            policy_contract["tier"]
+            if verified and required_policy
+            else "publisher_declared"
+            if verified
+            else "unverified"
+        ),
+        "methods": (
+            [
+                "verified_uploader_profile",
+                policy_contract["method"],
+            ]
+            if verified and required_policy
+            else [
+                "verified_uploader_profile",
+                "publisher_origin_annotation",
+            ]
+            if verified
+            else []
+        ),
         "verified_at": now_iso(),
         "signals": signals,
         "source_metadata": {
@@ -91,6 +153,35 @@ def verify_metadata(info, expected_bvid):
     }
 
 
+def promote_existing_collection_verification(record):
+    verification = copy.deepcopy(record.get("origin_verification") or {})
+    signals = verification.get("signals") or {}
+    required = {
+        "video_id_matches",
+        "uploader_profile_matches",
+        "canonical_url_matches",
+        "duration_valid",
+    }
+    if (
+        record.get("decision") != "required_transcription_policy"
+        or (record.get("collection_policy") or {}).get("basis")
+        != "collection"
+        or not verification.get("source_metadata")
+        or not all(signals.get(name) is True for name in required)
+    ):
+        return None
+    verification.update({
+        "status": "verified_collection_policy",
+        "verification_tier": "user_confirmed_collection_policy",
+        "methods": [
+            "verified_uploader_profile",
+            "user_confirmed_collection_policy",
+        ],
+        "verified_at": now_iso(),
+    })
+    return verification
+
+
 def preserve_verification_timestamp(previous, current):
     previous = previous or {}
     previous_stable = {key: value for key, value in previous.items() if key != "verified_at"}
@@ -100,7 +191,7 @@ def preserve_verification_timestamp(previous, current):
     return current
 
 
-def ydl_options(output_dir=None):
+def ydl_options(output_dir=None, *, output_stem=None):
     options = {
         "quiet": True,
         "no_warnings": True,
@@ -121,8 +212,10 @@ def ydl_options(output_dir=None):
         ),
     }
     if output_dir is not None:
+        if not output_stem:
+            raise ValueError("output_stem is required when downloading media")
         options.update({
-            "outtmpl": str(Path(output_dir) / "%(id)s.%(ext)s"),
+            "outtmpl": str(Path(output_dir) / f"{output_stem}.%(ext)s"),
             "overwrites": False,
         })
     return options
@@ -234,16 +327,97 @@ def validate_media(path, expected_duration=None):
     return inspect_media_content(path, expected_duration)
 
 
-def media_validation_is_current(item):
+def queued_media_path(item, expected_bvid):
+    return resolve_queue_media_path(
+        item,
+        expected_bvid,
+        project_root=ROOT,
+        cache_root=RAW_ROOT,
+    )
+
+
+def path_is_within(path, root):
+    try:
+        lexical_absolute(path).relative_to(lexical_absolute(root))
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
+def recovered_queue_item(
+    record,
+    verification,
+    media,
+    validation,
+    previous,
+    *,
+    reason,
+    forced,
+):
+    """Replace media while retaining ASR failure history and recovery audit."""
+
+    replacement = queue_item(
+        record,
+        verification,
+        media,
+        validation,
+    )
+    replacement["attempts"] = int(previous.get("attempts") or 0)
+    replacement["transcription_attempts"] = int(
+        previous.get("transcription_attempts") or 0
+    )
+    replacement["transcription_retry_attempts"] = 0
+    replacement["transcription_retryable"] = True
+    replacement["transcription_isolated_at"] = None
+    replacement["media_recoveries"] = (
+        int(previous.get("media_recoveries") or 0) + 1
+    )
+    if forced:
+        replacement["transcription_force_recoveries"] = (
+            int(previous.get("transcription_force_recoveries") or 0) + 1
+        )
+    audit = list(previous.get("media_recovery_audit") or [])
+    audit.append({
+        "recovered_at": now_iso(),
+        "reason": reason,
+        "forced": bool(forced),
+        "previous_status": previous.get("status"),
+        "previous_media_path": previous.get("media_path"),
+        "previous_media_cache_key": previous.get("media_cache_key"),
+        "previous_media_sha256": previous.get("media_sha256"),
+        "transcription_attempts": int(
+            previous.get("transcription_attempts") or 0
+        ),
+        "transcription_retry_attempts": int(
+            previous.get("transcription_retry_attempts") or 0
+        ),
+    })
+    replacement["media_recovery_audit"] = audit
+    return replacement
+
+
+def media_validation_is_current(item, expected_bvid=None):
     if (
         item.get("media_validation_version") != MEDIA_VALIDATION_VERSION
         or int(item.get("media_decoded_frame_count") or 0) <= 0
         or int(item.get("media_decoded_samples") or 0) <= 0
         or not item.get("media_sha256")
-        or not item.get("media_path")
+        or not (item.get("media_path") or item.get("media_cache_key"))
     ):
         return False
-    path = ROOT / item["media_path"]
+    try:
+        path = (
+            queued_media_path(item, expected_bvid)
+            if expected_bvid is not None
+            else resolve_queue_media_path(
+                item,
+                item.get("video_id"),
+                project_root=ROOT,
+                cache_root=RAW_ROOT,
+            )
+        )
+    except ValueError:
+        return False
     try:
         fingerprint = media_fingerprint(path)
     except OSError:
@@ -258,10 +432,20 @@ def recover_quarantined_media(bvid, expected_duration=None):
     quarantine = RAW_ROOT / "quarantine"
     if not quarantine.exists():
         return None, None
+    accepted_stems = [media_storage_key(bvid), str(bvid)]
     pattern = re.compile(
-        rf"^{re.escape(bvid)}(?P<suffix>\.(?:m4a|mp3|webm|wav|mp4))\."
+        rf"^(?P<stem>{'|'.join(re.escape(stem) for stem in accepted_stems)})"
+        r"(?P<suffix>\.(?:m4a|mp3|webm|wav|mp4))\."
     )
-    for candidate in sorted(quarantine.glob(f"{bvid}.*.invalid"), reverse=True):
+    candidates = sorted(
+        (
+            path
+            for path in quarantine.iterdir()
+            if path.is_file() and path.name.endswith(".invalid")
+        ),
+        reverse=True,
+    )
+    for candidate in candidates:
         match = pattern.match(candidate.name)
         if not match:
             continue
@@ -269,7 +453,7 @@ def recover_quarantined_media(bvid, expected_duration=None):
             validation = inspect_media_content(candidate, expected_duration)
         except (OSError, RuntimeError, ValueError):
             continue
-        target = RAW_ROOT / f"{bvid}{match.group('suffix')}"
+        target = RAW_ROOT / f"{media_storage_key(bvid)}{match.group('suffix')}"
         if target.exists():
             return target, validate_media(target, expected_duration)
         candidate.replace(target)
@@ -278,10 +462,18 @@ def recover_quarantined_media(bvid, expected_duration=None):
 
 
 def completed_media(bvid, expected_duration=None):
+    preferred_stems = [media_storage_key(bvid), str(bvid)]
+    preference = {stem: position for position, stem in enumerate(preferred_stems)}
     candidates = sorted(
-        path
-        for path in RAW_ROOT.glob(f"{bvid}.*")
-        if path.suffix.lower() in MEDIA_SUFFIXES and not path.name.endswith(".part")
+        (
+            path
+            for path in RAW_ROOT.iterdir()
+            if path.is_file()
+            and path.suffix.lower() in MEDIA_SUFFIXES
+            and not path.name.endswith(".part")
+            and media_stem_matches_bvid(path.stem, bvid)
+        ),
+        key=lambda path: (preference[path.stem], path.name),
     )
     invalid = []
     for path in candidates:
@@ -305,15 +497,35 @@ def completed_media(bvid, expected_duration=None):
     return None, None
 
 
-def download_audio(url, bvid, expected_duration=None):
+def download_audio(url, bvid, expected_duration=None, metadata_info=None):
     from yt_dlp import YoutubeDL
 
     RAW_ROOT.mkdir(parents=True, exist_ok=True)
+    output_stem = media_storage_key(bvid)
+    if metadata_info is not None:
+        media, validation = completed_media(bvid, expected_duration)
+        if media is not None:
+            return media, validation
+        try:
+            with YoutubeDL(
+                ydl_options(RAW_ROOT, output_stem=output_stem)
+            ) as ydl:
+                ydl.process_ie_result(
+                    copy.deepcopy(metadata_info),
+                    download=True,
+                )
+        except Exception:
+            # The regular URL path below is the compatibility fallback for
+            # extractor versions that cannot replay a processed info dict.
+            pass
+        media, validation = completed_media(bvid, expected_duration)
+        if media is not None:
+            return media, validation
     for _ in range(3):
         media, validation = completed_media(bvid, expected_duration)
         if media is not None:
             return media, validation
-        with YoutubeDL(ydl_options(RAW_ROOT)) as ydl:
+        with YoutubeDL(ydl_options(RAW_ROOT, output_stem=output_stem)) as ydl:
             ydl.download([url])
     media, validation = completed_media(bvid, expected_duration)
     if media is not None:
@@ -325,6 +537,13 @@ def download_audio(url, bvid, expected_duration=None):
 
 def queue_item(record, verification, media, media_validation):
     metadata = verification["source_metadata"]
+    policy_basis = (record.get("collection_policy") or {}).get("basis")
+    required_policy = record["decision"] == "required_transcription_policy"
+    policy_label = (
+        "用户确认合集"
+        if policy_basis == "collection"
+        else "用户逐条确认"
+    )
     return {
         "platform": "bilibili",
         "video_id": record["bvid"],
@@ -335,12 +554,24 @@ def queue_item(record, verification, media, media_validation):
         "category": "",
         "tags": "；".join(metadata["tags"]),
         "status": "downloaded",
-        "classification_decision": "保留：教学",
-        "classification_reason": "B站发布者元数据通过刘辉教学切片来源门禁",
+        "classification_decision": (
+            f"保留：{policy_label}"
+            if required_policy
+            else "保留：教学"
+        ),
+        "classification_reason": (
+            f"{policy_label}该B站视频必须转写并进入知识存储"
+            if required_policy
+            else "B站发布者元数据通过刘辉教学切片来源门禁"
+        ),
         "classification_rules_version": record["classification_rules_version"],
         "classification_rules_hash": record["classification_rules_hash"],
         "origin_verification": verification,
-        "media_path": str(media.relative_to(ROOT)),
+        **queue_media_locator(
+            media,
+            record["bvid"],
+            project_root=ROOT,
+        ),
         **media_validation,
         "duration_seconds": metadata["duration_seconds"],
         "attempts": 0,
@@ -348,6 +579,37 @@ def queue_item(record, verification, media, media_validation):
         "error_stage": None,
         "downloaded_at": now_iso()
     }
+
+
+def sync_queue_classification(item, record, verification):
+    policy_basis = (record.get("collection_policy") or {}).get("basis")
+    required_policy = record["decision"] == "required_transcription_policy"
+    policy_label = (
+        "用户确认合集"
+        if policy_basis == "collection"
+        else "用户逐条确认"
+    )
+    item.update({
+        "classification_decision": (
+            f"保留：{policy_label}"
+            if required_policy
+            else "保留：教学"
+        ),
+        "classification_reason": (
+            f"{policy_label}该B站视频必须转写并进入知识存储"
+            if required_policy
+            else "B站发布者元数据通过刘辉教学切片来源门禁"
+        ),
+        "classification_rules_version": record.get(
+            "classification_rules_version",
+            item.get("classification_rules_version"),
+        ),
+        "classification_rules_hash": record.get(
+            "classification_rules_hash",
+            item.get("classification_rules_hash"),
+        ),
+        "origin_verification": verification,
+    })
 
 
 def persist(ledger, queue):
@@ -359,7 +621,10 @@ def persist(ledger, queue):
     queue["counts"] = dict(Counter(item["status"] for item in queue["items"]))
     review_items = [
         item for item in ledger["videos"]
-        if item["decision"] == "candidate_liuhui_teaching"
+        if item["decision"] in {
+            "candidate_liuhui_teaching",
+            "review_pending",
+        }
         and not item.get("knowledge_admission_eligible")
     ]
     review = {
@@ -443,10 +708,273 @@ def update_processing_state(
     record["processing_state"] = state
 
 
+def process_candidate(
+    record,
+    existing,
+    *,
+    metadata_only,
+    cooldown_minutes,
+    force_reacquire=False,
+):
+    """Acquire one candidate without mutating the shared ledger or queue.
+
+    ``record`` and ``existing`` must be worker-owned copies.  The caller is
+    responsible for merging the returned values and persisting them from one
+    thread only.
+    """
+    bvid = record["bvid"]
+    try:
+        verification = record.get("origin_verification") or {}
+        metadata_info = None
+        if not may_enter_knowledge_base(record):
+            promoted = promote_existing_collection_verification(record)
+            if promoted is not None:
+                verification = promoted
+                record["origin_verification"] = verification
+                record["knowledge_admission_eligible"] = may_enter_knowledge_base(
+                    record
+                )
+        if not may_enter_knowledge_base(record):
+            info = extract_metadata(record["url"])
+            metadata_info = info
+            verification = preserve_verification_timestamp(
+                record.get("origin_verification"),
+                verify_metadata(
+                    info,
+                    bvid,
+                    record["decision"],
+                    (record.get("collection_policy") or {}).get("basis"),
+                ),
+            )
+            record["origin_verification"] = verification
+            record["knowledge_admission_eligible"] = may_enter_knowledge_base(record)
+        result = {
+            "bvid": bvid,
+            "origin_status": verification["status"],
+            "eligible": record["knowledge_admission_eligible"],
+        }
+        if not record["knowledge_admission_eligible"]:
+            update_processing_state(
+                record,
+                stage=(
+                    "metadata_verification_failed"
+                    if record["decision"] == "required_transcription_policy"
+                    else "quarantined_origin_unknown"
+                ),
+                terminal=record["decision"] != "required_transcription_policy",
+            )
+            result["status"] = record["processing_state"]["stage"]
+        elif existing and existing.get("status") == "transcribed":
+            expected_duration = verification["source_metadata"]["duration_seconds"]
+            sync_queue_classification(existing, record, verification)
+            if not existing.get("media_path"):
+                # Finalized transcripts deliberately release temporary media.
+                # Their transcript/source integrity is enforced during build.
+                existing["origin_verification"] = verification
+                update_processing_state(record, stage="transcribed", terminal=False)
+                result["status"] = "already_transcribed"
+            elif media_validation_is_current(existing, bvid):
+                existing["origin_verification"] = verification
+                update_processing_state(record, stage="transcribed", terminal=False)
+                result["status"] = "already_transcribed"
+            else:
+                try:
+                    validation = validate_media(
+                        queued_media_path(existing, bvid),
+                        expected_duration,
+                    )
+                except (OSError, RuntimeError, ValueError):
+                    media, validation = download_audio(
+                        record["url"],
+                        bvid,
+                        expected_duration,
+                    )
+                    existing = queue_item(
+                        record,
+                        verification,
+                        media,
+                        validation,
+                    )
+                    update_processing_state(record, stage="downloaded", terminal=False)
+                    result["status"] = "downloaded"
+                    result["media_recovered"] = True
+                else:
+                    existing.update(validation)
+                    existing["origin_verification"] = verification
+                    update_processing_state(record, stage="transcribed", terminal=False)
+                    result["status"] = "already_transcribed"
+                    result["media_validation_upgraded"] = True
+        elif (
+            existing
+            and existing.get("status") == "downloaded"
+            and media_validation_is_current(existing, bvid)
+        ):
+            sync_queue_classification(existing, record, verification)
+            update_processing_state(record, stage="downloaded", terminal=False)
+            result["status"] = "already_downloaded"
+        elif (
+            existing
+            and existing.get("status")
+            in {"transcription_failed", "transcription_quarantined"}
+        ):
+            existing_status = existing["status"]
+            expected_duration = verification["source_metadata"]["duration_seconds"]
+            try:
+                current_path = queued_media_path(existing, bvid)
+            except ValueError:
+                current_path = None
+            relocation_required = (
+                force_reacquire
+                and (
+                    current_path is None
+                    or not path_is_within(current_path, RAW_ROOT)
+                )
+            )
+            try:
+                media_current = (
+                    False
+                    if relocation_required or current_path is None
+                    else media_validation_is_current(existing, bvid)
+                )
+                if relocation_required:
+                    raise RuntimeError(
+                        "Explicit recovery requested relocation into the "
+                        "configured external media cache"
+                    )
+                if current_path is None:
+                    raise ValueError("Failed queue item has no usable media path")
+                if force_reacquire and not media_current:
+                    raise RuntimeError(
+                        "Explicit recovery requested reacquisition after media "
+                        "integrity validation failed"
+                    )
+                validation = (
+                    None
+                    if media_current
+                    else validate_media(current_path, expected_duration)
+                )
+            except (OSError, RuntimeError, ValueError):
+                media, validation = download_audio(
+                    record["url"],
+                    bvid,
+                    expected_duration,
+                )
+                replacement = recovered_queue_item(
+                    record,
+                    verification,
+                    media,
+                    validation,
+                    existing,
+                    reason=(
+                        "external_cache_relocation"
+                        if relocation_required
+                        else "forced_media_integrity_reacquisition"
+                        if force_reacquire
+                        else "media_missing_unreadable_or_hash_mismatch"
+                    ),
+                    forced=force_reacquire,
+                )
+                existing = replacement
+                update_processing_state(record, stage="downloaded", terminal=False)
+                result["status"] = "downloaded"
+                result["media_recovered"] = True
+            else:
+                if validation is not None:
+                    existing.update(validation)
+                sync_queue_classification(existing, record, verification)
+                update_processing_state(
+                    record,
+                    stage=existing_status,
+                    terminal=False,
+                )
+                result["status"] = f"already_{existing_status}"
+        elif metadata_only:
+            update_processing_state(record, stage="metadata_ready", terminal=False)
+            result["status"] = "metadata_ready"
+        else:
+            media, media_validation = download_audio(
+                record["url"],
+                bvid,
+                verification["source_metadata"]["duration_seconds"],
+                metadata_info=metadata_info,
+            )
+            if existing and existing.get("status") == "transcribed":
+                sync_queue_classification(existing, record, verification)
+                result["status"] = "already_transcribed"
+            else:
+                existing = queue_item(
+                    record,
+                    verification,
+                    media,
+                    media_validation,
+                )
+                result["status"] = "downloaded"
+                result["media_bytes"] = media_validation["media_bytes"]
+                result["media_sha256"] = media_validation["media_sha256"]
+                update_processing_state(record, stage="downloaded", terminal=False)
+        return {"record": record, "queue_item": existing, "result": result}
+    except Exception as error:
+        error_class, retryable = classify_error(error)
+        retry_minutes = (
+            cooldown_minutes
+            if error_class == "rate_limited"
+            else 12 * 60
+            if error_class == "blocked_auth"
+            else min(
+                60,
+                2
+                ** min(
+                    5,
+                    int(
+                        (record.get("processing_state") or {})
+                        .get("attempts_by_stage", {})
+                        .get("acquisition", 0)
+                    ),
+                ),
+            )
+            if retryable
+            else None
+        )
+        stage = (
+            "unavailable"
+            if error_class == "unavailable"
+            else "blocked_auth"
+            if error_class == "blocked_auth"
+            else "acquisition_failed"
+        )
+        update_processing_state(
+            record,
+            stage=stage,
+            attempt_stage="acquisition",
+            terminal=error_class == "unavailable",
+            error_class=error_class,
+            error_message=error,
+            retry_after_minutes=retry_minutes,
+        )
+        return {
+            "record": record,
+            "queue_item": existing,
+            "result": {
+                "bvid": bvid,
+                "status": stage,
+                "retryable": retryable,
+                "error_class": error_class,
+                "next_retry_at": record["processing_state"]["next_retry_at"],
+                "error": str(error)[-500:],
+            },
+        }
+
+
 def main():
+    global RAW_ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bvid", action="append", default=[])
     parser.add_argument("--metadata-only", action="store_true")
+    parser.add_argument(
+        "--existing-queue-only",
+        action="store_true",
+        help="Reconcile policy metadata only for records already in the queue",
+    )
     parser.add_argument("--max-items", type=int)
     parser.add_argument("--checkpoint-every", type=int, default=10)
     parser.add_argument("--cooldown-minutes", type=int, default=30)
@@ -461,7 +989,30 @@ def main():
         default=3,
         help="Stop after this many consecutive retryable acquisition failures",
     )
+    parser.add_argument(
+        "--download-workers",
+        type=int,
+        choices=range(1, 5),
+        default=int(os.environ.get("BSC_BILIBILI_DOWNLOAD_WORKERS", "2")),
+        metavar="{1,2,3,4}",
+        help=(
+            "Bounded concurrent acquisition workers (default: "
+            "BSC_BILIBILI_DOWNLOAD_WORKERS or 2; use 1 for diagnostics)"
+        ),
+    )
+    parser.add_argument(
+        "--media-cache-dir",
+        type=Path,
+        help=(
+            "Local Bilibili media cache outside synchronized Documents storage "
+            f"(default: {BILIBILI_MEDIA_CACHE_ENV} or data/raw_videos/bilibili)"
+        ),
+    )
     args = parser.parse_args()
+    RAW_ROOT = bilibili_media_cache_root(
+        ROOT,
+        override=args.media_cache_dir,
+    )
     pipeline_lock = acquire_bilibili_pipeline_lock()
     if args.max_items is not None and args.max_items <= 0:
         parser.error("--max-items must be positive")
@@ -472,258 +1023,137 @@ def main():
     requested = set(args.bvid)
     ledger = load_json(LEDGER_PATH)
     queue = load_json(QUEUE_PATH)
-    queue_by_id = {item["video_id"]: item for item in queue["items"]}
+    excluded_ids = {
+        item["bvid"]
+        for item in ledger["videos"]
+        if item["decision"] == "excluded_transcription_policy"
+    }
+    queue_by_id = {
+        item["video_id"]: item
+        for item in queue["items"]
+        if item["video_id"] not in excluded_ids
+    }
+    queue_changed = len(queue_by_id) != len(queue["items"])
+    queue["items"] = sorted(
+        queue_by_id.values(),
+        key=lambda item: item["video_id"],
+    )
     candidates = [
         item for item in ledger["videos"]
-        if item["decision"] == "candidate_liuhui_teaching"
+        if item["decision"] in {
+            "candidate_liuhui_teaching",
+            "required_transcription_policy",
+        }
         and (not requested or item["bvid"] in requested)
+        and (
+            not args.existing_queue_only
+            or item["bvid"] in queue_by_id
+        )
+        and (
+            args.existing_queue_only
+            or (queue_by_id.get(item["bvid"]) or {}).get("status")
+            != "transcribed"
+        )
         and not bool((item.get("processing_state") or {}).get("terminal"))
         and (retry_due(item) or (args.force and item["bvid"] in requested))
     ]
+    candidate_ids = [item["bvid"] for item in candidates]
+    if len(candidate_ids) != len(set(candidate_ids)):
+        raise RuntimeError(
+            "Candidate ledger contains duplicate BVIDs; refusing concurrent acquisition"
+        )
     if args.max_items is not None:
         candidates = candidates[:args.max_items]
     results = []
-    pending_changes = 0
+    pending_changes = int(queue_changed)
     consecutive_retryable_failures = 0
-    for record in candidates:
-        bvid = record["bvid"]
-        record_before = copy.deepcopy(record)
-        queue_item_before = copy.deepcopy(queue_by_id.get(bvid))
+    candidate_iterator = iter(enumerate(candidates))
+    in_flight = {}
+    circuit_open = False
+
+    def submit_next(executor):
         try:
-            existing = queue_by_id.get(bvid)
-            verification = record.get("origin_verification") or {}
-            if (
-                verification.get("status") != "verified_liuhui_clip"
-                or not may_enter_knowledge_base(record)
-            ):
-                info = extract_metadata(record["url"])
-                verification = preserve_verification_timestamp(
-                    record.get("origin_verification"),
-                    verify_metadata(info, bvid),
-                )
-                record["origin_verification"] = verification
-                record["knowledge_admission_eligible"] = may_enter_knowledge_base(
-                    record
-                )
-            result = {
-                "bvid": bvid,
-                "origin_status": verification["status"],
-                "eligible": record["knowledge_admission_eligible"],
-            }
-            if not record["knowledge_admission_eligible"]:
-                update_processing_state(
-                    record,
-                    stage="quarantined_origin_unknown",
-                    terminal=True,
-                )
-                result["status"] = "quarantined_origin_unknown"
-            elif existing and existing.get("status") == "transcribed":
-                expected_duration = verification["source_metadata"]["duration_seconds"]
-                if not existing.get("media_path"):
-                    # Finalized transcripts deliberately release temporary media.
-                    # Their transcript/source integrity is enforced during build.
-                    existing["origin_verification"] = verification
-                    update_processing_state(record, stage="transcribed", terminal=False)
-                    result["status"] = "already_transcribed"
-                elif media_validation_is_current(existing):
-                    existing["origin_verification"] = verification
-                    update_processing_state(record, stage="transcribed", terminal=False)
-                    result["status"] = "already_transcribed"
-                else:
-                    try:
-                        validation = validate_media(
-                            ROOT / existing.get("media_path", ""),
-                            expected_duration,
-                        )
-                    except (OSError, RuntimeError, ValueError):
-                        media, validation = download_audio(
-                            record["url"],
-                            bvid,
-                            expected_duration,
-                        )
-                        queue_by_id[bvid] = queue_item(
-                            record,
-                            verification,
-                            media,
-                            validation,
-                        )
-                        update_processing_state(
-                            record,
-                            stage="downloaded",
-                            terminal=False,
-                        )
-                        result["status"] = "downloaded"
-                        result["media_recovered"] = True
-                    else:
-                        existing.update(validation)
-                        existing["origin_verification"] = verification
-                        update_processing_state(
-                            record,
-                            stage="transcribed",
-                            terminal=False,
-                        )
-                        result["status"] = "already_transcribed"
-                        result["media_validation_upgraded"] = True
-            elif (
-                existing
-                and existing.get("status") == "downloaded"
-                and media_validation_is_current(existing)
-            ):
-                existing["origin_verification"] = verification
-                update_processing_state(record, stage="downloaded", terminal=False)
-                result["status"] = "already_downloaded"
-            elif (
-                existing
-                and existing.get("status")
-                in {"transcription_failed", "transcription_quarantined"}
-            ):
-                existing_status = existing["status"]
-                expected_duration = verification["source_metadata"]["duration_seconds"]
-                try:
-                    validation = (
-                        None
-                        if media_validation_is_current(existing)
-                        else validate_media(
-                            ROOT / existing.get("media_path", ""),
-                            expected_duration,
-                        )
-                    )
-                except (OSError, RuntimeError, ValueError):
-                    media, validation = download_audio(
-                        record["url"],
-                        bvid,
-                        expected_duration,
-                    )
-                    replacement = queue_item(
-                        record,
-                        verification,
-                        media,
-                        validation,
-                    )
-                    replacement["transcription_attempts"] = int(
-                        existing.get("transcription_attempts") or 0
-                    )
-                    replacement["transcription_retry_attempts"] = 0
-                    replacement["media_recoveries"] = (
-                        int(existing.get("media_recoveries") or 0) + 1
-                    )
-                    queue_by_id[bvid] = replacement
-                    update_processing_state(
-                        record,
-                        stage="downloaded",
-                        terminal=False,
-                    )
-                    result["status"] = "downloaded"
-                    result["media_recovered"] = True
-                else:
-                    if validation is not None:
-                        existing.update(validation)
-                    existing["origin_verification"] = verification
-                    update_processing_state(
-                        record,
-                        stage=existing_status,
-                        terminal=False,
-                    )
-                    result["status"] = f"already_{existing_status}"
-            elif args.metadata_only:
-                update_processing_state(record, stage="metadata_ready", terminal=False)
-                result["status"] = "metadata_ready"
-            else:
-                media, media_validation = download_audio(
-                    record["url"],
-                    bvid,
-                    verification["source_metadata"]["duration_seconds"],
-                )
-                if existing and existing.get("status") == "transcribed":
-                    existing["origin_verification"] = verification
-                    result["status"] = "already_transcribed"
-                else:
-                    queue_by_id[bvid] = queue_item(
-                        record,
-                        verification,
-                        media,
-                        media_validation,
-                    )
-                    result["status"] = "downloaded"
-                    result["media_bytes"] = media_validation["media_bytes"]
-                    result["media_sha256"] = media_validation["media_sha256"]
-                    update_processing_state(
-                        record,
-                        stage="downloaded",
-                        terminal=False,
-                    )
-            results.append(result)
-            consecutive_retryable_failures = 0
-        except Exception as error:
-            error_class, retryable = classify_error(error)
-            retry_minutes = (
-                args.cooldown_minutes
-                if error_class == "rate_limited"
-                else 12 * 60
-                if error_class == "blocked_auth"
-                else min(
-                    60,
-                    2 ** min(
-                        5,
-                        int(
-                            (record.get("processing_state") or {})
-                            .get("attempts_by_stage", {})
-                            .get("acquisition", 0)
-                        ),
-                    ),
-                )
-                if retryable
-                else None
-            )
-            stage = "unavailable" if error_class == "unavailable" else (
-                "blocked_auth" if error_class == "blocked_auth" else "acquisition_failed"
-            )
-            update_processing_state(
-                record,
-                stage=stage,
-                attempt_stage="acquisition",
-                terminal=error_class == "unavailable",
-                error_class=error_class,
-                error_message=error,
-                retry_after_minutes=retry_minutes,
-            )
-            results.append({
-                "bvid": bvid,
-                "status": stage,
-                "retryable": retryable,
-                "error_class": error_class,
-                "next_retry_at": record["processing_state"]["next_retry_at"],
-                "error": str(error)[-500:],
-            })
-            consecutive_retryable_failures = (
-                consecutive_retryable_failures + 1 if retryable else 0
-            )
-        queue["items"] = sorted(queue_by_id.values(), key=lambda item: item["video_id"])
-        if (
-            record != record_before
-            or queue_by_id.get(bvid) != queue_item_before
-        ):
-            pending_changes += 1
-        if pending_changes >= args.checkpoint_every:
-            persist(ledger, queue)
-            pending_changes = 0
-        print(
-            json.dumps(
-                {
-                    "progress": f"{len(results)}/{len(candidates)}",
-                    "result": results[-1],
-                },
-                ensure_ascii=False,
-            ),
-            flush=True,
+            index, record = next(candidate_iterator)
+        except StopIteration:
+            return False
+        bvid = record["bvid"]
+        future = executor.submit(
+            process_candidate,
+            copy.deepcopy(record),
+            copy.deepcopy(queue_by_id.get(bvid)),
+            metadata_only=args.metadata_only,
+            cooldown_minutes=args.cooldown_minutes,
+            force_reacquire=args.force and bvid in requested,
         )
-        if (
-            results[-1].get("error_class") == "rate_limited"
-            or results[-1].get("error_class") == "blocked_auth"
-            or consecutive_retryable_failures
-            >= args.failure_circuit_threshold
-        ):
-            break
+        in_flight[future] = {
+            "index": index,
+            "record": record,
+            "record_before": copy.deepcopy(record),
+            "queue_item_before": copy.deepcopy(queue_by_id.get(bvid)),
+        }
+        return True
+
+    with ThreadPoolExecutor(
+        max_workers=args.download_workers,
+        thread_name_prefix="bilibili-acquire",
+    ) as executor:
+        while len(in_flight) < args.download_workers and submit_next(executor):
+            pass
+        while in_flight:
+            completed, _ = wait(in_flight, return_when=FIRST_COMPLETED)
+            for future in sorted(
+                completed,
+                key=lambda item: in_flight[item]["index"],
+            ):
+                context = in_flight.pop(future)
+                outcome = future.result()
+                record = context["record"]
+                bvid = record["bvid"]
+                record.clear()
+                record.update(outcome["record"])
+                if outcome["queue_item"] is not None:
+                    queue_by_id[bvid] = outcome["queue_item"]
+                result = outcome["result"]
+                results.append(result)
+                if result.get("retryable"):
+                    consecutive_retryable_failures += 1
+                else:
+                    consecutive_retryable_failures = 0
+                if (
+                    result.get("error_class") in {"rate_limited", "blocked_auth"}
+                    or consecutive_retryable_failures
+                    >= args.failure_circuit_threshold
+                ):
+                    circuit_open = True
+
+                queue["items"] = sorted(
+                    queue_by_id.values(),
+                    key=lambda item: item["video_id"],
+                )
+                if (
+                    record != context["record_before"]
+                    or queue_by_id.get(bvid) != context["queue_item_before"]
+                ):
+                    pending_changes += 1
+                if pending_changes >= args.checkpoint_every:
+                    persist(ledger, queue)
+                    pending_changes = 0
+                print(
+                    json.dumps(
+                        {
+                            "progress": f"{len(results)}/{len(candidates)}",
+                            "result": result,
+                        },
+                        ensure_ascii=False,
+                    ),
+                    flush=True,
+                )
+            if not circuit_open:
+                while (
+                    len(in_flight) < args.download_workers
+                    and submit_next(executor)
+                ):
+                    pass
     if pending_changes:
         persist(ledger, queue)
     print(json.dumps({"processed": len(results), "results": results}, ensure_ascii=False, indent=2))

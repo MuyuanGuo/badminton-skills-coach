@@ -80,8 +80,21 @@ class RetrievalEvaluationTests(unittest.TestCase):
             exposure["candidate_videos"],
             expected_new_source_videos,
         )
-        self.assertLessEqual(exposure["top_k_rate"], 0.05)
-        self.assertLessEqual(exposure["max_top_k_per_case"], 3)
+        limits = exposure["limits"]
+        self.assertLessEqual(
+            exposure["top_k_rate"], limits["max_top_k_rate"]
+        )
+        self.assertLessEqual(
+            exposure["max_top_k_per_case"],
+            limits["max_top_k_per_case"],
+        )
+        self.assertLessEqual(
+            exposure["review_rate"], limits["max_review_rate"]
+        )
+        self.assertLessEqual(
+            exposure["max_review_per_case"],
+            limits["max_review_per_case"],
+        )
 
 
 if __name__ == "__main__":

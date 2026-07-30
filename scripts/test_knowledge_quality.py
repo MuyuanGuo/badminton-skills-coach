@@ -10,6 +10,7 @@ from build_douyin_knowledge import (
     automatic_note,
     build_record,
     build_knowledge,
+    filter_evidence_by_provenance,
     runtime_transcript_segments,
     reconcile_updated_at,
 )
@@ -36,6 +37,35 @@ def transcript(text, language="zh", probability=1.0, segment_count=5):
 
 
 class KnowledgeQualityTests(unittest.TestCase):
+    def test_external_douyin_cache_keeps_portable_transcript_reference(self):
+        video_id = "123456789012345678"
+        with tempfile.TemporaryDirectory() as directory:
+            transcript_root = Path(directory)
+            transcript_path = (
+                transcript_root / "batch-001" / f"{video_id}.json"
+            )
+            record = build_record(
+                {
+                    "video_id": video_id,
+                    "title": "击球教学",
+                    "url": f"https://www.douyin.com/video/{video_id}",
+                    "category": "握拍与基本动作",
+                    "tags": "",
+                    "classification_decision": "保留：教学",
+                },
+                transcript_path,
+                transcript("击球时先放松再发力。"),
+                {},
+                {},
+                RULES,
+                transcript_root=transcript_root,
+            )
+
+        self.assertEqual(
+            record["transcript_file"],
+            f"data/transcripts/douyin/batch-001/{video_id}.json",
+        )
+
     def test_douyin_builder_persists_source_neutral_evidence_identity(self):
         video_id = "123456789012345678"
         record = build_record(
@@ -163,7 +193,7 @@ class KnowledgeQualityTests(unittest.TestCase):
                 {
                     "start": 1,
                     "end": 2,
-                    "text": "先架盘握盘挥盘，再贴盘做隐拍，向前挥帕完成机球，用顿地炮。",
+                    "text": "先架盘握盘挥盘，再贴盘做隐拍，攀头向前挥帕完成机球，用顿地炮。",
                 },
                 {
                     "start": 2,
@@ -175,11 +205,11 @@ class KnowledgeQualityTests(unittest.TestCase):
         )
         self.assertEqual(
             segments[0]["text"],
-            "先架拍握拍挥拍，再贴拍做引拍，向前挥拍完成击球，用遁地炮。",
+            "先架拍握拍挥拍，再贴拍做引拍，拍头向前挥拍完成击球，用遁地炮。",
         )
         self.assertEqual(
             segments[0]["raw_text"],
-            "先架盘握盘挥盘，再贴盘做隐拍，向前挥帕完成机球，用顿地炮。",
+            "先架盘握盘挥盘，再贴盘做隐拍，攀头向前挥帕完成机球，用顿地炮。",
         )
         self.assertEqual(segments[1]["text"], "遁地炮也是自动转写错词。")
         self.assertEqual(segments[1]["raw_text"], "蹲地炮也是自动转写错词。")
@@ -193,6 +223,30 @@ class KnowledgeQualityTests(unittest.TestCase):
         self.assertEqual(
             len({item["timestamp"] for item in evidence}), len(evidence)
         )
+
+    def test_safety_redaction_cannot_create_nonverbatim_evidence(self):
+        accepted, rejected = filter_evidence_by_provenance(
+            [
+                {
+                    "timestamp": "00:00-00:03",
+                    "text": "反手发力应该先放松握拍",
+                },
+                {
+                    "timestamp": "00:03-00:06",
+                    "text": "我说 的人不能这样握拍",
+                },
+            ],
+            (
+                "关注我。反手发力应该先放松握拍。"
+                "我说关注我的人不能这样握拍。"
+            ),
+            RULES,
+        )
+        self.assertEqual(
+            [item["timestamp"] for item in accepted],
+            ["00:00-00:03"],
+        )
+        self.assertEqual(rejected, 1)
 
     def test_long_transcript_key_evidence_covers_later_time_buckets(self):
         item = {

@@ -288,7 +288,7 @@ def chunk_gram_postings(chunk_index, gram):
     position = bisect.bisect_left(vocabulary, gram)
     if position >= len(vocabulary) or vocabulary[position] != gram:
         return []
-    return postings[position]
+    return decode_chunk_ngram_postings(postings[position])
 
 
 def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
@@ -669,6 +669,10 @@ def assign_review_budget(ranked, query_concept_count, rules):
         else retrieval["multi_concept_review_limit"]
     )
     review_rank = 0
+    automatic_review_rank = 0
+    automatic_limit = retrieval.get(
+        "automatic_expansion_review_limit", limit
+    )
     for candidate in ranked:
         candidate.setdefault(
             "intrinsic_relevance_tier", candidate["relevance_tier"]
@@ -683,6 +687,16 @@ def assign_review_budget(ranked, query_concept_count, rules):
             candidate["within_review_budget"] = False
             candidate["review_priority"] = "recall_safeguard"
             continue
+        if candidate.get("retrieval_cohort") == "automatic_expansion":
+            automatic_review_rank += 1
+            candidate["cohort_review_rank"] = automatic_review_rank
+            if automatic_review_rank > automatic_limit:
+                candidate["review_rank"] = None
+                candidate["within_review_budget"] = False
+                candidate["review_priority"] = "deferred_cohort_review"
+                continue
+        else:
+            candidate["cohort_review_rank"] = None
         review_rank += 1
         candidate["review_rank"] = review_rank
         candidate["within_review_budget"] = review_rank <= limit

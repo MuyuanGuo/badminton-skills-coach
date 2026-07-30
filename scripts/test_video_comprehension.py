@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,6 +93,229 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertEqual(portable["failures"], [])
         self.assertIn("missing_transcript_file", strict["failures"])
         self.assertNotIn("empty_transcript", strict["failures"])
+
+    def test_bilibili_raw_transcript_prefers_readable_external_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preferred = root / "external" / "BV1External.json"
+            fallback = root / "repository" / "BV1External.json"
+            preferred.parent.mkdir()
+            fallback.parent.mkdir()
+            preferred.write_text(
+                json.dumps(
+                    {
+                        "full_text": (
+                            "接发时先准备最快的回球线路，再处理慢线路。"
+                        )
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            fallback.write_text("placeholder", encoding="utf-8")
+            video = self.transcript_video(
+                "data/transcripts/bilibili/BV1External.json"
+            )
+            video.update(
+                {
+                    "video_id": "bilibili:BV1External",
+                    "source_video_id": "BV1External",
+                    "source_type": "bilibili_video",
+                }
+            )
+            with mock.patch.object(
+                self.module,
+                "load_json",
+                wraps=self.module.load_json,
+            ) as load_json:
+                audit = self.module.audit_video_content(
+                    video,
+                    root=root,
+                    indexed_video_ids={"bilibili:BV1External"},
+                    require_raw_transcript=True,
+                    bilibili_transcript_candidates={
+                        "BV1External": [preferred, fallback]
+                    },
+                )
+            loaded_paths = [call.args[0] for call in load_json.call_args_list]
+        self.assertEqual(audit["raw_transcript_status"], "verified")
+        self.assertEqual(audit["failures"], [])
+        self.assertIn(preferred, loaded_paths)
+        self.assertNotIn(fallback, loaded_paths)
+
+    def test_bilibili_redacted_evidence_roundtrips_through_safe_transcript(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            transcript_path = root / "BV1Redacted.json"
+            transcript_path.write_text(
+                json.dumps(
+                    {
+                        "full_text": "关注我。先准备最快的回球线路",
+                        "segments": [
+                            {
+                                "start": 1.0,
+                                "end": 3.0,
+                                "text": "关注我。先准备最快的回球线路",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            video = self.transcript_video(
+                "data/transcripts/bilibili/BV1Redacted.json"
+            )
+            video.update(
+                {
+                    "video_id": "bilibili:BV1Redacted",
+                    "source_video_id": "BV1Redacted",
+                    "source_type": "bilibili_video",
+                    "title": "接发准备教学",
+                }
+            )
+            audit = self.module.audit_video_content(
+                video,
+                root=root,
+                indexed_video_ids={"bilibili:BV1Redacted"},
+                require_raw_transcript=True,
+                bilibili_transcript_candidates={
+                    "BV1Redacted": [transcript_path]
+                },
+            )
+
+        self.assertEqual(audit["raw_transcript_status"], "verified")
+        self.assertEqual(audit["failures"], [])
+
+    def test_bilibili_runtime_transcript_must_roundtrip_after_redaction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            transcript_path = root / "BV1RedactedMismatch.json"
+            transcript_path.write_text(
+                json.dumps(
+                    {
+                        "full_text": "关注我。先准备最快的回球线路",
+                        "segments": [
+                            {
+                                "start": 1.0,
+                                "end": 3.0,
+                                "text": "关注我。先准备最快的回球线路",
+                            }
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            video = self.transcript_video(
+                "data/transcripts/bilibili/BV1RedactedMismatch.json"
+            )
+            video.update(
+                {
+                    "video_id": "bilibili:BV1RedactedMismatch",
+                    "source_video_id": "BV1RedactedMismatch",
+                    "source_type": "bilibili_video",
+                    "title": "接发准备教学",
+                }
+            )
+            video["transcript_segments"][0]["text"] = "已被错误改写的文本"
+            audit = self.module.audit_video_content(
+                video,
+                root=root,
+                indexed_video_ids={
+                    "bilibili:BV1RedactedMismatch"
+                },
+                require_raw_transcript=True,
+                bilibili_transcript_candidates={
+                    "BV1RedactedMismatch": [transcript_path]
+                },
+            )
+
+        self.assertIn(
+            "runtime_transcript_raw_roundtrip_mismatch",
+            audit["failures"],
+        )
+
+    def test_douyin_raw_transcript_uses_external_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache = root / "external"
+            transcript_path = cache / "batch-001" / "source.json"
+            transcript_path.parent.mkdir(parents=True)
+            transcript_path.write_text(
+                json.dumps(
+                    {
+                        "full_text": (
+                            "接发时先准备最快的回球线路，再处理慢线路。"
+                        )
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            video = self.transcript_video(
+                "data/transcripts/douyin/batch-001/source.json"
+            )
+            video["source_type"] = "douyin_video"
+            audit = self.module.audit_video_content(
+                video,
+                root=root,
+                indexed_video_ids={video["video_id"]},
+                require_raw_transcript=True,
+                douyin_transcript_root=cache,
+            )
+
+        self.assertEqual(audit["raw_transcript_status"], "verified")
+        self.assertEqual(audit["failures"], [])
+
+    def test_bilibili_raw_transcript_falls_back_after_dataless_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preferred = root / "external" / "BV1Fallback.json"
+            fallback = root / "repository" / "BV1Fallback.json"
+            preferred.parent.mkdir()
+            fallback.parent.mkdir()
+            preferred.write_text("placeholder", encoding="utf-8")
+            fallback.write_text(
+                json.dumps(
+                    {
+                        "full_text": (
+                            "接发时先准备最快的回球线路，再处理慢线路。"
+                        )
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            video = self.transcript_video(
+                "data/transcripts/bilibili/BV1Fallback.json"
+            )
+            video.update(
+                {
+                    "video_id": "bilibili:BV1Fallback",
+                    "source_video_id": "BV1Fallback",
+                    "source_type": "bilibili_video",
+                }
+            )
+            original_open = Path.open
+
+            def open_with_eviction(path, *args, **kwargs):
+                if path == preferred:
+                    raise OSError(60, "Operation timed out")
+                return original_open(path, *args, **kwargs)
+
+            with mock.patch.object(Path, "open", open_with_eviction):
+                audit = self.module.audit_video_content(
+                    video,
+                    root=root,
+                    indexed_video_ids={"bilibili:BV1Fallback"},
+                    require_raw_transcript=True,
+                    bilibili_transcript_candidates={
+                        "BV1Fallback": [preferred, fallback]
+                    },
+                )
+        self.assertEqual(audit["raw_transcript_status"], "verified")
+        self.assertEqual(audit["failures"], [])
 
     def test_transcript_mismatch_is_reported(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -344,6 +568,18 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertEqual(metrics["transcript_timestamp_coverage"], 1.0)
         self.assertEqual(metrics["reviewed_visual_observation_items"], 1)
         self.assertEqual(metrics["synthesized_principle_items"], 1)
+        self.assertEqual(metrics["noncanonical_asr_occurrence_count"], 0)
+
+    def test_noncanonical_asr_terms_do_not_span_segment_boundaries(self):
+        transcript = self.transcript_video("")
+        transcript["transcript_segments"] = [
+            {"start": 1.0, "end": 2.0, "text": "保持高框架"},
+            {"start": 2.0, "end": 3.0, "text": "攀头下去"},
+        ]
+        metrics = self.module.evidence_provenance_metrics(
+            [transcript],
+            {"asr_canonicalization": {"架攀": "架拍"}},
+        )
         self.assertEqual(metrics["noncanonical_asr_occurrence_count"], 0)
 
 

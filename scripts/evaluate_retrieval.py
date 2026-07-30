@@ -36,6 +36,26 @@ def load_search_module():
     return module
 
 
+def decode_video_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(
+        (int(record_index), int(channel_mask))
+        for item in encoded.split(";")
+        for record_index, channel_mask in [item.split(",", 1)]
+    )
+
+
+def decode_chunk_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
+
+
 def exhaustive_candidate_ids(search_module, case, primary_payload, top_k):
     candidate_ids = {
         item["video_id"] for item in primary_payload["candidate_manifest"]
@@ -89,7 +109,9 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
     ):
         projected = [
             [old_to_new[old_index], channel_mask]
-            for old_index, channel_mask in postings
+            for old_index, channel_mask in decode_video_ngram_postings(
+                postings
+            )
             if old_index in old_to_new
         ]
         if projected:
@@ -238,7 +260,7 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
         ):
             projected_indexes = [
                 old_chunk_to_new[index]
-                for index in indexes
+                for index in decode_chunk_ngram_postings(indexes)
                 if index in old_chunk_to_new
             ]
             if projected_indexes:
@@ -296,6 +318,7 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
             },
             "term_postings": chunk_term_postings,
             "ngram_vocabulary": chunk_vocabulary,
+            "ngram_postings_encoding": "legacy_integer_lists_v1",
             "ngram_postings": chunk_ngram_postings,
             "chunks": chunks,
         }
@@ -339,6 +362,8 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
                 for field in retrieval_index["evidence_fields"]
             },
             "ngram_vocabulary": vocabulary,
+            "inverted_index_schema": "parallel_ngram_vocabulary_postings_v1",
+            "ngram_postings_encoding": "legacy_index_mask_lists_v1",
             "ngram_postings": ngram_postings,
             "term_postings": term_postings,
             "topic_postings": topic_postings,
@@ -439,6 +464,10 @@ def evaluate_view(
             for video_id in gold["irrelevant_video_ids"]
             if not filter_judgments or video_id in judged_video_ids
         }
+        case_judged_ids = set(expected) | set(primary) | irrelevant
+        case_unjudged_new_source_ids = (
+            unjudged_new_source_ids - case_judged_ids
+        )
         found = [video_id for video_id in expected if video_id in recall_candidate_ids]
         missing = [video_id for video_id in expected if video_id not in recall_candidate_ids]
         primary_ranks = [
@@ -485,8 +514,8 @@ def evaluate_view(
         }
         negative_top = irrelevant & set(top_ids)
         negative_review = irrelevant & review_ids
-        unjudged_new_top = unjudged_new_source_ids & set(top_ids)
-        unjudged_new_review = unjudged_new_source_ids & review_ids
+        unjudged_new_top = case_unjudged_new_source_ids & set(top_ids)
+        unjudged_new_review = case_unjudged_new_source_ids & review_ids
         hard_negative_total += len(irrelevant)
         hard_negative_top_k_violations += len(negative_top)
         hard_negative_review_violations += len(negative_review)
@@ -556,17 +585,7 @@ def evaluate_view(
 def evaluate(top_k, cases_path=CASES_PATH):
     cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
     search_module = load_search_module()
-    knowledge, _, _ = search_module.load_resources()
-    all_judged_ids = {
-        video_id
-        for case in cases
-        for field in (
-            "required_video_ids",
-            "primary_video_ids",
-            "irrelevant_video_ids",
-        )
-        for video_id in case["gold"][field]
-    }
+    knowledge, _, rules = search_module.load_resources()
     new_source_ids = {
         video["video_id"]
         for video in knowledge["videos"]
@@ -577,7 +596,7 @@ def evaluate(top_k, cases_path=CASES_PATH):
         top_k,
         cases,
         search_module,
-        unjudged_new_source_ids=new_source_ids - all_judged_ids,
+        unjudged_new_source_ids=new_source_ids,
     )
     with source_scoped_search(
         search_module, REGRESSION_SOURCE_TYPES
@@ -617,6 +636,21 @@ def evaluate(top_k, cases_path=CASES_PATH):
             "top_k",
         )
     }
+    retrieval_policy = rules["retrieval"]
+    production["unjudged_new_source_exposure"]["limits"] = {
+        "max_top_k_rate": retrieval_policy[
+            "automatic_expansion_max_top_k_rate"
+        ],
+        "max_top_k_per_case": retrieval_policy[
+            "automatic_expansion_surface_limit"
+        ],
+        "max_review_rate": retrieval_policy[
+            "automatic_expansion_max_review_rate"
+        ],
+        "max_review_per_case": retrieval_policy[
+            "automatic_expansion_review_limit"
+        ],
+    }
     return production
 
 
@@ -632,6 +666,22 @@ def main():
     parser.add_argument("--max-average-review-candidates", type=float, default=40)
     parser.add_argument(
         "--max-hard-negative-top-k-violations", type=int, default=0
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-top-k-rate",
+        type=float,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-top-k-per-case",
+        type=int,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-review-rate",
+        type=float,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-review-per-case",
+        type=int,
     )
     args = parser.parse_args()
     result = evaluate(args.top_k, args.cases)
@@ -668,6 +718,48 @@ def main():
         raise SystemExit(
             "Known irrelevant videos appeared in top-k: "
             f"{result['hard_negative_top_k_violations']} violations"
+        )
+    exposure = result["unjudged_new_source_exposure"]
+    limits = exposure["limits"]
+    max_top_k_rate = (
+        args.max_automatic_expansion_top_k_rate
+        if args.max_automatic_expansion_top_k_rate is not None
+        else limits["max_top_k_rate"]
+    )
+    max_top_k_per_case = (
+        args.max_automatic_expansion_top_k_per_case
+        if args.max_automatic_expansion_top_k_per_case is not None
+        else limits["max_top_k_per_case"]
+    )
+    max_review_rate = (
+        args.max_automatic_expansion_review_rate
+        if args.max_automatic_expansion_review_rate is not None
+        else limits["max_review_rate"]
+    )
+    max_review_per_case = (
+        args.max_automatic_expansion_review_per_case
+        if args.max_automatic_expansion_review_per_case is not None
+        else limits["max_review_per_case"]
+    )
+    if exposure["top_k_rate"] > max_top_k_rate:
+        raise SystemExit(
+            "Automatic-expansion top-k exposure "
+            f"{exposure['top_k_rate']:.3f} exceeds {max_top_k_rate:.3f}"
+        )
+    if exposure["max_top_k_per_case"] > max_top_k_per_case:
+        raise SystemExit(
+            "Automatic-expansion top-k per case "
+            f"{exposure['max_top_k_per_case']} exceeds {max_top_k_per_case}"
+        )
+    if exposure["review_rate"] > max_review_rate:
+        raise SystemExit(
+            "Automatic-expansion review exposure "
+            f"{exposure['review_rate']:.3f} exceeds {max_review_rate:.3f}"
+        )
+    if exposure["max_review_per_case"] > max_review_per_case:
+        raise SystemExit(
+            "Automatic-expansion review count per case "
+            f"{exposure['max_review_per_case']} exceeds {max_review_per_case}"
         )
 
 

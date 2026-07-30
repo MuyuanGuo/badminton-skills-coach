@@ -15,6 +15,7 @@ DEFAULT_RULES_PATH = ROOT / "config" / "bilibili_classification_rules.json"
 PIPELINE_LOCK_PATH = ROOT / "data" / "processing" / ".bilibili-pipeline.lock"
 PIPELINE_LOCK_OWNER_ENV = "BSC_BILIBILI_PIPELINE_LOCK_HELD"
 BVID_PATTERN = re.compile(r"BV[0-9A-Za-z]{10}")
+COLLECTION_LIST_ID_PATTERN = re.compile(r"/lists/(\d+)")
 
 
 def stabilize_updated_at(old_payload, new_payload, changed_at):
@@ -63,6 +64,46 @@ def rules_identity(payload):
 
 def load_rules(path=DEFAULT_RULES_PATH):
     payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    collection_policy = payload.get("collection_policy") or {}
+    required = collection_policy.get("required_transcription") or []
+    excluded = collection_policy.get("excluded") or []
+    video_overrides = collection_policy.get("video_overrides") or {}
+    video_required = video_overrides.get("required_transcription") or []
+    video_excluded = video_overrides.get("excluded") or []
+    configured_ids = [
+        str(item.get("list_id") or "")
+        for item in [*required, *excluded]
+    ]
+    configured_names = [
+        str(item.get("name") or "")
+        for item in [*required, *excluded]
+    ]
+    if (
+        not required
+        or not excluded
+        or any(not value for value in [*configured_ids, *configured_names])
+        or len(configured_ids) != len(set(configured_ids))
+        or len(configured_names) != len(set(configured_names))
+    ):
+        raise ValueError("Bilibili collection policy is missing or overlaps")
+    configured_bvids = [
+        str(item.get("bvid") or "")
+        for item in [*video_required, *video_excluded]
+    ]
+    if (
+        not video_required
+        or not video_excluded
+        or any(
+            not BVID_PATTERN.fullmatch(bvid)
+            for bvid in configured_bvids
+        )
+        or len(configured_bvids) != len(set(configured_bvids))
+        or any(
+            not str(item.get("title") or "").strip()
+            for item in [*video_required, *video_excluded]
+        )
+    ):
+        raise ValueError("Bilibili video policy is missing, invalid, or overlaps")
     return {
         **payload,
         "_identity": rules_identity(payload),
@@ -70,6 +111,78 @@ def load_rules(path=DEFAULT_RULES_PATH):
             name: re.compile(pattern)
             for name, pattern in payload["signals"].items()
         },
+    }
+
+
+def collection_list_id(membership):
+    match = COLLECTION_LIST_ID_PATTERN.search(str(membership.get("url") or ""))
+    return match.group(1) if match else None
+
+
+def classify_collection_policy(video, rules):
+    configured = rules["collection_policy"]
+    by_id = {}
+    by_name = {}
+    for action, key in (
+        ("required_transcription", "required_transcription"),
+        ("excluded", "excluded"),
+    ):
+        for item in configured[key]:
+            value = {
+                "action": action,
+                "list_id": str(item["list_id"]),
+                "configured_name": str(item["name"]),
+            }
+            by_id[value["list_id"]] = value
+            by_name[value["configured_name"]] = value
+
+    matched = []
+    for membership in video.get("collection_memberships") or []:
+        list_id = collection_list_id(membership)
+        name = str(membership.get("name") or "")
+        policy = by_id.get(list_id) if list_id else by_name.get(name)
+        if policy is None:
+            continue
+        matched.append({
+            **policy,
+            "name": name or policy["configured_name"],
+        })
+    actions = {item["action"] for item in matched}
+    if len(actions) > 1:
+        raise ValueError(
+            f"Video {video.get('video_id')} matches conflicting collection policies"
+        )
+    video_overrides = configured.get("video_overrides") or {}
+    video_policy = {}
+    for action, key in (
+        ("required_transcription", "required_transcription"),
+        ("excluded", "excluded"),
+    ):
+        for item in video_overrides.get(key) or []:
+            video_policy[str(item["bvid"])] = {
+                "action": action,
+                "bvid": str(item["bvid"]),
+                "configured_title": str(item["title"]),
+            }
+    override = video_policy.get(str(video.get("bvid") or ""))
+    if override and matched:
+        raise ValueError(
+            f"Video {video.get('video_id')} has both collection and video policy"
+        )
+    if override:
+        action = override["action"]
+        basis = "video_override"
+    elif matched:
+        action = matched[0]["action"]
+        basis = "collection"
+    else:
+        action = configured.get("unmatched", "needs_confirmation")
+        basis = "unmatched"
+    return {
+        "action": action,
+        "basis": basis,
+        "matches": matched,
+        "video_override": override,
     }
 
 
@@ -119,21 +232,33 @@ def classify_video(video, rules):
         name: bool(pattern.search(evidence_text))
         for name, pattern in rules["signals"].items()
     }
-    if signals["non_teaching"] or signals["medical"] or signals["promotion"]:
-        decision = "excluded_non_teaching"
+    collection_policy = classify_collection_policy(video, rules)
+    policy_action = collection_policy["action"]
+    if policy_action == "excluded":
+        decision = "excluded_transcription_policy"
+        origin_status = "excluded_transcription_policy"
+        stage = "excluded_transcription_policy"
+        terminal = True
+    elif policy_action == "required_transcription":
+        decision = "required_transcription_policy"
+        origin_status = "transcription_policy_metadata_pending"
+        stage = "metadata_pending"
+        terminal = False
     elif signals["liuhui_origin"] and signals["teaching"]:
         decision = "candidate_liuhui_teaching"
-    elif signals["teaching"]:
-        decision = "excluded_creator_original_or_unknown"
+        origin_status = "origin_verification_pending"
+        stage = "metadata_pending"
+        terminal = False
     else:
         decision = "review_pending"
+        origin_status = "origin_confirmation_pending"
+        stage = "review_pending"
+        terminal = False
     return {
         **video,
-        "origin_status": (
-            "origin_verification_pending"
-            if decision == "candidate_liuhui_teaching"
-            else "not_verified_liuhui"
-        ),
+        "collection_policy": collection_policy,
+        "transcription_required": policy_action == "required_transcription",
+        "origin_status": origin_status,
         "knowledge_admission_eligible": False,
         "decision": decision,
         "decision_reason": rules["decisions"][decision],
@@ -141,17 +266,8 @@ def classify_video(video, rules):
         "classification_rules_version": rules["_identity"]["version"],
         "classification_rules_hash": rules["_identity"]["sha256"],
         "processing_state": {
-            "stage": (
-                "metadata_pending"
-                if decision == "candidate_liuhui_teaching"
-                else {
-                    "excluded_creator_original_or_unknown":
-                        "quarantined_origin_unknown",
-                    "excluded_non_teaching": "excluded_non_teaching",
-                    "review_pending": "quarantined_origin_unknown",
-                }[decision]
-            ),
-            "terminal": decision != "candidate_liuhui_teaching",
+            "stage": stage,
+            "terminal": terminal,
             "attempts_by_stage": {},
             "next_retry_at": None,
             "last_error_class": None,
@@ -177,9 +293,45 @@ def may_enter_knowledge_base(item):
         and signals.get("publisher_text_names_liuhui") is True
         and signals.get("dedicated_origin_tag") is True
     )
-    return (
-        item.get("decision") == "candidate_liuhui_teaching"
+    policy = item.get("collection_policy") or {}
+    policy_basis = policy.get("basis")
+    expected_policy_verification = {
+        "collection": (
+            "verified_collection_policy",
+            "user_confirmed_collection_policy",
+        ),
+        "video_override": (
+            "verified_video_policy",
+            "user_confirmed_video_policy",
+        ),
+    }.get(policy_basis)
+    policy_admitted = (
+        item.get("decision") == "required_transcription_policy"
+        and (item.get("collection_policy") or {}).get("action")
+        == "required_transcription"
+        and expected_policy_verification is not None
+        and verification.get("status") == expected_policy_verification[0]
+        and {
+            "verified_uploader_profile",
+            expected_policy_verification[1],
+        }.issubset(methods)
+        and signals.get("video_id_matches") is True
+        and signals.get("uploader_profile_matches") is True
+        and signals.get("canonical_url_matches") is True
+        and signals.get("duration_valid") is True
+        and bool(verification.get("verified_at"))
+    )
+    verified_liuhui_admitted = (
+        item.get("decision")
+        in {
+            "candidate_liuhui_teaching",
+            "required_transcription_policy",
+        }
         and verification.get("status") == "verified_liuhui_clip"
         and (bool(methods & independent_methods) or publisher_declared)
         and bool(verification.get("verified_at"))
+    )
+    return (
+        policy_admitted
+        or verified_liuhui_admitted
     )

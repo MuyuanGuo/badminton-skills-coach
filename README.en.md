@@ -63,9 +63,9 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Metric | Current baseline |
 | --- | ---: |
 | Processed public videos | 1242 |
-| Bilibili full provenance archive | 767: 57 answer-ready, 710 automatically isolated, 0 pending |
-| Ready teaching videos | 411 |
-| Transcript-backed evidence | 392 |
+| Bilibili full source catalog | 767: 422 answer-ready, 345 policy-excluded or quality-isolated, 0 pending |
+| Ready teaching videos | 776 |
+| Transcript-backed evidence | 757 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Query-understanding cases | 143/143 |
@@ -74,7 +74,7 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Latest independently reviewed generations | 3/3; new runtime review pending |
 | Promoted public feedback signals | 0 |
 
-All 3,527 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
+All 7,668 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
 
 The balanced performance gate covers five question types. In the latest local acceptance run, search P95 was `77.75 ms`, answer-context P95 was `712.04 ms`, traced peak memory was `80.15 MB`, and the answer packet averaged a `71.22%` reduction. These are development-machine measurements, not cross-platform performance promises.
 
@@ -85,7 +85,7 @@ See the [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/e
 ```mermaid
 flowchart TD
     A1["Incremental Douyin observation"] --> B["Source ledger and processing queue"]
-    A2["Full 20-page Bilibili archive<br/>767 videos with page-content hashes"] --> O["Teaching-value and Liu Hui provenance gates"]
+    A2["Full 20-page Bilibili archive<br/>767 videos with page-content hashes"] --> O["Collection policy, provenance, and teaching-quality gates"]
     O --> B
     B --> C["Full media decode, duration, and SHA-256"]
     C --> D["Deterministic ASR"]
@@ -105,7 +105,7 @@ flowchart TD
     N --> F
 ```
 
-A new transcript does not update model weights or become Codex conversational memory. It can affect an answer only after passing provenance, media-integrity, transcription-recipe, ASR-quality, title-to-text, evidence-extraction, and duplicate gates; becoming a `processing_status: ready` knowledge record; passing index, regression, canary, and packet-budget checks; and being installed with the Skill. Even then, it affects only a question whose current retrieval selects a relevant chunk. A raw `.json`, `.srt`, or `.txt` file alone changes no answer.
+A new transcript does not update model weights or become Codex conversational memory. It can affect an answer only after collection-policy admission or independent provenance verification; media-integrity, transcription-recipe, ASR-quality, title-to-text, evidence-extraction, and duplicate gates; becoming a `processing_status: ready` knowledge record; index, regression, canary, and packet-budget checks; and Skill installation. Even then, it affects only a question whose current retrieval selects a relevant chunk. A raw `.json`, `.srt`, or `.txt` file alone changes no answer.
 
 Primary runtime path:
 
@@ -129,10 +129,10 @@ query
 ### Data and evidence layers
 
 - `data/knowledge/douyin_knowledge_base.json`: backward-compatible path for the unified multi-source knowledge base and processing state.
-- `data/knowledge/bilibili_knowledge_base.json`: Bilibili build output admitted through origin, transcript-quality, and cross-platform duplicate gates.
+- `data/knowledge/bilibili_knowledge_base.json`: Bilibili build output admitted by user-confirmed collection policy or provenance verification, then checked by transcript-quality and cross-platform duplicate gates.
 - `data/bilibili_video_index.json`: Bilibili metadata index for the 大G羽毛球 space.
-- `data/processing/bilibili_origin_review_queue.json`: candidates isolated by the automatic provenance gate; it is a machine-audit ledger rather than a mandatory human-review backlog.
-- `data/processing/bilibili_queue.json`: media, transcription, and knowledge-build state for records that passed the origin gate.
+- `data/processing/bilibili_origin_review_queue.json`: uncollected videos that still need confirmation; required-transcription collections are not duplicated here.
+- `data/processing/bilibili_queue.json`: media, transcription, and knowledge-build state for records that passed policy admission or the provenance gate.
 - `references/knowledge-base.json`: compact runtime evidence shipped with the Skill.
 - `retrieval-index.json`: retrieval data without full transcript bodies.
 - `reviewed-evidence-atoms.json`: closed, reviewed claims for covered scopes.
@@ -140,7 +140,7 @@ query
 
 `automatic_transcript`, `reviewed_transcript`, and `visual_reviewed` keep provenance explicit. Automated ASR is not mislabeled as human-reviewed fact, and synthesized principles are not presented as verbatim source claims.
 
-The Bilibili path separates teaching value from content origin. Teaching cards that name Liu Hui become candidates only; teaching videos without an origin signal are isolated as uploader-original or unknown-origin content. Bilibili SEO descriptions append biography and related-video text, so they are forbidden as provenance evidence. In unattended mode, admission requires the uploader identity, publisher-authored text naming Liu Hui, a dedicated origin tag, and valid media metadata together. This is auditable publisher-declared evidence, not an independent copyright determination. Conflicts or missing signals terminate in quarantine and never enter the answer pool.
+The Bilibili path applies two user-confirmed policy layers: 583 videos in eight technical collections plus 19 individually confirmed uncollected videos must be transcribed and stored; 156 videos in five non-target collections plus nine individually excluded videos are skipped. Stable List IDs and BVIDs fix the full-archive partition at `602 + 165 = 767`. Collection and individual confirmation prove only that the user requested storage, not that Liu Hui is the speaker, so they are recorded separately as `verified_collection_policy` and `verified_video_policy`; only independently admitted Liu Hui evidence is labeled `verified_liuhui_clip`. Bilibili SEO descriptions remain forbidden as provenance evidence because they append biography and related-video text. Regardless of admission path, only `ready` records that pass provenance, transcript, and evidence-quality gates can enter the answer pool.
 
 When one record fails provenance, transcription, title-to-text, automatic-evidence, or duplicate gates, its audit state is retained but it remains non-`ready`, and no transcript segments are packaged for runtime use. A cross-artifact invariant, stable-corpus regression, or release-gate failure instead rolls back the generated artifacts for that run. Neither failure class silently enters retrieval or the answer pool, and neither is disguised as a mandatory human-review backlog.
 
@@ -178,13 +178,14 @@ Generated artifacts use atomic writes, while full updates use a multi-file rollb
 
 ## Testing and delivery discipline
 
-The `validate` workflow includes:
+The PR `validate` workflow includes:
 
 - Static and unit tests on Python 3.10 and 3.12.
 - Sharded answer-context regressions.
 - Quality reporting, feedback-lifecycle, metamorphic, and performance gates.
-- Skill-reference synchronization, reproducibility, link, DOM, and release-artifact checks.
-- CodeQL, deterministic ZIP packaging, SHA-256, CycloneDX SBOM, and GitHub Artifact Attestation.
+- Skill-reference synchronization, reproducibility, link, DOM, and project-artifact checks.
+
+The separate tag-only `release` workflow produces the deterministic ZIP, SHA-256, CycloneDX SBOM, and GitHub Artifact Attestation. CodeQL runs independently through GitHub Default Setup; it is not presented as a `validate` step.
 
 Core local entry points:
 
@@ -198,6 +199,14 @@ python3 scripts/run_full_update_pipeline.py
 ```
 
 `run_bilibili_update_pipeline.py` is the resumable entry point for Bilibili updates. A full archive must reconcile the reported profile total, contiguous pages, and per-page BVID content hashes. Audio reaches ASR only after complete PyAV decoding, duration checks, and SHA-256 verification. Per-video checkpoints are followed by duration-scaled ASR QC, title-to-transcript consistency, B-B and B-Douyin deduplication, 45-second chunk construction, mechanical wiring canaries, stable-corpus regressions, performance budgets, and packet-size gates. An item failure retains its checkpoint and is retried or terminally isolated according to policy; a generation-level gate failure rolls back that run's generated artifacts.
+
+When the repository is inside an iCloud-synchronized macOS workspace, both transcript corpora can use non-synchronized caches so cloud placeholders cannot block a build. Knowledge records still retain portable repository-relative references. The build and strict comprehension audit recognize the same environment variables:
+
+```bash
+export BSC_DOUYIN_TRANSCRIPT_CACHE_DIR=/private/tmp/bsc-douyin-cache
+export BSC_BILIBILI_TRANSCRIPT_CACHE_DIR=/private/tmp/bsc-bilibili-transcripts
+python3 scripts/run_full_update_pipeline.py
+```
 
 After interruption, do not reconstruct the subcommands manually. Re-run the same complete recovery command: valid checkpoints are skipped, and installation occurs only after the full archive is terminal and the build and release gates pass.
 

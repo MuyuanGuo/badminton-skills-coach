@@ -63,9 +63,9 @@
 | 指标 | 当前值 | 约束 |
 | --- | ---: | --- |
 | 已处理公开视频 | 1242 | 来源处理记录，不等同于全部教学内容 |
-| B 站全量来源归档 | 767 | 57 条进入回答池、710 条自动隔离、0 条待处理 |
-| 可用于回答的教学视频 | 411 | 仅 `processing_status: ready` 进入证据池 |
-| 转写证据 | 392 | 3,527/3,527 条转写证据包含时间戳 |
+| B 站完整来源目录 | 767 | 422 条回答就绪、345 条策略排除或质量隔离、0 条待处理 |
+| 可用于回答的教学视频 | 776 | 仅 `processing_status: ready` 进入证据池 |
+| 转写证据 | 757 | 7,668/7,668 条转写证据包含时间戳 |
 | 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
 | 回答质量黄金用例 | 57/57 | 覆盖文本、边界、视频与禁用结论 |
 | 查询理解 | 143/143 | 当前结构化意图回归集 |
@@ -83,7 +83,7 @@
 ```mermaid
 flowchart TD
     A1["抖音主页增量观察"] --> B["来源分类台账与处理队列"]
-    A2["B站主页20页全量归档<br/>767条与逐页内容哈希"] --> O["教学价值与刘辉来源双门禁"]
+    A2["B站主页20页全量归档<br/>767条与逐页内容哈希"] --> O["合集策略、来源与教学质量门禁"]
     O --> B
     B --> C["媒体完整解码、时长与SHA-256"]
     C --> D["确定性ASR"]
@@ -103,7 +103,7 @@ flowchart TD
     N --> F
 ```
 
-新增转写不会写入模型权重或成为 Codex 的会话记忆。它只有依次通过来源核验、媒体完整性、转写配方与 ASR 质量、标题正文一致性、证据抽取和去重，成为 `processing_status: ready` 的知识记录，再通过索引、回归、canary 与回答包预算验证并安装到 Skill 后，才可能因为相关 chunk 在当前问题中被选中而影响回答。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。
+新增转写不会写入模型权重或成为 Codex 的会话记忆。它只有先通过合集准入或独立来源核验，再通过媒体完整性、转写配方与 ASR 质量、标题正文一致性、证据抽取和去重，成为 `processing_status: ready` 的知识记录，并通过索引、回归、canary 与回答包预算验证及 Skill 安装后，才可能因为相关 chunk 在当前问题中被选中而影响回答。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。
 
 运行时主路径：
 
@@ -127,10 +127,10 @@ query
 ### 数据与证据分层
 
 - `data/knowledge/douyin_knowledge_base.json`：兼容旧路径的多来源统一知识库与视频处理状态。
-- `data/knowledge/bilibili_knowledge_base.json`：通过来源核验、转写质量和跨平台去重门禁的 B 站构建产物。
+- `data/knowledge/bilibili_knowledge_base.json`：通过用户确认合集策略或来源核验，并经过转写质量和跨平台去重门禁的 B 站构建产物。
 - `data/bilibili_video_index.json`：大G羽毛球主页的 B 站元数据索引。
-- `data/processing/bilibili_origin_review_queue.json`：保存尚未通过自动来源门的隔离候选；它是机器审计台账，不要求真人逐条处理。
-- `data/processing/bilibili_queue.json`：已通过来源门禁的媒体、转写和知识构建状态。
+- `data/processing/bilibili_origin_review_queue.json`：保存无合集且尚未确认的候选；强制转写合集不会重复进入该队列。
+- `data/processing/bilibili_queue.json`：已通过合集策略或来源门禁的媒体、转写和知识构建状态。
 - `references/knowledge-base.json`：随 Skill 发布的运行时证据副本。
 - `retrieval-index.json`：不包含完整转写正文的紧凑索引。
 - `reviewed-evidence-atoms.json`：已审核范围的封闭结论与证据单元。
@@ -138,7 +138,7 @@ query
 
 `automatic_transcript`、`reviewed_transcript` 和 `visual_reviewed` 明确区分证据来源。自动转写不会被标记成人工事实；综合原则也不会伪装成视频逐字原话。
 
-B 站接入额外区分“教学价值”和“内容来源”。主页卡片明确出现“刘辉/刘辉教练”的教学视频只会成为候选；没有来源信号的教学视频按 UP 主原创或来源不明隔离。B 站页面的 SEO description 会拼入作者简介和相关视频，因此被明确禁止作为来源证据。无人模式只放行“上传者身份、发布者正文点名刘辉、专用来源标签、有效媒体元数据”同时成立的多信号记录；这属于可审计的发布者声明级证据，不冒充独立版权鉴定。任何冲突或不足都进入终态隔离，不进入回答池。
+B 站接入执行用户确认的两层策略：8 个技术合集的 583 条视频与 19 条逐条确认的无合集视频必须转写并进入知识存储；5 个非目标合集的 156 条视频与 9 条逐条排除的视频不处理。稳定 List ID 与 BVID 共同把完整归档锁定为 `602 + 165 = 767`。合集确认与逐条确认只证明用户要求收录，不证明内容来自刘辉，因此分别记录为 `verified_collection_policy` 和 `verified_video_policy`；只有独立通过刘辉来源门的记录才标为 `verified_liuhui_clip`。B 站 SEO description 会拼入作者简介和相关视频，仍禁止作为来源证据。无论通过哪种准入方式，只有来源、转写与证据质量门全部通过的 `ready` 记录才能进入回答池。
 
 单条记录未通过来源、转写、标题正文、自动证据或重复门禁时，会保留审计状态但保持非 `ready`，且不向运行时打包转写段。跨产物不变量、稳定语料回归或发布门失败时才回滚本轮生成产物。两类失败都不会静默进入检索或回答池，也不会被伪装成必须由真人清理的积压。
 
@@ -176,13 +176,14 @@ B 站接入额外区分“教学价值”和“内容来源”。主页卡片明
 
 ## 测试与交付纪律
 
-本仓库的 `validate` 工作流包含：
+PR 的 `validate` 工作流包含：
 
 - Python 3.10 / 3.12 静态与单元测试。
 - 分片回答上下文回归。
 - 质量报告、反馈生命周期、语言变体和性能预算。
-- Skill 引用同步、构建可复现性、链接、DOM 与发布产物验证。
-- CodeQL、确定性 ZIP、SHA-256、CycloneDX SBOM 和 GitHub Artifact Attestation。
+- Skill 引用同步、构建可复现性、链接、DOM 与项目产物验证。
+
+标签发布由独立的 `release` 工作流生成确定性 ZIP、SHA-256、CycloneDX SBOM 和 GitHub Artifact Attestation。CodeQL 使用 GitHub Default Setup 独立运行，不冒充 `validate` 中的步骤。
 
 本地核心入口：
 
@@ -196,6 +197,14 @@ python3 scripts/run_full_update_pipeline.py
 ```
 
 新增 B 站证据使用 `run_bilibili_update_pipeline.py` 作为可恢复单入口。全量归档必须对账主页总数、连续页、逐页 BVID 内容哈希；下载只有在 PyAV 完整解码、时长和 SHA-256 全部通过后才进入转写。转写按单视频 checkpoint，随后执行按时长缩放的 ASR 质量门、标题正文一致性、B-B/B-抖音去重、45 秒 chunk 构建、机械 wiring canary、旧语料回归、性能和回答包预算。单条失败会保留 checkpoint 并按策略重试或终态隔离；生成级门禁失败会回滚本轮生成产物。
+
+在 macOS 的 iCloud 同步工作区中，可将两平台转写放到非同步缓存，避免云端占位文件阻塞构建；知识记录仍写入可移植的仓库相对引用。构建和严格理解度验证共同识别这两个环境变量：
+
+```bash
+export BSC_DOUYIN_TRANSCRIPT_CACHE_DIR=/private/tmp/bsc-douyin-cache
+export BSC_BILIBILI_TRANSCRIPT_CACHE_DIR=/private/tmp/bsc-bilibili-transcripts
+python3 scripts/run_full_update_pipeline.py
+```
 
 中断后不要手工拼接子命令；重复运行同一条完整恢复命令即可跳过有效 checkpoint，并且只有全量终态、构建与验证都成功后才安装：
 

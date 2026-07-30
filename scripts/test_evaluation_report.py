@@ -95,6 +95,36 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_can_use_fingerprinted_policy_limit(self):
+        evaluations = {
+            "suite": {
+                "score": 0.11,
+                "limits": {"maximum_score": 0.12},
+            }
+        }
+        baseline = {
+            "metrics": {
+                "suite.score": {
+                    "value_source": "suite.limits.maximum_score",
+                    "direction": "at_most",
+                }
+            }
+        }
+        comparison = self.module.compare_baseline(
+            evaluations,
+            baseline,
+        )[0]
+        self.assertTrue(comparison["passed"])
+        self.assertEqual(comparison["baseline"], 0.12)
+        self.assertEqual(
+            comparison["contract_source"],
+            "suite.limits.maximum_score",
+        )
+        evaluations["suite"]["score"] = 0.13
+        self.assertFalse(
+            self.module.compare_baseline(evaluations, baseline)[0]["passed"]
+        )
+
     def test_precomputed_evaluations_require_current_fingerprints(self):
         committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
         payload = {
@@ -115,7 +145,30 @@ class EvaluationReportTests(unittest.TestCase):
                 self.module.load_evaluation_results(path)
 
     def test_build_report_does_not_recollect_precomputed_evaluations(self):
-        committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
+        committed = self.module.load_json(
+            self.module.REPORT_PATH
+        )["evaluations"]
+        exposure = committed["retrieval"][
+            "unjudged_new_source_exposure"
+        ]
+        if "limits" not in exposure:
+            retrieval_rules = self.module.load_json(
+                ROOT / "config" / "retrieval_rules.json"
+            )["retrieval"]
+            exposure["limits"] = {
+                "max_top_k_rate": retrieval_rules[
+                    "automatic_expansion_max_top_k_rate"
+                ],
+                "max_top_k_per_case": retrieval_rules[
+                    "automatic_expansion_surface_limit"
+                ],
+                "max_review_rate": retrieval_rules[
+                    "automatic_expansion_max_review_rate"
+                ],
+                "max_review_per_case": retrieval_rules[
+                    "automatic_expansion_review_limit"
+                ],
+            }
         with mock.patch.object(self.module, "collect_evaluations") as collect:
             report = self.module.build_report(evaluations=committed)
         collect.assert_not_called()

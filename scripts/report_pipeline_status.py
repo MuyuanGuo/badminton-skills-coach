@@ -116,6 +116,7 @@ def bilibili_status():
         "needs_correction",
     }
     stage_counts = Counter()
+    collection_policy_counts = Counter()
     terminal_counts = Counter()
     retry_due = []
     now = datetime.now(timezone.utc)
@@ -136,6 +137,12 @@ def bilibili_status():
             continue
         bvid = record["bvid"]
         state = record.get("processing_state") or {}
+        collection_policy_counts[
+            (record.get("collection_policy") or {}).get(
+                "action",
+                "missing",
+            )
+        ] += 1
         stage = state.get("stage") or "unknown"
         queue_item = queue_by_id.get(bvid)
         knowledge_item = knowledge_by_source_id.get(bvid)
@@ -157,8 +164,6 @@ def bilibili_status():
             stage = f"released_{knowledge_item['processing_status']}"
             terminal = True
         elif state.get("terminal"):
-            terminal = True
-        elif record.get("decision") != "candidate_liuhui_teaching":
             terminal = True
         elif (
             queue_item
@@ -198,6 +203,7 @@ def bilibili_status():
         ),
         "profile_unique_videos": coverage.get("profile_unique_videos"),
         "classification_counts": ledger.get("counts", {}),
+        "collection_policy_counts": dict(collection_policy_counts),
         "stage_counts": dict(stage_counts),
         "queue_counts": queue.get("counts", {}),
         "knowledge_counts": knowledge.get("knowledge_counts", {}),
@@ -234,8 +240,15 @@ def bilibili_next_action(status):
             "Refresh the Bilibili browser authentication, then resume the "
             "blocked BVIDs with process_bilibili_candidates.py --force."
         )
-    if stages.get("metadata_ready") or stages.get("acquisition_failed"):
-        return "Resume verified Bilibili media acquisition."
+    if (
+        stages.get("metadata_pending")
+        or stages.get("metadata_ready")
+        or stages.get("metadata_verification_failed")
+        or stages.get("acquisition_failed")
+    ):
+        return "Resume required Bilibili metadata verification and media acquisition."
+    if stages.get("review_pending"):
+        return "Confirm the uncollected Bilibili videos before admitting or excluding them."
     if stages.get("downloaded") or stages.get("transcription_failed"):
         return "Resume the checkpointed Bilibili transcription batch."
     if stages.get("transcription_quarantined"):

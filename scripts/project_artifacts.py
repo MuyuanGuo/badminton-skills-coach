@@ -456,8 +456,18 @@ def skill_reference_bytes(source_relative, source_bytes):
     payload = json.loads(source_bytes.decode("utf-8"))
     for video in payload.get("videos", []):
         video.pop("transcript_file", None)
+        if (
+            video.get("source_type") == "bilibili_video"
+            and "transcript_segments" in video
+        ):
+            video["transcript_segments_json"] = json.dumps(
+                video.pop("transcript_segments"),
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
     payload["transcript_files_bundled"] = False
     payload["runtime_transcript_segments_bundled"] = True
+    payload["bilibili_transcript_segments_encoding"] = "json_string_v1"
     return (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 

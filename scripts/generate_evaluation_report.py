@@ -438,7 +438,13 @@ def compare_baseline(evaluations, baseline):
     comparisons = []
     for path, contract in baseline["metrics"].items():
         current = metric_value(evaluations, path)
-        expected = contract["value"]
+        expected_source = contract.get("value_source")
+        if expected_source is None:
+            expected = contract["value"]
+            contract_source = "stable_baseline"
+        else:
+            expected = metric_value(evaluations, expected_source)
+            contract_source = expected_source
         tolerance = contract.get("tolerance", 0)
         direction = contract["direction"]
         if direction == "at_least":
@@ -456,6 +462,7 @@ def compare_baseline(evaluations, baseline):
                 "baseline": expected,
                 "direction": direction,
                 "tolerance": tolerance,
+                "contract_source": contract_source,
                 "passed": passed,
             }
         )

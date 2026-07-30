@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import copy
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,6 +13,7 @@ from project_artifacts import atomic_write_text
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "data" / "processing" / "douyin_queue.json"
 TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "douyin"
+DOUYIN_TRANSCRIPT_CACHE_ENV = "BSC_DOUYIN_TRANSCRIPT_CACHE_DIR"
 CURATED_PATH = ROOT / "data" / "knowledge" / "pilot_teaching_notes.json"
 REVIEW_ANNOTATIONS_PATH = ROOT / "data" / "review" / "visual_review_annotations.json"
 QUALITY_RULES_PATH = ROOT / "config" / "knowledge_quality_rules.json"
@@ -233,7 +236,33 @@ def topic_terms(item, rules):
     return sorted(set(matched), key=lambda term: (-len(term), term))
 
 
-def automatic_note(item, segments, rules):
+def normalize_provenance_text(text, rules):
+    return re.sub(
+        r"\s+",
+        "",
+        canonicalize_asr_text(text, rules),
+    ).lower()
+
+
+def filter_evidence_by_provenance(evidence, provenance_text, rules):
+    """Keep only evidence that remains a contiguous excerpt of the raw source."""
+
+    normalized_source = normalize_provenance_text(provenance_text, rules)
+    accepted = []
+    rejected = 0
+    for item in evidence:
+        normalized_evidence = normalize_provenance_text(
+            item.get("text", ""),
+            rules,
+        )
+        if normalized_evidence and normalized_evidence in normalized_source:
+            accepted.append(item)
+        else:
+            rejected += 1
+    return accepted, rejected
+
+
+def automatic_note(item, segments, rules, provenance_text=None):
     evidence_rules = rules["evidence"]
     teaching_pattern = compile_terms(evidence_rules["teaching_terms"])
     topic_values = topic_terms(item, rules)
@@ -285,6 +314,41 @@ def automatic_note(item, segments, rules):
         evidence_rules["action_cue_limit"],
         rules,
     )
+    provenance_rejections = {
+        "key_evidence": 0,
+        "coverage_evidence": 0,
+        "error_evidence": 0,
+        "action_cues": 0,
+    }
+    if provenance_text is not None:
+        key_evidence, provenance_rejections["key_evidence"] = (
+            filter_evidence_by_provenance(
+                key_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        coverage_evidence, provenance_rejections["coverage_evidence"] = (
+            filter_evidence_by_provenance(
+                coverage_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        error_evidence, provenance_rejections["error_evidence"] = (
+            filter_evidence_by_provenance(
+                error_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        action_cues, provenance_rejections["action_cues"] = (
+            filter_evidence_by_provenance(
+                action_cues,
+                provenance_text,
+                rules,
+            )
+        )
     canonical_segments = [
         canonicalize_asr_text(segment["text"], rules) for segment in segments
     ]
@@ -338,6 +402,10 @@ def automatic_note(item, segments, rules):
             "unique_teaching_terms": unique_teaching_terms,
             "instruction_signal_matches": instruction_signal_matches,
             "evidence_text_characters": evidence_text_characters,
+            "provenance_rejected_evidence_count": sum(
+                provenance_rejections.values()
+            ),
+            "provenance_rejections": provenance_rejections,
             "passed": not issues,
             "issues": issues,
         },
@@ -444,7 +512,26 @@ def apply_review_annotation(record, review_annotation):
     return record
 
 
-def build_record(item, transcript_path, transcript, curated, review_annotations, rules):
+def portable_transcript_reference(transcript_path, transcript_root):
+    transcript_path = Path(transcript_path)
+    transcript_root = Path(transcript_root)
+    try:
+        relative = transcript_path.relative_to(transcript_root)
+    except ValueError:
+        return str(transcript_path.relative_to(ROOT))
+    return str(Path("data/transcripts/douyin") / relative)
+
+
+def build_record(
+    item,
+    transcript_path,
+    transcript,
+    curated,
+    review_annotations,
+    rules,
+    *,
+    transcript_root=TRANSCRIPT_ROOT,
+):
     segments = transcript.get("segments") or []
     transcript_quality = assess_transcript(transcript, rules)
     automatic = automatic_note(item, segments, rules)
@@ -480,7 +567,10 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
         "duration_seconds": round(transcript.get("duration") or 0, 1),
         "processing_status": initial_status,
         "confidence": initial_confidence,
-        "transcript_file": str(transcript_path.relative_to(ROOT)),
+        "transcript_file": portable_transcript_reference(
+            transcript_path,
+            transcript_root,
+        ),
         "quality": {
             "transcript": transcript_quality,
             "automatic_evidence": automatic["quality"],
@@ -523,7 +613,15 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
     return record
 
 
-def build_knowledge(queue, curated_data, review_annotations_data, transcripts, rules):
+def build_knowledge(
+    queue,
+    curated_data,
+    review_annotations_data,
+    transcripts,
+    rules,
+    *,
+    transcript_root=TRANSCRIPT_ROOT,
+):
     curated = {item["video_id"]: item for item in curated_data["videos"]}
     review_annotations = {
         item["video_id"]: item
@@ -541,7 +639,15 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
             continue
         transcript = json.loads(transcript_path.read_text(encoding="utf-8"))
         records.append(
-            build_record(item, transcript_path, transcript, curated, review_annotations, rules)
+            build_record(
+                item,
+                transcript_path,
+                transcript,
+                curated,
+                review_annotations,
+                rules,
+                transcript_root=transcript_root,
+            )
         )
     if missing_transcripts:
         raise SystemExit("Missing transcripts: " + ", ".join(missing_transcripts))
@@ -634,6 +740,22 @@ def merge_bilibili_knowledge(douyin, bilibili):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--transcript-cache-dir",
+        type=Path,
+        default=(
+            Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV]).expanduser()
+            if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
+            else TRANSCRIPT_ROOT
+        ),
+        help=(
+            "Readable Douyin transcript root "
+            f"(default: {DOUYIN_TRANSCRIPT_CACHE_ENV} or repository data)"
+        ),
+    )
+    args = parser.parse_args()
+    transcript_root = args.transcript_cache_dir.resolve()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     curated_data = json.loads(CURATED_PATH.read_text(encoding="utf-8"))
     review_annotations_data = (
@@ -642,9 +764,16 @@ def main():
         else {"items": []}
     )
     rules = json.loads(QUALITY_RULES_PATH.read_text(encoding="utf-8"))
-    transcripts = {path.stem: path for path in TRANSCRIPT_ROOT.rglob("*.json")}
+    transcripts = {
+        path.stem: path for path in transcript_root.rglob("*.json")
+    }
     output = build_knowledge(
-        queue, curated_data, review_annotations_data, transcripts, rules
+        queue,
+        curated_data,
+        review_annotations_data,
+        transcripts,
+        rules,
+        transcript_root=transcript_root,
     )
     bilibili = (
         json.loads(BILIBILI_KNOWLEDGE_PATH.read_text(encoding="utf-8"))

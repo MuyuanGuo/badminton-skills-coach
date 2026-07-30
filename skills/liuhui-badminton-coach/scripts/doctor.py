@@ -11,6 +11,24 @@ import urllib.request
 from pathlib import Path
 
 
+def decode_chunk_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
+
+
+def video_transcript_segments(video):
+    segments = video.get("transcript_segments")
+    if segments is not None:
+        return segments
+    encoded = video.get("transcript_segments_json")
+    if not encoded:
+        return []
+    return json.loads(encoded)
+
+
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 MINIMUM_PYTHON = (3, 10)
 LATEST_RELEASE_URL = (
@@ -115,7 +133,7 @@ def validate_chunk_index(knowledge, retrieval):
             continue
         if video.get("source_type") not in source_allowlist:
             errors.append(f"chunk[{chunk_position}].source_type")
-        segments = (video or {}).get("transcript_segments") or []
+        segments = video_transcript_segments(video or {})
         start = chunk.get("start_segment")
         end = chunk.get("end_segment")
         if (
@@ -182,14 +200,14 @@ def validate_chunk_index(knowledge, retrieval):
         str(record.get("video_id"))
         for record in records
         if record.get("source_type") in source_allowlist
-        and (
+        and video_transcript_segments(
             knowledge_by_id.get(str(record.get("video_id"))) or {}
-        ).get("transcript_segments")
+        )
     }
     for video_id in sorted(expected_indexed_video_ids):
-        segments = (knowledge_by_id.get(video_id) or {}).get(
-            "transcript_segments"
-        ) or []
+        segments = video_transcript_segments(
+            knowledge_by_id.get(video_id) or {}
+        )
         if not segments:
             continue
         ranges = sorted(ranges_by_video.get(video_id, []))
@@ -235,7 +253,7 @@ def validate_chunk_index(knowledge, retrieval):
         validate_postings(
             "chunk_ngram_postings",
             {
-                gram: indexes
+                gram: list(decode_chunk_ngram_postings(indexes))
                 for gram, indexes in zip(vocabulary, ngram_postings)
             },
         )
@@ -537,7 +555,10 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
     runtime_segments_complete = (
         knowledge.get("runtime_transcript_segments_bundled") is True
         and transcript_backed_ready
-        and all(video.get("transcript_segments") for video in transcript_backed_ready)
+        and all(
+            video_transcript_segments(video)
+            for video in transcript_backed_ready
+        )
     )
     checks.append(
         check(

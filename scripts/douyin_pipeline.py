@@ -70,6 +70,7 @@ TEMPORARY_MEDIA_FIELDS = {
     "media_asset_kind",
     "media_asset_source",
     "media_asset_url",
+    "media_cache_key",
     "media_download_method",
 }
 

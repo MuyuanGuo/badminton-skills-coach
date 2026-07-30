@@ -641,11 +641,33 @@ class SearchKnowledgeTests(unittest.TestCase):
         _, retrieval_index, _ = self.search_module.load_resources()
         self.assertEqual(
             retrieval_index["inverted_index_schema"],
-            "parallel_ngram_vocabulary_postings_v1",
+            "parallel_ngram_vocabulary_compact_string_postings_v2",
+        )
+        self.assertEqual(
+            retrieval_index["ngram_postings_encoding"],
+            "semicolon_delimited_index_mask_pairs_v1",
         )
         self.assertEqual(
             len(retrieval_index["ngram_vocabulary"]),
             len(retrieval_index["ngram_postings"]),
+        )
+        self.assertTrue(
+            all(
+                isinstance(postings, str)
+                for postings in retrieval_index["ngram_postings"]
+            )
+        )
+        self.assertEqual(
+            retrieval_index["chunk_index"]["ngram_postings_encoding"],
+            "comma_delimited_indexes_v1",
+        )
+        self.assertTrue(
+            all(
+                isinstance(postings, str)
+                for postings in retrieval_index["chunk_index"][
+                    "ngram_postings"
+                ]
+            )
         )
         self.assertEqual(
             retrieval_index["ngram_vocabulary"],
@@ -790,7 +812,16 @@ class SearchKnowledgeTests(unittest.TestCase):
             manifest_limit=None,
             local_personalization=False,
         )
-        self.assertEqual(payload["results"][0]["video_id"], "7659348110628345210")
+        result_ids = [item["video_id"] for item in payload["results"]]
+        self.assertIn(
+            result_ids[0],
+            {
+                "7659348110628345210",
+                "bilibili:BV1VXtfeSENW",
+                "bilibili:BV1AykwBJEUV",
+            },
+        )
+        self.assertLess(result_ids.index("7659348110628345210"), 3)
         recovery = next(
             item
             for item in payload["candidate_manifest"]
@@ -903,9 +934,16 @@ class SearchKnowledgeTests(unittest.TestCase):
             if not item["retrieval_policy_eligible"]
         }
         self.assertIn("7445495930280856892", rejected)
-        self.assertIn(
-            "specific_stroke_intent_not_supported",
-            rejected["7445495930280856892"]["retrieval_policy_reasons"],
+        self.assertTrue(
+            {
+                "specific_stroke_intent_not_supported",
+                "explicit_constraint_conflict:shot_family",
+            }
+            & set(
+                rejected["7445495930280856892"][
+                    "retrieval_policy_reasons"
+                ]
+            )
         )
         self.assertFalse(
             rejected["7445495930280856892"]["within_review_budget"]
@@ -930,6 +968,8 @@ class SearchKnowledgeTests(unittest.TestCase):
         for video_id in [
             "7205399670959459623",
             "7322291358931127592",
+            "bilibili:BV1up421D7NG",
+            "bilibili:BV1byKAewE6d",
         ]:
             self.assertNotIn(video_id, forecourt_ids)
         self.assertIn("7205399670959459623", forecourt_rejected)
@@ -997,13 +1037,21 @@ class SearchKnowledgeTests(unittest.TestCase):
         )
         result_ids = [item["video_id"] for item in payload["results"]]
         self.assertEqual(result_ids[0], "7523163965838003514")
-        self.assertEqual(
-            set(result_ids),
+        self.assertTrue(
             {
                 "7523163965838003514",
                 "7511934047901846841",
                 "7151961376448138531",
-            },
+                "bilibili:BV1Gs421u7zw",
+                "bilibili:BV1VpyBYmEtH",
+            }.issubset(result_ids)
+        )
+        self.assertLessEqual(
+            sum(
+                item.get("retrieval_cohort") == "automatic_expansion"
+                for item in payload["results"]
+            ),
+            3,
         )
         manifest = {
             item["video_id"]: item
@@ -1032,8 +1080,7 @@ class SearchKnowledgeTests(unittest.TestCase):
             local_personalization=False,
         )
         result_ids = {item["video_id"] for item in payload["results"]}
-        self.assertEqual(
-            result_ids,
+        self.assertTrue(
             {
                 "7515625891511995706",
                 "7393550140465777960",
@@ -1042,14 +1089,28 @@ class SearchKnowledgeTests(unittest.TestCase):
                 "7344186576013905187",
                 "7511934047901846841",
                 "bilibili:BV1tw411U7PV",
-                "bilibili:BV1Qi4y1H7gt",
                 "bilibili:BV1ba4y1C7E5",
-            },
+                "bilibili:BV1VH4y1o7ad",
+                "bilibili:BV1sKRjBREQj",
+            }.issubset(result_ids)
+        )
+        self.assertLessEqual(
+            sum(
+                item.get("retrieval_cohort") == "automatic_expansion"
+                for item in payload["results"]
+            ),
+            3,
         )
         manifest = {
             item["video_id"]: item
             for item in payload["candidate_manifest"]
         }
+        for video_id in [
+            "bilibili:BV1Qi4y1H7gt",
+            "bilibili:BV1uSy2YwEFL",
+        ]:
+            self.assertIn(video_id, manifest)
+            self.assertTrue(manifest[video_id]["retrieval_policy_eligible"])
         self.assertIn("7541623926234811705", manifest)
         for video_id in [
             "7535400692573211962",

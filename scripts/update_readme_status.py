@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import re
 from pathlib import Path
@@ -229,16 +230,16 @@ def update_technical_readme_text(
     bilibili_ready = sum(
         video.get("processing_status") == "ready" for video in bilibili_records
     )
-    bilibili_knowledge_ids = {
-        video.get("evidence_id") for video in bilibili_records
-    }
-    bilibili_isolated = sum(
-        bool((video.get("processing_state") or {}).get("terminal"))
-        and video.get("video_id") not in bilibili_knowledge_ids
+    bilibili_policy_excluded = sum(
+        video.get("decision") == "excluded_transcription_policy"
         for video in bilibili_ledger["videos"]
-    ) + sum(
+    )
+    bilibili_quality_isolated = sum(
         video.get("processing_status") != "ready"
         for video in bilibili_records
+    )
+    bilibili_isolated = (
+        bilibili_policy_excluded + bilibili_quality_isolated
     )
     bilibili_pending = (
         len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
@@ -259,9 +260,10 @@ def update_technical_readme_text(
         r"^\| 视觉复核兜底 \| \d+ \|": f"| 视觉复核兜底 | {visual} |",
         r"^\| 回答质量黄金用例 \| \d+/\d+ \|": f"| 回答质量黄金用例 | {answer_count}/{answer_count} |",
         r"^\| 公共反馈信号 \| \d+ \|": f"| 公共反馈信号 | {feedback_count} |",
-        r"^\| B 站(?:来源隔离试点|全量来源归档) \|.*$": (
-            f"| B 站全量来源归档 | {len(bilibili_index['videos'])} | "
-            f"{bilibili_ready} 条进入回答池、{bilibili_isolated} 条自动隔离、"
+        r"^\| B 站(?:来源隔离试点|全量来源归档|完整来源目录) \|.*$": (
+            f"| B 站完整来源目录 | {len(bilibili_index['videos'])} | "
+            f"{bilibili_ready} 条回答就绪、"
+            f"{bilibili_isolated} 条策略排除或质量隔离、"
             f"{bilibili_pending} 条待处理 |"
         ),
     }
@@ -293,16 +295,16 @@ def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
         video for video in knowledge.get("videos", [])
         if video.get("source_type") == "bilibili_video"
     ]
-    bilibili_knowledge_ids = {
-        video.get("evidence_id") for video in bilibili_records
-    }
-    bilibili_isolated = sum(
-        bool((video.get("processing_state") or {}).get("terminal"))
-        and video.get("video_id") not in bilibili_knowledge_ids
+    bilibili_policy_excluded = sum(
+        video.get("decision") == "excluded_transcription_policy"
         for video in bilibili_ledger["videos"]
-    ) + sum(
+    )
+    bilibili_quality_isolated = sum(
         video.get("processing_status") != "ready"
         for video in bilibili_records
+    )
+    bilibili_isolated = (
+        bilibili_policy_excluded + bilibili_quality_isolated
     )
     bilibili_pending = (
         len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
@@ -321,10 +323,10 @@ def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
         r"^\| Reviewed visual-summary fallbacks \| \d+ \|$": (
             f"| Reviewed visual-summary fallbacks | {evidence['visual']} |"
         ),
-        r"^\| Bilibili (?:provenance-isolation pilot|full provenance archive) \|.*$": (
-            f"| Bilibili full provenance archive | "
+        r"^\| Bilibili (?:provenance-isolation pilot|full provenance archive|full source catalog) \|.*$": (
+            f"| Bilibili full source catalog | "
             f"{len(bilibili_index['videos'])}: {bilibili_ready} answer-ready, "
-            f"{bilibili_isolated} automatically isolated, "
+            f"{bilibili_isolated} policy-excluded or quality-isolated, "
             f"{bilibili_pending} pending |"
         ),
     }
@@ -438,10 +440,20 @@ def update_agent_metadata_text(metadata, knowledge):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Update recruiter-facing development documentation metrics"
+    )
+    parser.add_argument(
+        "--update-stable-site",
+        action="store_true",
+        help=(
+            "Also update the stable-version docs home pages; use only when "
+            "publishing that stable version"
+        ),
+    )
+    args = parser.parse_args()
     readme = README.read_text(encoding="utf-8")
     readme_en = README_EN.read_text(encoding="utf-8")
-    docs_zh = DOCS_ZH.read_text(encoding="utf-8")
-    docs_en = DOCS_EN.read_text(encoding="utf-8")
     skill = SKILL.read_text(encoding="utf-8")
     agent_metadata = AGENT_METADATA.read_text(encoding="utf-8")
     knowledge = load_json(KNOWLEDGE)
@@ -459,20 +471,34 @@ def main():
     updated_en = update_english_readme_text(
         readme_en, video_index, teaching_filter, knowledge
     )
-    updated_docs_zh = update_site_status_text(docs_zh, knowledge, "zh")
-    updated_docs_en = update_site_status_text(docs_en, knowledge, "en")
     updated_skill = update_skill_status_text(skill, knowledge)
     updated_agent_metadata = update_agent_metadata_text(agent_metadata, knowledge)
+    candidates = [
+        (README, updated, readme),
+        (README_EN, updated_en, readme_en),
+        (SKILL, updated_skill, skill),
+        (AGENT_METADATA, updated_agent_metadata, agent_metadata),
+    ]
+    if args.update_stable_site:
+        docs_zh = DOCS_ZH.read_text(encoding="utf-8")
+        docs_en = DOCS_EN.read_text(encoding="utf-8")
+        candidates.extend(
+            [
+                (
+                    DOCS_ZH,
+                    update_site_status_text(docs_zh, knowledge, "zh"),
+                    docs_zh,
+                ),
+                (
+                    DOCS_EN,
+                    update_site_status_text(docs_en, knowledge, "en"),
+                    docs_en,
+                ),
+            ]
+        )
     changed = {
         path: text
-        for path, text, original in [
-            (README, updated, readme),
-            (README_EN, updated_en, readme_en),
-            (DOCS_ZH, updated_docs_zh, docs_zh),
-            (DOCS_EN, updated_docs_en, docs_en),
-            (SKILL, updated_skill, skill),
-            (AGENT_METADATA, updated_agent_metadata, agent_metadata),
-        ]
+        for path, text, original in candidates
         if text != original
     }
     if not changed:

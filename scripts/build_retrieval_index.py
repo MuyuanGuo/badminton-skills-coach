@@ -121,6 +121,18 @@ CHUNK_INDEX_SOURCE_ALLOWLIST = {
 CHUNK_FIRST_SOURCE_ALLOWLIST = {"bilibili_video"}
 
 
+def encode_video_ngram_postings(postings):
+    """Store one video's (record index, field mask) postings compactly."""
+
+    return ";".join(f"{record_index},{channel_mask}" for record_index, channel_mask in postings)
+
+
+def encode_chunk_ngram_postings(indexes):
+    """Store one chunk posting list without per-integer JSON objects."""
+
+    return ",".join(str(index) for index in indexes)
+
+
 def segment_start(segment):
     return float(segment.get("start") or 0.0)
 
@@ -430,7 +442,7 @@ def build_chunk_index(records, knowledge, lexicon, sizes):
         for chunk in chunks
     ]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "config": {
             "target_seconds": CHUNK_TARGET_SECONDS,
             "minimum_seconds": CHUNK_MINIMUM_SECONDS,
@@ -484,7 +496,11 @@ def build_chunk_index(records, knowledge, lexicon, sizes):
             term: indexes for term, indexes in sorted(term_postings.items())
         },
         "ngram_vocabulary": vocabulary,
-        "ngram_postings": [ngram_postings[gram] for gram in vocabulary],
+        "ngram_postings_encoding": "comma_delimited_indexes_v1",
+        "ngram_postings": [
+            encode_chunk_ngram_postings(ngram_postings[gram])
+            for gram in vocabulary
+        ],
         "chunks": public_chunks,
     }
 
@@ -750,10 +766,17 @@ def build_index(knowledge, topic_index, rules):
             CHUNK_FIRST_SOURCE_ALLOWLIST
         ),
         "transcript_ngram_sizes": sizes,
-        "inverted_index_schema": "parallel_ngram_vocabulary_postings_v1",
+        "inverted_index_schema": (
+            "parallel_ngram_vocabulary_compact_string_postings_v2"
+        ),
         "ngram_vocabulary": ngram_vocabulary,
+        "ngram_postings_encoding": (
+            "semicolon_delimited_index_mask_pairs_v1"
+        ),
         "ngram_postings": [
-            sorted(ngram_posting_masks[gram].items())
+            encode_video_ngram_postings(
+                sorted(ngram_posting_masks[gram].items())
+            )
             for gram in ngram_vocabulary
         ],
         "term_postings": {

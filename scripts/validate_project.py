@@ -3,6 +3,7 @@ import json
 import re
 import struct
 import xml.etree.ElementTree as ET
+from collections import Counter
 from pathlib import Path
 
 from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
@@ -105,6 +106,7 @@ json_paths = [
     "data/processing/douyin_discovery_state.json",
     "data/processing/bilibili_origin_review_queue.json",
     "data/processing/bilibili_queue.json",
+    "data/processing/bilibili_transcription_plan.json",
     "skills/liuhui-badminton-coach/references/answer-audit-rules.json",
     "skills/liuhui-badminton-coach/references/answer-modality-rules.json",
     "skills/liuhui-badminton-coach/references/answer-selection-rules.json",
@@ -139,6 +141,17 @@ if (
         "metadata_candidates_enter_knowledge_base"
     )
     is not False
+    or set(
+        bilibili_source.get("admission_policy", {}).get(
+            "required_origin_statuses",
+            [],
+        )
+    )
+    != {
+        "verified_liuhui_clip",
+        "verified_collection_policy",
+        "verified_video_policy",
+    }
 ):
     raise SystemExit("Bilibili source or admission policy is unsafe")
 for relative_path, collection_key in [
@@ -162,6 +175,14 @@ bilibili_review = json.loads(
         encoding="utf-8"
     )
 )
+bilibili_plan = json.loads(
+    (
+        ROOT
+        / "data"
+        / "processing"
+        / "bilibili_transcription_plan.json"
+    ).read_text(encoding="utf-8")
+)
 eligible_bilibili_ids = {
     item["bvid"]
     for item in bilibili_ledger["videos"]
@@ -175,10 +196,87 @@ if any(
     for item in bilibili_ledger["videos"]
 ):
     raise SystemExit("Bilibili ledger contains stale classification metadata")
+collection_policy_counts = Counter(
+    (item.get("collection_policy") or {}).get("action")
+    for item in bilibili_ledger["videos"]
+    if not item.get("missing_since")
+)
+if collection_policy_counts != {
+    "required_transcription": 602,
+    "excluded": 165,
+}:
+    raise SystemExit(
+        "Bilibili collection policy partition is stale or incomplete: "
+        f"{dict(collection_policy_counts)}"
+    )
+required_bilibili_ids = {
+    item["bvid"]
+    for item in bilibili_ledger["videos"]
+    if item.get("decision") == "required_transcription_policy"
+}
+excluded_bilibili_ids = {
+    item["bvid"]
+    for item in bilibili_ledger["videos"]
+    if item.get("decision") == "excluded_transcription_policy"
+}
+if (
+    bilibili_plan.get("counts")
+    != {
+        "archive": 767,
+        "required": 602,
+        "excluded": 165,
+        "baseline_completed": 67,
+        "pending": 535,
+    }
+    or set(bilibili_plan.get("required_bvids") or [])
+    != required_bilibili_ids
+    or set(bilibili_plan.get("excluded_bvids") or [])
+    != excluded_bilibili_ids
+    or set(bilibili_plan.get("baseline_completed_bvids") or [])
+    & set(bilibili_plan.get("pending_bvids") or [])
+    or (
+        set(bilibili_plan.get("baseline_completed_bvids") or [])
+        | set(bilibili_plan.get("pending_bvids") or [])
+    )
+    != required_bilibili_ids
+    or bilibili_plan.get("set_sha256")
+    != {
+        "required": "368babeea2f674a3c5112b663fe459c44348f26dc1058b221d5958a669f7712b",
+        "excluded": "8425c4dbc2255a3a96a1f92fd565fec424946ddd78f30585803f90b2d4112863",
+        "baseline_completed": "b42b08214ba7a79785ae6aadb697ef9dd9b22ae6ef6604b9612f97a7fc330ae3",
+        "pending": "ed0d6587024b602e699b27c5d2bb6fdf2e5b8b80064b70f42c08e34cd1634593",
+    }
+):
+    raise SystemExit("Bilibili transcription plan is stale or inconsistent")
+if any(
+    item.get("transcription_required") != (
+        (item.get("collection_policy") or {}).get("action")
+        == "required_transcription"
+    )
+    for item in bilibili_ledger["videos"]
+    if not item.get("missing_since")
+):
+    raise SystemExit("Bilibili transcription policy flags are inconsistent")
 if eligible_bilibili_ids & {
     item["bvid"] for item in bilibili_review["items"]
 }:
     raise SystemExit("Verified Bilibili evidence remains in the origin review queue")
+expected_bilibili_review_ids = {
+    item["bvid"]
+    for item in bilibili_ledger["videos"]
+    if item.get("decision")
+    in {
+        "candidate_liuhui_teaching",
+        "review_pending",
+    }
+    and not item.get("knowledge_admission_eligible")
+}
+if {
+    item["bvid"] for item in bilibili_review["items"]
+} != expected_bilibili_review_ids:
+    raise SystemExit(
+        "Bilibili origin review queue does not match unconfirmed videos"
+    )
 if not (ROOT / "scripts" / "apply_answer_quality_review_notes.py").exists():
     raise SystemExit("Answer quality review application script is missing")
 for runtime_file in [
@@ -349,8 +447,22 @@ for item in bilibili_queue["items"]:
             f"Transcribed Bilibili item retains temporary media: {item['video_id']}"
         )
     verification = item.get("origin_verification") or {}
-    if verification.get("status") != "verified_liuhui_clip":
-        raise SystemExit(f"Bilibili queue item is not origin-verified: {item['video_id']}")
+    if verification.get("status") not in {
+        "verified_liuhui_clip",
+        "verified_collection_policy",
+        "verified_video_policy",
+    }:
+        raise SystemExit(
+            f"Bilibili queue item is not admission-verified: {item['video_id']}"
+        )
+if any(
+    item.get("status") != "transcribed"
+    for item in bilibili_queue["items"]
+):
+    raise SystemExit(
+        "Bilibili release validation requires every eligible video to be "
+        "transcribed"
+    )
 if len(queue["items"]) < 405:
     raise SystemExit(f"Expected at least 405 teaching videos in queue, found {len(queue['items'])}")
 if sum(queue["counts"].values()) != len(queue["items"]):
@@ -445,6 +557,19 @@ if any(
 douyin_knowledge = json.loads(
     (ROOT / "data" / "knowledge" / "douyin_knowledge_base.json").read_text(encoding="utf-8")
 )
+bilibili_knowledge_ids = [
+    video.get("source_video_id")
+    for video in douyin_knowledge.get("videos", [])
+    if video.get("source_type") == "bilibili_video"
+]
+if (
+    len(bilibili_knowledge_ids) != len(set(bilibili_knowledge_ids))
+    or set(bilibili_knowledge_ids) != eligible_bilibili_ids
+):
+    raise SystemExit(
+        "Unified knowledge base does not exactly cover eligible Bilibili "
+        "videos"
+    )
 if douyin_knowledge.get("evidence_schema_version") != 1:
     raise SystemExit("Knowledge evidence schema version is unsupported")
 validate_evidence_records(douyin_knowledge["videos"])
@@ -474,6 +599,24 @@ if skill_knowledge.get("transcript_files_bundled") is not False or any(
     "transcript_file" in video for video in skill_knowledge["videos"]
 ):
     raise SystemExit("Skill package exposes transcript paths that are not bundled")
+if (
+    skill_knowledge.get("bilibili_transcript_segments_encoding")
+    != "json_string_v1"
+):
+    raise SystemExit("Skill Bilibili transcript segment encoding is stale")
+for video in skill_knowledge["videos"]:
+    if video.get("source_type") != "bilibili_video":
+        continue
+    if "transcript_segments" in video:
+        raise SystemExit("Skill Bilibili transcript segments were not compacted")
+    try:
+        compact_segments = json.loads(video["transcript_segments_json"])
+    except (KeyError, TypeError, json.JSONDecodeError) as exc:
+        raise SystemExit(
+            "Skill Bilibili transcript segments are not decodable"
+        ) from exc
+    if not isinstance(compact_segments, list):
+        raise SystemExit("Skill Bilibili transcript segments must decode to a list")
 
 retrieval_rules = json.loads(
     (ROOT / "config" / "retrieval_rules.json").read_text(encoding="utf-8")
@@ -938,7 +1081,9 @@ if douyin_knowledge.get("quality_rules_version") != knowledge_quality_rules["ver
 for video in douyin_knowledge["videos"]:
     expected_quality_fields = {"transcript", "automatic_evidence"}
     if video.get("source_type") == "bilibili_video":
-        expected_quality_fields.add("source_content_safety")
+        expected_quality_fields.update(
+            {"origin_verification", "source_content_safety"}
+        )
     if set(video.get("quality", {})) != expected_quality_fields:
         raise SystemExit(f"Knowledge quality audit is missing for {video['video_id']}")
     if video["confidence"] == "medium" and (
@@ -946,7 +1091,10 @@ for video in douyin_knowledge["videos"]:
         or not video["quality"]["automatic_evidence"]["passed"]
         or (
             video.get("source_type") == "bilibili_video"
-            and not video["quality"]["source_content_safety"]["passed"]
+            and (
+                not video["quality"]["origin_verification"]["passed"]
+                or not video["quality"]["source_content_safety"]["passed"]
+            )
         )
     ):
         raise SystemExit(f"Automatic ready video failed quality gates: {video['video_id']}")
@@ -1043,12 +1191,35 @@ if retrieval_index.get("stable_indexable_video_count") != sum(
     for video in retrieval_index["videos"]
 ):
     raise SystemExit("Retrieval stable cohort count is inconsistent")
-if retrieval_index.get("inverted_index_schema") != "parallel_ngram_vocabulary_postings_v1":
+if (
+    retrieval_index.get("inverted_index_schema")
+    != "parallel_ngram_vocabulary_compact_string_postings_v2"
+):
     raise SystemExit("Retrieval index does not use the expected inverted-index schema")
+if (
+    retrieval_index.get("ngram_postings_encoding")
+    != "semicolon_delimited_index_mask_pairs_v1"
+    or any(
+        not isinstance(postings, str)
+        for postings in retrieval_index.get("ngram_postings", [])
+    )
+):
+    raise SystemExit("Retrieval video n-gram postings are not compact strings")
 if len(retrieval_index.get("ngram_vocabulary", [])) != len(
     retrieval_index.get("ngram_postings", [])
 ):
     raise SystemExit("Retrieval inverted-index vocabulary/postings lengths differ")
+chunk_index = retrieval_index.get("chunk_index") or {}
+if (
+    chunk_index.get("schema_version") != 2
+    or chunk_index.get("ngram_postings_encoding")
+    != "comma_delimited_indexes_v1"
+    or any(
+        not isinstance(postings, str)
+        for postings in chunk_index.get("ngram_postings", [])
+    )
+):
+    raise SystemExit("Retrieval chunk n-gram postings are not compact strings")
 ready_video_ids = {
     video["video_id"]
     for video in douyin_knowledge["videos"]

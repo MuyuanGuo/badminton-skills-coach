@@ -32,6 +32,16 @@ TRANSACTION_PATH = ROOT / "data" / "processing" / ".bilibili-update-transaction.
 DEFAULT_ARCHIVE_PATH = (
     ROOT / "data" / "snapshots" / "bilibili_profile_full_archive.json"
 )
+PRESERVED_OPERATIONAL_STAGES = {
+    "metadata_ready",
+    "downloaded",
+    "transcribed",
+    "transcription_failed",
+    "transcription_quarantined",
+    "acquisition_failed",
+    "blocked_auth",
+    "unavailable",
+}
 
 
 def load_json(path):
@@ -231,6 +241,22 @@ def possible_douyin_duplicates(title, postings, titles, threshold=0.55):
     return sorted(scored, key=lambda item: (-item["title_term_jaccard"], item["video_id"]))[:5]
 
 
+def reconcile_processing_state(existing, classified):
+    """Reset obsolete classification terminals without losing real work."""
+
+    if classified["decision"] == "excluded_transcription_policy":
+        return classified["processing_state"]
+    existing_state = existing.get("processing_state") or {}
+    existing_stage = existing_state.get("stage")
+    same_rules = (
+        existing.get("classification_rules_hash")
+        == classified.get("classification_rules_hash")
+    )
+    if same_rules or existing_stage in PRESERVED_OPERATIONAL_STAGES:
+        return existing_state or classified["processing_state"]
+    return classified["processing_state"]
+
+
 def build_payloads(snapshot):
     snapshot, _ = normalize_snapshot_shape(snapshot)
     source = load_json(SOURCE_PATH)
@@ -284,8 +310,7 @@ def build_payloads(snapshot):
         if existing.get("origin_verification"):
             item["origin_verification"] = existing["origin_verification"]
             item["knowledge_admission_eligible"] = may_enter_knowledge_base(item)
-        if existing.get("processing_state"):
-            item["processing_state"] = existing["processing_state"]
+        item["processing_state"] = reconcile_processing_state(existing, item)
         ledger_by_id[item["video_id"]] = item
     if full_archive:
         observed_ids = {item["video_id"] for item in classified}
@@ -295,7 +320,10 @@ def build_payloads(snapshot):
     ledger_items = sorted(ledger_by_id.values(), key=lambda item: item["video_id"])
     review_items = [
         item for item in ledger_items
-        if item["decision"] == "candidate_liuhui_teaching"
+        if item["decision"] in {
+            "candidate_liuhui_teaching",
+            "review_pending",
+        }
         and not item["knowledge_admission_eligible"]
     ]
     index_payload = stabilize_updated_at(

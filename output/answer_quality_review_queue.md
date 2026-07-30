@@ -1,6 +1,6 @@
 # 回答质量黄金集审核队列
 
-知识库版本：`2026-07-28T19:53:44.676631+00:00`
+知识库版本：`2026-07-30T03:55:04.640231+00:00`
 候选问题：`57`
 可进入自动回归：`57`
 仍待审核：`0`
@@ -137,8 +137,8 @@
 
 ### 机器补充候选
 
-- 机器候选: [反手杀球 不同的击球位置也会使用不同的动作,都有不同的效果](https://www.douyin.com/video/7550305145877155131) (`7550305145877155131`)
-- 机器候选: [发力第二集 大家不要错误的去伸胳膊，要学会利用身体去拿高点](https://www.douyin.com/video/7485692231404342586) (`7485692231404342586`)
+- 机器候选: [陶菲克重杀教学！杀球重不重就看这一点！最后真的笑死了](https://www.bilibili.com/video/BV1VXtfeSENW/) (`bilibili:BV1VXtfeSENW`)
+- 机器候选: [业余杀球优化爆改教学！后场杀球架拍和发力动作细节！羽毛球新手必看！杀球不重的赶紧试试](https://www.bilibili.com/video/BV1AykwBJEUV/) (`bilibili:BV1AykwBJEUV`)
 
 ### Review notes
 
@@ -239,8 +239,8 @@
 
 ### 机器补充候选
 
+- 机器候选: [网前框架怎么做？好的框架需要满足这几点](https://www.bilibili.com/video/BV1ft421A73A/) (`bilibili:BV1ft421A73A`)
 - 机器候选: [网前撤后场手部细节 场景是网前撤后场，不是中场撤后场，只要把肘先抬起来到合适的位置怎么抬怎么摆都可以](https://www.douyin.com/video/7486788550298471739) (`7486788550298471739`)
-- 机器候选: [滚网搓球 双打网前有人看守时有奇效](https://www.douyin.com/video/7509355373729762619) (`7509355373729762619`)
 
 ### Review notes
 
@@ -320,7 +320,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学](https://www.bilibili.com/video/BV1Ac411q7eJ/) (`bilibili:BV1Ac411q7eJ`)
+- 机器候选: [双打接发球如何准备！不为人知的站位和握拍细节揭秘](https://www.bilibili.com/video/BV1nvsfeHENA/) (`bilibili:BV1nvsfeHENA`)
 
 ### Review notes
 
@@ -1019,7 +1019,8 @@
 
 ### 机器补充候选
 
-- 机器候选: [双打抓回头 紫电青霜不要去掉低胶，如果一定要去掉低胶，或者已经去掉底胶，就要考虑结合自己的能力，也要换掉拍头的连钉，普通的线孔就在盒子里赠送了的](https://www.douyin.com/video/7656927370758796145) (`7656927370758796145`)
+- 机器候选: [史上最细双打轮转教学！神秘网红客串](https://www.bilibili.com/video/BV1U1421973Z/) (`bilibili:BV1U1421973Z`)
+- 机器候选: [双打网前一蹲起不来了怎么办？ 正确的双打轮转技巧！轮转是有信号的，看看有哪些信号](https://www.bilibili.com/video/BV1GN4y1H7co/) (`bilibili:BV1GN4y1H7co`)
 
 ### Review notes
 
@@ -1108,8 +1109,8 @@
 
 ### 机器补充候选
 
+- 机器候选: [双打杀球落点如何选择？教你三拍必杀死对面的秘诀！恍然大悟了啊，有没有](https://www.bilibili.com/video/BV111421t7s3/) (`bilibili:BV111421t7s3`)
 - 机器候选: [大家可以去试一试，不过要确实有需求在折球哦，头像挡住观看落点的话，可以打开评论区观看😂](https://www.douyin.com/video/7069948509838904591) (`7069948509838904591`)
-- 机器候选: [起跳进阶 有的时候努力得不到回报，有可能是方向选择错了](https://www.douyin.com/video/7634016952800880570) (`7634016952800880570`)
 
 ### Review notes
 
@@ -1665,9 +1666,9 @@
 
 ### 机器补充候选
 
-- 机器候选: [高远球改动作误区(二)击球点 正确改动作](https://www.bilibili.com/video/BV1NN411m7sh/) (`bilibili:BV1NN411m7sh`)
 - 机器候选: [小孩子和球友正手位大距离位移打高远球，前交叉步的要求更高，后交叉容易，距离相近](https://www.douyin.com/video/7059205903639121187) (`7059205903639121187`)
 - 机器候选: [教科书动作教不出高手，但是实战动作可以](https://www.douyin.com/video/7098156298415459599) (`7098156298415459599`)
+- 机器候选: [高远球改动作为什么总是改不过来？ 高远球改动作你只需要知道这三点（一）](https://www.bilibili.com/video/BV1es4y1K7PV/) (`bilibili:BV1es4y1K7PV`)
 
 ### Review notes
 
@@ -2402,7 +2403,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学](https://www.bilibili.com/video/BV1Ac411q7eJ/) (`bilibili:BV1Ac411q7eJ`)
+- 机器候选: [双打接发球如何准备！不为人知的站位和握拍细节揭秘](https://www.bilibili.com/video/BV1nvsfeHENA/) (`bilibili:BV1nvsfeHENA`)
 
 ### Review notes
 
@@ -3051,7 +3052,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [反手网前挑球技巧！羽毛球想挑的又高又到位必看](https://www.bilibili.com/video/BV1Gs421u7zw/) (`bilibili:BV1Gs421u7zw`)
 
 ### Review notes
 
@@ -3427,6 +3428,7 @@
 ### 机器补充候选
 
 - 机器候选: [单打制胜唯一法宝 羽毛球单打核心思路](https://www.bilibili.com/video/BV1tM4y1B7z8/) (`bilibili:BV1tM4y1B7z8`)
+- 机器候选: [削(切)球在实战中的逆天妙用！正反手过渡劈吊滑板切腰等都得用削啊！削球可太有用了](https://www.bilibili.com/video/BV1XCd8YnENF/) (`bilibili:BV1XCd8YnENF`)
 
 ### Review notes
 
@@ -4028,7 +4030,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [你不知道的架拍细节延伸！ 最适合业余球友的架拍方式！进阶霸王杀等多种架拍优势](https://www.bilibili.com/video/BV1Bi4y1q7eh/) (`bilibili:BV1Bi4y1q7eh`)
+- 机器候选: [霸王杀杀球 ！羽毛球最强爆发力杀球的秘诀！架拍引拍是关键](https://www.bilibili.com/video/BV1s6p9zNEzj/) (`bilibili:BV1s6p9zNEzj`)
 
 ### Review notes
 
@@ -4502,7 +4504,8 @@
 
 ### 机器补充候选
 
-- 机器候选: [遁地炮杀球有多重？ 国际女双常用的重杀这样打 一亿来了](https://www.bilibili.com/video/BV1p34y1V7qa/) (`bilibili:BV1p34y1V7qa`)
+- 机器候选: [史上最重杀球教学！遁地炮](https://www.bilibili.com/video/BV1kz421i7cj/) (`bilibili:BV1kz421i7cj`)
+- 机器候选: [遁地炮重杀教学！业余小白学重杀从0到1 第一部分！共两部分](https://www.bilibili.com/video/BV1upjgzKELr/) (`bilibili:BV1upjgzKELr`)
 
 ### Review notes
 
@@ -4613,7 +4616,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [杀球太平不够尖怎么办？杀球压下去的动作技巧！不看又错过一个亿~](https://www.bilibili.com/video/BV1rp421d7om/) (`bilibili:BV1rp421d7om`)
 
 ### Review notes
 
@@ -4783,7 +4786,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [李梓嘉同款反手杀球教学！ ！帅最重要啊](https://www.bilibili.com/video/BV1xy4beSEqm/) (`bilibili:BV1xy4beSEqm`)
 
 ### Review notes
 
@@ -5024,7 +5027,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [解说单打比赛切片！小羊(杨越凯)vs蔡教练(蔡晓源)第一局完整字幕版](https://www.bilibili.com/video/BV1bZRqYcEN7/) (`bilibili:BV1bZRqYcEN7`)
 
 ### Review notes
 
