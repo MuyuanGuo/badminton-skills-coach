@@ -4,6 +4,7 @@
 import argparse
 import importlib.util
 import json
+from collections import Counter
 from pathlib import Path
 
 from bilibili_wiring_canary import evaluate_registry
@@ -23,6 +24,11 @@ def load_module(name, path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("registry", type=Path)
+    parser.add_argument(
+        "--details-output",
+        type=Path,
+        help="Optionally persist the complete per-case result JSON.",
+    )
     args = parser.parse_args()
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
     search = load_module(
@@ -34,7 +40,33 @@ def main():
         SKILL_SCRIPTS / "prepare_answer_context.py",
     )
     result = evaluate_registry(registry, search, context_runtime)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if args.details_output:
+        from project_artifacts import atomic_write_text
+
+        atomic_write_text(
+            args.details_output,
+            json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+        )
+    summary = {
+        key: value
+        for key, value in result.items()
+        if key not in {"results", "failures"}
+    }
+    summary["surface_disposition_counts"] = dict(
+        sorted(
+            Counter(
+                item["retrieval_surface_disposition"]
+                for item in result["results"]
+            ).items()
+        )
+    )
+    summary["transcript_anchor_probe_lookup_passed"] = sum(
+        item["transcript_anchor_probe_lookup_hit"]
+        for item in result["results"]
+    )
+    summary["failure_count"] = len(result["failures"])
+    summary["failures"] = result["failures"]
+    print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 1 if result["failures"] else 0
 
 

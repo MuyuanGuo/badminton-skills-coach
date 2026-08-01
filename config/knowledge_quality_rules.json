@@ -1,6 +1,7 @@
 {
-  "version": 8,
+  "version": 10,
   "asr_canonicalization": {
+    "攀头": "拍头",
     "架盘": "架拍",
     "架攀": "架拍",
     "握盘": "握拍",
@@ -98,6 +99,17 @@
         "device": "cpu",
         "compute_type": "int8"
       }
+    ],
+    "stable_retrieval_evidence_ids": [
+      "bilibili:BV12N411v7qo",
+      "bilibili:BV16G411y7Rs",
+      "bilibili:BV1TT411r7Ft",
+      "bilibili:BV1aw411179M",
+      "bilibili:BV1es4y1K7PV",
+      "bilibili:BV1t94y1a7La",
+      "bilibili:BV1tM4y1B7z8",
+      "bilibili:BV1tw411U7PV",
+      "bilibili:BV1vx4y1A71t"
     ],
     "legacy_metricless_transcript_sha256": {
       "bilibili:BV12N411v7qo": "cd244b8d424fb56fc14d4e3302efff84f4ae7b9bbc8bef93cf818c2bdcb3154d",

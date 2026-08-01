@@ -89,8 +89,88 @@ class BilibiliQualityGateTests(unittest.TestCase):
             "origin_verification": {
                 "status": "verified_liuhui_clip",
                 "verified_at": "2026-07-28T00:00:00+00:00",
+                "methods": ["publisher_origin_annotation"],
+                "signals": {
+                    "uploader_profile_matches": True,
+                    "publisher_text_names_liuhui": True,
+                    "dedicated_origin_tag": True,
+                },
             },
         }
+
+    def test_category_prefers_title_over_incidental_feeder_prompts(self):
+        self.assertEqual(
+            self.builder.infer_category(
+                "跳杀如何形成向前的力量",
+                "你先给我发球，再往前移动一下，来到网前继续。",
+            ),
+            "后场技术",
+        )
+        self.assertEqual(
+            self.builder.infer_category(
+                "遁地炮完整动作",
+                "给我发球，脚下移动一下。",
+            ),
+            "后场技术",
+        )
+        self.assertEqual(
+            self.builder.infer_category(
+                "刘辉教练答疑",
+                "反手杀球需要先架拍，再完成后场动作。",
+            ),
+            "后场技术",
+        )
+        self.assertEqual(
+            self.builder.infer_category(
+                "刘辉教练答疑",
+                "给我发球，然后移动一下。",
+            ),
+            "训练与纠错",
+        )
+        self.assertEqual(
+            self.builder.infer_category(
+                "杀球压不下去；不止杀球，还有过渡勾球",
+                "",
+            ),
+            "后场技术",
+        )
+        self.assertEqual(
+            self.builder.infer_category(
+                "网前两点上网步法教学",
+                "",
+            ),
+            "步法与移动",
+        )
+
+    def test_release_cohort_is_independent_from_recipe_compatibility(self):
+        current = self.transcript()
+        current_item = {
+            **self.item(),
+            "video_id": current["video_id"],
+            "evidence_id": f"bilibili:{current['video_id']}",
+            "status": "transcribed",
+        }
+        rules = copy.deepcopy(self.rules)
+        rules["bilibili_unattended"][
+            "stable_retrieval_evidence_ids"
+        ] = [current_item["evidence_id"]]
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            path = Path(directory) / f"{current['video_id']}.json"
+            path.write_text(
+                json.dumps(current, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            knowledge = self.builder.build_knowledge(
+                {"items": [current_item], "counts": {"transcribed": 1}},
+                {current["video_id"]: [path]},
+                rules,
+                {"videos": []},
+            )
+
+        record = knowledge["videos"][0]
+        self.assertEqual(record["quality_recipe_mode"], "current_recipe")
+        self.assertEqual(record["release_cohort"], "stable_baseline")
+        self.assertEqual(record["retrieval_cohort"], "stable_baseline")
 
     def test_transcription_quarantine_builds_terminal_low_value_record(self):
         item = {
@@ -147,6 +227,49 @@ class BilibiliQualityGateTests(unittest.TestCase):
                 "pre_excluded": 0,
                 "pending": 0,
             },
+        )
+
+    def test_build_falls_back_when_preferred_transcript_is_dataless(self):
+        payload = self.transcript()
+        item = {
+            **self.item(),
+            "video_id": payload["video_id"],
+            "status": "transcribed",
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            root = Path(directory)
+            preferred = root / "external" / f"{payload['video_id']}.json"
+            fallback = root / "legacy" / f"{payload['video_id']}.json"
+            preferred.parent.mkdir()
+            fallback.parent.mkdir()
+            preferred.write_text("placeholder", encoding="utf-8")
+            fallback.write_text(
+                json.dumps(payload, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            original_load = self.builder.load_valid_queue_transcript
+
+            def load_with_eviction(queue_item, path):
+                if path == preferred:
+                    raise OSError(60, "Operation timed out")
+                return original_load(queue_item, path)
+
+            with mock.patch.object(
+                self.builder,
+                "load_valid_queue_transcript",
+                side_effect=load_with_eviction,
+            ):
+                knowledge = self.builder.build_knowledge(
+                    {"items": [item], "counts": {"transcribed": 1}},
+                    {payload["video_id"]: [preferred, fallback]},
+                    self.rules,
+                    {"videos": []},
+                )
+
+        self.assertEqual(knowledge["knowledge_counts"]["videos"], 1)
+        self.assertEqual(
+            knowledge["videos"][0]["source_video_id"],
+            payload["video_id"],
         )
 
     def test_good_long_transcript_passes_duration_and_integrity_gates(self):
@@ -507,6 +630,37 @@ class BilibiliQualityGateTests(unittest.TestCase):
         self.assertEqual(record["processing_status"], "ready")
         self.assertTrue(record["automatic_admission"]["answer_evidence_eligible"])
         self.assertTrue(record["transcript_segments"])
+
+    def test_good_transcript_with_failed_origin_is_not_answer_eligible(self):
+        payload = self.transcript()
+        item = self.item()
+        item["origin_verification"] = {
+            "status": "verification_failed",
+            "verified_at": "2026-07-28T00:00:00+00:00",
+            "methods": [],
+            "signals": {},
+        }
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            record = self.builder.build_record(
+                item,
+                Path(directory) / "fixture.json",
+                payload,
+                self.rules,
+                self.builder.build_shingle_index([]),
+            )
+        self.assertEqual(record["processing_status"], "low_value")
+        self.assertEqual(
+            record["automatic_admission"]["disposition"],
+            "quarantined_origin_verification",
+        )
+        self.assertFalse(
+            record["automatic_admission"]["answer_evidence_eligible"]
+        )
+        self.assertEqual(record["transcript_segments"], [])
+        self.assertIn(
+            "origin_verification_not_admitted",
+            record["quality"]["origin_verification"]["issues"],
+        )
 
     def test_prompt_injection_segment_is_excluded_without_deleting_teaching(self):
         payload = self.transcript()

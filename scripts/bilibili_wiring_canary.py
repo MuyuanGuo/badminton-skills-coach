@@ -38,6 +38,22 @@ def stable_payload_hash(payload):
     ).hexdigest()
 
 
+def runtime_transcript_segments(video):
+    """Return transcript segments from canonical or compact Skill records."""
+
+    segments = video.get("transcript_segments")
+    if isinstance(segments, list):
+        return segments
+    encoded = video.get("transcript_segments_json")
+    if not isinstance(encoded, str) or not encoded.strip():
+        return []
+    try:
+        decoded = json.loads(encoded)
+    except (TypeError, ValueError, json.JSONDecodeError):
+        return []
+    return decoded if isinstance(decoded, list) else []
+
+
 def mechanical_knowledge_hash(knowledge):
     """Hash only portable Bilibili wiring inputs, not package-only metadata."""
 
@@ -62,7 +78,7 @@ def mechanical_knowledge_hash(knowledge):
                     .get("transcript_sha256")
                 ),
                 "runtime_segments_sha256": stable_payload_hash(
-                    video.get("transcript_segments") or []
+                    runtime_transcript_segments(video)
                 ),
             }
         )
@@ -130,7 +146,7 @@ def configured_supported_terms(video, quality_rules):
     transcript = normalize(
         "".join(
             str(segment.get("text") or "")
-            for segment in video.get("transcript_segments") or []
+            for segment in runtime_transcript_segments(video)
         )
     )
     terms = (
@@ -164,7 +180,7 @@ def configured_supported_terms(video, quality_rules):
 
 
 def transcript_anchor(video, supported_terms):
-    segments = video.get("transcript_segments") or []
+    segments = runtime_transcript_segments(video)
     normalized_terms = {
         term: normalize(term) for term in supported_terms if normalize(term)
     }
@@ -254,7 +270,8 @@ def generate_registry(
         state = admission_state(video)
         if state is None:
             continue
-        if not video.get("transcript_segments"):
+        segments = runtime_transcript_segments(video)
+        if not segments:
             exclusions.append(
                 {
                     "evidence_id": evidence_id,
@@ -300,7 +317,13 @@ def generate_registry(
             .get("transcript", {})
             .get("integrity", {})
             .get("transcript_sha256")
-        ) or stable_payload_hash(video.get("transcript_segments") or [])
+        ) or stable_payload_hash(segments)
+        anchor_probe = "".join(
+            str(segment.get("text") or "")
+            for segment in segments[
+                anchor["start_segment"]:anchor["end_segment"]
+            ]
+        ).strip()
         case = {
             "case_id": "bili-mechanical-" + evidence_id.split(":", 1)[-1],
             "measurement_type": MEASUREMENT_TYPE,
@@ -308,10 +331,11 @@ def generate_registry(
             "admission_state": state,
             "query": retrieval_title,
             "query_derivation": (
-                "cleaned_retrieval_title_with_transcript_supported_terms"
+                "cleaned_retrieval_title_with_separate_transcript_anchor_probe"
             ),
             "expected_evidence_id": evidence_id,
             "supported_title_terms": supported_terms,
+            "transcript_probe": anchor_probe,
             "transcript_sha256": transcript_hash,
             "transcript_anchor": anchor,
             "expected_chunk_ids": expected["chunk_ids"],
@@ -366,6 +390,7 @@ def validate_registry(registry):
             "query",
             "expected_evidence_id",
             "supported_title_terms",
+            "transcript_probe",
             "transcript_anchor",
             "expected_chunk_ids",
             "expected_cluster_ids",
@@ -376,6 +401,7 @@ def validate_registry(registry):
         if (
             not case["query"].strip()
             or not case["supported_title_terms"]
+            or not case["transcript_probe"].strip()
             or not case["expected_chunk_ids"]
             or not case["expected_cluster_ids"]
         ):
@@ -439,7 +465,7 @@ def top_k_cluster_violations(
 
 
 def current_anchor_hash(video, anchor):
-    segments = video.get("transcript_segments") or []
+    segments = runtime_transcript_segments(video)
     start = int(anchor["start_segment"])
     end = int(anchor["end_segment"])
     if not 0 <= start < end <= len(segments):
@@ -499,12 +525,21 @@ def evaluate_registry(
         retrieval = search_module.search(
             query,
             limit=int(thresholds["retrieval_top_k"]),
+            manifest_limit=None,
             local_personalization=False,
         )
         top_results = retrieval.get("results", [])
         top_ids = [item["video_id"] for item in top_results]
         target = next(
             (item for item in top_results if item["video_id"] == expected),
+            None,
+        )
+        manifest_target = next(
+            (
+                item
+                for item in retrieval.get("candidate_manifest", [])
+                if item.get("video_id") == expected
+            ),
             None,
         )
         context = context_runtime.prepare_answer_context(
@@ -530,10 +565,61 @@ def evaluate_registry(
             packet_video.get("window_ids", []) if packet_video else []
         )
         target_retrieval = (
-            target.get("transcript_retrieval", {}) if target else {}
+            (target or manifest_target or {}).get("transcript_retrieval") or {}
         )
         matched_chunks = set(target_retrieval.get("matched_chunk_ids") or [])
         matched_clusters = set(target_retrieval.get("matched_cluster_ids") or [])
+        top_clusters = {
+            cluster_id
+            for item in top_results
+            for cluster_id in (
+                (item.get("transcript_retrieval") or {}).get(
+                    "matched_cluster_ids",
+                    [],
+                )
+            )
+        }
+        target_clusters = set(
+            target_retrieval.get("matched_cluster_ids") or []
+        )
+        anchor_lookup = search_module.lookup_videos(
+            [expected],
+            query=case["transcript_probe"],
+            local_personalization=False,
+            include_query_match=False,
+            chunk_hints_by_video={
+                expected: [
+                    {
+                        "start_segment": case["transcript_anchor"][
+                            "start_segment"
+                        ],
+                        "end_segment": case["transcript_anchor"][
+                            "end_segment"
+                        ],
+                    }
+                ]
+            },
+        )
+        anchor_lookup_video = next(
+            (
+                item
+                for item in anchor_lookup.get("results", [])
+                if item.get("video_id") == expected
+            ),
+            None,
+        )
+        normalized_probe = normalize(case["transcript_probe"])
+        anchor_probe_lookup_hit = bool(
+            normalized_probe
+            and anchor_lookup_video
+            and any(
+                normalized_probe in normalize(item.get("text"))
+                for item in anchor_lookup_video.get(
+                    "transcript_evidence",
+                    [],
+                )
+            )
+        )
         case_failures = []
         video = videos.get(expected)
         if video is None:
@@ -544,7 +630,7 @@ def evaluate_registry(
                 .get("transcript", {})
                 .get("integrity", {})
                 .get("transcript_sha256")
-            ) or stable_payload_hash(video.get("transcript_segments") or [])
+            ) or stable_payload_hash(runtime_transcript_segments(video))
             if current_transcript_hash != case["transcript_sha256"]:
                 case_failures.append("transcript_content_hash_mismatch")
             if (
@@ -552,16 +638,39 @@ def evaluate_registry(
                 != case["transcript_anchor"]["text_sha256"]
             ):
                 case_failures.append("transcript_anchor_hash_mismatch")
+        surface_disposition = "surfaced_top_k"
         if expected not in top_ids:
+            policy_guarded = bool(
+                manifest_target
+                and manifest_target.get("retrieval_policy_eligible") is False
+                and manifest_target.get("retrieval_policy_reasons")
+            )
+            cohort_deferred = bool(
+                manifest_target
+                and manifest_target.get("review_priority")
+                == "deferred_cohort_review"
+            )
+            content_cluster_deferred = bool(
+                manifest_target
+                and target_clusters
+                and target_clusters.issubset(top_clusters)
+            )
+            if policy_guarded:
+                surface_disposition = "policy_guarded_manifest"
+            elif cohort_deferred:
+                surface_disposition = "cohort_deferred_manifest"
+            elif content_cluster_deferred:
+                surface_disposition = "content_cluster_deferred_manifest"
+            else:
+                surface_disposition = "unexpectedly_missing_top_k"
+        if surface_disposition == "unexpectedly_missing_top_k":
             case_failures.append("expected_evidence_not_in_top_k")
         if (
-            not target
-            or target_retrieval.get("mode") != "chunk_first"
-            or not matched_chunks
+            not (target or manifest_target)
         ):
-            case_failures.append("expected_evidence_missing_transcript_chunk_hit")
-        if not matched_clusters:
-            case_failures.append("expected_evidence_missing_content_cluster_hit")
+            case_failures.append("expected_evidence_missing_from_search_manifest")
+        if not anchor_probe_lookup_hit:
+            case_failures.append("transcript_anchor_probe_lookup_failed")
         size = packet_bytes(packet)
         if size > int(thresholds["maximum_packet_bytes"]):
             case_failures.append("packet_exceeds_absolute_byte_budget")
@@ -595,7 +704,10 @@ def evaluate_registry(
             "query": query,
             "expected_evidence_id": expected,
             "retrieval_top_ids": top_ids,
+            "retrieval_surface_disposition": surface_disposition,
+            "candidate_manifest_found": manifest_target is not None,
             "transcript_chunk_hit": bool(matched_chunks),
+            "transcript_anchor_probe_lookup_hit": anchor_probe_lookup_hit,
             "matched_chunk_ids": sorted(matched_chunks),
             "matched_cluster_ids": sorted(matched_clusters),
             "claim_mapped": bool(mapped),

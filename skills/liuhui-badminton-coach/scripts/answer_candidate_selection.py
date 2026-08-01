@@ -739,8 +739,8 @@ def selected_sort_key(entry, rules=None):
             else 0
         ),
         entry.get("actor_context_rank", 2),
-        symptom_match_rank,
         reviewed_evidence_rank,
+        symptom_match_rank,
         retrieval_cohort_rank,
         unrequested_value_priority,
         -exact_constraint_count,

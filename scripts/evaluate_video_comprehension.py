@@ -3,13 +3,24 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 import re
 from collections import Counter
 from pathlib import Path
 
 from evaluate_answer_context import planned_queries
-from build_douyin_knowledge import canonicalize_asr_text
+from build_douyin_knowledge import (
+    DOUYIN_TRANSCRIPT_CACHE_ENV,
+    canonicalize_asr_text,
+    runtime_transcript_segments,
+)
+from build_bilibili_knowledge import assess_source_content
 from build_retrieval_index import normalize as normalize_retrieval_text
+from bilibili_storage import (
+    bilibili_transcript_roots,
+    first_readable_transcript,
+    index_exact_transcript_candidates,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +44,26 @@ ALL_EVIDENCE_FIELDS = TRANSCRIPT_EVIDENCE_FIELDS + (
 
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def decode_video_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(
+        (int(record_index), int(channel_mask))
+        for item in encoded.split(";")
+        for record_index, channel_mask in [item.split(",", 1)]
+    )
+
+
+def decode_chunk_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
 
 
 def load_search_module():
@@ -213,6 +244,20 @@ def transcript_text(payload):
     ).strip()
 
 
+def bilibili_safe_runtime_segments(video, payload, quality_rules):
+    """Rebuild the exact safe transcript boundary used by the Bilibili builder."""
+
+    raw_segments = payload.get("segments") or []
+    if not raw_segments:
+        return None
+    _, safe_segments = assess_source_content(
+        video,
+        raw_segments,
+        quality_rules,
+    )
+    return runtime_transcript_segments(safe_segments, quality_rules)
+
+
 def evidence_provenance_metrics(videos, quality_rules):
     transcript_items = 0
     timestamped_transcript_items = 0
@@ -243,13 +288,20 @@ def evidence_provenance_metrics(videos, quality_rules):
                 if isinstance(item, dict) and str(item.get("text", "")).strip()
             ]
         )
-        transcript = "".join(
+        transcript_segments = [
             str(segment.get("text", ""))
             for segment in video.get("transcript_segments", []) or []
             if isinstance(segment, dict)
-        )
+        ]
         for noncanonical in canonicalization:
-            occurrences = transcript.count(noncanonical)
+            # ASR terms are segment-local. Concatenating adjacent segments can
+            # invent a token that never appeared in either source segment
+            # (for example, one ending in "架" followed by one starting in
+            # "攀"). Count each segment independently.
+            occurrences = sum(
+                segment.count(noncanonical)
+                for segment in transcript_segments
+            )
             if occurrences:
                 noncanonical_terms[noncanonical] += occurrences
     return {
@@ -277,6 +329,8 @@ def audit_video_content(
     chunk_lexicon=(),
     transcript_ngram_sizes=(2, 3),
     require_raw_transcript=False,
+    bilibili_transcript_candidates=None,
+    douyin_transcript_root=None,
 ):
     video_id = video["video_id"]
     note = video.get("teaching_note") or {}
@@ -377,10 +431,46 @@ def audit_video_content(
             failures.append("missing_transcript_file_reference")
             raw_transcript_status = "missing_reference"
         else:
-            path = root / transcript_file
-            if not path.exists():
+            candidate_paths = None
+            if video.get("source_type") == "bilibili_video":
+                source_video_id = str(
+                    video.get("source_video_id") or ""
+                ).strip()
+                if bilibili_transcript_candidates is None:
+                    bilibili_transcript_candidates = (
+                        index_exact_transcript_candidates(
+                            bilibili_transcript_roots(root)
+                        )
+                    )
+                candidate_paths = bilibili_transcript_candidates.get(
+                    source_video_id,
+                    [],
+                )
+                path = first_readable_transcript(candidate_paths)
+            elif video.get("source_type") == "douyin_video":
+                if douyin_transcript_root is None:
+                    douyin_transcript_root = (
+                        Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV])
+                        if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
+                        else root / "data" / "transcripts" / "douyin"
+                    )
+                canonical_root = Path("data/transcripts/douyin")
+                try:
+                    relative = Path(transcript_file).relative_to(
+                        canonical_root
+                    )
+                except ValueError:
+                    path = root / transcript_file
+                else:
+                    path = Path(douyin_transcript_root) / relative
+            else:
+                path = root / transcript_file
+            if path is None or not path.exists():
                 raw_transcript_status = "unavailable"
-                if require_raw_transcript:
+                if candidate_paths:
+                    failures.append("invalid_transcript_file")
+                    raw_transcript_status = "invalid"
+                elif require_raw_transcript:
                     failures.append("missing_transcript_file")
             else:
                 try:
@@ -401,8 +491,23 @@ def audit_video_content(
 
         if source_kind == "automatic_transcript" and video.get("confidence") != "curated" and full_transcript:
             quality_rules = load_json(QUALITY_RULES_PATH)
+            provenance_transcript = full_transcript
+            if video.get("source_type") == "bilibili_video":
+                expected_runtime_segments = bilibili_safe_runtime_segments(
+                    video,
+                    payload or {},
+                    quality_rules,
+                )
+                if expected_runtime_segments is not None:
+                    if expected_runtime_segments != segments:
+                        failures.append(
+                            "runtime_transcript_raw_roundtrip_mismatch"
+                        )
             normalized_transcript = normalize_text(
-                canonicalize_asr_text(full_transcript, quality_rules)
+                canonicalize_asr_text(
+                    provenance_transcript,
+                    quality_rules,
+                )
             )
             for item in note_evidence(note, TRANSCRIPT_EVIDENCE_FIELDS):
                 if normalize_text(item["text"]) not in normalized_transcript:
@@ -426,6 +531,7 @@ def evaluate(
     require_raw_transcripts=False,
     answer_cases_path=ANSWER_CASES_PATH,
     semantic_top_k=12,
+    douyin_transcript_root=None,
 ):
     knowledge = load_json(knowledge_path)
     retrieval_index = load_json(retrieval_index_path)
@@ -445,7 +551,9 @@ def evaluate(
             retrieval_index["ngram_vocabulary"],
             retrieval_index["ngram_postings"],
         ):
-            for record_index, channel_mask in postings:
+            for record_index, channel_mask in decode_video_ngram_postings(
+                postings
+            ):
                 if channel_mask & 4:
                     transcript_ngrams_by_id[video_ids[record_index]].add(gram)
     indexed_video_ids = set(index_by_id)
@@ -471,13 +579,16 @@ def evaluate(
     if len(chunk_vocabulary) != len(chunk_postings):
         raise ValueError("Chunk n-gram vocabulary/postings length mismatch")
     for gram, postings in zip(chunk_vocabulary, chunk_postings):
-        for chunk_position in postings:
+        for chunk_position in decode_chunk_ngram_postings(postings):
             if isinstance(chunk_position, int) and 0 <= chunk_position < len(chunks):
                 indexed_chunk_ngrams[str(chunks[chunk_position]["chunk_id"])].add(
                     gram
                 )
     chunk_lexicon = set(
         (chunk_index.get("term_cluster_document_frequency") or {}).keys()
+    )
+    bilibili_transcript_candidates = index_exact_transcript_candidates(
+        bilibili_transcript_roots(root)
     )
     audits = [
         audit_video_content(
@@ -496,6 +607,8 @@ def evaluate(
             chunk_lexicon=chunk_lexicon,
             transcript_ngram_sizes=ngram_sizes,
             require_raw_transcript=require_raw_transcripts,
+            bilibili_transcript_candidates=bilibili_transcript_candidates,
+            douyin_transcript_root=douyin_transcript_root,
         )
         for video in ready_videos
     ]
@@ -666,6 +779,15 @@ def main():
             "the portable knowledge and retrieval artifacts instead."
         ),
     )
+    parser.add_argument(
+        "--douyin-transcript-cache-dir",
+        type=Path,
+        default=(
+            Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV])
+            if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
+            else None
+        ),
+    )
     args = parser.parse_args()
 
     result = evaluate(
@@ -674,6 +796,7 @@ def main():
         run_retrieval_roundtrip=not args.skip_retrieval_roundtrip,
         run_semantic_probes=not args.skip_retrieval_roundtrip,
         require_raw_transcripts=args.require_raw_transcripts,
+        douyin_transcript_root=args.douyin_transcript_cache_dir,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if args.require_ready is not None and result["ready_videos"] < args.require_ready:

@@ -4,6 +4,7 @@
 import argparse
 import importlib.util
 import json
+import re
 from itertools import chain
 from pathlib import Path
 
@@ -43,6 +44,25 @@ def load_navigation_module():
 
 def load_feedback_module():
     return load_sibling("liuhui_answer_feedback", "feedback.py")
+
+
+def canonicalize_retrieval_query(query, rules):
+    """Normalize accepted spelling errors before retrieval planning."""
+
+    canonical = query
+    for rule in rules.get("canonical_terminology", []):
+        for term in sorted(
+            rule.get("accepted_input_errors", []),
+            key=len,
+            reverse=True,
+        ):
+            canonical = re.sub(
+                re.escape(term),
+                rule["canonical_term"],
+                canonical,
+                flags=re.IGNORECASE,
+            )
+    return canonical
 
 
 _selection_policy = load_sibling(
@@ -268,7 +288,7 @@ def automatic_expansion_variant_failure(
         .get("transcript_retrieval", {})
         .get("chunk_hints", [])
     )
-    segments = video.get("transcript_segments") or []
+    segments = search_module.video_transcript_segments(video)
     if hints:
         segment_indexes = {
             index
@@ -327,6 +347,8 @@ def prepare_answer_context(
         )
     elif clarification_answers is not None:
         raise ValueError("clarification_answers requires continue_from")
+    user_query = query
+    query = canonicalize_retrieval_query(query, rules)
     explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
@@ -611,6 +633,32 @@ def prepare_answer_context(
         }
         for duplicate in cluster_duplicates
     )
+    automatic_limit = rules.get(
+        "automatic_expansion_selection_limit", 3
+    )
+    cohort_kept = []
+    cohort_suppressed = []
+    automatic_count = 0
+    for entry in accepted:
+        if (
+            entry["candidate"].get("retrieval_cohort")
+            == "automatic_expansion"
+        ):
+            automatic_count += 1
+            if automatic_count > automatic_limit:
+                cohort_suppressed.append(entry)
+                continue
+        cohort_kept.append(entry)
+    accepted = cohort_kept
+    rejected.extend(
+        {
+            **entry,
+            "selection_reasons": [
+                "automatic_expansion_selection_limit_exceeded"
+            ],
+        }
+        for entry in cohort_suppressed
+    )
     exact_entries = [
         entry
         for entry in accepted
@@ -762,9 +810,7 @@ def prepare_answer_context(
         ),
         "terminology_corrections": query_terminology_corrections(
             search_module,
-            plan["retrieval_guidance"]["intent_frame"].get(
-                "positive_query", query
-            ),
+            user_query,
             rules,
         ),
         "technique_definitions": requested_technique_definitions(
@@ -814,7 +860,7 @@ def prepare_answer_context(
         video for video in selected_videos if video["label"] in visible_label_set
     ]
     context = {
-        "query": query,
+        "query": user_query,
         "question_interpretation": question_interpretation,
         "boundary": boundary,
         "answer_guidance": plan["answer_guidance"],

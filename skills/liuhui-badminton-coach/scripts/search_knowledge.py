@@ -291,6 +291,45 @@ def load_resources():
     return _RESOURCE_CACHE
 
 
+def decode_video_ngram_postings(encoded):
+    """Decode one compact top-level posting list, while accepting legacy lists."""
+
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(
+        (int(record_index), int(channel_mask))
+        for item in encoded.split(";")
+        for record_index, channel_mask in [item.split(",", 1)]
+    )
+
+
+def decode_chunk_ngram_postings(encoded):
+    """Decode one compact chunk posting list, while accepting legacy lists."""
+
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
+
+
+def video_transcript_segments(video):
+    """Return timestamped segments, lazily expanding bundled Bilibili payloads."""
+
+    segments = video.get("transcript_segments")
+    if segments is not None:
+        return segments
+    encoded = video.get("transcript_segments_json")
+    if not encoded:
+        return []
+    segments = json.loads(encoded)
+    if not isinstance(segments, list):
+        raise ValueError("compact transcript segments must decode to a list")
+    return segments
+
+
 def prepared_retrieval_index(retrieval_index):
     cache_key = id(retrieval_index)
     cached = _PREPARED_RETRIEVAL_CACHE.get(cache_key)
@@ -383,7 +422,7 @@ def inverted_ngram_matches(retrieval_index, grams):
         position = bisect.bisect_left(vocabulary, gram)
         if position >= len(vocabulary) or vocabulary[position] != gram:
             continue
-        gram_postings = postings[position]
+        gram_postings = decode_video_ngram_postings(postings[position])
         document_frequency[gram] = len(gram_postings)
         for record_index, channel_mask in gram_postings:
             video_id = video_ids[record_index]
@@ -568,6 +607,7 @@ _retrieval_ranking.hashed_ngrams = hashed_ngrams
 _retrieval_ranking.inverted_candidate_ids = inverted_candidate_ids
 _retrieval_ranking.inverted_ngram_matches = inverted_ngram_matches
 _retrieval_ranking.prepared_retrieval_index = prepared_retrieval_index
+_retrieval_ranking.decode_chunk_ngram_postings = decode_chunk_ngram_postings
 _retrieval_ranking.load_selection_policy = load_selection_policy
 _retrieval_ranking.TIER_ORDER = TIER_ORDER
 _retrieval_ranking._VIDEO_CONSTRAINT_SCOPE_CACHE = _VIDEO_CONSTRAINT_SCOPE_CACHE
@@ -699,6 +739,25 @@ def cap_content_clusters(
     return kept, suppressed
 
 
+def cap_retrieval_cohort(items, rules):
+    """Bound one unreviewed release cohort without hiding it from the manifest."""
+
+    limit = rules["retrieval"].get("automatic_expansion_surface_limit")
+    if limit is None:
+        return list(items), []
+    kept = []
+    suppressed = []
+    automatic_count = 0
+    for item in items:
+        if item.get("retrieval_cohort") == "automatic_expansion":
+            automatic_count += 1
+            if automatic_count > limit:
+                suppressed.append(item)
+                continue
+        kept.append(item)
+    return kept, suppressed
+
+
 def search(
     query,
     limit=12,
@@ -752,10 +811,19 @@ def search(
     eligible_ranked = [
         item for item in ranked if item["retrieval_policy_eligible"]
     ]
-    surfaced_ranked, cluster_suppressed_results = cap_content_clusters(
+    cluster_capped_ranked, cluster_suppressed_results = cap_content_clusters(
         eligible_ranked,
-        limit=limit,
     )
+    cohort_capped_ranked, cohort_suppressed_results = cap_retrieval_cohort(
+        cluster_capped_ranked,
+        rules,
+    )
+    if limit is None:
+        surfaced_ranked = cohort_capped_ranked
+    elif limit > 0:
+        surfaced_ranked = cohort_capped_ranked[:limit]
+    else:
+        surfaced_ranked = []
     accessible_candidate_count = (
         len(ranked)
         if recall_mode == "exhaustive"
@@ -837,6 +905,9 @@ def search(
             "candidate_count": len(ranked),
             "eligible_candidate_count": len(eligible_ranked),
             "policy_rejected_candidate_count": len(ranked) - len(eligible_ranked),
+            "cohort_suppressed_result_count": len(
+                cohort_suppressed_results
+            ),
             "content_cluster_suppressed_result_count": len(
                 cluster_suppressed_results
             ),
@@ -866,7 +937,13 @@ def search(
                 item["within_review_budget"] for item in ranked
             ),
             "deferred_review_candidate_count": sum(
-                item["review_priority"] == "deferred_review" for item in ranked
+                item["review_priority"]
+                in {"deferred_review", "deferred_cohort_review"}
+                for item in ranked
+            ),
+            "cohort_deferred_review_candidate_count": sum(
+                item["review_priority"] == "deferred_cohort_review"
+                for item in ranked
             ),
             "channel_counts": dict(channel_counts),
             "coverage_claim": (
@@ -935,6 +1012,12 @@ def lookup_videos(
             )
             continue
         record = records.get(video_id) or {}
+        transcript_segments = video_transcript_segments(video)
+        evidence_video = (
+            video
+            if video.get("transcript_segments") is not None
+            else {**video, "transcript_segments": transcript_segments}
+        )
         result = {
             "video_id": video_id,
             "evidence": evidence_descriptor(video),
@@ -947,7 +1030,7 @@ def lookup_videos(
             "quality": compact_quality(video.get("quality")),
             "teaching_note": compact_teaching_note(video["teaching_note"]),
             "transcript_evidence": rank_transcript_evidence(
-                video,
+                evidence_video,
                 query,
                 expansion,
                 limit=segment_limit,
@@ -962,7 +1045,7 @@ def lookup_videos(
                     else len(record.get("transcript_ngrams", []))
                 ),
                 "bundled_transcript_segment_count": len(
-                    video.get("transcript_segments") or []
+                    transcript_segments
                 ),
             },
         }

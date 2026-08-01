@@ -14,13 +14,20 @@ from bilibili_pipeline import (
     PIPELINE_LOCK_OWNER_ENV,
     acquire_bilibili_pipeline_lock,
 )
+from bilibili_storage import (
+    BILIBILI_MEDIA_CACHE_ENV,
+    BILIBILI_TRANSCRIPT_CACHE_ENV,
+    bilibili_media_cache_root,
+    bilibili_transcript_cache_root,
+    bilibili_transcript_roots,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARCHIVE = (
     ROOT / "data" / "snapshots" / "bilibili_profile_full_archive.json"
 )
-MEDIA_ROOT = ROOT / "data" / "raw_videos" / "bilibili"
-TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "bilibili"
+MEDIA_ROOT = bilibili_media_cache_root(ROOT)
+TRANSCRIPT_ROOT = bilibili_transcript_cache_root(ROOT)
 QUEUE_PATH = ROOT / "data" / "processing" / "bilibili_queue.json"
 
 
@@ -86,7 +93,32 @@ def main():
         help="Verify provenance without downloading media",
     )
     parser.add_argument("--max-items", type=int)
+    parser.add_argument(
+        "--download-workers",
+        type=int,
+        choices=range(1, 5),
+        default=int(os.environ.get("BSC_BILIBILI_DOWNLOAD_WORKERS", "2")),
+        metavar="{1,2,3,4}",
+        help="Bounded concurrent Bilibili acquisition workers (default: 2)",
+    )
     parser.add_argument("--model", default="small")
+    parser.add_argument(
+        "--media-cache-dir",
+        type=Path,
+        help=(
+            "Local Bilibili media cache outside synchronized Documents storage "
+            f"(default: {BILIBILI_MEDIA_CACHE_ENV} or data/raw_videos/bilibili)"
+        ),
+    )
+    parser.add_argument(
+        "--transcript-cache-dir",
+        type=Path,
+        help=(
+            "Preferred Bilibili transcript cache outside synchronized "
+            f"Documents storage (default: {BILIBILI_TRANSCRIPT_CACHE_ENV} "
+            "or data/transcripts/bilibili)"
+        ),
+    )
     parser.add_argument(
         "--skip-acquisition",
         action="store_true",
@@ -118,6 +150,18 @@ def main():
         help="Allow an intentionally partial run to exit zero",
     )
     args = parser.parse_args()
+    media_root = bilibili_media_cache_root(
+        ROOT,
+        override=args.media_cache_dir,
+    )
+    transcript_root = bilibili_transcript_cache_root(
+        ROOT,
+        override=args.transcript_cache_dir,
+    )
+    if args.media_cache_dir is not None:
+        os.environ[BILIBILI_MEDIA_CACHE_ENV] = str(media_root)
+    if args.transcript_cache_dir is not None:
+        os.environ[BILIBILI_TRANSCRIPT_CACHE_ENV] = str(transcript_root)
     if args.require_complete and args.allow_partial:
         parser.error("--require-complete and --allow-partial are mutually exclusive")
     if args.install and (
@@ -145,36 +189,63 @@ def main():
         )
 
     acquisition_incomplete = False
+    if not args.skip_acquisition and not args.skip_ingest:
+        run(
+            [
+                sys.executable,
+                "scripts/process_bilibili_candidates.py",
+                "--existing-queue-only",
+            ]
+        )
     if not args.skip_acquisition:
         command = [
             sys.executable,
             "scripts/process_bilibili_candidates.py",
+            "--media-cache-dir",
+            media_root,
         ]
         if args.metadata_only:
             command.append("--metadata-only")
         if args.max_items:
             command.extend(["--max-items", str(args.max_items)])
+        command.extend(["--download-workers", str(args.download_workers)])
         acquisition_incomplete = bool(run(command, allow_incomplete=True))
 
     if (
         not args.metadata_only
         and not args.skip_transcription
-        and not acquisition_incomplete
     ):
         run(
             [
                 sys.executable,
                 "scripts/batch_transcribe_directory.py",
-                MEDIA_ROOT,
+                media_root,
                 "--output-dir",
-                TRANSCRIPT_ROOT,
+                transcript_root,
                 "--queue",
                 QUEUE_PATH,
                 "--model",
                 args.model,
             ]
+            + [
+                part
+                for fallback_root in bilibili_transcript_roots(
+                    ROOT,
+                    override=transcript_root,
+                )[1:]
+                for part in ["--fallback-output-dir", fallback_root]
+            ]
         )
-        run([sys.executable, "scripts/finalize_bilibili_transcripts.py"])
+        run(
+            [
+                sys.executable,
+                "scripts/finalize_bilibili_transcripts.py",
+                "--media-cache-dir",
+                media_root,
+                "--transcript-cache-dir",
+                transcript_root,
+            ]
+        )
 
     release_validated = False
     release_build_id = None

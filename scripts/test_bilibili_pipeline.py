@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
@@ -27,12 +28,22 @@ class BilibiliPipelineTests(unittest.TestCase):
         cls.rules = cls.pipeline.load_rules()
 
     def classify(self, title, **extra):
+        bvid = extra.pop("bvid", "BV16G411y7Rs")
         item = self.pipeline.normalize_video({
-            "bvid": "BV16G411y7Rs",
+            "bvid": bvid,
             "title": title,
             **extra,
         })
         return self.pipeline.classify_video(item, self.rules)
+
+    def membership(self, name, list_id):
+        return {
+            "name": name,
+            "url": (
+                "https://space.bilibili.com/1423436652/"
+                f"lists/{list_id}?type=season"
+            ),
+        }
 
     def test_explicit_liuhui_teaching_is_candidate_but_not_admitted(self):
         item = self.classify("刘辉教练教你反手万能握拍")
@@ -41,25 +52,109 @@ class BilibiliPipelineTests(unittest.TestCase):
         self.assertFalse(item["knowledge_admission_eligible"])
         self.assertFalse(self.pipeline.may_enter_knowledge_base(item))
 
-    def test_creator_teaching_without_origin_signal_is_isolated(self):
+    def test_uncollected_teaching_without_origin_signal_needs_confirmation(self):
         item = self.classify("反手高远球提高稳定性的技巧")
-        self.assertEqual(item["decision"], "excluded_creator_original_or_unknown")
+        self.assertEqual(item["decision"], "review_pending")
+        self.assertEqual(
+            item["collection_policy"]["action"],
+            "needs_confirmation",
+        )
+        self.assertFalse(item["processing_state"]["terminal"])
 
     def test_seo_description_cannot_contaminate_origin_decision(self):
         item = self.classify(
             "反手高远球提高稳定性的技巧",
             description="直播教学切片已获刘辉教练授权；相关视频：刘辉教练教你",
         )
-        self.assertEqual(item["decision"], "excluded_creator_original_or_unknown")
+        self.assertEqual(item["decision"], "review_pending")
 
-    def test_non_teaching_and_medical_are_not_candidates(self):
+    def test_uncollected_non_teaching_and_medical_remain_pending(self):
         self.assertEqual(
             self.classify("直播花絮 第45集")["decision"],
-            "excluded_non_teaching",
+            "review_pending",
         )
         self.assertEqual(
             self.classify("为什么打完羽毛球后膝盖疼？刘辉教练告诉你")["decision"],
-            "excluded_non_teaching",
+            "review_pending",
+        )
+
+    def test_required_collection_overrides_missing_origin_and_title_signals(self):
+        item = self.classify(
+            "反手高远球提高稳定性的技巧",
+            collection_memberships=[
+                self.membership("合集·反手发力", "1815203"),
+            ],
+        )
+        self.assertEqual(item["decision"], "required_transcription_policy")
+        self.assertEqual(item["collection_policy"]["basis"], "collection")
+        self.assertTrue(item["transcription_required"])
+        self.assertEqual(item["processing_state"]["stage"], "metadata_pending")
+        self.assertFalse(item["processing_state"]["terminal"])
+
+    def test_excluded_collection_overrides_liuhui_teaching_title(self):
+        item = self.classify(
+            "刘辉教练教你反手万能握拍",
+            collection_memberships=[
+                self.membership("合集·刘辉教练直播花絮", "5307613"),
+            ],
+        )
+        self.assertEqual(item["decision"], "excluded_transcription_policy")
+        self.assertFalse(item["transcription_required"])
+        self.assertTrue(item["processing_state"]["terminal"])
+
+    def test_manual_video_policy_applies_after_user_confirmation(self):
+        included = self.classify(
+            "羽毛球专项力量怎么练？",
+            bvid="BV1Gx4y1Q7Xb",
+        )
+        excluded = self.classify(
+            "李宁雷霆100深度评测",
+            bvid="BV1DM4y177i5",
+        )
+        self.assertEqual(
+            included["decision"],
+            "required_transcription_policy",
+        )
+        self.assertEqual(
+            included["collection_policy"]["basis"],
+            "video_override",
+        )
+        self.assertTrue(included["transcription_required"])
+        self.assertEqual(
+            excluded["decision"],
+            "excluded_transcription_policy",
+        )
+        self.assertEqual(
+            excluded["collection_policy"]["basis"],
+            "video_override",
+        )
+        self.assertTrue(excluded["processing_state"]["terminal"])
+
+    def test_collection_policy_admission_keeps_origin_status_distinct(self):
+        item = self.classify(
+            "反手高远球提高稳定性的技巧",
+            collection_memberships=[
+                self.membership("合集·反手发力", "1815203"),
+            ],
+        )
+        item["origin_verification"] = {
+            "status": "verified_collection_policy",
+            "methods": [
+                "verified_uploader_profile",
+                "user_confirmed_collection_policy",
+            ],
+            "verified_at": "2026-07-28T00:00:00+00:00",
+            "signals": {
+                "video_id_matches": True,
+                "uploader_profile_matches": True,
+                "canonical_url_matches": True,
+                "duration_valid": True,
+            },
+        }
+        self.assertTrue(self.pipeline.may_enter_knowledge_base(item))
+        self.assertNotEqual(
+            item["origin_verification"]["status"],
+            "verified_liuhui_clip",
         )
 
     def test_verified_origin_requires_method_and_timestamp(self):
@@ -317,6 +412,157 @@ class BilibiliPipelineTests(unittest.TestCase):
                 "Unable to download webpage: nodename nor servname provided"
             ),
             ("temporary_network", True),
+        )
+
+    def test_required_collection_metadata_does_not_claim_liuhui_origin(self):
+        processor = load("process_bilibili_candidates")
+        metadata = {
+            "id": "BV16G411y7Rs",
+            "uploader": "大G羽毛球",
+            "uploader_id": "1423436652",
+            "title": "反手发力教学",
+            "description": "",
+            "tags": ["羽毛球教学"],
+            "duration": 300.0,
+            "webpage_url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+        }
+        result = processor.verify_metadata(
+            metadata,
+            "BV16G411y7Rs",
+            "required_transcription_policy",
+            "collection",
+        )
+        self.assertEqual(result["status"], "verified_collection_policy")
+        self.assertEqual(
+            result["verification_tier"],
+            "user_confirmed_collection_policy",
+        )
+        self.assertFalse(result["signals"]["publisher_text_names_liuhui"])
+        self.assertFalse(result["signals"]["dedicated_origin_tag"])
+
+    def test_required_video_metadata_uses_distinct_policy_status(self):
+        processor = load("process_bilibili_candidates")
+        metadata = {
+            "id": "BV1Gx4y1Q7Xb",
+            "uploader": "大G羽毛球",
+            "uploader_id": "1423436652",
+            "title": "羽毛球专项力量怎么练？",
+            "description": "",
+            "tags": [],
+            "duration": 89.0,
+            "webpage_url": "https://www.bilibili.com/video/BV1Gx4y1Q7Xb/",
+        }
+        result = processor.verify_metadata(
+            metadata,
+            "BV1Gx4y1Q7Xb",
+            "required_transcription_policy",
+            "video_override",
+        )
+        self.assertEqual(result["status"], "verified_video_policy")
+        self.assertEqual(
+            result["verification_tier"],
+            "user_confirmed_video_policy",
+        )
+        self.assertIn("user_confirmed_video_policy", result["methods"])
+
+    def test_existing_metadata_can_be_promoted_without_refetch(self):
+        processor = load("process_bilibili_candidates")
+        record = {
+            "decision": "required_transcription_policy",
+            "collection_policy": {"basis": "collection"},
+            "origin_verification": {
+                "status": "verification_failed",
+                "signals": {
+                    "video_id_matches": True,
+                    "uploader_profile_matches": True,
+                    "canonical_url_matches": True,
+                    "duration_valid": True,
+                    "publisher_text_names_liuhui": True,
+                    "dedicated_origin_tag": False,
+                },
+                "source_metadata": {
+                    "duration_seconds": 300.0,
+                },
+            },
+        }
+        with mock.patch.object(
+            processor,
+            "now_iso",
+            return_value="2026-07-28T00:00:00+00:00",
+        ):
+            promoted = processor.promote_existing_collection_verification(record)
+        self.assertEqual(promoted["status"], "verified_collection_policy")
+        self.assertEqual(
+            promoted["methods"],
+            [
+                "verified_uploader_profile",
+                "user_confirmed_collection_policy",
+            ],
+        )
+
+    def test_rules_upgrade_reopens_obsolete_classification_terminal(self):
+        classified = self.classify(
+            "反手发力教学",
+            collection_memberships=[
+                self.membership("合集·反手发力", "1815203"),
+            ],
+        )
+        existing = {
+            "classification_rules_hash": "old",
+            "processing_state": {
+                "stage": "quarantined_origin_unknown",
+                "terminal": True,
+            },
+        }
+        state = self.updates.reconcile_processing_state(existing, classified)
+        self.assertEqual(state["stage"], "metadata_pending")
+        self.assertFalse(state["terminal"])
+
+    def test_rules_upgrade_preserves_completed_transcription(self):
+        classified = self.classify(
+            "反手发力教学",
+            collection_memberships=[
+                self.membership("合集·反手发力", "1815203"),
+            ],
+        )
+        existing = {
+            "classification_rules_hash": "old",
+            "processing_state": {
+                "stage": "transcribed",
+                "terminal": False,
+            },
+        }
+        self.assertEqual(
+            self.updates.reconcile_processing_state(existing, classified),
+            existing["processing_state"],
+        )
+
+    def test_committed_archive_has_exact_collection_policy_partition(self):
+        archive = json.loads(
+            (
+                ROOT
+                / "data"
+                / "snapshots"
+                / "bilibili_profile_full_archive.json"
+            ).read_text(encoding="utf-8")
+        )
+        normalized, _ = self.updates.normalize_snapshot_shape(archive)
+        classified = [
+            self.pipeline.classify_video(
+                self.pipeline.normalize_video(item),
+                self.rules,
+            )
+            for item in normalized["videos"]
+        ]
+        self.assertEqual(
+            Counter(
+                item["collection_policy"]["action"]
+                for item in classified
+            ),
+            {
+                "required_transcription": 602,
+                "excluded": 165,
+            },
         )
 
     def test_media_completion_ignores_part_and_quarantines_broken_final(self):

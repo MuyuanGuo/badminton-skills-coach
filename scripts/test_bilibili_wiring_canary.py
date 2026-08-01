@@ -11,16 +11,44 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class FakeSearch:
-    def __init__(self, knowledge, index, results):
+    def __init__(self, knowledge, index, results, manifest=None):
         self.knowledge = knowledge
         self.index = index
         self.results = results
+        self.manifest = results if manifest is None else manifest
 
     def load_resources(self):
         return self.knowledge, self.index, {}
 
-    def search(self, query, limit, local_personalization):
-        return {"results": self.results[:limit]}
+    def search(
+        self,
+        query,
+        limit,
+        local_personalization,
+        manifest_limit=None,
+    ):
+        return {
+            "results": self.results[:limit],
+            "candidate_manifest": self.manifest,
+        }
+
+    def lookup_videos(
+        self,
+        video_ids,
+        query,
+        local_personalization,
+        include_query_match,
+        chunk_hints_by_video,
+    ):
+        return {
+            "results": [
+                {
+                    "video_id": video_id,
+                    "transcript_evidence": [{"text": query}],
+                }
+                for video_id in video_ids
+            ]
+        }
 
 
 class FakeContext:
@@ -154,6 +182,14 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
         self.assertFalse(first["semantic_gold"])
         self.assertFalse(case["semantic_gold"])
         self.assertEqual(case["query"], "反手过渡球怎么打")
+        self.assertEqual(
+            case["query_derivation"],
+            "cleaned_retrieval_title_with_separate_transcript_anchor_probe",
+        )
+        self.assertEqual(
+            case["transcript_probe"],
+            "反手过渡球先稳定拍面。然后注意击球点再逐步加速。",
+        )
         self.assertEqual(case["expected_cluster_ids"], ["CCprimary"])
         canary.validate_registry(first)
 
@@ -221,6 +257,39 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
             canary.mechanical_knowledge_hash(packaged),
         )
 
+    def test_compact_skill_segments_preserve_hash_and_anchor_contract(self):
+        registry = self.generated_registry()
+        packaged = copy.deepcopy(self.knowledge)
+        video = packaged["videos"][0]
+        video["transcript_segments_json"] = json.dumps(
+            video.pop("transcript_segments"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        self.assertEqual(
+            canary.mechanical_knowledge_hash(self.knowledge),
+            canary.mechanical_knowledge_hash(packaged),
+        )
+        self.assertEqual(
+            canary.current_anchor_hash(
+                video,
+                registry["cases"][0]["transcript_anchor"],
+            ),
+            registry["cases"][0]["transcript_anchor"]["text_sha256"],
+        )
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(packaged, self.index, [self.target_result()]),
+            FakeContext(self.evidence_id),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+
+    def test_malformed_compact_segments_fail_closed(self):
+        packaged = copy.deepcopy(self.video)
+        packaged.pop("transcript_segments")
+        packaged["transcript_segments_json"] = "{not-json"
+        self.assertEqual(canary.runtime_transcript_segments(packaged), [])
+
     def test_evaluator_accepts_complete_transcript_chunk_claim_and_packet_wiring(self):
         registry = self.generated_registry()
         search = FakeSearch(
@@ -232,6 +301,88 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
         result = canary.evaluate_registry(registry, search, context)
         self.assertTrue(result["passed"], result["failures"])
         self.assertEqual(result["results"][0]["packet_window_count"], 1)
+
+    def test_policy_guarded_manifest_proves_wiring_without_bypassing_policy(self):
+        registry = self.generated_registry()
+        manifest_target = {
+            **self.target_result(),
+            "retrieval_policy_eligible": False,
+            "retrieval_policy_reasons": [
+                "medical_boundary_has_no_direct_safety_evidence"
+            ],
+            "review_priority": "policy_rejected",
+        }
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                self.knowledge,
+                self.index,
+                [],
+                manifest=[manifest_target],
+            ),
+            FakeContext(self.evidence_id),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertEqual(
+            result["results"][0]["retrieval_surface_disposition"],
+            "policy_guarded_manifest",
+        )
+
+    def test_unexplained_top_k_miss_is_still_a_failure(self):
+        registry = self.generated_registry()
+        manifest_target = {
+            **self.target_result(),
+            "retrieval_policy_eligible": True,
+            "retrieval_policy_reasons": [],
+            "review_priority": "priority_review",
+        }
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                self.knowledge,
+                self.index,
+                [],
+                manifest=[manifest_target],
+            ),
+            FakeContext(self.evidence_id),
+        )
+        self.assertIn(
+            "expected_evidence_not_in_top_k",
+            {item["reason"] for item in result["failures"]},
+        )
+
+    def test_content_cluster_suppressed_manifest_is_not_treated_as_loss(self):
+        registry = self.generated_registry()
+        representative = {
+            "video_id": "bilibili:BV1representative",
+            "transcript_retrieval": {
+                "mode": "chunk_first",
+                "best_chunk_id": "representative#chunk",
+                "matched_chunk_ids": ["representative#chunk"],
+                "matched_cluster_ids": ["CCprimary"],
+            },
+        }
+        manifest_target = {
+            **self.target_result(),
+            "retrieval_policy_eligible": True,
+            "retrieval_policy_reasons": [],
+            "review_priority": "priority_review",
+        }
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                self.knowledge,
+                self.index,
+                [representative],
+                manifest=[manifest_target],
+            ),
+            FakeContext(self.evidence_id),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertEqual(
+            result["results"][0]["retrieval_surface_disposition"],
+            "content_cluster_deferred_manifest",
+        )
 
     def test_evaluator_rejects_duplicate_content_clusters_in_top_k_and_packet(self):
         duplicate_id = "bilibili:BV1duplicate1"

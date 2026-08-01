@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build verified Bilibili evidence with the same quality gates as Douyin."""
 
+import argparse
 import copy
 import hashlib
 import json
@@ -24,12 +25,20 @@ from batch_transcribe_directory import (
     validate_transcript_payload,
 )
 from bilibili_pipeline import acquire_bilibili_pipeline_lock
+from bilibili_storage import (
+    BILIBILI_TRANSCRIPT_CACHE_ENV,
+    bilibili_transcript_cache_root,
+    bilibili_transcript_roots,
+    index_exact_transcript_candidates,
+    portable_transcript_reference,
+)
 from project_artifacts import atomic_write_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "data" / "processing" / "bilibili_queue.json"
-TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "bilibili"
+LEDGER_PATH = ROOT / "data" / "bilibili_classification_ledger.json"
+TRANSCRIPT_ROOT = bilibili_transcript_cache_root(ROOT)
 DOUYIN_KNOWLEDGE_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 QUALITY_RULES_PATH = ROOT / "config" / "knowledge_quality_rules.json"
 OUTPUT_PATH = ROOT / "data" / "knowledge" / "bilibili_knowledge_base.json"
@@ -61,6 +70,40 @@ def stable_payload_hash(payload):
             separators=(",", ":"),
         ).encode("utf-8")
     ).hexdigest()
+
+
+def validate_queue_classification_policy(queue, ledger):
+    """Fail closed if stale or excluded ledger rows remain in the build queue."""
+
+    ledger_by_bvid = {}
+    for record in ledger.get("videos") or []:
+        bvid = str(record.get("bvid") or "")
+        if not bvid:
+            raise ValueError("Bilibili classification ledger has a blank BVID")
+        if bvid in ledger_by_bvid:
+            raise ValueError(
+                f"Bilibili classification ledger has duplicate BVID {bvid}"
+            )
+        ledger_by_bvid[bvid] = record
+
+    seen_queue_ids = set()
+    rejected = []
+    for item in queue.get("items") or []:
+        bvid = str(item.get("video_id") or "")
+        if not bvid:
+            raise ValueError("Bilibili queue has a blank video_id")
+        if bvid in seen_queue_ids:
+            raise ValueError(f"Bilibili queue has duplicate video_id {bvid}")
+        seen_queue_ids.add(bvid)
+        record = ledger_by_bvid.get(bvid)
+        decision = str((record or {}).get("decision") or "missing")
+        if decision != "required_transcription_policy":
+            rejected.append(f"{bvid}:{decision}")
+    if rejected:
+        raise ValueError(
+            "Bilibili build queue contains videos not admitted by the current "
+            "required-transcription policy: " + ", ".join(sorted(rejected))
+        )
 
 
 def transcript_integrity(transcript, rules):
@@ -709,26 +752,140 @@ def assess_bilibili_transcript(
     return result
 
 
-def infer_category(text):
-    for category, pattern in [
-        ("发球与接发", r"发球|接发"),
-        ("步法与移动", r"启动|步法|蹬地|移动"),
-        ("单打战术", r"单打|球路|制胜"),
-        ("双打战术", r"双打|轮转|混双"),
-        ("网前技术", r"网前|搓球|勾球|扑球|放网"),
-        ("中前场与抽挡", r"抽挡|平抽|中场"),
-        ("后场技术", r"反手|高远球|杀球|吊球|后场|架拍"),
-        ("握拍与基本动作", r"握拍|拍面|击球点"),
-        ("发力与身体运用", r"发力|手腕|小臂|转体"),
-    ]:
-        if re.search(pattern, text):
+_CATEGORY_TERMS = [
+    ("发球与接发", ("发球", "接发")),
+    ("步法与移动", ("启动", "步法", "蹬地", "移动")),
+    ("单打战术", ("单打", "球路", "制胜")),
+    ("双打战术", ("双打", "轮转", "混双")),
+    (
+        "后场技术",
+        (
+            "反手杀",
+            "反手高远",
+            "反手过渡",
+            "后场反手",
+            "高远球",
+            "杀球",
+            "快杀",
+            "点杀",
+            "重杀",
+            "跳杀",
+            "劈杀",
+            "遁地炮",
+            "顿地炮",
+            "蹲地炮",
+            "吊球",
+            "后场",
+            "架拍",
+        ),
+    ),
+    ("网前技术", ("网前", "搓球", "勾球", "扑球", "放网")),
+    ("中前场与抽挡", ("抽挡", "平抽", "中场")),
+    ("握拍与基本动作", ("握拍", "拍面", "击球点")),
+    ("发力与身体运用", ("发力", "手腕", "小臂", "转体")),
+]
+
+
+def infer_category(title, transcript_text=""):
+    """Infer from the uploader title, with a conservative transcript fallback.
+
+    Full transcripts contain feeder prompts and incidental coaching phrases
+    such as “给我发球” or “移动一下”.  Letting the first such phrase win made
+    smash lessons look like serving or footwork lessons, which then changed
+    answer-scope filtering.  A title signal is therefore authoritative.  The
+    transcript is used only when one category has at least two distinct
+    technical signals and no tie.
+    """
+
+    normalized_title = str(title or "")
+    for category, terms in _CATEGORY_TERMS:
+        if any(term in normalized_title for term in terms):
             return category
+
+    normalized_transcript = str(transcript_text or "")
+    scored = sorted(
+        (
+            (sum(term in normalized_transcript for term in terms), category)
+            for category, terms in _CATEGORY_TERMS
+        ),
+        reverse=True,
+    )
+    if scored and scored[0][0] >= 2 and (
+        len(scored) == 1 or scored[0][0] > scored[1][0]
+    ):
+        return scored[0][1]
     return "训练与纠错"
 
 
-def build_record(item, transcript_path, transcript, rules, duplicate_index):
+def assess_origin_verification(item):
+    verification = item.get("origin_verification") or {}
+    status = str(verification.get("status") or "")
+    methods = set(verification.get("methods") or [])
+    signals = verification.get("signals") or {}
+    verified_at = bool(verification.get("verified_at"))
+    shared_signals_pass = all(
+        signals.get(name) is True
+        for name in (
+            "video_id_matches",
+            "uploader_profile_matches",
+            "canonical_url_matches",
+            "duration_valid",
+        )
+    )
+    policy_contracts = {
+        "verified_collection_policy": "user_confirmed_collection_policy",
+        "verified_video_policy": "user_confirmed_video_policy",
+    }
+    if status in policy_contracts:
+        passed = (
+            verified_at
+            and shared_signals_pass
+            and {
+                "verified_uploader_profile",
+                policy_contracts[status],
+            }.issubset(methods)
+        )
+    elif status == "verified_liuhui_clip":
+        independent_methods = {
+            "cross_platform_content_match",
+            "direct_video_content_review",
+            "verified_source_watermark",
+        }
+        publisher_declared = (
+            "publisher_origin_annotation" in methods
+            and signals.get("uploader_profile_matches") is True
+            and signals.get("publisher_text_names_liuhui") is True
+            and signals.get("dedicated_origin_tag") is True
+        )
+        passed = verified_at and (
+            bool(methods & independent_methods) or publisher_declared
+        )
+    else:
+        passed = False
+    return {
+        "passed": passed,
+        "status": status or None,
+        "issues": [] if passed else ["origin_verification_not_admitted"],
+    }
+
+
+def build_record(
+    item,
+    transcript_path,
+    transcript,
+    rules,
+    duplicate_index,
+):
     segments = transcript.get("segments") or []
     evidence_id = item["evidence_id"]
+    release_cohort = (
+        "stable_baseline"
+        if evidence_id
+        in rules["bilibili_unattended"].get(
+            "stable_retrieval_evidence_ids", []
+        )
+        else "automatic_expansion"
+    )
     source_content_safety, safe_segments = assess_source_content(
         item, segments, rules
     )
@@ -746,15 +903,28 @@ def build_record(item, transcript_path, transcript, rules, duplicate_index):
         **item,
         "title": retrieval_title,
         "category": item.get("category") or infer_category(
-            f"{retrieval_title} "
-            + "".join(
+            retrieval_title,
+            "".join(
                 str(segment.get("text") or "") for segment in safe_segments
-            )
+            ),
         ),
     }
-    automatic = automatic_note(enriched, safe_segments, rules)
+    automatic = automatic_note(
+        enriched,
+        safe_segments,
+        rules,
+        provenance_text=(
+            transcript.get("full_text")
+            or "".join(
+                str(segment.get("text") or "")
+                for segment in segments
+            )
+        ),
+    )
+    origin_verification = assess_origin_verification(item)
     automatic_ready = (
-        transcript_quality["passed"]
+        origin_verification["passed"]
+        and transcript_quality["passed"]
         and source_content_safety["passed"]
         and automatic["quality"]["passed"]
     )
@@ -773,6 +943,8 @@ def build_record(item, transcript_path, transcript, rules, duplicate_index):
     canonical_url = f"https://www.bilibili.com/video/{bvid}/"
     if duplicates:
         disposition = "duplicate"
+    elif not origin_verification["passed"]:
+        disposition = "quarantined_origin_verification"
     elif not source_content_safety["passed"]:
         disposition = "quarantined_source_content_safety"
     elif not transcript_quality["passed"]:
@@ -802,13 +974,22 @@ def build_record(item, transcript_path, transcript, rules, duplicate_index):
         "duration_seconds": round(float(transcript.get("duration") or 0), 1),
         "processing_status": status,
         "confidence": confidence,
-        "retrieval_cohort": (
-            "stable_baseline"
+        "quality_recipe_mode": (
+            "legacy_metricless_exception"
             if transcript_quality.get("legacy_metricless_exception")
-            else "automatic_expansion"
+            else "current_recipe"
         ),
-        "transcript_file": str(transcript_path.relative_to(ROOT)),
+        "release_cohort": release_cohort,
+        # Runtime compatibility alias.  Release membership is deliberately
+        # independent from transcript-recipe compatibility.
+        "retrieval_cohort": release_cohort,
+        "transcript_file": portable_transcript_reference(
+            transcript_path,
+            project_root=ROOT,
+            cache_root=TRANSCRIPT_ROOT,
+        ),
         "quality": {
+            "origin_verification": origin_verification,
             "transcript": transcript_quality,
             "source_content_safety": source_content_safety,
             "automatic_evidence": automatic["quality"],
@@ -824,7 +1005,9 @@ def build_record(item, transcript_path, transcript, rules, duplicate_index):
             "rules_version": item["classification_rules_version"],
             "rules_hash": item["classification_rules_hash"],
         },
-        "origin_verification": copy.deepcopy(item["origin_verification"]),
+        "origin_verification": copy.deepcopy(
+            item.get("origin_verification") or {}
+        ),
         "possible_duplicate_evidence": duplicates,
         "teaching_note": automatic["note"],
         "transcript_segments": (
@@ -871,6 +1054,14 @@ def load_valid_queue_transcript(item, transcript_path):
 def build_transcription_quarantine_record(item, rules):
     bvid = item["video_id"]
     evidence_id = item["evidence_id"]
+    release_cohort = (
+        "stable_baseline"
+        if evidence_id
+        in rules["bilibili_unattended"].get(
+            "stable_retrieval_evidence_ids", []
+        )
+        else "automatic_expansion"
+    )
     canonical_url = f"https://www.bilibili.com/video/{bvid}/"
     title = sanitize_retrieval_title(item["title"], rules)
     source_content_safety, _ = assess_source_content(item, [], rules)
@@ -896,7 +1087,9 @@ def build_transcription_quarantine_record(item, rules):
         ),
         "processing_status": "low_value",
         "confidence": "low",
-        "retrieval_cohort": "automatic_expansion",
+        "quality_recipe_mode": "missing_transcript",
+        "release_cohort": release_cohort,
+        "retrieval_cohort": release_cohort,
         "transcript_file": None,
         "quality": {
             "transcript": {
@@ -933,7 +1126,12 @@ def build_transcription_quarantine_record(item, rules):
     }
 
 
-def build_knowledge(queue, transcripts, rules, douyin_knowledge):
+def build_knowledge(
+    queue,
+    transcripts,
+    rules,
+    douyin_knowledge,
+):
     duplicate_index = build_douyin_shingle_index(douyin_knowledge)
     records = []
     missing = []
@@ -943,11 +1141,24 @@ def build_knowledge(queue, transcripts, rules, douyin_knowledge):
             continue
         if item.get("status") != "transcribed":
             continue
-        transcript_path = transcripts.get(item["video_id"])
-        if transcript_path is None:
+        transcript_paths = transcripts.get(item["video_id"])
+        if transcript_paths is None:
             missing.append(item["video_id"])
             continue
-        transcript = load_valid_queue_transcript(item, transcript_path)
+        if isinstance(transcript_paths, (str, Path)):
+            transcript_paths = [Path(transcript_paths)]
+        transcript = None
+        transcript_path = None
+        for candidate in transcript_paths:
+            try:
+                transcript = load_valid_queue_transcript(item, candidate)
+            except OSError:
+                continue
+            transcript_path = candidate
+            break
+        if transcript is None:
+            missing.append(item["video_id"])
+            continue
         record = build_record(
             item,
             transcript_path,
@@ -969,7 +1180,7 @@ def build_knowledge(queue, transcripts, rules, douyin_knowledge):
     return {
         "version": 1,
         "evidence_schema_version": 1,
-        "scope": "经来源核验的大G羽毛球B站刘辉教学切片",
+        "scope": "用户确认技术合集及经来源核验的大G羽毛球B站教学视频",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "quality_rules_version": rules["version"],
         "queue_counts": queue["counts"],
@@ -989,11 +1200,33 @@ def build_knowledge(queue, transcripts, rules, douyin_knowledge):
 
 
 def main():
+    global TRANSCRIPT_ROOT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--transcript-cache-dir",
+        type=Path,
+        help=(
+            "Preferred Bilibili transcript cache "
+            f"(default: {BILIBILI_TRANSCRIPT_CACHE_ENV} or repository data)"
+        ),
+    )
+    args = parser.parse_args()
+    TRANSCRIPT_ROOT = bilibili_transcript_cache_root(
+        ROOT,
+        override=args.transcript_cache_dir,
+    )
     pipeline_lock = acquire_bilibili_pipeline_lock()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    ledger = json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
+    validate_queue_classification_policy(queue, ledger)
     rules = json.loads(QUALITY_RULES_PATH.read_text(encoding="utf-8"))
     douyin = json.loads(DOUYIN_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
-    transcripts = {path.stem: path for path in TRANSCRIPT_ROOT.rglob("*.json")}
+    transcripts = index_exact_transcript_candidates(
+        bilibili_transcript_roots(
+            ROOT,
+            override=TRANSCRIPT_ROOT,
+        )
+    )
     output = build_knowledge(queue, transcripts, rules, douyin)
     existing = json.loads(OUTPUT_PATH.read_text(encoding="utf-8")) if OUTPUT_PATH.exists() else None
     output, changed = reconcile_updated_at(output, existing)

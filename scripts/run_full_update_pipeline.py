@@ -44,8 +44,6 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "output/answer_quality_review_queue.md",
     ROOT / "README.md",
     ROOT / "README.en.md",
-    ROOT / "docs/index.html",
-    ROOT / "docs/en/index.html",
     ROOT / "docs/evaluation/index.html",
     ROOT / "skills/liuhui-badminton-coach/SKILL.md",
     ROOT / "skills/liuhui-badminton-coach/agents/openai.yaml",
@@ -201,7 +199,75 @@ def rebuild_and_validate():
     return changed_references
 
 
+def validate_bilibili_release_completeness(root=None):
+    """Fail closed unless every required Bilibili video reached the build."""
+
+    root = ROOT if root is None else Path(root)
+
+    def load(relative_path):
+        return json.loads(
+            (Path(root) / relative_path).read_text(encoding="utf-8")
+        )
+
+    ledger = load("data/bilibili_classification_ledger.json")
+    queue = load("data/processing/bilibili_queue.json")
+    knowledge = load("data/knowledge/bilibili_knowledge_base.json")
+    manifest = load("data/knowledge/build_manifest.json")
+
+    required_ids = {
+        item["bvid"]
+        for item in ledger.get("videos", [])
+        if item.get("decision") == "required_transcription_policy"
+    }
+    excluded_ids = {
+        item["bvid"]
+        for item in ledger.get("videos", [])
+        if item.get("decision") == "excluded_transcription_policy"
+    }
+    queue_items = queue.get("items") or []
+    queue_ids = [item.get("video_id") for item in queue_items]
+    transcribed_ids = {
+        item.get("video_id")
+        for item in queue_items
+        if item.get("status") == "transcribed"
+    }
+    knowledge_ids = [
+        item.get("source_video_id")
+        for item in knowledge.get("videos", [])
+    ]
+    if not required_ids or not excluded_ids or required_ids & excluded_ids:
+        raise ValueError(
+            "Bilibili classification ledger is empty or overlapping"
+        )
+    if len(queue_ids) != len(set(queue_ids)):
+        raise ValueError("Bilibili release queue contains duplicate video IDs")
+    if set(queue_ids) != required_ids or transcribed_ids != required_ids:
+        raise ValueError(
+            "Bilibili release requires every policy-required video to be "
+            "transcribed"
+        )
+    if len(knowledge_ids) != len(set(knowledge_ids)):
+        raise ValueError(
+            "Bilibili release knowledge base contains duplicate video IDs"
+        )
+    if set(knowledge_ids) != required_ids:
+        raise ValueError(
+            "Bilibili release knowledge base does not cover the required set"
+        )
+    if excluded_ids & (set(queue_ids) | set(knowledge_ids)):
+        raise ValueError(
+            "Policy-excluded Bilibili video entered the release corpus"
+        )
+    if manifest.get("corpus", {}).get("pending_count") != 0:
+        raise ValueError("Validated build manifest still contains pending work")
+    return {
+        "required": len(required_ids),
+        "excluded": len(excluded_ids),
+    }
+
+
 def write_validation_receipt(path):
+    validate_bilibili_release_completeness()
     manifest = json.loads(
         (ROOT / "data/knowledge/build_manifest.json").read_text(
             encoding="utf-8"

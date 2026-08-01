@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import copy
+import hashlib
 import importlib.util
 import json
 import math
@@ -8,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import threading
 import types
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -334,6 +337,158 @@ class BilibiliRetryStateTests(unittest.TestCase):
                 self.assertEqual(saved_item["transcription_retry_attempts"], 2)
 
 
+class BilibiliParallelAcquisitionTests(unittest.TestCase):
+    @staticmethod
+    def record(bvid):
+        return {
+            "bvid": bvid,
+            "video_id": f"bilibili:{bvid}",
+            "url": f"https://www.bilibili.com/video/{bvid}/",
+            "title": f"教学 {bvid}",
+            "decision": "required_transcription_policy",
+            "collection_policy": {"basis": "collection"},
+            "classification_rules_version": 3,
+            "classification_rules_hash": "a" * 64,
+            "knowledge_admission_eligible": True,
+            "origin_verification": {
+                "status": "verified_collection_policy",
+                "source_metadata": {
+                    "title": f"教学 {bvid}",
+                    "description": "",
+                    "tags": [],
+                    "duration_seconds": 10.0,
+                },
+            },
+            "processing_state": {
+                "stage": "metadata_ready",
+                "terminal": False,
+            },
+        }
+
+    def test_workers_acquire_in_parallel_but_main_thread_alone_persists(self):
+        processor = load("process_bilibili_candidates")
+        bvids = ["BV16G411y7Rs", "BV1aw411179M"]
+        ledger = {
+            "version": 1,
+            "platform": "bilibili",
+            "counts": {"required_transcription_policy": 2},
+            "videos": [self.record(bvid) for bvid in bvids],
+        }
+        queue = {
+            "version": 1,
+            "platform": "bilibili",
+            "counts": {},
+            "items": [],
+        }
+        barrier = threading.Barrier(2)
+        download_threads = set()
+        persist_threads = []
+        snapshots = []
+        main_thread = threading.get_ident()
+
+        def fake_download(_url, bvid, _duration, metadata_info=None):
+            self.assertIsNone(metadata_info)
+            download_threads.add(threading.get_ident())
+            barrier.wait(timeout=2)
+            return (
+                processor.RAW_ROOT / f"{bvid}.m4a",
+                {
+                    "media_bytes": 8192,
+                    "media_sha256": bvid.lower().ljust(64, "0")[:64],
+                },
+            )
+
+        def fake_load(path):
+            if path == processor.LEDGER_PATH:
+                return ledger
+            if path == processor.QUEUE_PATH:
+                return queue
+            raise AssertionError(path)
+
+        def fake_persist(saved_ledger, saved_queue):
+            persist_threads.append(threading.get_ident())
+            snapshots.append(
+                (
+                    copy.deepcopy(saved_ledger),
+                    copy.deepcopy(saved_queue),
+                )
+            )
+
+        with (
+            mock.patch.object(
+                processor,
+                "acquire_bilibili_pipeline_lock",
+                return_value=object(),
+            ),
+            mock.patch.object(processor, "load_json", side_effect=fake_load),
+            mock.patch.object(
+                processor,
+                "may_enter_knowledge_base",
+                return_value=True,
+            ),
+            mock.patch.object(processor, "download_audio", side_effect=fake_download),
+            mock.patch.object(processor, "persist", side_effect=fake_persist),
+            mock.patch.object(
+                sys,
+                "argv",
+                [
+                    "process_bilibili_candidates.py",
+                    "--max-items",
+                    "2",
+                    "--checkpoint-every",
+                    "1",
+                    "--download-workers",
+                    "2",
+                ],
+            ),
+        ):
+            exit_code = processor.main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(download_threads), 2)
+        self.assertNotIn(main_thread, download_threads)
+        self.assertTrue(persist_threads)
+        self.assertEqual(set(persist_threads), {main_thread})
+        self.assertEqual(
+            {item["video_id"] for item in snapshots[-1][1]["items"]},
+            set(bvids),
+        )
+
+    def test_current_downloaded_queue_item_is_never_downloaded_again(self):
+        processor = load("process_bilibili_candidates")
+        record = self.record("BV16G411y7Rs")
+        existing = {
+            "video_id": record["bvid"],
+            "status": "downloaded",
+            "media_path": f"data/raw_videos/bilibili/{record['bvid']}.m4a",
+        }
+        with (
+            mock.patch.object(
+                processor,
+                "may_enter_knowledge_base",
+                return_value=True,
+            ),
+            mock.patch.object(
+                processor,
+                "media_validation_is_current",
+                return_value=True,
+            ),
+            mock.patch.object(
+                processor,
+                "download_audio",
+                side_effect=AssertionError("duplicate download"),
+            ),
+        ):
+            outcome = processor.process_candidate(
+                copy.deepcopy(record),
+                copy.deepcopy(existing),
+                metadata_only=False,
+                cooldown_minutes=30,
+            )
+        self.assertEqual(outcome["result"]["status"], "already_downloaded")
+        self.assertEqual(outcome["queue_item"]["status"], "downloaded")
+
+
 class BilibiliOrchestratorContractTests(unittest.TestCase):
     def setUp(self):
         self.orchestrator = load("run_bilibili_update_pipeline")
@@ -392,6 +547,79 @@ class BilibiliOrchestratorContractTests(unittest.TestCase):
         exit_code, _ = self.run_main(common)
         self.assertEqual(exit_code, 2)
         exit_code, _ = self.run_main([*common, "--allow-partial"])
+        self.assertEqual(exit_code, 0)
+
+    def test_download_worker_limit_is_forwarded_to_acquisition(self):
+        exit_code, commands = self.run_main(
+            [
+                "--skip-ingest",
+                "--skip-transcription",
+                "--skip-release",
+                "--allow-partial",
+                "--download-workers",
+                "4",
+            ]
+        )
+        acquisition = next(
+            command
+            for command in commands
+            if "scripts/process_bilibili_candidates.py" in command
+        )
+        self.assertEqual(
+            acquisition[acquisition.index("--download-workers") + 1],
+            "4",
+        )
+        self.assertEqual(exit_code, 0)
+
+    def test_external_media_cache_is_forwarded_to_acquisition_and_transcription(self):
+        with tempfile.TemporaryDirectory() as directory:
+            cache_root = Path(directory) / "bilibili-cache"
+            transcript_root = Path(directory) / "transcript-cache"
+            exit_code, commands = self.run_main(
+                [
+                    "--skip-ingest",
+                    "--skip-release",
+                    "--allow-partial",
+                    "--media-cache-dir",
+                    str(cache_root),
+                    "--transcript-cache-dir",
+                    str(transcript_root),
+                ]
+            )
+
+        acquisition = next(
+            command
+            for command in commands
+            if "scripts/process_bilibili_candidates.py" in command
+            and "--existing-queue-only" not in command
+        )
+        transcription = next(
+            command
+            for command in commands
+            if "scripts/batch_transcribe_directory.py" in command
+        )
+        self.assertEqual(
+            acquisition[acquisition.index("--media-cache-dir") + 1],
+            str(cache_root),
+        )
+        self.assertEqual(transcription[2], str(cache_root))
+        self.assertEqual(
+            transcription[
+                transcription.index("--output-dir") + 1
+            ],
+            str(transcript_root),
+        )
+        self.assertEqual(
+            transcription[
+                transcription.index("--fallback-output-dir") + 1
+            ],
+            str(
+                self.orchestrator.ROOT
+                / "data"
+                / "transcripts"
+                / "bilibili"
+            ),
+        )
         self.assertEqual(exit_code, 0)
 
     def test_skip_release_cannot_be_combined_with_install(self):
@@ -653,6 +881,337 @@ class BilibiliOrchestratorContractTests(unittest.TestCase):
             self.orchestrator.main()
         self.assertFalse(
             any("scripts/install_skill.py" in command for command in commands)
+        )
+
+
+class BilibiliCollisionSafeStorageTests(unittest.TestCase):
+    def test_explicit_force_relocates_failed_media_and_preserves_asr_audit(self):
+        candidates = load("process_bilibili_candidates")
+        storage = load("bilibili_storage")
+        video_id = "BV1DSNFz2Ets"
+        record = BilibiliParallelAcquisitionTests.record(video_id)
+        validation = {
+            "media_bytes": 9000,
+            "media_sha256": "b" * 64,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory) / "project"
+            old_cache = project_root / "legacy-cache"
+            external_cache = Path(directory) / "media-cache"
+            old_cache.mkdir(parents=True)
+            filename = f"{storage.media_storage_key(video_id)}.m4a"
+            old_media = old_cache / filename
+            old_media.write_bytes(b"legacy")
+            existing = {
+                "video_id": video_id,
+                "status": "transcription_failed",
+                "media_path": f"legacy-cache/{filename}",
+                "media_cache_key": filename,
+                "media_sha256": "a" * 64,
+                "media_bytes": 8192,
+                "attempts": 4,
+                "transcription_attempts": 2,
+                "transcription_retry_attempts": 2,
+                "media_recoveries": 1,
+            }
+            replacement = (
+                external_cache
+                / filename
+            )
+            with (
+                mock.patch.object(candidates, "ROOT", project_root),
+                mock.patch.object(candidates, "RAW_ROOT", external_cache),
+                mock.patch.object(
+                    candidates,
+                    "may_enter_knowledge_base",
+                    return_value=True,
+                ),
+                mock.patch.object(
+                    candidates,
+                    "media_validation_is_current",
+                    return_value=True,
+                ),
+                mock.patch.object(
+                    candidates,
+                    "download_audio",
+                    return_value=(replacement, validation),
+                ) as download,
+            ):
+                outcome = candidates.process_candidate(
+                    copy.deepcopy(record),
+                    copy.deepcopy(existing),
+                    metadata_only=False,
+                    cooldown_minutes=30,
+                    force_reacquire=True,
+                )
+
+        download.assert_called_once()
+        item = outcome["queue_item"]
+        self.assertEqual(outcome["result"]["status"], "downloaded")
+        self.assertEqual(item["status"], "downloaded")
+        self.assertEqual(item["attempts"], 4)
+        self.assertEqual(item["transcription_attempts"], 2)
+        self.assertEqual(item["transcription_retry_attempts"], 0)
+        self.assertEqual(item["media_recoveries"], 2)
+        self.assertEqual(item["transcription_force_recoveries"], 1)
+        self.assertEqual(
+            item["media_recovery_audit"][-1]["reason"],
+            "external_cache_relocation",
+        )
+        self.assertEqual(
+            item["media_recovery_audit"][-1][
+                "transcription_retry_attempts"
+            ],
+            2,
+        )
+
+    def test_explicit_force_reacquires_hash_mismatch_inside_active_cache(self):
+        candidates = load("process_bilibili_candidates")
+        storage = load("bilibili_storage")
+        video_id = "BV1DSNFz2Ets"
+        record = BilibiliParallelAcquisitionTests.record(video_id)
+        validation = {
+            "media_bytes": 9000,
+            "media_sha256": "b" * 64,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            project_root = Path(directory) / "project"
+            cache_root = Path(directory) / "media-cache"
+            cache_root.mkdir()
+            filename = f"{storage.media_storage_key(video_id)}.m4a"
+            media = cache_root / filename
+            media.write_bytes(b"stale")
+            existing = {
+                "video_id": video_id,
+                "status": "transcription_failed",
+                "media_path": str(media),
+                "media_cache_key": filename,
+                "media_sha256": "a" * 64,
+                "media_bytes": 8192,
+                "attempts": 2,
+                "transcription_attempts": 1,
+                "transcription_retry_attempts": 1,
+            }
+            with (
+                mock.patch.object(candidates, "ROOT", project_root),
+                mock.patch.object(candidates, "RAW_ROOT", cache_root),
+                mock.patch.object(
+                    candidates,
+                    "may_enter_knowledge_base",
+                    return_value=True,
+                ),
+                mock.patch.object(
+                    candidates,
+                    "media_validation_is_current",
+                    return_value=False,
+                ),
+                mock.patch.object(
+                    candidates,
+                    "validate_media",
+                ) as validate,
+                mock.patch.object(
+                    candidates,
+                    "download_audio",
+                    return_value=(media, validation),
+                ) as download,
+            ):
+                outcome = candidates.process_candidate(
+                    copy.deepcopy(record),
+                    copy.deepcopy(existing),
+                    metadata_only=False,
+                    cooldown_minutes=30,
+                    force_reacquire=True,
+                )
+
+        validate.assert_not_called()
+        download.assert_called_once()
+        self.assertEqual(outcome["result"]["status"], "downloaded")
+        self.assertEqual(
+            outcome["queue_item"]["media_recovery_audit"][-1]["reason"],
+            "forced_media_integrity_reacquisition",
+        )
+        self.assertEqual(
+            outcome["queue_item"]["transcription_attempts"],
+            1,
+        )
+
+    def test_external_media_queue_item_keeps_portable_cache_key(self):
+        candidates = load("process_bilibili_candidates")
+        storage = load("bilibili_storage")
+        video_id = "BV1DSNFz2Ets"
+        record = BilibiliParallelAcquisitionTests.record(video_id)
+        verification = record["origin_verification"]
+        with tempfile.TemporaryDirectory() as directory:
+            cache_root = Path(directory) / "cache"
+            cache_root.mkdir()
+            media = cache_root / f"{storage.media_storage_key(video_id)}.m4a"
+            media.write_bytes(b"audio")
+            item = candidates.queue_item(
+                record,
+                verification,
+                media,
+                {
+                    "media_bytes": 5,
+                    "media_sha256": hashlib.sha256(b"audio").hexdigest(),
+                },
+            )
+            with mock.patch.object(candidates, "RAW_ROOT", cache_root):
+                resolved = candidates.queued_media_path(item, video_id)
+
+        self.assertTrue(Path(item["media_path"]).is_absolute())
+        self.assertEqual(item["media_cache_key"], media.name)
+        self.assertEqual(resolved, media)
+
+    def test_case_colliding_ids_download_to_distinct_paths_and_deduplicate(self):
+        candidates = load("process_bilibili_candidates")
+        storage = load("bilibili_storage")
+        video_ids = ["BV1DSNFz2ETs", "BV1DSNFz2Ets"]
+        self.assertNotEqual(
+            storage.media_storage_key(video_ids[0]).casefold(),
+            storage.media_storage_key(video_ids[1]).casefold(),
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            raw_root = Path(directory)
+            downloads = []
+
+            class FakeYoutubeDL:
+                def __init__(self, options):
+                    self.options = options
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *_args):
+                    return False
+
+                def download(self, _urls):
+                    target = Path(
+                        self.options["outtmpl"].replace("%(ext)s", "m4a")
+                    )
+                    downloads.append(target)
+                    target.write_bytes(target.stem.encode("utf-8"))
+
+            def fake_validate(path, _expected_duration=None):
+                return {
+                    "media_bytes": path.stat().st_size,
+                    "media_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                }
+
+            with (
+                mock.patch.object(candidates, "RAW_ROOT", raw_root),
+                mock.patch.object(
+                    candidates,
+                    "validate_media",
+                    side_effect=fake_validate,
+                ),
+                mock.patch.dict(
+                    sys.modules,
+                    {"yt_dlp": types.SimpleNamespace(YoutubeDL=FakeYoutubeDL)},
+                ),
+            ):
+                first, _ = candidates.download_audio(
+                    f"https://www.bilibili.com/video/{video_ids[0]}/",
+                    video_ids[0],
+                )
+                second, _ = candidates.download_audio(
+                    f"https://www.bilibili.com/video/{video_ids[1]}/",
+                    video_ids[1],
+                )
+                first_again, _ = candidates.download_audio(
+                    f"https://www.bilibili.com/video/{video_ids[0]}/",
+                    video_ids[0],
+                )
+
+            self.assertEqual(first_again, first)
+            self.assertNotEqual(first.name.casefold(), second.name.casefold())
+            self.assertEqual(
+                {path.stem for path in downloads},
+                {
+                    storage.media_storage_key(video_id)
+                    for video_id in video_ids
+                },
+            )
+            self.assertEqual(len(downloads), 2)
+
+    def test_completed_media_accepts_only_exact_case_legacy_bvid(self):
+        candidates = load("process_bilibili_candidates")
+        requested = "BV1DSNFz2Ets"
+        other = "BV1DSNFz2ETs"
+        with tempfile.TemporaryDirectory() as directory:
+            raw_root = Path(directory)
+            other_path = raw_root / f"{other}.m4a"
+            other_path.write_bytes(b"other")
+            with (
+                mock.patch.object(candidates, "RAW_ROOT", raw_root),
+                mock.patch.object(
+                    candidates,
+                    "validate_media",
+                    return_value={"media_bytes": 5, "media_sha256": "a" * 64},
+                ),
+            ):
+                media, validation = candidates.completed_media(requested)
+
+            self.assertIsNone(media)
+            self.assertIsNone(validation)
+            self.assertTrue(other_path.exists())
+
+    def test_wrong_case_colliding_queue_path_is_redownloaded(self):
+        candidates = load("process_bilibili_candidates")
+        storage = load("bilibili_storage")
+        requested = "BV1DSNFz2Ets"
+        other = "BV1DSNFz2ETs"
+        record = BilibiliParallelAcquisitionTests.record(requested)
+        existing = {
+            "video_id": requested,
+            "status": "downloaded",
+            "media_path": f"data/raw_videos/bilibili/{other}.m4a",
+            "media_validation_version": candidates.MEDIA_VALIDATION_VERSION,
+            "media_decoded_frame_count": 1,
+            "media_decoded_samples": 1,
+            "media_bytes": 8192,
+            "media_sha256": "a" * 64,
+        }
+        replacement = (
+            candidates.RAW_ROOT
+            / f"{storage.media_storage_key(requested)}.m4a"
+        )
+        validation = {
+            "media_bytes": 9000,
+            "media_sha256": "b" * 64,
+        }
+        with (
+            mock.patch.object(
+                candidates,
+                "may_enter_knowledge_base",
+                return_value=True,
+            ),
+            mock.patch.object(
+                candidates,
+                "media_fingerprint",
+                return_value={
+                    "media_bytes": 8192,
+                    "media_sha256": "a" * 64,
+                },
+            ),
+            mock.patch.object(
+                candidates,
+                "download_audio",
+                return_value=(replacement, validation),
+            ) as download,
+        ):
+            outcome = candidates.process_candidate(
+                copy.deepcopy(record),
+                copy.deepcopy(existing),
+                metadata_only=False,
+                cooldown_minutes=30,
+            )
+
+        download.assert_called_once()
+        self.assertEqual(outcome["result"]["status"], "downloaded")
+        self.assertEqual(
+            Path(outcome["queue_item"]["media_path"]).name,
+            replacement.name,
         )
 
 

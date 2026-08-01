@@ -401,6 +401,37 @@ class ProjectArtifactsTests(unittest.TestCase):
         self.assertTrue(packaged["runtime_transcript_segments_bundled"])
         self.assertNotIn("transcript_file", packaged["videos"][0])
 
+    def test_packaged_knowledge_compacts_bilibili_transcript_segments(self):
+        source = json.dumps(
+            {
+                "videos": [
+                    {
+                        "video_id": "bilibili:BV1fixture",
+                        "source_type": "bilibili_video",
+                        "transcript_segments": [
+                            {"start": 0.0, "end": 1.0, "text": "握拍"}
+                        ],
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ).encode()
+        packaged = json.loads(
+            self.module.skill_reference_bytes(
+                Path("data/knowledge/douyin_knowledge_base.json"), source
+            )
+        )
+        video = packaged["videos"][0]
+        self.assertNotIn("transcript_segments", video)
+        self.assertEqual(
+            json.loads(video["transcript_segments_json"]),
+            [{"start": 0.0, "end": 1.0, "text": "握拍"}],
+        )
+        self.assertEqual(
+            packaged["bilibili_transcript_segments_encoding"],
+            "json_string_v1",
+        )
+
     def test_reviewed_evidence_signals_match_reviewed_registry(self):
         expected = self.signal_builder.build_payload()
         actual = json.loads(
@@ -466,11 +497,66 @@ class ProjectArtifactsTests(unittest.TestCase):
     def test_full_update_pipeline_writes_exact_build_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
+            ledger_path = root / "data/bilibili_classification_ledger.json"
+            queue_path = root / "data/processing/bilibili_queue.json"
+            knowledge_path = (
+                root / "data/knowledge/bilibili_knowledge_base.json"
+            )
             manifest_path = root / "data/knowledge/build_manifest.json"
+            queue_path.parent.mkdir(parents=True)
             manifest_path.parent.mkdir(parents=True)
             build_id = "a" * 64
+            ledger_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {
+                                "bvid": "BV1Required",
+                                "decision": (
+                                    "required_transcription_policy"
+                                ),
+                            },
+                            {
+                                "bvid": "BV1Excluded",
+                                "decision": (
+                                    "excluded_transcription_policy"
+                                ),
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {
+                                "video_id": "BV1Required",
+                                "status": "transcribed",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {"source_video_id": "BV1Required"}
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
             manifest_path.write_text(
-                json.dumps({"build_id": build_id}),
+                json.dumps(
+                    {
+                        "build_id": build_id,
+                        "corpus": {"pending_count": 0},
+                    }
+                ),
                 encoding="utf-8",
             )
             receipt = root / "receipt.json"
@@ -483,6 +569,73 @@ class ProjectArtifactsTests(unittest.TestCase):
                 json.loads(receipt.read_text(encoding="utf-8")),
                 {"schema_version": 1, "build_id": build_id},
             )
+
+    def test_full_update_pipeline_rejects_partial_bilibili_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger_path = root / "data/bilibili_classification_ledger.json"
+            queue_path = root / "data/processing/bilibili_queue.json"
+            knowledge_path = (
+                root / "data/knowledge/bilibili_knowledge_base.json"
+            )
+            manifest_path = root / "data/knowledge/build_manifest.json"
+            queue_path.parent.mkdir(parents=True)
+            manifest_path.parent.mkdir(parents=True)
+            ledger_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {
+                                "bvid": "BV1Missing",
+                                "decision": (
+                                    "required_transcription_policy"
+                                ),
+                            },
+                            {
+                                "bvid": "BV1Excluded",
+                                "decision": (
+                                    "excluded_transcription_policy"
+                                ),
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {
+                                "video_id": "BV1Missing",
+                                "status": "downloaded",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path.write_text(
+                json.dumps({"videos": []}),
+                encoding="utf-8",
+            )
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "build_id": "a" * 64,
+                        "corpus": {"pending_count": 0},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with mock.patch.object(self.update_pipeline, "ROOT", root):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "every policy-required video",
+                ):
+                    self.update_pipeline.write_validation_receipt(
+                        root / "receipt.json"
+                    )
 
 
 if __name__ == "__main__":

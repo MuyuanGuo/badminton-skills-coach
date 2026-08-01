@@ -8,7 +8,15 @@ from pathlib import Path
 
 from batch_transcribe_directory import (
     load_valid_transcript,
+    transcript_directories,
     transcription_recipe,
+    write_transcript_outputs,
+)
+from bilibili_storage import (
+    BILIBILI_TRANSCRIPT_CACHE_ENV,
+    bilibili_transcript_roots,
+    index_exact_transcript_candidates,
+    lexical_absolute,
 )
 from douyin_pipeline import write_json
 
@@ -67,19 +75,42 @@ def eligible_for_backfill(payload, queue_item):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--transcript-cache-dir",
+        type=Path,
+        help=(
+            "Preferred Bilibili transcript cache "
+            f"(default: {BILIBILI_TRANSCRIPT_CACHE_ENV} or repository data)"
+        ),
+    )
     args = parser.parse_args()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     queue_by_id = {item["video_id"]: item for item in queue["items"]}
     eligible = []
     already_present = []
     skipped = []
-    for transcript_path in sorted(TRANSCRIPT_ROOT.glob("*.json")):
-        bvid = transcript_path.stem
+    transcript_roots = bilibili_transcript_roots(
+        ROOT,
+        override=args.transcript_cache_dir,
+    )
+    transcript_index = index_exact_transcript_candidates(transcript_roots)
+    for bvid in sorted(transcript_index):
         queue_item = queue_by_id.get(bvid)
         if not queue_item:
             skipped.append(bvid)
             continue
-        payload = load_valid_transcript(transcript_path, bvid)
+        payload = None
+        transcript_path = None
+        for candidate in transcript_index[bvid]:
+            try:
+                payload = load_valid_transcript(candidate, bvid)
+            except OSError:
+                continue
+            transcript_path = candidate
+            break
+        if payload is None:
+            skipped.append(bvid)
+            continue
         if payload.get("transcription_recipe"):
             already_present.append(bvid)
             continue
@@ -88,7 +119,18 @@ def main():
             continue
         payload["transcription_recipe"] = transcription_recipe(payload["model"])
         if not args.check:
-            write_json(transcript_path, payload)
+            preferred_root = transcript_roots[0]
+            try:
+                transcript_path.relative_to(lexical_absolute(preferred_root))
+            except ValueError:
+                preferred_root.mkdir(parents=True, exist_ok=True)
+                target_dir = transcript_directories(
+                    preferred_root,
+                    set(queue_by_id),
+                )[bvid]
+                write_transcript_outputs(target_dir, payload)
+            else:
+                write_json(transcript_path, payload)
         eligible.append(bvid)
     print(
         json.dumps(

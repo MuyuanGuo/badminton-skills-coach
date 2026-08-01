@@ -94,6 +94,7 @@
         "query_derivation",
         "expected_evidence_id",
         "supported_title_terms",
+        "transcript_probe",
         "transcript_sha256",
         "transcript_anchor",
         "expected_chunk_ids",
@@ -109,7 +110,7 @@
         "admission_state": {"enum": ["ready", "shadow"]},
         "query": {"type": "string", "minLength": 1},
         "query_derivation": {
-          "const": "cleaned_retrieval_title_with_transcript_supported_terms"
+          "const": "cleaned_retrieval_title_with_separate_transcript_anchor_probe"
         },
         "expected_evidence_id": {"type": "string", "minLength": 1},
         "supported_title_terms": {
@@ -117,6 +118,7 @@
           "minItems": 1,
           "items": {"type": "string", "minLength": 1}
         },
+        "transcript_probe": {"type": "string", "minLength": 1},
         "transcript_sha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
