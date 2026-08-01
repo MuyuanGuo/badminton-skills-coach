@@ -162,6 +162,27 @@ def batch_items(batch):
     ]
 
 
+def transcribed_batch_items(batch, requested_video_ids=None):
+    """Find completed ASR checkpoints for post-transcription recovery."""
+
+    transcript_dir = TRANSCRIPT_ROOT / batch
+    if not transcript_dir.is_dir():
+        return []
+    transcript_ids = {path.stem for path in transcript_dir.glob("*.json")}
+    requested = set(requested_video_ids or [])
+    queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
+    return [
+        item
+        for item in queue["items"]
+        if item.get("status") == "transcribed"
+        and str(item.get("video_id")) in transcript_ids
+        and (
+            not requested
+            or str(item.get("video_id")) in requested
+        )
+    ]
+
+
 def download_ready_items(batch, items):
     media_policy = load_media_policy()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
@@ -281,7 +302,7 @@ def cleanup_transcribed_media(batch, video_ids, *, root=ROOT, queue_path=QUEUE_P
 def finalize_transcribed_batch(batch, video_ids):
     cleanup = cleanup_transcribed_media(batch, video_ids)
     print(json.dumps({"media_cleanup": cleanup}, ensure_ascii=False), flush=True)
-    rebuild_and_validate()
+    rebuild_and_validate(rebuild_bilibili=False)
     return cleanup
 
 
@@ -500,7 +521,44 @@ def main():
             return browser_completed.returncode
         items = batch_items(args.batch)
     if not items:
-        print(json.dumps(preflight, ensure_ascii=False))
+        resumable = transcribed_batch_items(
+            args.batch,
+            requested_video_ids=args.video_id,
+        )
+        if not resumable:
+            print(json.dumps(preflight, ensure_ascii=False))
+            return 0
+        print(
+            json.dumps(
+                {
+                    **preflight,
+                    "resuming_post_transcription": len(resumable),
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+        finalize_transcribed_batch(
+            args.batch,
+            [item["video_id"] for item in resumable],
+        )
+        commit_if_changed(
+            f"Process Douyin teaching {args.batch}",
+            push=not args.no_push,
+        )
+        print(
+            json.dumps(
+                {
+                    "batch": args.batch,
+                    "after": queue_counts(),
+                    "validated": True,
+                    "resumed_post_transcription": True,
+                    "pushed": not args.no_push,
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
         return 0
 
     media_dir = RAW_ROOT / args.batch

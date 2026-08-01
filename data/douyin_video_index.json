@@ -2,10 +2,31 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-07-24T04:12:46.181639+00:00",
-  "collected_unique_links": 475,
+  "collected_at": "2026-08-01T04:45:16.696385+00:00",
+  "collected_unique_links": 478,
   "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7668741102412834545",
+      "url": "https://www.douyin.com/video/7668741102412834545",
+      "title": "900 单打接杀进阶 不光是接杀，所有快节奏的球都需要人快#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "900 单打接杀进阶 不光是接杀，所有快节奏的球都需要人快#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练"
+    },
+    {
+      "video_id": "7667841485241148145",
+      "url": "https://www.douyin.com/video/7667841485241148145",
+      "title": "8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练"
+    },
+    {
+      "video_id": "7667477046378167473",
+      "url": "https://www.douyin.com/video/7667477046378167473",
+      "title": "7766 00:00 / 01:42 短促集中发力 有了内外旋发力会更大，没用会更快，主要看手腕的保护力能不能卸力，大家量力而为#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "teaching_candidate": "unknown",
+      "raw_text": "7766 00:00 / 01:42 短促集中发力 有了内外旋发力会更大，没用会更快，主要看手腕的保护力能不能卸力，大家量力而为#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球"
+    },
     {
       "video_id": "7665812689277115897",
       "url": "https://www.douyin.com/video/7665812689277115897",

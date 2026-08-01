@@ -556,6 +556,9 @@ def build_record(
         "video_id": item["video_id"],
         "evidence_id": item["video_id"],
         "source_type": "douyin_video",
+        "retrieval_cohort": item.get(
+            "retrieval_cohort", "stable_baseline"
+        ),
         "canonical_url": item["url"],
         "parent_source_id": None,
         "clip_start_seconds": None,

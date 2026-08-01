@@ -329,6 +329,7 @@ def audit_video_content(
     chunk_lexicon=(),
     transcript_ngram_sizes=(2, 3),
     require_raw_transcript=False,
+    required_raw_transcript_sources=None,
     bilibili_transcript_candidates=None,
     douyin_transcript_root=None,
 ):
@@ -470,7 +471,11 @@ def audit_video_content(
                 if candidate_paths:
                     failures.append("invalid_transcript_file")
                     raw_transcript_status = "invalid"
-                elif require_raw_transcript:
+                elif require_raw_transcript and (
+                    required_raw_transcript_sources is None
+                    or video.get("source_type")
+                    in required_raw_transcript_sources
+                ):
                     failures.append("missing_transcript_file")
             else:
                 try:
@@ -529,6 +534,7 @@ def evaluate(
     run_retrieval_roundtrip=True,
     run_semantic_probes=True,
     require_raw_transcripts=False,
+    required_raw_transcript_sources=None,
     answer_cases_path=ANSWER_CASES_PATH,
     semantic_top_k=12,
     douyin_transcript_root=None,
@@ -607,6 +613,11 @@ def evaluate(
             chunk_lexicon=chunk_lexicon,
             transcript_ngram_sizes=ngram_sizes,
             require_raw_transcript=require_raw_transcripts,
+            required_raw_transcript_sources=(
+                set(required_raw_transcript_sources)
+                if required_raw_transcript_sources is not None
+                else None
+            ),
             bilibili_transcript_candidates=bilibili_transcript_candidates,
             douyin_transcript_root=douyin_transcript_root,
         )
@@ -712,6 +723,11 @@ def evaluate(
         "evidence_provenance": provenance,
         "automated_review_backlog": dict(sorted(pending_statuses.items())),
         "raw_transcript_requirement_enabled": require_raw_transcripts,
+        "required_raw_transcript_sources": (
+            sorted(required_raw_transcript_sources)
+            if required_raw_transcript_sources is not None
+            else ["all"]
+        ),
         "raw_transcript_files_verified": raw_transcript_counts["verified"],
         "raw_transcript_files_unavailable": raw_transcript_counts["unavailable"],
         "raw_transcript_roundtrip_coverage": (
@@ -780,6 +796,16 @@ def main():
         ),
     )
     parser.add_argument(
+        "--require-raw-transcript-source",
+        action="append",
+        choices=("douyin_video", "bilibili_video"),
+        help=(
+            "With --require-raw-transcripts, fail only when a selected "
+            "source's raw transcript is unavailable. Repeat for both "
+            "sources; omit to require every source."
+        ),
+    )
+    parser.add_argument(
         "--douyin-transcript-cache-dir",
         type=Path,
         default=(
@@ -789,6 +815,14 @@ def main():
         ),
     )
     args = parser.parse_args()
+    if (
+        args.require_raw_transcript_source
+        and not args.require_raw_transcripts
+    ):
+        parser.error(
+            "--require-raw-transcript-source requires "
+            "--require-raw-transcripts"
+        )
 
     result = evaluate(
         args.knowledge,
@@ -796,6 +830,11 @@ def main():
         run_retrieval_roundtrip=not args.skip_retrieval_roundtrip,
         run_semantic_probes=not args.skip_retrieval_roundtrip,
         require_raw_transcripts=args.require_raw_transcripts,
+        required_raw_transcript_sources=(
+            args.require_raw_transcript_source
+            if args.require_raw_transcript_source
+            else None
+        ),
         douyin_transcript_root=args.douyin_transcript_cache_dir,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))

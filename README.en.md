@@ -62,10 +62,10 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 
 | Metric | Current baseline |
 | --- | ---: |
-| Processed public videos | 1242 |
+| Processed public videos | 1245 |
 | Bilibili full source catalog | 767: 422 answer-ready, 345 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 776 |
-| Transcript-backed evidence | 757 |
+| Ready teaching videos | 779 |
+| Transcript-backed evidence | 760 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Query-understanding cases | 143/143 |
@@ -74,7 +74,7 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Latest independently reviewed generations | 3/3; new runtime review pending |
 | Promoted public feedback signals | 0 |
 
-All 7,668 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
+All 7,697 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
 
 The balanced performance gate covers five question types. In the latest local acceptance run, search P95 was `77.75 ms`, answer-context P95 was `712.04 ms`, traced peak memory was `80.15 MB`, and the answer packet averaged a `71.22%` reduction. These are development-machine measurements, not cross-platform performance promises.
 

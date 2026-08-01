@@ -42,6 +42,7 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "output/liuhui-knowledge-map.mmd",
     ROOT / "output/liuhui-knowledge-map.html",
     ROOT / "output/answer_quality_review_queue.md",
+    ROOT / "output/video-link-health.json",
     ROOT / "README.md",
     ROOT / "README.en.md",
     ROOT / "docs/evaluation/index.html",
@@ -61,9 +62,8 @@ def run(command, *, env=None):
     return subprocess.run(normalized, cwd=ROOT, check=True, env=env)
 
 
-def build_commands():
-    return [
-        [sys.executable, "scripts/build_bilibili_knowledge.py"],
+def build_commands(*, rebuild_bilibili=True):
+    commands = [
         [sys.executable, "scripts/build_douyin_knowledge.py"],
         [sys.executable, "scripts/build_topic_index.py"],
         [sys.executable, "scripts/build_retrieval_index.py"],
@@ -72,9 +72,24 @@ def build_commands():
         [sys.executable, "scripts/build_answer_quality_review_queue.py"],
         [sys.executable, "scripts/build_reviewed_evidence_signals.py"],
     ]
+    if rebuild_bilibili:
+        commands.insert(
+            0,
+            [sys.executable, "scripts/build_bilibili_knowledge.py"],
+        )
+    return commands
 
 
-def validation_commands():
+def validation_commands(*, raw_transcript_sources=None):
+    video_comprehension = [
+        sys.executable,
+        "scripts/evaluate_video_comprehension.py",
+        "--require-raw-transcripts",
+    ]
+    for source in raw_transcript_sources or ():
+        video_comprehension.extend(
+            ["--require-raw-transcript-source", source]
+        )
     return [
         [sys.executable, "scripts/evaluate_bilibili_canaries.py"],
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
@@ -105,11 +120,7 @@ def validation_commands():
         [sys.executable, "scripts/evaluate_retrieval.py"],
         [sys.executable, "scripts/benchmark_runtime.py"],
         [sys.executable, "scripts/evaluate_forward_test_results.py"],
-        [
-            sys.executable,
-            "scripts/evaluate_video_comprehension.py",
-            "--require-raw-transcripts",
-        ],
+        video_comprehension,
         [sys.executable, "scripts/build_manifest.py", "--check"],
         [sys.executable, "scripts/check_video_links.py"],
         ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
@@ -120,10 +131,15 @@ def validation_commands():
     ]
 
 
-def rebuild_and_validate():
+def rebuild_and_validate(*, rebuild_bilibili=True):
+    if not rebuild_bilibili:
+        # A Douyin-only update may reuse the committed Bilibili knowledge
+        # artifact, but only after its policy partition and release coverage
+        # have been checked. Full rebuilds retain the stricter raw-source gate.
+        validate_bilibili_release_completeness()
     before = impact_snapshot()
     with artifact_rollback_guard(UPDATE_ARTIFACT_PATHS):
-        for command in build_commands():
+        for command in build_commands(rebuild_bilibili=rebuild_bilibili):
             run(command)
         changed_references = sync_skill_references()
         print(
@@ -155,7 +171,12 @@ def rebuild_and_validate():
             ],
             env=test_environment,
         )
-        for command in validation_commands():
+        raw_transcript_sources = (
+            None if rebuild_bilibili else ("douyin_video",)
+        )
+        for command in validation_commands(
+            raw_transcript_sources=raw_transcript_sources
+        ):
             run(command)
         with tempfile.TemporaryDirectory(
             prefix="badminton-evaluations-"

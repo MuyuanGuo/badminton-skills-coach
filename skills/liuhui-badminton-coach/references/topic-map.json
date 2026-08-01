@@ -2,10 +2,10 @@
   "version": "knowledge-graph-v1",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-07-30T03:55:04.640231+00:00",
-  "video_count": 1011,
-  "indexable_video_count": 776,
-  "assigned_video_count": 776,
+  "source_updated_at": "2026-08-01T05:31:36.156259+00:00",
+  "video_count": 1014,
+  "indexable_video_count": 779,
+  "assigned_video_count": 779,
   "multi_topic_video_count": 382,
   "categories": [
     {
@@ -597,7 +597,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 46,
+      "video_count": 48,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -608,10 +608,19 @@
             "快挡",
             "高速对抗"
           ],
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "is_fallback": false,
           "representative_videos": [
+            {
+              "video_id": "7667841485241148145",
+              "title": "8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的",
+              "url": "https://www.douyin.com/video/7667841485241148145",
+              "confidence": "medium",
+              "category": "中前场与抽挡",
+              "duration_seconds": 138.6,
+              "score": 18
+            },
             {
               "video_id": "bilibili:BV1Y5kMY9ELd",
               "title": "羽毛球万能平抽挡教学！职业级抽档握拍细节！进阶必学 平抽档直接进入专业级",
@@ -629,15 +638,6 @@
               "category": "中前场与抽挡",
               "duration_seconds": 34.5,
               "score": 15
-            },
-            {
-              "video_id": "7652440366436945017",
-              "title": "高速对抗步法 小姐姐是两省冠军🏆，这种情况属于高速对抗状态下，就是球都比较平，没有侧身的时间和意义",
-              "url": "https://www.douyin.com/video/7652440366436945017",
-              "confidence": "medium",
-              "category": "步法与移动",
-              "duration_seconds": 298.4,
-              "score": 15
             }
           ]
         },
@@ -649,8 +649,8 @@
             "防反",
             "防守反击"
           ],
-          "video_count": 35,
-          "ready_count": 35,
+          "video_count": 36,
+          "ready_count": 36,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -998,7 +998,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 323,
+      "video_count": 324,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1092,8 +1092,8 @@
             "小臂旋转",
             "手腕"
           ],
-          "video_count": 98,
-          "ready_count": 98,
+          "video_count": 99,
+          "ready_count": 99,
           "is_fallback": false,
           "representative_videos": [
             {

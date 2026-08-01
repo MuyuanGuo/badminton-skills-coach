@@ -263,6 +263,11 @@ def build_apply_payloads(new_videos, classified):
             "classification_rules_version": item["classification_rules_version"],
             "classification_rules_hash": item["classification_rules_hash"],
             "classified_at": applied_at,
+            # New evidence is searchable immediately, but remains in the
+            # bounded expansion cohort until a reviewed regression promotes
+            # it. This prevents an unjudged upload from perturbing stable
+            # answer rankings merely because it is newer.
+            "retrieval_cohort": "automatic_expansion",
             "media_path": None,
             "duration_seconds": None,
             "attempts": 0,
@@ -402,6 +407,7 @@ def resolve_review(video_id, resolution, note):
                         "classification_rules_hash"
                     ),
                     "classified_at": resolved_at,
+                    "retrieval_cohort": "automatic_expansion",
                     "media_path": None,
                     "duration_seconds": None,
                     "attempts": 0,
