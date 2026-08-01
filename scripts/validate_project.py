@@ -8,6 +8,7 @@ from pathlib import Path
 
 from evaluate_answer_quality import validate_registry as validate_answer_quality_registry
 from evaluate_answer_packet import load_case_registry as load_answer_packet_case_registry
+from build_evidence_graph import build_graph as build_expected_evidence_graph
 from build_manifest import manifest_bytes
 from bilibili_pipeline import load_rules as load_bilibili_rules
 from douyin_pipeline import QUEUE_STATUSES, load_classification_rules, validate_queue_statuses
@@ -83,6 +84,7 @@ json_paths = [
     "data/evaluation/bilibili_mechanical_canary.schema.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/evaluation_report.json",
+    "data/evaluation/supplemental_evidence_report.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/diagnostic_answer_continuation_cases.json",
@@ -98,6 +100,7 @@ json_paths = [
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/bilibili_knowledge_base.json",
     "data/knowledge/retrieval_index.json",
+    "data/knowledge/evidence_graph.json",
     "data/knowledge/topic_index.json",
     "data/knowledge/knowledge_graph_summary.json",
     "data/review/visual_review_annotations.json",
@@ -117,6 +120,7 @@ json_paths = [
     "skills/liuhui-badminton-coach/references/feedback-signals.json",
     "skills/liuhui-badminton-coach/references/knowledge-base.json",
     "skills/liuhui-badminton-coach/references/retrieval-index.json",
+    "skills/liuhui-badminton-coach/references/evidence-graph.json",
     "skills/liuhui-badminton-coach/references/retrieval-rules.json",
     "skills/liuhui-badminton-coach/references/reviewed-evidence-atoms.json",
     "skills/liuhui-badminton-coach/references/reviewed-evidence-signals.json",
@@ -570,7 +574,7 @@ if (
         "Unified knowledge base does not exactly cover eligible Bilibili "
         "videos"
     )
-if douyin_knowledge.get("evidence_schema_version") != 1:
+if douyin_knowledge.get("evidence_schema_version") != 2:
     raise SystemExit("Knowledge evidence schema version is unsupported")
 validate_evidence_records(douyin_knowledge["videos"])
 if len(douyin_knowledge["videos"]) < 25:
@@ -1139,6 +1143,49 @@ if retrieval_index["version"] != retrieval_rules["version"]:
     raise SystemExit("Retrieval index version is out of sync with retrieval rules")
 if retrieval_index["indexable_video_count"] != ready_count:
     raise SystemExit("Retrieval index count is out of sync with ready videos")
+evidence_graph = json.loads(
+    (ROOT / "data" / "knowledge" / "evidence_graph.json").read_text(
+        encoding="utf-8"
+    )
+)
+skill_evidence_graph = json.loads(
+    (
+        ROOT
+        / "skills"
+        / "liuhui-badminton-coach"
+        / "references"
+        / "evidence-graph.json"
+    ).read_text(encoding="utf-8")
+)
+if skill_evidence_graph != evidence_graph:
+    raise SystemExit("Skill evidence graph is out of sync with project data")
+if evidence_graph.get("schema_version") != 2:
+    raise SystemExit("Evidence graph schema version is invalid")
+if evidence_graph.get("source_updated_at") != douyin_knowledge["updated_at"]:
+    raise SystemExit("Evidence graph is stale relative to the knowledge base")
+graph_profiles = evidence_graph.get("video_profiles") or {}
+if set(graph_profiles) != {item["video_id"] for item in retrieval_index["videos"]}:
+    raise SystemExit("Evidence graph video coverage differs from retrieval index")
+expected_evidence_graph = build_expected_evidence_graph(
+    douyin_knowledge,
+    retrieval_index,
+    json.loads(
+        (ROOT / "data" / "knowledge" / "topic_index.json").read_text(
+            encoding="utf-8"
+        )
+    ),
+)
+if evidence_graph != expected_evidence_graph:
+    raise SystemExit("Evidence graph does not match its deterministic sources")
+graph_counts = evidence_graph.get("counts") or {}
+if (
+    graph_counts.get("video_nodes") != ready_count
+    or graph_counts.get("primary_videos")
+    != retrieval_index.get("primary_indexable_video_count")
+    or graph_counts.get("supplemental_videos")
+    != retrieval_index.get("supplemental_indexable_video_count")
+):
+    raise SystemExit("Evidence graph answer-eligibility counts are inconsistent")
 if retrieval_index.get("full_transcript_text_included") is not False:
     raise SystemExit("Retrieval index must not include full transcript text")
 if retrieval_index.get("evidence_fields") != ["title", "teaching_note", "transcript"]:
@@ -1157,6 +1204,10 @@ allowed_retrieval_video_fields = {
     "video_id",
     "evidence_id",
     "source_type",
+    "answer_eligibility",
+    "evidence_roles",
+    "metadata_title_trust",
+    "runtime_evidence_mode",
     "retrieval_cohort",
     "canonical_url",
     "parent_source_id",

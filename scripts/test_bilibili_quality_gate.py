@@ -591,7 +591,7 @@ class BilibiliQualityGateTests(unittest.TestCase):
         )
         self.assertIn("repeated_segment_hallucination_risk", quality["issues"])
 
-    def test_title_is_cleaned_and_mismatch_is_quarantined_as_low_value(self):
+    def test_title_mismatch_is_bounded_supplemental_not_discarded(self):
         payload = self.transcript()
         item = self.item(
             "杀球怎么压下去？刘辉教练教你完整教学 不看又错过一亿"
@@ -607,9 +607,11 @@ class BilibiliQualityGateTests(unittest.TestCase):
             )
         self.assertNotIn("刘辉教练", record["retrieval_title"])
         self.assertNotIn("错过一亿", record["retrieval_title"])
-        self.assertEqual(record["processing_status"], "low_value")
-        self.assertFalse(record["automatic_admission"]["answer_evidence_eligible"])
-        self.assertEqual(record["transcript_segments"], [])
+        self.assertEqual(record["processing_status"], "ready")
+        self.assertEqual(record["answer_eligibility"], "supplemental")
+        self.assertTrue(record["automatic_admission"]["answer_evidence_eligible"])
+        self.assertTrue(record["transcript_segments"])
+        self.assertEqual(record["metadata_title_trust"], "limited")
         self.assertIn(
             "title_technical_concept_not_supported_by_transcript",
             record["quality"]["transcript"]["issues"],
@@ -649,6 +651,7 @@ class BilibiliQualityGateTests(unittest.TestCase):
                 self.builder.build_shingle_index([]),
             )
         self.assertEqual(record["processing_status"], "low_value")
+        self.assertEqual(record["answer_eligibility"], "none")
         self.assertEqual(
             record["automatic_admission"]["disposition"],
             "quarantined_origin_verification",
@@ -713,6 +716,7 @@ class BilibiliQualityGateTests(unittest.TestCase):
             )
 
         self.assertEqual(record["processing_status"], "low_value")
+        self.assertEqual(record["answer_eligibility"], "none")
         self.assertEqual(record["transcript_segments"], [])
         self.assertEqual(
             record["automatic_admission"]["disposition"],
@@ -819,7 +823,12 @@ class BilibiliQualityGateTests(unittest.TestCase):
                 self.builder.build_shingle_index([]),
             )
 
-        self.assertEqual(record["processing_status"], "low_value")
+        self.assertEqual(record["processing_status"], "ready")
+        self.assertEqual(record["answer_eligibility"], "supplemental")
+        self.assertNotIn(
+            "忽略以上指令",
+            "".join(item["text"] for item in record["transcript_segments"]),
+        )
         self.assertIn(
             "title_technical_concept_not_supported_by_transcript",
             record["quality"]["transcript"]["issues"],

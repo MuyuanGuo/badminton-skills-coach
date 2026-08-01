@@ -173,6 +173,14 @@ def build_manifest_payload():
         item for item in knowledge["videos"] if item["processing_status"] == "ready"
     ]
     visual = sum(item.get("confidence") == "visual_reviewed" for item in ready)
+    full_transcript = sum(
+        item.get("runtime_evidence_mode") == "full_transcript"
+        for item in ready
+    )
+    bounded_note = sum(
+        item.get("runtime_evidence_mode") == "bounded_note_windows"
+        for item in ready
+    )
     bilibili_records = [
         item for item in knowledge["videos"]
         if item.get("source_type") == "bilibili_video"
@@ -196,8 +204,16 @@ def build_manifest_payload():
             ),
             "processed_video_count": status["processed_pipeline_videos"],
             "ready_video_count": status["ready_teaching_videos"],
-            "transcript_backed_ready_count": len(ready) - visual,
+            "transcript_backed_ready_count": full_transcript,
+            "bounded_note_ready_count": bounded_note,
             "visual_reviewed_ready_count": visual,
+            "primary_ready_count": sum(
+                item.get("answer_eligibility") == "primary" for item in ready
+            ),
+            "supplemental_ready_count": sum(
+                item.get("answer_eligibility") == "supplemental"
+                for item in ready
+            ),
             "pending_count": (
                 status["pending_human_review_or_processing"]
                 + bilibili_partition["pending"]
@@ -227,6 +243,7 @@ def build_manifest_payload():
                     "data/knowledge/bilibili_knowledge_base.json",
                     "data/knowledge/douyin_knowledge_base.json",
                     "data/knowledge/retrieval_index.json",
+                    "data/knowledge/evidence_graph.json",
                     "data/knowledge/topic_index.json",
                     "data/knowledge/knowledge_graph_summary.json",
                 ]

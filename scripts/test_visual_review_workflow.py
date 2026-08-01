@@ -43,10 +43,11 @@ class VisualReviewWorkflowTests(unittest.TestCase):
         self.assertEqual(updated["processing_status"], "needs_correction")
         self.assertEqual(updated["confidence"], "review_needs_correction")
 
-    def test_low_value_is_not_promoted(self):
+    def test_reviewed_low_value_is_ready_for_later_supplemental_admission(self):
         updated = apply_review_annotation(record(), annotation("low_value"))
-        self.assertEqual(updated["processing_status"], "low_value")
+        self.assertEqual(updated["processing_status"], "ready")
         self.assertEqual(updated["confidence"], "reviewed_low_value")
+        self.assertIn("只可", updated["teaching_note"]["note"])
 
     def test_only_approved_becomes_visual_reviewed_evidence(self):
         updated = apply_review_annotation(record(), annotation("approved"))

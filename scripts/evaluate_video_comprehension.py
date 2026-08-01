@@ -15,7 +15,12 @@ from build_douyin_knowledge import (
     runtime_transcript_segments,
 )
 from build_bilibili_knowledge import assess_source_content
-from build_retrieval_index import normalize as normalize_retrieval_text
+from build_retrieval_index import (
+    flatten as flatten_retrieval_value,
+    normalize as normalize_retrieval_text,
+    searchable_teaching_note,
+)
+from evidence_admission import split_transcript_issues
 from bilibili_storage import (
     bilibili_transcript_roots,
     first_readable_transcript,
@@ -258,6 +263,178 @@ def bilibili_safe_runtime_segments(video, payload, quality_rules):
     return runtime_transcript_segments(safe_segments, quality_rules)
 
 
+def load_raw_transcript(
+    video,
+    *,
+    root,
+    require_raw_transcript=False,
+    required_raw_transcript_sources=None,
+    bilibili_transcript_candidates=None,
+    douyin_transcript_root=None,
+):
+    """Load optional local provenance without changing the portable gate.
+
+    Full-transcript and bounded-note evidence use the same resolver.  The
+    latter may intentionally ship without its gitignored raw cache, but a
+    cache that is present is still audited against every committed evidence
+    window.
+    """
+
+    failures = []
+    transcript_file = str(video.get("transcript_file", "")).strip()
+    if not transcript_file:
+        return None, "missing_reference", ["missing_transcript_file_reference"]
+
+    candidate_paths = None
+    if video.get("source_type") == "bilibili_video":
+        source_video_id = str(video.get("source_video_id") or "").strip()
+        if bilibili_transcript_candidates is None:
+            bilibili_transcript_candidates = index_exact_transcript_candidates(
+                bilibili_transcript_roots(root)
+            )
+        candidate_paths = bilibili_transcript_candidates.get(source_video_id, [])
+        path = first_readable_transcript(candidate_paths)
+    elif video.get("source_type") == "douyin_video":
+        if douyin_transcript_root is None:
+            douyin_transcript_root = (
+                Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV])
+                if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
+                else root / "data" / "transcripts" / "douyin"
+            )
+        canonical_root = Path("data/transcripts/douyin")
+        try:
+            relative = Path(transcript_file).relative_to(canonical_root)
+        except ValueError:
+            path = root / transcript_file
+        else:
+            path = Path(douyin_transcript_root) / relative
+    else:
+        path = root / transcript_file
+
+    if path is None or not path.exists():
+        if candidate_paths:
+            return None, "invalid", ["invalid_transcript_file"]
+        if require_raw_transcript and (
+            required_raw_transcript_sources is None
+            or video.get("source_type") in required_raw_transcript_sources
+        ):
+            failures.append("missing_transcript_file")
+        return None, "unavailable", failures
+
+    try:
+        payload = load_json(path)
+    except (json.JSONDecodeError, OSError):
+        return None, "invalid", ["invalid_transcript_file"]
+
+    full_transcript = transcript_text(payload)
+    if not full_transcript:
+        return payload, "empty", ["empty_transcript"]
+    return payload, "verified", failures
+
+
+def audit_bounded_note_evidence(
+    video,
+    *,
+    index_record=None,
+    indexed_title_ngrams=None,
+    indexed_teaching_note_ngrams=None,
+    indexed_transcript_ngrams=None,
+    transcript_ngram_sizes=(2, 3),
+    root=ROOT,
+    require_raw_transcript=False,
+    required_raw_transcript_sources=None,
+    bilibili_transcript_candidates=None,
+    douyin_transcript_root=None,
+):
+    """Audit a supplemental record as bounded evidence, not a full transcript.
+
+    Admission remains strict: only title-alignment advisories may lower a safe,
+    provenance-backed transcript to supplemental status.  Runtime retrieval is
+    then limited to the committed timestamped teaching-note windows.
+    """
+
+    failures = []
+    quality = video.get("quality") or {}
+    transcript_quality = quality.get("transcript") or {}
+    advisory, blocking = split_transcript_issues(transcript_quality.get("issues"))
+    if video.get("answer_eligibility") != "supplemental":
+        append_failure(failures, "bounded_note_not_supplemental")
+    if video.get("runtime_evidence_mode") != "bounded_note_windows":
+        append_failure(failures, "invalid_bounded_note_runtime_mode")
+    if video.get("metadata_title_trust") != "limited":
+        append_failure(failures, "bounded_note_title_trust_not_limited")
+    if not advisory or blocking:
+        append_failure(failures, "bounded_note_has_invalid_transcript_issues")
+    if (quality.get("origin_verification") or {}).get("passed") is not True:
+        append_failure(failures, "bounded_note_origin_not_verified")
+    if (quality.get("source_content_safety") or {}).get("passed") is not True:
+        append_failure(failures, "bounded_note_source_content_not_safe")
+    if (quality.get("automatic_evidence") or {}).get("passed") is not True:
+        append_failure(failures, "bounded_note_automatic_evidence_not_passed")
+    if video.get("transcript_segments"):
+        append_failure(failures, "bounded_note_contains_runtime_transcript")
+
+    note = video.get("teaching_note") or {}
+    evidence = note_evidence(note, TRANSCRIPT_EVIDENCE_FIELDS)
+    if not evidence:
+        append_failure(failures, "bounded_note_has_no_evidence_windows")
+    if any(not item["timestamp"].strip() for item in evidence):
+        append_failure(failures, "bounded_note_evidence_missing_timestamp")
+
+    if index_record is not None:
+        if index_record.get("answer_eligibility") != "supplemental":
+            append_failure(failures, "bounded_note_index_eligibility_mismatch")
+        if index_record.get("runtime_evidence_mode") != "bounded_note_windows":
+            append_failure(failures, "bounded_note_index_runtime_mode_mismatch")
+        if index_record.get("metadata_title_trust") != "limited":
+            append_failure(failures, "bounded_note_index_title_trust_mismatch")
+        field_lengths = index_record.get("field_lengths") or {}
+        ngram_counts = index_record.get("ngram_counts") or {}
+        if field_lengths.get("transcript") != 0 or ngram_counts.get("transcript") != 0:
+            append_failure(failures, "bounded_note_contains_transcript_index")
+        if ngram_counts.get("title") != 0:
+            append_failure(failures, "bounded_note_contains_limited_title_index")
+
+        note_text = flatten_retrieval_value(searchable_teaching_note(note))
+        expected_note_ngrams = hashed_ngrams(note_text, transcript_ngram_sizes)
+        actual_note_ngrams = (
+            indexed_teaching_note_ngrams
+            if indexed_teaching_note_ngrams is not None
+            else set()
+        )
+        if expected_note_ngrams != actual_note_ngrams:
+            append_failure(failures, "bounded_note_index_mismatch")
+        if field_lengths.get("teaching_note") != len(normalize_index_text(note_text)):
+            append_failure(failures, "bounded_note_index_length_mismatch")
+        if indexed_title_ngrams:
+            append_failure(failures, "bounded_note_contains_limited_title_index")
+        if indexed_transcript_ngrams:
+            append_failure(failures, "bounded_note_contains_transcript_index")
+
+    payload, raw_status, raw_failures = load_raw_transcript(
+        video,
+        root=root,
+        require_raw_transcript=require_raw_transcript,
+        required_raw_transcript_sources=required_raw_transcript_sources,
+        bilibili_transcript_candidates=bilibili_transcript_candidates,
+        douyin_transcript_root=douyin_transcript_root,
+    )
+    failures.extend(raw_failures)
+    full_transcript = transcript_text(payload or {})
+    if full_transcript:
+        quality_rules = load_json(QUALITY_RULES_PATH)
+        normalized_transcript = normalize_text(
+            canonicalize_asr_text(full_transcript, quality_rules)
+        )
+        for item in evidence:
+            if normalize_text(item["text"]) not in normalized_transcript:
+                append_failure(
+                    failures,
+                    f"bounded_evidence_not_in_transcript:{item['role']}:{item['timestamp']}",
+                )
+    return failures, raw_status
+
+
 def evidence_provenance_metrics(videos, quality_rules):
     transcript_items = 0
     timestamped_transcript_items = 0
@@ -322,6 +499,8 @@ def audit_video_content(
     root=ROOT,
     indexed_video_ids=None,
     index_record=None,
+    indexed_title_ngrams=None,
+    indexed_teaching_note_ngrams=None,
     indexed_transcript_ngrams=None,
     chunk_first_sources=(),
     chunks=None,
@@ -336,7 +515,10 @@ def audit_video_content(
     video_id = video["video_id"]
     note = video.get("teaching_note") or {}
     failures = []
-    if video.get("confidence") == "visual_reviewed":
+    runtime_evidence_mode = video.get("runtime_evidence_mode")
+    if runtime_evidence_mode == "bounded_note_windows":
+        source_kind = "bounded_note_windows"
+    elif video.get("confidence") == "visual_reviewed":
         source_kind = "visual_review"
     elif video.get("confidence") == "reviewed_transcript":
         source_kind = "reviewed_transcript"
@@ -349,7 +531,22 @@ def audit_video_content(
     if not str(note.get("topic", "")).strip():
         failures.append("missing_teaching_topic")
 
-    if source_kind == "visual_review":
+    if source_kind == "bounded_note_windows":
+        bounded_failures, raw_transcript_status = audit_bounded_note_evidence(
+            video,
+            index_record=index_record,
+            indexed_title_ngrams=indexed_title_ngrams,
+            indexed_teaching_note_ngrams=indexed_teaching_note_ngrams,
+            indexed_transcript_ngrams=indexed_transcript_ngrams,
+            transcript_ngram_sizes=transcript_ngram_sizes,
+            root=root,
+            require_raw_transcript=require_raw_transcript,
+            required_raw_transcript_sources=required_raw_transcript_sources,
+            bilibili_transcript_candidates=bilibili_transcript_candidates,
+            douyin_transcript_root=douyin_transcript_root,
+        )
+        failures.extend(bounded_failures)
+    elif source_kind == "visual_review":
         summary = str(note.get("review_summary", "")).strip()
         visual_evidence = note_evidence(note, ("visual_review_evidence",))
         if not summary:
@@ -426,70 +623,16 @@ def audit_video_content(
             if index_record.get("field_lengths", {}).get("transcript") != expected_length:
                 failures.append("runtime_transcript_length_mismatch")
 
-        transcript_file = str(video.get("transcript_file", "")).strip()
-        payload = None
-        if not transcript_file:
-            failures.append("missing_transcript_file_reference")
-            raw_transcript_status = "missing_reference"
-        else:
-            candidate_paths = None
-            if video.get("source_type") == "bilibili_video":
-                source_video_id = str(
-                    video.get("source_video_id") or ""
-                ).strip()
-                if bilibili_transcript_candidates is None:
-                    bilibili_transcript_candidates = (
-                        index_exact_transcript_candidates(
-                            bilibili_transcript_roots(root)
-                        )
-                    )
-                candidate_paths = bilibili_transcript_candidates.get(
-                    source_video_id,
-                    [],
-                )
-                path = first_readable_transcript(candidate_paths)
-            elif video.get("source_type") == "douyin_video":
-                if douyin_transcript_root is None:
-                    douyin_transcript_root = (
-                        Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV])
-                        if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
-                        else root / "data" / "transcripts" / "douyin"
-                    )
-                canonical_root = Path("data/transcripts/douyin")
-                try:
-                    relative = Path(transcript_file).relative_to(
-                        canonical_root
-                    )
-                except ValueError:
-                    path = root / transcript_file
-                else:
-                    path = Path(douyin_transcript_root) / relative
-            else:
-                path = root / transcript_file
-            if path is None or not path.exists():
-                raw_transcript_status = "unavailable"
-                if candidate_paths:
-                    failures.append("invalid_transcript_file")
-                    raw_transcript_status = "invalid"
-                elif require_raw_transcript and (
-                    required_raw_transcript_sources is None
-                    or video.get("source_type")
-                    in required_raw_transcript_sources
-                ):
-                    failures.append("missing_transcript_file")
-            else:
-                try:
-                    payload = load_json(path)
-                except (json.JSONDecodeError, OSError):
-                    failures.append("invalid_transcript_file")
-                    raw_transcript_status = "invalid"
-
+        payload, raw_transcript_status, raw_failures = load_raw_transcript(
+            video,
+            root=root,
+            require_raw_transcript=require_raw_transcript,
+            required_raw_transcript_sources=required_raw_transcript_sources,
+            bilibili_transcript_candidates=bilibili_transcript_candidates,
+            douyin_transcript_root=douyin_transcript_root,
+        )
+        failures.extend(raw_failures)
         full_transcript = transcript_text(payload or {})
-        if payload is not None and not full_transcript:
-            failures.append("empty_transcript")
-            raw_transcript_status = "empty"
-        elif full_transcript:
-            raw_transcript_status = "verified"
         evidence = note_evidence(note)
         if source_kind == "automatic_transcript" and not evidence:
             failures.append("missing_teaching_evidence")
@@ -547,8 +690,16 @@ def evaluate(
     index_by_id = {
         record["video_id"]: record for record in retrieval_index.get("videos", [])
     }
+    title_ngrams_by_id = None
+    teaching_note_ngrams_by_id = None
     transcript_ngrams_by_id = None
     if retrieval_index.get("ngram_vocabulary") is not None:
+        title_ngrams_by_id = {
+            record["video_id"]: set() for record in retrieval_index["videos"]
+        }
+        teaching_note_ngrams_by_id = {
+            record["video_id"]: set() for record in retrieval_index["videos"]
+        }
         transcript_ngrams_by_id = {
             record["video_id"]: set() for record in retrieval_index["videos"]
         }
@@ -560,6 +711,10 @@ def evaluate(
             for record_index, channel_mask in decode_video_ngram_postings(
                 postings
             ):
+                if channel_mask & 1:
+                    title_ngrams_by_id[video_ids[record_index]].add(gram)
+                if channel_mask & 2:
+                    teaching_note_ngrams_by_id[video_ids[record_index]].add(gram)
                 if channel_mask & 4:
                     transcript_ngrams_by_id[video_ids[record_index]].add(gram)
     indexed_video_ids = set(index_by_id)
@@ -602,6 +757,16 @@ def evaluate(
             root=root,
             indexed_video_ids=indexed_video_ids,
             index_record=index_by_id.get(video["video_id"]),
+            indexed_title_ngrams=(
+                title_ngrams_by_id.get(video["video_id"])
+                if title_ngrams_by_id is not None
+                else None
+            ),
+            indexed_teaching_note_ngrams=(
+                teaching_note_ngrams_by_id.get(video["video_id"])
+                if teaching_note_ngrams_by_id is not None
+                else None
+            ),
             indexed_transcript_ngrams=(
                 transcript_ngrams_by_id.get(video["video_id"])
                 if transcript_ngrams_by_id is not None
@@ -717,6 +882,7 @@ def evaluate(
             source_counts["automatic_transcript"]
             + source_counts["reviewed_transcript"]
         ),
+        "bounded_note_windows": source_counts["bounded_note_windows"],
         "automatic_transcript": source_counts["automatic_transcript"],
         "reviewed_transcript": source_counts["reviewed_transcript"],
         "visual_review_fallback": source_counts["visual_review"],
@@ -735,7 +901,8 @@ def evaluate(
             / max(
                 1,
                 source_counts["automatic_transcript"]
-                + source_counts["reviewed_transcript"],
+                + source_counts["reviewed_transcript"]
+                + source_counts["bounded_note_windows"],
             )
         ),
         "runtime_lookup_coverage": (

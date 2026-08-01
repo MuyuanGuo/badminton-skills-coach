@@ -392,6 +392,129 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertNotIn("automatic_evidence_quality_not_passed", audit["failures"])
         self.assertNotIn("missing_teaching_evidence", audit["failures"])
 
+    def supplemental_video(self):
+        return {
+            "video_id": "bilibili:BV1Supplemental",
+            "evidence_id": "bilibili:BV1Supplemental",
+            "source_video_id": "BV1Supplemental",
+            "source_type": "bilibili_video",
+            "processing_status": "ready",
+            "confidence": "supplemental_note_only",
+            "answer_eligibility": "supplemental",
+            "runtime_evidence_mode": "bounded_note_windows",
+            "metadata_title_trust": "limited",
+            "transcript_file": (
+                "data/transcripts/bilibili/BV1Supplemental.json"
+            ),
+            "transcript_segments": [],
+            "quality": {
+                "origin_verification": {"passed": True},
+                "source_content_safety": {"passed": True},
+                "transcript": {
+                    "passed": False,
+                    "issues": ["title_has_no_technical_concept"],
+                },
+                "automatic_evidence": {"passed": True},
+            },
+            "teaching_note": {
+                "topic": "接发准备",
+                "key_evidence": [
+                    {
+                        "timestamp": "00:01-00:03",
+                        "text": "先准备最快的回球线路",
+                    }
+                ],
+                "error_evidence": [],
+                "action_cues": [],
+            },
+        }
+
+    def supplemental_index_record(self, video):
+        note_text = self.module.flatten_retrieval_value(
+            self.module.searchable_teaching_note(video["teaching_note"])
+        )
+        return {
+            "answer_eligibility": "supplemental",
+            "runtime_evidence_mode": "bounded_note_windows",
+            "metadata_title_trust": "limited",
+            "field_lengths": {
+                "title": 0,
+                "teaching_note": len(
+                    self.module.normalize_index_text(note_text)
+                ),
+                "transcript": 0,
+            },
+            "ngram_counts": {
+                "title": 0,
+                "teaching_note": len(
+                    self.module.hashed_ngrams(note_text, [2, 3])
+                ),
+                "transcript": 0,
+            },
+        }
+
+    def test_bounded_note_windows_are_audited_as_supplemental_evidence(self):
+        video = self.supplemental_video()
+        note_text = self.module.flatten_retrieval_value(
+            self.module.searchable_teaching_note(video["teaching_note"])
+        )
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=self.supplemental_index_record(video),
+            indexed_title_ngrams=set(),
+            indexed_teaching_note_ngrams=self.module.hashed_ngrams(
+                note_text, [2, 3]
+            ),
+            indexed_transcript_ngrams=set(),
+            bilibili_transcript_candidates={},
+        )
+        self.assertEqual(audit["source_kind"], "bounded_note_windows")
+        self.assertEqual(audit["raw_transcript_status"], "unavailable")
+        self.assertEqual(audit["failures"], [])
+
+    def test_bounded_note_windows_reject_unbounded_or_unindexed_evidence(self):
+        video = self.supplemental_video()
+        video["teaching_note"]["key_evidence"][0]["timestamp"] = ""
+        index_record = self.supplemental_index_record(video)
+        index_record["field_lengths"]["transcript"] = 10
+        index_record["ngram_counts"]["transcript"] = 2
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+            index_record=index_record,
+            indexed_title_ngrams=set(),
+            indexed_teaching_note_ngrams=set(),
+            indexed_transcript_ngrams={"unexpected"},
+            bilibili_transcript_candidates={},
+        )
+        self.assertIn(
+            "bounded_note_evidence_missing_timestamp", audit["failures"]
+        )
+        self.assertIn("bounded_note_contains_transcript_index", audit["failures"])
+        self.assertIn("bounded_note_index_mismatch", audit["failures"])
+
+    def test_bounded_note_windows_roundtrip_when_raw_cache_is_present(self):
+        with tempfile.TemporaryDirectory() as directory:
+            transcript_path = Path(directory) / "BV1Supplemental.json"
+            transcript_path.write_text(
+                json.dumps(
+                    {"full_text": "接发时先准备最快的回球线路。"},
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            video = self.supplemental_video()
+            audit = self.module.audit_video_content(
+                video,
+                indexed_video_ids={video["video_id"]},
+                bilibili_transcript_candidates={
+                    "BV1Supplemental": [transcript_path]
+                },
+            )
+        self.assertEqual(audit["raw_transcript_status"], "verified")
+        self.assertEqual(audit["failures"], [])
+
     def test_runtime_transcript_must_match_retrieval_index(self):
         video = self.transcript_video("")
         transcript = "先准备最快的回球线路"

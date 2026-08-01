@@ -14,6 +14,7 @@ DRAWIO_OUTPUT = OUTPUT_DIR / "liuhui-full-knowledge-map.drawio"
 MERMAID_OUTPUT = OUTPUT_DIR / "liuhui-knowledge-map.mmd"
 HTML_OUTPUT = OUTPUT_DIR / "liuhui-knowledge-map.html"
 SUMMARY_OUTPUT = ROOT / "data" / "knowledge" / "knowledge_graph_summary.json"
+EVIDENCE_GRAPH = ROOT / "data" / "knowledge" / "evidence_graph.json"
 DOUYIN_VIDEO_URL_PATTERN = re.compile(
     r"https://www\.douyin\.com/video/(?P<video_id>\d{18,20})"
 )
@@ -65,6 +66,7 @@ def json_for_inline_script(payload):
 def load_graph():
     index = json.loads(TOPIC_INDEX.read_text(encoding="utf-8"))
     knowledge = json.loads(KNOWLEDGE_BASE.read_text(encoding="utf-8"))
+    evidence_graph = json.loads(EVIDENCE_GRAPH.read_text(encoding="utf-8"))
     video_lookup = {video["video_id"]: video for video in knowledge["videos"]}
     categories = []
     for category in index["categories"]:
@@ -109,7 +111,7 @@ def load_graph():
             }
         )
     return {
-        "version": "knowledge-graph-v1",
+        "version": "knowledge-graph-v2",
         "source": str(TOPIC_INDEX.relative_to(ROOT)),
         "scope": index["scope"],
         "source_updated_at": index["source_updated_at"],
@@ -117,6 +119,11 @@ def load_graph():
         "indexable_video_count": index["indexable_video_count"],
         "assigned_video_count": index["assigned_video_count"],
         "multi_topic_video_count": index["multi_topic_video_count"],
+        "evidence_graph": {
+            "source": str(EVIDENCE_GRAPH.relative_to(ROOT)),
+            "schema_version": evidence_graph["schema_version"],
+            "counts": evidence_graph["counts"],
+        },
         "categories": categories,
     }
 

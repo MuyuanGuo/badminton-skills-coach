@@ -205,6 +205,133 @@ _answer_retrieval_plan.query_actor_context = query_actor_context
 _answer_retrieval_plan.required_focus_groups = required_focus_groups
 
 
+def apply_supplemental_evidence_policy(
+    accepted,
+    plan,
+    boundary,
+    rules,
+):
+    """Use supplemental evidence only for bounded coverage or corroboration."""
+
+    primary_entries = [
+        entry
+        for entry in accepted
+        if entry["candidate"].get("answer_eligibility", "primary")
+        == "primary"
+    ]
+    covered_concepts = {
+        concept
+        for entry in primary_entries
+        for concept in entry["candidate"].get(
+            "matched_query_concepts", []
+        )
+    }
+    covered_roles = {
+        role
+        for entry in primary_entries
+        for role in entry["candidate"].get("evidence_roles", [])
+    }
+    requested_output = plan["retrieval_guidance"]["intent_frame"].get(
+        "requested_output", "coaching_answer"
+    )
+    required_roles = set(
+        rules.get("supplemental_role_requirements", {}).get(
+            requested_output, []
+        )
+    )
+    if boundary.get("type") == "purchase_advice":
+        required_roles.add("equipment")
+    allowed_tiers = set(
+        rules.get(
+            "supplemental_allowed_relevance_tiers",
+            ["direct", "strong_related"],
+        )
+    )
+    limit = int(rules.get("supplemental_selection_limit", 2))
+    kept = []
+    rejected = []
+    supplemental_count = 0
+    corroboration_count = 0
+    for entry in accepted:
+        candidate = entry["candidate"]
+        if candidate.get("answer_eligibility", "primary") != "supplemental":
+            kept.append(entry)
+            continue
+        if supplemental_count >= limit:
+            rejected.append(
+                {
+                    **entry,
+                    "selection_reasons": [
+                        "supplemental_evidence_limit_exceeded"
+                    ],
+                }
+            )
+            continue
+        tier = candidate.get("relevance_tier")
+        candidate_concepts = set(
+            candidate.get("matched_query_concepts", [])
+        )
+        adds_concepts = candidate_concepts - covered_concepts
+        roles = set(candidate.get("evidence_roles", []))
+        bounded_note_term_count = len(
+            candidate.get("matched_fields", {}).get("teaching_note", [])
+        )
+        has_direct_match = (
+            bounded_note_term_count >= 2
+            if candidate.get("runtime_evidence_mode")
+            == "bounded_note_windows"
+            else bool(
+                candidate.get("matched_original_terms")
+                or candidate.get("matched_equivalent_terms")
+                or entry_is_core(entry)
+            )
+        )
+        bounded_note_direct_match = bool(
+            candidate.get("runtime_evidence_mode")
+            == "bounded_note_windows"
+            and bounded_note_term_count >= 3
+            and (
+                candidate.get("matched_original_terms")
+                or candidate.get("matched_equivalent_terms")
+            )
+        )
+        reason = None
+        if tier in allowed_tiers and has_direct_match:
+            if not primary_entries:
+                reason = "supplemental_only_direct_evidence_available"
+            elif adds_concepts and (
+                candidate.get("runtime_evidence_mode")
+                != "bounded_note_windows"
+                or bounded_note_term_count >= 3
+            ):
+                reason = "supplemental_fills_uncovered_query_concept"
+            elif roles & (required_roles - covered_roles):
+                reason = "supplemental_fills_requested_evidence_role"
+            elif (
+                (tier == "direct" or bounded_note_direct_match)
+                and entry_is_core(entry)
+                and corroboration_count < 1
+            ):
+                reason = "supplemental_direct_corroboration"
+                corroboration_count += 1
+        if reason is None:
+            rejected.append(
+                {
+                    **entry,
+                    "selection_reasons": [
+                        "supplemental_evidence_not_needed"
+                    ],
+                }
+            )
+            continue
+        entry["selection_reasons"].append(reason)
+        kept.append(entry)
+        supplemental_count += 1
+        covered_concepts.update(candidate_concepts)
+        covered_roles.update(roles)
+    return kept, rejected
+
+
 
 
 
@@ -659,6 +786,13 @@ def prepare_answer_context(
         }
         for entry in cohort_suppressed
     )
+    accepted, supplemental_rejected = apply_supplemental_evidence_policy(
+        accepted,
+        plan,
+        boundary,
+        rules,
+    )
+    rejected.extend(supplemental_rejected)
     exact_entries = [
         entry
         for entry in accepted
@@ -750,6 +884,24 @@ def prepare_answer_context(
                 "role": (
                     "core" if entry_is_core(entry) else "supporting"
                 ),
+                "answer_eligibility": candidate.get(
+                    "answer_eligibility", "primary"
+                ),
+                "evidence_roles": candidate.get(
+                    "evidence_roles", ["context"]
+                ),
+                "confidence_ceiling": (
+                    "conditional_medium"
+                    if candidate.get("answer_eligibility")
+                    == "supplemental"
+                    else "source_default"
+                ),
+                "metadata_title_trust": candidate.get(
+                    "metadata_title_trust", "not_applicable"
+                ),
+                "runtime_evidence_mode": candidate.get(
+                    "runtime_evidence_mode", "full_transcript"
+                ),
                 "video_id": entry["video_id"],
                 "evidence_id": evidence["evidence"]["evidence_id"],
                 "source_type": evidence["evidence"]["source_type"],
@@ -793,6 +945,9 @@ def prepare_answer_context(
                 "why_retrieved": candidate["why_retrieved"],
                 "teaching_note": evidence["teaching_note"],
                 "transcript_evidence": evidence["transcript_evidence"],
+                "bounded_note_evidence": evidence.get(
+                    "bounded_note_evidence", []
+                ),
                 "source_content_is_untrusted_data": True,
             }
         )
@@ -909,6 +1064,8 @@ def prepare_answer_context(
                 "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
                 "逐项执行 answer_turn_contract：正文承认每条 resolved_clarifications，不得重复询问 resolved_question_ids_must_not_be_reasked，并逐条提出 pending_clarifications；本轮引用只能来自契约绑定的最新 evidence_state。",
                 "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；answer_visible_video_labels 是回答全局引用白名单。",
+                "answer_eligibility=primary 的证据优先；supplemental 只可补足主证据未覆盖的概念、纠错、训练、装备、条件或反例，不能单独扩张为普遍结论。",
+                "metadata_title_trust=limited 时标题只用于弱召回，不能作为技术结论证据；只能引用 bounded_note_evidence、transcript_evidence 或 teaching_note 中实际命中的时间戳窗口。",
                 "逐项完成 completeness_contract；must_answer、conditional 和 unresolved 项都不得静默省略。",
             ],
             "feedback_prompt": feedback_module.build_feedback_hint(

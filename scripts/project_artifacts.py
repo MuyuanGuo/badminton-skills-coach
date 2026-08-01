@@ -8,6 +8,7 @@ import tempfile
 from contextlib import contextmanager
 from pathlib import Path
 
+from evidence_admission import validate_answer_evidence_fields
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,6 +24,10 @@ SKILL_REFERENCE_PATHS = (
     (
         Path("data/knowledge/retrieval_index.json"),
         Path("skills/liuhui-badminton-coach/references/retrieval-index.json"),
+    ),
+    (
+        Path("data/knowledge/evidence_graph.json"),
+        Path("skills/liuhui-badminton-coach/references/evidence-graph.json"),
     ),
     (
         Path("config/retrieval_rules.json"),
@@ -183,6 +188,12 @@ def validate_evidence_records(records, label="Knowledge base"):
                 raise ArtifactConsistencyError(
                     f"{label} Bilibili evidence {evidence_id!r} is not canonical"
                 )
+        try:
+            validate_answer_evidence_fields(record)
+        except ValueError as error:
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has invalid answer admission: {error}"
+            ) from error
         evidence_ids.append(evidence_id)
     if len(evidence_ids) != len(set(evidence_ids)):
         raise ArtifactConsistencyError(f"{label} contains duplicate evidence IDs")

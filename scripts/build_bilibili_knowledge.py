@@ -32,6 +32,11 @@ from bilibili_storage import (
     index_exact_transcript_candidates,
     portable_transcript_reference,
 )
+from evidence_admission import (
+    answer_admission,
+    infer_evidence_roles,
+    split_transcript_issues,
+)
 from project_artifacts import atomic_write_text
 
 
@@ -749,6 +754,12 @@ def assess_bilibili_transcript(
         issues.extend(title_content["issues"])
     result["issues"] = sorted(set(issues))
     result["passed"] = not result["issues"]
+    advisory_issues, blocking_issues = split_transcript_issues(
+        result["issues"]
+    )
+    result["advisory_issues"] = advisory_issues
+    result["blocking_issues"] = blocking_issues
+    result["evidence_passed"] = not blocking_issues
     return result
 
 
@@ -922,37 +933,42 @@ def build_record(
         ),
     )
     origin_verification = assess_origin_verification(item)
-    automatic_ready = (
-        origin_verification["passed"]
-        and transcript_quality["passed"]
-        and source_content_safety["passed"]
-        and automatic["quality"]["passed"]
-    )
     duplicates = duplicate_candidates(
         safe_segments,
         float(transcript.get("duration") or 0),
         duplicate_index,
     )
-    # Unattended Bilibili runs fail closed. Low-quality ASR is quarantined as
-    # low-value evidence instead of creating a human-review backlog.
-    status = "ready" if automatic_ready and not duplicates else "low_value"
-    confidence = "cross_platform_duplicate" if duplicates else (
-        "medium" if automatic_ready else "low"
+    admission = answer_admission(
+        origin_passed=origin_verification["passed"],
+        transcript_issues=transcript_quality.get("issues", []),
+        source_content_safe=source_content_safety["passed"],
+        automatic_evidence_passed=automatic["quality"]["passed"],
+        duplicate=bool(duplicates),
+    )
+    status = (
+        "ready"
+        if admission["answer_evidence_eligible"]
+        else "low_value"
+    )
+    confidence = (
+        "cross_platform_duplicate"
+        if duplicates
+        else (
+            "medium"
+            if admission["answer_eligibility"] == "primary"
+            else (
+                "supplemental_transcript"
+                if admission["answer_eligibility"] == "supplemental"
+                else "low"
+            )
+        )
     )
     bvid = item["video_id"]
     canonical_url = f"https://www.bilibili.com/video/{bvid}/"
-    if duplicates:
-        disposition = "duplicate"
-    elif not origin_verification["passed"]:
-        disposition = "quarantined_origin_verification"
-    elif not source_content_safety["passed"]:
-        disposition = "quarantined_source_content_safety"
-    elif not transcript_quality["passed"]:
-        disposition = "quarantined_transcript_or_title_quality"
-    elif not automatic["quality"]["passed"]:
-        disposition = "quarantined_automatic_evidence_quality"
-    else:
-        disposition = "quality_gate_passed"
+    disposition = admission["disposition"]
+    evidence_roles = infer_evidence_roles(
+        enriched["category"], retrieval_title, automatic["note"]
+    )
     record = {
         "video_id": evidence_id,
         "evidence_id": evidence_id,
@@ -974,6 +990,14 @@ def build_record(
         "duration_seconds": round(float(transcript.get("duration") or 0), 1),
         "processing_status": status,
         "confidence": confidence,
+        "answer_eligibility": admission["answer_eligibility"],
+        "evidence_roles": evidence_roles,
+        "metadata_title_trust": admission["metadata_title_trust"],
+        "runtime_evidence_mode": (
+            "full_transcript"
+            if admission["answer_evidence_eligible"]
+            else "quarantined"
+        ),
         "quality_recipe_mode": (
             "legacy_metricless_exception"
             if transcript_quality.get("legacy_metricless_exception")
@@ -996,7 +1020,12 @@ def build_record(
         },
         "automatic_admission": {
             "disposition": disposition,
-            "answer_evidence_eligible": status == "ready",
+            "answer_evidence_eligible": admission[
+                "answer_evidence_eligible"
+            ],
+            "answer_eligibility": admission["answer_eligibility"],
+            "advisory_issues": admission["advisory_issues"],
+            "blocking_issues": admission["blocking_issues"],
             "rules_version": rules["version"],
         },
         "classification": {
@@ -1012,7 +1041,7 @@ def build_record(
         "teaching_note": automatic["note"],
         "transcript_segments": (
             runtime_transcript_segments(safe_segments, rules)
-            if status == "ready"
+            if admission["answer_evidence_eligible"]
             else []
         ),
     }
@@ -1020,9 +1049,13 @@ def build_record(
         record["teaching_note"]["note"] = (
             "与现有已接纳证据高度重复；保留来源台账但不进入回答证据池。"
         )
-    elif not automatic_ready:
+    elif admission["answer_eligibility"] == "none":
         record["teaching_note"]["note"] = (
             "自动证据或来源文本安全门槛未通过；已隔离，不进入回答证据池。"
+        )
+    elif admission["answer_eligibility"] == "supplemental":
+        record["teaching_note"]["note"] = (
+            "转写教学证据通过，但标题与转写的词面一致性有限；仅在主证据覆盖不足或需要补充条件、纠错、训练与反例时使用。"
         )
     return record
 
@@ -1087,6 +1120,10 @@ def build_transcription_quarantine_record(item, rules):
         ),
         "processing_status": "low_value",
         "confidence": "low",
+        "answer_eligibility": "none",
+        "evidence_roles": ["context"],
+        "metadata_title_trust": "unverified",
+        "runtime_evidence_mode": "quarantined",
         "quality_recipe_mode": "missing_transcript",
         "release_cohort": release_cohort,
         "retrieval_cohort": release_cohort,
@@ -1105,6 +1142,9 @@ def build_transcription_quarantine_record(item, rules):
         "automatic_admission": {
             "disposition": "quarantined_transcription_retry_exhausted",
             "answer_evidence_eligible": False,
+            "answer_eligibility": "none",
+            "advisory_issues": [],
+            "blocking_issues": ["transcription_retry_exhausted"],
             "rules_version": rules["version"],
         },
         "classification": {
@@ -1179,7 +1219,7 @@ def build_knowledge(
     status_counts = Counter(item["processing_status"] for item in records)
     return {
         "version": 1,
-        "evidence_schema_version": 1,
+        "evidence_schema_version": 2,
         "scope": "用户确认技术合集及经来源核验的大G羽毛球B站教学视频",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "quality_rules_version": rules["version"],
@@ -1187,6 +1227,29 @@ def build_knowledge(
         "knowledge_counts": {
             "videos": len(records),
             **dict(status_counts),
+            "primary": sum(
+                item.get("answer_eligibility") == "primary"
+                for item in records
+            ),
+            "supplemental": sum(
+                item.get("answer_eligibility") == "supplemental"
+                for item in records
+            ),
+            "answer_ineligible": sum(
+                item.get("answer_eligibility") == "none"
+                for item in records
+            ),
+            "full_transcript_ready": sum(
+                item.get("processing_status") == "ready"
+                and item.get("runtime_evidence_mode") == "full_transcript"
+                for item in records
+            ),
+            "bounded_note_ready": sum(
+                item.get("processing_status") == "ready"
+                and item.get("runtime_evidence_mode")
+                == "bounded_note_windows"
+                for item in records
+            ),
             "transcript_segment_videos": sum(
                 bool(item["transcript_segments"]) for item in records
             ),

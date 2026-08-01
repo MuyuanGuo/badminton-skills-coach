@@ -70,6 +70,16 @@ def compact_candidate(candidate):
         "retrieval_cohort": candidate.get(
             "retrieval_cohort", "stable_baseline"
         ),
+        "answer_eligibility": candidate.get(
+            "answer_eligibility", "primary"
+        ),
+        "evidence_roles": candidate.get("evidence_roles", ["context"]),
+        "metadata_title_trust": candidate.get(
+            "metadata_title_trust", "not_applicable"
+        ),
+        "runtime_evidence_mode": candidate.get(
+            "runtime_evidence_mode", "full_transcript"
+        ),
         "retrieval_channels": candidate.get("retrieval_channels", []),
         "matched_query_concepts": candidate["matched_query_concepts"],
         "matched_structured_query_concepts": candidate.get(
@@ -162,6 +172,53 @@ def compact_teaching_note(note):
     for item in evidence:
         item["roles"].sort()
     return {"summary": summary, "evidence": evidence}
+
+def rank_bounded_note_evidence(evidence, query, expansion, limit=4):
+    """Rank committed timestamped note windows without treating titles as proof."""
+
+    if not query.strip() or limit <= 0:
+        return []
+    query_normalized = normalize(query)
+    query_grams = character_grams(query)
+    term_weights = expansion.get("term_weights", {}) if expansion else {}
+    scored = []
+    for item in evidence:
+        text_value = str(item.get("text") or "")
+        normalized_value = normalize(text_value)
+        if not normalized_value:
+            continue
+        matched_terms = sorted(
+            term
+            for term in term_weights
+            if normalize(term) and normalize(term) in normalized_value
+        )
+        shared_grams = query_grams & character_grams(text_value)
+        gram_coverage = len(shared_grams) / max(1, len(query_grams))
+        exact_match = bool(
+            query_normalized and query_normalized in normalized_value
+        )
+        if not exact_match and not matched_terms and len(shared_grams) < 2:
+            continue
+        scored.append(
+            {
+                "score": round(
+                    (100.0 if exact_match else 0.0)
+                    + sum(term_weights[term] for term in matched_terms)
+                    + gram_coverage * 25.0,
+                    4,
+                ),
+                "timestamp": item.get("timestamp"),
+                "text": text_value,
+                "roles": item.get("roles", []),
+                "matched_terms": matched_terms,
+                "query_ngram_coverage": round(gram_coverage, 4),
+                "exact_query_match": exact_match,
+            }
+        )
+    scored.sort(
+        key=lambda item: (-item["score"], item.get("timestamp") or "", item["text"])
+    )
+    return scored[:limit]
 
 def rank_transcript_evidence(
     video,

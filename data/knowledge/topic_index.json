@@ -4,19 +4,19 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-01T05:31:36.156259+00:00",
+  "source_updated_at": "2026-08-01T07:10:29.448460+00:00",
   "video_count": 1014,
-  "indexable_video_count": 779,
-  "assigned_video_count": 779,
+  "indexable_video_count": 946,
+  "assigned_video_count": 946,
   "unassigned_video_ids": [],
-  "fallback_assigned_video_count": 139,
-  "multi_topic_video_count": 382,
+  "fallback_assigned_video_count": 176,
+  "multi_topic_video_count": 451,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 339,
+      "video_count": 423,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -30,8 +30,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 96,
-          "ready_count": 96,
+          "video_count": 131,
+          "ready_count": 131,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1ZbcUzDEd6",
@@ -129,7 +129,42 @@
             "7141570854437063977",
             "bilibili:BV12Z4y1n7b4",
             "7492357671853526329",
-            "bilibili:BV1g8V8zHE29"
+            "bilibili:BV1g8V8zHE29",
+            "bilibili:BV1JpLUzdEcA",
+            "bilibili:BV15TZ5YmEbk",
+            "bilibili:BV1d7Y7z6Ecu",
+            "bilibili:BV1Kn5v62Ez7",
+            "bilibili:BV1xXLUzKELN",
+            "bilibili:BV1ic411m7jF",
+            "bilibili:BV1QqdAY6Epa",
+            "bilibili:BV1jHsiz3EtD",
+            "bilibili:BV19zSoYjESR",
+            "bilibili:BV1TK4y1B7XQ",
+            "bilibili:BV1AJQAYEE4T",
+            "bilibili:BV1JP411y7j8",
+            "bilibili:BV1s86SB7EDk",
+            "bilibili:BV1zNmJBqEBq",
+            "bilibili:BV1dfQxBbEsP",
+            "bilibili:BV1kftBzeEDc",
+            "bilibili:BV1mS421X7sN",
+            "bilibili:BV12V411g7dx",
+            "bilibili:BV1CS42197Qo",
+            "bilibili:BV1iX2wBmEex",
+            "bilibili:BV1RV411Q7rL",
+            "bilibili:BV1Vi421r7gW",
+            "bilibili:BV19C4y1S7z2",
+            "bilibili:BV128EwzLE7H",
+            "bilibili:BV1wZqrBLET2",
+            "bilibili:BV1oC4y1i7Bk",
+            "bilibili:BV1fJdZY6EMy",
+            "bilibili:BV1EzU3YdEYs",
+            "bilibili:BV1wzisB8E7k",
+            "bilibili:BV1Eb421J7E8",
+            "bilibili:BV1tC4y1C77U",
+            "bilibili:BV1PuCVY4EvH",
+            "bilibili:BV1KqkeB5E5p",
+            "bilibili:BV14N411k7Uk",
+            "bilibili:BV1f38gzSEyL"
           ],
           "representative_videos": [
             {
@@ -139,6 +174,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "让反手高远爆炸的秘诀！正确的反手框架加上神仙操作！学员想学反手杀！先把反手高远打透",
               "score": 54,
               "match_basis": {
@@ -155,6 +197,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手高远球从1到2进阶教学！业余羽毛球高手发力进阶细节纠错提升！反动反手高远才是实战中需要的",
               "score": 44,
               "match_basis": {
@@ -171,6 +220,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "高远球如何轻松打到底线？深度理解越想发力越没有！羽毛球正反手高远球示范",
               "score": 43,
               "match_basis": {
@@ -187,6 +243,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球反手高远球教学！从0到1 (1)：理论篇！ ！理论加实践学动作更快",
               "score": 42,
               "match_basis": {
@@ -203,6 +266,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "业余反手高远球爆改教学！反手高远击球点架拍挥拍技巧！没发错啊",
               "score": 39,
               "match_basis": {
@@ -225,8 +295,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 152,
-          "ready_count": 152,
+          "video_count": 167,
+          "ready_count": 167,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1Dh4y1h7vW",
@@ -380,7 +450,22 @@
             "7229889111706848544",
             "7138604160051612969",
             "7606560547489149691",
-            "7174229898238676228"
+            "7174229898238676228",
+            "bilibili:BV1CPWtzoEVT",
+            "bilibili:BV13U411S7AM",
+            "bilibili:BV14F4m137TN",
+            "bilibili:BV1pAzzYQERY",
+            "bilibili:BV1694y1E7bg",
+            "bilibili:BV19C4y1S7z2",
+            "bilibili:BV1EM4m1a7of",
+            "bilibili:BV1bcKoz6EoB",
+            "bilibili:BV1VpY7zTE3H",
+            "bilibili:BV1di421S7L3",
+            "bilibili:BV1gw411N772",
+            "bilibili:BV1PCp9zAEFy",
+            "bilibili:BV1PcqPYJErm",
+            "bilibili:BV1uqtGe5Enw",
+            "bilibili:BV1fJdZY6EMy"
           ],
           "representative_videos": [
             {
@@ -390,6 +475,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "杀球杀不好可能是因为你没搞懂什么是杀球？ 正确的杀球概念 看懂后再去试试杀球 猛一倍不止",
               "score": 59,
               "match_basis": {
@@ -406,6 +499,11 @@
               "category": "后场技术",
               "confidence": "curated",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "快速突击中的杀球落点与身体姿态",
               "score": 42,
               "match_basis": {
@@ -422,6 +520,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "principle"
+              ],
               "topic": "杀球怎么压球？杀球压不下去杀不尖问题细节纠错！不止杀球。还有过渡勾球等",
               "score": 40,
               "match_basis": {
@@ -438,6 +543,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "杀球下网根本原因！业余杀球问题解决方案！杀下网",
               "score": 35,
               "match_basis": {
@@ -454,6 +566,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球头顶点杀教学！点杀靠手腕吗？点杀发力动作纠错！教练示范！结尾有互动花絮",
               "score": 35,
               "match_basis": {
@@ -483,8 +602,8 @@
             "发力"
           ],
           "is_fallback": false,
-          "video_count": 98,
-          "ready_count": 98,
+          "video_count": 109,
+          "ready_count": 109,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7589749293205363633",
@@ -584,7 +703,18 @@
             "bilibili:BV1a5zgYQESp",
             "bilibili:BV17uxLzXEqc",
             "bilibili:BV1LCaAzYEJm",
-            "bilibili:BV1WKStY7E8w"
+            "bilibili:BV1WKStY7E8w",
+            "bilibili:BV1RV411Q7rL",
+            "bilibili:BV1uULEz4E9M",
+            "bilibili:BV1Km411D7aq",
+            "bilibili:BV1dfQxBbEsP",
+            "bilibili:BV1tC4y1C77U",
+            "bilibili:BV1xdLEzQERY",
+            "bilibili:BV1szHVzSELW",
+            "bilibili:BV1QqdAY6Epa",
+            "bilibili:BV1Dm421n78v",
+            "bilibili:BV1mS421X7sN",
+            "bilibili:BV1Dr421T7FE"
           ],
           "representative_videos": [
             {
@@ -594,6 +724,11 @@
               "category": "后场技术",
               "confidence": "curated",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "equipment",
+                "mechanism"
+              ],
               "topic": "来球快速时的后场架拍选择",
               "score": 58,
               "match_basis": {
@@ -610,6 +745,15 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "业余最优架拍方式！羽毛球重杀框架和快杀框架！三种后场框架优缺点和发力方式",
               "score": 42,
               "match_basis": {
@@ -626,6 +770,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "爆发力框架怎么做？ 快速出框架意义太大了！打羽毛球有了框架就是专业",
               "score": 40,
               "match_basis": {
@@ -642,6 +793,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "最适合业余球友的架拍是哪种？！霸王杀架拍和标准架拍！一个视频解决90%新手架拍问题",
               "score": 37,
               "match_basis": {
@@ -658,6 +815,12 @@
               "category": "后场技术",
               "confidence": "curated",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "equipment",
+                "mechanism",
+                "practice"
+              ],
               "topic": "被动后场高远球的引拍、击球点与身体姿态",
               "score": 33,
               "match_basis": {
@@ -679,8 +842,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 23,
-          "ready_count": 23,
+          "video_count": 47,
+          "ready_count": 47,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1iF411k7R2",
@@ -705,7 +868,31 @@
             "bilibili:BV1S1vkBsEab",
             "bilibili:BV16G411B7fc",
             "7055130343476710667",
-            "bilibili:BV1tM4y1B7z8"
+            "bilibili:BV1tM4y1B7z8",
+            "bilibili:BV1Q2d8YEEcg",
+            "bilibili:BV1wzisB8E7k",
+            "bilibili:BV16wZEYqEta",
+            "bilibili:BV1XaCmYBEo7",
+            "bilibili:BV1uULEz4E9M",
+            "bilibili:BV1LzAae7EgY",
+            "bilibili:BV1VwiEBhE2x",
+            "bilibili:BV14eBTBoExK",
+            "bilibili:BV1DByrBCEqF",
+            "bilibili:BV1Hz4y1A7XQ",
+            "bilibili:BV1e4421S76x",
+            "bilibili:BV1PcqPYJErm",
+            "bilibili:BV13f5EzdEN4",
+            "bilibili:BV1xdLEzQERY",
+            "bilibili:BV1qZ421u7C6",
+            "bilibili:BV1EM4m1a7of",
+            "bilibili:BV1Xx421Z7R8",
+            "bilibili:BV1QS42197Dd",
+            "bilibili:BV1VfEszRECd",
+            "bilibili:BV1YVkMYsERR",
+            "bilibili:BV1QC4y1R7jp",
+            "bilibili:BV12C4benEDo",
+            "bilibili:BV1Cj411n7zV",
+            "bilibili:BV1LfQxB8EQV"
           ],
           "representative_videos": [
             {
@@ -715,6 +902,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "劈吊球 来啦！ 轻吊劈吊重劈的关键技巧！看不懂的多看几遍 别再错过十亿了",
               "score": 29,
               "match_basis": {
@@ -731,6 +926,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "后场滑拍吊球进阶教学！爆改球友 羽毛球滑板吊球加半侧身闪动发力",
               "score": 27,
               "match_basis": {
@@ -747,6 +949,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "致命劈吊教学！羽毛球高阶吊球必学项！好用是真好用啊",
               "score": 26,
               "match_basis": {
@@ -763,6 +973,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "劈吊球 ！ 重劈",
               "score": 25,
               "match_basis": {
@@ -779,6 +997,13 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打软压教学！如何利用软压增加自身连贯！还能破高远球哦",
               "score": 20,
               "match_basis": {
@@ -804,8 +1029,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 36,
+          "ready_count": 36,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1FB4y1Z7cD",
@@ -834,7 +1059,16 @@
             "bilibili:BV1byKAewE6d",
             "bilibili:BV1jdeGzAEtL",
             "bilibili:BV1YR5EzbEv9",
-            "7344186576013905187"
+            "7344186576013905187",
+            "bilibili:BV1szHVzSELW",
+            "bilibili:BV1BYftYcEuX",
+            "bilibili:BV1VpY7zTE3H",
+            "bilibili:BV1qnYyzpEdf",
+            "bilibili:BV1KQ4y137en",
+            "bilibili:BV1oNsbebEgo",
+            "bilibili:BV1nMSZYtET7",
+            "bilibili:BV1wn32z1Ezk",
+            "bilibili:BV1faFoe7EXF"
           ],
           "representative_videos": [
             {
@@ -844,6 +1078,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正手被动过渡球【一】 实战过渡球这样打能直接得分 别再打又高又慢的过渡球拉",
               "score": 35,
               "match_basis": {
@@ -860,6 +1101,15 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "反手过渡秘籍！成人班小姐姐从0-1学反手过渡球全程纠错",
               "score": 27,
               "match_basis": {
@@ -876,6 +1126,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "如何让反手过渡球打出球速？ 真正实战用的反手过渡教学(第一部分)反手击球点",
               "score": 27,
               "match_basis": {
@@ -892,6 +1150,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球反手过渡球 ！反手握拍 动作 位置 原理一次讲清楚！只需18分钟包教包会",
               "score": 22,
               "match_basis": {
@@ -908,6 +1173,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "【进阶】正手过渡球步法教学！羽毛球单打被动转主动秘诀！很难得的单打步法课！进阶必看",
               "score": 19,
               "match_basis": {
@@ -932,8 +1204,8 @@
             "反拍"
           ],
           "is_fallback": false,
-          "video_count": 29,
-          "ready_count": 29,
+          "video_count": 41,
+          "ready_count": 41,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1ZbcUzDEd6",
@@ -964,7 +1236,19 @@
             "bilibili:BV19wXyB5E8G",
             "7546109410041908538",
             "7276646497377176872",
-            "7202800263588105510"
+            "7202800263588105510",
+            "bilibili:BV1JpLUzdEcA",
+            "bilibili:BV15TZ5YmEbk",
+            "bilibili:BV1d7Y7z6Ecu",
+            "bilibili:BV1Kn5v62Ez7",
+            "bilibili:BV1xXLUzKELN",
+            "bilibili:BV19zSoYjESR",
+            "bilibili:BV1jHsiz3EtD",
+            "bilibili:BV1QqdAY6Epa",
+            "bilibili:BV1AJQAYEE4T",
+            "bilibili:BV1DZ421J7AY",
+            "bilibili:BV1s86SB7EDk",
+            "bilibili:BV1zNmJBqEBq"
           ],
           "representative_videos": [
             {
@@ -974,6 +1258,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "让反手高远爆炸的秘诀！正确的反手框架加上神仙操作！学员想学反手杀！先把反手高远打透",
               "score": 31,
               "match_basis": {
@@ -990,6 +1281,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "业余反手高远球爆改教学！反手高远击球点架拍挥拍技巧！没发错啊",
               "score": 19,
               "match_basis": {
@@ -1006,6 +1304,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手高远球从1到2进阶教学！业余羽毛球高手发力进阶细节纠错提升！反动反手高远才是实战中需要的",
               "score": 19,
               "match_basis": {
@@ -1022,6 +1327,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球反手高远球教学！从0到1 (1)：理论篇！ ！理论加实践学动作更快",
               "score": 19,
               "match_basis": {
@@ -1038,6 +1350,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手高远球是怎么发力的？ 羽毛球发力的关键技巧 正手反手杀球抽球核心动作都是相同的 2023.4直播",
               "score": 18,
               "match_basis": {
@@ -1054,8 +1373,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 15,
+          "ready_count": 15,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1QY6qBdEBt",
@@ -1069,7 +1388,10 @@
             "bilibili:BV1jGJhz5EwL",
             "bilibili:BV1EjsizyEEz",
             "7418417650264558848",
-            "7153445193713290511"
+            "7153445193713290511",
+            "bilibili:BV1ip4y1R7p9",
+            "bilibili:BV1WS421o7rx",
+            "bilibili:BV1ZuBQYGEN9"
           ],
           "representative_videos": [
             {
@@ -1079,6 +1401,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "【进阶】业余跳杀爆改双脚跳杀细节教学！进阶必看！又是醍醐灌顶的一期",
               "score": 0,
               "match_basis": {
@@ -1095,6 +1424,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "专业队羽毛球双脚跳杀示范！230斤跳杀欢乐花絮",
               "score": 0,
               "match_basis": {
@@ -1111,6 +1446,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "业余学跳杀进阶版教学！把转跳改成卷腹你的跳杀就成了！业余学这种又快又轻松",
               "score": 0,
               "match_basis": {
@@ -1127,6 +1469,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "业余快速正确架拍的方法！快速检查架拍对错的技巧！业余别再用奇奇怪怪的架拍啦",
               "score": 0,
               "match_basis": {
@@ -1143,6 +1491,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "业余球友跳杀进阶1-2！双脚跳杀如何获得更优美的屈腿动作！唉！会者不难哦",
               "score": 0,
               "match_basis": {
@@ -1160,7 +1516,7 @@
       "name": "网前技术",
       "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 80,
+      "video_count": 94,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -1171,8 +1527,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 15,
+          "ready_count": 15,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7509355373729762619",
@@ -1187,7 +1543,9 @@
             "bilibili:BV1mw4m12783",
             "7072915842605878528",
             "7172742523096517927",
-            "7195014413932367116"
+            "7195014413932367116",
+            "bilibili:BV1EsZbYaESt",
+            "bilibili:BV19Q4y1w7oH"
           ],
           "representative_videos": [
             {
@@ -1197,6 +1555,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "principle"
+              ],
               "topic": "滚网搓球 双打网前有人看守时有奇效",
               "score": 23,
               "match_basis": {
@@ -1213,6 +1577,15 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "平搓远网 平搓可以根据情况加力减力",
               "score": 22,
               "match_basis": {
@@ -1229,6 +1602,11 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "搓球的方向很重要",
               "score": 15,
               "match_basis": {
@@ -1245,6 +1623,10 @@
               "category": "网前技术",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
               "score": 11,
               "match_basis": {
@@ -1261,6 +1643,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "龙卷风搓球教学！羽毛球单打网前黄金技术！不可将就的必学技能",
               "score": 10,
               "match_basis": {
@@ -1281,8 +1671,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 19,
+          "ready_count": 19,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7064010057020673314",
@@ -1302,7 +1692,8 @@
             "7156785188884778275",
             "7076257912192060707",
             "7074399231259266344",
-            "7128211692743363880"
+            "7128211692743363880",
+            "bilibili:BV12V411g7dx"
           ],
           "representative_videos": [
             {
@@ -1312,6 +1703,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "身前位勾球",
               "score": 24,
               "match_basis": {
@@ -1328,6 +1725,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "principle"
+              ],
               "topic": "不是说勾球不能带过去",
               "score": 23,
               "match_basis": {
@@ -1344,6 +1748,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "反手位死角勾球教学！业余常用的被动勾球！羽毛球单双打必备往前技能",
               "score": 22,
               "match_basis": {
@@ -1360,6 +1771,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "网前正手死角勾球教学！业余常用的网前被动勾球！羽毛球单双打必备技能",
               "score": 18,
               "match_basis": {
@@ -1376,6 +1795,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "网前反手勾对角技巧！超详细的动作原理拆解教学",
               "score": 15,
               "match_basis": {
@@ -1396,8 +1822,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 24,
-          "ready_count": 24,
+          "video_count": 28,
+          "ready_count": 28,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1uD421E7Uk",
@@ -1423,7 +1849,11 @@
             "7265142606580026658",
             "bilibili:BV1Y5kMY9ELd",
             "bilibili:BV19S421Q7Mf",
-            "7195014413932367116"
+            "7195014413932367116",
+            "bilibili:BV1GF4m1E7jn",
+            "bilibili:BV1QP411x7Vd",
+            "bilibili:BV1ue41167Dg",
+            "bilibili:BV1Yx4y1f7Fe"
           ],
           "representative_videos": [
             {
@@ -1433,6 +1863,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为什么正手推球发不上力？ 无敌透彻的推球发力技巧！ 你要不要吧",
               "score": 22,
               "match_basis": {
@@ -1449,6 +1887,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "小羊联动 被正手扑球如何解？羽毛球单打高端局 解九死一生的扑球方法揭秘",
               "score": 18,
               "match_basis": {
@@ -1465,6 +1912,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "摇摆球对付抢网凶狠的对手",
               "score": 15,
               "match_basis": {
@@ -1481,6 +1936,12 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "practice",
+                "principle"
+              ],
               "topic": "模拟的防守挡斜线随后抢网反击",
               "score": 12,
               "match_basis": {
@@ -1497,6 +1958,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打如何减少失误？中场篇！教你不失误的秘诀！推球抽球短发力动作示范",
               "score": 9,
               "match_basis": {
@@ -1517,8 +1986,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 9,
+          "ready_count": 9,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7524557392328461627",
@@ -1528,7 +1997,8 @@
             "7226178331408928038",
             "7063638911301520680",
             "bilibili:BV1Jz421877Z",
-            "7106697344128748835"
+            "7106697344128748835",
+            "bilibili:BV1eh4y1k7zb"
           ],
           "representative_videos": [
             {
@@ -1538,6 +2008,14 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "principle",
+                "tactics"
+              ],
               "topic": "挡网 我最近发的东西都是大家认为简单",
               "score": 13,
               "match_basis": {
@@ -1554,6 +2032,10 @@
               "category": "网前技术",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
               "score": 9,
               "match_basis": {
@@ -1570,6 +2052,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "也不要问为什么不放网",
               "score": 9,
               "match_basis": {
@@ -1586,6 +2075,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "principle",
+                "tactics"
+              ],
               "topic": "同水平对抗慎重使用。对方网前球员站中线时死活不要用😂",
               "score": 9,
               "match_basis": {
@@ -1602,6 +2098,12 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "对面挡网直接挑球就行了",
               "score": 9,
               "match_basis": {
@@ -1623,8 +2125,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 11,
+          "ready_count": 11,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1Ls421T79c",
@@ -1634,7 +2136,10 @@
             "7523163965838003514",
             "7226178331408928038",
             "7497098752897879355",
-            "bilibili:BV1ZiK6zrE3x"
+            "bilibili:BV1ZiK6zrE3x",
+            "bilibili:BV1QE4m1R7HD",
+            "bilibili:BV1RKCdYbEP4",
+            "bilibili:BV1Eb421J7E8"
           ],
           "representative_videos": [
             {
@@ -1644,6 +2149,14 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "正手网前挑球技巧！羽毛球普通挑球和超短发力立腕弹挑！学会就很省力了",
               "score": 29,
               "match_basis": {
@@ -1660,6 +2173,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "反手网前挑球技巧！羽毛球想挑的又高又到位必看",
               "score": 18,
               "match_basis": {
@@ -1676,6 +2195,12 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正手挑球 他的变化在于手的放松",
               "score": 18,
               "match_basis": {
@@ -1692,6 +2217,14 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手黄金挑球教学！不可将就的羽毛球网前技术！学就学最核心的",
               "score": 17,
               "match_basis": {
@@ -1708,6 +2241,15 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "反手挑球 嗓子哑了",
               "score": 11,
               "match_basis": {
@@ -1732,8 +2274,8 @@
             "上网"
           ],
           "is_fallback": false,
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 13,
+          "ready_count": 13,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1WV4y1v7tM",
@@ -1747,7 +2289,8 @@
             "7099644893269839144",
             "7659348110628345210",
             "7092959332047785250",
-            "7195014413932367116"
+            "7195014413932367116",
+            "bilibili:BV1Vi421r7gW"
           ],
           "representative_videos": [
             {
@@ -1757,6 +2300,13 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "什么是变速？ 怎么做手上变速和脚上的变速！附送高质量吊上网训练方法",
               "score": 15,
               "match_basis": {
@@ -1773,6 +2323,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打吊上网球路！初阶四方球拉吊训练",
               "score": 14,
               "match_basis": {
@@ -1789,6 +2348,10 @@
               "category": "步法与移动",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
               "score": 11,
               "match_basis": {
@@ -1805,6 +2368,12 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "practice",
+                "principle"
+              ],
               "topic": "s上网小飞侠“两步一冲”",
               "score": 9,
               "match_basis": {
@@ -1821,6 +2390,11 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "正手网前步法 当然还要注意左手的摆放和重心的控制",
               "score": 9,
               "match_basis": {
@@ -1837,15 +2411,17 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 5,
-          "ready_count": 5,
+          "video_count": 7,
+          "ready_count": 7,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7504391919716273468",
             "7078487171803467042",
             "7505345719160933692",
             "7054786188086955276",
-            "7129696487956647208"
+            "7129696487956647208",
+            "bilibili:BV1LSUVYoEhr",
+            "bilibili:BV1GtNoeSEJk"
           ],
           "representative_videos": [
             {
@@ -1855,6 +2431,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "双打网前意识 双打只要能让球往下飞",
               "score": 0,
               "match_basis": {
@@ -1871,6 +2453,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "practice",
+                "principle"
+              ],
               "topic": "总之球必须向我们飞来才有练的价值。不需要网",
               "score": 0,
               "match_basis": {
@@ -1887,6 +2475,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "网前摸摸术 双打最厉害的就是让球向下飞",
               "score": 0,
               "match_basis": {
@@ -1903,6 +2498,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "网前近网高位",
               "score": 0,
               "match_basis": {
@@ -1919,6 +2521,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "胳膊够着打满足不了直线必须有推送动作的条件",
               "score": 0,
               "match_basis": {
@@ -1936,7 +2544,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 48,
+      "video_count": 53,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -1949,8 +2557,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 7,
-          "ready_count": 7,
+          "video_count": 8,
+          "ready_count": 8,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7667841485241148145",
@@ -1959,7 +2567,8 @@
             "7652440366436945017",
             "7205399670959459623",
             "7506736569824726332",
-            "7663523942439940453"
+            "7663523942439940453",
+            "bilibili:BV1du4y1B7wa"
           ],
           "representative_videos": [
             {
@@ -1969,6 +2578,13 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "8166 抽挡细节 会了抽挡动作",
               "score": 18,
               "match_basis": {
@@ -1985,6 +2601,13 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "principle"
+              ],
               "topic": "羽毛球万能平抽挡教学！职业级抽档握拍细节！进阶必学 平抽档直接进入专业级",
               "score": 18,
               "match_basis": {
@@ -2001,6 +2624,10 @@
               "category": "中前场与抽挡",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "mechanism"
+              ],
               "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
               "score": 15,
               "match_basis": {
@@ -2017,6 +2644,14 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "高速对抗步法 小姐姐是两省冠军🏆",
               "score": 15,
               "match_basis": {
@@ -2033,6 +2668,10 @@
               "category": "双打战术",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "tactics"
+              ],
               "topic": "压抽才是双打的主旋律，没人一上来就挑给你",
               "score": 9,
               "match_basis": {
@@ -2054,8 +2693,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 36,
-          "ready_count": 36,
+          "video_count": 40,
+          "ready_count": 40,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV18V3Ez2ECs",
@@ -2093,7 +2732,11 @@
             "7215787369381858599",
             "7422121561559272739",
             "7127470220309957923",
-            "7647839024535507897"
+            "7647839024535507897",
+            "bilibili:BV1bcKoz6EoB",
+            "bilibili:BV1694y1E7bg",
+            "bilibili:BV1k2gazqEZC",
+            "bilibili:BV128EwzLE7H"
           ],
           "representative_videos": [
             {
@@ -2103,6 +2746,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "反手接杀怎么握拍？大拇指顶在哪？羽毛球单打双打接杀常见握拍方法",
               "score": 31,
               "match_basis": {
@@ -2119,6 +2770,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "接杀球从0到1完整版教学！学就学最牛逼的接杀顶后场！防守小白线下版教学",
               "score": 25,
               "match_basis": {
@@ -2135,6 +2793,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "重杀怎么接？ 重杀接杀防守技巧 如何快速做出接杀动作",
               "score": 23,
               "match_basis": {
@@ -2151,6 +2815,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "单打高端局 接杀变线教学！圈内网红小羊做客直播 示范羽毛球单打进阶接杀防守变线契机",
               "score": 22,
               "match_basis": {
@@ -2167,6 +2839,13 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打接杀教学！单打防守动作纠错完整版！小白从0到1！多处细节纠正",
               "score": 21,
               "match_basis": {
@@ -2205,6 +2884,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打封网何时举拍？！花絮——1拍20万赞的球！羽毛球双打封网举拍标准示范！花絮真的笑死了",
               "score": 21,
               "match_basis": {
@@ -2221,6 +2907,15 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球双打封网教学！黄雅琼正反手封网技巧揭秘！12分钟极限干货",
               "score": 18,
               "match_basis": {
@@ -2237,6 +2932,14 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "压迫位封网 祝大家新年快乐！大年初二也不要忘记研究羽毛球啊！",
               "score": 9,
               "match_basis": {
@@ -2253,6 +2956,13 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "这种情况下是对方防守的好",
               "score": 6,
               "match_basis": {
@@ -2283,6 +2993,13 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "步法节奏 越着急跑输的越快",
               "score": 0,
               "match_basis": {
@@ -2300,7 +3017,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 77,
+      "video_count": 88,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -2312,8 +3029,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 34,
-          "ready_count": 34,
+          "video_count": 38,
+          "ready_count": 38,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1H1421Q75w",
@@ -2349,7 +3066,11 @@
             "7106697344128748835",
             "7475440958130097466",
             "bilibili:BV1kM4m167Yv",
-            "7271452082337598760"
+            "7271452082337598760",
+            "bilibili:BV1Mu411T7bE",
+            "bilibili:BV1EM4m1a7of",
+            "bilibili:BV1Em4y1g7D7",
+            "bilibili:BV1GRtfeEEnq"
           ],
           "representative_videos": [
             {
@@ -2359,6 +3080,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "打球时启动是听击球声吗？到底什么才是正确的启动时机！没有童子功基础的要仔细听了",
               "score": 48,
               "match_basis": {
@@ -2375,6 +3103,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "为什么打球时启动步做不出来？启动步快速移动的奥秘！不看又错过一个亿",
               "score": 35,
               "match_basis": {
@@ -2391,6 +3126,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "羽毛球启动步如何做到更快",
               "score": 33,
               "match_basis": {
@@ -2407,6 +3148,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "实战启动步教学！打羽毛球移动中启动的方法！最后一句特别重要",
               "score": 32,
               "match_basis": {
@@ -2423,6 +3170,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "打球时站死了总是启动不了怎么办？ 移动中的启动方法！回动即是启动",
               "score": 32,
               "match_basis": {
@@ -2445,8 +3199,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 21,
-          "ready_count": 21,
+          "video_count": 24,
+          "ready_count": 24,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7229889111706848544",
@@ -2469,7 +3223,10 @@
             "7427416335900020008",
             "bilibili:BV1EwsbeaEmo",
             "bilibili:BV1KPNxz5Epc",
-            "7531326870298873147"
+            "7531326870298873147",
+            "bilibili:BV1nMSZYtET7",
+            "bilibili:BV1Xx421Z7R8",
+            "bilibili:BV12V411g7dx"
           ],
           "representative_videos": [
             {
@@ -2479,6 +3236,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "这属于为了下一拍更好衔接的步法",
               "score": 20,
               "match_basis": {
@@ -2495,6 +3259,10 @@
               "category": "步法与移动",
               "confidence": "reviewed_transcript",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "并不是说一定要一步回位。而是体现向左回动，左脚的重要性",
               "score": 19,
               "match_basis": {
@@ -2511,6 +3279,14 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "1 白鞋白胶布2低重心步法回动3低重心步法训练",
               "score": 11,
               "match_basis": {
@@ -2527,6 +3303,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "一个小小的方向改变就可以让进攻衔接的更加流畅",
               "score": 11,
               "match_basis": {
@@ -2543,6 +3327,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "回动步法合理性 每个人的合理也不一样",
               "score": 10,
               "match_basis": {
@@ -2564,8 +3355,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 18,
+          "ready_count": 18,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1oH4y1n7s7",
@@ -2582,7 +3373,10 @@
             "7083684012513840424",
             "bilibili:BV1Ai756oEbD",
             "7567860375287303035",
-            "7343069490126540084"
+            "7343069490126540084",
+            "bilibili:BV12C4benEDo",
+            "bilibili:BV1Em4y1g7D7",
+            "bilibili:BV19Q4y1w7oH"
           ],
           "representative_videos": [
             {
@@ -2592,6 +3386,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "初学用并步or交叉步？实战步法不是你想的那样",
               "score": 24,
               "match_basis": {
@@ -2608,6 +3408,11 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "发个老库存",
               "score": 12,
               "match_basis": {
@@ -2624,6 +3429,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "头顶区马来步和倒退步启动细节！让步法快人一步的秘诀",
               "score": 12,
               "match_basis": {
@@ -2640,6 +3452,10 @@
               "category": "步法与移动",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "今天偷懒，晚上见，发个没音乐的，纯粹目的杀上网就是交叉步，",
               "score": 11,
               "match_basis": {
@@ -2656,6 +3472,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "后场球怎么做半侧身步法？ 和半侧身最搭的万能步法！别再只会用马来步了",
               "score": 11,
               "match_basis": {
@@ -2677,14 +3500,15 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7085169366005714217",
             "7280727710740139264",
             "7275536378321014051",
-            "bilibili:BV1SK411v7FG"
+            "bilibili:BV1SK411v7FG",
+            "bilibili:BV1V84y1Z7eJ"
           ],
           "representative_videos": [
             {
@@ -2694,6 +3518,14 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "1 白鞋白胶布2低重心步法回动3低重心步法训练",
               "score": 29,
               "match_basis": {
@@ -2710,6 +3542,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "后场就是刻意练的被动步法",
               "score": 9,
               "match_basis": {
@@ -2726,6 +3565,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "大家练习的时候注意安全",
               "score": 5,
               "match_basis": {
@@ -2742,12 +3589,44 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "单打实战步法重心怎么调配？ 骆建佑重心稳定的步伐秘诀！超级干货 稀缺资源",
               "score": 3,
               "match_basis": {
                 "title": 0,
                 "focus": 0,
                 "evidence": 3
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "bilibili:BV1V84y1Z7eJ",
+              "title": "鱼跃千万别学林丹 适合90%羽毛球友的鱼跃救球方式 李宗伟式鱼跃技巧",
+              "url": "https://www.bilibili.com/video/BV1V84y1Z7eJ/",
+              "category": "训练与纠错",
+              "confidence": "supplemental_note_only",
+              "processing_status": "ready",
+              "answer_eligibility": "supplemental",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
+              "topic": "鱼跃千万别学林丹 适合90%羽毛球友的鱼跃救球方式 李宗伟式鱼跃技巧",
+              "score": 9,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 0
               },
               "assignment_method": "rule_match"
             }
@@ -2764,14 +3643,15 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7567860375287303035",
             "7406541084219821312",
             "bilibili:BV1uBvfBNEV4",
-            "bilibili:BV1UBt3zPEQX"
+            "bilibili:BV1UBt3zPEQX",
+            "bilibili:BV19Q4y1w7oH"
           ],
           "representative_videos": [
             {
@@ -2781,6 +3661,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正手区前后步法（基础版） 正手区前后步法种类非常多",
               "score": 18,
               "match_basis": {
@@ -2797,6 +3684,11 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "正手网前步法 当然还要注意左手的摆放和重心的控制",
               "score": 9,
               "match_basis": {
@@ -2813,6 +3705,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "羽毛球后撤步示范！跳杀起跳方法！业余最好用的万能退后场步法！不可错过的步法课",
               "score": 9,
               "match_basis": {
@@ -2829,7 +3727,37 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "退后场步法慢怎么练？让你快后退如闪电的秘诀！羽毛球后退步法 拆分训练",
+              "score": 9,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "bilibili:BV19Q4y1w7oH",
+              "title": "退后场斜线步伐怎么跑？ 搓球后斜线退后场步法",
+              "url": "https://www.bilibili.com/video/BV19Q4y1w7oH/",
+              "category": "步法与移动",
+              "confidence": "supplemental_note_only",
+              "processing_status": "ready",
+              "answer_eligibility": "supplemental",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "safety_boundary"
+              ],
+              "topic": "退后场斜线步伐怎么跑？ 搓球后斜线退后场步法",
               "score": 9,
               "match_basis": {
                 "title": 1,
@@ -2845,8 +3773,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 14,
-          "ready_count": 14,
+          "video_count": 15,
+          "ready_count": 15,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7167546787073477900",
@@ -2862,7 +3790,8 @@
             "bilibili:BV1V76uY9EzF",
             "7491244893893938492",
             "7642648621985030138",
-            "7650602010613537265"
+            "7650602010613537265",
+            "bilibili:BV1w64y1n7YF"
           ],
           "representative_videos": [
             {
@@ -2872,6 +3801,10 @@
               "category": "步法与移动",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？",
               "score": 0,
               "match_basis": {
@@ -2888,6 +3821,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "保护身位",
               "score": 0,
               "match_basis": {
@@ -2904,6 +3843,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "关于重心转换的真相！羽毛球步法和发力调配重心的技巧",
               "score": 0,
               "match_basis": {
@@ -2920,6 +3866,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手步伐不会走？可能是你不会反手找球！ 反手步法和反手找球的方法",
               "score": 0,
               "match_basis": {
@@ -2936,6 +3889,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手网前高速步法教学！ 先动左腿和先动右腿差别这么大",
               "score": 0,
               "match_basis": {
@@ -2953,7 +3913,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 324,
+      "video_count": 378,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -2966,8 +3926,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 48,
-          "ready_count": 48,
+          "video_count": 53,
+          "ready_count": 53,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV18KqWYmEx7",
@@ -3017,7 +3977,12 @@
             "7531326870298873147",
             "bilibili:BV1Jf421Q7K7",
             "bilibili:BV1jSCsBuEER",
-            "7634016952800880570"
+            "7634016952800880570",
+            "bilibili:BV1QC4y1R7jp",
+            "bilibili:BV1AJQAYEE4T",
+            "bilibili:BV1Zy421i7nu",
+            "bilibili:BV1Gx4y1Q7Xb",
+            "bilibili:BV1PCp9zAEFy"
           ],
           "representative_videos": [
             {
@@ -3027,6 +3992,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "大发力的杀球是什么感觉？ 杀球爆发力训练方法和原理 偷偷说一下这是VIP课的内容",
               "score": 18,
               "match_basis": {
@@ -3043,6 +4016,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "提升挥速的秘诀是什么？球速、挥速、爆发力、静止框架！ 一次讲清楚",
               "score": 18,
               "match_basis": {
@@ -3059,6 +4040,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "杀球没劲一招解决！如何用3成力打出爆发鞭甩",
               "score": 18,
               "match_basis": {
@@ -3075,6 +4063,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为什么脚蹬地发力感觉没力呢？原来放轻松才能使出爆发力！打羽毛球是越想发力越没力！跳杀示范",
               "score": 14,
               "match_basis": {
@@ -3091,6 +4086,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "爆发力抽球教学！不看又错过一个亿",
               "score": 13,
               "match_basis": {
@@ -3113,8 +4115,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 51,
-          "ready_count": 51,
+          "video_count": 61,
+          "ready_count": 61,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7494729488699559225",
@@ -3167,7 +4169,17 @@
             "bilibili:BV1SU411U7fd",
             "bilibili:BV11y411H74p",
             "bilibili:BV1Rx421m7rQ",
-            "bilibili:BV1p34y1V7qa"
+            "bilibili:BV1p34y1V7qa",
+            "bilibili:BV15TZ5YmEbk",
+            "bilibili:BV1Mu411T7bE",
+            "bilibili:BV1RKCdYbEP4",
+            "bilibili:BV1QC4y1R7jp",
+            "bilibili:BV1oC4y1i7Bk",
+            "bilibili:BV13s421A7JR",
+            "bilibili:BV1cYsfeXEab",
+            "bilibili:BV1tC4y1C77U",
+            "bilibili:BV1CS42197Qo",
+            "bilibili:BV1Ua8kzxEcE"
           ],
           "representative_videos": [
             {
@@ -3177,6 +4189,12 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "principle"
+              ],
               "topic": "腰腹发力 手放好位置",
               "score": 21,
               "match_basis": {
@@ -3193,6 +4211,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "爆改球友 转髋还有问题",
               "score": 18,
               "match_basis": {
@@ -3209,6 +4235,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "学会腰腹带动后",
               "score": 14,
               "match_basis": {
@@ -3225,6 +4258,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球跳杀发力教学！小臂发力和腰腹发力哪个重要",
               "score": 14,
               "match_basis": {
@@ -3241,6 +4281,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "腰腹发力",
               "score": 14,
               "match_basis": {
@@ -3262,8 +4309,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 99,
-          "ready_count": 99,
+          "video_count": 111,
+          "ready_count": 111,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1bF6SYtEGz",
@@ -3364,7 +4411,19 @@
             "bilibili:BV15k4y1G7LM",
             "bilibili:BV1yS1AYKE54",
             "bilibili:BV1WKStY7E8w",
-            "7084422988291935523"
+            "7084422988291935523",
+            "bilibili:BV1Mj411R7fb",
+            "bilibili:BV1wZqrBLET2",
+            "bilibili:BV19C4y1S7z2",
+            "bilibili:BV1VwiEBhE2x",
+            "bilibili:BV14eBTBoExK",
+            "bilibili:BV1qZ421u7C6",
+            "bilibili:BV16wZEYqEta",
+            "bilibili:BV1uULEz4E9M",
+            "bilibili:BV1LfQxB8EQV",
+            "bilibili:BV15TZ5YmEbk",
+            "bilibili:BV1oC4y1i7Bk",
+            "bilibili:BV1Q2d8YEEcg"
           ],
           "representative_videos": [
             {
@@ -3374,6 +4433,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "后场发力手腕怎么用？如此这般 终于会用手腕了！羽毛球大发力手腕力传导的方法",
               "score": 38,
               "match_basis": {
@@ -3390,6 +4456,12 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "手腕在发力中的正确用法！羽毛球正反手发力手腕技巧",
               "score": 32,
               "match_basis": {
@@ -3406,6 +4478,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "principle"
+              ],
               "topic": "重杀手腕怎么用？三种后场高球发力模式示范对比！手腕卸力及抡大臂问题",
               "score": 28,
               "match_basis": {
@@ -3422,6 +4500,14 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "为什么内旋会切拍？两点建议改善",
               "score": 25,
               "match_basis": {
@@ -3438,6 +4524,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "00:00 / 00:47 后场发力下集",
               "score": 24,
               "match_basis": {
@@ -3459,8 +4552,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 61,
-          "ready_count": 61,
+          "video_count": 71,
+          "ready_count": 71,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1y4421F7KV",
@@ -3523,7 +4616,17 @@
             "7075515778073709824",
             "7344186576013905187",
             "bilibili:BV1QB4y1Z73X",
-            "bilibili:BV1es4y1K7PV"
+            "bilibili:BV1es4y1K7PV",
+            "bilibili:BV1szHVzSELW",
+            "bilibili:BV1jJ4m1b7Wm",
+            "bilibili:BV15TZ5YmEbk",
+            "bilibili:BV1Zx2wYdEsV",
+            "bilibili:BV19C4y1S7z2",
+            "bilibili:BV19zSoYjESR",
+            "bilibili:BV1kftBzeEDc",
+            "bilibili:BV1KqkeB5E5p",
+            "bilibili:BV1cYsfeXEab",
+            "bilibili:BV18Xt9z9EyS"
           ],
           "representative_videos": [
             {
@@ -3533,6 +4636,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "跳杀怎样有滞空感？最高点击球对吗？滞空详细教学完整版",
               "score": 21,
               "match_basis": {
@@ -3549,6 +4659,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "跳杀找不到击球点怎么办？ 找正确的击球点最快的方法！真的绝了",
               "score": 21,
               "match_basis": {
@@ -3565,6 +4681,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "注意击球点要在起跳的高点击",
               "score": 18,
               "match_basis": {
@@ -3581,6 +4705,12 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "史上最难跳杀教学！教不会水都不能喝啊",
               "score": 16,
               "match_basis": {
@@ -3597,6 +4727,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "压球新讲 就算追求贴球发力",
               "score": 15,
               "match_basis": {
@@ -3621,8 +4758,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 119,
-          "ready_count": 119,
+          "video_count": 143,
+          "ready_count": 143,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1P4DGYrE8B",
@@ -3743,7 +4880,31 @@
             "bilibili:BV1jdeGzAEtL",
             "bilibili:BV1SWQoY5Env",
             "bilibili:BV1YR5EzbEv9",
-            "bilibili:BV1z22wBQEwd"
+            "bilibili:BV1z22wBQEwd",
+            "bilibili:BV1VpDnYjEPU",
+            "bilibili:BV1EM4m1a7of",
+            "bilibili:BV1CJDQYUEGC",
+            "bilibili:BV1B99TYtEXv",
+            "bilibili:BV1faFoe7EXF",
+            "bilibili:BV1CaDqYGEis",
+            "bilibili:BV1bcKoz6EoB",
+            "bilibili:BV1fJdZY6EMy",
+            "bilibili:BV1qZ421u7C6",
+            "bilibili:BV1oC4y1i7Bk",
+            "bilibili:BV1ZD421g7x9",
+            "bilibili:BV1H64y1N7iZ",
+            "bilibili:BV1XaCmYBEo7",
+            "bilibili:BV1Q2d8YEEcg",
+            "bilibili:BV1jJ4m1b7Wm",
+            "bilibili:BV1om42137Yy",
+            "bilibili:BV13U411S7AM",
+            "bilibili:BV1Zy421i7nu",
+            "bilibili:BV1Zx2wYdEsV",
+            "bilibili:BV1xybQzLEZV",
+            "bilibili:BV1tC4y1C77U",
+            "bilibili:BV1qnYyzpEdf",
+            "bilibili:BV1xdLEzQERY",
+            "bilibili:BV1QE4m1R7HD"
           ],
           "representative_videos": [
             {
@@ -3753,6 +4914,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "甩大臂vs随摆！大臂是如何带动小臂发力的！正确的羽毛球发力核心动作怎么做",
               "score": 36,
               "match_basis": {
@@ -3769,6 +4938,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "羽毛球杀球怎么杀得快？快杀理论知识+动作示范！P.S抡大臂就不可能快",
               "score": 29,
               "match_basis": {
@@ -3785,6 +4962,15 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "不用管身高",
               "score": 27,
               "match_basis": {
@@ -3801,6 +4987,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "基础挥拍重快 由于要控制时长我剪辑的很精简",
               "score": 27,
               "match_basis": {
@@ -3817,6 +5010,13 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "principle"
+              ],
               "topic": "日常纠错反手过渡 总结",
               "score": 23,
               "match_basis": {
@@ -3833,8 +5033,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 23,
-          "ready_count": 23,
+          "video_count": 29,
+          "ready_count": 29,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1TdHZz2EG3",
@@ -3859,7 +5059,13 @@
             "7062570553936268559",
             "bilibili:BV1wG4JeDEtk",
             "bilibili:BV1jhEvz9EjL",
-            "7380562375188974888"
+            "7380562375188974888",
+            "bilibili:BV1Mm411D7VQ",
+            "bilibili:BV1Cy411B7mJ",
+            "bilibili:BV11w4m167Ui",
+            "bilibili:BV1CM4m1y7x5",
+            "bilibili:BV129XXYwELX",
+            "bilibili:BV1764y1A79d"
           ],
           "representative_videos": [
             {
@@ -3869,6 +5075,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "【羽毛球发力】慢球为什么难接？教你一个练习找到慢球节奏！不用借力一样发力",
               "score": 0,
               "match_basis": {
@@ -3885,6 +5099,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为什么新手不要学闪动发力？不仅是100%学不会的原因！循序渐进！听劝",
               "score": 0,
               "match_basis": {
@@ -3901,6 +5122,15 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "为什么越使劲越打不出去？ 正手发力关键技巧！并不是绝对力量大就能打的远",
               "score": 0,
               "match_basis": {
@@ -3917,6 +5147,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为何集中发力和大发力相悖？巧发力 vs 大发力！可能很多人看不懂",
               "score": 0,
               "match_basis": {
@@ -3933,6 +5170,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "力传导连贯发力教学！全发力不连贯传导链断了的试试改变这个细节",
               "score": 0,
               "match_basis": {
@@ -3950,7 +5194,7 @@
       "name": "握拍与拍面",
       "description": "正反手握拍、握拍转换、手指发力和拍面控制。",
       "discipline": "general",
-      "video_count": 55,
+      "video_count": 59,
       "subtopics": [
         {
           "name": "正手握拍",
@@ -3986,6 +5230,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "半拳式握拍是发力必备的握拍",
               "score": 18,
               "match_basis": {
@@ -4002,6 +5253,14 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "发力时握拍是握拳还是九字？ 正确的发力握拍应该是这样的",
               "score": 10,
               "match_basis": {
@@ -4018,6 +5277,13 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "握拍从准备握拍",
               "score": 9,
               "match_basis": {
@@ -4034,6 +5300,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "practice",
+                "principle"
+              ],
               "topic": "别在说我不发初级教学啦",
               "score": 7,
               "match_basis": {
@@ -4050,6 +5324,13 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "我知道很多人学不会握拍",
               "score": 7,
               "match_basis": {
@@ -4085,6 +5366,16 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "反手过渡球的关键技巧！ 更高级的反手握拍 不看又错过一个亿",
               "score": 9,
               "match_basis": {
@@ -4101,6 +5392,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球反手过渡球 ！反手握拍 动作 位置 原理一次讲清楚！只需18分钟包教包会",
               "score": 9,
               "match_basis": {
@@ -4117,6 +5415,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球无敌平抽从0到1的秘诀！单双打万能抽档教学完整版",
               "score": 3,
               "match_basis": {
@@ -4138,8 +5444,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 9,
+          "ready_count": 9,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7447084061371272507",
@@ -4149,7 +5455,8 @@
             "7213191190382972172",
             "7064010057020673314",
             "bilibili:BV1BFmNYNEN5",
-            "bilibili:BV1iKE3zXEMG"
+            "bilibili:BV1iKE3zXEMG",
+            "bilibili:BV1rvG4z4E8Y"
           ],
           "representative_videos": [
             {
@@ -4159,6 +5466,10 @@
               "category": "中前场与抽挡",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "mechanism"
+              ],
               "topic": "握拍微调 抽挡反手为主，尽量不做正反手转换",
               "score": 9,
               "match_basis": {
@@ -4175,6 +5486,10 @@
               "category": "握拍与基本动作",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "跳出束缚，灵活握拍",
               "score": 9,
               "match_basis": {
@@ -4191,6 +5506,14 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "什么是反手万能握拍？ 反手各种回球握拍和超厉害的快速变拍技巧",
               "score": 9,
               "match_basis": {
@@ -4207,6 +5530,12 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "principle"
+              ],
               "topic": "反手负角度勾球",
               "score": 6,
               "match_basis": {
@@ -4223,6 +5552,14 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "正常击球位置的握拍",
               "score": 6,
               "match_basis": {
@@ -4243,8 +5580,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 29,
+          "ready_count": 29,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7146762792438074665",
@@ -4273,7 +5610,9 @@
             "bilibili:BV1nJLUzZEyK",
             "bilibili:BV17eAaeDE5i",
             "bilibili:BV1jdeGzAEtL",
-            "bilibili:BV1a6421Z7LE"
+            "bilibili:BV1a6421Z7LE",
+            "bilibili:BV1DByrBCEqF",
+            "bilibili:BV1TK4y1B7XQ"
           ],
           "representative_videos": [
             {
@@ -4283,6 +5622,13 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "握拍从准备握拍",
               "score": 15,
               "match_basis": {
@@ -4299,6 +5645,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正反手过渡 先掌握核心技术",
               "score": 8,
               "match_basis": {
@@ -4315,6 +5668,12 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "principle"
+              ],
               "topic": "这个实战很行",
               "score": 8,
               "match_basis": {
@@ -4331,6 +5690,13 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "4280 多点位抽球应用 这种准备就是应对快速腹部胸口位置的准备",
               "score": 7,
               "match_basis": {
@@ -4347,6 +5713,14 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "网前切腰球怎么切？切腰动作&练习方法",
               "score": 7,
               "match_basis": {
@@ -4363,8 +5737,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 7,
-          "ready_count": 7,
+          "video_count": 8,
+          "ready_count": 8,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7078852452442836224",
@@ -4373,7 +5747,8 @@
             "bilibili:BV1TT411r7Ft",
             "bilibili:BV1ngnnzfEBD",
             "7053637734749031691",
-            "7053234542290668811"
+            "7053234542290668811",
+            "bilibili:BV1qtMqzME2Y"
           ],
           "representative_videos": [
             {
@@ -4383,6 +5758,10 @@
               "category": "握拍与基本动作",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "context"
+              ],
               "topic": "我说握拍千变万化",
               "score": 0,
               "match_basis": {
@@ -4399,6 +5778,12 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "方法一把球放到侧面",
               "score": 0,
               "match_basis": {
@@ -4415,6 +5800,11 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "深夜高级教学 张旌懿平时使用的为快速框架",
               "score": 0,
               "match_basis": {
@@ -4431,6 +5821,12 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "羽毛球反手怎么打？ ！ 羽毛球反手被动球如何处理",
               "score": 0,
               "match_basis": {
@@ -4447,6 +5843,13 @@
               "category": "握拍与基本动作",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "羽毛球发力握拍进阶教学！准备握拍和正手发力握拍的概念！高手必会啊",
               "score": 0,
               "match_basis": {
@@ -4464,7 +5867,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 42,
+      "video_count": 47,
       "subtopics": [
         {
           "name": "发小球",
@@ -4498,6 +5901,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正手发小球教学！学会这个就超过90%的业余球友了",
               "score": 12,
               "match_basis": {
@@ -4514,6 +5924,12 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "正手发小球的教学",
               "score": 12,
               "match_basis": {
@@ -4530,6 +5946,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "反手发小球太高怎么办？ 反手发贴网球的秘诀！业余初学必看！很多老鸟也不一定发的好",
               "score": 11,
               "match_basis": {
@@ -4546,6 +5970,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "郑雨发球有问题吗",
               "score": 11,
               "match_basis": {
@@ -4562,6 +5993,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "发小球进阶 大家总是关注球飞的贴不贴",
               "score": 10,
               "match_basis": {
@@ -4591,8 +6030,8 @@
             "接发"
           ],
           "is_fallback": false,
-          "video_count": 16,
-          "ready_count": 16,
+          "video_count": 17,
+          "ready_count": 17,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7483346020332522812",
@@ -4610,7 +6049,8 @@
             "7271452082337598760",
             "7113001319694224655",
             "bilibili:BV1uQ4y1H7gg",
-            "7118192644957818127"
+            "7118192644957818127",
+            "bilibili:BV1cYsfeXEab"
           ],
           "representative_videos": [
             {
@@ -4620,6 +6060,11 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle"
+              ],
               "topic": "发球变化 发球隐蔽是非常重要的",
               "score": 18,
               "match_basis": {
@@ -4636,6 +6081,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手发后场 现在的规则是不超过1.15高度就可以",
               "score": 11,
               "match_basis": {
@@ -4652,6 +6104,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "正手发高远球教学！发高球核心动作讲解示范纠错",
               "score": 10,
               "match_basis": {
@@ -4668,6 +6128,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "羽毛球正手发高远球教学！30分钟零基础加进阶！发球都发不好你还指望单打有多强",
               "score": 10,
               "match_basis": {
@@ -4684,6 +6152,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打如何防对方偷后场！顶线站再也不怕被偷了",
               "score": 9,
               "match_basis": {
@@ -4705,8 +6181,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 14,
-          "ready_count": 14,
+          "video_count": 19,
+          "ready_count": 19,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1Ac411q7eJ",
@@ -4722,7 +6198,12 @@
             "7271452082337598760",
             "bilibili:BV1BHPhzVEVb",
             "7639306481355832689",
-            "7501542236061420859"
+            "7501542236061420859",
+            "bilibili:BV14PPhzdEwu",
+            "bilibili:BV1cYsfeXEab",
+            "bilibili:BV1v142197Vt",
+            "bilibili:BV1DZ421J7AY",
+            "bilibili:BV1Pi4y1B7NB"
           ],
           "representative_videos": [
             {
@@ -4732,6 +6213,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学",
               "score": 38,
               "match_basis": {
@@ -4748,6 +6236,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "羽毛球提拉假动作接发球实战有用吗？实用好用还炫酷的双打接发！提拉是个正经羽毛球技术",
               "score": 32,
               "match_basis": {
@@ -4764,6 +6260,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打接发球教学！万金油实用球路公式",
               "score": 29,
               "match_basis": {
@@ -4780,6 +6284,12 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "羽毛球正手提拉假动作接发教学！业余接发球切腰切底线超实用技术！问题较多需耐心",
               "score": 29,
               "match_basis": {
@@ -4796,6 +6306,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球双打接发球技巧！双数区接发站位教学！双打必看含防偷秘籍",
               "score": 27,
               "match_basis": {
@@ -4838,6 +6356,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "单打发接发打法(一） 羽毛球单打单数区发接发常规打法第一部分",
               "score": 18,
               "match_basis": {
@@ -4854,6 +6380,15 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "单打发接发打法(二） 羽毛球单打单数区发接发常规打法第二部分",
               "score": 18,
               "match_basis": {
@@ -4870,6 +6405,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "超神预判！羽毛球双打发接发教学！如何从对手站位握拍来预判抓球！亨德拉网前预判秘诀",
               "score": 18,
               "match_basis": {
@@ -4886,6 +6428,12 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "双打发接发教学！挑战世界排名前100名",
               "score": 12,
               "match_basis": {
@@ -4902,6 +6450,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打发接发 永远考虑对手出球最快的位置",
               "score": 9,
               "match_basis": {
@@ -4934,6 +6489,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "单打发球 人最舒服的状态就是顺着球头发力",
               "score": 0,
               "match_basis": {
@@ -4950,6 +6513,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手的位置不同",
               "score": 0,
               "match_basis": {
@@ -4966,6 +6536,12 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "羽毛球单打单数区发几号位？发球位置如何选择简单技巧",
               "score": 0,
               "match_basis": {
@@ -4983,7 +6559,7 @@
       "name": "双打战术",
       "description": "双打轮转、防守站位、封网和攻防组织。",
       "discipline": "doubles",
-      "video_count": 30,
+      "video_count": 31,
       "subtopics": [
         {
           "name": "轮转与补位",
@@ -5021,6 +6597,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打网前一蹲起不来了怎么办？ 正确的双打轮转技巧！轮转是有信号的",
               "score": 33,
               "match_basis": {
@@ -5037,6 +6621,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "史上最细双打轮转教学！神秘网红客串",
               "score": 23,
               "match_basis": {
@@ -5053,6 +6645,15 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打实战轮转 无论训练时有多么默契",
               "score": 15,
               "match_basis": {
@@ -5069,6 +6670,11 @@
               "category": "双打战术",
               "confidence": "reviewed_transcript",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "双打抓回头：站位、轮转、握拍、锁腕和步法",
               "score": 9,
               "match_basis": {
@@ -5085,6 +6691,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "中腰球出来",
               "score": 7,
               "match_basis": {
@@ -5126,6 +6740,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打防守思路 你总会遇到你挑不起来的进攻",
               "score": 9,
               "match_basis": {
@@ -5142,6 +6763,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打防守进阶 外旋是大臂带动小臂的必然动作",
               "score": 9,
               "match_basis": {
@@ -5158,6 +6786,15 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "训练的时候没有带麦",
               "score": 6,
               "match_basis": {
@@ -5201,6 +6838,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打封网何时举拍？！花絮——1拍20万赞的球！羽毛球双打封网举拍标准示范！花絮真的笑死了",
               "score": 21,
               "match_basis": {
@@ -5217,6 +6861,15 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球双打封网教学！黄雅琼正反手封网技巧揭秘！12分钟极限干货",
               "score": 18,
               "match_basis": {
@@ -5233,6 +6886,14 @@
               "category": "中前场与抽挡",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "压迫位封网 祝大家新年快乐！大年初二也不要忘记研究羽毛球啊！",
               "score": 9,
               "match_basis": {
@@ -5249,6 +6910,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学",
               "score": 9,
               "match_basis": {
@@ -5291,6 +6959,11 @@
               "category": "双打战术",
               "confidence": "reviewed_transcript",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "双打抓回头：站位、轮转、握拍、锁腕和步法",
               "score": 10,
               "match_basis": {
@@ -5307,6 +6980,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "中腰球出来",
               "score": 9,
               "match_basis": {
@@ -5323,6 +7004,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打进攻思路 抛砖引玉",
               "score": 9,
               "match_basis": {
@@ -5367,6 +7055,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打发接发 永远考虑对手出球最快的位置",
               "score": 9,
               "match_basis": {
@@ -5383,6 +7078,12 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "双打发接发教学！挑战世界排名前100名",
               "score": 9,
               "match_basis": {
@@ -5399,6 +7100,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学",
               "score": 9,
               "match_basis": {
@@ -5415,6 +7123,15 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打接发球如何准备！不为人知的站位和握拍细节揭秘",
               "score": 9,
               "match_basis": {
@@ -5431,6 +7148,14 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球双打接发球技巧！双数区接发站位教学！双打必看含防偷秘籍",
               "score": 9,
               "match_basis": {
@@ -5447,8 +7172,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 9,
-          "ready_count": 9,
+          "video_count": 10,
+          "ready_count": 10,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7241053732916596026",
@@ -5459,7 +7184,8 @@
             "7246960976459730191",
             "bilibili:BV1cv421C7pD",
             "bilibili:BV1up421D7WJ",
-            "7498830855188942137"
+            "7498830855188942137",
+            "bilibili:BV1Li421R74W"
           ],
           "representative_videos": [
             {
@@ -5469,6 +7195,12 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "tactics"
+              ],
               "topic": "5138 说好的技术假动作比赛 你搁这玩假摔是吧？",
               "score": 0,
               "match_basis": {
@@ -5485,6 +7217,12 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打中分完注意封直线",
               "score": 0,
               "match_basis": {
@@ -5501,6 +7239,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "双打分边后注意保护封住边线平高球",
               "score": 0,
               "match_basis": {
@@ -5517,6 +7262,14 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "双打反手抽球教学！加拿大国家队退役教练现场示范抽球发力！16分钟 ！建议找个安静地慢慢看",
               "score": 0,
               "match_basis": {
@@ -5533,6 +7286,15 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "反手提拉切腰教学！正规军童子功小羊同学学花活！羽毛球双打可太有用了",
               "score": 0,
               "match_basis": {
@@ -5550,7 +7312,7 @@
       "name": "单打战术",
       "description": "单打线路、落点、节奏、攻防转换与目的性。",
       "discipline": "singles",
-      "video_count": 27,
+      "video_count": 33,
       "subtopics": [
         {
           "name": "线路与落点选择",
@@ -5568,8 +7330,8 @@
             "落点"
           ],
           "is_fallback": false,
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1XNQDYAES3",
@@ -5577,7 +7339,8 @@
             "7488280037955816762",
             "bilibili:BV1KPNxz5Epc",
             "bilibili:BV19S421Q7Mf",
-            "bilibili:BV1tSXnYyEmY"
+            "bilibili:BV1tSXnYyEmY",
+            "bilibili:BV1Xc411k7fC"
           ],
           "representative_videos": [
             {
@@ -5587,6 +7350,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打四方球为什么难？真相可能超出你的认知！你以为的拉吊和实际的拉吊",
               "score": 17,
               "match_basis": {
@@ -5603,6 +7374,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "四方球破解教学！破后场买房和超级高远球的方法！懂得",
               "score": 12,
               "match_basis": {
@@ -5619,6 +7398,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "羽球科普 近网球的出现意味着四方球的出现",
               "score": 10,
               "match_basis": {
@@ -5635,6 +7423,12 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle"
+              ],
               "topic": "四方球步法节奏教学！羽毛球高手轻松连贯的秘诀！太难得了！终于等来了小白鼠的步法问题",
               "score": 9,
               "match_basis": {
@@ -5651,6 +7445,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打吊上网球路！初阶四方球拉吊训练",
               "score": 9,
               "match_basis": {
@@ -5691,6 +7494,10 @@
               "category": "后场技术",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "tactics"
+              ],
               "topic": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
               "score": 13,
               "match_basis": {
@@ -5736,6 +7543,13 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "超神预判！羽毛球双打发接发教学！如何从对手站位握拍来预判抓球！亨德拉网前预判秘诀",
               "score": 27,
               "match_basis": {
@@ -5752,6 +7566,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "打球要有目的性",
               "score": 15,
               "match_basis": {
@@ -5768,6 +7590,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "节奏变化及目的性 虽然最后还是被干了",
               "score": 11,
               "match_basis": {
@@ -5784,6 +7614,13 @@
               "category": "网前技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "搓球 技术技巧是一方面",
               "score": 7,
               "match_basis": {
@@ -5800,6 +7637,15 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "一定先看上集",
               "score": 6,
               "match_basis": {
@@ -5842,6 +7688,14 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "单打防守反击",
               "score": 10,
               "match_basis": {
@@ -5858,6 +7712,10 @@
               "category": "后场技术",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "tactics"
+              ],
               "topic": "吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反",
               "score": 9,
               "match_basis": {
@@ -5874,6 +7732,11 @@
               "category": "后场技术",
               "confidence": "curated",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "safety_boundary",
+                "tactics"
+              ],
               "topic": "快速突击中的杀球落点与身体姿态",
               "score": 6,
               "match_basis": {
@@ -5890,8 +7753,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 18,
+          "ready_count": 18,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7630800123594285305",
@@ -5906,7 +7769,12 @@
             "bilibili:BV1jz421i73z",
             "bilibili:BV1bZRqYcEN7",
             "7078117752275225891",
-            "7089632297791671587"
+            "7089632297791671587",
+            "bilibili:BV1dh4y1S7W4",
+            "bilibili:BV1er4y1o7Ry",
+            "bilibili:BV1UZRqYcEVH",
+            "bilibili:BV1Ld6MBEETC",
+            "bilibili:BV1eqUPBWEk1"
           ],
           "representative_videos": [
             {
@@ -5916,6 +7784,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "减少失误 一个球总失误",
               "score": 0,
               "match_basis": {
@@ -5932,6 +7809,12 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "tactics"
+              ],
               "topic": "单打技术 借用一下三位健将和我昔日对抗的素材",
               "score": 0,
               "match_basis": {
@@ -5948,6 +7831,13 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "单打球路战术如何调整？怎么动脑筋打球？ 实战中通过对手出球来调整球路战术 不可多得",
               "score": 0,
               "match_basis": {
@@ -5964,6 +7854,12 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "principle",
+                "tactics"
+              ],
               "topic": "在快节奏中不能浪费一点时间",
               "score": 0,
               "match_basis": {
@@ -5980,6 +7876,12 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "大家可以去试一试",
               "score": 0,
               "match_basis": {
@@ -5997,7 +7899,7 @@
       "name": "装备选择",
       "description": "与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。",
       "discipline": "general",
-      "video_count": 52,
+      "video_count": 66,
       "subtopics": [
         {
           "name": "球拍选择与重量",
@@ -6010,8 +7912,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 50,
-          "ready_count": 50,
+          "video_count": 62,
+          "ready_count": 62,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1VejRziExt",
@@ -6063,7 +7965,19 @@
             "bilibili:BV1ZjftBHEgW",
             "bilibili:BV1xZU6B1Eoh",
             "bilibili:BV1GeyrB7Esa",
-            "bilibili:BV1GKpceMExM"
+            "bilibili:BV1GKpceMExM",
+            "bilibili:BV1uk4y1n7BG",
+            "bilibili:BV1gw411N772",
+            "bilibili:BV11kmPY2Esb",
+            "bilibili:BV16MMQz7EK9",
+            "bilibili:BV14eBTBoExK",
+            "bilibili:BV1z4421S776",
+            "bilibili:BV1xybQzLEZV",
+            "bilibili:BV1Qdr3YbEcn",
+            "bilibili:BV1ks421w7Cj",
+            "bilibili:BV14PPhzdEwu",
+            "bilibili:BV1Cj411n7zV",
+            "bilibili:BV1B99TYtEXv"
           ],
           "representative_videos": [
             {
@@ -6073,6 +7987,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "解读新手为何爱打3u球拍？球拍重量与发力的关系！听劝 新手想快速学会发力 选5u就对了",
               "score": 36,
               "match_basis": {
@@ -6089,6 +8011,14 @@
               "category": "装备与参数",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "动作比较 大家需要根据能力选择球拍",
               "score": 31,
               "match_basis": {
@@ -6105,6 +8035,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "基础挥拍重快 由于要控制时长我剪辑的很精简",
               "score": 11,
               "match_basis": {
@@ -6121,6 +8058,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "手与球拍 只是说合适",
               "score": 11,
               "match_basis": {
@@ -6137,6 +8082,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为什么反手发力后球拍容易甩出去？手指放松抓紧解读！需要但不要迷信",
               "score": 10,
               "match_basis": {
@@ -6158,12 +8111,14 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 2,
-          "ready_count": 2,
+          "video_count": 4,
+          "ready_count": 4,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1CC51zDEcw",
-            "bilibili:BV1Xoe9zkEVT"
+            "bilibili:BV1Xoe9zkEVT",
+            "bilibili:BV1ue41167Dg",
+            "bilibili:BV1VJ4m1b7U7"
           ],
           "representative_videos": [
             {
@@ -6173,6 +8128,13 @@
               "category": "双打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "反手位死角勾球教学！业余常用的被动勾球！羽毛球单双打必备往前技能",
               "score": 4,
               "match_basis": {
@@ -6189,12 +8151,71 @@
               "category": "发球与接发",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "羽毛球正手发高远球教学！30分钟零基础加进阶！发球都发不好你还指望单打有多强",
               "score": 3,
               "match_basis": {
                 "title": 0,
                 "focus": 0,
                 "evidence": 3
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "bilibili:BV1ue41167Dg",
+              "title": "怎么感觉磅数适不适合自己？ 测试磅数最简单方法",
+              "url": "https://www.bilibili.com/video/BV1ue41167Dg/",
+              "category": "训练与纠错",
+              "confidence": "supplemental_note_only",
+              "processing_status": "ready",
+              "answer_eligibility": "supplemental",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
+              "topic": "怎么感觉磅数适不适合自己？ 测试磅数最简单方法",
+              "score": 18,
+              "match_basis": {
+                "title": 2,
+                "focus": 2,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "bilibili:BV1VJ4m1b7U7",
+              "title": "业余球友拉什么线好？ 如何选择合适的拍线",
+              "url": "https://www.bilibili.com/video/BV1VJ4m1b7U7/",
+              "category": "训练与纠错",
+              "confidence": "supplemental_note_only",
+              "processing_status": "ready",
+              "answer_eligibility": "supplemental",
+              "evidence_roles": [
+                "action",
+                "equipment",
+                "mechanism",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
+              "topic": "业余球友拉什么线好？ 如何选择合适的拍线",
+              "score": 9,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 0
               },
               "assignment_method": "rule_match"
             }
@@ -6217,7 +8238,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 86,
+      "video_count": 114,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -6230,8 +8251,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 20,
+          "ready_count": 20,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV12M4m1m7kv",
@@ -6248,7 +8269,12 @@
             "bilibili:BV1Av42127u2",
             "bilibili:BV1Zw4m1k72d",
             "7236568825607621922",
-            "bilibili:BV1A7PVeCE1G"
+            "bilibili:BV1A7PVeCE1G",
+            "bilibili:BV1994y167xY",
+            "bilibili:BV1wNMQznEF2",
+            "bilibili:BV1EsZbYaESt",
+            "bilibili:BV1DH4y1277F",
+            "bilibili:BV1fJdZY6EMy"
           ],
           "representative_videos": [
             {
@@ -6258,6 +8284,15 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "4点控1点私教课教学(二)！羽毛球单打多球训练！第一部分可主页搜索",
               "score": 9,
               "match_basis": {
@@ -6274,6 +8309,14 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "业余挥拍训练方法！羽毛球发力时正确的内旋是什么样的",
               "score": 9,
               "match_basis": {
@@ -6290,6 +8333,13 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "什么是变速？ 怎么做手上变速和脚上的变速！附送高质量吊上网训练方法",
               "score": 9,
               "match_basis": {
@@ -6306,6 +8356,13 @@
               "category": "步法与移动",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "原动力启动步教学！训练方法实操篇",
               "score": 9,
               "match_basis": {
@@ -6322,6 +8379,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
               "topic": "反手高远球 提供一个训练方法",
               "score": 9,
               "match_basis": {
@@ -6344,8 +8408,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 18,
+          "ready_count": 18,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV16CU5BFEaG",
@@ -6362,7 +8426,10 @@
             "bilibili:BV1YR5EzbEv9",
             "7589749293205363633",
             "bilibili:BV1Uz421m7w2",
-            "7597528312752490929"
+            "7597528312752490929",
+            "bilibili:BV1QqdAY6Epa",
+            "bilibili:BV1kftBzeEDc",
+            "bilibili:BV1oC4y1i7Bk"
           ],
           "representative_videos": [
             {
@@ -6372,6 +8439,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "【进阶】被动反手高远教学！纠正提前倒拍",
               "score": 9,
               "match_basis": {
@@ -6388,6 +8463,13 @@
               "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "为什么打球会掉肘？发力时掉肘的两种情况！改正就能克服",
               "score": 9,
               "match_basis": {
@@ -6404,6 +8486,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "反手高远发力教学！业余小白反手框架两点细节调整！改正这两点让你的反手发力有质的提升",
               "score": 9,
               "match_basis": {
@@ -6420,6 +8509,13 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
               "topic": "暴力杀球业余小白从1到2！提升挥速示范多处动作细节纠正！很详细26分钟版 适合有耐心的人",
               "score": 9,
               "match_basis": {
@@ -6436,6 +8532,13 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "principle",
+                "tactics"
+              ],
               "topic": "羽毛球单打接杀教学！单打防守动作纠错完整版！小白从0到1！多处细节纠正",
               "score": 9,
               "match_basis": {
@@ -6471,6 +8574,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "课堂随录的",
               "score": 9,
               "match_basis": {
@@ -6492,14 +8603,16 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 6,
+          "ready_count": 6,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7432633273060314408",
             "7099644893269839144",
             "bilibili:BV136c5zjEUE",
-            "bilibili:BV12M4m1m7kv"
+            "bilibili:BV12M4m1m7kv",
+            "bilibili:BV1xbTTzwEyT",
+            "bilibili:BV1Yu411G7mr"
           ],
           "representative_videos": [
             {
@@ -6509,6 +8622,15 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
               "topic": "如何快速恢复对抗能力 觉得训练的时候实在不行了",
               "score": 15,
               "match_basis": {
@@ -6525,6 +8647,14 @@
               "category": "训练与纠错",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle"
+              ],
               "topic": "职业运动员上网因为身体能力强",
               "score": 10,
               "match_basis": {
@@ -6541,6 +8671,14 @@
               "category": "后场技术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle",
+                "tactics"
+              ],
               "topic": "业余跳杀教学！握拍和站位起跳纠错！练跳杀要先练体能啊",
               "score": 9,
               "match_basis": {
@@ -6557,12 +8695,43 @@
               "category": "单打战术",
               "confidence": "medium",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "practice",
+                "principle",
+                "tactics"
+              ],
               "topic": "4点控1点私教课教学(二)！羽毛球单打多球训练！第一部分可主页搜索",
               "score": 4,
               "match_basis": {
                 "title": 0,
                 "focus": 0,
                 "evidence": 4
+              },
+              "assignment_method": "rule_match"
+            },
+            {
+              "video_id": "bilibili:BV1xbTTzwEyT",
+              "title": "羽毛球怎么练体能？最好的方式不是跑步！不是跑步",
+              "url": "https://www.bilibili.com/video/BV1xbTTzwEyT/",
+              "category": "训练与纠错",
+              "confidence": "supplemental_note_only",
+              "processing_status": "ready",
+              "answer_eligibility": "supplemental",
+              "evidence_roles": [
+                "practice",
+                "principle",
+                "safety_boundary"
+              ],
+              "topic": "羽毛球怎么练体能？最好的方式不是跑步！不是跑步",
+              "score": 12,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 3
               },
               "assignment_method": "rule_match"
             }
@@ -6573,8 +8742,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 52,
-          "ready_count": 52,
+          "video_count": 70,
+          "ready_count": 70,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7061422431386324264",
@@ -6628,7 +8797,25 @@
             "7302621786980486440",
             "7200944470446050599",
             "7148267452877638944",
-            "7500519808157371711"
+            "7500519808157371711",
+            "bilibili:BV16PtzzcEW6",
+            "bilibili:BV1tGwezFEMm",
+            "bilibili:BV1mL411Q7QA",
+            "bilibili:BV1jC411J7ni",
+            "bilibili:BV1heK8zPE3G",
+            "bilibili:BV1Xr421T7z3",
+            "bilibili:BV13D421577p",
+            "bilibili:BV1EcsbeAEmR",
+            "bilibili:BV1qP411s7YC",
+            "bilibili:BV1Fz421i7Yx",
+            "bilibili:BV1XP3tzCEkx",
+            "bilibili:BV14UNzzDEk7",
+            "bilibili:BV1GTCdYZE69",
+            "bilibili:BV1mudzYvE2K",
+            "bilibili:BV1BDRCYFEFr",
+            "bilibili:BV1DT42167Ba",
+            "bilibili:BV1aL411e7gv",
+            "bilibili:BV1Yu411A7hu"
           ],
           "representative_videos": [
             {
@@ -6638,6 +8825,10 @@
               "category": "训练与纠错",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "practice"
+              ],
               "topic": "假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走",
               "score": 0,
               "match_basis": {
@@ -6654,6 +8845,11 @@
               "category": "训练与纠错",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "mechanism",
+                "practice"
+              ],
               "topic": "其实羽毛球技术就在我们生活中，换一种学习方式也是不错的选择",
               "score": 0,
               "match_basis": {
@@ -6670,6 +8866,10 @@
               "category": "训练与纠错",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "practice"
+              ],
               "topic": "听说很多人喜欢这招，别说华而不实，有没有用，我只想让对手心里难受，他难受我心里就美滋滋的",
               "score": 0,
               "match_basis": {
@@ -6686,6 +8886,10 @@
               "category": "训练与纠错",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "practice"
+              ],
               "topic": "喜欢哪招评论区告诉我，不要怕失误，毕竟输就一球的事，帅是一辈子的事🧐",
               "score": 0,
               "match_basis": {
@@ -6702,6 +8906,11 @@
               "category": "训练与纠错",
               "confidence": "visual_reviewed",
               "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "practice",
+                "tactics"
+              ],
               "topic": "羽毛球的魅力不光只有暴力攻防，还有轻巧灵动，拍法退步了，我想练回来，和你们一起进步😘",
               "score": 0,
               "match_basis": {

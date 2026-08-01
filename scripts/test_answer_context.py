@@ -674,6 +674,34 @@ class AnswerContextTests(unittest.TestCase):
             {item["video_id"] for item in rearcourt["selected_videos"]},
         )
 
+    def test_bounded_supplemental_requires_direct_note_coverage(self):
+        equipment = self.context_module.prepare_answer_context(
+            "初学者低磅应该选高弹线还是耐打线？",
+            local_personalization=False,
+        )
+        supplemental = next(
+            item
+            for item in equipment["selected_videos"]
+            if item["video_id"] == "bilibili:BV1VJ4m1b7U7"
+        )
+        self.assertEqual(supplemental["answer_eligibility"], "supplemental")
+        self.assertEqual(
+            supplemental["runtime_evidence_mode"], "bounded_note_windows"
+        )
+        self.assertGreaterEqual(len(supplemental["bounded_note_evidence"]), 1)
+        self.assertIn(
+            supplemental["label"], equipment["answer_visible_video_labels"]
+        )
+
+        weak_title_overlap = self.context_module.prepare_answer_context(
+            "双打网前怎么下压",
+            local_personalization=False,
+        )
+        self.assertNotIn(
+            "bilibili:BV1BDRCYFEFr",
+            {item["video_id"] for item in weak_title_overlap["selected_videos"]},
+        )
+
     def test_query_actor_context_separates_opponent_and_player_actions(self):
         backhand = self.context_module.query_actor_context(
             self.search_module,

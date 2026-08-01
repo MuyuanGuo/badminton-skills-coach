@@ -567,13 +567,22 @@ def build_index(knowledge, topic_index, rules):
         if video["processing_status"] != "ready":
             continue
         segments = video.get("transcript_segments") or []
-        transcript_backed = video.get("confidence") != "visual_reviewed"
+        runtime_evidence_mode = video.get(
+            "runtime_evidence_mode",
+            (
+                "reviewed_visual_summary"
+                if video.get("confidence") == "visual_reviewed"
+                else "full_transcript"
+            ),
+        )
+        transcript_backed = runtime_evidence_mode == "full_transcript"
         if transcript_backed and not segments:
             missing_runtime_segments.append(video["video_id"])
             continue
         full_text = "".join(segment.get("text", "") for segment in segments)
         chunk_first_transcript = (
             video.get("source_type") in CHUNK_FIRST_SOURCE_ALLOWLIST
+            and runtime_evidence_mode == "full_transcript"
         )
         # Bilibili automatic notes are extracted from the same transcript
         # windows that feed the chunk index. Indexing them again at video
@@ -638,8 +647,12 @@ def build_index(knowledge, topic_index, rules):
                 topic_counts[topic["topic_id"]] += 1
         record_index = len(records)
         channel_ngrams = {
-            "title": hashed_ngrams(
-                video.get("retrieval_title") or video["title"], sizes
+            "title": (
+                set()
+                if video.get("metadata_title_trust") == "limited"
+                else hashed_ngrams(
+                    video.get("retrieval_title") or video["title"], sizes
+                )
             ),
             "teaching_note": hashed_ngrams(video_level_teaching_note, sizes),
             "transcript": (
@@ -662,6 +675,14 @@ def build_index(knowledge, topic_index, rules):
                 "video_id": video["video_id"],
                 "evidence_id": video["evidence_id"],
                 "source_type": video["source_type"],
+                "answer_eligibility": video.get(
+                    "answer_eligibility", "primary"
+                ),
+                "evidence_roles": video.get("evidence_roles", ["context"]),
+                "metadata_title_trust": video.get(
+                    "metadata_title_trust", "not_applicable"
+                ),
+                "runtime_evidence_mode": runtime_evidence_mode,
                 "retrieval_cohort": video.get(
                     "retrieval_cohort", "stable_baseline"
                 ),
@@ -701,6 +722,14 @@ def build_index(knowledge, topic_index, rules):
         "source": str(KNOWLEDGE_PATH.relative_to(ROOT)),
         "source_updated_at": knowledge["updated_at"],
         "indexable_video_count": len(records),
+        "primary_indexable_video_count": sum(
+            record.get("answer_eligibility", "primary") == "primary"
+            for record in records
+        ),
+        "supplemental_indexable_video_count": sum(
+            record.get("answer_eligibility") == "supplemental"
+            for record in records
+        ),
         "stable_indexable_video_count": stable_indexable_video_count,
         "full_transcript_text_included": False,
         "runtime_transcript_segments_in_knowledge": True,

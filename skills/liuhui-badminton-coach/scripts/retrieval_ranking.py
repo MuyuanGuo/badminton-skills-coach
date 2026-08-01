@@ -601,12 +601,18 @@ def candidate_sort_key(candidate, rules):
         if candidate.get("retrieval_cohort") == "automatic_expansion"
         else 0.0
     )
+    supplemental_penalty = (
+        rules["retrieval"].get("supplemental_score_penalty", 0.0)
+        if candidate.get("answer_eligibility") == "supplemental"
+        else 0.0
+    )
     ranking_score = (
         candidate["score"]
         + tier_bonus[candidate["relevance_tier"]]
         - intent_penalty
         - candidate.get("excluded_query_penalty", 0)
         - cohort_penalty
+        - supplemental_penalty
     )
     return (
         -ranking_score,
@@ -638,6 +644,11 @@ def refresh_score_breakdown(candidate, rules):
         if candidate.get("retrieval_cohort") == "automatic_expansion"
         else 0.0
     )
+    supplemental_penalty = (
+        rules["retrieval"].get("supplemental_score_penalty", 0.0)
+        if candidate.get("answer_eligibility") == "supplemental"
+        else 0.0
+    )
     breakdown.update(
         {
             "feedback_adjustment": round(feedback_delta, 4),
@@ -648,12 +659,16 @@ def refresh_score_breakdown(candidate, rules):
             "automatic_expansion_score_penalty": round(
                 cohort_penalty, 4
             ),
+            "supplemental_score_penalty": round(
+                supplemental_penalty, 4
+            ),
             "effective_ranking_score": round(
                 candidate["score"]
                 + tier_bonus
                 - required_intent_penalty
                 - excluded_query_penalty
-                - cohort_penalty,
+                - cohort_penalty
+                - supplemental_penalty,
                 4,
             ),
         }
@@ -913,6 +928,41 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             ).get(video["video_id"], {}),
             excluded_fields={"transcript"} if use_chunk_transcript else None,
         )
+        if record.get("metadata_title_trust") == "limited":
+            # A title/transcript mismatch is an admission advisory, not proof.
+            # Keep title text as a weak recall hint while preventing it from
+            # dominating evidence-backed note or transcript matches.
+            limited_title_terms = set(matched_fields.get("title", []))
+            if limited_title_terms:
+                trusted_field_score, _, _ = bm25_record_fields(
+                    record,
+                    expansion["term_weights"],
+                    retrieval_index,
+                    rules,
+                    dynamic_document_frequency=(
+                        stable_dynamic_document_frequency
+                        if stable_record
+                        else dynamic_document_frequency
+                    ),
+                    dynamic_field_document_frequency=(
+                        stable_dynamic_field_document_frequency
+                        if stable_record
+                        else dynamic_field_document_frequency
+                    ),
+                    dynamic_field_frequencies=(
+                        stable_dynamic_frequencies_by_video
+                        if stable_record
+                        else dynamic_frequencies_by_video
+                    ).get(video["video_id"], {}),
+                    excluded_fields={"title", "transcript"}
+                    if use_chunk_transcript
+                    else {"title"},
+                )
+                field_score = trusted_field_score + (
+                    field_score - trusted_field_score
+                ) * rules["retrieval"].get(
+                    "limited_title_score_factor", 0.2
+                )
         if use_chunk_transcript:
             transcript_terms = set(
                 (chunk_match or {}).get("matched_terms", set())
@@ -1050,9 +1100,14 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
             }
         )
         title_terms = set(matched_fields.get("title", []))
+        trusted_title_terms = (
+            set()
+            if record.get("metadata_title_trust") == "limited"
+            else title_terms
+        )
         strong_title_related = {
             term
-            for term in title_terms
+            for term in trusted_title_terms
             if any(
                 item["term"] == term and item["weight"] >= 0.45
                 for item in expansion["related_terms"]
@@ -1061,7 +1116,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         title_concepts = {
             group[0]
             for group in matched_groups
-            if any(term in title_terms for term in group)
+            if any(term in trusted_title_terms for term in group)
         }
         matched_required_intents = sorted(
             intent["name"]
@@ -1163,6 +1218,18 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
         score += evidence_quality_bonus
         candidate = {
                 "score": round(score, 4),
+                "answer_eligibility": record.get(
+                    "answer_eligibility", "primary"
+                ),
+                "evidence_roles": record.get(
+                    "evidence_roles", ["context"]
+                ),
+                "metadata_title_trust": record.get(
+                    "metadata_title_trust", "not_applicable"
+                ),
+                "runtime_evidence_mode": record.get(
+                    "runtime_evidence_mode", "full_transcript"
+                ),
                 "retrieval_cohort": record.get(
                     "retrieval_cohort", "stable_baseline"
                 ),
