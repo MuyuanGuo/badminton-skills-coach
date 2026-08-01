@@ -62,6 +62,12 @@ class RetrievalEvaluationTests(unittest.TestCase):
         self.assertEqual(result["hard_negative_top_k_violations"], 0)
         self.assertEqual(stable["candidate_recall"], 1.0)
         self.assertEqual(stable["hard_negative_top_k_violations"], 0)
+        self.assertEqual(
+            result["evaluation_views"]["stable_regression"][
+                "retrieval_cohorts"
+            ],
+            ["stable_baseline"],
+        )
         self.assertGreater(stable["mean_ndcg_at_k"], result["mean_ndcg_at_k"])
         knowledge = json.loads(
             (

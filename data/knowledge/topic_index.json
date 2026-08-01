@@ -4,10 +4,10 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-07-30T03:55:04.640231+00:00",
-  "video_count": 1011,
-  "indexable_video_count": 776,
-  "assigned_video_count": 776,
+  "source_updated_at": "2026-08-01T05:31:36.156259+00:00",
+  "video_count": 1014,
+  "indexable_video_count": 779,
+  "assigned_video_count": 779,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 139,
   "multi_topic_video_count": 382,
@@ -1936,7 +1936,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 46,
+      "video_count": 48,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -1949,10 +1949,11 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "needs_visual_review_count": 0,
           "video_ids": [
+            "7667841485241148145",
             "bilibili:BV1Y5kMY9ELd",
             "7447084061371272507",
             "7652440366436945017",
@@ -1961,6 +1962,22 @@
             "7663523942439940453"
           ],
           "representative_videos": [
+            {
+              "video_id": "7667841485241148145",
+              "title": "8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的",
+              "url": "https://www.douyin.com/video/7667841485241148145",
+              "category": "中前场与抽挡",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "topic": "8166 抽挡细节 会了抽挡动作",
+              "score": 18,
+              "match_basis": {
+                "title": 2,
+                "focus": 2,
+                "evidence": 0
+              },
+              "assignment_method": "rule_match"
+            },
             {
               "video_id": "bilibili:BV1Y5kMY9ELd",
               "title": "羽毛球万能平抽挡教学！职业级抽档握拍细节！进阶必学 平抽档直接进入专业级",
@@ -2024,22 +2041,6 @@
                 "evidence": 0
               },
               "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "7506736569824726332",
-              "title": "抽挡连贯 我知道有些兄弟很要强，受不了这种屈辱，就是不能承认被动，没关系，打羽毛球吧，它一定会教会你",
-              "url": "https://www.douyin.com/video/7506736569824726332",
-              "category": "中前场与抽挡",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "topic": "抽挡连贯 我知道有些兄弟很要强",
-              "score": 9,
-              "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 0
-              },
-              "assignment_method": "rule_match"
             }
           ]
         },
@@ -2053,8 +2054,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 35,
-          "ready_count": 35,
+          "video_count": 36,
+          "ready_count": 36,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV18V3Ez2ECs",
@@ -2062,6 +2063,7 @@
             "bilibili:BV1QB4y1Z73X",
             "bilibili:BV1BEZoYgE3g",
             "bilibili:BV1FQwLe3EYV",
+            "7668741102412834545",
             "bilibili:BV17TJhzmEoQ",
             "bilibili:BV1xZU6B1Eoh",
             "bilibili:BV1objpzSESJ",
@@ -2951,7 +2953,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 323,
+      "video_count": 324,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -3260,8 +3262,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 98,
-          "ready_count": 98,
+          "video_count": 99,
+          "ready_count": 99,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1bF6SYtEGz",
@@ -3271,6 +3273,7 @@
             "7052600326116887812",
             "bilibili:BV18ZpszFE6v",
             "7570301879545426171",
+            "7667477046378167473",
             "bilibili:BV11F411D7s4",
             "bilibili:BV19x2rYFEBU",
             "bilibili:BV1px4y1s7gL",

@@ -493,6 +493,10 @@ class ProjectArtifactsTests(unittest.TestCase):
             / "skills/liuhui-badminton-coach/references/topic-index.md",
             self.update_pipeline.UPDATE_ARTIFACT_PATHS,
         )
+        self.assertIn(
+            ROOT / "output/video-link-health.json",
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
 
     def test_full_update_pipeline_writes_exact_build_receipt(self):
         with tempfile.TemporaryDirectory() as directory:

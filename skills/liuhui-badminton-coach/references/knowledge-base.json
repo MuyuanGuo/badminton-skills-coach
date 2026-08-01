@@ -2,28 +2,1687 @@
   "version": 1,
   "evidence_schema_version": 1,
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "updated_at": "2026-07-30T03:55:04.640231+00:00",
+  "updated_at": "2026-08-01T05:31:36.156259+00:00",
   "quality_rules_version": 10,
   "queue_counts": {
-    "transcribed": 409
+    "transcribed": 412
   },
   "knowledge_counts": {
-    "videos": 1011,
-    "ready": 776,
+    "videos": 1014,
+    "ready": 779,
     "not_teaching": 55,
     "low_value": 180,
     "curated": 4,
     "visual_reviewed": 19,
     "reviewed_transcript": 6,
-    "transcript_segment_videos": 757,
-    "transcript_segments": 124395
+    "transcript_segment_videos": 760,
+    "transcript_segments": 124612
   },
   "runtime_transcript_segments_bundled": true,
   "videos": [
     {
+      "video_id": "7668741102412834545",
+      "evidence_id": "7668741102412834545",
+      "source_type": "douyin_video",
+      "retrieval_cohort": "automatic_expansion",
+      "canonical_url": "https://www.douyin.com/video/7668741102412834545",
+      "parent_source_id": null,
+      "clip_start_seconds": null,
+      "clip_end_seconds": null,
+      "title": "900 单打接杀进阶 不光是接杀，所有快节奏的球都需要人快",
+      "url": "https://www.douyin.com/video/7668741102412834545",
+      "category": "单打战术",
+      "tags": [
+        "单打战术"
+      ],
+      "duration_seconds": 160.9,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "quality": {
+        "transcript": {
+          "language": "zh",
+          "language_probability": 1.0,
+          "segment_count": 75,
+          "text_characters": 580,
+          "han_ratio": 1.0,
+          "passed": true,
+          "issues": []
+        },
+        "automatic_evidence": {
+          "topic_terms": [
+            "接杀",
+            "接殺"
+          ],
+          "key_evidence_count": 5,
+          "teaching_term_matches": 9,
+          "unique_teaching_terms": [
+            "击球",
+            "发力",
+            "手腕",
+            "拍面",
+            "接杀",
+            "杀球",
+            "正手"
+          ],
+          "instruction_signal_matches": 14,
+          "evidence_text_characters": 580,
+          "provenance_rejected_evidence_count": 0,
+          "provenance_rejections": {
+            "key_evidence": 0,
+            "coverage_evidence": 0,
+            "error_evidence": 0,
+            "action_cues": 0
+          },
+          "passed": true,
+          "issues": []
+        }
+      },
+      "classification": {
+        "decision": "保留：教学",
+        "reason": "包含明确技术、训练、纠错或战术信号",
+        "rules_version": 3,
+        "rules_hash": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7"
+      },
+      "teaching_note": {
+        "topic": "900 单打接杀进阶 不光是接杀",
+        "key_evidence": [
+          {
+            "timestamp": "00:26-00:29",
+            "text": "为什么因为你整个击球状态你看手是这样的",
+            "raw_text": "为什么因为你整个机球状态你看手是这样的"
+          },
+          {
+            "timestamp": "00:29-00:32",
+            "text": "你看手是这样的拍面本来就像这样我们要怎么样"
+          },
+          {
+            "timestamp": "00:32-00:38",
+            "text": "看哎 这个手腕要立起来你看这里能有一个把人揉进来的感觉"
+          },
+          {
+            "timestamp": "00:44-00:53",
+            "text": "哎 也就是我整个接这个位置的接杀都是包着去接的你看"
+          },
+          {
+            "timestamp": "00:55-00:59",
+            "text": "对 包着你们正手就喜欢这样接你肯定出击"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:10-00:14",
+            "text": "你看第一个不要这种动作你是要挡往"
+          },
+          {
+            "timestamp": "00:17-00:22",
+            "text": "第二个不要出现有这种感觉你看你都是那种顶的它的感觉"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "01:03-01:08",
+            "text": "我都是往里揉着去接记住一句话 揉着去接来 先把它摆出来一个这样的"
+          },
+          {
+            "timestamp": "01:23-01:29",
+            "text": "从底下抄上来的 不用把拍子先放在这个球飞行的轨迹上你看"
+          },
+          {
+            "timestamp": "01:28-01:32",
+            "text": "你看把拍子先快速放到这哎 往前一打"
+          },
+          {
+            "timestamp": "02:11-02:22",
+            "text": "我说明我能接很快的杀球当然这个是可以主观变快的就是教练我没有你那样的爆发力"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。",
+        "coverage_evidence": [
+          {
+            "timestamp": "01:53-02:03",
+            "text": "你看你这个腰能转多快就决定了你能接多快的杀球你比如你看吧"
+          }
+        ]
+      },
+      "transcript_segments": [
+        {
+          "start": 4.05,
+          "end": 6.61,
+          "timestamp": "00:04-00:06",
+          "text": "你看你不觉得你的球都是朝外走的吗"
+        },
+        {
+          "start": 8.13,
+          "end": 10.25,
+          "timestamp": "00:08-00:10",
+          "text": "而且你这个引拍动的也很大",
+          "raw_text": "而且你这个隐拍动的也很大"
+        },
+        {
+          "start": 10.25,
+          "end": 11.25,
+          "timestamp": "00:10-00:11",
+          "text": "你看第一个"
+        },
+        {
+          "start": 12.01,
+          "end": 13.17,
+          "timestamp": "00:12-00:13",
+          "text": "不要这种动作"
+        },
+        {
+          "start": 13.45,
+          "end": 14.85,
+          "timestamp": "00:13-00:14",
+          "text": "你是要挡往"
+        },
+        {
+          "start": 14.85,
+          "end": 16.01,
+          "timestamp": "00:14-00:16",
+          "text": "你让手伸过来"
+        },
+        {
+          "start": 16.37,
+          "end": 17.61,
+          "timestamp": "00:16-00:17",
+          "text": "它直接往前打就行"
+        },
+        {
+          "start": 17.61,
+          "end": 18.21,
+          "timestamp": "00:17-00:18",
+          "text": "第二个"
+        },
+        {
+          "start": 18.65,
+          "end": 20.21,
+          "timestamp": "00:18-00:20",
+          "text": "不要出现有这种感觉"
+        },
+        {
+          "start": 20.21,
+          "end": 22.17,
+          "timestamp": "00:20-00:22",
+          "text": "你看你都是那种顶的它的感觉"
+        },
+        {
+          "start": 23.33,
+          "end": 24.53,
+          "timestamp": "00:23-00:24",
+          "text": "你看它这球往外飞"
+        },
+        {
+          "start": 25.25,
+          "end": 26.33,
+          "timestamp": "00:25-00:26",
+          "text": "你看又往外飞"
+        },
+        {
+          "start": 26.33,
+          "end": 26.85,
+          "timestamp": "00:26-00:26",
+          "text": "为什么"
+        },
+        {
+          "start": 27.65,
+          "end": 29.13,
+          "timestamp": "00:27-00:29",
+          "text": "因为你整个击球状态",
+          "raw_text": "因为你整个机球状态"
+        },
+        {
+          "start": 29.13,
+          "end": 29.93,
+          "timestamp": "00:29-00:29",
+          "text": "你看手是这样的"
+        },
+        {
+          "start": 29.93,
+          "end": 31.25,
+          "timestamp": "00:29-00:31",
+          "text": "拍面本来就像这样"
+        },
+        {
+          "start": 31.85,
+          "end": 32.61,
+          "timestamp": "00:31-00:32",
+          "text": "我们要怎么样"
+        },
+        {
+          "start": 32.61,
+          "end": 32.97,
+          "timestamp": "00:32-00:32",
+          "text": "看"
+        },
+        {
+          "start": 34.05,
+          "end": 36.05,
+          "timestamp": "00:34-00:36",
+          "text": "哎 这个手腕要立起来"
+        },
+        {
+          "start": 36.05,
+          "end": 38.45,
+          "timestamp": "00:36-00:38",
+          "text": "你看这里能有一个把人揉进来的感觉"
+        },
+        {
+          "start": 38.45,
+          "end": 39.85,
+          "timestamp": "00:38-00:39",
+          "text": "你看 这能放个人"
+        },
+        {
+          "start": 39.85,
+          "end": 40.85,
+          "timestamp": "00:39-00:40",
+          "text": "你说你肚子挺大的"
+        },
+        {
+          "start": 40.85,
+          "end": 41.65,
+          "timestamp": "00:40-00:41",
+          "text": "哈 别动"
+        },
+        {
+          "start": 41.65,
+          "end": 44.45,
+          "timestamp": "00:41-00:44",
+          "text": "你看 我这能把你给包进来的感觉"
+        },
+        {
+          "start": 44.45,
+          "end": 46.05,
+          "timestamp": "00:44-00:46",
+          "text": "哎 也就是我整个接"
+        },
+        {
+          "start": 46.05,
+          "end": 48.25,
+          "timestamp": "00:46-00:48",
+          "text": "这个位置的接杀都是包着去接的"
+        },
+        {
+          "start": 48.25,
+          "end": 53.37,
+          "timestamp": "00:48-00:53",
+          "text": "你看"
+        },
+        {
+          "start": 53.37,
+          "end": 55.37,
+          "timestamp": "00:53-00:55",
+          "text": "那我的球永远不会出击"
+        },
+        {
+          "start": 55.37,
+          "end": 55.97,
+          "timestamp": "00:55-00:55",
+          "text": "包着"
+        },
+        {
+          "start": 55.97,
+          "end": 56.97,
+          "timestamp": "00:55-00:56",
+          "text": "对 包着"
+        },
+        {
+          "start": 56.97,
+          "end": 58.77,
+          "timestamp": "00:56-00:58",
+          "text": "你们正手就喜欢这样接"
+        },
+        {
+          "start": 58.77,
+          "end": 59.77,
+          "timestamp": "00:58-00:59",
+          "text": "你肯定出击"
+        },
+        {
+          "start": 59.77,
+          "end": 60.97,
+          "timestamp": "00:59-01:00",
+          "text": "你看我都揉着去接"
+        },
+        {
+          "start": 60.97,
+          "end": 61.77,
+          "timestamp": "01:00-01:01",
+          "text": "你看"
+        },
+        {
+          "start": 63.57,
+          "end": 65.57,
+          "timestamp": "01:03-01:05",
+          "text": "我都是往里揉着去接"
+        },
+        {
+          "start": 65.57,
+          "end": 66.97,
+          "timestamp": "01:05-01:06",
+          "text": "记住一句话 揉着去接"
+        },
+        {
+          "start": 66.97,
+          "end": 68.81,
+          "timestamp": "01:06-01:08",
+          "text": "来 先把它摆出来一个这样的"
+        },
+        {
+          "start": 68.81,
+          "end": 70.17,
+          "timestamp": "01:08-01:10",
+          "text": "你看 哎对了"
+        },
+        {
+          "start": 70.17,
+          "end": 71.61,
+          "timestamp": "01:10-01:11",
+          "text": "有了这个感觉了"
+        },
+        {
+          "start": 71.61,
+          "end": 72.61,
+          "timestamp": "01:11-01:12",
+          "text": "这样去往里解"
+        },
+        {
+          "start": 73.53,
+          "end": 74.41,
+          "timestamp": "01:13-01:14",
+          "text": "来 你试试"
+        },
+        {
+          "start": 76.62,
+          "end": 77.78,
+          "timestamp": "01:16-01:17",
+          "text": "不行 这球过你了"
+        },
+        {
+          "start": 82.29,
+          "end": 83.81,
+          "timestamp": "01:22-01:23",
+          "text": "不是 你看你这个动作是什么"
+        },
+        {
+          "start": 83.81,
+          "end": 85.69,
+          "timestamp": "01:23-01:25",
+          "text": "从底下抄上来的 不用"
+        },
+        {
+          "start": 85.69,
+          "end": 88.25,
+          "timestamp": "01:25-01:28",
+          "text": "把拍子先放在这个球飞行的轨迹上"
+        },
+        {
+          "start": 88.85,
+          "end": 89.33,
+          "timestamp": "01:28-01:29",
+          "text": "你看"
+        },
+        {
+          "start": 89.89,
+          "end": 91.37,
+          "timestamp": "01:29-01:31",
+          "text": "把拍子先快速放到这"
+        },
+        {
+          "start": 91.37,
+          "end": 92.37,
+          "timestamp": "01:31-01:32",
+          "text": "哎 往前一打"
+        },
+        {
+          "start": 92.77,
+          "end": 93.69,
+          "timestamp": "01:32-01:33",
+          "text": "快 走"
+        },
+        {
+          "start": 94.77,
+          "end": 95.61,
+          "timestamp": "01:34-01:35",
+          "text": "快 走"
+        },
+        {
+          "start": 96.13,
+          "end": 96.69,
+          "timestamp": "01:36-01:36",
+          "text": "明白吗"
+        },
+        {
+          "start": 99.16,
+          "end": 100.56,
+          "timestamp": "01:39-01:40",
+          "text": "但是你看你是个云素"
+        },
+        {
+          "start": 101.44,
+          "end": 102.16,
+          "timestamp": "01:41-01:42",
+          "text": "还有一个介绍"
+        },
+        {
+          "start": 102.16,
+          "end": 103.04,
+          "timestamp": "01:42-01:43",
+          "text": "你看你是这种感觉"
+        },
+        {
+          "start": 103.04,
+          "end": 106.24,
+          "timestamp": "01:43-01:46",
+          "text": "你看我是什么"
+        },
+        {
+          "start": 106.24,
+          "end": 107.36,
+          "timestamp": "01:46-01:47",
+          "text": "我是什么感觉"
+        },
+        {
+          "start": 107.36,
+          "end": 108.88,
+          "timestamp": "01:47-01:48",
+          "text": "一 二"
+        },
+        {
+          "start": 108.88,
+          "end": 113.43,
+          "timestamp": "01:48-01:53",
+          "text": "你看我是靠人转"
+        },
+        {
+          "start": 113.43,
+          "end": 118.93,
+          "timestamp": "01:53-01:58",
+          "text": "你看你这个腰能转多快"
+        },
+        {
+          "start": 118.93,
+          "end": 121.65,
+          "timestamp": "01:58-02:01",
+          "text": "就决定了你能接多快的杀球"
+        },
+        {
+          "start": 121.65,
+          "end": 123.17,
+          "timestamp": "02:01-02:03",
+          "text": "你比如你看吧"
+        },
+        {
+          "start": 123.17,
+          "end": 127.41,
+          "timestamp": "02:03-02:07",
+          "text": "你看你们接不住谁的杀球是一云什么"
+        },
+        {
+          "start": 127.41,
+          "end": 128.37,
+          "timestamp": "02:07-02:08",
+          "text": "你看你们转"
+        },
+        {
+          "start": 128.37,
+          "end": 130.67,
+          "timestamp": "02:08-02:10",
+          "text": "就慢"
+        },
+        {
+          "start": 130.67,
+          "end": 131.87,
+          "timestamp": "02:10-02:11",
+          "text": "你看我准备"
+        },
+        {
+          "start": 131.87,
+          "end": 137.25,
+          "timestamp": "02:11-02:17",
+          "text": "我说明我能接很快的杀球"
+        },
+        {
+          "start": 137.25,
+          "end": 140.59,
+          "timestamp": "02:17-02:20",
+          "text": "当然这个是可以主观变快的"
+        },
+        {
+          "start": 140.59,
+          "end": 142.59,
+          "timestamp": "02:20-02:22",
+          "text": "就是教练我没有你那样的爆发力"
+        },
+        {
+          "start": 142.59,
+          "end": 143.39,
+          "timestamp": "02:22-02:23",
+          "text": "我承认"
+        },
+        {
+          "start": 143.39,
+          "end": 145.89,
+          "timestamp": "02:23-02:25",
+          "text": "你可以尽可能做到你做的最快"
+        },
+        {
+          "start": 145.89,
+          "end": 149.19,
+          "timestamp": "02:25-02:29",
+          "text": "我能感觉说你根本就没有说想往最快了做"
+        },
+        {
+          "start": 149.19,
+          "end": 150.19,
+          "timestamp": "02:29-02:30",
+          "text": "对"
+        },
+        {
+          "start": 150.19,
+          "end": 154.75,
+          "timestamp": "02:30-02:34",
+          "text": "哎 太厉正了"
+        },
+        {
+          "start": 154.75,
+          "end": 158.7,
+          "timestamp": "02:34-02:38",
+          "text": "哇 这整个人"
+        },
+        {
+          "start": 158.7,
+          "end": 160.7,
+          "timestamp": "02:38-02:40",
+          "text": "这下巴就不一样了吗"
+        }
+      ]
+    },
+    {
+      "video_id": "7667841485241148145",
+      "evidence_id": "7667841485241148145",
+      "source_type": "douyin_video",
+      "retrieval_cohort": "automatic_expansion",
+      "canonical_url": "https://www.douyin.com/video/7667841485241148145",
+      "parent_source_id": null,
+      "clip_start_seconds": null,
+      "clip_end_seconds": null,
+      "title": "8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的",
+      "url": "https://www.douyin.com/video/7667841485241148145",
+      "category": "中前场与抽挡",
+      "tags": [
+        "中前场与抽挡",
+        "单打战术"
+      ],
+      "duration_seconds": 138.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "quality": {
+        "transcript": {
+          "language": "zh",
+          "language_probability": 1.0,
+          "segment_count": 89,
+          "text_characters": 515,
+          "han_ratio": 1.0,
+          "passed": true,
+          "issues": []
+        },
+        "automatic_evidence": {
+          "topic_terms": [
+            "抽挡",
+            "抽擋"
+          ],
+          "key_evidence_count": 4,
+          "teaching_term_matches": 6,
+          "unique_teaching_terms": [
+            "击球",
+            "发力",
+            "手指",
+            "手腕"
+          ],
+          "instruction_signal_matches": 15,
+          "evidence_text_characters": 515,
+          "provenance_rejected_evidence_count": 0,
+          "provenance_rejections": {
+            "key_evidence": 0,
+            "coverage_evidence": 0,
+            "error_evidence": 0,
+            "action_cues": 0
+          },
+          "passed": true,
+          "issues": []
+        }
+      },
+      "classification": {
+        "decision": "保留：教学",
+        "reason": "包含明确技术、训练、纠错或战术信号",
+        "rules_version": 3,
+        "rules_hash": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7"
+      },
+      "teaching_note": {
+        "topic": "8166 抽挡细节 会了抽挡动作",
+        "key_evidence": [
+          {
+            "timestamp": "00:12-00:17",
+            "text": "伸得前有什么坏处呢就它需要你必须手指手腕特别有力才可以"
+          },
+          {
+            "timestamp": "00:21-00:26",
+            "text": "你收回来一点拍子你才有空间向前去发力对吧"
+          },
+          {
+            "timestamp": "00:59-01:08",
+            "text": "你看打回打回打回就是这儿也像个击球一样一二三四五六七八九",
+            "raw_text": "你看打回打回打回就是这儿也像个机球一样一二三四五六七八九"
+          },
+          {
+            "timestamp": "01:08-01:20",
+            "text": "然后你就可以自动去对它的点了你看我是不是点拍就是它击球的时间你看这是一个对点",
+            "raw_text": "然后你就可以自动去对它的点了你看我是不是点拍就是它机球的时间你看这是一个对点"
+          }
+        ],
+        "error_evidence": [
+          {
+            "timestamp": "00:43-00:48",
+            "text": "当球来了肯定是在你拍子的上面对不对你一边抬肘"
+          }
+        ],
+        "action_cues": [
+          {
+            "timestamp": "00:06-00:10",
+            "text": "举起来 好像听着很专业首先第一个你这个是不是要抬的"
+          },
+          {
+            "timestamp": "00:09-00:14",
+            "text": "你这个是不是要抬的就是伸得太前了 首先伸得前有什么坏处呢"
+          },
+          {
+            "timestamp": "00:12-00:17",
+            "text": "伸得前有什么坏处呢就它需要你必须手指手腕特别有力才可以"
+          },
+          {
+            "timestamp": "01:05-01:13",
+            "text": "一二三四五六七八九然后你就可以自动去对它的点了你看我是不是点拍就是它击球的时间",
+            "raw_text": "一二三四五六七八九然后你就可以自动去对它的点了你看我是不是点拍就是它机球的时间"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      },
+      "transcript_segments": [
+        {
+          "start": 2.54,
+          "end": 4.54,
+          "timestamp": "00:02-00:04",
+          "text": "我教你点双打干货"
+        },
+        {
+          "start": 4.54,
+          "end": 6.54,
+          "timestamp": "00:04-00:06",
+          "text": "把拍子抬高伸出去"
+        },
+        {
+          "start": 6.54,
+          "end": 8.54,
+          "timestamp": "00:06-00:08",
+          "text": "举起来 好像听着很专业"
+        },
+        {
+          "start": 8.54,
+          "end": 9.54,
+          "timestamp": "00:08-00:09",
+          "text": "首先第一个"
+        },
+        {
+          "start": 9.54,
+          "end": 10.54,
+          "timestamp": "00:09-00:10",
+          "text": "你这个是不是要抬的"
+        },
+        {
+          "start": 10.54,
+          "end": 12.54,
+          "timestamp": "00:10-00:12",
+          "text": "就是伸得太前了 首先"
+        },
+        {
+          "start": 12.54,
+          "end": 14.54,
+          "timestamp": "00:12-00:14",
+          "text": "伸得前有什么坏处呢"
+        },
+        {
+          "start": 14.54,
+          "end": 16.54,
+          "timestamp": "00:14-00:16",
+          "text": "就它需要你必须手指手腕"
+        },
+        {
+          "start": 16.54,
+          "end": 17.54,
+          "timestamp": "00:16-00:17",
+          "text": "特别有力才可以"
+        },
+        {
+          "start": 17.54,
+          "end": 19.54,
+          "timestamp": "00:17-00:19",
+          "text": "但你作为就是业余球友"
+        },
+        {
+          "start": 19.54,
+          "end": 20.54,
+          "timestamp": "00:19-00:20",
+          "text": "它是不具备的"
+        },
+        {
+          "start": 20.54,
+          "end": 21.54,
+          "timestamp": "00:20-00:21",
+          "text": "所以你第一要收回来一点"
+        },
+        {
+          "start": 21.54,
+          "end": 22.54,
+          "timestamp": "00:21-00:22",
+          "text": "你收回来一点拍子"
+        },
+        {
+          "start": 22.54,
+          "end": 25.54,
+          "timestamp": "00:22-00:25",
+          "text": "你才有空间向前去发力"
+        },
+        {
+          "start": 25.54,
+          "end": 26.54,
+          "timestamp": "00:25-00:26",
+          "text": "对吧"
+        },
+        {
+          "start": 26.54,
+          "end": 27.54,
+          "timestamp": "00:26-00:27",
+          "text": "这是第一个具备"
+        },
+        {
+          "start": 27.54,
+          "end": 28.54,
+          "timestamp": "00:27-00:28",
+          "text": "第二 如果你收回来"
+        },
+        {
+          "start": 28.54,
+          "end": 29.54,
+          "timestamp": "00:28-00:29",
+          "text": "拍子举得这么高"
+        },
+        {
+          "start": 29.54,
+          "end": 30.54,
+          "timestamp": "00:29-00:30",
+          "text": "你会发现"
+        },
+        {
+          "start": 30.54,
+          "end": 31.54,
+          "timestamp": "00:30-00:31",
+          "text": "所有来的球都像是挡"
+        },
+        {
+          "start": 31.54,
+          "end": 32.7,
+          "timestamp": "00:31-00:32",
+          "text": "像是挡"
+        },
+        {
+          "start": 32.7,
+          "end": 36.1,
+          "timestamp": "00:32-00:36",
+          "text": "你并没有办法去做顶肘抽球的动作"
+        },
+        {
+          "start": 36.1,
+          "end": 38.86,
+          "timestamp": "00:36-00:38",
+          "text": "所以我们如果预设极球点的这片区域"
+        },
+        {
+          "start": 38.86,
+          "end": 39.62,
+          "timestamp": "00:38-00:39",
+          "text": "挺好"
+        },
+        {
+          "start": 39.62,
+          "end": 41.66,
+          "timestamp": "00:39-00:41",
+          "text": "把你的拍子放下来"
+        },
+        {
+          "start": 41.66,
+          "end": 42.9,
+          "timestamp": "00:41-00:42",
+          "text": "一个拍头的距离"
+        },
+        {
+          "start": 43.78,
+          "end": 46.1,
+          "timestamp": "00:43-00:46",
+          "text": "当球来了肯定是在你拍子的上面"
+        },
+        {
+          "start": 46.1,
+          "end": 47.02,
+          "timestamp": "00:46-00:47",
+          "text": "对不对"
+        },
+        {
+          "start": 47.02,
+          "end": 48.74,
+          "timestamp": "00:47-00:48",
+          "text": "你一边抬肘"
+        },
+        {
+          "start": 48.74,
+          "end": 49.9,
+          "timestamp": "00:48-00:49",
+          "text": "击抬"
+        },
+        {
+          "start": 49.9,
+          "end": 50.94,
+          "timestamp": "00:49-00:50",
+          "text": "击抬"
+        },
+        {
+          "start": 50.94,
+          "end": 51.42,
+          "timestamp": "00:50-00:51",
+          "text": "击"
+        },
+        {
+          "start": 51.42,
+          "end": 55.06,
+          "timestamp": "00:51-00:55",
+          "text": "那你每一下抬牌等于都带着一个顶肘"
+        },
+        {
+          "start": 55.9,
+          "end": 57.78,
+          "timestamp": "00:55-00:57",
+          "text": "然后最重要的一个"
+        },
+        {
+          "start": 57.78,
+          "end": 58.9,
+          "timestamp": "00:57-00:58",
+          "text": "一打一回复"
+        },
+        {
+          "start": 58.9,
+          "end": 59.54,
+          "timestamp": "00:58-00:59",
+          "text": "什么意思"
+        },
+        {
+          "start": 59.54,
+          "end": 63.58,
+          "timestamp": "00:59-01:03",
+          "text": "你看打回打回打回"
+        },
+        {
+          "start": 63.58,
+          "end": 65.58,
+          "timestamp": "01:03-01:05",
+          "text": "就是这儿也像个击球一样",
+          "raw_text": "就是这儿也像个机球一样"
+        },
+        {
+          "start": 65.58,
+          "end": 68.78,
+          "timestamp": "01:05-01:08",
+          "text": "一二三四五六七八九"
+        },
+        {
+          "start": 68.78,
+          "end": 70.82,
+          "timestamp": "01:08-01:10",
+          "text": "然后你就可以自动去对它的点了"
+        },
+        {
+          "start": 70.82,
+          "end": 73.38,
+          "timestamp": "01:10-01:13",
+          "text": "你看我是不是点拍就是它击球的时间",
+          "raw_text": "你看我是不是点拍就是它机球的时间"
+        },
+        {
+          "start": 73.38,
+          "end": 80.11,
+          "timestamp": "01:13-01:20",
+          "text": "你看这是一个对点"
+        },
+        {
+          "start": 80.11,
+          "end": 80.79,
+          "timestamp": "01:20-01:20",
+          "text": "明白这意思吗"
+        },
+        {
+          "start": 82.15,
+          "end": 84.27,
+          "timestamp": "01:22-01:24",
+          "text": "对对对对"
+        },
+        {
+          "start": 84.27,
+          "end": 85.23,
+          "timestamp": "01:24-01:25",
+          "text": "但是这儿别这样打"
+        },
+        {
+          "start": 85.23,
+          "end": 87.27,
+          "timestamp": "01:25-01:27",
+          "text": "你看你这是没有顶着的"
+        },
+        {
+          "start": 87.27,
+          "end": 87.63,
+          "timestamp": "01:27-01:27",
+          "text": "看我"
+        },
+        {
+          "start": 88.95,
+          "end": 90.83,
+          "timestamp": "01:28-01:30",
+          "text": "你看这个拍是顺着身体上来"
+        },
+        {
+          "start": 90.83,
+          "end": 91.99,
+          "timestamp": "01:30-01:31",
+          "text": "把出去的"
+        },
+        {
+          "start": 91.99,
+          "end": 92.95,
+          "timestamp": "01:31-01:32",
+          "text": "虽然你看我拿的底"
+        },
+        {
+          "start": 92.95,
+          "end": 94.35,
+          "timestamp": "01:32-01:34",
+          "text": "这如果一来球"
+        },
+        {
+          "start": 95.35,
+          "end": 95.71,
+          "timestamp": "01:35-01:35",
+          "text": "对吧"
+        },
+        {
+          "start": 95.71,
+          "end": 97.39,
+          "timestamp": "01:35-01:37",
+          "text": "你看准备"
+        },
+        {
+          "start": 98.35,
+          "end": 99.39,
+          "timestamp": "01:38-01:39",
+          "text": "顶手往上顶"
+        },
+        {
+          "start": 99.79,
+          "end": 100.79,
+          "timestamp": "01:39-01:40",
+          "text": "顺着这出来"
+        },
+        {
+          "start": 101.95,
+          "end": 102.79,
+          "timestamp": "01:41-01:42",
+          "text": "对"
+        },
+        {
+          "start": 104.91,
+          "end": 105.51,
+          "timestamp": "01:44-01:45",
+          "text": "打回"
+        },
+        {
+          "start": 105.51,
+          "end": 106.59,
+          "timestamp": "01:45-01:46",
+          "text": "先放低一点"
+        },
+        {
+          "start": 107.43,
+          "end": 108.11,
+          "timestamp": "01:47-01:48",
+          "text": "来放在这"
+        },
+        {
+          "start": 108.63,
+          "end": 109.15,
+          "timestamp": "01:48-01:49",
+          "text": "好准备好"
+        },
+        {
+          "start": 109.15,
+          "end": 112.32,
+          "timestamp": "01:49-01:52",
+          "text": "来打回"
+        },
+        {
+          "start": 112.32,
+          "end": 113.4,
+          "timestamp": "01:52-01:53",
+          "text": "打回"
+        },
+        {
+          "start": 113.4,
+          "end": 114.16,
+          "timestamp": "01:53-01:54",
+          "text": "有力了"
+        },
+        {
+          "start": 114.16,
+          "end": 114.92,
+          "timestamp": "01:54-01:54",
+          "text": "感觉到没有"
+        },
+        {
+          "start": 114.92,
+          "end": 115.84,
+          "timestamp": "01:54-01:55",
+          "text": "是"
+        },
+        {
+          "start": 118.0,
+          "end": 119.88,
+          "timestamp": "01:58-01:59",
+          "text": "来打回"
+        },
+        {
+          "start": 119.88,
+          "end": 121.56,
+          "timestamp": "01:59-02:01",
+          "text": "打不不不"
+        },
+        {
+          "start": 121.56,
+          "end": 122.8,
+          "timestamp": "02:01-02:02",
+          "text": "你看你这打完"
+        },
+        {
+          "start": 122.8,
+          "end": 124.16,
+          "timestamp": "02:02-02:04",
+          "text": "就回的动作做得不好"
+        },
+        {
+          "start": 124.36,
+          "end": 125.36,
+          "timestamp": "02:04-02:05",
+          "text": "这儿击个球"
+        },
+        {
+          "start": 125.36,
+          "end": 126.28,
+          "timestamp": "02:05-02:06",
+          "text": "这儿也击个球"
+        },
+        {
+          "start": 126.28,
+          "end": 127.12,
+          "timestamp": "02:06-02:07",
+          "text": "这儿击个球"
+        },
+        {
+          "start": 127.12,
+          "end": 128.68,
+          "timestamp": "02:07-02:08",
+          "text": "这儿好像也击个球的动作"
+        },
+        {
+          "start": 128.68,
+          "end": 129.04,
+          "timestamp": "02:08-02:09",
+          "text": "你看"
+        },
+        {
+          "start": 129.04,
+          "end": 129.72,
+          "timestamp": "02:09-02:09",
+          "text": "当"
+        },
+        {
+          "start": 129.72,
+          "end": 130.0,
+          "timestamp": "02:09-02:10",
+          "text": "当"
+        },
+        {
+          "start": 130.0,
+          "end": 130.32,
+          "timestamp": "02:10-02:10",
+          "text": "当"
+        },
+        {
+          "start": 130.32,
+          "end": 130.64,
+          "timestamp": "02:10-02:10",
+          "text": "当"
+        },
+        {
+          "start": 130.64,
+          "end": 130.92,
+          "timestamp": "02:10-02:10",
+          "text": "当"
+        },
+        {
+          "start": 132.12,
+          "end": 132.72,
+          "timestamp": "02:12-02:12",
+          "text": "打"
+        },
+        {
+          "start": 132.72,
+          "end": 133.4,
+          "timestamp": "02:12-02:13",
+          "text": "对"
+        },
+        {
+          "start": 133.4,
+          "end": 134.52,
+          "timestamp": "02:13-02:14",
+          "text": "去找他击球点"
+        },
+        {
+          "start": 134.52,
+          "end": 135.04,
+          "timestamp": "02:14-02:15",
+          "text": "哎"
+        },
+        {
+          "start": 135.04,
+          "end": 135.6,
+          "timestamp": "02:15-02:15",
+          "text": "对"
+        },
+        {
+          "start": 135.6,
+          "end": 136.08,
+          "timestamp": "02:15-02:16",
+          "text": "对"
+        },
+        {
+          "start": 136.08,
+          "end": 136.64,
+          "timestamp": "02:16-02:16",
+          "text": "对"
+        },
+        {
+          "start": 136.64,
+          "end": 137.2,
+          "timestamp": "02:16-02:17",
+          "text": "对"
+        },
+        {
+          "start": 137.2,
+          "end": 137.96,
+          "timestamp": "02:17-02:17",
+          "text": "对"
+        },
+        {
+          "start": 137.96,
+          "end": 138.48,
+          "timestamp": "02:17-02:18",
+          "text": "好"
+        }
+      ]
+    },
+    {
+      "video_id": "7667477046378167473",
+      "evidence_id": "7667477046378167473",
+      "source_type": "douyin_video",
+      "retrieval_cohort": "automatic_expansion",
+      "canonical_url": "https://www.douyin.com/video/7667477046378167473",
+      "parent_source_id": null,
+      "clip_start_seconds": null,
+      "clip_end_seconds": null,
+      "title": "7766 00:00 / 01:42 短促集中发力 有了内外旋发力会更大，没用会更快，主要看手腕的保护力能不能卸力，大家量力而为",
+      "url": "https://www.douyin.com/video/7667477046378167473",
+      "category": "后场技术",
+      "tags": [
+        "后场技术",
+        "发力与身体运用"
+      ],
+      "duration_seconds": 101.6,
+      "processing_status": "ready",
+      "confidence": "medium",
+      "quality": {
+        "transcript": {
+          "language": "zh",
+          "language_probability": 1.0,
+          "segment_count": 53,
+          "text_characters": 425,
+          "han_ratio": 1.0,
+          "passed": true,
+          "issues": []
+        },
+        "automatic_evidence": {
+          "topic_terms": [
+            "发力",
+            "發力"
+          ],
+          "key_evidence_count": 5,
+          "teaching_term_matches": 21,
+          "unique_teaching_terms": [
+            "卸力",
+            "发力",
+            "大臂",
+            "小臂",
+            "手腕",
+            "挥拍",
+            "正手"
+          ],
+          "instruction_signal_matches": 10,
+          "evidence_text_characters": 425,
+          "provenance_rejected_evidence_count": 0,
+          "provenance_rejections": {
+            "key_evidence": 0,
+            "coverage_evidence": 0,
+            "error_evidence": 0,
+            "action_cues": 0
+          },
+          "passed": true,
+          "issues": []
+        }
+      },
+      "classification": {
+        "decision": "保留：教学",
+        "reason": "包含明确技术、训练、纠错或战术信号",
+        "rules_version": 3,
+        "rules_hash": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7"
+      },
+      "teaching_note": {
+        "topic": "7766 00:00 / 01:42 短促集中发力 有了内外旋发力会更大",
+        "key_evidence": [
+          {
+            "timestamp": "00:00-00:05",
+            "text": "什么你们还不会这样的短触发力一个视频教会你们"
+          },
+          {
+            "timestamp": "00:05-00:10",
+            "text": "那么很多朋友都知道想要打出短触发力主要就是靠我们手的制动"
+          },
+          {
+            "timestamp": "00:12-00:17",
+            "text": "抬头没有出去手腕是卡死的大臂快速的停住"
+          },
+          {
+            "timestamp": "01:00-01:07",
+            "text": "手臂外旋內旋來給手腕來進行卸力我適當的手腕使用"
+          },
+          {
+            "timestamp": "01:15-01:20",
+            "text": "那正手也是一樣的道理那正手快速的大臂停住為了讓小臂出去"
+          }
+        ],
+        "error_evidence": [],
+        "action_cues": [
+          {
+            "timestamp": "00:21-00:29",
+            "text": "为了让手腕快速的出去那我们手腕先尝试做这种拧平盖一样的动作那我们配合小臂的制动"
+          },
+          {
+            "timestamp": "00:31-00:37",
+            "text": "我们看看有效的和无效的首先无效拍头没有出去"
+          },
+          {
+            "timestamp": "00:45-00:54",
+            "text": "中感发生形变拍头都已经可以回到前面去那这肯定是有效的"
+          },
+          {
+            "timestamp": "01:25-01:30",
+            "text": "來進行保護就可以了其实我们在后场的时候"
+          }
+        ],
+        "note": "自动抽取；用于正式回答前应结合上下文与视频画面复核术语。"
+      },
+      "transcript_segments": [
+        {
+          "start": 0.0,
+          "end": 0.84,
+          "timestamp": "00:00-00:00",
+          "text": "什么"
+        },
+        {
+          "start": 0.84,
+          "end": 4.12,
+          "timestamp": "00:00-00:04",
+          "text": "你们还不会这样的短触发力"
+        },
+        {
+          "start": 4.12,
+          "end": 5.6,
+          "timestamp": "00:04-00:05",
+          "text": "一个视频教会你们"
+        },
+        {
+          "start": 5.6,
+          "end": 6.72,
+          "timestamp": "00:05-00:06",
+          "text": "那么很多朋友都知道"
+        },
+        {
+          "start": 6.72,
+          "end": 7.92,
+          "timestamp": "00:06-00:07",
+          "text": "想要打出短触发力"
+        },
+        {
+          "start": 7.92,
+          "end": 10.08,
+          "timestamp": "00:07-00:10",
+          "text": "主要就是靠我们手的制动"
+        },
+        {
+          "start": 10.08,
+          "end": 12.24,
+          "timestamp": "00:10-00:12",
+          "text": "但是很多朋友的制动是这样"
+        },
+        {
+          "start": 12.24,
+          "end": 13.8,
+          "timestamp": "00:12-00:13",
+          "text": "抬头没有出去"
+        },
+        {
+          "start": 13.8,
+          "end": 15.76,
+          "timestamp": "00:13-00:15",
+          "text": "手腕是卡死的"
+        },
+        {
+          "start": 15.76,
+          "end": 17.6,
+          "timestamp": "00:15-00:17",
+          "text": "大臂快速的停住"
+        },
+        {
+          "start": 17.6,
+          "end": 19.68,
+          "timestamp": "00:17-00:19",
+          "text": "为了让小臂更快的出去"
+        },
+        {
+          "start": 19.68,
+          "end": 21.2,
+          "timestamp": "00:19-00:21",
+          "text": "小臂快速的制动"
+        },
+        {
+          "start": 21.2,
+          "end": 23.44,
+          "timestamp": "00:21-00:23",
+          "text": "为了让手腕快速的出去"
+        },
+        {
+          "start": 23.44,
+          "end": 26.96,
+          "timestamp": "00:23-00:26",
+          "text": "那我们手腕先尝试做这种拧平盖一样的动作"
+        },
+        {
+          "start": 26.96,
+          "end": 29.08,
+          "timestamp": "00:26-00:29",
+          "text": "那我们配合小臂的制动"
+        },
+        {
+          "start": 29.08,
+          "end": 31.08,
+          "timestamp": "00:29-00:31",
+          "text": "把拍头打出来"
+        },
+        {
+          "start": 31.08,
+          "end": 33.08,
+          "timestamp": "00:31-00:33",
+          "text": "我们看看有效的和无效的"
+        },
+        {
+          "start": 33.08,
+          "end": 35.08,
+          "timestamp": "00:33-00:35",
+          "text": "首先无效"
+        },
+        {
+          "start": 36.08,
+          "end": 37.08,
+          "timestamp": "00:36-00:37",
+          "text": "拍头没有出去"
+        },
+        {
+          "start": 37.08,
+          "end": 39.08,
+          "timestamp": "00:37-00:39",
+          "text": "那这样的形式发不到力"
+        },
+        {
+          "start": 39.08,
+          "end": 40.08,
+          "timestamp": "00:39-00:40",
+          "text": "是要往前推的"
+        },
+        {
+          "start": 40.08,
+          "end": 42.08,
+          "timestamp": "00:40-00:42",
+          "text": "但是有效的是什么"
+        },
+        {
+          "start": 42.08,
+          "end": 43.08,
+          "timestamp": "00:42-00:43",
+          "text": "我手臂停在这儿"
+        },
+        {
+          "start": 43.08,
+          "end": 45.08,
+          "timestamp": "00:43-00:45",
+          "text": "但是通过我们的制动"
+        },
+        {
+          "start": 45.08,
+          "end": 47.08,
+          "timestamp": "00:45-00:47",
+          "text": "中感发生形变"
+        },
+        {
+          "start": 47.08,
+          "end": 49.08,
+          "timestamp": "00:47-00:49",
+          "text": "拍头都已经可以回到前面去"
+        },
+        {
+          "start": 49.08,
+          "end": 54.34,
+          "timestamp": "00:49-00:54",
+          "text": "那这肯定是有效的"
+        },
+        {
+          "start": 54.34,
+          "end": 55.34,
+          "timestamp": "00:54-00:55",
+          "text": "但是有的朋友会说了"
+        },
+        {
+          "start": 55.34,
+          "end": 57.34,
+          "timestamp": "00:55-00:57",
+          "text": "这样我的手腕会不会疼"
+        },
+        {
+          "start": 57.34,
+          "end": 58.34,
+          "timestamp": "00:57-00:58",
+          "text": "是有这种可能的"
+        },
+        {
+          "start": 58.34,
+          "end": 60.34,
+          "timestamp": "00:58-01:00",
+          "text": "所以我们还要学会手臂"
+        },
+        {
+          "start": 60.34,
+          "end": 63.14,
+          "timestamp": "01:00-01:03",
+          "text": "手臂外旋內旋"
+        },
+        {
+          "start": 63.14,
+          "end": 64.94,
+          "timestamp": "01:03-01:04",
+          "text": "來給手腕來進行卸力"
+        },
+        {
+          "start": 64.94,
+          "end": 67.14,
+          "timestamp": "01:04-01:07",
+          "text": "我適當的手腕使用"
+        },
+        {
+          "start": 67.14,
+          "end": 68.62,
+          "timestamp": "01:07-01:08",
+          "text": "進入一點點外旋"
+        },
+        {
+          "start": 68.62,
+          "end": 70.42,
+          "timestamp": "01:08-01:10",
+          "text": "來進行一些保護"
+        },
+        {
+          "start": 70.42,
+          "end": 72.1,
+          "timestamp": "01:10-01:12",
+          "text": "手臂微微的轉一點"
+        },
+        {
+          "start": 72.1,
+          "end": 73.14,
+          "timestamp": "01:12-01:13",
+          "text": "手腕送出去"
+        },
+        {
+          "start": 75.06,
+          "end": 75.54,
+          "timestamp": "01:15-01:15",
+          "text": "搞定"
+        },
+        {
+          "start": 75.54,
+          "end": 77.26,
+          "timestamp": "01:15-01:17",
+          "text": "那正手也是一樣的道理"
+        },
+        {
+          "start": 77.26,
+          "end": 78.9,
+          "timestamp": "01:17-01:18",
+          "text": "那正手快速的大臂停住"
+        },
+        {
+          "start": 78.9,
+          "end": 80.1,
+          "timestamp": "01:18-01:20",
+          "text": "為了讓小臂出去"
+        },
+        {
+          "start": 80.1,
+          "end": 81.66,
+          "timestamp": "01:20-01:21",
+          "text": "小臂快速的停住"
+        },
+        {
+          "start": 81.66,
+          "end": 83.3,
+          "timestamp": "01:21-01:23",
+          "text": "為了讓手腕出去"
+        },
+        {
+          "start": 83.3,
+          "end": 85.18,
+          "timestamp": "01:23-01:25",
+          "text": "那麼我們加一點內旋"
+        },
+        {
+          "start": 85.18,
+          "end": 86.06,
+          "timestamp": "01:25-01:26",
+          "text": "來進行保護"
+        },
+        {
+          "start": 87.94,
+          "end": 88.7,
+          "timestamp": "01:27-01:28",
+          "text": "就可以了"
+        },
+        {
+          "start": 88.7,
+          "end": 90.42,
+          "timestamp": "01:28-01:30",
+          "text": "其实我们在后场的时候"
+        },
+        {
+          "start": 90.42,
+          "end": 91.18,
+          "timestamp": "01:30-01:31",
+          "text": "也可以使用"
+        },
+        {
+          "start": 91.18,
+          "end": 93.38,
+          "timestamp": "01:31-01:33",
+          "text": "尤其是空间比较小的时候"
+        },
+        {
+          "start": 93.38,
+          "end": 95.98,
+          "timestamp": "01:33-01:35",
+          "text": "不管是高原"
+        },
+        {
+          "start": 95.98,
+          "end": 98.78,
+          "timestamp": "01:35-01:38",
+          "text": "还是说沙球"
+        },
+        {
+          "start": 98.78,
+          "end": 100.66,
+          "timestamp": "01:38-01:40",
+          "text": "总有没有时间挥拍的时候吧"
+        }
+      ]
+    },
+    {
       "video_id": "7665812689277115897",
       "evidence_id": "7665812689277115897",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7665812689277115897",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -293,6 +1952,7 @@
       "video_id": "7664908274752137146",
       "evidence_id": "7664908274752137146",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7664908274752137146",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -1023,6 +2683,7 @@
       "video_id": "7663523942439940453",
       "evidence_id": "7663523942439940453",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7663523942439940453",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -1443,6 +3104,7 @@
       "video_id": "7661940775983482097",
       "evidence_id": "7661940775983482097",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7661940775983482097",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -1856,6 +3518,7 @@
       "video_id": "7659991105622862457",
       "evidence_id": "7659991105622862457",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7659991105622862457",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -2265,6 +3928,7 @@
       "video_id": "7659348110628345210",
       "evidence_id": "7659348110628345210",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7659348110628345210",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -3045,6 +4709,7 @@
       "video_id": "7658231159860261361",
       "evidence_id": "7658231159860261361",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7658231159860261361",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -3442,6 +5107,7 @@
       "video_id": "7656927370758796145",
       "evidence_id": "7656927370758796145",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7656927370758796145",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -3952,6 +5618,7 @@
       "video_id": "7656560952972884730",
       "evidence_id": "7656560952972884730",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7656560952972884730",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -4699,6 +6366,7 @@
       "video_id": "7652440366436945017",
       "evidence_id": "7652440366436945017",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7652440366436945017",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -5931,6 +7599,7 @@
       "video_id": "7650602010613537265",
       "evidence_id": "7650602010613537265",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7650602010613537265",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -6205,6 +7874,7 @@
       "video_id": "7647839024535507897",
       "evidence_id": "7647839024535507897",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7647839024535507897",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -7419,6 +9089,7 @@
       "video_id": "7643719807951615482",
       "evidence_id": "7643719807951615482",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7643719807951615482",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -7984,6 +9655,7 @@
       "video_id": "7642648621985030138",
       "evidence_id": "7642648621985030138",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7642648621985030138",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -8691,6 +10363,7 @@
       "video_id": "7641533740292048049",
       "evidence_id": "7641533740292048049",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7641533740292048049",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -9527,6 +11200,7 @@
       "video_id": "7639306481355832689",
       "evidence_id": "7639306481355832689",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7639306481355832689",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -10079,6 +11753,7 @@
       "video_id": "7634998306204492794",
       "evidence_id": "7634998306204492794",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7634998306204492794",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -10556,6 +12231,7 @@
       "video_id": "7634016952800880570",
       "evidence_id": "7634016952800880570",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7634016952800880570",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -11110,6 +12786,7 @@
       "video_id": "7631290187235164026",
       "evidence_id": "7631290187235164026",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7631290187235164026",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -12004,6 +13681,7 @@
       "video_id": "7630800123594285305",
       "evidence_id": "7630800123594285305",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7630800123594285305",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -12733,6 +14411,7 @@
       "video_id": "7628342769941691121",
       "evidence_id": "7628342769941691121",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7628342769941691121",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -13007,6 +14686,7 @@
       "video_id": "7627338837022917809",
       "evidence_id": "7627338837022917809",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7627338837022917809",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -13078,6 +14758,7 @@
       "video_id": "7626127268884067249",
       "evidence_id": "7626127268884067249",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7626127268884067249",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -14417,6 +16098,7 @@
       "video_id": "7622167629645727717",
       "evidence_id": "7622167629645727717",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7622167629645727717",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -14888,6 +16570,7 @@
       "video_id": "7621243051541587889",
       "evidence_id": "7621243051541587889",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7621243051541587889",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -15392,6 +17075,7 @@
       "video_id": "7619576226616745445",
       "evidence_id": "7619576226616745445",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7619576226616745445",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -15769,6 +17453,7 @@
       "video_id": "7618301799796222833",
       "evidence_id": "7618301799796222833",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7618301799796222833",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -16094,6 +17779,7 @@
       "video_id": "7616819993833503601",
       "evidence_id": "7616819993833503601",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7616819993833503601",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -16541,6 +18227,7 @@
       "video_id": "7615737190207725937",
       "evidence_id": "7615737190207725937",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7615737190207725937",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -16611,6 +18298,7 @@
       "video_id": "7614167503938610417",
       "evidence_id": "7614167503938610417",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7614167503938610417",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -17324,6 +19012,7 @@
       "video_id": "7611635851789771721",
       "evidence_id": "7611635851789771721",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7611635851789771721",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -18650,6 +20339,7 @@
       "video_id": "7609429014616637050",
       "evidence_id": "7609429014616637050",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7609429014616637050",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -19420,6 +21110,7 @@
       "video_id": "7607852875611759802",
       "evidence_id": "7607852875611759802",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7607852875611759802",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -19856,6 +21547,7 @@
       "video_id": "7606412946096327978",
       "evidence_id": "7606412946096327978",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7606412946096327978",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -21398,6 +23090,7 @@
       "video_id": "7606560547489149691",
       "evidence_id": "7606560547489149691",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7606560547489149691",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -22179,6 +23872,7 @@
       "video_id": "7603148927714908273",
       "evidence_id": "7603148927714908273",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7603148927714908273",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -22599,6 +24293,7 @@
       "video_id": "7602766054809333617",
       "evidence_id": "7602766054809333617",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7602766054809333617",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -23297,6 +24992,7 @@
       "video_id": "7600107130034047973",
       "evidence_id": "7600107130034047973",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7600107130034047973",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -24211,6 +25907,7 @@
       "video_id": "7598855095372185273",
       "evidence_id": "7598855095372185273",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7598855095372185273",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -24561,6 +26258,7 @@
       "video_id": "7597528312752490929",
       "evidence_id": "7597528312752490929",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7597528312752490929",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -25114,6 +26812,7 @@
       "video_id": "7596955153073478011",
       "evidence_id": "7596955153073478011",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7596955153073478011",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -25381,6 +27080,7 @@
       "video_id": "7595804581259641521",
       "evidence_id": "7595804581259641521",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7595804581259641521",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -25984,6 +27684,7 @@
       "video_id": "7593661008519810289",
       "evidence_id": "7593661008519810289",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7593661008519810289",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -26236,6 +27937,7 @@
       "video_id": "7592181557051310961",
       "evidence_id": "7592181557051310961",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7592181557051310961",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -26968,6 +28670,7 @@
       "video_id": "7591112983016940977",
       "evidence_id": "7591112983016940977",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7591112983016940977",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -27252,6 +28955,7 @@
       "video_id": "7589749293205363633",
       "evidence_id": "7589749293205363633",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7589749293205363633",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -27520,6 +29224,7 @@
       "video_id": "7589590613499595185",
       "evidence_id": "7589590613499595185",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7589590613499595185",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -27733,6 +29438,7 @@
       "video_id": "7588747058782683513",
       "evidence_id": "7588747058782683513",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7588747058782683513",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -27928,6 +29634,7 @@
       "video_id": "7587362379455778097",
       "evidence_id": "7587362379455778097",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7587362379455778097",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -28226,6 +29933,7 @@
       "video_id": "7586613438625959217",
       "evidence_id": "7586613438625959217",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7586613438625959217",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -28726,6 +30434,7 @@
       "video_id": "7582017752145136945",
       "evidence_id": "7582017752145136945",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7582017752145136945",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -29897,6 +31606,7 @@
       "video_id": "7577392474555210597",
       "evidence_id": "7577392474555210597",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7577392474555210597",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -30231,6 +31941,7 @@
       "video_id": "7573211923485260537",
       "evidence_id": "7573211923485260537",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7573211923485260537",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -30815,6 +32526,7 @@
       "video_id": "7571574635323124145",
       "evidence_id": "7571574635323124145",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7571574635323124145",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -31299,6 +33011,7 @@
       "video_id": "7570301879545426171",
       "evidence_id": "7570301879545426171",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7570301879545426171",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -32099,6 +33812,7 @@
       "video_id": "7567860375287303035",
       "evidence_id": "7567860375287303035",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7567860375287303035",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -33156,6 +34870,7 @@
       "video_id": "7567155406117533051",
       "evidence_id": "7567155406117533051",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7567155406117533051",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -33243,6 +34958,7 @@
       "video_id": "7563513758061114875",
       "evidence_id": "7563513758061114875",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7563513758061114875",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -33536,6 +35252,7 @@
       "video_id": "7561558424342056250",
       "evidence_id": "7561558424342056250",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7561558424342056250",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -34201,6 +35918,7 @@
       "video_id": "7560064232592493882",
       "evidence_id": "7560064232592493882",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7560064232592493882",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -34837,6 +36555,7 @@
       "video_id": "7558912953539071292",
       "evidence_id": "7558912953539071292",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7558912953539071292",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -35340,6 +37059,7 @@
       "video_id": "7552759261840952636",
       "evidence_id": "7552759261840952636",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7552759261840952636",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -35421,6 +37141,7 @@
       "video_id": "7551459420703837498",
       "evidence_id": "7551459420703837498",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7551459420703837498",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -35932,6 +37653,7 @@
       "video_id": "7550305145877155131",
       "evidence_id": "7550305145877155131",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7550305145877155131",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -36581,6 +38303,7 @@
       "video_id": "7548394643144068411",
       "evidence_id": "7548394643144068411",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7548394643144068411",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -37130,6 +38853,7 @@
       "video_id": "7546109410041908538",
       "evidence_id": "7546109410041908538",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7546109410041908538",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -38011,6 +39735,7 @@
       "video_id": "7541623926234811705",
       "evidence_id": "7541623926234811705",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7541623926234811705",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -38685,6 +40410,7 @@
       "video_id": "7540508309087358266",
       "evidence_id": "7540508309087358266",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7540508309087358266",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -38957,6 +40683,7 @@
       "video_id": "7539394762560113978",
       "evidence_id": "7539394762560113978",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7539394762560113978",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -39356,6 +41083,7 @@
       "video_id": "7538639302243323195",
       "evidence_id": "7538639302243323195",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7538639302243323195",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -39582,6 +41310,7 @@
       "video_id": "7536519262631611707",
       "evidence_id": "7536519262631611707",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7536519262631611707",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -39951,6 +41680,7 @@
       "video_id": "7535400692573211962",
       "evidence_id": "7535400692573211962",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7535400692573211962",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -40268,6 +41998,7 @@
       "video_id": "7534955049426095419",
       "evidence_id": "7534955049426095419",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7534955049426095419",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -40831,6 +42562,7 @@
       "video_id": "7531326870298873147",
       "evidence_id": "7531326870298873147",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7531326870298873147",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -41602,6 +43334,7 @@
       "video_id": "7530102529830800699",
       "evidence_id": "7530102529830800699",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7530102529830800699",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -42160,6 +43893,7 @@
       "video_id": "7526124617461173562",
       "evidence_id": "7526124617461173562",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7526124617461173562",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -42745,6 +44479,7 @@
       "video_id": "7525379384673733945",
       "evidence_id": "7525379384673733945",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7525379384673733945",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -43585,6 +45320,7 @@
       "video_id": "7524557392328461627",
       "evidence_id": "7524557392328461627",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7524557392328461627",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -44355,6 +46091,7 @@
       "video_id": "7523163965838003514",
       "evidence_id": "7523163965838003514",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7523163965838003514",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -44903,6 +46640,7 @@
       "video_id": "7522041413614816570",
       "evidence_id": "7522041413614816570",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7522041413614816570",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -45403,6 +47141,7 @@
       "video_id": "7520190707093654844",
       "evidence_id": "7520190707093654844",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7520190707093654844",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -46097,6 +47836,7 @@
       "video_id": "7518239001813339449",
       "evidence_id": "7518239001813339449",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7518239001813339449",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -46467,6 +48207,7 @@
       "video_id": "7517867684509420857",
       "evidence_id": "7517867684509420857",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7517867684509420857",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -47196,6 +48937,7 @@
       "video_id": "7516012808523222329",
       "evidence_id": "7516012808523222329",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7516012808523222329",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -47266,6 +49008,7 @@
       "video_id": "7515625891511995706",
       "evidence_id": "7515625891511995706",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7515625891511995706",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -47653,6 +49396,7 @@
       "video_id": "7511934047901846841",
       "evidence_id": "7511934047901846841",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7511934047901846841",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -48088,6 +49832,7 @@
       "video_id": "7511074095086243131",
       "evidence_id": "7511074095086243131",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7511074095086243131",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -48431,6 +50176,7 @@
       "video_id": "7509355373729762619",
       "evidence_id": "7509355373729762619",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7509355373729762619",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -48760,6 +50506,7 @@
       "video_id": "7508222669708463420",
       "evidence_id": "7508222669708463420",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7508222669708463420",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -49053,6 +50800,7 @@
       "video_id": "7506736569824726332",
       "evidence_id": "7506736569824726332",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7506736569824726332",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -49510,6 +51258,7 @@
       "video_id": "7506362888166083897",
       "evidence_id": "7506362888166083897",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7506362888166083897",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -50420,6 +52169,7 @@
       "video_id": "7505345719160933692",
       "evidence_id": "7505345719160933692",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7505345719160933692",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -50783,6 +52533,7 @@
       "video_id": "7504391919716273468",
       "evidence_id": "7504391919716273468",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7504391919716273468",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -51604,6 +53355,7 @@
       "video_id": "7502895214820085049",
       "evidence_id": "7502895214820085049",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7502895214820085049",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -52047,6 +53799,7 @@
       "video_id": "7501542236061420859",
       "evidence_id": "7501542236061420859",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7501542236061420859",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -52405,6 +54158,7 @@
       "video_id": "7500519808157371711",
       "evidence_id": "7500519808157371711",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7500519808157371711",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -53036,6 +54790,7 @@
       "video_id": "7499776424493075772",
       "evidence_id": "7499776424493075772",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7499776424493075772",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -53317,6 +55072,7 @@
       "video_id": "7498830855188942137",
       "evidence_id": "7498830855188942137",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7498830855188942137",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -53863,6 +55619,7 @@
       "video_id": "7498295344284093755",
       "evidence_id": "7498295344284093755",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7498295344284093755",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -53947,6 +55704,7 @@
       "video_id": "7497098752897879355",
       "evidence_id": "7497098752897879355",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7497098752897879355",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -54220,6 +55978,7 @@
       "video_id": "7496715538836704571",
       "evidence_id": "7496715538836704571",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7496715538836704571",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -54290,6 +56049,7 @@
       "video_id": "7496238975796333881",
       "evidence_id": "7496238975796333881",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7496238975796333881",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -54365,6 +56125,7 @@
       "video_id": "7494729488699559225",
       "evidence_id": "7494729488699559225",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7494729488699559225",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -54517,6 +56278,7 @@
       "video_id": "7492357671853526329",
       "evidence_id": "7492357671853526329",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7492357671853526329",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -55449,6 +57211,7 @@
       "video_id": "7491780200468843833",
       "evidence_id": "7491780200468843833",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7491780200468843833",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -55654,6 +57417,7 @@
       "video_id": "7491244893893938492",
       "evidence_id": "7491244893893938492",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7491244893893938492",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -55958,6 +57722,7 @@
       "video_id": "7489412105641168187",
       "evidence_id": "7489412105641168187",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7489412105641168187",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -56300,6 +58065,7 @@
       "video_id": "7488538000524119356",
       "evidence_id": "7488538000524119356",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7488538000524119356",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -56371,6 +58137,7 @@
       "video_id": "7488280037955816762",
       "evidence_id": "7488280037955816762",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7488280037955816762",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -56792,6 +58559,7 @@
       "video_id": "7486788550298471739",
       "evidence_id": "7486788550298471739",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7486788550298471739",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -57320,6 +59088,7 @@
       "video_id": "7486058135547891004",
       "evidence_id": "7486058135547891004",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7486058135547891004",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -58019,6 +59788,7 @@
       "video_id": "7485692231404342586",
       "evidence_id": "7485692231404342586",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7485692231404342586",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -58528,6 +60298,7 @@
       "video_id": "7484563688096091449",
       "evidence_id": "7484563688096091449",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7484563688096091449",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59005,6 +60776,7 @@
       "video_id": "7483346020332522812",
       "evidence_id": "7483346020332522812",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7483346020332522812",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59163,6 +60935,7 @@
       "video_id": "7480852601798511929",
       "evidence_id": "7480852601798511929",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7480852601798511929",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59233,6 +61006,7 @@
       "video_id": "7476768272864644409",
       "evidence_id": "7476768272864644409",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7476768272864644409",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59306,6 +61080,7 @@
       "video_id": "7475440958130097466",
       "evidence_id": "7475440958130097466",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7475440958130097466",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59817,6 +61592,7 @@
       "video_id": "7471361140719652154",
       "evidence_id": "7471361140719652154",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7471361140719652154",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -59890,6 +61666,7 @@
       "video_id": "7459867608460840252",
       "evidence_id": "7459867608460840252",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7459867608460840252",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -60290,6 +62067,7 @@
       "video_id": "7458505857844776250",
       "evidence_id": "7458505857844776250",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7458505857844776250",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -60588,6 +62366,7 @@
       "video_id": "7453420876076240188",
       "evidence_id": "7453420876076240188",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7453420876076240188",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -64530,6 +66309,7 @@
       "video_id": "7449702119076072764",
       "evidence_id": "7449702119076072764",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7449702119076072764",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -65068,6 +66848,7 @@
       "video_id": "7447084061371272507",
       "evidence_id": "7447084061371272507",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7447084061371272507",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -65148,6 +66929,7 @@
       "video_id": "7445495930280856892",
       "evidence_id": "7445495930280856892",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7445495930280856892",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -65806,6 +67588,7 @@
       "video_id": "7441796812475747641",
       "evidence_id": "7441796812475747641",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7441796812475747641",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -65975,6 +67758,7 @@
       "video_id": "7440406891664133428",
       "evidence_id": "7440406891664133428",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7440406891664133428",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -66281,6 +68065,7 @@
       "video_id": "7432633273060314408",
       "evidence_id": "7432633273060314408",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7432633273060314408",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -66640,6 +68425,7 @@
       "video_id": "7427416335900020008",
       "evidence_id": "7427416335900020008",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7427416335900020008",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -66901,6 +68687,7 @@
       "video_id": "7423714121620737315",
       "evidence_id": "7423714121620737315",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7423714121620737315",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -66971,6 +68758,7 @@
       "video_id": "7422121561559272739",
       "evidence_id": "7422121561559272739",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7422121561559272739",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -67399,6 +69187,7 @@
       "video_id": "7418417650264558848",
       "evidence_id": "7418417650264558848",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7418417650264558848",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -67600,6 +69389,7 @@
       "video_id": "7415820467606473999",
       "evidence_id": "7415820467606473999",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7415820467606473999",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -67673,6 +69463,7 @@
       "video_id": "7414339897990843663",
       "evidence_id": "7414339897990843663",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7414339897990843663",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -68117,6 +69908,7 @@
       "video_id": "7413335844594994447",
       "evidence_id": "7413335844594994447",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7413335844594994447",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -68800,6 +70592,7 @@
       "video_id": "7411850466457292084",
       "evidence_id": "7411850466457292084",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7411850466457292084",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69131,6 +70924,7 @@
       "video_id": "7409137525006060840",
       "evidence_id": "7409137525006060840",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7409137525006060840",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69201,6 +70995,7 @@
       "video_id": "7408162190647217460",
       "evidence_id": "7408162190647217460",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7408162190647217460",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69271,6 +71066,7 @@
       "video_id": "7406541084219821312",
       "evidence_id": "7406541084219821312",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7406541084219821312",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69744,6 +71540,7 @@
       "video_id": "7405420818009722146",
       "evidence_id": "7405420818009722146",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7405420818009722146",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69814,6 +71611,7 @@
       "video_id": "7404091511773613347",
       "evidence_id": "7404091511773613347",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7404091511773613347",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69885,6 +71683,7 @@
       "video_id": "7400221745208167695",
       "evidence_id": "7400221745208167695",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7400221745208167695",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -69958,6 +71757,7 @@
       "video_id": "7397746202562956559",
       "evidence_id": "7397746202562956559",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7397746202562956559",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -70762,6 +72562,7 @@
       "video_id": "7393550140465777960",
       "evidence_id": "7393550140465777960",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7393550140465777960",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -71299,6 +73100,7 @@
       "video_id": "7387250672263040267",
       "evidence_id": "7387250672263040267",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7387250672263040267",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -71370,6 +73172,7 @@
       "video_id": "7387233755057949987",
       "evidence_id": "7387233755057949987",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7387233755057949987",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -71557,6 +73360,7 @@
       "video_id": "7385749108843089187",
       "evidence_id": "7385749108843089187",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7385749108843089187",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -73043,6 +74847,7 @@
       "video_id": "7384641787647872308",
       "evidence_id": "7384641787647872308",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7384641787647872308",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -73441,6 +75246,7 @@
       "video_id": "7383154379915906319",
       "evidence_id": "7383154379915906319",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7383154379915906319",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -74085,6 +75891,7 @@
       "video_id": "7382052454063492392",
       "evidence_id": "7382052454063492392",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7382052454063492392",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -74158,6 +75965,7 @@
       "video_id": "7381785580268473635",
       "evidence_id": "7381785580268473635",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7381785580268473635",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -74232,6 +76040,7 @@
       "video_id": "7380562375188974888",
       "evidence_id": "7380562375188974888",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7380562375188974888",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -74842,6 +76651,7 @@
       "video_id": "7376838935164505384",
       "evidence_id": "7376838935164505384",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7376838935164505384",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -75025,6 +76835,7 @@
       "video_id": "7370160247467494691",
       "evidence_id": "7370160247467494691",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7370160247467494691",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -75098,6 +76909,7 @@
       "video_id": "7369052560818195752",
       "evidence_id": "7369052560818195752",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7369052560818195752",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -75700,6 +77512,7 @@
       "video_id": "7367561803234069800",
       "evidence_id": "7367561803234069800",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7367561803234069800",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -75773,6 +77586,7 @@
       "video_id": "7358661350945525007",
       "evidence_id": "7358661350945525007",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7358661350945525007",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -75845,6 +77659,7 @@
       "video_id": "7357171384377740544",
       "evidence_id": "7357171384377740544",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7357171384377740544",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -76177,6 +77992,7 @@
       "video_id": "7356057989767269684",
       "evidence_id": "7356057989767269684",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7356057989767269684",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -76356,6 +78172,7 @@
       "video_id": "7354580584229866787",
       "evidence_id": "7354580584229866787",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7354580584229866787",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -76428,6 +78245,7 @@
       "video_id": "7353467942706695458",
       "evidence_id": "7353467942706695458",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7353467942706695458",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -76735,6 +78553,7 @@
       "video_id": "7351983713426705699",
       "evidence_id": "7351983713426705699",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7351983713426705699",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -77282,6 +79101,7 @@
       "video_id": "7348271667711380770",
       "evidence_id": "7348271667711380770",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7348271667711380770",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -77358,6 +79178,7 @@
       "video_id": "7346781656461724963",
       "evidence_id": "7346781656461724963",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7346781656461724963",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -77708,6 +79529,7 @@
       "video_id": "7344186576013905187",
       "evidence_id": "7344186576013905187",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7344186576013905187",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -77871,6 +79693,7 @@
       "video_id": "7343069490126540084",
       "evidence_id": "7343069490126540084",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7343069490126540084",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -78679,6 +80502,7 @@
       "video_id": "7341595770195430690",
       "evidence_id": "7341595770195430690",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7341595770195430690",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -78891,6 +80715,7 @@
       "video_id": "7340472371322686755",
       "evidence_id": "7340472371322686755",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7340472371322686755",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -78963,6 +80788,7 @@
       "video_id": "7335277415456836898",
       "evidence_id": "7335277415456836898",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7335277415456836898",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -79385,6 +81211,7 @@
       "video_id": "7331201469292596520",
       "evidence_id": "7331201469292596520",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7331201469292596520",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -79995,6 +81822,7 @@
       "video_id": "7330090280055491874",
       "evidence_id": "7330090280055491874",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7330090280055491874",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -80070,6 +81898,7 @@
       "video_id": "7327483273536474408",
       "evidence_id": "7327483273536474408",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7327483273536474408",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -80272,6 +82101,7 @@
       "video_id": "7324887936980274432",
       "evidence_id": "7324887936980274432",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7324887936980274432",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -80346,6 +82176,7 @@
       "video_id": "7322291358931127592",
       "evidence_id": "7322291358931127592",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7322291358931127592",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -80863,6 +82694,7 @@
       "video_id": "7319695192297180431",
       "evidence_id": "7319695192297180431",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7319695192297180431",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -81216,6 +83048,7 @@
       "video_id": "7318207777246072098",
       "evidence_id": "7318207777246072098",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7318207777246072098",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -81463,6 +83296,7 @@
       "video_id": "7315610620424883496",
       "evidence_id": "7315610620424883496",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7315610620424883496",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -81733,6 +83567,7 @@
       "video_id": "7313012058021186866",
       "evidence_id": "7313012058021186866",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7313012058021186866",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -81866,6 +83701,7 @@
       "video_id": "7311907273461320975",
       "evidence_id": "7311907273461320975",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7311907273461320975",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -82236,6 +84072,7 @@
       "video_id": "7309303794733485327",
       "evidence_id": "7309303794733485327",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7309303794733485327",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -82411,6 +84248,7 @@
       "video_id": "7307817481257766178",
       "evidence_id": "7307817481257766178",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7307817481257766178",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -82680,6 +84518,7 @@
       "video_id": "7306709804234444072",
       "evidence_id": "7306709804234444072",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7306709804234444072",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -82923,6 +84762,7 @@
       "video_id": "7305218669343264034",
       "evidence_id": "7305218669343264034",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7305218669343264034",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -83118,6 +84958,7 @@
       "video_id": "7304104136306412835",
       "evidence_id": "7304104136306412835",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7304104136306412835",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -83700,6 +85541,7 @@
       "video_id": "7302621786980486440",
       "evidence_id": "7302621786980486440",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7302621786980486440",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -84044,6 +85886,7 @@
       "video_id": "7301508881325296931",
       "evidence_id": "7301508881325296931",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7301508881325296931",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -84502,6 +86345,7 @@
       "video_id": "7300032085358660904",
       "evidence_id": "7300032085358660904",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7300032085358660904",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -85119,6 +86963,7 @@
       "video_id": "7298921585358933283",
       "evidence_id": "7298921585358933283",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7298921585358933283",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -85491,6 +87336,7 @@
       "video_id": "7296314453379910947",
       "evidence_id": "7296314453379910947",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7296314453379910947",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -85724,6 +87570,7 @@
       "video_id": "7293716793221205283",
       "evidence_id": "7293716793221205283",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7293716793221205283",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -85943,6 +87790,7 @@
       "video_id": "7292235083715448104",
       "evidence_id": "7292235083715448104",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7292235083715448104",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -86017,6 +87865,7 @@
       "video_id": "7291120515530493184",
       "evidence_id": "7291120515530493184",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7291120515530493184",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -86322,6 +88171,7 @@
       "video_id": "7289635377009151247",
       "evidence_id": "7289635377009151247",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7289635377009151247",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -86535,6 +88385,7 @@
       "video_id": "7288529711267859747",
       "evidence_id": "7288529711267859747",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7288529711267859747",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -87328,6 +89179,7 @@
       "video_id": "7284439456776506658",
       "evidence_id": "7284439456776506658",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7284439456776506658",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -87958,6 +89810,7 @@
       "video_id": "7280727710740139264",
       "evidence_id": "7280727710740139264",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7280727710740139264",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -88549,6 +90402,7 @@
       "video_id": "7279243688423853347",
       "evidence_id": "7279243688423853347",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7279243688423853347",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -89151,6 +91005,7 @@
       "video_id": "7278130800220998946",
       "evidence_id": "7278130800220998946",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7278130800220998946",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -89452,6 +91307,7 @@
       "video_id": "7276646497377176872",
       "evidence_id": "7276646497377176872",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7276646497377176872",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -89776,6 +91632,7 @@
       "video_id": "7275536378321014051",
       "evidence_id": "7275536378321014051",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7275536378321014051",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -90381,6 +92238,7 @@
       "video_id": "7272944156618542336",
       "evidence_id": "7272944156618542336",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7272944156618542336",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -90964,6 +92822,7 @@
       "video_id": "7271452082337598760",
       "evidence_id": "7271452082337598760",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7271452082337598760",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -91593,6 +93452,7 @@
       "video_id": "7267754640270216483",
       "evidence_id": "7267754640270216483",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7267754640270216483",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -92032,6 +93892,7 @@
       "video_id": "7265142606580026658",
       "evidence_id": "7265142606580026658",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7265142606580026658",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -92359,6 +94220,7 @@
       "video_id": "7263668594196745487",
       "evidence_id": "7263668594196745487",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7263668594196745487",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -92615,6 +94477,7 @@
       "video_id": "7262546080133401890",
       "evidence_id": "7262546080133401890",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7262546080133401890",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -93106,6 +94969,7 @@
       "video_id": "7259946986114190626",
       "evidence_id": "7259946986114190626",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7259946986114190626",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -93336,6 +95200,7 @@
       "video_id": "7258462271670586658",
       "evidence_id": "7258462271670586658",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7258462271670586658",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -93726,6 +95591,7 @@
       "video_id": "7254755365995285812",
       "evidence_id": "7254755365995285812",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7254755365995285812",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -94131,6 +95997,7 @@
       "video_id": "7252154554828033295",
       "evidence_id": "7252154554828033295",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7252154554828033295",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -96099,6 +97966,7 @@
       "video_id": "7249558167288335656",
       "evidence_id": "7249558167288335656",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7249558167288335656",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -96172,6 +98040,7 @@
       "video_id": "7248074193118547240",
       "evidence_id": "7248074193118547240",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7248074193118547240",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -96883,6 +98752,7 @@
       "video_id": "7246960976459730191",
       "evidence_id": "7246960976459730191",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7246960976459730191",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -97400,6 +99270,7 @@
       "video_id": "7245471347210554639",
       "evidence_id": "7245471347210554639",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7245471347210554639",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -97474,6 +99345,7 @@
       "video_id": "7242877295336164642",
       "evidence_id": "7242877295336164642",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7242877295336164642",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -98188,6 +100060,7 @@
       "video_id": "7241053732916596026",
       "evidence_id": "7241053732916596026",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7241053732916596026",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -98433,6 +100306,7 @@
       "video_id": "7236568825607621922",
       "evidence_id": "7236568825607621922",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7236568825607621922",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -98795,6 +100669,7 @@
       "video_id": "7235084849025912096",
       "evidence_id": "7235084849025912096",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7235084849025912096",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -99151,6 +101026,7 @@
       "video_id": "7231384286954409271",
       "evidence_id": "7231384286954409271",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7231384286954409271",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -99804,6 +101680,7 @@
       "video_id": "7231373527314631947",
       "evidence_id": "7231373527314631947",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7231373527314631947",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -100049,6 +101926,7 @@
       "video_id": "7229889111706848544",
       "evidence_id": "7229889111706848544",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7229889111706848544",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -100523,6 +102401,7 @@
       "video_id": "7229506261136526647",
       "evidence_id": "7229506261136526647",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7229506261136526647",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101022,6 +102901,7 @@
       "video_id": "7226178331408928038",
       "evidence_id": "7226178331408928038",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7226178331408928038",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101260,6 +103140,7 @@
       "video_id": "7223584265072692518",
       "evidence_id": "7223584265072692518",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7223584265072692518",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101333,6 +103214,7 @@
       "video_id": "7220984919747497255",
       "evidence_id": "7220984919747497255",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7220984919747497255",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101686,6 +103568,7 @@
       "video_id": "7220630996293635385",
       "evidence_id": "7220630996293635385",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7220630996293635385",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101753,6 +103636,7 @@
       "video_id": "7218386274690796832",
       "evidence_id": "7218386274690796832",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7218386274690796832",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -101823,6 +103707,7 @@
       "video_id": "7215787369381858599",
       "evidence_id": "7215787369381858599",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7215787369381858599",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -102325,6 +104210,7 @@
       "video_id": "7214304020775652620",
       "evidence_id": "7214304020775652620",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7214304020775652620",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -102410,6 +104296,7 @@
       "video_id": "7213191190382972172",
       "evidence_id": "7213191190382972172",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7213191190382972172",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -102865,6 +104752,7 @@
       "video_id": "7211705676840602918",
       "evidence_id": "7211705676840602918",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7211705676840602918",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -103123,6 +105011,7 @@
       "video_id": "7210592889141775627",
       "evidence_id": "7210592889141775627",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7210592889141775627",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -103197,6 +105086,7 @@
       "video_id": "7209108124924464387",
       "evidence_id": "7209108124924464387",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7209108124924464387",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -103277,6 +105167,7 @@
       "video_id": "7206510177317702924",
       "evidence_id": "7206510177317702924",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7206510177317702924",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -103765,6 +105656,7 @@
       "video_id": "7205399670959459623",
       "evidence_id": "7205399670959459623",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7205399670959459623",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -103841,6 +105733,7 @@
       "video_id": "7203541969530883361",
       "evidence_id": "7203541969530883361",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7203541969530883361",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -104168,6 +106061,7 @@
       "video_id": "7202800263588105510",
       "evidence_id": "7202800263588105510",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7202800263588105510",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -104593,6 +106487,7 @@
       "video_id": "7200944470446050599",
       "evidence_id": "7200944470446050599",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7200944470446050599",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -104894,6 +106789,7 @@
       "video_id": "7200204622852623628",
       "evidence_id": "7200204622852623628",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7200204622852623628",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -104967,6 +106863,7 @@
       "video_id": "7197605327993310467",
       "evidence_id": "7197605327993310467",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7197605327993310467",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -105037,6 +106934,7 @@
       "video_id": "7195014413932367116",
       "evidence_id": "7195014413932367116",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7195014413932367116",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -105383,6 +107281,7 @@
       "video_id": "7193151905139395872",
       "evidence_id": "7193151905139395872",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7193151905139395872",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -105844,6 +107743,7 @@
       "video_id": "7189812762409782539",
       "evidence_id": "7189812762409782539",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7189812762409782539",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -106129,6 +108029,7 @@
       "video_id": "7185744630439333153",
       "evidence_id": "7185744630439333153",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7185744630439333153",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -106199,6 +108100,7 @@
       "video_id": "7185360811248864544",
       "evidence_id": "7185360811248864544",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7185360811248864544",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -106519,6 +108421,7 @@
       "video_id": "7184618028619910433",
       "evidence_id": "7184618028619910433",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7184618028619910433",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -107037,6 +108940,7 @@
       "video_id": "7183132124801682726",
       "evidence_id": "7183132124801682726",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7183132124801682726",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -107109,6 +109013,7 @@
       "video_id": "7182762294294744332",
       "evidence_id": "7182762294294744332",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7182762294294744332",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -107182,6 +109087,7 @@
       "video_id": "7182019728024538380",
       "evidence_id": "7182019728024538380",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7182019728024538380",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -107456,6 +109362,7 @@
       "video_id": "7175339579392707878",
       "evidence_id": "7175339579392707878",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7175339579392707878",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -107663,6 +109570,7 @@
       "video_id": "7174969770511551756",
       "evidence_id": "7174969770511551756",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7174969770511551756",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -108045,6 +109953,7 @@
       "video_id": "7174229898238676228",
       "evidence_id": "7174229898238676228",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7174229898238676228",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -108420,6 +110329,7 @@
       "video_id": "7172742523096517927",
       "evidence_id": "7172742523096517927",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7172742523096517927",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -108827,6 +110737,7 @@
       "video_id": "7170144521781562662",
       "evidence_id": "7170144521781562662",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7170144521781562662",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -109155,6 +111066,7 @@
       "video_id": "7169772952039345411",
       "evidence_id": "7169772952039345411",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7169772952039345411",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -109467,6 +111379,7 @@
       "video_id": "7169038502280154380",
       "evidence_id": "7169038502280154380",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7169038502280154380",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -109949,6 +111862,7 @@
       "video_id": "7167546787073477900",
       "evidence_id": "7167546787073477900",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7167546787073477900",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -110026,6 +111940,7 @@
       "video_id": "7167176069978623236",
       "evidence_id": "7167176069978623236",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7167176069978623236",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -110486,6 +112401,7 @@
       "video_id": "7166433980986756384",
       "evidence_id": "7166433980986756384",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7166433980986756384",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -110556,6 +112472,7 @@
       "video_id": "7164948889630493991",
       "evidence_id": "7164948889630493991",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7164948889630493991",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -110628,6 +112545,7 @@
       "video_id": "7163836275487804676",
       "evidence_id": "7163836275487804676",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7163836275487804676",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -110888,6 +112806,7 @@
       "video_id": "7161980324409363712",
       "evidence_id": "7161980324409363712",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7161980324409363712",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -111526,6 +113445,7 @@
       "video_id": "7159754364297448715",
       "evidence_id": "7159754364297448715",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7159754364297448715",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -111599,6 +113519,7 @@
       "video_id": "7159382785092783375",
       "evidence_id": "7159382785092783375",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7159382785092783375",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -111673,6 +113594,7 @@
       "video_id": "7158640349798255907",
       "evidence_id": "7158640349798255907",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7158640349798255907",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -111967,6 +113889,7 @@
       "video_id": "7157156135538134307",
       "evidence_id": "7157156135538134307",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7157156135538134307",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -112234,6 +114157,7 @@
       "video_id": "7156785188884778275",
       "evidence_id": "7156785188884778275",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7156785188884778275",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -112514,6 +114438,7 @@
       "video_id": "7156043406962134306",
       "evidence_id": "7156043406962134306",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7156043406962134306",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -112786,6 +114711,7 @@
       "video_id": "7154558892742151464",
       "evidence_id": "7154558892742151464",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7154558892742151464",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -112976,6 +114902,7 @@
       "video_id": "7154187492487335203",
       "evidence_id": "7154187492487335203",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7154187492487335203",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -113262,6 +115189,7 @@
       "video_id": "7153445193713290511",
       "evidence_id": "7153445193713290511",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7153445193713290511",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -113787,6 +115715,7 @@
       "video_id": "7151961376448138531",
       "evidence_id": "7151961376448138531",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7151961376448138531",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114012,6 +115941,7 @@
       "video_id": "7151589626031901992",
       "evidence_id": "7151589626031901992",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7151589626031901992",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114145,6 +116075,7 @@
       "video_id": "7150847019320429839",
       "evidence_id": "7150847019320429839",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7150847019320429839",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114221,6 +116152,7 @@
       "video_id": "7149363344649047311",
       "evidence_id": "7149363344649047311",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7149363344649047311",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114294,6 +116226,7 @@
       "video_id": "7148990784363138344",
       "evidence_id": "7148990784363138344",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7148990784363138344",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114745,6 +116678,7 @@
       "video_id": "7148267452877638944",
       "evidence_id": "7148267452877638944",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7148267452877638944",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -114995,6 +116929,7 @@
       "video_id": "7146762792438074665",
       "evidence_id": "7146762792438074665",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7146762792438074665",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -115168,6 +117103,7 @@
       "video_id": "7146394347586587919",
       "evidence_id": "7146394347586587919",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7146394347586587919",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -115243,6 +117179,7 @@
       "video_id": "7145708380047297833",
       "evidence_id": "7145708380047297833",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7145708380047297833",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -115502,6 +117439,7 @@
       "video_id": "7144168689510649128",
       "evidence_id": "7144168689510649128",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7144168689510649128",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -115927,6 +117865,7 @@
       "video_id": "7143811094698528040",
       "evidence_id": "7143811094698528040",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7143811094698528040",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -115999,6 +117938,7 @@
       "video_id": "7142313105324870950",
       "evidence_id": "7142313105324870950",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7142313105324870950",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -116402,6 +118342,7 @@
       "video_id": "7141570854437063977",
       "evidence_id": "7141570854437063977",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7141570854437063977",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -116629,6 +118570,7 @@
       "video_id": "7141200093922790688",
       "evidence_id": "7141200093922790688",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7141200093922790688",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -117122,6 +119064,7 @@
       "video_id": "7140089034096839976",
       "evidence_id": "7140089034096839976",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7140089034096839976",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -117339,6 +119282,7 @@
       "video_id": "7138604160051612969",
       "evidence_id": "7138604160051612969",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7138604160051612969",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -117831,6 +119775,7 @@
       "video_id": "7137859788255284520",
       "evidence_id": "7137859788255284520",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7137859788255284520",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -118156,6 +120101,7 @@
       "video_id": "7136376084920012032",
       "evidence_id": "7136376084920012032",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7136376084920012032",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -118229,6 +120175,7 @@
       "video_id": "7133406724035185920",
       "evidence_id": "7133406724035185920",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7133406724035185920",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -118398,6 +120345,7 @@
       "video_id": "7132666254980074793",
       "evidence_id": "7132666254980074793",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7132666254980074793",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -118465,6 +120413,7 @@
       "video_id": "7131178146023427328",
       "evidence_id": "7131178146023427328",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7131178146023427328",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -118855,6 +120804,7 @@
       "video_id": "7130069152592645411",
       "evidence_id": "7130069152592645411",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7130069152592645411",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -119253,6 +121203,7 @@
       "video_id": "7129696487956647208",
       "evidence_id": "7129696487956647208",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7129696487956647208",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -119517,6 +121468,7 @@
       "video_id": "7128211692743363880",
       "evidence_id": "7128211692743363880",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7128211692743363880",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -119763,6 +121715,7 @@
       "video_id": "7127470220309957923",
       "evidence_id": "7127470220309957923",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7127470220309957923",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -119977,6 +121930,7 @@
       "video_id": "7125615679402724623",
       "evidence_id": "7125615679402724623",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7125615679402724623",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -120388,6 +122342,7 @@
       "video_id": "7124871920230632745",
       "evidence_id": "7124871920230632745",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7124871920230632745",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -120824,6 +122779,7 @@
       "video_id": "7123390328643603752",
       "evidence_id": "7123390328643603752",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7123390328643603752",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121019,6 +122975,7 @@
       "video_id": "7122277769202896163",
       "evidence_id": "7122277769202896163",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7122277769202896163",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121268,6 +123225,7 @@
       "video_id": "7118192644957818127",
       "evidence_id": "7118192644957818127",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7118192644957818127",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121468,6 +123426,7 @@
       "video_id": "7117821949165718824",
       "evidence_id": "7117821949165718824",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7117821949165718824",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121603,6 +123562,7 @@
       "video_id": "7117079751398919465",
       "evidence_id": "7117079751398919465",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7117079751398919465",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121787,6 +123747,7 @@
       "video_id": "7115598014642736424",
       "evidence_id": "7115598014642736424",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7115598014642736424",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121857,6 +123818,7 @@
       "video_id": "7115241358255803683",
       "evidence_id": "7115241358255803683",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7115241358255803683",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -121934,6 +123896,7 @@
       "video_id": "7114483272972881193",
       "evidence_id": "7114483272972881193",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7114483272972881193",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -122206,6 +124169,7 @@
       "video_id": "7113001319694224655",
       "evidence_id": "7113001319694224655",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7113001319694224655",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -122692,6 +124656,7 @@
       "video_id": "7112628690395106560",
       "evidence_id": "7112628690395106560",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7112628690395106560",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -123179,6 +125144,7 @@
       "video_id": "7111887264187190528",
       "evidence_id": "7111887264187190528",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7111887264187190528",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -123708,6 +125674,7 @@
       "video_id": "7110431174811602191",
       "evidence_id": "7110431174811602191",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7110431174811602191",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -124044,6 +126011,7 @@
       "video_id": "7110033991918554402",
       "evidence_id": "7110033991918554402",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7110033991918554402",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -124786,6 +126754,7 @@
       "video_id": "7109288333884329231",
       "evidence_id": "7109288333884329231",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7109288333884329231",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -125174,6 +127143,7 @@
       "video_id": "7106697344128748835",
       "evidence_id": "7106697344128748835",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7106697344128748835",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -125416,6 +127386,7 @@
       "video_id": "7105205741954321699",
       "evidence_id": "7105205741954321699",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7105205741954321699",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -125814,6 +127785,7 @@
       "video_id": "7103721178195397888",
       "evidence_id": "7103721178195397888",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7103721178195397888",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -126076,6 +128048,7 @@
       "video_id": "7102635326803332393",
       "evidence_id": "7102635326803332393",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7102635326803332393",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -126276,6 +128249,7 @@
       "video_id": "7101123673062378767",
       "evidence_id": "7101123673062378767",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7101123673062378767",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -126616,6 +128590,7 @@
       "video_id": "7099644893269839144",
       "evidence_id": "7099644893269839144",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7099644893269839144",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -126969,6 +128944,7 @@
       "video_id": "7098897570482670888",
       "evidence_id": "7098897570482670888",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7098897570482670888",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -127367,6 +129343,7 @@
       "video_id": "7098156298415459599",
       "evidence_id": "7098156298415459599",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7098156298415459599",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -127722,6 +129699,7 @@
       "video_id": "7097413480747191587",
       "evidence_id": "7097413480747191587",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7097413480747191587",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -128041,6 +130019,7 @@
       "video_id": "7097047150479084835",
       "evidence_id": "7097047150479084835",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7097047150479084835",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -128518,6 +130497,7 @@
       "video_id": "7096301894984846632",
       "evidence_id": "7096301894984846632",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7096301894984846632",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -128992,6 +130972,7 @@
       "video_id": "7095554075210550528",
       "evidence_id": "7095554075210550528",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7095554075210550528",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -129243,6 +131224,7 @@
       "video_id": "7094813761894223139",
       "evidence_id": "7094813761894223139",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7094813761894223139",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -129319,6 +131301,7 @@
       "video_id": "7094072057608047913",
       "evidence_id": "7094072057608047913",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7094072057608047913",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -129564,6 +131547,7 @@
       "video_id": "7093706918492917033",
       "evidence_id": "7093706918492917033",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7093706918492917033",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -129886,6 +131870,7 @@
       "video_id": "7092959332047785250",
       "evidence_id": "7092959332047785250",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7092959332047785250",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -130158,6 +132143,7 @@
       "video_id": "7092220370400365839",
       "evidence_id": "7092220370400365839",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7092220370400365839",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -130380,6 +132366,7 @@
       "video_id": "7091844908973067561",
       "evidence_id": "7091844908973067561",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7091844908973067561",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -130777,6 +132764,7 @@
       "video_id": "7091101085535915279",
       "evidence_id": "7091101085535915279",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7091101085535915279",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -130857,6 +132845,7 @@
       "video_id": "7090377448017235234",
       "evidence_id": "7090377448017235234",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7090377448017235234",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -130938,6 +132927,7 @@
       "video_id": "7089632297791671587",
       "evidence_id": "7089632297791671587",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7089632297791671587",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -131177,6 +133167,7 @@
       "video_id": "7088881901209013545",
       "evidence_id": "7088881901209013545",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7088881901209013545",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -131250,6 +133241,7 @@
       "video_id": "7088510866093591808",
       "evidence_id": "7088510866093591808",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7088510866093591808",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -131526,6 +133518,7 @@
       "video_id": "7088131899348028687",
       "evidence_id": "7088131899348028687",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7088131899348028687",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -131697,6 +133690,7 @@
       "video_id": "7087759120761228578",
       "evidence_id": "7087759120761228578",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7087759120761228578",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -132092,6 +134086,7 @@
       "video_id": "7087020706680048930",
       "evidence_id": "7087020706680048930",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7087020706680048930",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -132165,6 +134160,7 @@
       "video_id": "7086648517627858176",
       "evidence_id": "7086648517627858176",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7086648517627858176",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -132607,6 +134603,7 @@
       "video_id": "7086276287681137961",
       "evidence_id": "7086276287681137961",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7086276287681137961",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -132827,6 +134824,7 @@
       "video_id": "7085903098853592335",
       "evidence_id": "7085903098853592335",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7085903098853592335",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -132900,6 +134898,7 @@
       "video_id": "7085169366005714217",
       "evidence_id": "7085169366005714217",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7085169366005714217",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -133371,6 +135370,7 @@
       "video_id": "7084422988291935523",
       "evidence_id": "7084422988291935523",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7084422988291935523",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -133680,6 +135680,7 @@
       "video_id": "7083684012513840424",
       "evidence_id": "7083684012513840424",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7083684012513840424",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -133975,6 +135976,7 @@
       "video_id": "7082564138752281896",
       "evidence_id": "7082564138752281896",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7082564138752281896",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -134047,6 +136049,7 @@
       "video_id": "7081831033515117865",
       "evidence_id": "7081831033515117865",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7081831033515117865",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -134321,6 +136324,7 @@
       "video_id": "7081451189262355747",
       "evidence_id": "7081451189262355747",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7081451189262355747",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -134596,6 +136600,7 @@
       "video_id": "7080735688819281193",
       "evidence_id": "7080735688819281193",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7080735688819281193",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -134799,6 +136804,7 @@
       "video_id": "7080341135545126144",
       "evidence_id": "7080341135545126144",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7080341135545126144",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -134878,6 +136884,7 @@
       "video_id": "7079966173307194639",
       "evidence_id": "7079966173307194639",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7079966173307194639",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135101,6 +137108,7 @@
       "video_id": "7078852452442836224",
       "evidence_id": "7078852452442836224",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7078852452442836224",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135178,6 +137186,7 @@
       "video_id": "7078487171803467042",
       "evidence_id": "7078487171803467042",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7078487171803467042",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135322,6 +137331,7 @@
       "video_id": "7078117752275225891",
       "evidence_id": "7078117752275225891",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7078117752275225891",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135482,6 +137492,7 @@
       "video_id": "7077740726926298402",
       "evidence_id": "7077740726926298402",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7077740726926298402",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135756,6 +137767,7 @@
       "video_id": "7076997927054495010",
       "evidence_id": "7076997927054495010",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7076997927054495010",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -135936,6 +137948,7 @@
       "video_id": "7076641227025763618",
       "evidence_id": "7076641227025763618",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7076641227025763618",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -136128,6 +138141,7 @@
       "video_id": "7076257912192060707",
       "evidence_id": "7076257912192060707",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7076257912192060707",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -136480,6 +138494,7 @@
       "video_id": "7075515778073709824",
       "evidence_id": "7075515778073709824",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7075515778073709824",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -136781,6 +138796,7 @@
       "video_id": "7075140710332239119",
       "evidence_id": "7075140710332239119",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7075140710332239119",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -137014,6 +139030,7 @@
       "video_id": "7074399231259266344",
       "evidence_id": "7074399231259266344",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7074399231259266344",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -137330,6 +139347,7 @@
       "video_id": "7073657979328826659",
       "evidence_id": "7073657979328826659",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7073657979328826659",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -137817,6 +139835,7 @@
       "video_id": "7072915842605878528",
       "evidence_id": "7072915842605878528",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7072915842605878528",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138218,6 +140237,7 @@
       "video_id": "7072543702161296640",
       "evidence_id": "7072543702161296640",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7072543702161296640",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138430,6 +140450,7 @@
       "video_id": "7071800926553541922",
       "evidence_id": "7071800926553541922",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7071800926553541922",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138513,6 +140534,7 @@
       "video_id": "7071430658584857891",
       "evidence_id": "7071430658584857891",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7071430658584857891",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138583,6 +140605,7 @@
       "video_id": "7071068959021255951",
       "evidence_id": "7071068959021255951",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7071068959021255951",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138796,6 +140819,7 @@
       "video_id": "7070320753916366095",
       "evidence_id": "7070320753916366095",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7070320753916366095",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -138869,6 +140893,7 @@
       "video_id": "7069948509838904591",
       "evidence_id": "7069948509838904591",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7069948509838904591",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -139238,6 +141263,7 @@
       "video_id": "7069575740836023587",
       "evidence_id": "7069575740836023587",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7069575740836023587",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -139756,6 +141782,7 @@
       "video_id": "7068835198938516777",
       "evidence_id": "7068835198938516777",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7068835198938516777",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -140088,6 +142115,7 @@
       "video_id": "7068465954270792994",
       "evidence_id": "7068465954270792994",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7068465954270792994",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -141636,6 +143664,7 @@
       "video_id": "7068092085533953315",
       "evidence_id": "7068092085533953315",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7068092085533953315",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -142198,6 +144227,7 @@
       "video_id": "7067722128413543680",
       "evidence_id": "7067722128413543680",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7067722128413543680",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -142828,6 +144858,7 @@
       "video_id": "7066977429230718223",
       "evidence_id": "7066977429230718223",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7066977429230718223",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -142901,6 +144932,7 @@
       "video_id": "7066596981992394025",
       "evidence_id": "7066596981992394025",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7066596981992394025",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143063,6 +145095,7 @@
       "video_id": "7065871561915485440",
       "evidence_id": "7065871561915485440",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7065871561915485440",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143196,6 +145229,7 @@
       "video_id": "7065491791167999232",
       "evidence_id": "7065491791167999232",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7065491791167999232",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143329,6 +145363,7 @@
       "video_id": "7065157571816000809",
       "evidence_id": "7065157571816000809",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7065157571816000809",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143405,6 +145440,7 @@
       "video_id": "7064753436809514281",
       "evidence_id": "7064753436809514281",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7064753436809514281",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143581,6 +145617,7 @@
       "video_id": "7064372942880148777",
       "evidence_id": "7064372942880148777",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7064372942880148777",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -143780,6 +145817,7 @@
       "video_id": "7064010057020673314",
       "evidence_id": "7064010057020673314",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7064010057020673314",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -144127,6 +146165,7 @@
       "video_id": "7063638911301520680",
       "evidence_id": "7063638911301520680",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7063638911301520680",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -144334,6 +146373,7 @@
       "video_id": "7063280271403060520",
       "evidence_id": "7063280271403060520",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7063280271403060520",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -144680,6 +146720,7 @@
       "video_id": "7062570553936268559",
       "evidence_id": "7062570553936268559",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7062570553936268559",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -144798,6 +146839,7 @@
       "video_id": "7062171437569805609",
       "evidence_id": "7062171437569805609",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7062171437569805609",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145033,6 +147075,7 @@
       "video_id": "7061422431386324264",
       "evidence_id": "7061422431386324264",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7061422431386324264",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145114,6 +147157,7 @@
       "video_id": "7060717442825309480",
       "evidence_id": "7060717442825309480",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7060717442825309480",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145213,6 +147257,7 @@
       "video_id": "7059927286186822946",
       "evidence_id": "7059927286186822946",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7059927286186822946",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145517,6 +147562,7 @@
       "video_id": "7059589039694957864",
       "evidence_id": "7059589039694957864",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7059589039694957864",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145610,6 +147656,7 @@
       "video_id": "7059205903639121187",
       "evidence_id": "7059205903639121187",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7059205903639121187",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -145876,6 +147923,7 @@
       "video_id": "7058464382786784547",
       "evidence_id": "7058464382786784547",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7058464382786784547",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -146122,6 +148170,7 @@
       "video_id": "7057722299855801641",
       "evidence_id": "7057722299855801641",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7057722299855801641",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -146436,6 +148485,7 @@
       "video_id": "7056953556531809547",
       "evidence_id": "7056953556531809547",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7056953556531809547",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -146609,6 +148659,7 @@
       "video_id": "7056596925721726220",
       "evidence_id": "7056596925721726220",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7056596925721726220",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -146725,6 +148776,7 @@
       "video_id": "7056244399390412064",
       "evidence_id": "7056244399390412064",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7056244399390412064",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -147080,6 +149132,7 @@
       "video_id": "7055859367005949187",
       "evidence_id": "7055859367005949187",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7055859367005949187",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -147329,6 +149382,7 @@
       "video_id": "7055491154288102667",
       "evidence_id": "7055491154288102667",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7055491154288102667",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -147568,6 +149622,7 @@
       "video_id": "7055130343476710667",
       "evidence_id": "7055130343476710667",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7055130343476710667",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -147853,6 +149908,7 @@
       "video_id": "7054786188086955276",
       "evidence_id": "7054786188086955276",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7054786188086955276",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -147989,6 +150045,7 @@
       "video_id": "7054395778814561575",
       "evidence_id": "7054395778814561575",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7054395778814561575",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -148181,6 +150238,7 @@
       "video_id": "7054025391601650948",
       "evidence_id": "7054025391601650948",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7054025391601650948",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -148575,6 +150633,7 @@
       "video_id": "7053654124042194215",
       "evidence_id": "7053654124042194215",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7053654124042194215",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -148773,6 +150832,7 @@
       "video_id": "7053637734749031691",
       "evidence_id": "7053637734749031691",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7053637734749031691",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -149028,6 +151088,7 @@
       "video_id": "7053234542290668811",
       "evidence_id": "7053234542290668811",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7053234542290668811",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -149234,6 +151295,7 @@
       "video_id": "7053016126262988064",
       "evidence_id": "7053016126262988064",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7053016126262988064",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -149554,6 +151616,7 @@
       "video_id": "7052912740955999499",
       "evidence_id": "7052912740955999499",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7052912740955999499",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -149742,6 +151805,7 @@
       "video_id": "7052600326116887812",
       "evidence_id": "7052600326116887812",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7052600326116887812",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -149893,6 +151957,7 @@
       "video_id": "7052519937125911846",
       "evidence_id": "7052519937125911846",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7052519937125911846",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -150039,6 +152104,7 @@
       "video_id": "7052252250189696267",
       "evidence_id": "7052252250189696267",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7052252250189696267",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -150238,6 +152304,7 @@
       "video_id": "7052148706681883907",
       "evidence_id": "7052148706681883907",
       "source_type": "douyin_video",
+      "retrieval_cohort": "stable_baseline",
       "canonical_url": "https://www.douyin.com/video/7052148706681883907",
       "parent_source_id": null,
       "clip_start_seconds": null,
@@ -294658,14 +296725,14 @@
   ],
   "source_queue_counts": {
     "douyin": {
-      "transcribed": 409
+      "transcribed": 412
     },
     "bilibili": {
       "transcribed": 602
     }
   },
   "source_counts": {
-    "douyin_video": 409,
+    "douyin_video": 412,
     "bilibili_video": 602
   },
   "transcript_files_bundled": false,

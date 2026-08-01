@@ -4,9 +4,9 @@
   "development_version": "2.0.0-dev.1",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "7d40c143db21b502",
-    "inputs_sha256": "f43fac2ecda20dd7010a3c2a531705b56b851786682e5ce1bbef20c624a8e9a9",
-    "runtime_sha256": "03c48ab078c59b25c3626d8c93c9ca892175434e3ef62f7f33b2a81bcf8a508a"
+    "id": "94d45ea9ab03cdc6",
+    "inputs_sha256": "6c0123987cf244a7ebcf5769712970ea93da566cbf1b56bf19ea8e86c45db5fa",
+    "runtime_sha256": "e3329827e70bdd1b181217f92ef5d76c45f6f99aa5b8f12e1586ba7cd47bd583"
   },
   "summary": {
     "status": "pass",
@@ -102,12 +102,12 @@
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
-        "candidate_videos": 413,
-        "top_k_count": 75,
-        "top_k_rate": 0.10964912280701754,
+        "candidate_videos": 416,
+        "top_k_count": 76,
+        "top_k_rate": 0.1111111111111111,
         "max_top_k_per_case": 3,
-        "review_count": 108,
-        "review_rate": 0.13219094247246022,
+        "review_count": 109,
+        "review_rate": 0.13341493268053856,
         "max_review_per_case": 3,
         "limits": {
           "max_top_k_rate": 0.12,
@@ -124,6 +124,9 @@
         "stable_regression": {
           "source_types": [
             "douyin_video"
+          ],
+          "retrieval_cohorts": [
+            "stable_baseline"
           ],
           "purpose": "apples_to_apples_retrieval_regression"
         }
@@ -161,16 +164,16 @@
       "failed": []
     },
     "video_comprehension": {
-      "ready_videos": 776,
-      "understood_videos": 776,
+      "ready_videos": 779,
+      "understood_videos": 779,
       "understanding_coverage": 1.0,
-      "transcript_backed": 757,
-      "automatic_transcript": 751,
+      "transcript_backed": 760,
+      "automatic_transcript": 754,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "evidence_provenance": {
-        "transcript_evidence_items": 7668,
-        "timestamped_transcript_evidence_items": 7668,
+        "transcript_evidence_items": 7697,
+        "timestamped_transcript_evidence_items": 7697,
         "transcript_timestamp_coverage": 1.0,
         "reviewed_visual_observation_items": 19,
         "synthesized_principle_items": 15,
@@ -199,12 +202,12 @@
       "current_runtime_match": false,
       "current_runtime_generation_claimed": false,
       "release_eligible": false,
-      "runtime_fingerprint": "3821c5428c9ce88ea246951a21d2a44e3bd04bfe4848eee10fae4c44c5a1e60e",
+      "runtime_fingerprint": "9d7d63e856e193451c13e12e6aff6ac4354ae4b6827e7e86b363cf878767b939",
       "runtime_fingerprint_scope": "answer_semantics",
       "reviewed_answer_runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
-      "current_answer_runtime_fingerprint": "3821c5428c9ce88ea246951a21d2a44e3bd04bfe4848eee10fae4c44c5a1e60e",
+      "current_answer_runtime_fingerprint": "9d7d63e856e193451c13e12e6aff6ac4354ae4b6827e7e86b363cf878767b939",
       "reviewed_artifact_runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
-      "current_artifact_runtime_fingerprint": "85313899e8c1e271d5031254222ba0bbcb98f1afee1f4d437fce2ea19173b477",
+      "current_artifact_runtime_fingerprint": "312804a23208fe3aac04e74eff0f1bec7623b558fe08ee774c10714619493310",
       "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
@@ -511,7 +514,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
-      "current": 0.10964912280701754,
+      "current": 0.1111111111111111,
       "baseline": 0.12,
       "direction": "at_most",
       "tolerance": 0,
@@ -529,7 +532,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.review_rate",
-      "current": 0.13219094247246022,
+      "current": 0.13341493268053856,
       "baseline": 0.15,
       "direction": "at_most",
       "tolerance": 0,
@@ -565,7 +568,7 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 776,
+      "current": 779,
       "baseline": 354,
       "direction": "at_least",
       "tolerance": 0,
@@ -583,7 +586,7 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 757,
+      "current": 760,
       "baseline": 335,
       "direction": "at_least",
       "tolerance": 0,

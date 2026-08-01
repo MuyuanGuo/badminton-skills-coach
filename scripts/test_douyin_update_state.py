@@ -140,6 +140,13 @@ class DouyinUpdateStateTests(unittest.TestCase):
                 self.assertEqual(reviewed["decision"], "保留：教学")
                 self.assertEqual(reviewed["migration_action"], "manual_review_keep")
                 self.assertEqual(queue["counts"], {"classified_teaching": 2})
+                self.assertTrue(
+                    all(
+                        item["retrieval_cohort"]
+                        == "automatic_expansion"
+                        for item in queue["items"]
+                    )
+                )
                 rules_identity = self.module.load_classification_rules()[
                     "_rules_identity"
                 ]

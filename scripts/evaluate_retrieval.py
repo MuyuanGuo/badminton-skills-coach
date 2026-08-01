@@ -19,6 +19,7 @@ SEARCH_PATH = (
     / "search_knowledge.py"
 )
 REGRESSION_SOURCE_TYPES = ("douyin_video",)
+REGRESSION_RETRIEVAL_COHORTS = ("stable_baseline",)
 
 
 def ensure_deterministic_hash_seed():
@@ -385,14 +386,28 @@ def project_retrieval_index(retrieval_index, allowed_video_ids):
 
 
 @contextmanager
-def source_scoped_search(search_module, source_types):
+def source_scoped_search(
+    search_module,
+    source_types,
+    retrieval_cohorts=None,
+):
     original_resources = search_module.load_resources()
     knowledge, retrieval_index, rules = original_resources
     source_types = set(source_types)
+    retrieval_cohorts = (
+        set(retrieval_cohorts)
+        if retrieval_cohorts is not None
+        else None
+    )
     videos = [
         video
         for video in knowledge["videos"]
         if video.get("source_type") in source_types
+        and (
+            retrieval_cohorts is None
+            or video.get("retrieval_cohort", "stable_baseline")
+            in retrieval_cohorts
+        )
     ]
     video_ids = {video["video_id"] for video in videos}
     scoped_knowledge = {**knowledge, "videos": videos}
@@ -599,7 +614,9 @@ def evaluate(top_k, cases_path=CASES_PATH):
         unjudged_new_source_ids=new_source_ids,
     )
     with source_scoped_search(
-        search_module, REGRESSION_SOURCE_TYPES
+        search_module,
+        REGRESSION_SOURCE_TYPES,
+        REGRESSION_RETRIEVAL_COHORTS,
     ) as regression_video_ids:
         regression = evaluate_view(
             top_k,
@@ -615,6 +632,9 @@ def evaluate(top_k, cases_path=CASES_PATH):
         },
         "stable_regression": {
             "source_types": list(REGRESSION_SOURCE_TYPES),
+            "retrieval_cohorts": list(
+                REGRESSION_RETRIEVAL_COHORTS
+            ),
             "purpose": "apples_to_apples_retrieval_regression",
         },
     }

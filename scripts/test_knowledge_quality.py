@@ -76,6 +76,7 @@ class KnowledgeQualityTests(unittest.TestCase):
                 "category": "握拍与基本动作",
                 "tags": "握拍与基本动作；训练与纠错",
                 "classification_decision": "保留：教学",
+                "retrieval_cohort": "automatic_expansion",
             },
             ROOT / "data" / "transcripts" / "douyin" / f"{video_id}.json",
             transcript("击球时先放松再发力。"),
@@ -85,6 +86,7 @@ class KnowledgeQualityTests(unittest.TestCase):
         )
         self.assertEqual(record["evidence_id"], video_id)
         self.assertEqual(record["source_type"], "douyin_video")
+        self.assertEqual(record["retrieval_cohort"], "automatic_expansion")
         self.assertEqual(record["canonical_url"], record["url"])
         self.assertIsNone(record["parent_source_id"])
         self.assertIsNone(record["clip_start_seconds"])

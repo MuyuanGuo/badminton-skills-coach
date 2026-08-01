@@ -3,8 +3,8 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `1011`
-- Assigned videos: `776`
+- Videos: `1014`
+- Assigned videos: `779`
 - Multi-topic videos: `382`
 
 ## How To Use
@@ -118,15 +118,15 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 平抽挡、接杀、防反及中前场高速衔接。
 
-- Matched videos: `46`
+- Matched videos: `48`
 
-- **平抽挡与高速对抗**: `6` videos, `6` ready, `0` needs visual review.
+- **平抽挡与高速对抗**: `7` videos, `7` ready, `0` needs visual review.
   Keywords: 平抽挡, 抽挡, 压抽, 快挡, 高速对抗
   Representative videos:
+  - 8166 抽挡细节 会了抽挡动作，做动作的节奏才是最重要的 [ready] https://www.douyin.com/video/7667841485241148145
   - 羽毛球万能平抽挡教学！职业级抽档握拍细节！进阶必学 平抽档直接进入专业级 [ready] https://www.bilibili.com/video/BV1Y5kMY9ELd/
   - 握拍微调 抽挡反手为主，尽量不做正反手转换 [ready] https://www.douyin.com/video/7447084061371272507
-  - 高速对抗步法 小姐姐是两省冠军🏆，这种情况属于高速对抗状态下，就是球都比较平，没有侧身的时间和意义 [ready] https://www.douyin.com/video/7652440366436945017
-- **接杀与防反**: `35` videos, `35` ready, `0` needs visual review.
+- **接杀与防反**: `36` videos, `36` ready, `0` needs visual review.
   Keywords: 接杀, 挡杀, 防反, 防守反击
   Representative videos:
   - 反手接杀怎么握拍？大拇指顶在哪？羽毛球单打双打接杀常见握拍方法 [ready] https://www.bilibili.com/video/BV18V3Ez2ECs/
@@ -190,7 +190,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `323`
+- Matched videos: `324`
 
 - **放松、传导与爆发**: `48` videos, `48` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -204,7 +204,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready] https://www.douyin.com/video/7494729488699559225
   - 爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调 [ready] https://www.douyin.com/video/7492357671853526329
   - 学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率 [ready] https://www.douyin.com/video/7057722299855801641
-- **小臂旋转与手腕**: `98` videos, `98` ready, `0` needs visual review.
+- **小臂旋转与手腕**: `99` videos, `99` ready, `0` needs visual review.
   Keywords: 内旋, 外旋, 小臂旋转, 手腕
   Representative videos:
   - 后场发力手腕怎么用？如此这般 终于会用手腕了！羽毛球大发力手腕力传导的方法 [ready] https://www.bilibili.com/video/BV1bF6SYtEGz/

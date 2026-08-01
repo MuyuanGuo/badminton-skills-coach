@@ -94,6 +94,22 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertIn("missing_transcript_file", strict["failures"])
         self.assertNotIn("empty_transcript", strict["failures"])
 
+    def test_source_scoped_raw_gate_ignores_unmodified_source_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            video = self.transcript_video("transcript.json")
+            video["source_type"] = "bilibili_video"
+            audit = self.module.audit_video_content(
+                video,
+                root=root,
+                indexed_video_ids={video["video_id"]},
+                require_raw_transcript=True,
+                required_raw_transcript_sources={"douyin_video"},
+                bilibili_transcript_candidates={},
+            )
+        self.assertEqual(audit["raw_transcript_status"], "unavailable")
+        self.assertNotIn("missing_transcript_file", audit["failures"])
+
     def test_bilibili_raw_transcript_prefers_readable_external_cache(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
