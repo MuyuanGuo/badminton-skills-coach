@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/bilibili-mechanical-canary-v1.json",
+  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/bilibili-mechanical-canary-v2.json",
   "title": "Bilibili mechanical wiring canary registry",
   "description": "Automatically generated retrieval and packet wiring checks. This schema explicitly forbids representing the cases as human-reviewed semantic gold.",
   "type": "object",
@@ -18,7 +18,7 @@
     "exclusions"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "measurement_type": {
       "const": "mechanical_wiring_canary_not_semantic_gold"
     },
@@ -90,15 +90,10 @@
         "measurement_type",
         "semantic_gold",
         "admission_state",
+        "evidence_mode",
         "query",
         "query_derivation",
         "expected_evidence_id",
-        "supported_title_terms",
-        "transcript_probe",
-        "transcript_sha256",
-        "transcript_anchor",
-        "expected_chunk_ids",
-        "expected_cluster_ids",
         "case_sha256"
       ],
       "properties": {
@@ -108,9 +103,15 @@
         },
         "semantic_gold": {"const": false},
         "admission_state": {"enum": ["ready", "shadow"]},
+        "evidence_mode": {
+          "enum": ["full_transcript", "bounded_note_windows"]
+        },
         "query": {"type": "string", "minLength": 1},
         "query_derivation": {
-          "const": "cleaned_retrieval_title_with_separate_transcript_anchor_probe"
+          "enum": [
+            "cleaned_retrieval_title_with_separate_transcript_anchor_probe",
+            "committed_bounded_note_window"
+          ]
         },
         "expected_evidence_id": {"type": "string", "minLength": 1},
         "supported_title_terms": {
@@ -160,11 +161,66 @@
           "minItems": 1,
           "items": {"type": "string", "minLength": 1}
         },
+        "bounded_note_probe": {"type": "string", "minLength": 1},
+        "bounded_note_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bounded_note_anchor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["timestamp", "roles", "text_sha256"],
+          "properties": {
+            "timestamp": {"type": "string", "minLength": 1},
+            "roles": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "enum": ["key_evidence", "error_evidence", "action_cues"]
+              }
+            },
+            "text_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        },
         "case_sha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"evidence_mode": {"const": "full_transcript"}}
+          },
+          "then": {
+            "required": [
+              "supported_title_terms",
+              "transcript_probe",
+              "transcript_sha256",
+              "transcript_anchor",
+              "expected_chunk_ids",
+              "expected_cluster_ids"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "evidence_mode": {"const": "bounded_note_windows"}
+            }
+          },
+          "then": {
+            "required": [
+              "bounded_note_probe",
+              "bounded_note_sha256",
+              "bounded_note_anchor"
+            ]
+          }
+        }
+      ]
     }
   }
 }

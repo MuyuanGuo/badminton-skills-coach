@@ -29,6 +29,7 @@ SKILL_RELEASE_PATHS = {
     "references/build-manifest.json",
     "references/diagnostic-answer-rules.json",
     "references/evidence-scope-guide.md",
+    "references/evidence-graph.json",
     "references/feedback-rules.json",
     "references/feedback-signals.json",
     "references/feedback-workflow.md",

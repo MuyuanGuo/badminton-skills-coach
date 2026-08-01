@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v29",
+  "version": "retrieval-v30",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -186,6 +186,8 @@
   ],
   "retrieval": {
     "automatic_expansion_score_penalty": 96.0,
+    "supplemental_score_penalty": 18.0,
+    "limited_title_score_factor": 0.2,
     "automatic_expansion_surface_limit": 3,
     "automatic_expansion_review_limit": 3,
     "automatic_expansion_max_top_k_rate": 0.12,

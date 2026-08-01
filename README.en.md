@@ -63,9 +63,11 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Metric | Current baseline |
 | --- | ---: |
 | Processed public videos | 1245 |
-| Bilibili full source catalog | 767: 422 answer-ready, 345 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 779 |
+| Bilibili full source catalog | 767: 589 answer-ready, 178 policy-excluded or quality-isolated, 0 pending |
+| Ready teaching videos | 946 |
+| Primary / bounded supplemental evidence | 779 / 167 |
 | Transcript-backed evidence | 760 |
+| Bounded timestamp-window evidence | 167 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Query-understanding cases | 143/143 |
@@ -76,7 +78,7 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 
 All 7,697 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
 
-The balanced performance gate covers five question types. In the latest local acceptance run, search P95 was `77.75 ms`, answer-context P95 was `712.04 ms`, traced peak memory was `80.15 MB`, and the answer packet averaged a `71.22%` reduction. These are development-machine measurements, not cross-platform performance promises.
+The balanced performance gate covers five question types. After expanding to 946 answer-eligible sources, the latest local run measured `232.11 ms` search P95, `1,552.47 ms` answer-context P95, `175.79 MB` traced peak memory, and an `81.87%` average answer-packet reduction. These remain inside the `750 ms`, `2,500 ms`, `192 MB`, and minimum `50%` reduction gates. They are development-machine measurements, not cross-platform performance promises.
 
 See the [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/) for the latest generation snapshot with completed independent human review. The deterministic regression and performance gates above describe this branch; generation review for the new runtime remains pending independent human review.
 
@@ -89,13 +91,15 @@ flowchart TD
     O --> B
     B --> C["Full media decode, duration, and SHA-256"]
     C --> D["Deterministic ASR"]
-    D --> P["Recipe, ASR quality, title-text, and duplicate gates"]
+    D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
     P --> E["Structured knowledge, including quarantine audit records"]
-    E --> R["Only ready records enter runtime evidence"]
-    R --> F["45-second chunk-first retrieval<br/>cross-source clusters and cluster-aware DF"]
+    E --> A["Answer admission layers<br/>primary / supplemental / none"]
+    A --> KG["Concept-topic-evidence-role graph<br/>17,589 relationships"]
+    A --> F["45-second chunk-first plus bounded-window retrieval<br/>cross-source clusters and cluster-aware DF"]
     Q["Natural-language question"] --> G["Intent, actor, and scenario parser"]
     G --> H["Multi-query recall"]
     F --> H
+    KG --> H
     H --> I["Conflict filtering and finalist selection"]
     I --> J["Compact answer packet"]
     J --> K["Codex Skill answer"]
@@ -105,7 +109,7 @@ flowchart TD
     N --> F
 ```
 
-A new transcript does not update model weights or become Codex conversational memory. It can affect an answer only after collection-policy admission or independent provenance verification; media-integrity, transcription-recipe, ASR-quality, title-to-text, evidence-extraction, and duplicate gates; becoming a `processing_status: ready` knowledge record; index, regression, canary, and packet-budget checks; and Skill installation. Even then, it affects only a question whose current retrieval selects a relevant chunk. A raw `.json`, `.srt`, or `.txt` file alone changes no answer.
+A new transcript does not update model weights or become Codex conversational memory. It can receive answer admission only after collection-policy or independent provenance verification, media integrity, recipe and ASR quality, source-text safety, evidence extraction, and duplicate checks. A fully aligned record becomes `primary`. A record whose title wording is weakly aligned but whose direct teaching evidence passes becomes `supplemental`; its title is only a weak recall hint and only matched timestamp windows may support a claim. Hard quality, provenance, safety, or duplicate failures remain `none`. Graph, index, regression, canary, packet-budget, and Skill-installation checks must still pass before any record can affect a question. A raw `.json`, `.srt`, or `.txt` file alone changes no answer.
 
 Primary runtime path:
 
@@ -142,7 +146,7 @@ query
 
 The Bilibili path applies two user-confirmed policy layers: 583 videos in eight technical collections plus 19 individually confirmed uncollected videos must be transcribed and stored; 156 videos in five non-target collections plus nine individually excluded videos are skipped. Stable List IDs and BVIDs fix the full-archive partition at `602 + 165 = 767`. Collection and individual confirmation prove only that the user requested storage, not that Liu Hui is the speaker, so they are recorded separately as `verified_collection_policy` and `verified_video_policy`; only independently admitted Liu Hui evidence is labeled `verified_liuhui_clip`. Bilibili SEO descriptions remain forbidden as provenance evidence because they append biography and related-video text. Regardless of admission path, only `ready` records that pass provenance, transcript, and evidence-quality gates can enter the answer pool.
 
-When one record fails provenance, transcription, title-to-text, automatic-evidence, or duplicate gates, its audit state is retained but it remains non-`ready`, and no transcript segments are packaged for runtime use. A cross-artifact invariant, stable-corpus regression, or release-gate failure instead rolls back the generated artifacts for that run. Neither failure class silently enters retrieval or the answer pool, and neither is disguised as a mandatory human-review backlog.
+When one record fails provenance, blocking transcription quality, source safety, automatic evidence, or duplicate gates, its audit state is retained with `answer_eligibility: none`. Title-to-text wording mismatch is a downgrade signal, not an automatic deletion signal: only records that pass every hard gate can enter as bounded supplemental evidence, and only through matched committed windows. Cross-artifact, stable-corpus, or release-gate failures still roll back the generated artifacts for that run.
 
 ### Answer contract
 

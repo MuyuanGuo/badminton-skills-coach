@@ -104,6 +104,67 @@ class AnswerPacketTests(unittest.TestCase):
         }
         self.assertEqual(referenced, set(packet["evidence_windows"]))
 
+    def test_mixed_plan_keeps_fallback_claim_windows_without_empty_videos(self):
+        context = copy.deepcopy(self.context)
+        fallback_video = copy.deepcopy(context["selected_videos"][0])
+        fallback_video.update(
+            {
+                "label": "V99",
+                "video_id": "bilibili:BV1Fallback",
+                "evidence_id": "bilibili:BV1Fallback",
+                "answer_eligibility": "supplemental",
+                "runtime_evidence_mode": "bounded_note_windows",
+                "bounded_note_evidence": [
+                    {
+                        "timestamp": "00:10-00:15",
+                        "text": "补充证据说明拍面需要稳定。",
+                        "exact_query_match": True,
+                        "matched_terms": ["拍面", "稳定"],
+                        "score": 50,
+                    }
+                ],
+                "transcript_evidence": [],
+                "transcript_retrieval": {},
+            }
+        )
+        context["selected_videos"].append(fallback_video)
+        context["claim_evidence_map"].append(
+            {
+                "claim_id": "Q99",
+                "kind": "question_unit",
+                "text": "一个没有人工原子但有直接来源证据的补充问题",
+                "status": "supported",
+                "confidence_ceiling": "moderate",
+                "evidence": [
+                    {
+                        "label": "V99",
+                        "evidence_id": "bilibili:BV1Fallback",
+                        "directness": "scoped",
+                        "scope": "exact_question_scope",
+                        "answer_eligibility": "supplemental",
+                        "evidence_roles": ["principle"],
+                    }
+                ],
+            }
+        )
+        context["answer_plan"] = self.runtime.build_closed_answer_plan(
+            context, self.runtime.load_reviewed_evidence_atoms()
+        )
+        packet = self.runtime.build_answer_packet(context)
+        self.assertEqual(
+            packet["answer_plan"]["mode"],
+            "hybrid_reviewed_atoms_and_claim_evidence",
+        )
+        projected = next(
+            video
+            for video in packet["selected_videos"]
+            if video["label"] == "V99"
+        )
+        self.assertTrue(projected["window_ids"])
+        self.assertTrue(
+            self.runtime.validate_answer_packet(packet, context)
+        )
+
     def test_packet_omits_retrieval_diagnostics_and_repeated_policy(self):
         encoded = json.dumps(self.packet, ensure_ascii=False)
         self.assertNotIn("why_retrieved", encoded)

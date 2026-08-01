@@ -32,9 +32,11 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "data/knowledge/topic_index.json",
     ROOT / "skills/liuhui-badminton-coach/references/topic-index.md",
     ROOT / "data/knowledge/retrieval_index.json",
+    ROOT / "data/knowledge/evidence_graph.json",
     ROOT / "data/knowledge/knowledge_graph_summary.json",
     ROOT / "data/knowledge/build_manifest.json",
     ROOT / "data/evaluation/evaluation_report.json",
+    ROOT / "data/evaluation/supplemental_evidence_report.json",
     ROOT / "data/review/visual_review_queue.json",
     ROOT / "config/reviewed_evidence_signals.json",
     ROOT / "output/visual_review_queue.md",
@@ -64,9 +66,11 @@ def run(command, *, env=None):
 
 def build_commands(*, rebuild_bilibili=True):
     commands = [
+        [sys.executable, "scripts/migrate_bilibili_evidence_admission.py"],
         [sys.executable, "scripts/build_douyin_knowledge.py"],
         [sys.executable, "scripts/build_topic_index.py"],
         [sys.executable, "scripts/build_retrieval_index.py"],
+        [sys.executable, "scripts/build_evidence_graph.py"],
         [sys.executable, "scripts/build_visual_review_queue.py"],
         [sys.executable, "scripts/generate_knowledge_graph.py"],
         [sys.executable, "scripts/build_answer_quality_review_queue.py"],
@@ -92,6 +96,7 @@ def validation_commands(*, raw_transcript_sources=None):
         )
     return [
         [sys.executable, "scripts/evaluate_bilibili_canaries.py"],
+        [sys.executable, "scripts/evaluate_supplemental_evidence_policy.py"],
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
         [sys.executable, "scripts/evaluate_answer_policy.py"],
         [sys.executable, "scripts/evaluate_answer_context.py"],

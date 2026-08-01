@@ -96,6 +96,8 @@ def compact_video(video, score, match_basis, assignment_method="rule_match"):
         "category": video["category"],
         "confidence": video["confidence"],
         "processing_status": video["processing_status"],
+        "answer_eligibility": video.get("answer_eligibility", "primary"),
+        "evidence_roles": video.get("evidence_roles", ["context"]),
         "topic": note.get("topic") or note.get("title") or video["title"],
         "score": score,
         "match_basis": match_basis,
@@ -235,6 +237,7 @@ def build_index(data, taxonomy=None):
             matches = matches_by_topic[topic_id]
             matches.sort(
                 key=lambda item: (
+                    item.get("answer_eligibility", "primary") != "primary",
                     -item["score"],
                     item["assignment_method"] == "category_fallback",
                     confidence_order(item["confidence"]),
@@ -330,8 +333,9 @@ def markdown(index):
                 lines.append("  Representative videos:")
                 for video in reps:
                     status = video["processing_status"]
+                    eligibility = video.get("answer_eligibility", "primary")
                     lines.append(
-                        f"  - {video['title']} [{status}] {video['url']}"
+                        f"  - {video['title']} [{status}/{eligibility}] {video['url']}"
                     )
         lines.append("")
 

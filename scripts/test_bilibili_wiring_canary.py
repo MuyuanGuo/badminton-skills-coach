@@ -45,6 +45,7 @@ class FakeSearch:
                 {
                     "video_id": video_id,
                     "transcript_evidence": [{"text": query}],
+                    "bounded_note_evidence": [{"text": query}],
                 }
                 for video_id in video_ids
             ]
@@ -247,6 +248,61 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
             "blocking_mechanical_case_generation_exclusions_present",
             result["global_failures"],
         )
+
+    def test_bounded_note_supplemental_gets_a_separate_wiring_contract(self):
+        supplemental = copy.deepcopy(self.video)
+        supplemental.update(
+            {
+                "answer_eligibility": "supplemental",
+                "runtime_evidence_mode": "bounded_note_windows",
+                "metadata_title_trust": "limited",
+                "transcript_segments": [],
+                "teaching_note": {
+                    "topic": "球拍重量选择",
+                    "key_evidence": [
+                        {
+                            "timestamp": "00:23-00:28",
+                            "text": "初学者先用四优球拍建立稳定动作",
+                        }
+                    ],
+                    "error_evidence": [],
+                    "action_cues": [],
+                },
+            }
+        )
+        knowledge = {"videos": [supplemental]}
+        index = {
+            "videos": [{"video_id": self.evidence_id}],
+            "chunk_index": {"chunks": []},
+        }
+        registry = canary.generate_registry(knowledge, index, self.rules)
+        self.assertEqual(registry["case_count"], 1)
+        self.assertEqual(registry["excluded_count"], 0)
+        case = registry["cases"][0]
+        self.assertEqual(case["evidence_mode"], "bounded_note_windows")
+        self.assertEqual(
+            case["query_derivation"], "committed_bounded_note_window"
+        )
+        self.assertNotIn("transcript_anchor", case)
+        canary.validate_registry(registry)
+
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                knowledge,
+                index,
+                [
+                    {
+                        "video_id": self.evidence_id,
+                        "answer_eligibility": "supplemental",
+                    }
+                ],
+            ),
+            FakeContext(self.evidence_id),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertTrue(result["results"][0]["claim_mapped"])
+        self.assertEqual(result["results"][0]["packet_window_count"], 1)
 
     def test_packaging_only_knowledge_fields_do_not_change_source_hash(self):
         packaged = copy.deepcopy(self.knowledge)

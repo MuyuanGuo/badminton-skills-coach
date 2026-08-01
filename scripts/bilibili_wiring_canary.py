@@ -11,7 +11,7 @@ import re
 from collections import Counter, defaultdict
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 MEASUREMENT_TYPE = "mechanical_wiring_canary_not_semantic_gold"
 DEFAULT_THRESHOLDS = {
     "retrieval_top_k": 5,
@@ -67,6 +67,8 @@ def mechanical_knowledge_hash(knowledge):
                     video.get("evidence_id") or video.get("video_id") or ""
                 ),
                 "processing_status": video.get("processing_status"),
+                "answer_eligibility": video.get("answer_eligibility"),
+                "runtime_evidence_mode": video.get("runtime_evidence_mode"),
                 "promotion_state": video.get("promotion_state"),
                 "retrieval_cohort": video.get("retrieval_cohort"),
                 "retrieval_title": video.get("retrieval_title")
@@ -79,6 +81,9 @@ def mechanical_knowledge_hash(knowledge):
                 ),
                 "runtime_segments_sha256": stable_payload_hash(
                     runtime_transcript_segments(video)
+                ),
+                "bounded_note_sha256": stable_payload_hash(
+                    bounded_note_evidence(video)
                 ),
             }
         )
@@ -98,6 +103,71 @@ def admission_state(video):
         "shadow_quality_gate_passed",
     }:
         return "shadow"
+    return None
+
+
+BOUNDED_NOTE_FIELDS = ("key_evidence", "error_evidence", "action_cues")
+
+
+def bounded_note_evidence(video):
+    """Return a stable, role-preserving view of committed note windows."""
+
+    note = video.get("teaching_note") or {}
+    merged = defaultdict(set)
+    for role in BOUNDED_NOTE_FIELDS:
+        for item in note.get(role, []) or []:
+            if not isinstance(item, dict):
+                continue
+            timestamp = str(item.get("timestamp") or "").strip()
+            text = str(item.get("text") or "").strip()
+            if timestamp and text:
+                merged[(timestamp, text)].add(role)
+    return [
+        {
+            "timestamp": timestamp,
+            "text": text,
+            "roles": sorted(roles),
+        }
+        for (timestamp, text), roles in sorted(merged.items())
+    ]
+
+
+def bounded_note_anchor(video):
+    """Choose one deterministic direct window for a mechanical probe."""
+
+    evidence = bounded_note_evidence(video)
+    if not evidence:
+        return None
+    role_priority = {
+        "key_evidence": 0,
+        "action_cues": 1,
+        "error_evidence": 2,
+    }
+    selected = min(
+        evidence,
+        key=lambda item: (
+            min(role_priority.get(role, 9) for role in item["roles"]),
+            -len(normalize(item["text"])),
+            item["timestamp"],
+            item["text"],
+        ),
+    )
+    return {
+        "timestamp": selected["timestamp"],
+        "roles": selected["roles"],
+        "text_sha256": hashlib.sha256(
+            selected["text"].encode("utf-8")
+        ).hexdigest(),
+    }
+
+
+def current_bounded_note_anchor_hash(video, anchor):
+    for item in bounded_note_evidence(video):
+        if (
+            item["timestamp"] == anchor.get("timestamp")
+            and item["roles"] == anchor.get("roles")
+        ):
+            return hashlib.sha256(item["text"].encode("utf-8")).hexdigest()
     return None
 
 
@@ -270,6 +340,43 @@ def generate_registry(
         state = admission_state(video)
         if state is None:
             continue
+        runtime_evidence_mode = video.get(
+            "runtime_evidence_mode", "full_transcript"
+        )
+        if runtime_evidence_mode == "bounded_note_windows":
+            anchor = bounded_note_anchor(video)
+            evidence = bounded_note_evidence(video)
+            if anchor is None:
+                exclusions.append(
+                    {
+                        "evidence_id": evidence_id,
+                        "reason": "missing_bounded_note_evidence",
+                        "blocking": True,
+                    }
+                )
+                continue
+            probe = next(
+                item["text"]
+                for item in evidence
+                if item["timestamp"] == anchor["timestamp"]
+                and item["roles"] == anchor["roles"]
+            )
+            case = {
+                "case_id": "bili-mechanical-" + evidence_id.split(":", 1)[-1],
+                "measurement_type": MEASUREMENT_TYPE,
+                "semantic_gold": False,
+                "admission_state": state,
+                "evidence_mode": "bounded_note_windows",
+                "query": probe,
+                "query_derivation": "committed_bounded_note_window",
+                "expected_evidence_id": evidence_id,
+                "bounded_note_probe": probe,
+                "bounded_note_sha256": stable_payload_hash(evidence),
+                "bounded_note_anchor": anchor,
+            }
+            case["case_sha256"] = stable_payload_hash(case)
+            cases.append(case)
+            continue
         segments = runtime_transcript_segments(video)
         if not segments:
             exclusions.append(
@@ -329,6 +436,7 @@ def generate_registry(
             "measurement_type": MEASUREMENT_TYPE,
             "semantic_gold": False,
             "admission_state": state,
+            "evidence_mode": "full_transcript",
             "query": retrieval_title,
             "query_derivation": (
                 "cleaned_retrieval_title_with_separate_transcript_anchor_probe"
@@ -349,7 +457,8 @@ def generate_registry(
         "semantic_gold": False,
         "description": (
             "Automatically generated mechanical wiring checks. Passing proves "
-            "transcript-backed retrieval and packet plumbing, not coaching semantics."
+            "full-transcript and bounded-note retrieval/packet plumbing, not "
+            "coaching semantics."
         ),
         "source": {
             "knowledge_sha256": mechanical_knowledge_hash(knowledge),
@@ -387,27 +496,51 @@ def validate_registry(registry):
             raise ValueError("A mechanical case claims semantic gold")
         required = {
             "case_id",
+            "evidence_mode",
             "query",
             "expected_evidence_id",
-            "supported_title_terms",
-            "transcript_probe",
-            "transcript_anchor",
-            "expected_chunk_ids",
-            "expected_cluster_ids",
             "case_sha256",
         }
         if not required.issubset(case):
             raise ValueError("Mechanical canary case is incomplete")
-        if (
-            not case["query"].strip()
-            or not case["supported_title_terms"]
-            or not case["transcript_probe"].strip()
-            or not case["expected_chunk_ids"]
-            or not case["expected_cluster_ids"]
-        ):
+        if not case["query"].strip():
             raise ValueError("Mechanical canary case has an empty wiring contract")
-        if not re.fullmatch(r"[0-9a-f]{64}", str(case["transcript_sha256"])):
-            raise ValueError("Mechanical canary transcript hash is invalid")
+        if case["evidence_mode"] == "full_transcript":
+            transcript_required = {
+                "supported_title_terms",
+                "transcript_probe",
+                "transcript_sha256",
+                "transcript_anchor",
+                "expected_chunk_ids",
+                "expected_cluster_ids",
+            }
+            if not transcript_required.issubset(case):
+                raise ValueError("Full-transcript mechanical case is incomplete")
+            if (
+                not case["supported_title_terms"]
+                or not case["transcript_probe"].strip()
+                or not case["expected_chunk_ids"]
+                or not case["expected_cluster_ids"]
+            ):
+                raise ValueError("Full-transcript canary has an empty contract")
+            if not re.fullmatch(r"[0-9a-f]{64}", str(case["transcript_sha256"])):
+                raise ValueError("Mechanical canary transcript hash is invalid")
+        elif case["evidence_mode"] == "bounded_note_windows":
+            note_required = {
+                "bounded_note_probe",
+                "bounded_note_sha256",
+                "bounded_note_anchor",
+            }
+            if not note_required.issubset(case):
+                raise ValueError("Bounded-note mechanical case is incomplete")
+            if not case["bounded_note_probe"].strip():
+                raise ValueError("Bounded-note canary has an empty probe")
+            if not re.fullmatch(
+                r"[0-9a-f]{64}", str(case["bounded_note_sha256"])
+            ):
+                raise ValueError("Mechanical canary bounded-note hash is invalid")
+        else:
+            raise ValueError("Mechanical canary evidence_mode is invalid")
         expected_hash = stable_payload_hash(
             {key: value for key, value in case.items() if key != "case_sha256"}
         )
@@ -522,6 +655,7 @@ def evaluate_registry(
     for case in registry["cases"]:
         query = case["query"]
         expected = case["expected_evidence_id"]
+        evidence_mode = case["evidence_mode"]
         retrieval = search_module.search(
             query,
             limit=int(thresholds["retrieval_top_k"]),
@@ -582,12 +716,13 @@ def evaluate_registry(
         target_clusters = set(
             target_retrieval.get("matched_cluster_ids") or []
         )
-        anchor_lookup = search_module.lookup_videos(
-            [expected],
-            query=case["transcript_probe"],
-            local_personalization=False,
-            include_query_match=False,
-            chunk_hints_by_video={
+        evidence_probe = (
+            case["transcript_probe"]
+            if evidence_mode == "full_transcript"
+            else case["bounded_note_probe"]
+        )
+        chunk_hints = (
+            {
                 expected: [
                     {
                         "start_segment": case["transcript_anchor"][
@@ -598,7 +733,16 @@ def evaluate_registry(
                         ],
                     }
                 ]
-            },
+            }
+            if evidence_mode == "full_transcript"
+            else {}
+        )
+        anchor_lookup = search_module.lookup_videos(
+            [expected],
+            query=evidence_probe,
+            local_personalization=False,
+            include_query_match=False,
+            chunk_hints_by_video=chunk_hints,
         )
         anchor_lookup_video = next(
             (
@@ -608,23 +752,25 @@ def evaluate_registry(
             ),
             None,
         )
-        normalized_probe = normalize(case["transcript_probe"])
+        normalized_probe = normalize(evidence_probe)
+        lookup_evidence_field = (
+            "transcript_evidence"
+            if evidence_mode == "full_transcript"
+            else "bounded_note_evidence"
+        )
         anchor_probe_lookup_hit = bool(
             normalized_probe
             and anchor_lookup_video
             and any(
                 normalized_probe in normalize(item.get("text"))
-                for item in anchor_lookup_video.get(
-                    "transcript_evidence",
-                    [],
-                )
+                for item in anchor_lookup_video.get(lookup_evidence_field, [])
             )
         )
         case_failures = []
         video = videos.get(expected)
         if video is None:
             case_failures.append("expected_evidence_missing_from_knowledge")
-        else:
+        elif evidence_mode == "full_transcript":
             current_transcript_hash = (
                 (video.get("quality") or {})
                 .get("transcript", {})
@@ -638,6 +784,18 @@ def evaluate_registry(
                 != case["transcript_anchor"]["text_sha256"]
             ):
                 case_failures.append("transcript_anchor_hash_mismatch")
+        else:
+            if stable_payload_hash(bounded_note_evidence(video)) != case[
+                "bounded_note_sha256"
+            ]:
+                case_failures.append("bounded_note_content_hash_mismatch")
+            if (
+                current_bounded_note_anchor_hash(
+                    video, case["bounded_note_anchor"]
+                )
+                != case["bounded_note_anchor"]["text_sha256"]
+            ):
+                case_failures.append("bounded_note_anchor_hash_mismatch")
         surface_disposition = "surfaced_top_k"
         if expected not in top_ids:
             policy_guarded = bool(
@@ -661,16 +819,36 @@ def evaluate_registry(
                 surface_disposition = "cohort_deferred_manifest"
             elif content_cluster_deferred:
                 surface_disposition = "content_cluster_deferred_manifest"
+            elif evidence_mode == "bounded_note_windows" and anchor_probe_lookup_hit:
+                # Supplemental records are not guaranteed a top-k slot when
+                # stronger primary evidence already covers an artificial
+                # per-window probe.  Their portable direct-lookup contract is
+                # still checked above, while realistic admission into answers
+                # is covered by the positive supplemental policy canary.
+                surface_disposition = "bounded_note_lookup_only"
             else:
                 surface_disposition = "unexpectedly_missing_top_k"
         if surface_disposition == "unexpectedly_missing_top_k":
             case_failures.append("expected_evidence_not_in_top_k")
-        if (
-            not (target or manifest_target)
+        if not (target or manifest_target) and not (
+            evidence_mode == "bounded_note_windows" and anchor_probe_lookup_hit
         ):
             case_failures.append("expected_evidence_missing_from_search_manifest")
         if not anchor_probe_lookup_hit:
-            case_failures.append("transcript_anchor_probe_lookup_failed")
+            case_failures.append(
+                "transcript_anchor_probe_lookup_failed"
+                if evidence_mode == "full_transcript"
+                else "bounded_note_probe_lookup_failed"
+            )
+        if evidence_mode == "bounded_note_windows" and bool(mapped) != bool(
+            packet_window_ids
+        ):
+            # Supplemental evidence is intentionally not forced into every
+            # answer: primary evidence may already cover the question.  But
+            # claim mapping and packet projection must agree whenever policy
+            # does select it.  A separate positive policy canary proves that
+            # bounded notes can enter answers when they add useful coverage.
+            case_failures.append("bounded_note_mapping_packet_mismatch")
         size = packet_bytes(packet)
         if size > int(thresholds["maximum_packet_bytes"]):
             case_failures.append("packet_exceeds_absolute_byte_budget")
@@ -703,6 +881,7 @@ def evaluate_registry(
             "semantic_gold": False,
             "query": query,
             "expected_evidence_id": expected,
+            "evidence_mode": evidence_mode,
             "retrieval_top_ids": top_ids,
             "retrieval_surface_disposition": surface_disposition,
             "candidate_manifest_found": manifest_target is not None,

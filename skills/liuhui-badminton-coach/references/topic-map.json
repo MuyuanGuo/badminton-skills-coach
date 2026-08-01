@@ -1,18 +1,34 @@
 {
-  "version": "knowledge-graph-v1",
+  "version": "knowledge-graph-v2",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-01T05:31:36.156259+00:00",
+  "source_updated_at": "2026-08-01T07:10:29.448460+00:00",
   "video_count": 1014,
-  "indexable_video_count": 779,
-  "assigned_video_count": 779,
-  "multi_topic_video_count": 382,
+  "indexable_video_count": 946,
+  "assigned_video_count": 946,
+  "multi_topic_video_count": 451,
+  "evidence_graph": {
+    "source": "data/knowledge/evidence_graph.json",
+    "schema_version": 2,
+    "counts": {
+      "video_nodes": 946,
+      "concept_nodes": 326,
+      "topic_nodes": 58,
+      "role_nodes": 9,
+      "primary_videos": 779,
+      "supplemental_videos": 167,
+      "video_concept_edges": 11801,
+      "video_topic_edges": 1641,
+      "video_role_edges": 4147,
+      "total_edges": 17589
+    }
+  },
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 339,
+      "video_count": 423,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -24,8 +40,8 @@
             "高远",
             "底线"
           ],
-          "video_count": 96,
-          "ready_count": 96,
+          "video_count": 131,
+          "ready_count": 131,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -66,8 +82,8 @@
             "突击",
             "扣杀"
           ],
-          "video_count": 152,
-          "ready_count": 152,
+          "video_count": 167,
+          "ready_count": 167,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -109,8 +125,8 @@
             "举拍",
             "框架"
           ],
-          "video_count": 98,
-          "ready_count": 98,
+          "video_count": 109,
+          "ready_count": 109,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -150,8 +166,8 @@
             "滑板",
             "软压"
           ],
-          "video_count": 23,
-          "ready_count": 23,
+          "video_count": 47,
+          "ready_count": 47,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -195,8 +211,8 @@
             "过渡击球点",
             "过渡基础"
           ],
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 36,
+          "ready_count": 36,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -236,8 +252,8 @@
             "反手杀球",
             "反拍"
           ],
-          "video_count": 29,
-          "ready_count": 29,
+          "video_count": 41,
+          "ready_count": 41,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -272,8 +288,8 @@
         {
           "name": "后场综合待细分",
           "keywords": [],
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 15,
+          "ready_count": 15,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -311,7 +327,7 @@
       "name": "网前技术",
       "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 80,
+      "video_count": 94,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -320,8 +336,8 @@
             "滚网",
             "平搓"
           ],
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 15,
+          "ready_count": 15,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -360,8 +376,8 @@
             "勾对角",
             "网前变线"
           ],
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 19,
+          "ready_count": 19,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -400,8 +416,8 @@
             "推球",
             "抢网"
           ],
-          "video_count": 24,
-          "ready_count": 24,
+          "video_count": 28,
+          "ready_count": 28,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -440,8 +456,8 @@
             "挡网",
             "网前球"
           ],
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -481,8 +497,8 @@
             "挑底线",
             "弹挑"
           ],
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 11,
+          "ready_count": 11,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -522,8 +538,8 @@
             "上网",
             "持拍"
           ],
-          "video_count": 12,
-          "ready_count": 12,
+          "video_count": 13,
+          "ready_count": 13,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -558,8 +574,8 @@
         {
           "name": "网前综合待细分",
           "keywords": [],
-          "video_count": 5,
-          "ready_count": 5,
+          "video_count": 7,
+          "ready_count": 7,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -597,7 +613,7 @@
       "name": "中前场与抽挡",
       "description": "平抽挡、接杀、防反及中前场高速衔接。",
       "discipline": "general",
-      "video_count": 48,
+      "video_count": 53,
       "subtopics": [
         {
           "name": "平抽挡与高速对抗",
@@ -608,8 +624,8 @@
             "快挡",
             "高速对抗"
           ],
-          "video_count": 7,
-          "ready_count": 7,
+          "video_count": 8,
+          "ready_count": 8,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -649,8 +665,8 @@
             "防反",
             "防守反击"
           ],
-          "video_count": 36,
-          "ready_count": 36,
+          "video_count": 40,
+          "ready_count": 40,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -747,7 +763,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 77,
+      "video_count": 88,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -757,8 +773,8 @@
             "起动",
             "第一步"
           ],
-          "video_count": 34,
-          "ready_count": 34,
+          "video_count": 38,
+          "ready_count": 38,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -799,8 +815,8 @@
             "下一拍",
             "衔接"
           ],
-          "video_count": 21,
-          "ready_count": 21,
+          "video_count": 24,
+          "ready_count": 24,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -840,8 +856,8 @@
             "垫步",
             "马来步"
           ],
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 18,
+          "ready_count": 18,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -881,8 +897,8 @@
             "救球",
             "跑动不到位"
           ],
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -923,8 +939,8 @@
             "正手区步法",
             "反手区步法"
           ],
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 5,
+          "ready_count": 5,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -959,8 +975,8 @@
         {
           "name": "步法综合待细分",
           "keywords": [],
-          "video_count": 14,
-          "ready_count": 14,
+          "video_count": 15,
+          "ready_count": 15,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -998,7 +1014,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 324,
+      "video_count": 378,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1009,8 +1025,8 @@
             "打透",
             "鞭甩"
           ],
-          "video_count": 48,
-          "ready_count": 48,
+          "video_count": 53,
+          "ready_count": 53,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1051,8 +1067,8 @@
             "转髋",
             "身体旋转"
           ],
-          "video_count": 51,
-          "ready_count": 51,
+          "video_count": 61,
+          "ready_count": 61,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1092,8 +1108,8 @@
             "小臂旋转",
             "手腕"
           ],
-          "video_count": 99,
-          "ready_count": 99,
+          "video_count": 111,
+          "ready_count": 111,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1133,8 +1149,8 @@
             "击球点",
             "高点"
           ],
-          "video_count": 61,
-          "ready_count": 61,
+          "video_count": 71,
+          "ready_count": 71,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1177,8 +1193,8 @@
             "全程",
             "大臂"
           ],
-          "video_count": 119,
-          "ready_count": 119,
+          "video_count": 143,
+          "ready_count": 143,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1213,8 +1229,8 @@
         {
           "name": "发力综合待细分",
           "keywords": [],
-          "video_count": 23,
-          "ready_count": 23,
+          "video_count": 29,
+          "ready_count": 29,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -1252,7 +1268,7 @@
       "name": "握拍与拍面",
       "description": "正反手握拍、握拍转换、手指发力和拍面控制。",
       "discipline": "general",
-      "video_count": 55,
+      "video_count": 59,
       "subtopics": [
         {
           "name": "正手握拍",
@@ -1341,8 +1357,8 @@
             "握拍微调",
             "灵活握拍"
           ],
-          "video_count": 8,
-          "ready_count": 8,
+          "video_count": 9,
+          "ready_count": 9,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1381,8 +1397,8 @@
             "拍型",
             "拍面角度"
           ],
-          "video_count": 27,
-          "ready_count": 27,
+          "video_count": 29,
+          "ready_count": 29,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1417,8 +1433,8 @@
         {
           "name": "握拍综合待细分",
           "keywords": [],
-          "video_count": 7,
-          "ready_count": 7,
+          "video_count": 8,
+          "ready_count": 8,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -1456,7 +1472,7 @@
       "name": "发球与接发",
       "description": "单双打发球、接发、变化和发接发目的性。",
       "discipline": "general",
-      "video_count": 42,
+      "video_count": 47,
       "subtopics": [
         {
           "name": "发小球",
@@ -1507,8 +1523,8 @@
             "发球变化",
             "隐蔽"
           ],
-          "video_count": 16,
-          "ready_count": 16,
+          "video_count": 17,
+          "ready_count": 17,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1548,8 +1564,8 @@
             "抢发",
             "抓发球"
           ],
-          "video_count": 14,
-          "ready_count": 14,
+          "video_count": 19,
+          "ready_count": 19,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -1664,7 +1680,7 @@
       "name": "双打战术",
       "description": "双打轮转、防守站位、封网和攻防组织。",
       "discipline": "doubles",
-      "video_count": 30,
+      "video_count": 31,
       "subtopics": [
         {
           "name": "轮转与补位",
@@ -1873,8 +1889,8 @@
         {
           "name": "双打综合待细分",
           "keywords": [],
-          "video_count": 9,
-          "ready_count": 9,
+          "video_count": 10,
+          "ready_count": 10,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -1912,7 +1928,7 @@
       "name": "单打战术",
       "description": "单打线路、落点、节奏、攻防转换与目的性。",
       "discipline": "singles",
-      "video_count": 27,
+      "video_count": 33,
       "subtopics": [
         {
           "name": "线路与落点选择",
@@ -1923,8 +1939,8 @@
             "四方球",
             "调动"
           ],
-          "video_count": 6,
-          "ready_count": 6,
+          "video_count": 7,
+          "ready_count": 7,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2065,8 +2081,8 @@
         {
           "name": "单打综合待细分",
           "keywords": [],
-          "video_count": 13,
-          "ready_count": 13,
+          "video_count": 18,
+          "ready_count": 18,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -2104,7 +2120,7 @@
       "name": "装备选择",
       "description": "与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。",
       "discipline": "general",
-      "video_count": 52,
+      "video_count": 66,
       "subtopics": [
         {
           "name": "球拍选择与重量",
@@ -2115,8 +2131,8 @@
             "拍重",
             "球拍"
           ],
-          "video_count": 50,
-          "ready_count": 50,
+          "video_count": 62,
+          "ready_count": 62,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2156,8 +2172,8 @@
             "磅数",
             "线床"
           ],
-          "video_count": 2,
-          "ready_count": 2,
+          "video_count": 4,
+          "ready_count": 4,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2177,6 +2193,15 @@
               "category": "发球与接发",
               "duration_seconds": 1886.2,
               "score": 3
+            },
+            {
+              "video_id": "bilibili:BV1ue41167Dg",
+              "title": "怎么感觉磅数适不适合自己？ 测试磅数最简单方法",
+              "url": "https://www.bilibili.com/video/BV1ue41167Dg/",
+              "confidence": "supplemental_note_only",
+              "category": "训练与纠错",
+              "duration_seconds": 49.8,
+              "score": 18
             }
           ]
         },
@@ -2194,7 +2219,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 86,
+      "video_count": 114,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -2205,8 +2230,8 @@
             "分解练习",
             "专项训练"
           ],
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 20,
+          "ready_count": 20,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2247,8 +2272,8 @@
             "改正",
             "做不好"
           ],
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 18,
+          "ready_count": 18,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2311,8 +2336,8 @@
             "精疲力尽",
             "恢复训练"
           ],
-          "video_count": 4,
-          "ready_count": 4,
+          "video_count": 6,
+          "ready_count": 6,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2347,8 +2372,8 @@
         {
           "name": "教学与训练综合待细分",
           "keywords": [],
-          "video_count": 52,
-          "ready_count": 52,
+          "video_count": 70,
+          "ready_count": 70,
           "is_fallback": true,
           "representative_videos": [
             {

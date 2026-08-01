@@ -153,6 +153,9 @@ class ProjectArtifactsTests(unittest.TestCase):
                     "parent_source_id": "live:2026-07-21",
                     "clip_start_seconds": 315,
                     "clip_end_seconds": 372,
+                    "processing_status": "ready",
+                    "answer_eligibility": "primary",
+                    "evidence_roles": ["context"],
                 }
             ]
         )
@@ -172,6 +175,9 @@ class ProjectArtifactsTests(unittest.TestCase):
                 "parent_source_id": None,
                 "clip_start_seconds": None,
                 "clip_end_seconds": None,
+                "processing_status": "ready",
+                "answer_eligibility": "primary",
+                "evidence_roles": ["context"],
             }
         ])
         self.assertEqual(result, [evidence_id])
@@ -190,6 +196,9 @@ class ProjectArtifactsTests(unittest.TestCase):
                         "parent_source_id": None,
                         "clip_start_seconds": 400,
                         "clip_end_seconds": None,
+                        "processing_status": "ready",
+                        "answer_eligibility": "primary",
+                        "evidence_roles": ["context"],
                     }
                 ]
             )

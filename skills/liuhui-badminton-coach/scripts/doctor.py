@@ -550,7 +550,8 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
         video
         for video in knowledge.get("videos", [])
         if video.get("processing_status") == "ready"
-        and video.get("confidence") != "visual_reviewed"
+        and video.get("runtime_evidence_mode", "full_transcript")
+        == "full_transcript"
     ]
     runtime_segments_complete = (
         knowledge.get("runtime_transcript_segments_bundled") is True

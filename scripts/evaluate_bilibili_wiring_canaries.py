@@ -60,9 +60,22 @@ def main():
             ).items()
         )
     )
+    summary["evidence_mode_counts"] = dict(
+        sorted(Counter(item["evidence_mode"] for item in result["results"]).items())
+    )
     summary["transcript_anchor_probe_lookup_passed"] = sum(
         item["transcript_anchor_probe_lookup_hit"]
         for item in result["results"]
+    )
+    summary["bounded_note_claim_mapped"] = sum(
+        item["claim_mapped"]
+        for item in result["results"]
+        if item["evidence_mode"] == "bounded_note_windows"
+    )
+    summary["bounded_note_packet_projected"] = sum(
+        item["packet_window_count"] > 0
+        for item in result["results"]
+        if item["evidence_mode"] == "bounded_note_windows"
     )
     summary["failure_count"] = len(result["failures"])
     summary["failures"] = result["failures"]

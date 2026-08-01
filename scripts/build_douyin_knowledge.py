@@ -7,6 +7,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+from evidence_admission import infer_evidence_roles
 from project_artifacts import atomic_write_text
 
 
@@ -439,11 +440,13 @@ def apply_review_annotation(record, review_annotation):
             "note": "人工视觉复核：非教学视频，不作为教练证据使用。",
         }
     elif status == "low_value":
-        record["processing_status"] = "low_value"
+        record["processing_status"] = "ready"
         record["confidence"] = "reviewed_low_value"
         note = record.get("teaching_note") or {}
         note["review_summary"] = review_annotation["review_notes"]
-        note["note"] = "人工视觉复核：存在教学内容，但证据价值不足，不进入回答检索。"
+        note["note"] = (
+            "人工视觉复核：存在教学内容，但只可在主证据覆盖不足或需要补充条件、纠错、训练与反例时使用。"
+        )
         record["teaching_note"] = note
     elif status == "needs_correction":
         record["processing_status"] = "needs_correction"
@@ -602,9 +605,38 @@ def build_record(
     review_annotation = review_annotations.get(item["video_id"])
     if review_annotation:
         apply_review_annotation(record, review_annotation)
+    record["answer_eligibility"] = (
+        "supplemental"
+        if record.get("review_status") == "low_value"
+        and record["processing_status"] == "ready"
+        else (
+            "primary"
+            if record["processing_status"] == "ready"
+            else "none"
+        )
+    )
+    record["evidence_roles"] = infer_evidence_roles(
+        record.get("category"),
+        record.get("retrieval_title") or record.get("title"),
+        record.get("teaching_note"),
+    )
+    record["metadata_title_trust"] = (
+        "reviewed"
+        if record.get("review_status") == "approved" or is_curated
+        else "not_applicable"
+    )
     transcript_backed = (
         record["processing_status"] == "ready"
         and record["confidence"] != "visual_reviewed"
+    )
+    record["runtime_evidence_mode"] = (
+        "full_transcript"
+        if transcript_backed
+        else (
+            "reviewed_visual_summary"
+            if record["processing_status"] == "ready"
+            else "quarantined"
+        )
     )
     scoped_segments = filter_segments_by_time_ranges(
         segments,
@@ -660,7 +692,7 @@ def build_knowledge(
         status_counts[status] = status_counts.get(status, 0) + 1
     return {
         "version": 1,
-        "evidence_schema_version": 1,
+        "evidence_schema_version": 2,
         "scope": "刘辉羽毛球抖音教学视频",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "quality_rules_version": rules["version"],
@@ -668,6 +700,18 @@ def build_knowledge(
         "knowledge_counts": {
             "videos": len(records),
             **status_counts,
+            "primary": sum(
+                item.get("answer_eligibility") == "primary"
+                for item in records
+            ),
+            "supplemental": sum(
+                item.get("answer_eligibility") == "supplemental"
+                for item in records
+            ),
+            "answer_ineligible": sum(
+                item.get("answer_eligibility") == "none"
+                for item in records
+            ),
             "curated": sum(item["confidence"] == "curated" for item in records),
             "visual_reviewed": sum(item["confidence"] == "visual_reviewed" for item in records),
             "reviewed_transcript": sum(
@@ -725,6 +769,18 @@ def merge_bilibili_knowledge(douyin, bilibili):
     merged["knowledge_counts"] = {
         "videos": len(merged["videos"]),
         **status_counts,
+        "primary": sum(
+            item.get("answer_eligibility") == "primary"
+            for item in merged["videos"]
+        ),
+        "supplemental": sum(
+            item.get("answer_eligibility") == "supplemental"
+            for item in merged["videos"]
+        ),
+        "answer_ineligible": sum(
+            item.get("answer_eligibility") == "none"
+            for item in merged["videos"]
+        ),
         "curated": sum(item["confidence"] == "curated" for item in merged["videos"]),
         "visual_reviewed": sum(
             item["confidence"] == "visual_reviewed" for item in merged["videos"]

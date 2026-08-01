@@ -682,6 +682,9 @@ compact_candidate = _retrieval_projection.compact_candidate
 compact_quality = _retrieval_projection.compact_quality
 compact_teaching_note = _retrieval_projection.compact_teaching_note
 rank_transcript_evidence = _retrieval_projection.rank_transcript_evidence
+rank_bounded_note_evidence = (
+    _retrieval_projection.rank_bounded_note_evidence
+)
 compact_lookup_feedback = _retrieval_projection.compact_lookup_feedback
 
 
@@ -1025,6 +1028,16 @@ def lookup_videos(
             "category": video["category"],
             "confidence": video["confidence"],
             "processing_status": video["processing_status"],
+            "answer_eligibility": video.get(
+                "answer_eligibility", "primary"
+            ),
+            "evidence_roles": video.get("evidence_roles", ["context"]),
+            "metadata_title_trust": video.get(
+                "metadata_title_trust", "not_applicable"
+            ),
+            "runtime_evidence_mode": video.get(
+                "runtime_evidence_mode", "full_transcript"
+            ),
             "url": video["url"],
             "duration_seconds": video["duration_seconds"],
             "quality": compact_quality(video.get("quality")),
@@ -1049,6 +1062,13 @@ def lookup_videos(
                 ),
             },
         }
+        if result["runtime_evidence_mode"] == "bounded_note_windows":
+            result["bounded_note_evidence"] = rank_bounded_note_evidence(
+                result["teaching_note"]["evidence"],
+                query,
+                expansion,
+                limit=segment_limit,
+            )
         if video_id in candidates:
             candidate = candidates[video_id]
             result["query_match"] = {

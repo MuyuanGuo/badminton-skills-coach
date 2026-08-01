@@ -112,6 +112,10 @@ def selected_video_evidence_text(search_module, video):
     evidence_text.extend(
         item.get("text", "") for item in video.get("transcript_evidence", [])
     )
+    evidence_text.extend(
+        item.get("text", "")
+        for item in video.get("bounded_note_evidence", [])
+    )
     return search_module.normalize(" ".join(evidence_text))
 
 
@@ -159,6 +163,10 @@ def claim_evidence_entry(video, directness, reason):
         "directness": directness,
         "scope": video["claim_scope_policy"],
         "reason": reason,
+        "answer_eligibility": video.get(
+            "answer_eligibility", "primary"
+        ),
+        "evidence_roles": video.get("evidence_roles", ["context"]),
     }
 
 
@@ -172,7 +180,11 @@ def query_window_support(video):
         "query_ngram_coverage": 0.0,
         "exact_query_match": False,
     }
-    for window in video.get("transcript_evidence", []):
+    source_windows = [
+        *video.get("transcript_evidence", []),
+        *video.get("bounded_note_evidence", []),
+    ]
+    for window in source_windows:
         matched_count = len(window.get("matched_terms") or [])
         coverage = float(window.get("query_ngram_coverage") or 0)
         exact = bool(window.get("exact_query_match"))
@@ -204,6 +216,13 @@ def query_window_support(video):
             best["query_ngram_coverage"],
         ):
             best = candidate
+    if (
+        best["rank"] < 2
+        and video.get("runtime_evidence_mode") == "bounded_note_windows"
+    ):
+        # Bounded-note sources fail closed: an unmatched note cannot borrow
+        # support from a low-trust title.
+        return best
     if (
         best["rank"] < 2
         and video.get("reviewed_evidence_rank", 2) <= 1

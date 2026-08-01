@@ -1,6 +1,6 @@
 # 回答质量黄金集审核队列
 
-知识库版本：`2026-08-01T05:31:36.156259+00:00`
+知识库版本：`2026-08-01T07:10:29.448460+00:00`
 候选问题：`57`
 可进入自动回归：`57`
 仍待审核：`0`
@@ -321,6 +321,7 @@
 ### 机器补充候选
 
 - 机器候选: [双打接发球如何准备！不为人知的站位和握拍细节揭秘](https://www.bilibili.com/video/BV1nvsfeHENA/) (`bilibili:BV1nvsfeHENA`)
+- 机器候选: [双打接发球太凶怎么限制抢网？ 一招逼疯对面接发球小姐姐 的双打教学](https://www.bilibili.com/video/BV1Ac411q7eJ/) (`bilibili:BV1Ac411q7eJ`)
 
 ### Review notes
 
@@ -2968,7 +2969,7 @@
 
 ### 机器补充候选
 
-- 没有额外候选。
+- 机器候选: [羊vs蔡 直播赛后总结！ 复盘比赛](https://www.bilibili.com/video/BV1BDRCYFEFr/) (`bilibili:BV1BDRCYFEFr`)
 
 ### Review notes
 
@@ -4617,6 +4618,7 @@
 ### 机器补充候选
 
 - 机器候选: [杀球太平不够尖怎么办？杀球压下去的动作技巧！不看又错过一个亿~](https://www.bilibili.com/video/BV1rp421d7om/) (`bilibili:BV1rp421d7om`)
+- 机器候选: [羽毛球场老登是怎样练成的？真相扎心但练技术很有效](https://www.bilibili.com/video/BV1DT42167Ba/) (`bilibili:BV1DT42167Ba`)
 
 ### Review notes
 
@@ -5027,7 +5029,7 @@
 
 ### 机器补充候选
 
-- 机器候选: [解说单打比赛切片！小羊(杨越凯)vs蔡教练(蔡晓源)第一局完整字幕版](https://www.bilibili.com/video/BV1bZRqYcEN7/) (`bilibili:BV1bZRqYcEN7`)
+- 机器候选: [底线被平高球顶穿怎么办？ 接底线球技巧](https://www.bilibili.com/video/BV1JP411y7j8/) (`bilibili:BV1JP411y7j8`)
 
 ### Review notes
 
