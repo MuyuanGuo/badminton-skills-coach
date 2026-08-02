@@ -6,121 +6,137 @@
 
 ![Badminton Skills Coach: evidence-backed badminton video knowledge base](.github/assets/social-preview.jpg)
 
-An evidence-backed badminton coaching Skill for Codex. It turns public Chinese coaching videos from Liu Hui Badminton into searchable, citable, regression-tested guidance with video links, timestamps, and explicit evidence boundaries.
+An evidence-backed badminton coaching Skill for Codex. Describe a real technique, footwork, tactics, equipment, or practice problem and it returns a diagnosis, actionable practice, relevant Douyin and Bilibili videos, timestamps, and explicit evidence boundaries.
 
-[Install the latest release](#install) · [See a real answer](#reviewed-answer-example) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
+[Install 2.0.0](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
 
-The stable channel is [`main`](https://github.com/MuyuanGuo/badminton-skills-coach/tree/main) and the latest formal package is available from [Releases](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest). Ongoing work lives on `develop`. This project is independent and is not authored, endorsed, or operated by Liu Hui.
+Version 2.0.0 is the stable release on main and [v2.0.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0). Ongoing work lives on develop. This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
-## What it does
+## Start in 30 seconds
 
-- Diagnoses technique, footwork, tactics, rotation, serve/receive, and training problems.
-- Keeps forehand/backhand, court area, singles/doubles, active/passive state, player roles, and shot direction separate.
-- Uses titles and keywords for recall, but requires teaching notes or timestamped transcript evidence for specific claims.
-- Assigns text and video different jobs: text explains and plans; video demonstrates spatial movement.
-- Returns stable source links, `evidence_id` values, viewing timestamps, and confidence boundaries.
-- Turns confirmed user feedback into reviewed regression cases instead of treating feedback as source truth.
+Install the Skill, restart Codex, and describe the situation:
 
-## Reviewed answer example
+~~~text
+$liuhui-badminton-coach I am an intermediate doubles player.
+Smashes into my backhand hip make my block sit up.
+Separate racket-face, contact-point, and movement problems, then give me
+a 20-minute partner drill.
+~~~
 
-> **Question:** I am late in the rear court and cannot complete my normal preparation. How can I still clear to the baseline?
->
-> **Diagnosis:** When the shuttle has already put you under genuine pressure, do not force a large active preparation or a full body turn. Move the racket behind the body earlier from below; as the contact point becomes lower and farther behind, shorten the preparation and swing while preserving racket speed and force transfer.
->
-> **Practice:** Rehearse the transition from normal ready position to “racket below and behind, then swing upward.” Add progressively deeper feeds and check only three things: early recognition, a frame that matches the contact point, and sufficient racket speed after shortening the motion.
->
-> **Evidence example:** [Forehand passive rear-court clear](https://www.douyin.com/video/7558912953539071292), especially `00:27–00:40` for the preparation path and `01:54–02:03` for earlier contact.
+The Skill reconstructs who did what, the incoming shot, and the requested action before retrieving evidence. Every displayed source has a turn-scoped V label, a stable evidence_id, a canonical link, and a timestamp when available.
 
-The full reviewed answer also separates forehand overhead and backhand branches, lists confidence limits, and maps every cited video to a stable source identifier.
+## What changed in 2.0.0
 
-## Current evidence baseline
+- One answer-ready corpus now combines processed Douyin and Bilibili teaching material across strokes, full-court movement, singles and doubles tactics, net skills, serve/receive, equipment, and practice.
+- Titles and keywords recall candidates but cannot prove a technical claim. Source, transcript, evidence-quality, and duplicate gates decide whether a video may answer.
+- 781 primary sources lead. 175 bounded supplemental sources may fill a concept, condition, drill, or equipment gap only through matched timestamp windows.
+- “One to three videos” is a per-claim evidence cap, not a three-video answer cap. Materially different subquestions or scenario branches may expose more sources; simple answers are never padded with duplicates.
+- Local feedback stays on the user's machine by default and affects personalization only after confirmation. Public feedback requires separate sanitization, consent, source verification, and regression tests.
+- The model reads a compact answer packet while the complete context remains authoritative for final audit; canonical JSON SHA-256 binds the two.
+
+## Current evidence and quality baseline
 
 | Metric | Current baseline |
 | --- | ---: |
-| Processed public videos | 474 |
-| Ready teaching videos | 353 |
-| Transcript-backed evidence | 334 |
+| Processed public videos | 1245 |
+| Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
+| Ready teaching videos | 956 |
+| Primary / bounded supplemental evidence | 781 / 175 |
+| Transcript-backed evidence | 763 |
+| Bounded timestamp-window evidence | 174 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
-| Hard-negative selections in the current regression set | 0 |
+| Query-understanding cases | 143/143 |
+| Metamorphic language variants | 30/30 |
+| Hard-negative selections | 0 of 194 |
+| Current-runtime independent generations | 3/3 |
+| Promoted public feedback signals | 0 |
 
-These numbers describe the current reviewed corpus and evaluation set. They are not a claim that every possible natural-language question has already been tested.
+All 7,724 transcript evidence items have timestamps. These figures describe the controlled corpus and evaluation set; they do not claim that every possible natural-language question has already been tested.
 
 ## Install
 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
-```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.5.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
+~~~bash
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
+  -o /tmp/liuhui-badminton-coach-2.0.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
-```
+~~~
 
-Restart Codex and ask a concrete question:
+Verify the installation:
 
-```text
-$liuhui-badminton-coach I am an intermediate doubles player. Smashes into my
-backhand hip make my racket face roll over and my block sits up. Diagnose the
-likely causes and give me a 20-minute partner drill.
-```
+~~~bash
+python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
+~~~
 
-Chinese questions work best because the source videos and evidence notes are primarily Chinese.
+Restart Codex after installation. Re-running the installer safely upgrades the installed Skill after validating the package.
 
-## Architecture
+## Ask better questions
 
-```mermaid
-flowchart TD
-    A["Incremental source observation"] --> B["Classification ledger and processing queue"]
-    B --> C["Download and metadata validation"]
-    B --> D["Transcript or reviewed visual summary"]
-    C --> E["Structured knowledge base"]
-    D --> E
-    E --> F["Topic map, retrieval index, quality signals"]
-    Q["Natural-language question"] --> G["Intent and scenario-boundary parser"]
-    G --> H["Multi-query recall, conflict filtering, finalist selection"]
-    F --> H
-    H --> I["Evidence-ready answer context"]
-    I --> J["Codex Skill answer"]
-    J --> K["Reviewed feedback and regression cases"]
-    K --> F
-```
+Useful details include:
 
-The runtime entry point is `skills/liuhui-badminton-coach/scripts/prepare_answer_context.py`. The repository also contains source processing, evaluation, installation, feedback, packaging, and reproducibility tooling.
+- Your level and whether the situation is singles or doubles.
+- Incoming shot, court area, forehand/backhand side, and active/passive state.
+- What you currently do and the symptom you observe.
+- The action, tactical outcome, or training goal you want.
+- Whether you practice alone, with a partner, or with a coach, plus session length.
 
-Normal answer generation uses `--answer-packet --audit-context context.json`. The model reads the compact packet while the complete context remains authoritative for final audit. A canonical JSON SHA-256 binds the two. The compact packet removes retrieval scores and repeated policy prose without reducing internal candidate recall; reviewed scopes use a closed evidence-atom composer contract.
+Chinese questions usually retrieve more precisely because the source videos and evidence notes are primarily Chinese.
 
-## Development and verification
+Without a continuous video of your movement, the Skill can provide an evidence-backed diagnostic order but cannot confirm one unique cause. It does not provide medical diagnosis, performance guarantees, generic shopping recommendations, or impersonation of Liu Hui.
 
-Start contributions from `develop` and target pull requests back to `develop`. See [CONTRIBUTING.md](CONTRIBUTING.md) for data, privacy, test, and release rules.
+## Why an answer may show more than three videos
 
-```bash
-python3 scripts/doctor.py
-python3 scripts/validate_project.py
-PYTHONPATH=scripts python3 -m unittest discover -s scripts -p 'test_*.py'
-```
+The one-to-three limit applies to evidence for a single claim. A simple question normally needs only a few sources. A complex question may need more when separate strokes, singles/doubles branches, technique and footwork subproblems, or complementary evidence roles are materially different.
 
-Changes to retrieval, evidence, or answer behavior should also run the full quality pipeline:
+Only videos in the final answer packet are displayed, exactly once each, with contiguous V1…Vn labels ordered by usefulness. Content-cluster deduplication, claim-level evidence gates, and a 16-finalist hard ceiling prevent redundant or uncontrolled expansion.
 
-```bash
-python3 scripts/run_full_update_pipeline.py
-```
+## Feedback and privacy
 
-Check whether the committed profile observation, knowledge build, processing queue,
-classification review, or blind forward tests need maintenance:
+Every answer ends with a prompt tailored to its current labels, for example:
 
-```bash
-python3 scripts/check_maintenance_health.py --fail-on overdue
-```
+~~~text
+V2 was most useful; V4 was irrelevant; claim 2 is wrong;
+the answer missed “how to handle the passive situation”;
+you misunderstood me—I meant “singles kill-to-net.”
+~~~
 
-Release archives are deterministic, checksum-published, accompanied by a CycloneDX SBOM, and attested by GitHub Actions. See [RELEASE_SECURITY.md](RELEASE_SECURITY.md) for verification instructions.
+Explicit feedback first enters a local pending-review queue. It affects personalization only after the user confirms the parsed record. The recorder preserves the exact turn-scoped mapping; sparse labels from an older answer such as V2, V3, and V5 are never silently renumbered or rebound to different videos.
 
-## License and source boundaries
+To share sanitized public feedback, use the [Skill feedback Issue template](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml). A signal can enter the public Skill only after consent, provenance verification, privacy checks, and regression testing. Feedback is never treated as badminton source truth by itself.
 
-Original software and automation in this repository use the [MIT License](LICENSE). Third-party video, audio, creator names, titles, thumbnails, transcripts, and other source material are not covered by the MIT grant; see [NOTICE](NOTICE).
+## Sources and boundaries
 
-The repository does not ship original media, complete transcript directories, temporary media credentials, model caches, or local user feedback. Public links are source citations, and users remain responsible for platform rules, copyright, and privacy requirements.
+The repository does not ship original media, complete transcript directories, temporary cookies, platform credentials, model caches, or local user feedback. Public links are source citations. Original software and automation use the [MIT License](LICENSE); third-party video, audio, titles, creator names, thumbnails, and transcripts are outside that grant. See [NOTICE](NOTICE).
+
+### How new data reaches an answer
+
+~~~mermaid
+flowchart LR
+    B["Source admission and media validation"] --> C["Decodable media"]
+    C --> D["Deterministic ASR"]
+    D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
+    P --> E["Structured knowledge, including quarantine audit records"]
+    E --> A["Answer admission layers: primary / supplemental / none"]
+    A --> KG["Concept-topic-evidence-role graph"]
+    A --> F["45-second chunk-first plus bounded-window retrieval"]
+    F --> R["Answer packet and final audit"]
+~~~
+
+A new transcript does not update model weights or become Codex conversational memory. A raw `.json`, `.srt`, or `.txt` file alone changes no answer. A fully aligned record becomes `primary`; a record with direct teaching windows but narrower metadata or scope becomes `supplemental`. When provenance, safety, transcript quality, or duplicate gates fail, audit state is retained with `answer_eligibility: none`; only a generation-level consistency failure will still roll back the generated artifacts for that run.
+
+Maintainers resume an incomplete Bilibili pipeline through one recovery entry point:
+
+~~~bash
+python3 scripts/run_bilibili_update_pipeline.py --install
+~~~
+
+For maintenance and contributions, see [CONTRIBUTING.md](CONTRIBUTING.md). Release verification and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). The recruiter-facing architecture, evaluation, and engineering narrative remains on develop.
+
+The `main` README targets Skill users; the `develop` README targets recruiters, technical interviewers, and contributors.

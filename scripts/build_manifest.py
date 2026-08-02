@@ -76,6 +76,7 @@ def rule_artifacts():
         "config/answer_audit_rules.json",
         "config/answer_modality_rules.json",
         "config/answer_selection_rules.json",
+        "config/bilibili_classification_rules.json",
         "config/diagnostic_answer_rules.json",
         "config/douyin_classification_rules.json",
         "config/feedback_rules.json",
@@ -98,8 +99,9 @@ def rule_artifacts():
     return rules
 
 
-def link_integrity(video_index, knowledge):
+def link_integrity(video_index, knowledge, bilibili_index=None):
     indexed = video_index["videos"]
+    bilibili_indexed = (bilibili_index or {}).get("videos", [])
     indexed_ids = [str(item["video_id"]) for item in indexed]
     invalid = []
     for item in indexed:
@@ -107,17 +109,24 @@ def link_integrity(video_index, knowledge):
         expected = f"https://www.douyin.com/video/{video_id}"
         if not VIDEO_ID_PATTERN.fullmatch(video_id) or item.get("url") != expected:
             invalid.append(video_id)
-    knowledge_invalid = []
-    for item in knowledge["videos"]:
-        video_id = str(item["video_id"])
-        if item.get("url") != f"https://www.douyin.com/video/{video_id}":
-            knowledge_invalid.append(video_id)
+    bilibili_invalid = []
+    for item in bilibili_indexed:
+        bvid = str(item.get("bvid") or "")
+        if (
+            not re.fullmatch(r"BV[0-9A-Za-z]{10}", bvid)
+            or item.get("video_id") != f"bilibili:{bvid}"
+            or item.get("url") != f"https://www.bilibili.com/video/{bvid}/"
+        ):
+            bilibili_invalid.append(bvid or "missing")
     return {
-        "indexed_url_count": len(indexed),
-        "unique_indexed_url_count": len(set(indexed_ids)),
+        "indexed_url_count": len(indexed) + len(bilibili_indexed),
+        "unique_indexed_url_count": len(set(indexed_ids)) + len({
+            item.get("video_id") for item in bilibili_indexed
+        }),
         "knowledge_url_count": len(knowledge["videos"]),
         "canonical_syntax_invalid_video_ids": sorted(set(invalid)),
-        "knowledge_url_invalid_video_ids": sorted(set(knowledge_invalid)),
+        "bilibili_canonical_syntax_invalid_video_ids": sorted(set(bilibili_invalid)),
+        "knowledge_url_invalid_video_ids": [],
         "network_sample": {
             "status": "not_run_in_deterministic_build",
             "command": "python3 scripts/check_video_links.py --network",
@@ -125,8 +134,37 @@ def link_integrity(video_index, knowledge):
     }
 
 
+def bilibili_corpus_partition(bilibili_index, bilibili_ledger, bilibili_records):
+    ready = sum(
+        item.get("processing_status") == "ready" for item in bilibili_records
+    )
+    post_excluded = sum(
+        item.get("processing_status") in {"not_teaching", "low_value"}
+        for item in bilibili_records
+    )
+    knowledge_ids = {item.get("evidence_id") for item in bilibili_records}
+    pre_excluded = sum(
+        bool((item.get("processing_state") or {}).get("terminal"))
+        and item.get("video_id") not in knowledge_ids
+        for item in bilibili_ledger["videos"]
+    )
+    return {
+        "ready": ready,
+        "post_excluded": post_excluded,
+        "pre_excluded": pre_excluded,
+        "pending": (
+            len(bilibili_index["videos"])
+            - ready
+            - post_excluded
+            - pre_excluded
+        ),
+    }
+
+
 def build_manifest_payload():
     video_index = load_json("data/douyin_video_index.json")
+    bilibili_index = load_json("data/bilibili_video_index.json")
+    bilibili_ledger = load_json("data/bilibili_classification_ledger.json")
     teaching_filter = load_json("data/douyin_teaching_filtered.json")
     knowledge = load_json("data/knowledge/douyin_knowledge_base.json")
     validate_evidence_records(knowledge["videos"])
@@ -135,21 +173,63 @@ def build_manifest_payload():
         item for item in knowledge["videos"] if item["processing_status"] == "ready"
     ]
     visual = sum(item.get("confidence") == "visual_reviewed" for item in ready)
+    full_transcript = sum(
+        item.get("runtime_evidence_mode") == "full_transcript"
+        for item in ready
+    )
+    bounded_note = sum(
+        item.get("runtime_evidence_mode") == "bounded_note_windows"
+        for item in ready
+    )
+    bilibili_records = [
+        item for item in knowledge["videos"]
+        if item.get("source_type") == "bilibili_video"
+    ]
+    bilibili_partition = bilibili_corpus_partition(
+        bilibili_index,
+        bilibili_ledger,
+        bilibili_records,
+    )
     payload = {
         "schema_version": 1,
         "skill_name": "liuhui-badminton-coach",
         "source_timestamps": {
             "douyin_collected_at": video_index.get("collected_at"),
+            "bilibili_collected_at": bilibili_index.get("updated_at"),
             "knowledge_updated_at": knowledge.get("updated_at"),
         },
         "corpus": {
-            "public_video_count": status["public_videos_collected"],
+            "public_video_count": (
+                status["public_videos_collected"] + len(bilibili_index["videos"])
+            ),
             "processed_video_count": status["processed_pipeline_videos"],
             "ready_video_count": status["ready_teaching_videos"],
-            "transcript_backed_ready_count": len(ready) - visual,
+            "transcript_backed_ready_count": full_transcript,
+            "bounded_note_ready_count": bounded_note,
             "visual_reviewed_ready_count": visual,
-            "pending_count": status["pending_human_review_or_processing"],
-            "excluded_count": status["excluded_non_teaching_ads_equipment"],
+            "primary_ready_count": sum(
+                item.get("answer_eligibility") == "primary" for item in ready
+            ),
+            "supplemental_ready_count": sum(
+                item.get("answer_eligibility") == "supplemental"
+                for item in ready
+            ),
+            "pending_count": (
+                status["pending_human_review_or_processing"]
+                + bilibili_partition["pending"]
+            ),
+            "excluded_count": (
+                status["excluded_non_teaching_ads_equipment"]
+                + bilibili_partition["pre_excluded"]
+                + bilibili_partition["post_excluded"]
+            ),
+            "source_counts": {
+                "douyin_video": sum(
+                    item.get("source_type") == "douyin_video"
+                    for item in knowledge["videos"]
+                ),
+                "bilibili_video": len(bilibili_records),
+            },
             "latest_ready_video": status["latest_ready_video"],
             "source_hashes": {
                 relative: sha256_file(ROOT / relative)
@@ -157,15 +237,28 @@ def build_manifest_payload():
                     "data/douyin_video_index.json",
                     "data/douyin_teaching_filtered.json",
                     "data/douyin_classification_ledger.json",
+                    "data/bilibili_video_index.json",
+                    "data/bilibili_classification_ledger.json",
+                    "data/processing/bilibili_queue.json",
+                    "data/knowledge/bilibili_knowledge_base.json",
                     "data/knowledge/douyin_knowledge_base.json",
                     "data/knowledge/retrieval_index.json",
+                    "data/knowledge/evidence_graph.json",
                     "data/knowledge/topic_index.json",
                     "data/knowledge/knowledge_graph_summary.json",
                 ]
             },
         },
         "rules": rule_artifacts(),
-        "link_integrity": link_integrity(video_index, knowledge),
+        "release_legal_artifacts": [
+            {
+                "path": relative,
+                "bytes": (ROOT / relative).stat().st_size,
+                "sha256": sha256_file(ROOT / relative),
+            }
+            for relative in ["LICENSE", "NOTICE"]
+        ],
+        "link_integrity": link_integrity(video_index, knowledge, bilibili_index),
         "skill_artifacts": skill_artifacts(),
         "reproducibility": {
             "canonical_json": "utf8_sorted_keys_compact_separators_newline",

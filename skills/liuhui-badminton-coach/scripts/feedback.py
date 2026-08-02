@@ -19,7 +19,9 @@ REFERENCES = SKILL_ROOT / "references"
 KNOWLEDGE_PATH = REFERENCES / "knowledge-base.json"
 RULES_PATH = REFERENCES / "feedback-rules.json"
 VIDEO_REF_PATTERN = re.compile(r"(?:[Vv]\s*0*(\d+)|视频\s*0*(\d+))")
-VIDEO_ID_PATTERN = re.compile(r"(?<!\d)(\d{18,20})(?!\d)")
+VIDEO_ID_PATTERN = re.compile(
+    r"(?<![A-Za-z0-9:])(?:\d{18,20}|(?:bilibili:)?BV[0-9A-Za-z]{10})(?![A-Za-z0-9])"
+)
 CLAUSE_SPLIT_PATTERN = re.compile(r"[，,；;。!！？?\n]+|[.](?=\s|$)")
 ISSUE_HEADING_PATTERN = re.compile(r"^###\s+(.+?)\s*$", re.MULTILINE)
 GITHUB_ISSUE_URL = "https://github.com/MuyuanGuo/badminton-skills-coach/issues/new"
@@ -146,7 +148,10 @@ def extract_video_refs(text):
 
 
 def extract_video_ids(text):
-    return unique_in_order(VIDEO_ID_PATTERN.findall(text or ""))
+    return unique_in_order(
+        f"bilibili:{value}" if value.startswith("BV") else value
+        for value in VIDEO_ID_PATTERN.findall(text or "")
+    )
 
 
 def parse_video_spec(spec):
@@ -156,9 +161,14 @@ def parse_video_spec(spec):
     matched = re.fullmatch(r"[Vv]\s*0*(\d+)", reference)
     if not matched:
         raise ValueError(f"Invalid video reference: {reference}")
-    if not re.fullmatch(r"\d{18,20}", video_id):
-        raise ValueError(f"Invalid Douyin video ID: {video_id}")
-    return normalize_ref(matched.group(1)), video_id
+    reference_number = int(matched.group(1))
+    if reference_number < 1:
+        raise ValueError(f"Invalid video reference: {reference}")
+    if re.fullmatch(r"BV[0-9A-Za-z]{10}", video_id):
+        video_id = f"bilibili:{video_id}"
+    if not re.fullmatch(r"(?:\d{18,20}|bilibili:BV[0-9A-Za-z]{10})", video_id):
+        raise ValueError(f"Invalid evidence ID: {video_id}")
+    return normalize_ref(reference_number), video_id
 
 
 def validate_video_mappings(video_specs, core_refs, knowledge):
@@ -169,9 +179,9 @@ def validate_video_mappings(video_specs, core_refs, knowledge):
         raise ValueError("Video references must be unique")
     if len(video_ids) != len(set(video_ids)):
         raise ValueError("The same video ID cannot receive multiple references")
-    expected = [f"V{index}" for index in range(1, len(mappings) + 1)]
-    if sorted(references, key=ref_sort_key) != expected:
-        raise ValueError("Video references must be contiguous and start at V1")
+    # Current answer packets use contiguous V1...Vn labels. Preserve exact
+    # sparse mappings from older answers as well: renumbering V2/V3/V5 while
+    # recording feedback would silently bind the user's words to other videos.
 
     ready_videos = {
         video["video_id"]: video
@@ -660,10 +670,14 @@ def review_feedback(feedback_id, decision, note, reviewer, queue_dir=None):
 def github_video_lines(video_ids):
     if not video_ids:
         return "无"
-    return "\n".join(
-        f"- https://www.douyin.com/video/{video_id} (`{video_id}`)"
-        for video_id in video_ids
-    )
+    lines = []
+    for video_id in video_ids:
+        if video_id.startswith("bilibili:"):
+            url = f"https://www.bilibili.com/video/{video_id.split(':', 1)[1]}/"
+        else:
+            url = f"https://www.douyin.com/video/{video_id}"
+        lines.append(f"- {url} (`{video_id}`)")
+    return "\n".join(lines)
 
 
 def body_sha256(body):

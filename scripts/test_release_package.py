@@ -50,6 +50,8 @@ class ReleasePackageTests(unittest.TestCase):
                 self.assertTrue(
                     all(name.startswith("liuhui-badminton-coach/") for name in names)
                 )
+                self.assertIn("liuhui-badminton-coach/LICENSE", names)
+                self.assertIn("liuhui-badminton-coach/NOTICE", names)
                 knowledge = json.loads(
                     archive.read(
                         "liuhui-badminton-coach/references/knowledge-base.json"
@@ -82,10 +84,32 @@ class ReleasePackageTests(unittest.TestCase):
             self.assertEqual(first, second)
             self.assertEqual(first["bomFormat"], "CycloneDX")
             self.assertEqual(first["specVersion"], "1.6")
-            self.assertEqual(len(first["components"]), len(release_files()))
+            file_components = [
+                item for item in first["components"] if item["type"] == "file"
+            ]
+            optional_components = [
+                item for item in first["components"] if item.get("scope") == "optional"
+            ]
+            self.assertEqual(len(file_components), len(release_files()))
+            self.assertGreater(len(optional_components), 20)
             self.assertTrue(
-                all(component["hashes"][0]["alg"] == "SHA-256" for component in first["components"])
+                all(item["purl"].startswith("pkg:pypi/") for item in optional_components)
             )
+            self.assertTrue(
+                all(
+                    component["hashes"][0]["alg"] == "SHA-256"
+                    for component in file_components
+                )
+            )
+
+    def test_unexpected_skill_file_fails_closed(self):
+        unexpected = ROOT / "skills" / "liuhui-badminton-coach" / "unexpected.tmp"
+        unexpected.write_text("must be explicitly allowlisted\n", encoding="utf-8")
+        try:
+            with self.assertRaisesRegex(ValueError, "unexpected Skill files"):
+                release_files()
+        finally:
+            unexpected.unlink()
 
     def test_checksum_manifest_uses_downloadable_asset_names(self):
         with tempfile.TemporaryDirectory() as directory:

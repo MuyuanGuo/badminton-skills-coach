@@ -21,12 +21,17 @@ CONTEXT_PATH = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+_MODULE_CACHE = {}
 
 
 def load_module(name, path):
+    cache_key = str(Path(path).resolve())
+    if cache_key in _MODULE_CACHE:
+        return _MODULE_CACHE[cache_key]
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    _MODULE_CACHE[cache_key] = module
     return module
 
 

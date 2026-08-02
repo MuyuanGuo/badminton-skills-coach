@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import re
 from pathlib import Path
@@ -8,11 +9,16 @@ from project_artifacts import atomic_write_bundle, derive_project_status
 
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
+README_EN = ROOT / "README.en.md"
+DOCS_ZH = ROOT / "docs" / "index.html"
+DOCS_EN = ROOT / "docs" / "en" / "index.html"
 SKILL = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 AGENT_METADATA = (
     ROOT / "skills" / "liuhui-badminton-coach" / "agents" / "openai.yaml"
 )
 VIDEO_INDEX = ROOT / "data" / "douyin_video_index.json"
+BILIBILI_INDEX = ROOT / "data" / "bilibili_video_index.json"
+BILIBILI_LEDGER = ROOT / "data" / "bilibili_classification_ledger.json"
 TEACHING_FILTER = ROOT / "data" / "douyin_teaching_filtered.json"
 KNOWLEDGE = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
 FEEDBACK_SIGNALS = ROOT / "config" / "feedback_signals.json"
@@ -44,12 +50,53 @@ def evidence_counts(knowledge):
         for video in knowledge["videos"]
         if video["processing_status"] == "ready"
     ]
-    visual = sum(video.get("confidence") == "visual_reviewed" for video in ready)
+    visual = sum(
+        video.get("runtime_evidence_mode") == "reviewed_visual_summary"
+        or video.get("confidence") == "visual_reviewed"
+        for video in ready
+    )
+    transcript_ready = [
+        video
+        for video in ready
+        if video.get(
+            "runtime_evidence_mode",
+            (
+                "reviewed_visual_summary"
+                if video.get("confidence") == "visual_reviewed"
+                else "full_transcript"
+            ),
+        )
+        == "full_transcript"
+    ]
+    bounded_ready = [
+        video
+        for video in ready
+        if video.get("runtime_evidence_mode") == "bounded_note_windows"
+    ]
+    transcript_items = sum(
+        len((video.get("teaching_note") or {}).get(field) or [])
+        for video in transcript_ready
+        for field in ("key_evidence", "error_evidence", "action_cues")
+    )
+    bounded_items = sum(
+        len((video.get("teaching_note") or {}).get(field) or [])
+        for video in bounded_ready
+        for field in ("key_evidence", "error_evidence", "action_cues")
+    )
     return {
         "processed": len(knowledge["videos"]),
         "ready": len(ready),
-        "transcript": len(ready) - visual,
+        "transcript": len(transcript_ready),
+        "bounded": len(bounded_ready),
         "visual": visual,
+        "transcript_items": transcript_items,
+        "bounded_items": bounded_items,
+        "primary": sum(
+            video.get("answer_eligibility") == "primary" for video in ready
+        ),
+        "supplemental": sum(
+            video.get("answer_eligibility") == "supplemental" for video in ready
+        ),
         "pending_visual": sum(
             video["processing_status"]
             in {"needs_visual_review", "needs_correction"}
@@ -207,102 +254,422 @@ def update_technical_readme_text(
         for video in knowledge.get("videos", [])
         if video.get("processing_status") == "ready"
     ]
+    evidence = evidence_counts(knowledge)
     visual = sum(video.get("confidence") == "visual_reviewed" for video in ready)
-    processed = status["public_videos_collected"]
+    bilibili_index = load_json(BILIBILI_INDEX) if BILIBILI_INDEX.exists() else {"videos": []}
+    bilibili_ledger = load_json(BILIBILI_LEDGER) if BILIBILI_LEDGER.exists() else {"videos": []}
+    bilibili_records = [
+        video for video in knowledge.get("videos", [])
+        if video.get("source_type") == "bilibili_video"
+    ]
+    bilibili_ready = sum(
+        video.get("processing_status") == "ready" for video in bilibili_records
+    )
+    bilibili_policy_excluded = sum(
+        video.get("decision") == "excluded_transcription_policy"
+        for video in bilibili_ledger["videos"]
+    )
+    bilibili_quality_isolated = sum(
+        video.get("processing_status") != "ready"
+        for video in bilibili_records
+    )
+    bilibili_isolated = (
+        bilibili_policy_excluded + bilibili_quality_isolated
+    )
+    bilibili_pending = (
+        len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
+    )
+    processed = status["public_videos_collected"] + len(bilibili_index["videos"])
     ready_count = status["ready_teaching_videos"]
-    transcript = len(ready) - visual
+    transcript = evidence["transcript"]
     feedback_count = len(feedback_signals.get("signals", []))
     answer_count = len((answer_cases or load_json(ANSWER_CASES)).get("cases", []))
     replacements = {
         r"^\| 已处理公开视频 \| \d+ \|": f"| 已处理公开视频 | {processed} |",
         r"^\| 可用于回答的教学视频 \| \d+ \|": f"| 可用于回答的教学视频 | {ready_count} |",
-        r"^\| 转写证据 \| \d+ \|": f"| 转写证据 | {transcript} |",
+        r"^\| 主证据 / 受限补充证据 \|.*$": (
+            f"| 主证据 / 受限补充证据 | "
+            f"{evidence['primary']} / {evidence['supplemental']} | "
+            "主证据优先；补充证据只使用命中的时间戳窗口 |"
+        ),
+        r"^\| 转写证据 \|.*$": (
+            f"| 转写证据 | {transcript} | "
+            f"{evidence['transcript_items']:,}/{evidence['transcript_items']:,} "
+            "条转写证据包含时间戳 |"
+        ),
         r"^\| 视觉复核兜底 \| \d+ \|": f"| 视觉复核兜底 | {visual} |",
+        r"^\| 受限时间戳窗口证据 \|.*$": (
+            f"| 受限时间戳窗口证据 | {evidence['bounded']} | "
+            f"{evidence['bounded_items']:,} 条已提交窗口；标题不得作为结论证据 |"
+        ),
         r"^\| 回答质量黄金用例 \| \d+/\d+ \|": f"| 回答质量黄金用例 | {answer_count}/{answer_count} |",
         r"^\| 公共反馈信号 \| \d+ \|": f"| 公共反馈信号 | {feedback_count} |",
+        r"^\| B 站(?:来源隔离试点|全量来源归档|完整来源目录) \|.*$": (
+            f"| B 站完整来源目录 | {len(bilibili_index['videos'])} | "
+            f"{bilibili_ready} 条回答就绪、"
+            f"{bilibili_isolated} 条策略排除或质量隔离、"
+            f"{bilibili_pending} 条待处理 |"
+        ),
     }
     updated = readme
     for pattern, replacement in replacements.items():
         updated, count = re.subn(pattern, replacement, updated, flags=re.MULTILINE)
         if count > 1:
             raise ValueError(f"Technical README metric matched {count} times: {pattern}")
+    if "| 主证据 / 受限补充证据 |" not in updated:
+        updated = replace_one(
+            updated,
+            r"^(\| 可用于回答的教学视频 \|.*)$",
+            (
+                r"\1\n"
+                f"| 主证据 / 受限补充证据 | "
+                f"{evidence['primary']} / {evidence['supplemental']} | "
+                "主证据优先；补充证据只使用命中的时间戳窗口 |"
+            ),
+            "README evidence admission row",
+        )
+    if "| 受限时间戳窗口证据 |" not in updated:
+        updated = replace_one(
+            updated,
+            r"^(\| 转写证据 \|.*)$",
+            (
+                r"\1\n"
+                f"| 受限时间戳窗口证据 | {evidence['bounded']} | "
+                f"{evidence['bounded_items']:,} 条已提交窗口；"
+                "标题不得作为结论证据 |"
+            ),
+            "README bounded evidence row",
+        )
+    updated = replace_optional(
+        updated,
+        r"^- `references/knowledge-base\.json`：\d+ 条可用教学证据。$",
+        f"- `references/knowledge-base.json`：{ready_count} 条可用教学证据。",
+        "README knowledge resource count",
+    )
     return updated
+
+
+def update_english_readme_text(readme, video_index, teaching_filter, knowledge):
+    status = derive_project_status(video_index, teaching_filter, knowledge)
+    evidence = evidence_counts(knowledge)
+    bilibili_index = load_json(BILIBILI_INDEX) if BILIBILI_INDEX.exists() else {"videos": []}
+    bilibili_ledger = load_json(BILIBILI_LEDGER) if BILIBILI_LEDGER.exists() else {"videos": []}
+    bilibili_ready = sum(
+        video.get("source_type") == "bilibili_video"
+        and video.get("processing_status") == "ready"
+        for video in knowledge.get("videos", [])
+    )
+    bilibili_records = [
+        video for video in knowledge.get("videos", [])
+        if video.get("source_type") == "bilibili_video"
+    ]
+    bilibili_policy_excluded = sum(
+        video.get("decision") == "excluded_transcription_policy"
+        for video in bilibili_ledger["videos"]
+    )
+    bilibili_quality_isolated = sum(
+        video.get("processing_status") != "ready"
+        for video in bilibili_records
+    )
+    bilibili_isolated = (
+        bilibili_policy_excluded + bilibili_quality_isolated
+    )
+    bilibili_pending = (
+        len(bilibili_index["videos"]) - bilibili_ready - bilibili_isolated
+    )
+    replacements = {
+        r"^\| Processed public videos \| \d+ \|$": (
+            f"| Processed public videos | "
+            f"{status['public_videos_collected'] + len(bilibili_index['videos'])} |"
+        ),
+        r"^\| Ready teaching videos \| \d+ \|$": (
+            f"| Ready teaching videos | {status['ready_teaching_videos']} |"
+        ),
+        r"^\| Transcript-backed evidence \| \d+ \|$": (
+            f"| Transcript-backed evidence | {evidence['transcript']} |"
+        ),
+        r"^\| Primary / bounded supplemental evidence \|.*$": (
+            f"| Primary / bounded supplemental evidence | "
+            f"{evidence['primary']} / {evidence['supplemental']} |"
+        ),
+        r"^\| Bounded timestamp-window evidence \|.*$": (
+            f"| Bounded timestamp-window evidence | {evidence['bounded']} |"
+        ),
+        r"^\| Reviewed visual-summary fallbacks \| \d+ \|$": (
+            f"| Reviewed visual-summary fallbacks | {evidence['visual']} |"
+        ),
+        r"^\| Bilibili (?:provenance-isolation pilot|full provenance archive|full source catalog) \|.*$": (
+            f"| Bilibili full source catalog | "
+            f"{len(bilibili_index['videos'])}: {bilibili_ready} answer-ready, "
+            f"{bilibili_isolated} policy-excluded or quality-isolated, "
+            f"{bilibili_pending} pending |"
+        ),
+    }
+    updated = readme
+    for pattern, replacement in replacements.items():
+        updated = replace_optional(
+            updated, pattern, replacement, "English README evidence baseline"
+        )
+    if "| Primary / bounded supplemental evidence |" not in updated:
+        updated = replace_one(
+            updated,
+            r"^(\| Ready teaching videos \|.*)$",
+            (
+                r"\1\n"
+                f"| Primary / bounded supplemental evidence | "
+                f"{evidence['primary']} / {evidence['supplemental']} |"
+            ),
+            "English README evidence admission row",
+        )
+    if "| Bounded timestamp-window evidence |" not in updated:
+        updated = replace_one(
+            updated,
+            r"^(\| Transcript-backed evidence \|.*)$",
+            (
+                r"\1\n"
+                f"| Bounded timestamp-window evidence | {evidence['bounded']} |"
+            ),
+            "English README bounded evidence row",
+        )
+    updated = replace_one(
+        updated,
+        r"^All [\d,]+ transcript evidence items have timestamps\.",
+        (
+            f"All {evidence['transcript_items']:,} transcript evidence items "
+            "have timestamps."
+        ),
+        "English README transcript evidence count",
+    )
+    return updated
+
+
+def update_site_status_text(page, knowledge, language):
+    evidence = evidence_counts(knowledge)
+    if language == "zh":
+        page = replace_one(
+            page,
+            r"(它从 )\d+( 条教学视频中寻找答案)",
+            rf"\g<1>{evidence['ready']}\g<2>",
+            "Chinese site lede count",
+        )
+        page = replace_one(
+            page,
+            r"(<strong>)\d+(</strong><span>条可用教学视频</span>)",
+            rf"\g<1>{evidence['ready']}\g<2>",
+            "Chinese site metric count",
+        )
+        return replace_one(
+            page,
+            r"(<strong>)\d+(</strong><span>条转写证据</span>)",
+            rf"\g<1>{evidence['transcript']}\g<2>",
+            "Chinese site transcript count",
+        )
+    page = replace_one(
+        page,
+        r"(searches )\d+( Chinese badminton teaching videos)",
+        rf"\g<1>{evidence['ready']}\g<2>",
+        "English site lede count",
+    )
+    page = replace_one(
+        page,
+        r"(<strong>)\d+(</strong><span>ready teaching videos</span>)",
+        rf"\g<1>{evidence['ready']}\g<2>",
+        "English site ready count",
+    )
+    return replace_one(
+        page,
+        r"(<strong>)\d+(</strong><span>transcript-backed sources</span>)",
+        rf"\g<1>{evidence['transcript']}\g<2>",
+        "English site transcript count",
+    )
 
 
 def update_skill_status_text(skill, knowledge):
     counts = evidence_counts(knowledge)
+    if "processed Douyin+Bilibili knowledge base" not in skill:
+        skill = replace_one(
+            skill,
+            r"full \d+-video processed (?:multi-source )?knowledge base",
+            f"full {counts['processed']}-video processed multi-source knowledge base",
+            "Skill legacy frontmatter processed count",
+        )
+        skill = replace_one(
+            skill,
+            r"^(description: .*including )\d+( ready teaching videos)",
+            rf"\g<1>{counts['ready']}\g<2>",
+            "Skill legacy frontmatter ready count",
+        )
+        skill = replace_one(
+            skill,
+            r"(Base coaching claims on `references/knowledge-base\.json`: )\d+( processed videos,)",
+            rf"\g<1>{counts['processed']}\g<2>",
+            "Skill legacy scope processed count",
+        )
+        skill = replace_one(
+            skill,
+            r"including \d+ `ready` teaching entries, \d+ entries awaiting visual review",
+            (
+                f"including {counts['ready']} `ready` teaching entries, "
+                f"{counts['pending_visual']} entries awaiting visual review"
+            ),
+            "Skill legacy archive count",
+        )
+        skill = replace_one(
+            skill,
+            r"Among the ready entries, \d+ are transcript-backed and \d+ use reviewed visual summaries",
+            (
+                f"Among the ready entries, {counts['transcript']} are transcript-backed "
+                f"and {counts['visual']} use reviewed visual summaries"
+            ),
+            "Skill legacy evidence count",
+        )
+        skill = replace_one(
+            skill,
+            r"full structured knowledge entries for \d+ processed videos, including \d+ ready teaching videos \(\d+ transcript-backed and \d+ visual-review fallbacks\) and \d+ entries awaiting visual review\.",
+            (
+                f"full structured knowledge entries for {counts['processed']} processed videos, "
+                f"including {counts['ready']} ready teaching videos "
+                f"({counts['transcript']} transcript-backed and {counts['visual']} visual-review fallbacks) "
+                f"and {counts['pending_visual']} entries awaiting visual review."
+            ),
+            "Skill legacy resource count",
+        )
+        return skill
     skill = replace_one(
         skill,
-        r"full \d+-video processed knowledge base",
-        f"full {counts['processed']}-video processed knowledge base",
+        r"from a \d+-video processed Douyin\+Bilibili knowledge base",
+        f"from a {counts['processed']}-video processed Douyin+Bilibili knowledge base",
         "Skill frontmatter processed count",
     )
     skill = replace_one(
         skill,
-        r"including \d+ ready teaching videos\.",
-        f"including {counts['ready']} ready teaching videos.",
-        "Skill frontmatter count",
+        r"with \d+ answer-eligible teaching videos split into \d+ primary and \d+ bounded supplemental sources",
+        (
+            f"with {counts['ready']} answer-eligible teaching videos split into "
+            f"{counts['primary']} primary and {counts['supplemental']} bounded supplemental sources"
+        ),
+        "Skill frontmatter admission counts",
     )
     skill = replace_one(
         skill,
-        r"(Base coaching claims on `references/knowledge-base\.json`: )\d+( processed videos,)",
-        rf"\g<1>{counts['processed']}\g<2>",
-        "Skill scope processed count",
+        r"\d+ processed videos, including \d+ `ready` answer-eligible entries and \d+ awaiting visual review",
+        (
+            f"{counts['processed']} processed videos, including {counts['ready']} `ready` "
+            f"answer-eligible entries and {counts['pending_visual']} awaiting visual review"
+        ),
+        "Skill scope archive counts",
     )
     skill = replace_one(
         skill,
-        r"including \d+ `ready` teaching entries, \d+ entries awaiting visual review",
-        f"including {counts['ready']} `ready` teaching entries, {counts['pending_visual']} entries awaiting visual review",
-        "Skill archive count",
+        r"Of these, \d+ are `primary`; \d+ are `supplemental` sources",
+        (
+            f"Of these, {counts['primary']} are `primary`; "
+            f"{counts['supplemental']} are `supplemental` sources"
+        ),
+        "Skill scope admission split",
     )
     skill = replace_one(
         skill,
-        r"Among the ready entries, \d+ are transcript-backed and \d+ use reviewed visual summaries",
-        f"Among the ready entries, {counts['transcript']} are transcript-backed and {counts['visual']} use reviewed visual summaries",
-        "Skill evidence count",
+        r"Runtime evidence comprises \d+ full-transcript records, \d+ bounded-note records, and \d+ reviewed visual summaries",
+        (
+            f"Runtime evidence comprises {counts['transcript']} full-transcript records, "
+            f"{counts['bounded']} bounded-note records, and {counts['visual']} reviewed visual summaries"
+        ),
+        "Skill runtime evidence modes",
     )
     skill = replace_one(
         skill,
-        r"full structured knowledge entries for \d+ processed videos, including \d+ ready teaching videos \(\d+ transcript-backed and \d+ visual-review fallbacks\) and \d+ entries awaiting visual review\.",
-        f"full structured knowledge entries for {counts['processed']} processed videos, including {counts['ready']} ready teaching videos ({counts['transcript']} transcript-backed and {counts['visual']} visual-review fallbacks) and {counts['pending_visual']} entries awaiting visual review.",
-        "Skill resource count",
+        r"`references/knowledge-base\.json`: \d+ processed entries, including \d+ primary, \d+ bounded supplemental, and \d+ answer-ineligible records\.",
+        (
+            f"`references/knowledge-base.json`: {counts['processed']} processed entries, "
+            f"including {counts['primary']} primary, {counts['supplemental']} bounded supplemental, "
+            f"and {counts['processed'] - counts['ready']} answer-ineligible records."
+        ),
+        "Skill resource admission counts",
     )
     return skill
 
 
 def update_agent_metadata_text(metadata, knowledge):
-    ready_count = evidence_counts(knowledge)["ready"]
+    counts = evidence_counts(knowledge)
+    if "条分层教学证据回答" not in metadata:
+        return replace_one(
+            metadata,
+            r'^(  short_description: "基于)\d+(条教学视频回答，并安全使用已审核的本地与公共反馈")$',
+            rf"\g<1>{counts['ready']}\g<2>",
+            "Agent legacy short description count",
+        )
     return replace_one(
         metadata,
-        r'^(  short_description: "基于)\d+(条教学视频回答，并安全使用已审核的本地与公共反馈")$',
-        rf"\g<1>{ready_count}\g<2>",
+        r'^(  short_description: "基于)\d+(条分层教学证据回答：)\d+(条主证据与)\d+(条受限补充证据")$',
+        (
+            rf"\g<1>{counts['ready']}\g<2>{counts['primary']}"
+            rf"\g<3>{counts['supplemental']}\g<4>"
+        ),
         "Agent short description count",
     )
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Update recruiter-facing development documentation metrics"
+    )
+    parser.add_argument(
+        "--update-stable-site",
+        action="store_true",
+        help=(
+            "Also update the stable-version docs home pages; use only when "
+            "publishing that stable version"
+        ),
+    )
+    args = parser.parse_args()
     readme = README.read_text(encoding="utf-8")
+    readme_en = README_EN.read_text(encoding="utf-8")
     skill = SKILL.read_text(encoding="utf-8")
     agent_metadata = AGENT_METADATA.read_text(encoding="utf-8")
     knowledge = load_json(KNOWLEDGE)
+    video_index = load_json(VIDEO_INDEX)
+    teaching_filter = load_json(TEACHING_FILTER)
     updated = update_readme_text(
         readme,
-        load_json(VIDEO_INDEX),
-        load_json(TEACHING_FILTER),
+        video_index,
+        teaching_filter,
         knowledge,
         load_json(FEEDBACK_SIGNALS),
         load_json(ANSWER_CASES),
         load_json(QUEUE),
     )
+    updated_en = update_english_readme_text(
+        readme_en, video_index, teaching_filter, knowledge
+    )
     updated_skill = update_skill_status_text(skill, knowledge)
     updated_agent_metadata = update_agent_metadata_text(agent_metadata, knowledge)
+    candidates = [
+        (README, updated, readme),
+        (README_EN, updated_en, readme_en),
+        (SKILL, updated_skill, skill),
+        (AGENT_METADATA, updated_agent_metadata, agent_metadata),
+    ]
+    if args.update_stable_site:
+        docs_zh = DOCS_ZH.read_text(encoding="utf-8")
+        docs_en = DOCS_EN.read_text(encoding="utf-8")
+        candidates.extend(
+            [
+                (
+                    DOCS_ZH,
+                    update_site_status_text(docs_zh, knowledge, "zh"),
+                    docs_zh,
+                ),
+                (
+                    DOCS_EN,
+                    update_site_status_text(docs_en, knowledge, "en"),
+                    docs_en,
+                ),
+            ]
+        )
     changed = {
         path: text
-        for path, text, original in [
-            (README, updated, readme),
-            (SKILL, updated_skill, skill),
-            (AGENT_METADATA, updated_agent_metadata, agent_metadata),
-        ]
+        for path, text, original in candidates
         if text != original
     }
     if not changed:

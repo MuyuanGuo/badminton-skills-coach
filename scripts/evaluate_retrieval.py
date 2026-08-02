@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+from contextlib import contextmanager
 import importlib.util
 import json
 import math
+import os
 from pathlib import Path
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +18,16 @@ SEARCH_PATH = (
     / "scripts"
     / "search_knowledge.py"
 )
+REGRESSION_SOURCE_TYPES = ("douyin_video",)
+REGRESSION_RETRIEVAL_COHORTS = ("stable_baseline",)
+
+
+def ensure_deterministic_hash_seed():
+    if os.environ.get("PYTHONHASHSEED") == "0":
+        return
+    environment = dict(os.environ)
+    environment["PYTHONHASHSEED"] = "0"
+    os.execvpe(sys.executable, [sys.executable, *sys.argv], environment)
 
 
 def load_search_module():
@@ -22,6 +35,26 @@ def load_search_module():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def decode_video_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(
+        (int(record_index), int(channel_mask))
+        for item in encoded.split(";")
+        for record_index, channel_mask in [item.split(",", 1)]
+    )
+
+
+def decode_chunk_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
 
 
 def exhaustive_candidate_ids(search_module, case, primary_payload, top_k):
@@ -53,9 +86,353 @@ def exhaustive_candidate_ids(search_module, case, primary_payload, top_k):
     return candidate_ids
 
 
-def evaluate(top_k, cases_path=CASES_PATH):
-    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
-    search_module = load_search_module()
+def project_retrieval_index(retrieval_index, allowed_video_ids):
+    """Project an inverted index without rebuilding text-derived features."""
+
+    allowed_video_ids = set(allowed_video_ids)
+    old_records = retrieval_index["videos"]
+    retained_old_indexes = [
+        index
+        for index, record in enumerate(old_records)
+        if record["video_id"] in allowed_video_ids
+    ]
+    old_to_new = {
+        old_index: new_index
+        for new_index, old_index in enumerate(retained_old_indexes)
+    }
+    records = [old_records[index] for index in retained_old_indexes]
+
+    vocabulary = []
+    ngram_postings = []
+    for gram, postings in zip(
+        retrieval_index["ngram_vocabulary"],
+        retrieval_index["ngram_postings"],
+    ):
+        projected = [
+            [old_to_new[old_index], channel_mask]
+            for old_index, channel_mask in decode_video_ngram_postings(
+                postings
+            )
+            if old_index in old_to_new
+        ]
+        if projected:
+            vocabulary.append(gram)
+            ngram_postings.append(projected)
+
+    def project_named_postings(postings):
+        return {
+            name: [
+                old_to_new[old_index]
+                for old_index in indexes
+                if old_index in old_to_new
+            ]
+            for name, indexes in postings.items()
+            if any(old_index in old_to_new for old_index in indexes)
+        }
+
+    term_postings = project_named_postings(
+        retrieval_index.get("term_postings", {})
+    )
+    topic_postings = project_named_postings(
+        retrieval_index.get("topic_postings", {})
+    )
+    field_length_totals = {
+        field: sum(record["field_lengths"].get(field, 0) for record in records)
+        for field in retrieval_index["evidence_fields"]
+    }
+    field_document_counts = {
+        field: sum(
+            record["field_lengths"].get(field, 0) > 0
+            for record in records
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    field_term_document_frequency = {
+        field: dict(
+            sorted(
+                {
+                    term: sum(
+                        term
+                        in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                        for record in records
+                    )
+                    for term in {
+                        term
+                        for record in records
+                        for term in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                    }
+                }.items()
+            )
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    stable_records = [
+        record
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline")
+        == "stable_baseline"
+    ]
+    stable_term_document_frequency = {
+        term: sum(
+            term in record.get("lexicon_terms", [])
+            for record in stable_records
+        )
+        for term in {
+            term
+            for record in stable_records
+            for term in record.get("lexicon_terms", [])
+        }
+    }
+    stable_field_document_counts = {
+        field: sum(
+            record["field_lengths"].get(field, 0) > 0
+            for record in stable_records
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    stable_field_term_document_frequency = {
+        field: dict(
+            sorted(
+                {
+                    term: sum(
+                        term
+                        in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                        for record in stable_records
+                    )
+                    for term in {
+                        term
+                        for record in stable_records
+                        for term in record.get(
+                            "field_term_frequencies", {}
+                        ).get(field, {})
+                    }
+                }.items()
+            )
+        )
+        for field in retrieval_index["evidence_fields"]
+    }
+    projected_chunk_index = None
+    source_chunk_index = retrieval_index.get("chunk_index")
+    if source_chunk_index:
+        retained_chunk_indexes = [
+            index
+            for index, chunk in enumerate(source_chunk_index.get("chunks", []))
+            if chunk.get("video_index") in old_to_new
+        ]
+        old_chunk_to_new = {
+            old_index: new_index
+            for new_index, old_index in enumerate(retained_chunk_indexes)
+        }
+        chunks = [
+            {
+                **source_chunk_index["chunks"][old_index],
+                "video_index": old_to_new[
+                    source_chunk_index["chunks"][old_index]["video_index"]
+                ],
+            }
+            for old_index in retained_chunk_indexes
+        ]
+        chunk_term_postings = {
+            term: [
+                old_chunk_to_new[index]
+                for index in indexes
+                if index in old_chunk_to_new
+            ]
+            for term, indexes in source_chunk_index.get(
+                "term_postings", {}
+            ).items()
+        }
+        chunk_term_postings = {
+            term: indexes
+            for term, indexes in chunk_term_postings.items()
+            if indexes
+        }
+        chunk_vocabulary = []
+        chunk_ngram_postings = []
+        for gram, indexes in zip(
+            source_chunk_index.get("ngram_vocabulary", []),
+            source_chunk_index.get("ngram_postings", []),
+        ):
+            projected_indexes = [
+                old_chunk_to_new[index]
+                for index in decode_chunk_ngram_postings(indexes)
+                if index in old_chunk_to_new
+            ]
+            if projected_indexes:
+                chunk_vocabulary.append(gram)
+                chunk_ngram_postings.append(projected_indexes)
+        cluster_ids = {chunk["cluster_id"] for chunk in chunks}
+        stable_chunks = [
+            chunk
+            for chunk in chunks
+            if chunk.get("stable_cluster_id")
+            and records[chunk["video_index"]].get(
+                "retrieval_cohort", "stable_baseline"
+            )
+            == "stable_baseline"
+        ]
+        stable_cluster_ids = {
+            chunk["stable_cluster_id"] for chunk in stable_chunks
+        }
+        projected_chunk_index = {
+            **source_chunk_index,
+            "chunk_count": len(chunks),
+            "cluster_count": len(cluster_ids),
+            "stable_cluster_count": len(stable_cluster_ids),
+            "average_chunk_length": round(
+                sum(chunk["normalized_length"] for chunk in chunks)
+                / max(1, len(chunks)),
+                4,
+            ),
+            "stable_average_chunk_length": round(
+                sum(
+                    chunk["normalized_length"]
+                    for chunk in stable_chunks
+                )
+                / max(1, len(stable_chunks)),
+                4,
+            ),
+            "term_cluster_document_frequency": {
+                term: len(
+                    {
+                        chunks[index]["cluster_id"]
+                        for index in indexes
+                    }
+                )
+                for term, indexes in chunk_term_postings.items()
+            },
+            "stable_term_cluster_document_frequency": {
+                term: len(
+                    {
+                        chunks[index]["stable_cluster_id"]
+                        for index in indexes
+                        if chunks[index].get("stable_cluster_id")
+                    }
+                )
+                for term, indexes in chunk_term_postings.items()
+            },
+            "term_postings": chunk_term_postings,
+            "ngram_vocabulary": chunk_vocabulary,
+            "ngram_postings_encoding": "legacy_integer_lists_v1",
+            "ngram_postings": chunk_ngram_postings,
+            "chunks": chunks,
+        }
+    projected = dict(retrieval_index)
+    projected.update(
+        {
+            "indexable_video_count": len(records),
+            "stable_indexable_video_count": len(stable_records),
+            "term_document_frequency": {
+                term: len(indexes) for term, indexes in term_postings.items()
+            },
+            "stable_term_document_frequency": dict(
+                sorted(stable_term_document_frequency.items())
+            ),
+            "field_document_counts": field_document_counts,
+            "field_term_document_frequency": (
+                field_term_document_frequency
+            ),
+            "stable_field_document_counts": (
+                stable_field_document_counts
+            ),
+            "stable_field_term_document_frequency": (
+                stable_field_term_document_frequency
+            ),
+            "average_field_lengths": {
+                field: round(
+                    total / max(1, field_document_counts[field]),
+                    4,
+                )
+                for field, total in field_length_totals.items()
+            },
+            "stable_average_field_lengths": {
+                field: round(
+                    sum(
+                        record["field_lengths"].get(field, 0)
+                        for record in stable_records
+                    )
+                    / max(1, len(stable_records)),
+                    4,
+                )
+                for field in retrieval_index["evidence_fields"]
+            },
+            "ngram_vocabulary": vocabulary,
+            "inverted_index_schema": "parallel_ngram_vocabulary_postings_v1",
+            "ngram_postings_encoding": "legacy_index_mask_lists_v1",
+            "ngram_postings": ngram_postings,
+            "term_postings": term_postings,
+            "topic_postings": topic_postings,
+            "topics": [
+                {
+                    **topic,
+                    "video_count": len(
+                        topic_postings.get(topic["topic_id"], [])
+                    ),
+                }
+                for topic in retrieval_index["topics"]
+            ],
+            "videos": records,
+        }
+    )
+    if projected_chunk_index is not None:
+        projected["chunk_index"] = projected_chunk_index
+    return projected
+
+
+@contextmanager
+def source_scoped_search(
+    search_module,
+    source_types,
+    retrieval_cohorts=None,
+):
+    original_resources = search_module.load_resources()
+    knowledge, retrieval_index, rules = original_resources
+    source_types = set(source_types)
+    retrieval_cohorts = (
+        set(retrieval_cohorts)
+        if retrieval_cohorts is not None
+        else None
+    )
+    videos = [
+        video
+        for video in knowledge["videos"]
+        if video.get("source_type") in source_types
+        and (
+            retrieval_cohorts is None
+            or video.get("retrieval_cohort", "stable_baseline")
+            in retrieval_cohorts
+        )
+    ]
+    video_ids = {video["video_id"] for video in videos}
+    scoped_knowledge = {**knowledge, "videos": videos}
+    scoped_index = project_retrieval_index(retrieval_index, video_ids)
+    search_module._RESOURCE_CACHE = (scoped_knowledge, scoped_index, rules)
+    search_module._PREPARED_RETRIEVAL_CACHE.clear()
+    search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.clear()
+    try:
+        yield video_ids
+    finally:
+        search_module._RESOURCE_CACHE = original_resources
+        search_module._PREPARED_RETRIEVAL_CACHE.clear()
+        search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.clear()
+
+
+def evaluate_view(
+    top_k,
+    cases,
+    search_module,
+    judged_video_ids=None,
+    unjudged_new_source_ids=None,
+):
+    filter_judgments = judged_video_ids is not None
+    judged_video_ids = set(judged_video_ids or ())
+    unjudged_new_source_ids = set(unjudged_new_source_ids or ())
     expected_total = 0
     found_total = 0
     primary_top_k = 0
@@ -68,6 +445,10 @@ def evaluate(top_k, cases_path=CASES_PATH):
     hard_negative_total = 0
     hard_negative_top_k_violations = 0
     hard_negative_review_violations = 0
+    unjudged_new_source_top_k_total = 0
+    unjudged_new_source_review_total = 0
+    max_unjudged_new_source_top_k = 0
+    max_unjudged_new_source_review = 0
     case_results = []
     for case in cases:
         payload = search_module.search(
@@ -83,9 +464,25 @@ def evaluate(top_k, cases_path=CASES_PATH):
         )
         top_ids = [item["video_id"] for item in payload["results"]]
         gold = case["gold"]
-        expected = gold["required_video_ids"]
-        primary = gold["primary_video_ids"]
-        irrelevant = set(gold["irrelevant_video_ids"])
+        expected = [
+            video_id
+            for video_id in gold["required_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        ]
+        primary = [
+            video_id
+            for video_id in gold["primary_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        ]
+        irrelevant = {
+            video_id
+            for video_id in gold["irrelevant_video_ids"]
+            if not filter_judgments or video_id in judged_video_ids
+        }
+        case_judged_ids = set(expected) | set(primary) | irrelevant
+        case_unjudged_new_source_ids = (
+            unjudged_new_source_ids - case_judged_ids
+        )
         found = [video_id for video_id in expected if video_id in recall_candidate_ids]
         missing = [video_id for video_id in expected if video_id not in recall_candidate_ids]
         primary_ranks = [
@@ -132,9 +529,19 @@ def evaluate(top_k, cases_path=CASES_PATH):
         }
         negative_top = irrelevant & set(top_ids)
         negative_review = irrelevant & review_ids
+        unjudged_new_top = case_unjudged_new_source_ids & set(top_ids)
+        unjudged_new_review = case_unjudged_new_source_ids & review_ids
         hard_negative_total += len(irrelevant)
         hard_negative_top_k_violations += len(negative_top)
         hard_negative_review_violations += len(negative_review)
+        unjudged_new_source_top_k_total += len(unjudged_new_top)
+        unjudged_new_source_review_total += len(unjudged_new_review)
+        max_unjudged_new_source_top_k = max(
+            max_unjudged_new_source_top_k, len(unjudged_new_top)
+        )
+        max_unjudged_new_source_review = max(
+            max_unjudged_new_source_review, len(unjudged_new_review)
+        )
         case_results.append(
             {
                 "case_id": case["case_id"],
@@ -147,6 +554,12 @@ def evaluate(top_k, cases_path=CASES_PATH):
                 "review_candidate_count": review_candidate_count,
                 "irrelevant_top_k_video_ids": sorted(negative_top),
                 "irrelevant_review_video_ids": sorted(negative_review),
+                "unjudged_new_source_top_k_video_ids": sorted(
+                    unjudged_new_top
+                ),
+                "unjudged_new_source_review_video_ids": sorted(
+                    unjudged_new_review
+                ),
             }
         )
     return {
@@ -164,12 +577,105 @@ def evaluate(top_k, cases_path=CASES_PATH):
         "hard_negative_count": hard_negative_total,
         "hard_negative_top_k_violations": hard_negative_top_k_violations,
         "hard_negative_review_violations": hard_negative_review_violations,
+        "unjudged_new_source_exposure": {
+            "candidate_videos": len(unjudged_new_source_ids),
+            "top_k_count": unjudged_new_source_top_k_total,
+            "top_k_rate": (
+                unjudged_new_source_top_k_total
+                / max(1, len(cases) * top_k)
+            ),
+            "max_top_k_per_case": max_unjudged_new_source_top_k,
+            "review_count": unjudged_new_source_review_total,
+            "review_rate": (
+                unjudged_new_source_review_total
+                / max(1, review_candidate_total)
+            ),
+            "max_review_per_case": max_unjudged_new_source_review,
+        },
         "top_k": top_k,
         "case_results": case_results,
     }
 
 
+def evaluate(top_k, cases_path=CASES_PATH):
+    cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
+    search_module = load_search_module()
+    knowledge, _, rules = search_module.load_resources()
+    new_source_ids = {
+        video["video_id"]
+        for video in knowledge["videos"]
+        if video.get("retrieval_cohort") == "automatic_expansion"
+        and video.get("processing_status") == "ready"
+    }
+    production = evaluate_view(
+        top_k,
+        cases,
+        search_module,
+        unjudged_new_source_ids=new_source_ids,
+    )
+    with source_scoped_search(
+        search_module,
+        REGRESSION_SOURCE_TYPES,
+        REGRESSION_RETRIEVAL_COHORTS,
+    ) as regression_video_ids:
+        regression = evaluate_view(
+            top_k,
+            cases,
+            search_module,
+            judged_video_ids=regression_video_ids,
+        )
+
+    production["evaluation_views"] = {
+        "production": {
+            "source_scope": "all_admitted_sources",
+            "ranking_metrics": "informational_when_gold_judgments_are_incomplete",
+        },
+        "stable_regression": {
+            "source_types": list(REGRESSION_SOURCE_TYPES),
+            "retrieval_cohorts": list(
+                REGRESSION_RETRIEVAL_COHORTS
+            ),
+            "purpose": "apples_to_apples_retrieval_regression",
+        },
+    }
+    production["stable_regression"] = {
+        key: regression[key]
+        for key in (
+            "cases",
+            "expected_videos",
+            "found_videos",
+            "candidate_recall",
+            "primary_top_k",
+            "mean_reciprocal_rank",
+            "mean_ndcg_at_k",
+            "mean_known_precision_at_k",
+            "average_review_candidate_count",
+            "hard_negative_count",
+            "hard_negative_top_k_violations",
+            "hard_negative_review_violations",
+            "top_k",
+        )
+    }
+    retrieval_policy = rules["retrieval"]
+    production["unjudged_new_source_exposure"]["limits"] = {
+        "max_top_k_rate": retrieval_policy[
+            "automatic_expansion_max_top_k_rate"
+        ],
+        "max_top_k_per_case": retrieval_policy[
+            "automatic_expansion_surface_limit"
+        ],
+        "max_review_rate": retrieval_policy[
+            "automatic_expansion_max_review_rate"
+        ],
+        "max_review_per_case": retrieval_policy[
+            "automatic_expansion_review_limit"
+        ],
+    }
+    return production
+
+
 def main():
+    ensure_deterministic_hash_seed()
     parser = argparse.ArgumentParser(description="Evaluate high-recall Skill retrieval.")
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--top-k", type=int, default=12)
@@ -180,6 +686,22 @@ def main():
     parser.add_argument("--max-average-review-candidates", type=float, default=40)
     parser.add_argument(
         "--max-hard-negative-top-k-violations", type=int, default=0
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-top-k-rate",
+        type=float,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-top-k-per-case",
+        type=int,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-review-rate",
+        type=float,
+    )
+    parser.add_argument(
+        "--max-automatic-expansion-review-per-case",
+        type=int,
     )
     args = parser.parse_args()
     result = evaluate(args.top_k, args.cases)
@@ -216,6 +738,48 @@ def main():
         raise SystemExit(
             "Known irrelevant videos appeared in top-k: "
             f"{result['hard_negative_top_k_violations']} violations"
+        )
+    exposure = result["unjudged_new_source_exposure"]
+    limits = exposure["limits"]
+    max_top_k_rate = (
+        args.max_automatic_expansion_top_k_rate
+        if args.max_automatic_expansion_top_k_rate is not None
+        else limits["max_top_k_rate"]
+    )
+    max_top_k_per_case = (
+        args.max_automatic_expansion_top_k_per_case
+        if args.max_automatic_expansion_top_k_per_case is not None
+        else limits["max_top_k_per_case"]
+    )
+    max_review_rate = (
+        args.max_automatic_expansion_review_rate
+        if args.max_automatic_expansion_review_rate is not None
+        else limits["max_review_rate"]
+    )
+    max_review_per_case = (
+        args.max_automatic_expansion_review_per_case
+        if args.max_automatic_expansion_review_per_case is not None
+        else limits["max_review_per_case"]
+    )
+    if exposure["top_k_rate"] > max_top_k_rate:
+        raise SystemExit(
+            "Automatic-expansion top-k exposure "
+            f"{exposure['top_k_rate']:.3f} exceeds {max_top_k_rate:.3f}"
+        )
+    if exposure["max_top_k_per_case"] > max_top_k_per_case:
+        raise SystemExit(
+            "Automatic-expansion top-k per case "
+            f"{exposure['max_top_k_per_case']} exceeds {max_top_k_per_case}"
+        )
+    if exposure["review_rate"] > max_review_rate:
+        raise SystemExit(
+            "Automatic-expansion review exposure "
+            f"{exposure['review_rate']:.3f} exceeds {max_review_rate:.3f}"
+        )
+    if exposure["max_review_per_case"] > max_review_per_case:
+        raise SystemExit(
+            "Automatic-expansion review count per case "
+            f"{exposure['max_review_per_case']} exceeds {max_review_per_case}"
         )
 
 

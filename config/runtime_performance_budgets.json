@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "benchmark": {
+    "cases_per_type": 2,
+    "warmup_queries": 2,
+    "memory_queries": 5
+  },
+  "budgets": {
+    "module_load_p95_ms": 1000.0,
+    "query_plan_p95_ms": 250.0,
+    "search_p95_ms": 750.0,
+    "answer_context_p95_ms": 2500.0,
+    "peak_traced_memory_mb": 192.0,
+    "minimum_answer_packet_reduction": 0.5
+  }
+}

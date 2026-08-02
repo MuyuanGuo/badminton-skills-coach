@@ -68,6 +68,19 @@ class AnswerAuditTests(unittest.TestCase):
         self.assertTrue(audit["passed"], audit["violations"])
         self.assertEqual(audit["summary"]["completeness_items_covered"], 5)
 
+    def test_negated_unique_cause_is_not_hard_certainty(self):
+        context = copy.deepcopy(self.context)
+        context["claim_evidence_map"][0]["confidence_ceiling"] = "low"
+        answer = self.cases["answers"]["complete_conditional"].replace(
+            "仅凭文字不能确认唯一原因",
+            "仅凭文字不能确认唯一原因。[Q1]",
+        )
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertNotIn(
+            "confidence_ceiling_exceeded",
+            {item["code"] for item in audit["violations"]},
+        )
+
     def test_claim_level_allowlist_rejects_globally_selected_wrong_video(self):
         audit = self.audit_named_answer("citation_mismatch")
         violations = [
@@ -151,12 +164,19 @@ class AnswerAuditTests(unittest.TestCase):
         )
 
     def test_answer_packet_digest_binds_the_audit_context(self):
+        visible_labels = self.context.get(
+            "answer_visible_video_labels",
+            [item["label"] for item in self.context["selected_videos"]],
+        )
         packet = {
             "schema_version": 1,
             "packet_type": "liuhui_badminton_answer_packet",
             "audit_context": {
                 "digest": self.auditor.canonical_json_digest(self.context)
             },
+            "selected_videos": [
+                {"label": label} for label in visible_labels
+            ],
         }
         self.auditor.validate_packet_binding(packet, self.context)
         packet["audit_context"]["digest"] = "0" * 64
@@ -204,12 +224,32 @@ class AnswerAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             temporary = Path(directory)
             context_path = temporary / "context.json"
+            packet_path = temporary / "answer-packet.json"
             answer_path = temporary / "answer.md"
             context_path.write_text(
                 json.dumps(self.context, ensure_ascii=False), encoding="utf-8"
             )
             answer_path.write_text(
                 self.cases["answers"]["unsupported_cause"], encoding="utf-8"
+            )
+            packet_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "packet_type": "liuhui_badminton_answer_packet",
+                        "audit_context": {
+                            "digest": self.auditor.canonical_json_digest(
+                                self.context
+                            )
+                        },
+                        "selected_videos": [
+                            {"label": item["label"]}
+                            for item in self.context["selected_videos"]
+                        ],
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
             )
             completed = subprocess.run(
                 [
@@ -218,6 +258,8 @@ class AnswerAuditTests(unittest.TestCase):
                     self.context["query"],
                     "--context",
                     str(context_path),
+                    "--packet",
+                    str(packet_path),
                     "--answer",
                     str(answer_path),
                 ],

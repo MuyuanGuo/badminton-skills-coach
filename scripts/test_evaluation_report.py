@@ -95,6 +95,36 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_can_use_fingerprinted_policy_limit(self):
+        evaluations = {
+            "suite": {
+                "score": 0.11,
+                "limits": {"maximum_score": 0.12},
+            }
+        }
+        baseline = {
+            "metrics": {
+                "suite.score": {
+                    "value_source": "suite.limits.maximum_score",
+                    "direction": "at_most",
+                }
+            }
+        }
+        comparison = self.module.compare_baseline(
+            evaluations,
+            baseline,
+        )[0]
+        self.assertTrue(comparison["passed"])
+        self.assertEqual(comparison["baseline"], 0.12)
+        self.assertEqual(
+            comparison["contract_source"],
+            "suite.limits.maximum_score",
+        )
+        evaluations["suite"]["score"] = 0.13
+        self.assertFalse(
+            self.module.compare_baseline(evaluations, baseline)[0]["passed"]
+        )
+
     def test_precomputed_evaluations_require_current_fingerprints(self):
         committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
         payload = {
@@ -115,11 +145,72 @@ class EvaluationReportTests(unittest.TestCase):
                 self.module.load_evaluation_results(path)
 
     def test_build_report_does_not_recollect_precomputed_evaluations(self):
-        committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]
+        committed = self.module.load_json(
+            self.module.REPORT_PATH
+        )["evaluations"]
+        exposure = committed["retrieval"][
+            "unjudged_new_source_exposure"
+        ]
+        if "limits" not in exposure:
+            retrieval_rules = self.module.load_json(
+                ROOT / "config" / "retrieval_rules.json"
+            )["retrieval"]
+            exposure["limits"] = {
+                "max_top_k_rate": retrieval_rules[
+                    "automatic_expansion_max_top_k_rate"
+                ],
+                "max_top_k_per_case": retrieval_rules[
+                    "automatic_expansion_surface_limit"
+                ],
+                "max_review_rate": retrieval_rules[
+                    "automatic_expansion_max_review_rate"
+                ],
+                "max_review_per_case": retrieval_rules[
+                    "automatic_expansion_review_limit"
+                ],
+            }
         with mock.patch.object(self.module, "collect_evaluations") as collect:
             report = self.module.build_report(evaluations=committed)
         collect.assert_not_called()
         self.assertEqual(report["evaluations"], committed)
+
+    def test_historical_generation_summary_never_runs_current_runtime_audit(self):
+        payload = {
+            "cases": [{"manual_scores": {"quality": 4}}],
+            "generator": {
+                "provider": "test",
+                "model": "test",
+                "model_version": "1",
+            },
+            "review": {"reviewer": "independent"},
+        }
+        snapshot = {
+            "status": "valid_review_snapshot",
+            "current_runtime_match": False,
+            "reviewed_answer_runtime_fingerprint": "reviewed-answer",
+            "current_answer_runtime_fingerprint": "current-answer",
+            "reviewed_artifact_runtime_fingerprint": "reviewed-artifact",
+            "current_artifact_runtime_fingerprint": "current-artifact",
+            "artifact_runtime_match": False,
+            "critical_cases": 1,
+            "independently_reviewed": 1,
+            "current_runtime_audits_rerun": False,
+        }
+        with mock.patch.object(
+            self.module.validate_live_generation_results,
+            "inspect_review_snapshot",
+            return_value=snapshot,
+        ), mock.patch.object(
+            self.module.validate_live_generation_results,
+            "validate_results",
+        ) as strict:
+            summary = self.module.summarize_generation_review(payload)
+        strict.assert_not_called()
+        self.assertEqual(summary["measurement_type"], "historical_generation_review")
+        self.assertEqual(summary["review_status"], "historical_stale")
+        self.assertFalse(summary["current_runtime_generation_claimed"])
+        self.assertFalse(summary["release_eligible"])
+        self.assertFalse(summary["current_runtime_audits_rerun"])
 
     def test_rendered_html_exposes_summary_and_hashes(self):
         report = {
@@ -148,12 +239,15 @@ class EvaluationReportTests(unittest.TestCase):
                 },
                 "diagnostic_answer_contract": {"accuracy": 1.0},
                 "answer_audit": {"violation_detection_rate": 1.0},
+                "feedback_lifecycle": {"contract_accuracy": 1.0},
                 "retrieval": {
                     "mean_ndcg_at_k": 0.86,
+                    "stable_regression": {"mean_ndcg_at_k": 0.86},
                     "hard_negative_top_k_violations": 0,
                     "found_videos": 173,
                     "expected_videos": 173,
                 },
+                "metamorphic_robustness": {"pass_rate": 1.0},
                 "video_comprehension": {
                     "understanding_coverage": 1.0,
                     "ready_videos": 353,
@@ -161,6 +255,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "visual_review_fallback": 19,
                 },
                 "forward_tests": {"consecutive_passes": 3},
+                "live_generation": {"minimum_manual_score": 4},
             },
             "baseline_comparison": [
                 {"metric": f"{suite}.metric", "passed": True}
@@ -172,9 +267,12 @@ class EvaluationReportTests(unittest.TestCase):
                     "query_understanding",
                     "diagnostic_answer_contract",
                     "answer_audit",
+                    "feedback_lifecycle",
                     "retrieval",
+                    "metamorphic_robustness",
                     "video_comprehension",
                     "forward_tests",
+                    "live_generation",
                 )
             ],
         }
@@ -183,8 +281,17 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertIn("abc123", page)
         self.assertIn("a" * 64, page)
         self.assertIn("57/57", page)
-        self.assertEqual(page.count(">PASS<"), 11)
+        self.assertEqual(page.count(">PASS<"), 14)
         self.assertIn("tbody td:nth-of-type(3)", page)
+
+    def test_rendered_html_labels_stale_generation_review_as_informational(self):
+        report = self.module.load_json(self.module.REPORT_PATH)
+        report["evaluations"]["live_generation"][
+            "current_runtime_generation_claimed"
+        ] = False
+        page = self.module.render_html(report).decode("utf-8")
+        self.assertIn("Historical generation review", page)
+        self.assertIn(">REVIEW<", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:

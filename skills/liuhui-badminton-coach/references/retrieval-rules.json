@@ -1,5 +1,5 @@
 {
-  "version": "retrieval-v25",
+  "version": "retrieval-v30",
   "field_weights": {
     "title": 4.0,
     "teaching_note": 1.5,
@@ -185,6 +185,13 @@
     }
   ],
   "retrieval": {
+    "automatic_expansion_score_penalty": 96.0,
+    "supplemental_score_penalty": 18.0,
+    "limited_title_score_factor": 0.2,
+    "automatic_expansion_surface_limit": 3,
+    "automatic_expansion_review_limit": 3,
+    "automatic_expansion_max_top_k_rate": 0.12,
+    "automatic_expansion_max_review_rate": 0.15,
     "max_topics": 6,
     "topic_min_score": 8,
     "topic_relative_score": 0.4,
@@ -208,7 +215,7 @@
     "exact_focus_title_bonus_per_character": 33,
     "exact_focus_note_bonus_per_character": 8,
     "tier_score_bonus": {
-      "direct": 12,
+      "direct": 13,
       "strong_related": 6,
       "topic_related": 1,
       "semantic_lead": 0

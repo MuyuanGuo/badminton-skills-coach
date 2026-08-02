@@ -1,5 +1,5 @@
 {
-  "version": 37,
+  "version": 41,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -20,9 +20,23 @@
     }
   },
   "default_max_selected_videos": 16,
+  "retrieval_query_budget": 24,
+  "retrieval_query_hard_limit": 48,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
+  "automatic_expansion_selection_limit": 3,
+  "supplemental_selection_limit": 2,
+  "supplemental_allowed_relevance_tiers": [
+    "direct",
+    "strong_related"
+  ],
+  "supplemental_role_requirements": {
+    "practice": ["practice"],
+    "diagnosis": ["correction", "mechanism", "safety_boundary"],
+    "equipment": ["equipment"]
+  },
   "supporting_video_limits_by_technique_variant": {
+    "drop_reverse_slice": 0,
     "smash_heavy": 5
   },
   "default_segment_limit": 4,
@@ -312,9 +326,9 @@
       "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置", "守哪里", "守哪边"],
       "query_context_terms": [],
       "search_terms": ["站位"],
-      "source_terms": ["站位", "站哪里", "站在哪", "怎么站"],
-      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位"],
-      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "前后站位", "平行站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"]
+      "source_terms": ["站位", "站哪里", "站在哪"],
+      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位", "对手前后站位", "对方前后站位", "他前后站位", "对手平行站位", "对方平行站位", "他平行站位"],
+      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"]
     },
     {
       "name": "team_coverage_rotation",
@@ -349,7 +363,7 @@
         "smash": ["杀球", "扣杀", "普通杀球", "普通的杀球", "基础杀球", "反手杀球", "普通反手杀球", "反手转圈杀", "反手转圈杀球", "反手转着圈杀", "反手转着圈杀球", "转圈杀", "转着圈杀", "重杀", "点杀", "跳杀", "跳sha", "劈杀", "劈杀球", "快杀", "快速杀球", "遁地炮", "顿地炮", "蹲地炮", "dun地炮", "定杀", "轻杀", "轻杀球", "霸王杀", "A字霸王杀", "鲨球"],
         "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
-        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网"],
+        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网", "封网", "抢网", "后杀前封", "前封后杀"],
         "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
         "transition": ["过渡球", "过度球", "过渡动作", "正手过渡", "反手过渡", "正反手过渡", "过渡击球点", "过渡基础"],
         "smash_block": ["挡杀", "接杀"],
@@ -395,6 +409,12 @@
       "label": "击球意图",
       "values": {
         "downward_pressure": ["压球", "压下去", "压住", "压不住", "下压"]
+      },
+      "query_value_suppressions": {
+        "downward_pressure": ["压低重心", "下压重心", "重心往下压", "重心向下压"]
+      },
+      "source_value_suppressions": {
+        "downward_pressure": ["压低重心", "下压重心", "重心往下压", "重心向下压", "往下压重心", "向下压重心"]
       },
       "structured_evidence_policy": "support_only",
       "structured_mismatch_policy": "conflict"
@@ -607,6 +627,20 @@
       "any_terms": ["打到底线", "回到底线", "回球到底线"],
       "only_if_axes_missing": ["shot_family"],
       "derived_constraints": {"shot_family": ["clear"]}
+    },
+    {
+      "name": "forecourt_pressure_is_net_shot",
+      "all_terms": ["网前"],
+      "any_terms": ["下压", "压球", "压住"],
+      "only_if_axes_missing": ["shot_family"],
+      "derived_constraints": {"shot_family": ["net_shot"]}
+    },
+    {
+      "name": "frontcourt_pressure_is_net_shot",
+      "all_terms": ["前场"],
+      "any_terms": ["下压", "压球", "压住"],
+      "only_if_axes_missing": ["shot_family"],
+      "derived_constraints": {"shot_family": ["net_shot"]}
     }
   ],
   "required_constraint_support_conditions": [
@@ -661,6 +695,14 @@
       "target_values": ["attack"],
       "suppress_when_terms": ["对方杀球", "对手杀球", "人家杀球"],
       "basis": "明确的本方杀球教学属于进攻技术；对手杀球措辞不得证明本方处于进攻阶段。"
+    },
+    {
+      "source_axis": "technique_variant",
+      "source_values": ["smash_jump"],
+      "target_axis": "stroke_side",
+      "target_values": ["forehand"],
+      "suppress_when_terms": ["反手跳杀", "反手跳sha"],
+      "basis": "反手跳杀已有独立技术变体；未标反手的跳杀专项默认是正手后场动作。"
     }
   ],
   "video_display_title_overrides": {

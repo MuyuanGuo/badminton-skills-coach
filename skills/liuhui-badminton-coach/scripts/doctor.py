@@ -6,15 +6,50 @@ import os
 import shutil
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
+
+
+def decode_chunk_ngram_postings(encoded):
+    if not isinstance(encoded, str):
+        return encoded
+    if not encoded:
+        return ()
+    return tuple(int(index) for index in encoded.split(","))
+
+
+def video_transcript_segments(video):
+    segments = video.get("transcript_segments")
+    if segments is not None:
+        return segments
+    encoded = video.get("transcript_segments_json")
+    if not encoded:
+        return []
+    return json.loads(encoded)
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 MINIMUM_PYTHON = (3, 10)
+LATEST_RELEASE_URL = (
+    "https://api.github.com/repos/MuyuanGuo/badminton-skills-coach/releases/latest"
+)
 REQUIRED_SKILL_FILES = [
     "SKILL.md",
     "scripts/audit_answer.py",
+    "scripts/answer_candidate_selection.py",
+    "scripts/answer_constraints.py",
+    "scripts/answer_continuation.py",
+    "scripts/answer_packet.py",
+    "scripts/answer_retrieval_plan.py",
+    "scripts/answer_scope.py",
+    "scripts/answer_selection_policy.py",
+    "scripts/diagnostic_contract.py",
+    "scripts/feedback_ranking.py",
     "scripts/prepare_answer_context.py",
+    "scripts/query_planning.py",
+    "scripts/retrieval_projection.py",
+    "scripts/retrieval_ranking.py",
     "scripts/search_knowledge.py",
     "scripts/navigate_topics.py",
     "scripts/feedback.py",
@@ -31,9 +66,23 @@ REQUIRED_SKILL_FILES = [
     "references/feedback-signals.json",
     "references/topic-map.json",
 ]
+DEPENDENCY_CHECK_TIMEOUT_SECONDS = 30
+MODEL_CHECK_TIMEOUT_SECONDS = 60
 JSON_SKILL_FILES = [
     path for path in REQUIRED_SKILL_FILES if path.endswith(".json")
 ]
+
+
+def run_diagnostic_command(command, *, timeout, **kwargs):
+    try:
+        return subprocess.run(command, timeout=timeout, **kwargs)
+    except subprocess.TimeoutExpired:
+        return subprocess.CompletedProcess(
+            command,
+            124,
+            stdout="",
+            stderr=f"diagnostic timed out after {timeout} seconds",
+        )
 
 
 def check(name, ok, detail, remediation=None, required=True):
@@ -51,6 +100,304 @@ def nearest_existing_parent(path):
     while not candidate.exists() and candidate != candidate.parent:
         candidate = candidate.parent
     return candidate
+
+
+def validate_chunk_index(knowledge, retrieval):
+    chunk_index = retrieval.get("chunk_index")
+    if not chunk_index:
+        return []
+    errors = []
+    records = retrieval.get("videos") or []
+    chunks = chunk_index.get("chunks") or []
+    config = chunk_index.get("config") or {}
+    source_allowlist = set(
+        config.get("cluster_source_allowlist")
+        or config.get("source_allowlist")
+        or ["bilibili_video"]
+    )
+    knowledge_by_id = {
+        str(video.get("video_id")): video
+        for video in knowledge.get("videos", [])
+    }
+    ranges_by_video = {}
+    chunk_ids = []
+    for chunk_position, chunk in enumerate(chunks):
+        video_index = chunk.get("video_index")
+        if not isinstance(video_index, int) or not 0 <= video_index < len(records):
+            errors.append(f"chunk[{chunk_position}].video_index")
+            continue
+        video_id = str(records[video_index].get("video_id"))
+        video = knowledge_by_id.get(video_id)
+        if video is None:
+            errors.append(f"chunk[{chunk_position}].missing_video")
+            continue
+        if video.get("source_type") not in source_allowlist:
+            errors.append(f"chunk[{chunk_position}].source_type")
+        segments = video_transcript_segments(video or {})
+        start = chunk.get("start_segment")
+        end = chunk.get("end_segment")
+        if (
+            not isinstance(start, int)
+            or not isinstance(end, int)
+            or not 0 <= start < end <= len(segments)
+        ):
+            errors.append(f"chunk[{chunk_position}].segment_range")
+            continue
+        raw_text = "".join(
+            str(item.get("text") or "") for item in segments[start:end]
+        )
+        if hashlib.sha256(raw_text.encode("utf-8")).hexdigest() != chunk.get(
+            "text_sha256"
+        ):
+            errors.append(f"chunk[{chunk_position}].text_sha256")
+        start_ms = chunk.get("start_ms")
+        end_ms = chunk.get("end_ms")
+        if (
+            not isinstance(start_ms, int)
+            or not isinstance(end_ms, int)
+            or start_ms < 0
+            or end_ms < start_ms
+        ):
+            errors.append(f"chunk[{chunk_position}].time_range")
+        else:
+            try:
+                expected_start_ms = max(
+                    0,
+                    round(
+                        float(segments[start].get("start") or 0.0) * 1000
+                    ),
+                )
+                expected_end_ms = max(
+                    expected_start_ms,
+                    round(
+                        float(
+                            segments[end - 1].get("end")
+                            or segments[end - 1].get("start")
+                            or 0.0
+                        )
+                        * 1000
+                    ),
+                )
+            except (TypeError, ValueError):
+                expected_start_ms = expected_end_ms = None
+            if expected_start_ms is None or (
+                start_ms != expected_start_ms
+                or end_ms != expected_end_ms
+            ):
+                errors.append(f"chunk[{chunk_position}].time_alignment")
+        if not chunk.get("cluster_id"):
+            errors.append(f"chunk[{chunk_position}].cluster_id")
+        chunk_ids.append(chunk.get("chunk_id"))
+        ranges_by_video.setdefault(video_id, []).append((start, end))
+
+    if len(chunk_ids) != len(set(chunk_ids)) or any(
+        not isinstance(chunk_id, str) or not chunk_id
+        for chunk_id in chunk_ids
+    ):
+        errors.append("chunk_ids")
+
+    expected_indexed_video_ids = {
+        str(record.get("video_id"))
+        for record in records
+        if record.get("source_type") in source_allowlist
+        and video_transcript_segments(
+            knowledge_by_id.get(str(record.get("video_id"))) or {}
+        )
+    }
+    for video_id in sorted(expected_indexed_video_ids):
+        segments = video_transcript_segments(
+            knowledge_by_id.get(video_id) or {}
+        )
+        if not segments:
+            continue
+        ranges = sorted(ranges_by_video.get(video_id, []))
+        if (
+            not ranges
+            or ranges[0][0] != 0
+            or ranges[-1][1] != len(segments)
+            or any(
+                left[1] != right[0]
+                for left, right in zip(ranges, ranges[1:])
+            )
+        ):
+            errors.append(f"chunk_coverage:{video_id}")
+
+    def validate_postings(name, postings):
+        for key, indexes in postings.items():
+            if (
+                indexes != sorted(set(indexes))
+                or any(
+                    not isinstance(index, int)
+                    or not 0 <= index < len(chunks)
+                    for index in indexes
+                )
+            ):
+                errors.append(f"{name}:{key}")
+
+    validate_postings(
+        "chunk_term_postings", chunk_index.get("term_postings") or {}
+    )
+    expected_term_postings = {}
+    for index, chunk in enumerate(chunks):
+        for term in (chunk.get("field_term_frequencies") or {}):
+            expected_term_postings.setdefault(term, []).append(index)
+    if (chunk_index.get("term_postings") or {}) != expected_term_postings:
+        errors.append("chunk_term_postings_content")
+    vocabulary = chunk_index.get("ngram_vocabulary") or []
+    ngram_postings = chunk_index.get("ngram_postings") or []
+    if vocabulary != sorted(set(vocabulary)) or len(vocabulary) != len(
+        ngram_postings
+    ):
+        errors.append("chunk_ngram_vocabulary")
+    else:
+        validate_postings(
+            "chunk_ngram_postings",
+            {
+                gram: list(decode_chunk_ngram_postings(indexes))
+                for gram, indexes in zip(vocabulary, ngram_postings)
+            },
+        )
+    cluster_ids = {chunk.get("cluster_id") for chunk in chunks}
+    if chunk_index.get("chunk_count") != len(chunks):
+        errors.append("chunk_count")
+    if chunk_index.get("cluster_count") != len(cluster_ids):
+        errors.append("chunk_cluster_count")
+    expected_average_length = round(
+        sum(
+            int(chunk.get("normalized_length") or 0)
+            for chunk in chunks
+        )
+        / max(1, len(chunks)),
+        4,
+    )
+    if chunk_index.get("average_chunk_length") != expected_average_length:
+        errors.append("chunk_average_length")
+    term_postings = chunk_index.get("term_postings") or {}
+    term_cluster_df = (
+        chunk_index.get("term_cluster_document_frequency") or {}
+    )
+    if set(term_postings) != set(term_cluster_df):
+        errors.append("chunk_term_cluster_df_keys")
+    for term, postings in term_postings.items():
+        cluster_df = term_cluster_df.get(term)
+        expected = len({chunks[index]["cluster_id"] for index in postings})
+        if cluster_df != expected or cluster_df > len(postings):
+            errors.append(f"chunk_term_cluster_df:{term}")
+
+    stable_chunk_indexes = [
+        index
+        for index, chunk in enumerate(chunks)
+        if records[chunk["video_index"]].get(
+            "retrieval_cohort", "stable_baseline"
+        )
+        == "stable_baseline"
+    ]
+    for index, chunk in enumerate(chunks):
+        stable = index in stable_chunk_indexes
+        if stable != bool(chunk.get("stable_cluster_id")):
+            errors.append(f"chunk[{index}].stable_cluster_id")
+    stable_cluster_ids = {
+        chunks[index]["stable_cluster_id"]
+        for index in stable_chunk_indexes
+    }
+    if chunk_index.get("stable_cluster_count") != len(stable_cluster_ids):
+        errors.append("chunk_stable_cluster_count")
+    expected_stable_average = round(
+        sum(
+            int(chunks[index].get("normalized_length") or 0)
+            for index in stable_chunk_indexes
+        )
+        / max(1, len(stable_chunk_indexes)),
+        4,
+    )
+    if (
+        chunk_index.get("stable_average_chunk_length")
+        != expected_stable_average
+    ):
+        errors.append("chunk_stable_average_length")
+    expected_stable_term_df = {}
+    for term, postings in term_postings.items():
+        stable_clusters = {
+            chunks[index]["stable_cluster_id"]
+            for index in postings
+            if index in stable_chunk_indexes
+        }
+        if stable_clusters:
+            expected_stable_term_df[term] = len(stable_clusters)
+    if (
+        chunk_index.get("stable_term_cluster_document_frequency") or {}
+    ) != expected_stable_term_df:
+        errors.append("chunk_stable_term_cluster_df")
+    return sorted(set(errors))
+
+
+def validate_retrieval_cohorts(retrieval):
+    records = retrieval.get("videos") or []
+    errors = []
+    allowed = {"stable_baseline", "automatic_expansion"}
+    invalid = [
+        str(record.get("video_id"))
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline") not in allowed
+    ]
+    if invalid:
+        errors.append("invalid_cohort:" + ",".join(invalid[:8]))
+    stable_records = [
+        record
+        for record in records
+        if record.get("retrieval_cohort", "stable_baseline")
+        == "stable_baseline"
+    ]
+    if retrieval.get("stable_indexable_video_count") != len(stable_records):
+        errors.append("stable_indexable_video_count")
+    expected_term_df = {}
+    for record in stable_records:
+        for term in record.get("lexicon_terms", []):
+            expected_term_df[term] = expected_term_df.get(term, 0) + 1
+    if retrieval.get("stable_term_document_frequency") != dict(
+        sorted(expected_term_df.items())
+    ):
+        errors.append("stable_term_document_frequency")
+
+    fields = ("title", "teaching_note", "transcript")
+    expected_counts = {
+        field: sum(
+            int(record.get("field_lengths", {}).get(field) or 0) > 0
+            for record in stable_records
+        )
+        for field in fields
+    }
+    if retrieval.get("stable_field_document_counts") != expected_counts:
+        errors.append("stable_field_document_counts")
+    expected_df = {}
+    for field in fields:
+        frequencies = {}
+        for record in stable_records:
+            for term in (
+                record.get("field_term_frequencies", {})
+                .get(field, {})
+            ):
+                frequencies[term] = frequencies.get(term, 0) + 1
+        expected_df[field] = dict(sorted(frequencies.items()))
+    if (
+        retrieval.get("stable_field_term_document_frequency")
+        != expected_df
+    ):
+        errors.append("stable_field_term_document_frequency")
+    expected_average = {
+        field: round(
+            sum(
+                int(record.get("field_lengths", {}).get(field) or 0)
+                for record in stable_records
+            )
+            / max(1, len(stable_records)),
+            4,
+        )
+        for field in fields
+    }
+    if retrieval.get("stable_average_field_lengths") != expected_average:
+        errors.append("stable_average_field_lengths")
+    return errors
 
 
 def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
@@ -114,6 +461,39 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             "Reinstall a release whose knowledge base and retrieval index were packaged together.",
         )
     )
+    chunk_errors = (
+        validate_chunk_index(knowledge, retrieval)
+        if aligned and retrieval.get("chunk_index")
+        else []
+    )
+    checks.append(
+        check(
+            "chunk_index",
+            not chunk_errors,
+            (
+                f"chunks={retrieval['chunk_index'].get('chunk_count')}, "
+                f"clusters={retrieval['chunk_index'].get('cluster_count')}"
+                if retrieval.get("chunk_index") and not chunk_errors
+                else "legacy retrieval index; chunk-first fallback remains available"
+                if not retrieval.get("chunk_index")
+                else "; ".join(chunk_errors[:12])
+            ),
+            "Rebuild and reinstall the Skill so chunk postings match the bundled transcript segments.",
+        )
+    )
+    cohort_errors = validate_retrieval_cohorts(retrieval) if aligned else []
+    checks.append(
+        check(
+            "retrieval_cohorts",
+            not cohort_errors,
+            (
+                "stable and automatic expansion statistics are aligned"
+                if not cohort_errors
+                else "; ".join(cohort_errors[:12])
+            ),
+            "Rebuild and reinstall the Skill so cohort statistics match the bundled retrieval records.",
+        )
+    )
 
     manifest = payloads.get("references/build-manifest.json", {})
     artifact_errors = []
@@ -170,12 +550,16 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
         video
         for video in knowledge.get("videos", [])
         if video.get("processing_status") == "ready"
-        and video.get("confidence") != "visual_reviewed"
+        and video.get("runtime_evidence_mode", "full_transcript")
+        == "full_transcript"
     ]
     runtime_segments_complete = (
         knowledge.get("runtime_transcript_segments_bundled") is True
         and transcript_backed_ready
-        and all(video.get("transcript_segments") for video in transcript_backed_ready)
+        and all(
+            video_transcript_segments(video)
+            for video in transcript_backed_ready
+        )
     )
     checks.append(
         check(
@@ -206,7 +590,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
     )
 
     if run_smoke and not missing and not json_errors:
-        completed = subprocess.run(
+        completed = run_diagnostic_command(
             [
                 sys.executable,
                 str(skill_root / "scripts" / "search_knowledge.py"),
@@ -218,6 +602,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         smoke_ok = completed.returncode == 0
         if smoke_ok:
@@ -233,7 +618,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
                 "Run search_knowledge.py directly to inspect the reported error.",
             )
         )
-        context_completed = subprocess.run(
+        context_completed = run_diagnostic_command(
             [
                 sys.executable,
                 str(skill_root / "scripts" / "prepare_answer_context.py"),
@@ -246,6 +631,7 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         context_ok = context_completed.returncode == 0
         if context_ok:
@@ -307,31 +693,42 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             "transcription_python",
             python_path is not None,
             str(python_path) if python_path else "not found",
-            "Create .venv and install requirements-transcription.txt, or set LIUHUI_TRANSCRIPTION_PYTHON.",
+            "Create .venv and install the pinned requirements-transcription.txt, or set LIUHUI_TRANSCRIPTION_PYTHON.",
         )
     )
     faster_whisper_ok = False
     if python_path:
-        completed = subprocess.run(
-            [
-                str(python_path),
-                "-c",
-                "import faster_whisper; print(getattr(faster_whisper, '__version__', 'installed'))",
-            ],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        checks.append(
-            check(
-                "faster_whisper",
-                completed.returncode == 0,
-                completed.stdout.strip() or completed.stderr.strip()[-600:],
-                f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+        dependency_results = {}
+        for check_name, module_name in [
+            ("faster_whisper", "faster_whisper"),
+            ("pyyaml", "yaml"),
+            ("yt_dlp", "yt_dlp"),
+        ]:
+            completed = run_diagnostic_command(
+                [
+                    str(python_path),
+                    "-c",
+                    (
+                        f"import {module_name} as dependency; "
+                        "print(getattr(dependency, '__version__', 'installed'))"
+                    ),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+                timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
             )
-        )
-        faster_whisper_ok = completed.returncode == 0
-        browser_completed = subprocess.run(
+            dependency_results[check_name] = completed.returncode == 0
+            checks.append(
+                check(
+                    check_name,
+                    completed.returncode == 0,
+                    completed.stdout.strip() or completed.stderr.strip()[-600:],
+                    f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+                )
+            )
+        faster_whisper_ok = dependency_results["faster_whisper"]
+        browser_completed = run_diagnostic_command(
             [
                 str(python_path),
                 "scripts/download_douyin_browser_batch.py",
@@ -342,6 +739,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=DEPENDENCY_CHECK_TIMEOUT_SECONDS,
         )
         checks.append(
             check(
@@ -356,7 +754,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             )
         )
     if python_path and faster_whisper_ok:
-        model_completed = subprocess.run(
+        model_completed = run_diagnostic_command(
             [
                 str(python_path),
                 "-c",
@@ -370,6 +768,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
             text=True,
             capture_output=True,
             check=False,
+            timeout=MODEL_CHECK_TIMEOUT_SECONDS,
         )
         checks.append(
             check(
@@ -425,13 +824,84 @@ def maintainer_checks(repo_root, transcription=False, override=None):
     return checks
 
 
-def summarize(profile, checks):
+def installed_version_metadata(skill_root=SKILL_ROOT):
+    skill_root = Path(skill_root)
+    feedback = json.loads(
+        (skill_root / "references" / "feedback-rules.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    manifest = json.loads(
+        (skill_root / "references" / "build-manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    return {
+        "installed_version": feedback.get("skill_version"),
+        "stable_version_at_build": feedback.get("stable_version"),
+        "channel": feedback.get("channel"),
+        "build_id": manifest.get("build_id"),
+    }
+
+
+def latest_release_check(installed_version, timeout=10):
+    request = urllib.request.Request(
+        LATEST_RELEASE_URL,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "BadmintonSkillsCoachDoctor/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            latest = json.loads(response.read().decode("utf-8"))["tag_name"].removeprefix(
+                "v"
+            )
+    except (
+        OSError,
+        KeyError,
+        UnicodeDecodeError,
+        json.JSONDecodeError,
+        urllib.error.URLError,
+    ) as error:
+        return check(
+            "latest_release",
+            False,
+            f"could not query latest release: {error}",
+            "Check the Releases page when network access is available.",
+            required=False,
+        )
+    current = latest == installed_version
+    return check(
+        "latest_release",
+        current,
+        (
+            f"installed={installed_version}, latest={latest}"
+            if current
+            else f"update available: installed={installed_version}, latest={latest}"
+        ),
+        "Install the latest signed release archive and rerun doctor.py.",
+        required=False,
+    )
+
+
+def summarize(profile, checks, skill_root=SKILL_ROOT):
     failures = [item for item in checks if item["status"] == "fail"]
     warnings = [item for item in checks if item["status"] == "warn"]
+    try:
+        version = installed_version_metadata(skill_root)
+    except (OSError, KeyError, json.JSONDecodeError):
+        version = {
+            "installed_version": None,
+            "stable_version_at_build": None,
+            "channel": None,
+            "build_id": None,
+        }
     return {
         "profile": profile,
         "ok": not failures,
         "api_key_required": False,
+        "version": version,
         "checks": checks,
         "summary": {
             "passed": sum(item["status"] == "pass" for item in checks),
@@ -454,6 +924,11 @@ def main(default_profile="skill"):
     parser.add_argument("--repo-root", type=Path)
     parser.add_argument("--transcription-python", type=Path)
     parser.add_argument("--no-smoke", action="store_true")
+    parser.add_argument(
+        "--check-update",
+        action="store_true",
+        help="Compare the installed version with the latest GitHub release.",
+    )
     args = parser.parse_args()
 
     repo_root = (args.repo_root or args.skill_root.resolve().parents[1]).resolve()
@@ -472,7 +947,10 @@ def main(default_profile="skill"):
         )
     elif args.profile == "transcription":
         checks.extend(transcription_checks(repo_root, args.transcription_python))
-    result = summarize(args.profile, checks)
+    if args.check_update:
+        installed = installed_version_metadata(args.skill_root)["installed_version"]
+        checks.append(latest_release_check(installed))
+    result = summarize(args.profile, checks, args.skill_root)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["ok"] else 1
 

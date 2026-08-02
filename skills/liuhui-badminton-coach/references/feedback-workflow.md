@@ -4,7 +4,7 @@ Use this workflow only for answers produced with this Skill and for explicit use
 
 ## Before sending an answer
 
-1. Assign every confirmed worthwhile video exactly one stable label: `V1`, `V2`, and so on.
+1. Assign every confirmed worthwhile video exactly one stable, contiguous label: `V1`, `V2`, and so on. Current answer packets order these labels by answer usefulness after removing audit-only finalists.
 2. Keep the same label when a core video appears again in the complete related-video list.
 3. Order labels by answer usefulness, not by raw retrieval rank.
 4. Keep the question and mapping in task context. Do not persist the user's question merely because an answer was generated.
@@ -21,7 +21,7 @@ Do not imply that unselected videos are irrelevant.
 
 ## When the user gives feedback
 
-Only after the user explicitly gives feedback, save the prior question, exact answer text, exact label mapping, and user's words in one operation. The answer text and mapping are covered by one integrity digest:
+Only after the user explicitly gives feedback, save the prior question, exact answer text, exact label mapping, and user's words in one operation. The answer text and mapping are covered by one integrity digest. Never renumber labels during feedback capture. The recorder accepts sparse labels from already-presented legacy answers (for example `V2`, `V3`, `V5`) so their exact turn-scoped mapping remains valid:
 
 ```bash
 python3 scripts/feedback.py record \
@@ -95,7 +95,7 @@ python3 scripts/search_knowledge.py "用户问题" --no-local-personalization
 
 ## GitHub feedback
 
-Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Require a sanitized original question, sanitized complete answer or exact error excerpt, and a concrete error or omission. Ask users to paste video IDs or Douyin links, not only local `V` labels.
+Use the exported Issue body as the primary path. If the repository's Skill feedback form is visible on the default branch, users may fill it directly. Require a sanitized original question, sanitized complete answer or exact error excerpt, and a concrete error or omission. Ask users to paste stable evidence IDs or canonical Douyin/Bilibili links, not only local `V` labels.
 
 To share an accepted local record, first ask the user to provide or approve a sanitized public version of the question. After separate public-sharing consent, generate a GitHub Issue body:
 

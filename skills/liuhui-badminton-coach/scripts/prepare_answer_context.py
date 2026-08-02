@@ -2,10 +2,10 @@
 """Build a deterministic, evidence-ready context before answer generation."""
 
 import argparse
-import hashlib
 import importlib.util
 import json
 import re
+from itertools import chain
 from pathlib import Path
 
 
@@ -20,12 +20,17 @@ CLARIFICATION_STATE_SCHEMA_VERSION = 1
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 ANSWER_PACKET_SCHEMA_VERSION = 1
 ANSWER_PLAN_SCHEMA_VERSION = 1
+_SIBLING_MODULES = {}
+_STATIC_RESOURCE_CACHE = {}
 
 
 def load_sibling(name, filename):
+    if filename in _SIBLING_MODULES:
+        return _SIBLING_MODULES[filename]
     spec = importlib.util.spec_from_file_location(name, SCRIPT_DIR / filename)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    _SIBLING_MODULES[filename] = module
     return module
 
 
@@ -41,26 +46,55 @@ def load_feedback_module():
     return load_sibling("liuhui_answer_feedback", "feedback.py")
 
 
-def load_selection_rules():
-    rules = json.loads(SELECTION_RULES_PATH.read_text(encoding="utf-8"))
-    retrieval_rules = json.loads(RETRIEVAL_RULES_PATH.read_text(encoding="utf-8"))
-    rules["_equivalent_groups"] = retrieval_rules.get("equivalent_groups", [])
-    return rules
+def canonicalize_retrieval_query(query, rules):
+    """Normalize accepted spelling errors before retrieval planning."""
+
+    canonical = query
+    for rule in rules.get("canonical_terminology", []):
+        for term in sorted(
+            rule.get("accepted_input_errors", []),
+            key=len,
+            reverse=True,
+        ):
+            canonical = re.sub(
+                re.escape(term),
+                rule["canonical_term"],
+                canonical,
+                flags=re.IGNORECASE,
+            )
+    return canonical
+
+
+_selection_policy = load_sibling(
+    "liuhui_answer_selection_policy", "answer_selection_policy.py"
+)
+load_selection_rules = _selection_policy.load_selection_rules
+classify_boundary = _selection_policy.classify_boundary
 
 
 def load_reviewed_evidence_signals():
+    if "reviewed_evidence_signals" in _STATIC_RESOURCE_CACHE:
+        return _STATIC_RESOURCE_CACHE["reviewed_evidence_signals"]
     if not REVIEWED_EVIDENCE_PATH.exists():
         return []
-    return json.loads(REVIEWED_EVIDENCE_PATH.read_text(encoding="utf-8")).get(
+    signals = json.loads(REVIEWED_EVIDENCE_PATH.read_text(encoding="utf-8")).get(
         "signals", []
     )
+    _STATIC_RESOURCE_CACHE["reviewed_evidence_signals"] = signals
+    return signals
 
 
 def load_diagnostic_rules():
-    return json.loads(DIAGNOSTIC_RULES_PATH.read_text(encoding="utf-8"))
+    if "diagnostic_rules" not in _STATIC_RESOURCE_CACHE:
+        _STATIC_RESOURCE_CACHE["diagnostic_rules"] = json.loads(
+            DIAGNOSTIC_RULES_PATH.read_text(encoding="utf-8")
+        )
+    return _STATIC_RESOURCE_CACHE["diagnostic_rules"]
 
 
 def load_reviewed_evidence_atoms():
+    if "reviewed_evidence_atoms" in _STATIC_RESOURCE_CACHE:
+        return _STATIC_RESOURCE_CACHE["reviewed_evidence_atoms"]
     payload = json.loads(EVIDENCE_ATOMS_PATH.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
         raise ValueError("unsupported reviewed evidence atom schema_version")
@@ -72,3647 +106,429 @@ def load_reviewed_evidence_atoms():
         set(atom_ids)
     ):
         raise ValueError("reviewed evidence atom IDs must be present and unique")
+    _STATIC_RESOURCE_CACHE["reviewed_evidence_atoms"] = atoms
     return atoms
 
 
-def canonical_json_digest(payload):
-    encoded = json.dumps(
-        payload,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
-
-
-def clarification_state_digest(state):
-    unsigned = {
-        key: value for key, value in state.items() if key != "state_digest"
-    }
-    return canonical_json_digest(unsigned)
-
-
-def validate_clarification_state(previous_context, diagnostic_rules):
-    if not isinstance(previous_context, dict):
-        raise ValueError("continue_from must contain a context JSON object")
-    state = previous_context.get("clarification_state")
-    if not isinstance(state, dict):
-        raise ValueError("continue_from does not contain clarification_state")
-    if state.get("schema_version") != CLARIFICATION_STATE_SCHEMA_VERSION:
-        raise ValueError("unsupported clarification_state schema_version")
-    required = {
-        "original_query",
-        "effective_query",
-        "turns",
-        "resolved_answers",
-        "pending_question_ids",
-        "pending_requests",
-        "state_digest",
-    }
-    if required - set(state):
-        raise ValueError("clarification_state is missing required fields")
-    if clarification_state_digest(state) != state["state_digest"]:
-        raise ValueError("clarification_state digest mismatch")
-    if previous_context.get("query") != state["effective_query"]:
-        raise ValueError("continue_from query does not match clarification_state")
-    requests = previous_context.get("clarification_decision", {}).get(
-        "clarification_requests", []
-    )
-    if not isinstance(requests, list):
-        raise ValueError("continue_from clarification requests are invalid")
-    request_ids = [item.get("question_id") for item in requests]
-    if any(not item for item in request_ids) or len(request_ids) != len(
-        set(request_ids)
-    ):
-        raise ValueError("continue_from clarification request IDs are invalid")
-    if request_ids != state["pending_question_ids"]:
-        raise ValueError("clarification_state is stale for this context")
-    if requests != state["pending_requests"]:
-        raise ValueError("clarification_state request semantics are stale")
-    if not all(
-        isinstance(state.get(field), str) and state[field].strip()
-        for field in ("original_query", "effective_query")
-    ):
-        raise ValueError("clarification_state queries are invalid")
-    if not isinstance(state["resolved_answers"], list):
-        raise ValueError("clarification_state resolved answers are invalid")
-    if not isinstance(state["turns"], list) or not state["turns"]:
-        raise ValueError("clarification_state turns are invalid")
-    max_turns = diagnostic_rules.get("max_clarification_turns", 8)
-    if len(state["turns"]) >= max_turns:
-        raise ValueError("maximum clarification turns reached")
-    return state, {item["question_id"]: item for item in requests}
-
-
-def normalize_clarification_answers(payload):
-    if payload is None:
-        return None
-    if isinstance(payload, dict) and "answers" in payload:
-        payload = payload["answers"]
-    if isinstance(payload, dict):
-        items = [
-            {"question_id": question_id, "answer": answer}
-            for question_id, answer in payload.items()
-        ]
-    elif isinstance(payload, list):
-        items = payload
-    else:
-        raise ValueError("clarification_answers must be an object or answer list")
-    normalized = []
-    seen = set()
-    for item in items:
-        if not isinstance(item, dict):
-            raise ValueError("each clarification answer must be an object")
-        question_id = item.get("question_id")
-        answer = item.get("answer")
-        if not isinstance(question_id, str) or not question_id.strip():
-            raise ValueError("clarification answer has no question_id")
-        if question_id in seen:
-            raise ValueError(f"duplicate clarification answer: {question_id}")
-        if not isinstance(answer, str) or not answer.strip():
-            raise ValueError(f"empty clarification answer: {question_id}")
-        seen.add(question_id)
-        normalized.append(
-            {"question_id": question_id, "answer": answer.strip()}
-        )
-    if not normalized:
-        raise ValueError("clarification_answers cannot be empty")
-    return normalized
-
-
-def answer_resolves_request(search_module, answer, request, explicit_binding):
-    normalized = search_module.normalize(answer)
-    inconclusive = {
-        search_module.normalize(item)
-        for item in ("不知道", "不清楚", "没注意", "没有注意", "无法判断")
-    }
-    if not normalized or normalized in inconclusive:
-        return False
-    if explicit_binding:
-        return True
-    cues = request.get("answer_cues", [])
-    return any(search_module.normalize(cue) in normalized for cue in cues)
-
-
-def resolve_continuation(
-    search_module,
-    raw_reply,
-    previous_context,
-    clarification_answers,
-    diagnostic_rules,
-):
-    if not isinstance(raw_reply, str) or not raw_reply.strip():
-        raise ValueError("clarification reply cannot be empty")
-    state, requests_by_id = validate_clarification_state(
-        previous_context, diagnostic_rules
-    )
-    pending_ids = state["pending_question_ids"]
-    if not pending_ids:
-        raise ValueError("continue_from has no pending clarification questions")
-    answers = normalize_clarification_answers(clarification_answers)
-    explicit_binding = answers is not None
-    if answers is None:
-        if len(pending_ids) != 1:
-            raise ValueError(
-                "multiple clarification questions require structured answers"
-            )
-        answers = [{"question_id": pending_ids[0], "answer": raw_reply.strip()}]
-    unknown_ids = {
-        item["question_id"] for item in answers
-    } - set(pending_ids)
-    if unknown_ids:
-        raise ValueError(
-            "unknown or stale clarification question IDs: "
-            + ", ".join(sorted(unknown_ids))
-        )
-    turn_number = len(state["turns"]) + 1
-    resolved = []
-    for item in answers:
-        request = requests_by_id[item["question_id"]]
-        if not answer_resolves_request(
-            search_module, item["answer"], request, explicit_binding
-        ):
-            raise ValueError(
-                f'clarification reply does not resolve {item["question_id"]}'
-            )
-        resolved.append(
-            {
-                **item,
-                "question": request["question"],
-                "query_label": request["query_label"],
-                "unknown_type": request["unknown_type"],
-                "turn": turn_number,
-            }
-        )
-    all_resolved = [*state["resolved_answers"], *resolved]
-    effective_query = state["original_query"] + "".join(
-        f'\n补充说明（{item["query_label"]}）：{item["answer"]}'
-        for item in all_resolved
-    )
-    return effective_query, {
-        "original_query": state["original_query"],
-        "turns": [
-            *state["turns"],
-            {
-                "turn": turn_number,
-                "role": "user",
-                "kind": "clarification_reply",
-                "text": raw_reply.strip(),
-                "answered_question_ids": [
-                    item["question_id"] for item in resolved
-                ],
-            },
-        ],
-        "resolved_answers": all_resolved,
-    }
-
-
-def build_clarification_state(context, continuation=None):
-    if continuation is None:
-        state = {
-            "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
-            "original_query": context["query"],
-            "effective_query": context["query"],
-            "turns": [
-                {
-                    "turn": 1,
-                    "role": "user",
-                    "kind": "original_query",
-                    "text": context["query"],
-                    "answered_question_ids": [],
-                }
-            ],
-            "resolved_answers": [],
-            "pending_question_ids": [],
-            "pending_requests": [],
-        }
-    else:
-        state = {
-            "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
-            **continuation,
-            "effective_query": context["query"],
-            "pending_question_ids": [],
-            "pending_requests": [],
-        }
-    state["pending_question_ids"] = [
-        item["question_id"]
-        for item in context["clarification_decision"][
-            "clarification_requests"
-        ]
-    ]
-    state["pending_requests"] = context["clarification_decision"][
-        "clarification_requests"
-    ]
-    state["state_digest"] = clarification_state_digest(state)
-    return state
-
-
-def build_answer_turn_contract(context):
-    state = context["clarification_state"]
-    evidence_state = {
-        "selected_videos": [
-            {
-                "label": item.get("label"),
-                "evidence_id": str(
-                    item.get("evidence_id", item.get("video_id", ""))
-                ),
-                "canonical_url": item.get("canonical_url") or item.get("url"),
-            }
-            for item in context.get("selected_videos", [])
-        ],
-        "claim_evidence": [
-            {
-                "claim_id": item.get("claim_id"),
-                "kind": item.get("kind"),
-                "status": item.get("status"),
-                "eligible_video_labels": item.get(
-                    "eligible_video_labels", []
-                ),
-                "confidence_ceiling": item.get("confidence_ceiling", "none"),
-                "evidence": [
-                    {
-                        "label": evidence.get("label"),
-                        "evidence_id": str(evidence.get("evidence_id", "")),
-                        "directness": evidence.get("directness"),
-                        "scope": evidence.get("scope"),
-                    }
-                    for evidence in item.get("evidence", [])
-                ],
-            }
-            for item in context.get("claim_evidence_map", [])
-        ],
-    }
-    return {
-        "schema_version": ANSWER_TURN_CONTRACT_SCHEMA_VERSION,
-        "original_query": state["original_query"],
-        "effective_query": state["effective_query"],
-        "turn_number": len(state["turns"]),
-        "resolved_clarifications": state["resolved_answers"],
-        "pending_clarifications": state["pending_requests"],
-        "resolved_question_ids_must_not_be_reasked": [
-            item["question_id"] for item in state["resolved_answers"]
-        ],
-        "evidence_state": evidence_state,
-        "evidence_state_digest": canonical_json_digest(evidence_state),
-    }
-
-
-def reviewed_evidence_priorities(
-    search_module,
-    query,
-    plan,
-    retrieval_index,
-    retrieval_rules,
-    rules,
-):
-    priorities = {}
-    current_normalized = search_module.normalize(query)
-    current_signature = search_module.feedback_signature(
-        query, plan["query_expansion"]
-    )
-    feedback_rules = search_module.load_feedback_rules()
-    current_focus = {
-        search_module.normalize(group[0])
-        for group in required_focus_groups(search_module, query, rules)
-    }
-    minimum_similarity = rules.get(
-        "reviewed_evidence_min_strict_similarity", 0.35
-    )
-    for signal in load_reviewed_evidence_signals():
-        reviewed_query = signal["query"]
-        exact_query = (
-            current_normalized
-            and current_normalized == search_module.normalize(reviewed_query)
-        )
-        if not exact_query:
-            reviewed_expansion = search_module.expand_query(
-                reviewed_query, retrieval_index, retrieval_rules
-            )
-            reviewed_signature = search_module.feedback_signature(
-                reviewed_query, reviewed_expansion
-            )
-            reviewed_focus = {
-                search_module.normalize(group[0])
-                for group in required_focus_groups(
-                    search_module, reviewed_query, rules
-                )
-            }
-            if (
-                current_signature["concepts"]
-                != reviewed_signature["concepts"]
-                or (
-                    current_focus
-                    and reviewed_focus
-                    and current_focus != reviewed_focus
-                )
-            ):
-                continue
-            match = search_module.feedback_query_match(
-                current_signature,
-                reviewed_query,
-                retrieval_index,
-                retrieval_rules,
-                feedback_rules,
-            )
-            if not (
-                match["strict_compatible"]
-                and match["strict_similarity"] >= minimum_similarity
-            ):
-                continue
-        primary_ids = set(signal.get("primary_video_ids", []))
-        for video_id in signal.get("required_video_ids", []):
-            priority = 0 if video_id in primary_ids else 1
-            priorities[video_id] = min(
-                priorities.get(video_id, priority), priority
-            )
-    return priorities
-
-
-def planned_queries(search_module, plan, original_query, rules=None):
-    """Expand a question into focused retrieval units without losing the original."""
-
-    guidance = plan["retrieval_guidance"]
-    units = guidance.get("query_units") or []
-    queries = [original_query, *units]
-    for unit in units or [original_query]:
-        unit_plan = search_module.plan_query(unit)
-        expansion = unit_plan["query_expansion"]
-        queries.extend(expansion.get("primary_terms", []))
-        queries.extend(expansion.get("original_terms", []))
-        symptoms = expansion["intent_frame"].get("literal_symptoms", [])
-        if not symptoms:
-            queries.extend(
-                item["term"]
-                for item in expansion.get("related_terms", [])
-                if item["weight"] >= 0.45
-            )
-        if symptoms and expansion.get("primary_terms"):
-            queries.append(
-                " ".join([expansion["primary_terms"][0], *symptoms])
-            )
-        if guidance.get("strategy") == "split_multi_issue":
-            for group in expansion.get("matched_synonym_groups", []):
-                present = [term for term in group if term in unit]
-                if present:
-                    queries.append(max(present, key=len))
-    queries = list(dict.fromkeys(query.strip() for query in queries if query.strip()))
-    if not rules:
-        return queries
-    intent_frame = plan["retrieval_guidance"]["intent_frame"]
-    positive_query = intent_frame.get(
-        "positive_query", original_query
-    )
-    actor_query = intent_frame.get("actor_query", positive_query)
-    actor_context = query_actor_context(search_module, actor_query, rules)
-    constraints = explicit_constraint_terms(search_module, positive_query, rules)
-    constrained_queries = []
-    for query in queries:
-        if query == original_query:
-            constrained_queries.append(query)
-            continue
-        normalized_query = search_module.normalize(query)
-        missing = [
-            term
-            for term in constraints
-            if search_module.normalize(term) not in normalized_query
-        ]
-        constrained_queries.append(" ".join([*missing, query]).strip())
-    constrained_queries.extend(
-        query for query in queries[1:] if query not in constrained_queries
-    )
-    constrained_queries.extend(actor_context["derived_search_terms"])
-    return list(dict.fromkeys(constrained_queries))
-
-
-def continuation_query_plan(search_module, effective_query, continuation):
-    effective_plan = search_module.plan_query(effective_query)
-    if continuation is None:
-        return effective_plan, effective_query
-
-    original_query = continuation["original_query"]
-    plan = search_module.plan_query(original_query)
-    effective_intent = effective_plan["retrieval_guidance"]["intent_frame"]
-    plan["answer_guidance"] = effective_plan["answer_guidance"]
-    plan["retrieval_guidance"]["intent_frame"] = effective_intent
-    plan["query_expansion"]["intent_frame"] = effective_intent
-    return plan, original_query
-
-
-def topic_navigation(navigation_module, query, limit=5):
-    graph = json.loads(navigation_module.TOPIC_MAP.read_text(encoding="utf-8"))
-    practice_rules = json.loads(
-        navigation_module.PRACTICE_RULES.read_text(encoding="utf-8")
-    )
-    context = navigation_module.build_user_context(query, practice_rules)
-    matches = navigation_module.match_topics(graph, query, limit)
-    return {
-        "intent": navigation_module.detect_intent(query),
-        "user_context": context,
-        "context_assumptions": [
-            field
-            for field, source in context["sources"].items()
-            if source == "default"
-        ],
-        "material_clarification_questions": (
-            navigation_module.clarification_questions(context)
-        ),
-        "matches": matches,
-        "suggested_search_queries": navigation_module.suggested_queries(
-            query, matches
-        ),
-        "learning_path": navigation_module.learning_path(
-            matches, context, practice_rules
-        ),
-        "practice_adaptation": navigation_module.practice_adaptation(
-            context, practice_rules
-        ),
-    }
-
-
-def classify_boundary(query, rules):
-    normalized = query.replace(" ", "").lower()
-    matched = {
-        boundary: [term for term in terms if term in normalized]
-        for boundary, terms in rules["boundary_terms"].items()
-    }
-    if matched["pain_or_injury"]:
-        boundary_type = "pain_or_injury"
-        citation_policy = "no_coaching_video_without_direct_safety_evidence"
-        required_statement = "停止引发疼痛的动作，并由合格医疗专业人士评估；本 Skill 不作诊断。"
-    elif matched["endorsement_or_authorship"]:
-        boundary_type = "endorsement_or_authorship"
-        citation_policy = "no_video_needed_for_identity_or_endorsement_boundary"
-        required_statement = "Skill 的综合回答不代表刘辉本人审阅、认可或背书。"
-    elif matched["purchase_advice"]:
-        boundary_type = "purchase_advice"
-        citation_policy = "equipment_evidence_only"
-        required_statement = "只能总结来源中的选拍原则，不能冒充刘辉给出个性化购买背书。"
-    elif matched["visual_confirmation"]:
-        boundary_type = "visual_confirmation"
-        citation_policy = "technique_video_required_but_user_form_unverified"
-        required_statement = "文字和示范视频可以提供检查点，但不能确认用户自己的动作完全正确。"
-    elif matched["insufficient_observation"]:
-        boundary_type = "insufficient_observation"
-        citation_policy = (
-            "no_video_needed_for_unique_cause_boundary"
-            if "唯一原因" in matched["insufficient_observation"]
-            else "literal_problem_evidence_only"
-        )
-        required_statement = "仅凭文字症状不能确定唯一原因；只能列出证据直接覆盖的可能性和需要补充的观察。"
-    else:
-        boundary_type = "none"
-        citation_policy = "direct_worthwhile_evidence_only"
-        required_statement = None
-    return {
-        "type": boundary_type,
-        "matched_terms": matched[boundary_type] if boundary_type != "none" else [],
-        "citation_policy": citation_policy,
-        "required_statement": required_statement,
-    }
-
-
-def merge_candidates(payloads, retrieval_queries):
-    merged = {}
-    for query_index, (query, payload) in enumerate(
-        zip(retrieval_queries, payloads)
-    ):
-        for rank, candidate in enumerate(payload["candidate_manifest"], start=1):
-            video_id = candidate["video_id"]
-            entry = merged.setdefault(
-                video_id,
-                {
-                    "candidate": candidate,
-                    "matches": [],
-                    "best_rank": rank,
-                    "best_query_index": query_index,
-                },
-            )
-            entry["matches"].append(
-                {
-                    "query": query,
-                    "query_index": query_index,
-                    "rank": rank,
-                    "relevance_tier": candidate["relevance_tier"],
-                    "within_review_budget": candidate["within_review_budget"],
-                    "matched_original_terms": candidate["matched_original_terms"],
-                    "matched_equivalent_terms": candidate.get(
-                        "matched_equivalent_terms", []
-                    ),
-                    "matched_query_concepts": candidate.get(
-                        "matched_query_concepts", []
-                    ),
-                    "matched_structured_query_concepts": candidate.get(
-                        "matched_structured_query_concepts", []
-                    ),
-                    "query_concept_count": len(
-                        payload["query_expansion"].get(
-                            "matched_synonym_groups", []
-                        )
-                    ),
-                }
-            )
-            candidate_key = (
-                0 if candidate["relevance_tier"] == "direct" else 1,
-                rank,
-                -candidate["score_breakdown"].get(
-                    "effective_ranking_score", candidate["score"]
-                ),
-            )
-            current = entry["candidate"]
-            current_key = (
-                0 if current["relevance_tier"] == "direct" else 1,
-                entry["best_rank"],
-                -current["score_breakdown"].get(
-                    "effective_ranking_score", current["score"]
-                ),
-            )
-            if candidate_key < current_key:
-                entry["candidate"] = candidate
-                entry["best_rank"] = rank
-                entry["best_query_index"] = query_index
-            else:
-                entry["best_rank"] = min(entry["best_rank"], rank)
-    return merged
-
-
-def structured_video_text(search_module, video):
-    note = {
-        key: value
-        for key, value in (video.get("teaching_note") or {}).items()
-        if key not in {"note", "video_id", "title", "url"}
-    }
-    return search_module.normalize(
-        " ".join(
-            [
-                video.get("title", ""),
-                video.get("category", ""),
-                search_module.flatten(note),
-            ]
-        )
-    )
-
-
-def structured_constraint_text(search_module, video):
-    """Return teaching evidence without repeating metadata or broad taxonomy."""
-    note = {
-        key: value
-        for key, value in (video.get("teaching_note") or {}).items()
-        if key
-        not in {
-            "note",
-            "video_id",
-            "title",
-            "url",
-            "topic",
-            "review_summary",
-            "problem",
-        }
-    }
-    return search_module.normalize(search_module.flatten(note))
-
-
-def axis_values(search_module, text, axis):
-    normalized = search_module.normalize(text)
-    if not normalized:
-        return set()
-    value_names = set(axis["values"])
-    mapped_values = {
-        value
-        for phrase, values in axis.get("mixed_value_sets", {}).items()
-        if search_module.normalize(phrase) in normalized
-        for value in values
-    }
-    if mapped_values:
-        return mapped_values
-    if any(
-        search_module.normalize(term) in normalized
-        for term in axis.get("mixed_terms", [])
-    ):
-        return value_names
-
-    matches = []
-    for value, terms in axis["values"].items():
-        for term in terms:
-            normalized_term = search_module.normalize(term)
-            if not normalized_term:
-                continue
-            start = 0
-            while True:
-                index = normalized.find(normalized_term, start)
-                if index < 0:
-                    break
-                matches.append(
-                    {
-                        "value": value,
-                        "start": index,
-                        "end": index + len(normalized_term),
-                        "length": len(normalized_term),
-                    }
-                )
-                start = index + 1
-    retained = []
-    for match in matches:
-        shadowed = any(
-            other["value"] != match["value"]
-            and other["length"] > match["length"]
-            and other["start"] <= match["start"]
-            and other["end"] >= match["end"]
-            for other in matches
-        )
-        if not shadowed:
-            retained.append(match)
-    return {match["value"] for match in retained}
-
-
-def query_axis_values(search_module, query, axis):
-    values = axis_values(search_module, query, axis)
-    normalized = search_module.normalize(query)
-    if any(
-        search_module.normalize(phrase) in normalized
-        for phrase in axis.get("mixed_value_sets", {})
-    ):
-        return values
-    target_prefixes = [
-        search_module.normalize(prefix)
-        for prefix in axis.get("query_target_prefixes", [])
-        if search_module.normalize(prefix)
-    ]
-    if not values or not target_prefixes:
-        return values
-
-    max_prefix_length = max(map(len, target_prefixes))
-    retained = set()
-    for value in values:
-        for term in axis["values"][value]:
-            normalized_term = search_module.normalize(term)
-            if not normalized_term:
-                continue
-            start = 0
-            while True:
-                index = normalized.find(normalized_term, start)
-                if index < 0:
-                    break
-                prefix = normalized[max(0, index - max_prefix_length):index]
-                if not any(prefix.endswith(item) for item in target_prefixes):
-                    retained.add(value)
-                    break
-                start = index + 1
-            if value in retained:
-                break
-    return retained
-
-
-def source_axis_values(search_module, text, axis):
-    values = axis_values(search_module, text, axis)
-    normalized = search_module.normalize(text)
-    values.update(
-        value
-        for value, phrases in axis.get("source_value_additions", {}).items()
-        if any(
-            search_module.normalize(phrase) in normalized
-            for phrase in phrases
-        )
-    )
-    suppressed = {
-        value
-        for value, phrases in axis.get("source_value_suppressions", {}).items()
-        if any(
-            search_module.normalize(phrase) in normalized
-            for phrase in phrases
-        )
-    }
-    return values - suppressed, suppressed
-
-
-def _query_actor_marker_suppressed(query, match, rules):
-    token = match.group(0)
-    for phrase in rules.get("query_actor_marker_suppressions", {}).get(
-        token, []
-    ):
-        window_start = max(0, match.start() - len(phrase) + 1)
-        phrase_start = query.find(phrase, window_start, match.start() + 1)
-        if (
-            phrase_start >= 0
-            and phrase_start <= match.start()
-            and match.end() <= phrase_start + len(phrase)
-        ):
-            return True
-    return False
-
-
-def _query_actor_parser_parts(query, rules):
-    markers = {
-        marker: actor
-        for actor, actor_markers in rules.get(
-            "query_actor_markers", {}
-        ).items()
-        for marker in actor_markers
-    }
-    separators = set(rules.get("query_actor_clause_separators", []))
-    tokens = sorted([*markers, *separators], key=len, reverse=True)
-    pattern = None
-    if tokens:
-        pattern = re.compile("|".join(re.escape(token) for token in tokens))
-    return markers, separators, pattern
-
-
-def _query_actor_segments(query, rules):
-    markers, separators, pattern = _query_actor_parser_parts(query, rules)
-    if pattern is None:
-        return [{"actor": "player", "text": query}]
-    pronouns = set(rules.get("query_actor_pronoun_markers", []))
-    referent_actors = {"opponent", "partner"}
-    segments = []
-    current_actor = "player"
-    last_explicit_referent = None
-    previous_explicit_referent = None
-    cursor = 0
-
-    def append_text(text, force_new=False):
-        if not text:
-            return
-        if (
-            not force_new
-            and segments
-            and segments[-1]["actor"] == current_actor
-        ):
-            segments[-1]["text"] += text
-        else:
-            segments.append({"actor": current_actor, "text": text})
-
-    for match in pattern.finditer(query):
-        token = match.group(0)
-        append_text(query[cursor : match.start()])
-        if _query_actor_marker_suppressed(query, match, rules):
-            append_text(token)
-            cursor = match.end()
-            continue
-        if token in separators:
-            current_actor = "player"
-            append_text(" ", force_new=True)
-        else:
-            configured_actor = markers[token]
-            actor_before_marker = current_actor
-            restore_actor_after_pronoun = None
-            if token in pronouns and last_explicit_referent in referent_actors:
-                prefix = re.sub(r"\s+", "", query[cursor : match.start()])
-                object_pronoun = any(
-                    prefix.endswith(term)
-                    for term in rules.get(
-                        "query_actor_object_pronoun_prefixes", []
-                    )
-                )
-                partner_object_pronoun = any(
-                    prefix.endswith(term)
-                    for term in rules.get(
-                        "query_actor_partner_object_pronoun_prefixes", []
-                    )
-                )
-                if partner_object_pronoun and "partner" in {
-                    last_explicit_referent,
-                    previous_explicit_referent,
-                }:
-                    current_actor = "partner"
-                elif (
-                    object_pronoun
-                    and current_actor == last_explicit_referent
-                    and previous_explicit_referent in referent_actors
-                ):
-                    current_actor = previous_explicit_referent
-                else:
-                    current_actor = last_explicit_referent
-                if any(
-                    prefix.endswith(term)
-                    for term in rules.get(
-                        "query_actor_object_pronoun_restore_prefixes", []
-                    )
-                ):
-                    restore_actor_after_pronoun = actor_before_marker
-            else:
-                current_actor = configured_actor
-            append_text(token)
-            if restore_actor_after_pronoun:
-                current_actor = restore_actor_after_pronoun
-            if token not in pronouns and configured_actor in referent_actors:
-                if configured_actor != last_explicit_referent:
-                    previous_explicit_referent = last_explicit_referent
-                last_explicit_referent = configured_actor
-        cursor = match.end()
-    append_text(query[cursor:])
-    return [
-        {"actor": segment["actor"], "text": segment["text"]}
-        for segment in segments
-        if segment["text"]
-    ]
-
-
-def query_actor_text(query, rules):
-    buffers = {
-        actor: []
-        for actor in rules.get("query_actor_markers", {})
-    }
-    buffers.setdefault("player", [])
-    for segment in _query_actor_segments(query, rules):
-        buffers[segment["actor"]].append(segment["text"])
-    return {
-        actor: re.sub(r"\s+", " ", "".join(parts)).strip()
-        for actor, parts in buffers.items()
-    }
-
-
-def _segment_requests_answer(segment, rules):
-    normalized = re.sub(r"\s+", "", segment)
-    return any(
-        re.sub(r"\s+", "", str(term)) in normalized
-        for term in rules.get("query_target_actor_terms", [])
-        if str(term)
-    )
-
-
-def query_target_actor(query, actor_text, rules):
-    target_actor = None
-
-    for segment in _query_actor_segments(query, rules):
-        if _segment_requests_answer(segment["text"], rules):
-            target_actor = segment["actor"]
-    if target_actor in {"player", "partner"}:
-        return target_actor
-    if actor_text.get("partner") and not actor_text.get("player"):
-        return "partner"
-    return "player"
-
-
-def _query_constraints_from_text(
-    search_module,
-    query,
-    rules,
-    value_additions_field=None,
-):
-    constraints = {}
-    normalized_query = search_module.normalize(query)
-    for axis in rules.get("constraint_axes", []):
-        values = query_axis_values(search_module, query, axis)
-        if value_additions_field:
-            values.update(
-                value
-                for value, phrases in axis.get(
-                    value_additions_field, {}
-                ).items()
-                if any(
-                    search_module.normalize(phrase) in normalized_query
-                    for phrase in phrases
-                )
-            )
-        for value, phrases in axis.get("query_value_suppressions", {}).items():
-            if any(
-                search_module.normalize(phrase) in normalized_query
-                for phrase in phrases
-            ):
-                values.discard(value)
-        if values:
-            constraints[axis["name"]] = sorted(values)
-    for implication in rules.get("query_constraint_implications", []):
-        if any(
-            axis_name in constraints
-            for axis_name in implication.get("only_if_axes_missing", [])
-        ):
-            continue
-        if not all(
-            search_module.normalize(term) in normalized_query
-            for term in implication.get("all_terms", [])
-        ):
-            continue
-        any_terms = implication.get("any_terms", [])
-        if any_terms and not any(
-            search_module.normalize(term) in normalized_query
-            for term in any_terms
-        ):
-            continue
-        for axis_name, values in implication.get(
-            "derived_constraints", {}
-        ).items():
-            if axis_name not in constraints:
-                constraints[axis_name] = sorted(set(values))
-    if (
-        constraints.get("serve_role") == ["receive"]
-        and constraints.get("technique_variant") == ["net_push"]
-        and "court_zone" not in constraints
-    ):
-        constraints["court_zone"] = ["forecourt"]
-    if (
-        constraints.get("shot_family") == ["smash"]
-        and "tactical_phase" not in constraints
-        and any(
-            search_module.normalize(term) in normalized_query
-            for term in [
-                "杀球",
-                "扣杀",
-                "重杀",
-                "点杀",
-                "跳杀",
-                "遁地炮",
-                "顿地炮",
-                "蹲地炮",
-                "dun地炮",
-                "压球",
-                "杀",
-            ]
-        )
-    ):
-        constraints["tactical_phase"] = ["attack"]
-    sequence_implication = _action_sequence_implication(
-        search_module, query, rules
-    )
-    if sequence_implication:
-        for axis_name, values in sequence_implication.get(
-            "derived_constraints", {}
-        ).items():
-            constraints[axis_name] = sorted(
-                set(constraints.get(axis_name, [])) | set(values)
-            )
-    return constraints
-
-
-def _action_sequence_implication(search_module, query, rules):
-    actor_text = query_actor_text(query, rules)
-    normalized_player = search_module.normalize(actor_text.get("player", ""))
-    normalized_opponent = search_module.normalize(actor_text.get("opponent", ""))
-
-    def matching_terms(normalized_text, terms):
-        return [
-            term
-            for term in terms
-            if search_module.normalize(term) in normalized_text
-        ]
-
-    normalized_actor_text = {
-        actor: search_module.normalize(text)
-        for actor, text in actor_text.items()
-    }
-    for implication in rules.get("multi_actor_sequence_implications", []):
-        event_chain = []
-        for event in implication.get("events", []):
-            matches = matching_terms(
-                normalized_actor_text.get(event["actor"], ""),
-                event.get("terms", []),
-            )
-            if not matches:
-                event_chain = []
-                break
-            event_chain.append(
-                {
-                    "actor": event["actor"],
-                    "role": event["role"],
-                    "term": matches[0],
-                }
-            )
-        if event_chain:
-            result = dict(implication)
-            event_chain[-1]["term"] = implication["canonical_action_query"]
-            result["matched_context"] = {
-                "match_type": "multi_actor_sequence",
-                "event_chain": event_chain,
-                "explicit_after_term": event_chain[-1]["term"],
-            }
-            return result
-
-    def matched_implication(
-        implication,
-        match_type,
-        before_term="",
-        after_term="",
-        opponent_response_term="",
-    ):
-        result = dict(implication)
-        event_chain = []
-        if before_term:
-            event_chain.append(
-                {
-                    "actor": "player",
-                    "role": "prior_action",
-                    "term": before_term,
-                }
-            )
-        if opponent_response_term:
-            event_chain.append(
-                {
-                    "actor": "opponent",
-                    "role": "response",
-                    "term": opponent_response_term,
-                }
-            )
-        event_chain.append(
-            {
-                "actor": "player",
-                "role": "target_action",
-                "term": implication["canonical_action_query"],
-            }
-        )
-        result["matched_context"] = {
-            "match_type": match_type,
-            "event_chain": event_chain,
-            "explicit_after_term": after_term,
-        }
-        return result
-
-    for implication in rules.get("action_sequence_implications", []):
-        canonical_matches = matching_terms(
-            normalized_player, implication.get("canonical_terms", [])
-        )
-        if canonical_matches:
-            return matched_implication(
-                implication,
-                "canonical_term",
-                after_term=canonical_matches[0],
-            )
-        before_matches = [
-            (normalized_player.find(search_module.normalize(term)), term)
-            for term in implication.get("before_terms", [])
-            if search_module.normalize(term) in normalized_player
-        ]
-        after_matches = [
-            (normalized_player.find(search_module.normalize(term)), term)
-            for term in implication.get("after_terms", [])
-            if search_module.normalize(term) in normalized_player
-        ]
-        opponent_response_matches = [
-            term
-            for group in implication.get("opponent_response_groups", [])
-            for term in matching_terms(
-                normalized_opponent, group.get("response_terms", [])
-            )
-        ]
-        max_gap = implication.get("max_gap_characters", 12)
-        for before_index, before_term in before_matches:
-            before_end = before_index + len(search_module.normalize(before_term))
-            for after_index, after_term in after_matches:
-                if (
-                    after_index >= before_end
-                    and after_index - before_end <= max_gap
-                ):
-                    return matched_implication(
-                        implication,
-                        (
-                            "opponent_response_with_explicit_target"
-                            if opponent_response_matches
-                            else "same_actor_explicit_sequence"
-                        ),
-                        before_term=before_term,
-                        after_term=after_term,
-                        opponent_response_term=(
-                            opponent_response_matches[0]
-                            if opponent_response_matches
-                            else ""
-                        ),
-                    )
-
-        if not before_matches or not normalized_opponent:
-            continue
-        for response_group in implication.get("opponent_response_groups", []):
-            response_matches = matching_terms(
-                normalized_opponent,
-                response_group.get("response_terms", []),
-            )
-            symptom_matches = matching_terms(
-                normalized_player,
-                response_group.get("required_player_symptom_terms", []),
-            )
-            if response_matches and symptom_matches:
-                return matched_implication(
-                    implication,
-                    "opponent_response_interruption",
-                    before_term=before_matches[0][1],
-                    opponent_response_term=response_matches[0],
-                )
-    return None
-
-
-def _reception_symptom_implication(search_module, query, rules):
-    actor_text = query_actor_text(query, rules)
-    normalized_player = search_module.normalize(actor_text.get("player", ""))
-    normalized_opponent = search_module.normalize(actor_text.get("opponent", ""))
-
-    def matching_terms(normalized_text, terms):
-        return [
-            term
-            for term in terms
-            if search_module.normalize(term) in normalized_text
-        ]
-
-    def term_is_prior_player_action(term, implication):
-        normalized_term = search_module.normalize(term)
-        prefix_terms = implication.get(
-            "player_action_prefixes_by_incoming_term", {}
-        ).get(term, [])
-        start = 0
-        found = False
-        while True:
-            index = normalized_player.find(normalized_term, start)
-            if index < 0:
-                return found
-            found = True
-            prefix = normalized_player[:index]
-            prefixed_as_action = any(
-                prefix.endswith(search_module.normalize(item))
-                for item in prefix_terms
-            )
-            suffix = normalized_player[index + len(normalized_term):]
-            suffixed_as_action = any(
-                suffix.startswith(search_module.normalize(item))
-                for item in implication.get("prior_action_suffixes", [])
-            )
-            if not prefixed_as_action and not suffixed_as_action:
-                return False
-            start = index + 1
-
-    for implication in rules.get("reception_symptom_implications", []):
-        symptoms = matching_terms(
-            normalized_player, implication.get("symptom_terms", [])
-        )
-        opponent_incoming = matching_terms(
-            normalized_opponent, implication.get("incoming_terms", [])
-        )
-        player_incoming = [
-            term
-            for term in matching_terms(
-                normalized_player, implication.get("incoming_terms", [])
-            )
-            if not term_is_prior_player_action(term, implication)
-        ]
-        incoming = opponent_incoming or player_incoming
-        responses = matching_terms(
-            normalized_player, implication.get("response_terms", [])
-        )
-        implicit_terms = {
-            search_module.normalize(term)
-            for term in implication.get("implicit_response_incoming_terms", [])
-        }
-        implicit_response = any(
-            search_module.normalize(term) in implicit_terms for term in incoming
-        )
-        if symptoms and incoming and (responses or implicit_response):
-            result = dict(implication)
-            result["matched_context"] = {
-                "match_type": (
-                    "explicit_opponent_incoming"
-                    if opponent_incoming
-                    else "unmarked_incoming_condition"
-                ),
-                "incoming_term": incoming[0],
-                "symptom_term": symptoms[0],
-                "response_term": responses[0] if responses else "",
-            }
-            return result
-    return None
-
-
-def _query_target_action_context(
-    search_module,
-    query,
-    target_actor,
-    target_query,
-    target_actor_constraints,
-    rules,
-):
-    sequence_implication = _action_sequence_implication(
-        search_module, query, rules
-    )
-    if sequence_implication and target_actor == "player":
-        action_query = sequence_implication["canonical_action_query"]
-        normalized_target_query = search_module.normalize(target_query)
-        has_symptom = any(
-            search_module.normalize(term) in normalized_target_query
-            for term in sequence_implication.get("symptom_terms", [])
-        )
-        matched_context = sequence_implication.get("matched_context", {})
-        has_opponent_response = any(
-            item.get("actor") == "opponent"
-            for item in matched_context.get("event_chain", [])
-        )
-        action_constraints = _query_constraints_from_text(
-            search_module, action_query, rules
-        )
-        return {
-            "target_action_query": action_query,
-            "target_condition_query": (
-                query if has_symptom or has_opponent_response else ""
-            ),
-            "target_action_scope_query": action_query,
-            "target_action_backreferences_condition": False,
-            "target_action_constraints": action_constraints,
-            "target_condition_constraints": {},
-            "requested_action_scopes": list(
-                sequence_implication["requested_action_scopes"]
-            ),
-            "inferred_target_action": {
-                "rule": sequence_implication["name"],
-                "reason": sequence_implication["reason"],
-            },
-            "inferred_search_terms": list(
-                sequence_implication["search_terms"]
-            ),
-            "event_chain": matched_context.get("event_chain", []),
-            "condition_constraints_are_incoming": False,
-            "retain_prior_player_constraints": sequence_implication.get(
-                "retain_prior_player_constraints", True
-            ),
-        }
-
-    reception_implication = _reception_symptom_implication(
-        search_module, query, rules
-    )
-    if reception_implication and target_actor == "player":
-        action_query = reception_implication["target_action_query"]
-        return {
-            "target_action_query": action_query,
-            "target_condition_query": query,
-            "target_action_scope_query": action_query,
-            "target_action_backreferences_condition": True,
-            "target_action_constraints": _query_constraints_from_text(
-                search_module, action_query, rules
-            ),
-            "target_condition_constraints": _query_constraints_from_text(
-                search_module, query, rules
-            ),
-            "requested_action_scopes": list(
-                reception_implication["requested_action_scopes"]
-            ),
-            "inferred_target_action": {
-                "rule": reception_implication["name"],
-                "reason": reception_implication["reason"],
-            },
-            "inferred_search_terms": list(
-                reception_implication["search_terms"]
-            ),
-            "event_chain": [
-                {
-                    "actor": "opponent_or_feed",
-                    "role": "incoming_condition",
-                    "term": reception_implication.get(
-                        "matched_context", {}
-                    ).get("incoming_term", ""),
-                },
-                {
-                    "actor": "player",
-                    "role": "target_action",
-                    "term": action_query,
-                },
-            ],
-            "condition_constraints_are_incoming": True,
-        }
-
-    target_segments = [
-        segment
-        for segment in _query_actor_segments(query, rules)
-        if segment["actor"] == target_actor and segment["text"].strip()
-    ]
-    action_segments = [
-        segment["text"]
-        for segment in target_segments
-        if _segment_requests_answer(segment["text"], rules)
-    ]
-    condition_segments = [
-        segment["text"]
-        for segment in target_segments
-        if not _segment_requests_answer(segment["text"], rules)
-    ]
-    action_query = re.sub(
-        r"\s+", " ", " ".join(action_segments)
-    ).strip()
-    if not action_query:
-        action_query = target_query
-        condition_segments = []
-    condition_query = re.sub(
-        r"\s+", " ", " ".join(condition_segments)
-    ).strip()
-    action_constraints = _query_constraints_from_text(
-        search_module,
-        action_query,
-        rules,
-        value_additions_field=(
-            "opponent_query_value_additions"
-            if target_actor == "opponent"
-            else (
-                "partner_query_value_additions"
-                if target_actor == "partner"
-                else None
-            )
-        ),
-    )
-    condition_constraints = {}
-    for axis_name, values in target_actor_constraints.items():
-        remaining = set(values) - set(action_constraints.get(axis_name, []))
-        if remaining:
-            condition_constraints[axis_name] = sorted(remaining)
-
-    normalized_action = search_module.normalize(action_query)
-    action_backreferences_condition = bool(
-        condition_query
-        and any(
-            search_module.normalize(term) in normalized_action
-            for term in rules.get("target_action_backreference_terms", [])
-        )
-    )
-    action_scope_query = action_query
-    if action_backreferences_condition:
-        action_scope_query = " ".join([condition_query, action_query]).strip()
-    normalized_action_scope = search_module.normalize(action_scope_query)
-    normalized_full_query = search_module.normalize(query)
-    requested_action_scopes = []
-    for scope in rules.get("target_action_scopes", []):
-        if not any(
-            search_module.normalize(term) in normalized_action_scope
-            for term in scope["query_terms"]
-        ):
-            continue
-        context_terms = scope.get("query_context_terms", [])
-        if context_terms and not any(
-            search_module.normalize(term) in normalized_full_query
-            for term in context_terms
-        ):
-            continue
-        requested_action_scopes.append(scope["name"])
-    if "team_coverage_rotation" in requested_action_scopes:
-        requested_action_scopes = [
-            scope_name
-            for scope_name in requested_action_scopes
-            if scope_name != "positioning"
-        ]
-    return {
-        "target_action_query": action_query,
-        "target_condition_query": condition_query,
-        "target_action_scope_query": action_scope_query,
-        "target_action_backreferences_condition": action_backreferences_condition,
-        "target_action_constraints": action_constraints,
-        "target_condition_constraints": condition_constraints,
-        "requested_action_scopes": requested_action_scopes,
-        "inferred_target_action": None,
-        "inferred_search_terms": [],
-        "event_chain": [],
-        "condition_constraints_are_incoming": False,
-    }
-
-
-def query_actor_context(search_module, query, rules):
-    actor_text = query_actor_text(query, rules)
-    actor_constraints = {}
-    for actor, text in actor_text.items():
-        actor_constraints[actor] = _query_constraints_from_text(
-            search_module,
-            text,
-            rules,
-            value_additions_field=(
-                "opponent_query_value_additions"
-                if actor == "opponent"
-                else (
-                    "partner_query_value_additions"
-                    if actor == "partner"
-                    else None
-                )
-            ),
-        )
-    player_constraints = actor_constraints.get("player", {})
-    opponent_constraints = actor_constraints.get("opponent", {})
-    partner_constraints = actor_constraints.get("partner", {})
-    target_actor = query_target_actor(query, actor_text, rules)
-    target_action_context = _query_target_action_context(
-        search_module,
-        query,
-        target_actor,
-        actor_text[target_actor],
-        actor_constraints.get(target_actor, {}),
-        rules,
-    )
-    if target_action_context.get("inferred_target_action"):
-        if not target_action_context.get("retain_prior_player_constraints", True):
-            actor_constraints[target_actor] = {}
-            if target_actor == "player":
-                player_constraints = actor_constraints[target_actor]
-        target_actor_constraints = actor_constraints.setdefault(
-            target_actor, {}
-        )
-        for axis_name, values in target_action_context.get(
-            "target_action_constraints", {}
-        ).items():
-            target_actor_constraints[axis_name] = sorted(
-                set(target_actor_constraints.get(axis_name, []))
-                | set(values)
-            )
-        if target_actor == "player":
-            player_constraints = target_actor_constraints
-    if target_action_context.get("condition_constraints_are_incoming"):
-        incoming_constraints = target_action_context[
-            "target_condition_constraints"
-        ]
-        for axis_name, incoming_values in incoming_constraints.items():
-            retained = set(player_constraints.get(axis_name, [])) - set(
-                incoming_values
-            )
-            if retained:
-                player_constraints[axis_name] = sorted(retained)
-            else:
-                player_constraints.pop(axis_name, None)
-        actor_constraints["player"] = player_constraints
-    else:
-        incoming_constraints = {}
-    normalized_query = search_module.normalize(query)
-    derived_player_constraints = {}
-    derived_target_constraints = {}
-    derived_search_terms = list(
-        target_action_context.get("inferred_search_terms", [])
-    )
-    for implication in (
-        rules.get("opponent_response_implications", [])
-        if target_actor == "player"
-        and not target_action_context.get("condition_constraints_are_incoming")
-        else []
-    ):
-        opponent_values = set(
-            opponent_constraints.get(implication["opponent_axis"], [])
-        )
-        if not opponent_values & set(implication["opponent_values"]):
-            continue
-        if not any(
-            search_module.normalize(term) in normalized_query
-            for term in implication["response_terms"]
-        ):
-            continue
-        player_axis = implication["player_axis"]
-        if player_axis not in player_constraints:
-            player_constraints[player_axis] = sorted(
-                set(implication["player_values"])
-            )
-            derived_player_constraints[player_axis] = player_constraints[
-                player_axis
-            ]
-        derived_search_terms.extend(implication.get("search_terms", []))
-    if actor_text.get("partner"):
-        for implication in rules.get("partner_retrieval_implications", []):
-            if any(
-                search_module.normalize(term) in normalized_query
-                for term in implication["trigger_terms"]
-            ):
-                derived_search_terms.extend(implication["search_terms"])
-                for axis_name, values in implication.get(
-                    "derived_constraints", {}
-                ).items():
-                    derived_target_constraints.setdefault(axis_name, []).extend(
-                        values
-                    )
-    for scope_name in target_action_context["requested_action_scopes"]:
-        scope = next(
-            item
-            for item in rules.get("target_action_scopes", [])
-            if item["name"] == scope_name
-        )
-        derived_search_terms.extend(scope.get("search_terms", []))
-    actor_constraints["player"] = player_constraints
-    target_constraints = {
-        axis_name: list(values)
-        for axis_name, values in actor_constraints.get(target_actor, {}).items()
-    }
-    for axis_name, values in derived_target_constraints.items():
-        target_constraints[axis_name] = sorted(
-            set(target_constraints.get(axis_name, [])) | set(values)
-        )
-        derived_target_constraints[axis_name] = sorted(set(values))
-    return {
-        "player_query": actor_text["player"],
-        "opponent_query": actor_text["opponent"],
-        "partner_query": actor_text["partner"],
-        "player_constraints": player_constraints,
-        "opponent_constraints": opponent_constraints,
-        "partner_constraints": partner_constraints,
-        "actor_constraints": actor_constraints,
-        "target_actor": target_actor,
-        "target_query": actor_text[target_actor],
-        **target_action_context,
-        "target_constraints": target_constraints,
-        "derived_player_constraints": derived_player_constraints,
-        "derived_target_constraints": derived_target_constraints,
-        "derived_search_terms": list(dict.fromkeys(derived_search_terms)),
-        "incoming_shot_constraints": incoming_constraints,
-    }
-
-
-def query_constraints(search_module, query, rules):
-    return query_actor_context(search_module, query, rules)[
-        "target_constraints"
-    ]
-
-
-def query_ambiguities(search_module, query, rules):
-    normalized = search_module.normalize(query)
-    ambiguities = []
-    for rule in rules.get("query_ambiguities", []):
-        matched_terms = [
-            term
-            for term in rule.get("query_terms", [])
-            if search_module.normalize(term) in normalized
-        ]
-        if not matched_terms:
-            continue
-        if any(
-            search_module.normalize(term) in normalized
-            for term in rule.get("resolved_by_terms", [])
-        ):
-            continue
-        ambiguities.append(
-            {
-                "name": rule["name"],
-                "matched_terms": matched_terms,
-                "required_statement": rule["required_statement"],
-            }
-        )
-    return ambiguities
-
-
-def query_terminology_corrections(search_module, query, rules):
-    normalized = search_module.normalize(query)
-    corrections = []
-    for rule in rules.get("canonical_terminology", []):
-        matched_terms = [
-            term
-            for term in rule.get("accepted_input_errors", [])
-            if search_module.normalize(term) in normalized
-        ]
-        if not matched_terms:
-            continue
-        corrections.append(
-            {
-                "name": rule["name"],
-                "matched_terms": matched_terms,
-                "canonical_term": rule["canonical_term"],
-                "required_statement": rule["required_statement"],
-            }
-        )
-    return corrections
-
-
-def requested_technique_definitions(requested_constraints, rules):
-    definitions = rules.get("technique_definitions", {})
-    return [
-        {"technique_variant": variant, **definitions[variant]}
-        for variant in requested_constraints.get("technique_variant", [])
-        if variant in definitions
-    ]
-
-
-def explicit_constraint_terms(search_module, query, rules):
-    actor_context = query_actor_context(search_module, query, rules)
-    normalized = search_module.normalize(actor_context["target_query"])
-    requested = actor_context["target_constraints"]
-    terms = list(actor_context["derived_search_terms"])
-    for axis in rules.get("constraint_axes", []):
-        requested_values = set(requested.get(axis["name"], []))
-        if not requested_values:
-            continue
-        matched_mixed = [
-            term
-            for term in axis.get("mixed_terms", [])
-            if search_module.normalize(term) in normalized
-        ]
-        if matched_mixed and len(requested_values) > 1:
-            terms.append(max(matched_mixed, key=len))
-            continue
-        for value, value_terms in axis["values"].items():
-            if value not in requested_values:
-                continue
-            matched = [
-                term
-                for term in value_terms
-                if search_module.normalize(term) in normalized
-            ]
-            if matched:
-                terms.append(max(matched, key=len))
-    return list(dict.fromkeys(terms))
-
-
-def primary_video_constraint_text(search_module, video):
-    note = video.get("teaching_note") or {}
-    values = [
-        video.get("title", ""),
-        video.get("retrieval_title", ""),
-        note.get("topic", ""),
-    ]
-    return " ".join(str(value or "") for value in values)
-
-
-def video_constraint_scope(search_module, video, rules):
-    override = rules.get("video_constraint_overrides", {}).get(
-        video.get("video_id"), {}
-    )
-    primary_text = primary_video_constraint_text(search_module, video)
-    category_text = video.get("category", "")
-    note = video.get("teaching_note") or {}
-    reviewed_context = " ".join(
-        str(value or "")
-        for value in [note.get("review_summary", ""), note.get("problem", "")]
-    )
-    structured_text = structured_constraint_text(search_module, video)
-    scope = {}
-    for axis in rules.get("constraint_axes", []):
-        name = axis["name"]
-        if name in override:
-            scope[name] = {
-                "values": sorted(set(override[name])),
-                "source": "reviewed_override",
-                "basis": override.get("basis", ""),
-            }
-            continue
-        primary, primary_suppressed = source_axis_values(
-            search_module, primary_text, axis
-        )
-        reviewed, reviewed_suppressed = source_axis_values(
-            search_module, reviewed_context, axis
-        )
-        if axis.get("category_evidence_policy") == "ignore":
-            category, category_suppressed = set(), set()
-        else:
-            category, category_suppressed = source_axis_values(
-                search_module, category_text, axis
-            )
-        structured, structured_suppressed = source_axis_values(
-            search_module, structured_text, axis
-        )
-        suppressed_values = sorted(
-            primary_suppressed
-            | reviewed_suppressed
-            | category_suppressed
-            | structured_suppressed
-        )
-        if axis.get("combine_primary_and_reviewed") and (primary or reviewed):
-            values = primary | reviewed
-            source = (
-                "primary_and_reviewed"
-                if primary and reviewed
-                else ("primary_metadata" if primary else "reviewed_context")
-            )
-        else:
-            values = primary or reviewed or category or structured
-            source = (
-                "primary_metadata" if primary else (
-                    "reviewed_context" if reviewed else (
-                        "category" if category else (
-                            "structured_evidence" if structured else "unspecified"
-                        )
-                    )
-                )
-            )
-        scope[name] = {
-            "values": sorted(values),
-            "source": source,
-            "suppressed_values": suppressed_values,
-        }
-    for implication in rules.get("source_constraint_implications", []):
-        source_scope = scope.get(implication["source_axis"], {})
-        target_scope = scope.get(implication["target_axis"], {})
-        if target_scope.get("values"):
-            continue
-        if any(
-            search_module.normalize(term) in structured_text
-            for term in implication.get("suppress_when_terms", [])
-        ):
-            continue
-        if not set(implication["source_values"]).issubset(
-            source_scope.get("values", [])
-        ):
-            continue
-        scope[implication["target_axis"]] = {
-            "values": sorted(set(implication["target_values"])),
-            "source": "derived_constraint",
-            "suppressed_values": target_scope.get(
-                "suppressed_values", []
-            ),
-            "basis": implication.get("basis", ""),
-        }
-    return scope
-
-
-def constraint_decision(
-    search_module,
-    query,
-    plan,
-    video,
-    rules,
-    requested=None,
-    scope=None,
-):
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", query
-    )
-    requested = (
-        query_constraints(search_module, positive_query, rules)
-        if requested is None
-        else requested
-    )
-    scope = (
-        video_constraint_scope(search_module, video, rules)
-        if scope is None
-        else scope
-    )
-    requested_output = plan["retrieval_guidance"]["intent_frame"].get(
-        "requested_output"
-    )
-    failures = []
-    matches = {}
-    axes = {axis["name"]: axis for axis in rules.get("constraint_axes", [])}
-    for axis_name, requested_values in requested.items():
-        scope_details = scope[axis_name]
-        video_values = set(scope_details["values"])
-        suppressed_values = set(scope_details.get("suppressed_values", []))
-        requested_values = set(requested_values)
-        if (
-            requested_values & suppressed_values
-            and not requested_values & video_values
-        ):
-            failures.append(f"explicit_constraint_conflict:{axis_name}")
-            matches[axis_name] = "conflict"
-            continue
-        if not video_values:
-            matches[axis_name] = "unspecified_support"
-            continue
-        axis = axes[axis_name]
-        if (
-            scope_details["source"] == "structured_evidence"
-            and axis.get("structured_evidence_policy") == "support_only"
-        ):
-            if requested_values & video_values:
-                matches[axis_name] = "incidental_support"
-            elif axis.get("structured_mismatch_policy") == "conflict":
-                failures.append(f"explicit_constraint_conflict:{axis_name}")
-                matches[axis_name] = "conflict"
-            else:
-                matches[axis_name] = "unspecified_support"
-            continue
-        if not requested_values & video_values:
-            failures.append(f"explicit_constraint_conflict:{axis_name}")
-            matches[axis_name] = "conflict"
-            continue
-        if not requested_values.issubset(video_values):
-            matches[axis_name] = "partial_support"
-            continue
-        if (
-            len(requested_values) == 1
-            and len(video_values) > 1
-            and requested_output != "comparison"
-        ):
-            matches[axis_name] = "mixed_support"
-            continue
-        matches[axis_name] = "exact"
-    requested_shot_families = set(requested.get("shot_family", []))
-    requested_serve_roles = set(requested.get("serve_role", []))
-    requested_court_zones = set(requested.get("court_zone", []))
-    shot_scope = scope.get("shot_family", {})
-    video_shot_families = set(shot_scope.get("values", []))
-    serve_scope = scope.get("serve_role", {})
-    video_serve_roles = set(serve_scope.get("values", []))
-    if (
-        requested_shot_families - {"short_serve", "deep_serve"}
-        and "serve" not in requested_serve_roles
-        and video_serve_roles == {"serve"}
-        and serve_scope.get("source")
-        in {"primary_metadata", "reviewed_override"}
-    ):
-        failures.append(
-            "explicit_cross_axis_conflict:shot_family_vs_serve_role"
-        )
-    if (
-        requested_court_zones
-        and "serve" not in requested_serve_roles
-        and video_serve_roles == {"serve"}
-        and serve_scope.get("source")
-        in {"primary_metadata", "reviewed_override"}
-    ):
-        failures.append(
-            "explicit_cross_axis_conflict:court_zone_vs_serve_role"
-        )
-    non_serve_video_shots = video_shot_families - {
-        "short_serve",
-        "deep_serve",
-    }
-    if (
-        requested_serve_roles
-        and not video_serve_roles
-        and non_serve_video_shots
-        and not requested_shot_families & non_serve_video_shots
-    ):
-        failures.append(
-            "explicit_cross_axis_conflict:serve_role_vs_shot_family"
-        )
-    return not failures, failures, requested, scope, matches
-
-
-def required_constraint_support_failures(requested, matches, rules):
-    failures = []
-    for axis_name, failure_reason in rules.get(
-        "required_single_value_constraint_support_axes", {}
-    ).items():
-        if (
-            len(requested.get(axis_name, [])) == 1
-            and matches.get(axis_name) == "unspecified_support"
-        ):
-            failures.append(failure_reason)
-    for axis_name, failure_reason in rules.get(
-        "required_multi_value_constraint_support_axes", {}
-    ).items():
-        if (
-            len(requested.get(axis_name, [])) > 1
-            and matches.get(axis_name) == "unspecified_support"
-        ):
-            failures.append(failure_reason)
-    for condition in rules.get(
-        "required_constraint_support_conditions", []
-    ):
-        if not all(
-            set(required_values).issubset(requested.get(axis_name, []))
-            for axis_name, required_values in condition.get(
-                "when_requested", {}
-            ).items()
-        ):
-            continue
-        unsupported_matches = set(
-            condition.get(
-                "unsupported_matches", ["unspecified_support"]
-            )
-        )
-        if matches.get(condition["axis"]) in unsupported_matches:
-            failures.append(condition["failure_reason"])
-    return list(dict.fromkeys(failures))
-
-
-def named_technique_comparison_focus_failures(
-    search_module,
-    query,
-    requested,
-    video,
-    rules,
-):
-    if len(requested.get("technique_variant", [])) <= 1:
-        return []
-    normalized_query = search_module.normalize(query)
-    support_text = search_module.normalize(
-        " ".join(
-            [
-                primary_video_constraint_text(search_module, video),
-                substantive_instruction_text(search_module, video, rules),
-            ]
-        )
-    )
-    requested_groups = [
-        group
-        for group in rules.get(
-            "named_technique_comparison_focus_groups", []
-        )
-        if any(
-            search_module.normalize(term) in normalized_query
-            for term in group.get("query_terms", [])
-        )
-    ]
-    if not requested_groups:
-        return []
-    if all(
-        any(
-            search_module.normalize(term) in support_text
-            for term in group.get("source_terms", [])
-        )
-        for group in requested_groups
-    ):
-        return []
-    return ["named_technique_comparison_focus_not_supported"]
-
-
-def unrequested_specific_scope(requested, scope, rules):
-    allowed_sources = set(
-        rules.get("unrequested_scope_support_only_sources", [])
-    )
-    conditional_axes = {
-        condition["axis"]
-        for condition in rules.get(
-            "unrequested_scope_support_only_conditions", []
-        )
-        if set(scope.get(condition["axis"], {}).get("values", []))
-        & set(condition["values"])
-        and set(requested.get(condition["requested_axis"], []))
-        & set(condition["requested_values"])
-    }
-    return {
-        axis_name: scope[axis_name]
-        for axis_name in scope
-        if not requested.get(axis_name)
-        and scope.get(axis_name, {}).get("values")
-        and (
-            axis_name
-            in rules.get("unrequested_scope_support_only_axes", [])
-            or axis_name in conditional_axes
-        )
-        and (
-            not allowed_sources
-            or scope[axis_name].get("source") in allowed_sources
-        )
-    }
-
-
-def unrequested_ranking_scope(requested, scope, rules):
-    return {
-        axis_name: scope[axis_name]
-        for axis_name in rules.get("unrequested_scope_ranking_axes", [])
-        if not requested.get(axis_name)
-        and scope.get(axis_name, {}).get("values")
-    }
-
-
-def non_target_actor_condition_failures(
-    search_module,
-    actor_context,
-    scope,
-    video,
-    rules,
-):
-    requested = actor_context["target_constraints"]
-    rejected_sources = set(
-        rules.get("opponent_condition_player_action_rejected_sources", [])
-    )
-    support_text = search_module.normalize(
-        " ".join(
-            [
-                primary_video_constraint_text(search_module, video),
-                str(video.get("category", "")),
-                str((video.get("teaching_note") or {}).get("review_summary", "")),
-                str((video.get("teaching_note") or {}).get("problem", "")),
-            ]
-        )
-    )
-    failures = []
-    target_actor = actor_context["target_actor"]
-    if actor_context.get("partner_query") and not any(
-        search_module.normalize(term) in support_text
-        for term in rules.get("partner_condition_support_terms", [])
-    ):
-        failures.append("partner_context_not_supported")
-    for actor, actor_constraints in actor_context["actor_constraints"].items():
-        if actor == target_actor or not actor_constraints:
-            continue
-        support_terms_key = (
-            "opponent_condition_support_terms"
-            if actor == "opponent"
-            else "partner_condition_support_terms"
-        )
-        has_actor_support = any(
-            search_module.normalize(term) in support_text
-            for term in rules.get(support_terms_key, [])
-        )
-        if actor == "partner" and not has_actor_support:
-            if "partner_context_not_supported" not in failures:
-                failures.append("partner_context_not_supported")
-            continue
-        if has_actor_support:
-            continue
-        for axis_name, actor_values in actor_constraints.items():
-            if requested.get(axis_name):
-                continue
-            scope_details = scope.get(axis_name, {})
-            if scope_details.get("source") not in rejected_sources:
-                continue
-            if not set(scope_details.get("values", [])) & set(actor_values):
-                continue
-            if actor == "opponent" and target_actor == "player":
-                reason = (
-                    "opponent_condition_misread_as_player_action:"
-                    f"{axis_name}"
-                )
-            else:
-                reason = (
-                    f"{actor}_condition_misread_as_{target_actor}_action:"
-                    f"{axis_name}"
-                )
-            failures.append(reason)
-    return failures
-
-
-def partner_context_rank(search_module, actor_context, video, rules):
-    if not actor_context.get("partner_query"):
-        return 2
-    primary_text = search_module.normalize(
-        " ".join(
-            [
-                primary_video_constraint_text(search_module, video),
-                str(video.get("category", "")),
-                str((video.get("teaching_note") or {}).get("review_summary", "")),
-                str((video.get("teaching_note") or {}).get("problem", "")),
-            ]
-        )
-    )
-    if any(
-        search_module.normalize(term) in primary_text
-        for term in rules.get("query_actor_markers", {}).get("partner", [])
-    ):
-        return 0
-    if any(
-        search_module.normalize(term) in primary_text
-        for term in rules.get("partner_condition_support_terms", [])
-    ):
-        return 1
-    return 2
-
-
-def derived_player_constraint_failures(
-    derived_player_constraints,
-    scope,
-    rules,
-):
-    required_axes = set(
-        rules.get("derived_player_constraint_required_match_axes", [])
-    )
-    failures = []
-    for axis_name, requested_values in derived_player_constraints.items():
-        if axis_name not in required_axes:
-            continue
-        source_values = set(scope.get(axis_name, {}).get("values", []))
-        if not source_values & set(requested_values):
-            failures.append(
-                f"derived_player_constraint_not_supported:{axis_name}"
-            )
-    return failures
-
-
-def requested_action_scope_failures(
-    search_module,
-    actor_context,
-    video,
-    rules,
-):
-    requested_scopes = set(actor_context.get("requested_action_scopes", []))
-    if not requested_scopes:
-        return []
-    support_text = search_module.normalize(
-        " ".join(
-            [
-                primary_video_constraint_text(search_module, video),
-                str(video.get("category", "")),
-                substantive_instruction_text(search_module, video, rules),
-            ]
-        )
-    )
-    failures = []
-    for scope in rules.get("target_action_scopes", []):
-        if scope["name"] not in requested_scopes:
-            continue
-        has_support = any(
-            search_module.normalize(term) in support_text
-            for term in scope["source_terms"]
-        )
-        if not has_support:
-            failures.append(
-                f"requested_action_not_supported:{scope['name']}"
-            )
-            continue
-        suppressed = any(
-            search_module.normalize(term) in support_text
-            for term in scope.get("source_suppressions", [])
-        )
-        overridden = any(
-            search_module.normalize(term) in support_text
-            for term in scope.get("source_override_terms", [])
-        )
-        if suppressed and not overridden:
-            failures.append(
-                f"requested_action_wrong_actor:{scope['name']}"
-            )
-    return failures
-
-
-def is_direct_question_match(search_module, plan, match):
-    if match.get("query_index") == 0:
-        return True
-    normalized_match = search_module.normalize(match.get("query", ""))
-    if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
-        if len(
-            plan.get("query_expansion", {}).get(
-                "matched_synonym_groups", []
-            )
-        ) != 1:
-            return False
-        return any(
-            normalized_match == search_module.normalize(term)
-            for term in plan.get("query_expansion", {}).get(
-                "original_terms", []
-            )
-        )
-    for unit in plan["retrieval_guidance"].get("query_units", []):
-        normalized_unit = search_module.normalize(unit)
-        if normalized_unit and (
-            normalized_match == normalized_unit
-            or normalized_match.endswith(normalized_unit)
-        ):
-            return True
-    return False
-
-
-def term_matches_concept(search_module, term, concept, rules):
-    normalized_term = search_module.normalize(term)
-    normalized_concept = search_module.normalize(concept)
-    if not normalized_term or not normalized_concept:
-        return False
-    if normalized_term in normalized_concept or normalized_concept in normalized_term:
-        return True
-    for group in rules.get("_equivalent_groups", []):
-        normalized_group = {search_module.normalize(item) for item in group}
-        if normalized_term in normalized_group and normalized_concept in normalized_group:
-            return True
-    return False
-
-
-def substantive_instruction_text(search_module, video, rules):
-    note = video.get("teaching_note") or {}
-    evidence = {
-        key: value
-        for key, value in note.items()
-        if key
-        not in {
-            "note",
-            "video_id",
-            "title",
-            "url",
-            "topic",
-        }
-    }
-    reviewed_override = rules.get("video_constraint_overrides", {}).get(
-        video.get("video_id"), {}
-    )
-    return search_module.normalize(
-        " ".join(
-            [
-                search_module.flatten(evidence),
-                str(reviewed_override.get("basis", "")),
-            ]
-        )
-    )
-
-
-def has_instructional_evidence(video):
-    note = video.get("teaching_note") or {}
-    return bool(note.get("action_cues") or note.get("review_summary"))
-
-
-def match_has_substantive_concept_evidence(
-    search_module, match, video, concept, rules
-):
-    if not has_instructional_evidence(video):
-        return False
-    evidence = substantive_instruction_text(search_module, video, rules)
-    required_terms = {
-        concept,
-        *match.get("matched_original_terms", []),
-        *match.get("matched_equivalent_terms", []),
-    }
-    if any(
-        search_module.normalize(term) in evidence
-        for term in required_terms
-        if search_module.normalize(term)
-    ):
-        return True
-    axes = {
-        axis["name"]: axis for axis in rules.get("constraint_axes", [])
-    }
-    for axis_name in rules.get("substantive_concept_equivalence_axes", []):
-        axis = axes.get(axis_name)
-        if not axis:
-            continue
-        requested_values = query_axis_values(
-            search_module, match.get("query", ""), axis
-        )
-        evidence_values = axis_values(search_module, evidence, axis)
-        if (
-            len(requested_values) == 1
-            and requested_values == evidence_values
-        ):
-            return True
-    return False
-
-
-def required_relationship_group(search_module, query, rules):
-    normalized_query = search_module.normalize(query)
-    for group in rules.get("relationship_equivalent_groups", []):
-        if any(
-            search_module.normalize(term) in normalized_query
-            for term in group
-        ):
-            return group
-    return []
-
-
-def video_supports_relationship(search_module, video, group):
-    if not group:
-        return True
-    structured = structured_video_text(search_module, video)
-    return any(
-        search_module.normalize(term) in structured
-        for term in group
-    )
-
-
-def required_focus_groups(search_module, query, rules):
-    normalized_query = search_module.normalize(query)
-    return [
-        group
-        for group in rules.get("required_focus_equivalent_groups", [])
-        if any(
-            search_module.normalize(term) in normalized_query
-            for term in group
-        )
-    ]
-
-
-def text_supports_focus_group(search_module, text, group, rules):
-    normalized = search_module.normalize(text)
-    for focus_term, phrases in rules.get(
-        "focus_term_source_suppressions", {}
-    ).items():
-        if not any(
-            search_module.normalize(term) == search_module.normalize(focus_term)
-            for term in group
-        ):
-            continue
-        for phrase in phrases:
-            normalized = normalized.replace(search_module.normalize(phrase), "")
-    return any(
-        search_module.normalize(term) in normalized
-        for term in group
-    )
-
-
-def video_supports_required_focus(search_module, video, groups, rules):
-    structured = structured_video_text(search_module, video)
-    return all(
-        text_supports_focus_group(search_module, structured, group, rules)
-        for group in groups
-    )
-
-
-def primary_reviewed_focus_text(search_module, video):
-    note = video.get("teaching_note") or {}
-    return search_module.normalize(
-        " ".join(
-            str(value or "")
-            for value in [
-                primary_video_constraint_text(search_module, video),
-                note.get("review_summary", ""),
-                note.get("problem", ""),
-            ]
-        )
-    )
-
-
-def entry_focus_requirements(search_module, plan, entry, rules):
-    if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
-        positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-            "positive_query", plan.get("query", "")
-        )
-        groups = required_focus_groups(search_module, positive_query, rules)
-        return [[group] for group in groups]
-    return [
-        groups
-        for match in entry.get("matches", [])
-        if (
-            groups := required_focus_groups(
-                search_module, match.get("query", ""), rules
-            )
-        )
-    ]
-
-
-def entry_focus_match(search_module, plan, entry, video, rules):
-    primary_reviewed = primary_reviewed_focus_text(search_module, video)
-    structured = structured_video_text(search_module, video)
-    best_rank = 3
-    requirements = entry_focus_requirements(
-        search_module, plan, entry, rules
-    )
-    for groups in requirements:
-        if all(
-            text_supports_focus_group(
-                search_module, primary_reviewed, group, rules
-            )
-            for group in groups
-        ):
-            best_rank = min(best_rank, 0)
-        elif all(
-            text_supports_focus_group(search_module, structured, group, rules)
-            for group in groups
-        ):
-            best_rank = min(best_rank, 1)
-    if not requirements:
-        return "not_required"
-    return {0: "primary", 1: "structured", 3: "none"}[best_rank]
-
-
-def symptom_decision(search_module, plan, video, rules):
-    symptoms = plan["retrieval_guidance"]["intent_frame"].get(
-        "literal_symptoms", []
-    )
-    if not symptoms:
-        return "not_required"
-    primary_reviewed = primary_reviewed_focus_text(search_module, video)
-    structured = structured_video_text(search_module, video)
-    if any(
-        search_module.normalize(symptom) in primary_reviewed
-        for symptom in symptoms
-    ):
-        return "direct_primary"
-    if any(search_module.normalize(symptom) in structured for symptom in symptoms):
-        return "direct_structured"
-    support_terms = {
-        term
-        for symptom in symptoms
-        for term in rules.get("literal_symptom_support_terms", {}).get(
-            symptom, []
-        )
-    }
-    if any(
-        search_module.normalize(term) in primary_reviewed
-        for term in support_terms
-    ):
-        return "mechanism_primary"
-    if any(
-        search_module.normalize(term) in structured
-        for term in support_terms
-    ):
-        return "mechanism_structured"
-    return "none"
-
-
-def match_has_full_concept_coverage(search_module, match, video, rules):
-    concept_count = match.get("query_concept_count", 0)
-    structured_count = len(match.get("matched_structured_query_concepts", []))
-    if concept_count:
-        if structured_count < concept_count:
-            return False
-        direct_terms = set(match.get("matched_original_terms", [])) | set(
-            match.get("matched_equivalent_terms", [])
-        )
-        concepts_covered = all(
-            any(
-                term_matches_concept(search_module, term, concept, rules)
-                for term in direct_terms
-            )
-            or match_has_substantive_concept_evidence(
-                search_module, match, video, concept, rules
-            )
-            for concept in match.get("matched_query_concepts", [])
-        )
-        if not concepts_covered:
-            return False
-    elif not bool(
-        match.get("matched_original_terms")
-        or match.get("matched_equivalent_terms")
-    ):
-        return False
-    relationship_group = required_relationship_group(
-        search_module, match.get("query", ""), rules
-    )
-    if not video_supports_relationship(search_module, video, relationship_group):
-        return False
-    focus_groups = required_focus_groups(
-        search_module, match.get("query", ""), rules
-    )
-    return video_supports_required_focus(
-        search_module, video, focus_groups, rules
-    )
-
-
-def match_passes_direct_threshold(search_module, match, video, rules):
-    concept_count = match.get("query_concept_count", 0)
-    if not match_has_full_concept_coverage(
-        search_module, match, video, rules
-    ):
-        return False
-    if match.get("query_index") == 0 or concept_count >= 2:
-        return match.get("rank", 10**6) <= rules["top_rank_acceptance"]
-    if concept_count == 1:
-        return (
-            match.get("rank", 10**6)
-            <= rules["single_concept_top_rank_acceptance"]
-        )
-    return match.get("rank", 10**6) <= 3
-
-
-def match_passes_expansion_threshold(match, rules):
-    if match.get("relevance_tier") not in rules["allowed_relevance_tiers"]:
-        return False
-    concept_count = match.get("query_concept_count", 0)
-    structured_count = len(match.get("matched_structured_query_concepts", []))
-    if concept_count >= 2:
-        return bool(
-            structured_count >= concept_count
-            and match.get("rank", 10**6) <= rules["top_rank_acceptance"]
-        )
-    if concept_count == 1:
-        return bool(
-            structured_count
-            and match.get("rank", 10**6)
-            <= rules["single_concept_top_rank_acceptance"]
-        )
-    return bool(
-        (
-            match.get("matched_original_terms")
-            or match.get("matched_equivalent_terms")
-        )
-        and match.get("rank", 10**6) <= 3
-    )
-
-
-def match_passes_component_threshold(match, rules):
-    return bool(
-        match.get("relevance_tier") in rules["allowed_relevance_tiers"]
-        and match.get("matched_structured_query_concepts")
-        and (
-            match.get("matched_original_terms")
-            or match.get("matched_equivalent_terms")
-        )
-        and match.get("rank", 10**6)
-        <= rules.get("direct_review_rank_acceptance", 24)
-    )
-
-
-def concept_decision(search_module, plan, entry, video, rules):
-    direct_matches = [
-        match
-        for match in entry["matches"]
-        if is_direct_question_match(search_module, plan, match)
-    ]
-    exact_matches = [
-        match
-        for match in direct_matches
-        if match_passes_direct_threshold(search_module, match, video, rules)
-    ]
-    if (
-        plan["retrieval_guidance"].get("strategy") != "split_multi_issue"
-        and exact_matches
-    ) or any(match.get("query_index") == 0 for match in exact_matches):
-        return "exact_question"
-    if exact_matches:
-        return "exact_query_unit"
-
-    component_matches = [
-        match
-        for match in direct_matches
-        if match.get("query_concept_count", 0) >= 1
-        and match.get("matched_structured_query_concepts")
-        and match.get("rank", 10**6)
-        <= rules.get("direct_review_rank_acceptance", 24)
-    ]
-    if component_matches:
-        return "component_support"
-
-    original_terms = plan.get("query_expansion", {}).get("original_terms", [])
-    focused_component_matches = [
-        match
-        for match in entry["matches"]
-        if match not in direct_matches
-        and match_passes_component_threshold(match, rules)
-        and any(
-            term_matches_concept(search_module, term, original_term, rules)
-            for term in (
-                match.get("matched_original_terms", [])
-                + match.get("matched_equivalent_terms", [])
-            )
-            for original_term in original_terms
-        )
-    ]
-    if focused_component_matches:
-        return "component_support"
-
-    expansion_matches = [
-        match
-        for match in entry["matches"]
-        if match not in direct_matches
-        and match_passes_expansion_threshold(match, rules)
-    ]
-    if expansion_matches:
-        return "expanded_support"
-    if entry.get("reviewed_evidence_rank", 2) <= 1:
-        return "reviewed_support"
-    return "none"
-
-
-def selection_decision(
-    search_module,
-    query,
+_answer_continuation = load_sibling(
+    "liuhui_answer_continuation", "answer_continuation.py"
+)
+_answer_continuation.CLARIFICATION_STATE_SCHEMA_VERSION = CLARIFICATION_STATE_SCHEMA_VERSION
+_answer_continuation.ANSWER_TURN_CONTRACT_SCHEMA_VERSION = ANSWER_TURN_CONTRACT_SCHEMA_VERSION
+canonical_json_digest = _answer_continuation.canonical_json_digest
+clarification_state_digest = _answer_continuation.clarification_state_digest
+validate_clarification_state = _answer_continuation.validate_clarification_state
+normalize_clarification_answers = _answer_continuation.normalize_clarification_answers
+answer_resolves_request = _answer_continuation.answer_resolves_request
+resolve_continuation = _answer_continuation.resolve_continuation
+build_clarification_state = _answer_continuation.build_clarification_state
+build_answer_turn_contract = _answer_continuation.build_answer_turn_contract
+
+
+_answer_retrieval_plan = load_sibling(
+    "liuhui_answer_retrieval_plan", "answer_retrieval_plan.py"
+)
+_answer_retrieval_plan.load_reviewed_evidence_signals = load_reviewed_evidence_signals
+reviewed_evidence_priorities = _answer_retrieval_plan.reviewed_evidence_priorities
+planned_queries = _answer_retrieval_plan.planned_queries
+budget_retrieval_queries = _answer_retrieval_plan.budget_retrieval_queries
+continuation_query_plan = _answer_retrieval_plan.continuation_query_plan
+topic_navigation = _answer_retrieval_plan.topic_navigation
+merge_candidates = _answer_retrieval_plan.merge_candidates
+
+
+_answer_constraints = load_sibling(
+    "liuhui_answer_constraints", "answer_constraints.py"
+)
+structured_video_text = _answer_constraints.structured_video_text
+structured_constraint_text = _answer_constraints.structured_constraint_text
+axis_values = _answer_constraints.axis_values
+query_axis_values = _answer_constraints.query_axis_values
+source_axis_values = _answer_constraints.source_axis_values
+_query_actor_marker_suppressed = _answer_constraints._query_actor_marker_suppressed
+_query_actor_parser_parts = _answer_constraints._query_actor_parser_parts
+_query_actor_segments = _answer_constraints._query_actor_segments
+query_actor_text = _answer_constraints.query_actor_text
+_segment_requests_answer = _answer_constraints._segment_requests_answer
+query_target_actor = _answer_constraints.query_target_actor
+_query_constraints_from_text = _answer_constraints._query_constraints_from_text
+_action_sequence_implication = _answer_constraints._action_sequence_implication
+_reception_symptom_implication = _answer_constraints._reception_symptom_implication
+_query_target_action_context = _answer_constraints._query_target_action_context
+query_actor_context = _answer_constraints.query_actor_context
+query_constraints = _answer_constraints.query_constraints
+query_ambiguities = _answer_constraints.query_ambiguities
+query_terminology_corrections = _answer_constraints.query_terminology_corrections
+requested_technique_definitions = _answer_constraints.requested_technique_definitions
+explicit_constraint_terms = _answer_constraints.explicit_constraint_terms
+primary_video_constraint_text = _answer_constraints.primary_video_constraint_text
+video_constraint_scope = _answer_constraints.video_constraint_scope
+constraint_decision = _answer_constraints.constraint_decision
+required_constraint_support_failures = _answer_constraints.required_constraint_support_failures
+named_technique_comparison_focus_failures = _answer_constraints.named_technique_comparison_focus_failures
+unrequested_specific_scope = _answer_constraints.unrequested_specific_scope
+unrequested_ranking_scope = _answer_constraints.unrequested_ranking_scope
+non_target_actor_condition_failures = _answer_constraints.non_target_actor_condition_failures
+partner_context_rank = _answer_constraints.partner_context_rank
+derived_player_constraint_failures = _answer_constraints.derived_player_constraint_failures
+requested_action_scope_failures = _answer_constraints.requested_action_scope_failures
+is_direct_question_match = _answer_constraints.is_direct_question_match
+term_matches_concept = _answer_constraints.term_matches_concept
+substantive_instruction_text = _answer_constraints.substantive_instruction_text
+has_instructional_evidence = _answer_constraints.has_instructional_evidence
+match_has_substantive_concept_evidence = _answer_constraints.match_has_substantive_concept_evidence
+required_relationship_group = _answer_constraints.required_relationship_group
+video_supports_relationship = _answer_constraints.video_supports_relationship
+required_focus_groups = _answer_constraints.required_focus_groups
+text_supports_focus_group = _answer_constraints.text_supports_focus_group
+video_supports_required_focus = _answer_constraints.video_supports_required_focus
+primary_reviewed_focus_text = _answer_constraints.primary_reviewed_focus_text
+entry_focus_requirements = _answer_constraints.entry_focus_requirements
+entry_focus_match = _answer_constraints.entry_focus_match
+symptom_decision = _answer_constraints.symptom_decision
+match_has_full_concept_coverage = _answer_constraints.match_has_full_concept_coverage
+match_passes_direct_threshold = _answer_constraints.match_passes_direct_threshold
+match_passes_expansion_threshold = _answer_constraints.match_passes_expansion_threshold
+match_passes_component_threshold = _answer_constraints.match_passes_component_threshold
+concept_decision = _answer_constraints.concept_decision
+selection_decision = _answer_constraints.selection_decision
+selected_sort_key = _answer_constraints.selected_sort_key
+entry_is_core = _answer_constraints.entry_is_core
+entry_claim_scope_policy = _answer_constraints.entry_claim_scope_policy
+question_concept_anchors = _answer_constraints.question_concept_anchors
+entry_question_concept_coverage = (
+    _answer_constraints.entry_question_concept_coverage
+)
+diversify_support_entries = _answer_constraints.diversify_support_entries
+_answer_retrieval_plan.explicit_constraint_terms = explicit_constraint_terms
+_answer_retrieval_plan.query_actor_context = query_actor_context
+_answer_retrieval_plan.required_focus_groups = required_focus_groups
+
+
+def apply_supplemental_evidence_policy(
+    accepted,
     plan,
     boundary,
-    entry,
-    video,
     rules,
-    constraint_result=None,
 ):
-    candidate = entry["candidate"]
-    reasons = []
-    if video.get("processing_status") != "ready":
-        return False, ["video_not_ready"]
-    if candidate["relevance_tier"] not in rules["allowed_relevance_tiers"]:
-        return False, ["recall_safeguard_only"]
-    if boundary["type"] == "pain_or_injury":
-        return False, ["medical_boundary_has_no_direct_safety_evidence"]
-    if boundary["type"] == "endorsement_or_authorship":
-        return False, ["identity_boundary_does_not_need_teaching_video"]
-    if (
-        boundary["type"] == "insufficient_observation"
-        and "唯一原因" in boundary.get("matched_terms", [])
-    ):
-        return False, ["unique_cause_cannot_be_established_without_observation"]
-    if (
-        boundary["type"] == "purchase_advice"
-        and video.get("category") not in rules["purchase_allowed_categories"]
-    ):
-        return False, ["purchase_query_requires_equipment_evidence"]
+    """Use supplemental evidence only for bounded coverage or corroboration."""
 
-    title_normalized = search_module.normalize(video.get("title", ""))
-    structured = structured_video_text(search_module, video)
-    if video.get("video_id") not in rules.get(
-        "incomplete_fragment_exempt_video_ids", []
-    ):
-        for term in rules["incomplete_fragment_terms"]:
-            normalized_term = search_module.normalize(term)
-            if normalized_term in title_normalized or normalized_term in structured:
-                return False, ["incomplete_series_fragment"]
-
-    if constraint_result is None:
-        constraint_result = constraint_decision(
-            search_module, query, plan, video, rules
+    primary_entries = [
+        entry
+        for entry in accepted
+        if entry["candidate"].get("answer_eligibility", "primary")
+        == "primary"
+    ]
+    covered_concepts = {
+        concept
+        for entry in primary_entries
+        for concept in entry["candidate"].get(
+            "matched_query_concepts", []
         )
-    (
-        constraints_match,
-        constraint_failures,
-        requested_constraints,
-        _,
-        constraint_matches,
-    ) = constraint_result
-    if not constraints_match:
-        return False, constraint_failures
-    support_failures = required_constraint_support_failures(
-        requested_constraints, constraint_matches, rules
-    )
-    if support_failures:
-        return False, support_failures
-    comparison_focus_failures = named_technique_comparison_focus_failures(
-        search_module,
-        query,
-        requested_constraints,
-        video,
-        rules,
-    )
-    if comparison_focus_failures:
-        return False, comparison_focus_failures
-    if (
-        requested_constraints.get("serve_role")
-        and requested_constraints.get("technique_variant")
-        and constraint_matches.get("serve_role") != "exact"
-        and constraint_matches.get("technique_variant") != "exact"
-    ):
-        return False, ["specific_technique_role_not_supported"]
-    serve_scope = constraint_result[3].get("serve_role", {})
-    if (
-        requested_constraints.get("serve_role")
-        and constraint_matches.get("serve_role") == "unspecified_support"
-        and serve_scope.get("suppressed_values")
-    ):
-        return False, ["specific_serve_role_source_suppressed"]
-
-    concept_match = concept_decision(search_module, plan, entry, video, rules)
-    if concept_match == "none":
-        return False, ["no_direct_or_supporting_question_evidence"]
-
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", query
-    )
-    query_normalized = search_module.normalize(positive_query)
-    symptom_match = symptom_decision(search_module, plan, video, rules)
-    reviewed_symptom_support = bool(
-        symptom_match == "none"
-        and entry.get("reviewed_evidence_rank", 2) <= 1
-        and concept_match != "none"
-    )
-    if symptom_match == "none" and not reviewed_symptom_support:
-        return False, ["literal_symptom_or_mechanism_not_supported"]
-    focus_match = entry_focus_match(
-        search_module, plan, entry, video, rules
-    )
-    if (
-        plan["retrieval_guidance"].get("strategy") != "split_multi_issue"
-        and required_focus_groups(search_module, positive_query, rules)
-        and focus_match == "none"
-    ):
-        return False, ["required_focus_not_supported"]
-
+    }
+    covered_roles = {
+        role
+        for entry in primary_entries
+        for role in entry["candidate"].get("evidence_roles", [])
+    }
     requested_output = plan["retrieval_guidance"]["intent_frame"].get(
-        "requested_output"
+        "requested_output", "coaching_answer"
     )
-    if (
-        requested_output == "comparison"
-        and "被动" in positive_query
-        and search_module.normalize("被动") not in structured
-    ):
-        return False, ["comparison_missing_passive_scenario"]
-    if (
-        "姿势" in positive_query
-        and "被动" not in positive_query
-        and search_module.normalize("被动") in title_normalized
-    ):
-        return False, ["basic_form_query_conflicts_with_passive_variant"]
-    if (
-        "接发握拍" in query_normalized
-        and search_module.normalize("握拍") in structured
-        and search_module.normalize("接发") not in structured
-    ):
-        adaptation_terms = [
-            "调整",
-            "变化",
-            "变拍",
-            "微调",
-            "转换",
-            "随机应变",
-            "千变万化",
-            "拍面",
-        ]
-        if not any(
-            search_module.normalize(term) in structured
-            for term in adaptation_terms
-        ):
-            return False, ["receive_grip_query_requires_adaptation_evidence"]
-
-    strategy = plan["retrieval_guidance"]["strategy"]
-    symptoms = plan["retrieval_guidance"]["intent_frame"].get(
-        "literal_symptoms", []
+    required_roles = set(
+        rules.get("supplemental_role_requirements", {}).get(
+            requested_output, []
+        )
     )
-    if boundary["type"] == "insufficient_observation" and symptoms:
-        matched_symptoms = [
-            symptom
-            for symptom in symptoms
-            if search_module.normalize(symptom) in structured
-        ]
-        if not matched_symptoms:
-            return False, ["literal_symptom_not_supported_by_structured_evidence"]
-        reasons.append("direct_literal_symptom_evidence")
-
-    if candidate.get("matched_original_terms"):
-        reasons.append("matched_original_query_terms")
-    if candidate.get("matched_equivalent_terms"):
-        reasons.append("matched_equivalent_terms")
-    if candidate.get("matched_topics"):
-        reasons.append("matched_topic")
-    reasons.append("matched_required_constraints")
-    if symptom_match.startswith("direct_"):
-        reasons.append("matched_literal_symptom")
-    elif symptom_match.startswith("mechanism_"):
-        reasons.append("matched_literal_symptom_mechanism")
-    elif reviewed_symptom_support:
-        reasons.append("matched_reviewed_symptom_mechanism")
-    if any(
-        match in {
-            "unspecified_support",
-            "mixed_support",
-            "partial_support",
-            "incidental_support",
+    if boundary.get("type") == "purchase_advice":
+        required_roles.add("equipment")
+    allowed_tiers = set(
+        rules.get(
+            "supplemental_allowed_relevance_tiers",
+            ["direct", "strong_related"],
+        )
+    )
+    limit = int(rules.get("supplemental_selection_limit", 2))
+    kept = []
+    rejected = []
+    supplemental_count = 0
+    corroboration_count = 0
+    for entry in accepted:
+        candidate = entry["candidate"]
+        if candidate.get("answer_eligibility", "primary") != "supplemental":
+            kept.append(entry)
+            continue
+        if supplemental_count >= limit:
+            rejected.append(
+                {
+                    **entry,
+                    "selection_reasons": [
+                        "supplemental_evidence_limit_exceeded"
+                    ],
+                }
+            )
+            continue
+        tier = candidate.get("relevance_tier")
+        candidate_concepts = set(
+            candidate.get("matched_query_concepts", [])
+        )
+        adds_concepts = candidate_concepts - covered_concepts
+        roles = set(candidate.get("evidence_roles", []))
+        bounded_note_term_count = len(
+            candidate.get("matched_fields", {}).get("teaching_note", [])
+        )
+        has_direct_match = (
+            bounded_note_term_count >= 2
+            if candidate.get("runtime_evidence_mode")
+            == "bounded_note_windows"
+            else bool(
+                candidate.get("matched_original_terms")
+                or candidate.get("matched_equivalent_terms")
+                or entry_is_core(entry)
+            )
+        )
+        bounded_note_direct_match = bool(
+            candidate.get("runtime_evidence_mode")
+            == "bounded_note_windows"
+            and bounded_note_term_count >= 3
+            and (
+                candidate.get("matched_original_terms")
+                or candidate.get("matched_equivalent_terms")
+            )
+        )
+        runtime_evidence_channels = {
+            "teaching_note_lexicon",
+            "teaching_note_ngram",
+            "full_transcript_lexicon",
+            "full_transcript_ngram",
+            "chunk_transcript_lexicon",
+            "chunk_transcript_ngram",
         }
-        for match in constraint_matches.values()
-    ):
-        reasons.append("generic_constraint_support_only")
-    if concept_match == "exact_question":
-        reasons.append("matched_full_question_concepts")
-    elif concept_match == "exact_query_unit":
-        reasons.append("matched_full_query_unit_concepts")
-    elif concept_match == "component_support":
-        reasons.append("matched_question_component_only")
-    elif concept_match == "reviewed_support":
-        reasons.append("matched_compatible_reviewed_evidence_signal")
-    else:
-        reasons.append("matched_expansion_support_only")
-    if entry["best_query_index"] == 0:
-        reasons.append("ranked_for_original_question")
-    else:
-        reasons.append("ranked_for_focused_query_unit")
-    return True, reasons or ["direct_ranked_evidence"]
+        limited_metadata_transcript_match = bool(
+            candidate.get("metadata_title_trust") == "limited"
+            and set(candidate.get("retrieval_channels", []))
+            & runtime_evidence_channels
+            and entry.get("concept_match") == "exact_question"
+        )
+        reason = None
+        if tier in allowed_tiers and has_direct_match:
+            if not primary_entries:
+                reason = "supplemental_only_direct_evidence_available"
+            elif adds_concepts and (
+                candidate.get("runtime_evidence_mode")
+                != "bounded_note_windows"
+                or bounded_note_term_count >= 3
+            ):
+                reason = "supplemental_fills_uncovered_query_concept"
+            elif roles & (required_roles - covered_roles):
+                reason = "supplemental_fills_requested_evidence_role"
+            elif (
+                (
+                    tier == "direct"
+                    or bounded_note_direct_match
+                    or limited_metadata_transcript_match
+                )
+                and entry_is_core(entry)
+                and corroboration_count < 1
+            ):
+                reason = "supplemental_direct_corroboration"
+                corroboration_count += 1
+        if reason is None:
+            rejected.append(
+                {
+                    **entry,
+                    "selection_reasons": [
+                        "supplemental_evidence_not_needed"
+                    ],
+                }
+            )
+            continue
+        entry["selection_reasons"].append(reason)
+        kept.append(entry)
+        supplemental_count += 1
+        covered_concepts.update(candidate_concepts)
+        covered_roles.update(roles)
+    return kept, rejected
 
 
-def selected_sort_key(entry, rules=None):
-    rules = rules or {}
-    candidate = entry["candidate"]
-    original_match = next(
-        (item for item in entry["matches"] if item.get("query_index") == 0),
+
+
+
+
+
+
+
+
+
+
+
+
+_diagnostic_contract = load_sibling(
+    "liuhui_diagnostic_contract", "diagnostic_contract.py"
+)
+extract_user_hypotheses = _diagnostic_contract.extract_user_hypotheses
+diagnostic_mechanism_for_text = _diagnostic_contract.diagnostic_mechanism_for_text
+diagnostic_observed_symptoms = _diagnostic_contract.diagnostic_observed_symptoms
+selected_video_evidence_text = _diagnostic_contract.selected_video_evidence_text
+claim_scope_directness = _diagnostic_contract.claim_scope_directness
+has_requested_action_scope_support = _diagnostic_contract.has_requested_action_scope_support
+claim_evidence_entry = _diagnostic_contract.claim_evidence_entry
+confidence_ceiling = _diagnostic_contract.confidence_ceiling
+query_unit_evidence = _diagnostic_contract.query_unit_evidence
+mechanism_evidence = _diagnostic_contract.mechanism_evidence
+material_diagnostic_branches = _diagnostic_contract.material_diagnostic_branches
+build_diagnostic_contract = _diagnostic_contract.build_diagnostic_contract
+
+
+def answer_visible_video_labels(claim_evidence_map):
+    labels = []
+    seen = set()
+    for claim in claim_evidence_map:
+        for evidence in claim.get("evidence", []):
+            label = evidence.get("label")
+            if label and label not in seen:
+                labels.append(label)
+                seen.add(label)
+    return labels
+
+
+def _remap_contract_video_labels(value, label_map):
+    """Remap only structured video-label fields in a diagnostic contract."""
+
+    if isinstance(value, dict):
+        eligible = value.get("eligible_video_labels")
+        if isinstance(eligible, list):
+            value["eligible_video_labels"] = [
+                label_map.get(label, label) for label in eligible
+            ]
+        if value.get("evidence_id") and value.get("label") in label_map:
+            value["label"] = label_map[value["label"]]
+        if value.get("video_label") in label_map:
+            value["video_label"] = label_map[value["video_label"]]
+        for child in value.values():
+            _remap_contract_video_labels(child, label_map)
+    elif isinstance(value, list):
+        for child in value:
+            _remap_contract_video_labels(child, label_map)
+
+
+def relabel_answer_videos(
+    selected_videos,
+    diagnostic_contract,
+    visible_labels=None,
+):
+    """Put answer-visible videos first and assign a contiguous usefulness order."""
+
+    selected_by_label = {
+        video["label"]: video for video in selected_videos
+    }
+    if len(selected_by_label) != len(selected_videos):
+        raise ValueError("selected video labels must be unique")
+    if visible_labels is None:
+        visible_labels = answer_visible_video_labels(
+            diagnostic_contract["claim_evidence_map"]
+        )
+    unknown_labels = [
+        label for label in visible_labels if label not in selected_by_label
+    ]
+    if unknown_labels:
+        raise ValueError(
+            "claim evidence references unknown selected video labels: "
+            + ", ".join(unknown_labels)
+        )
+    visible_set = set(visible_labels)
+    ordered_old_labels = [
+        *visible_labels,
+        *[
+            video["label"]
+            for video in selected_videos
+            if video["label"] not in visible_set
+        ],
+    ]
+    label_map = {
+        old_label: f"V{index}"
+        for index, old_label in enumerate(ordered_old_labels, start=1)
+    }
+    for video in selected_videos:
+        video["label"] = label_map[video["label"]]
+    _remap_contract_video_labels(diagnostic_contract, label_map)
+    return (
+        selected_videos,
+        [f"V{index}" for index in range(1, len(visible_labels) + 1)],
+        label_map,
+    )
+
+
+def automatic_expansion_variant_failure(
+    search_module,
+    video,
+    entry,
+    requested_constraints,
+    constraint_match,
+    rules,
+):
+    """Fail closed when a named variant is absent from retrieved B chunks."""
+
+    if video.get("retrieval_cohort") != "automatic_expansion":
+        return None
+    requested_variants = requested_constraints.get(
+        "technique_variant", []
+    )
+    if not requested_variants:
+        return None
+    if constraint_match.get("technique_variant") not in {
+        "exact",
+        "mixed_support",
+    }:
+        return "automatic_expansion_named_variant_not_exact"
+    variant_axis = next(
+        (
+            axis
+            for axis in rules.get("constraint_axes", [])
+            if axis.get("name") == "technique_variant"
+        ),
         None,
     )
-    original_core = bool(
-        original_match
-        and original_match["relevance_tier"] == "direct"
-        and original_match["rank"] <= 12
-    )
-    original_concepts = len(
-        original_match["matched_structured_query_concepts"]
-        if original_match
-        else []
-    )
-    original_terms = len(
-        set(
-            (original_match or {}).get("matched_original_terms", [])
-            + (original_match or {}).get("matched_equivalent_terms", [])
-        )
-    )
-    constraint_support = any(
-        match in {
-            "unspecified_support",
-            "mixed_support",
-            "partial_support",
-            "incidental_support",
-        }
-        for match in entry.get("constraint_match", {}).values()
-    ) or bool(entry.get("unrequested_constraint_scope"))
-    exact_constraint_count = sum(
-        match == "exact" for match in entry.get("constraint_match", {}).values()
-    )
-    mixed_constraint_count = sum(
-        match == "mixed_support"
-        for match in entry.get("constraint_match", {}).values()
-    )
-    concept_match = entry.get("concept_match", "none")
-    concept_support_rank = {
-        "exact_question": 0,
-        "exact_query_unit": 1,
-        "component_support": 2,
-        "reviewed_support": 3,
-        "expanded_support": 4,
-        "none": 5,
-    }[concept_match]
-    focus_match_rank = {
-        "primary": 0,
-        "structured": 1,
-        "not_required": 2,
-        "none": 3,
-    }.get(entry.get("focus_match", "not_required"), 3)
-    symptom_match_rank = {
-        "direct_primary": 0,
-        "direct_structured": 1,
-        "mechanism_primary": 2,
-        "mechanism_structured": 3,
-        "reviewed_mechanism": 1,
-        "not_required": 5,
-        "none": 6,
-    }.get(entry.get("symptom_match", "not_required"), 6)
-    reviewed_evidence_rank = entry.get("reviewed_evidence_rank", 2)
-    direct_terms = {
-        search_term
-        for search_term in (
-            candidate.get("matched_original_terms", [])
-            + candidate.get("matched_equivalent_terms", [])
-        )
-    }
-    matched_fields = candidate.get("matched_fields", {})
-
-    value_priority_rules = rules.get(
-        "unrequested_ranking_value_priority", {}
-    )
-    default_value_priority = value_priority_rules.get("default", 1)
-    unrequested_value_priorities = [
-        value_priority_rules.get(axis_name, {}).get(
-            value, default_value_priority
-        )
-        for axis_name, scope_details in entry.get(
-            "unrequested_ranking_scope", {}
-        ).items()
-        for value in scope_details.get("values", [])
-    ]
-    unrequested_value_priority = min(
-        unrequested_value_priorities,
-        default=default_value_priority,
-    )
-
-    def field_has_direct_term(field):
-        return any(
-            (
-                str(term).replace(" ", "").lower()
-                in str(direct_term).replace(" ", "").lower()
-                or str(direct_term).replace(" ", "").lower()
-                in str(term).replace(" ", "").lower()
-            )
-            for term in matched_fields.get(field, [])
-            for direct_term in direct_terms
-        )
-
-    direct_field_rank = (
-        0
-        if field_has_direct_term("title")
-        else (
-            1
-            if field_has_direct_term("teaching_note")
-            else (2 if field_has_direct_term("transcript") else 3)
-        )
-    )
-    return (
-        (
-            1
-            if constraint_support
-            or concept_match not in {"exact_question", "exact_query_unit"}
-            else 0
-        ),
-        entry.get("actor_context_rank", 2),
-        symptom_match_rank,
-        reviewed_evidence_rank,
-        unrequested_value_priority,
-        -exact_constraint_count,
-        mixed_constraint_count,
-        focus_match_rank,
-        concept_support_rank,
-        direct_field_rank,
-        len(entry.get("unrequested_ranking_scope", {})),
-        0 if candidate["relevance_tier"] == "direct" else 1,
-        entry["best_rank"],
-        0 if original_core else 1,
-        -original_concepts,
-        -original_terms,
-        -len({item["query"] for item in entry["matches"]}),
-        candidate["title"],
-    )
-
-
-def entry_is_core(entry):
-    inferred_action_match = entry.get("inferred_target_action_match", False)
-    return bool(
-        not entry.get("unrequested_constraint_scope")
-        and (
-            inferred_action_match
-            or (
-                all(
-                    match == "exact"
-                    for match in entry["constraint_match"].values()
-                )
-                and entry["concept_match"]
-                in {"exact_question", "exact_query_unit"}
-            )
-        )
-    )
-
-
-def entry_claim_scope_policy(entry):
-    if (
-        entry.get("unrequested_constraint_scope")
-        or entry.get("unrequested_ranking_scope")
-    ):
-        return "additional_specific_scope_only_not_unrestricted_full_question_proof"
-    if entry_is_core(entry) and entry["concept_match"] == "exact_question":
-        return "exact_question_scope"
-    if entry_is_core(entry) and entry["concept_match"] == "exact_query_unit":
-        return "exact_query_unit_scope_only"
-    return "component_or_generic_support_only_not_full_question_proof"
-
-
-def question_concept_anchors(search_module, plan):
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", plan.get("query", "")
-    )
-    normalized_query = search_module.normalize(positive_query)
-    anchors = []
-    for group in plan.get("query_expansion", {}).get(
-        "matched_synonym_groups", []
-    ):
-        explicit_terms = [
-            term
-            for term in group
-            if search_module.normalize(term) in normalized_query
-        ]
-        if explicit_terms:
-            anchors.append((search_module.normalize(group[0]), explicit_terms))
-    return anchors
-
-
-def entry_question_concept_coverage(search_module, plan, entry, rules):
-    matched_terms = {
+    if not variant_axis:
+        return "automatic_expansion_named_variant_rules_missing"
+    variant_terms = [
         term
-        for match in entry.get("matches", [])
-        for term in (
-            match.get("matched_original_terms", [])
-            + match.get("matched_equivalent_terms", [])
-        )
-    }
-    return {
-        key
-        for key, anchors in question_concept_anchors(search_module, plan)
-        if any(
-            term_matches_concept(search_module, term, anchor, rules)
-            for term in matched_terms
-            for anchor in anchors
-        )
-    }
-
-
-def diversify_support_entries(
-    search_module, plan, exact_entries, support_entries, rules
-):
-    coverage_counts = {}
-    for concept in (
-        concept
-        for entry in exact_entries
-        for concept in entry_question_concept_coverage(
-            search_module, plan, entry, rules
-        )
-    ):
-        coverage_counts[concept] = coverage_counts.get(concept, 0) + 1
-    remaining = list(support_entries)
-    diversified = []
-    while remaining:
-        def diversity_key(entry):
-            concepts = entry_question_concept_coverage(
-                search_module, plan, entry, rules
-            )
-            new_concepts = sum(
-                coverage_counts.get(concept, 0) == 0
-                for concept in concepts
-            )
-            mean_coverage = (
-                sum(coverage_counts.get(concept, 0) for concept in concepts)
-                / len(concepts)
-                if concepts
-                else 10**6
-            )
-            return (
-                entry.get("reviewed_evidence_rank", 2),
-                -new_concepts,
-                mean_coverage,
-                selected_sort_key(entry, rules),
-            )
-
-        remaining.sort(
-            key=diversity_key
-        )
-        selected = remaining.pop(0)
-        diversified.append(selected)
-        for concept in entry_question_concept_coverage(
-            search_module, plan, selected, rules
-        ):
-            coverage_counts[concept] = coverage_counts.get(concept, 0) + 1
-    return diversified
-
-
-def extract_user_hypotheses(query, diagnostic_rules):
-    """Return causes proposed by the user without treating them as facts."""
-    hypotheses = []
-    seen = set()
-    for rule in diagnostic_rules.get("hypothesis_patterns", []):
-        for match in re.finditer(rule["pattern"], query):
-            group_names = (
-                ["hypothesis"]
-                if rule["type"] == "single_cause_question"
-                else ["left", "right"]
-            )
-            for group_name in group_names:
-                raw_text = match.group(group_name).strip(" ，,。？?！!")
-                parts = re.split(r"[、]", raw_text)
-                for text in parts:
-                    text = re.sub(
-                        r"(?:造成|导致|引起|带来)?的?(?:问题|原因)?$",
-                        "",
-                        text,
-                    ).strip()
-                    if not text or text in seen:
-                        continue
-                    seen.add(text)
-                    hypotheses.append(
-                        {
-                            "id": f"H{len(hypotheses) + 1}",
-                            "text": text,
-                            "framing": rule["type"],
-                        }
-                    )
-    return hypotheses
-
-
-def diagnostic_mechanism_for_text(search_module, text, diagnostic_rules):
-    normalized = search_module.normalize(text)
-    matches = []
-    for mechanism in diagnostic_rules.get("mechanisms", []):
-        matched_terms = [
-            term
-            for term in mechanism.get("query_terms", [])
-            if search_module.normalize(term) in normalized
-        ]
-        if matched_terms:
-            matches.append((max(map(len, matched_terms)), mechanism))
-    return max(matches, key=lambda item: item[0])[1] if matches else None
-
-
-def diagnostic_observed_symptoms(
-    search_module, query, intent_frame, hypotheses, diagnostic_rules
-):
-    remaining_query = query
-    for hypothesis in hypotheses:
-        remaining_query = remaining_query.replace(hypothesis["text"], " ")
-    normalized_remaining = search_module.normalize(remaining_query)
-
-    def occurs_without_negation(term):
-        normalized_term = search_module.normalize(term)
-        start = 0
-        while True:
-            index = normalized_remaining.find(normalized_term, start)
-            if index < 0:
-                return False
-            prefix = normalized_remaining[max(0, index - 4) : index]
-            if not any(
-                prefix.endswith(marker)
-                for marker in ("不", "没", "没有", "并不", "不会", "从不")
-            ):
-                return True
-            start = index + len(normalized_term)
-    configured = diagnostic_rules.get("symptom_terms", [])
-    terms = [
-        term
-        for term in configured
-        if occurs_without_negation(term)
-    ]
-    terms.extend(
-        term
-        for term in intent_frame.get("literal_symptoms", [])
-        if occurs_without_negation(term)
-    )
-    unique_terms = list(dict.fromkeys(terms))
-    terms = [
-        term
-        for term in unique_terms
-        if not any(
-            search_module.normalize(term) != search_module.normalize(other)
-            and search_module.normalize(term) in search_module.normalize(other)
-            for other in unique_terms
-        )
-    ]
-    return [
-        {
-            "id": f"S{index}",
-            "text": term,
-            "source": "user_report",
-            "verification_status": "reported_not_observed",
-        }
-        for index, term in enumerate(terms, start=1)
-    ]
-
-
-def selected_video_evidence_text(search_module, video):
-    evidence_text = [
-        item.get("text", "")
-        for item in (video.get("teaching_note") or {}).get("evidence", [])
-    ]
-    evidence_text.extend(
-        item.get("text", "") for item in video.get("transcript_evidence", [])
-    )
-    return search_module.normalize(" ".join(evidence_text))
-
-
-def claim_scope_directness(video, diagnostic_rules):
-    strong_axes = set(diagnostic_rules.get("strong_scope_axes", []))
-    matches = {
-        axis: value
-        for axis, value in video.get("constraint_match", {}).items()
-        if axis in strong_axes
-    }
-    if not matches:
-        return "generic"
-    exact_count = sum(value == "exact" for value in matches.values())
-    weak = set(diagnostic_rules.get("weak_constraint_matches", []))
-    if not exact_count and all(value in weak for value in matches.values()):
-        return "incompatible"
-    if all(value == "exact" for value in matches.values()):
-        return "exact"
-    return "partial"
-
-
-def has_requested_action_scope_support(video, query_constraints, diagnostic_rules):
-    requested_axes = [
-        axis
-        for axis in diagnostic_rules.get("claim_action_scope_axes", [])
-        if query_constraints.get(axis)
-    ]
-    if not requested_axes:
-        return True
-    supported_matches = set(
-        diagnostic_rules.get(
-            "claim_action_scope_support_matches", ["exact", "partial_support"]
-        )
-    )
-    return any(
-        video.get("constraint_match", {}).get(axis) in supported_matches
-        for axis in requested_axes
-    )
-
-
-def claim_evidence_entry(video, directness, reason):
-    return {
-        "label": video["label"],
-        "evidence_id": video["evidence_id"],
-        "directness": directness,
-        "scope": video["claim_scope_policy"],
-        "reason": reason,
-    }
-
-
-def confidence_ceiling(evidence_entries, selected_by_label):
-    if not evidence_entries:
-        return "none"
-    if any(item["directness"] == "direct" for item in evidence_entries):
-        direct_confidences = {
-            selected_by_label[item["label"]].get("confidence")
-            for item in evidence_entries
-            if item["directness"] == "direct"
-        }
-        if direct_confidences & {"curated", "reviewed_transcript"}:
-            return "high"
-        return "moderate"
-    if any(item["directness"] == "scoped" for item in evidence_entries):
-        return "moderate"
-    return "low"
-
-
-def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
-    if not has_requested_action_scope_support(
-        video, query_constraints, diagnostic_rules
-    ):
-        return None
-    scope_directness = claim_scope_directness(video, diagnostic_rules)
-    if scope_directness == "incompatible":
-        return None
-    concept = video.get("concept_match")
-    symptom = video.get("symptom_match")
-    if concept == "none" and symptom in {"none", "not_required"}:
-        return None
-    if (
-        scope_directness == "exact"
-        and concept in {"exact_question", "exact_query_unit"}
-        and video.get("claim_scope_policy")
-        in {"exact_question_scope", "exact_query_unit_scope_only"}
-    ):
-        directness = "direct"
-    elif concept in {"exact_question", "exact_query_unit"}:
-        directness = "scoped"
-    else:
-        directness = "component"
-    reason = (
-        "directly covers the requested question scope"
-        if directness == "direct"
-        else (
-            "covers the question under stated source conditions"
-            if directness == "scoped"
-            else "supports only a component or mechanism of the question"
-        )
-    )
-    return claim_evidence_entry(video, directness, reason)
-
-
-def mechanism_evidence(
-    search_module,
-    mechanism,
-    selected_videos,
-    query_constraints,
-    diagnostic_rules,
-):
-    matched = []
-    for video in selected_videos:
-        if not has_requested_action_scope_support(
-            video, query_constraints, diagnostic_rules
-        ):
-            continue
-        evidence_text = selected_video_evidence_text(search_module, video)
-        terms = [
-            term
-            for term in mechanism.get("evidence_terms", [])
-            if search_module.normalize(term) in evidence_text
-        ]
-        if not terms:
-            continue
-        scope_directness = claim_scope_directness(video, diagnostic_rules)
-        if scope_directness == "incompatible":
-            continue
-        directness = "direct" if scope_directness == "exact" else "scoped"
-        if video.get("concept_match") in {
-            "component_support",
-            "reviewed_support",
-            "expanded_support",
-        }:
-            directness = "component" if directness == "scoped" else "scoped"
-        matched.append(
-            claim_evidence_entry(
-                video,
-                directness,
-                f'direct evidence text matches {mechanism["label"]}: {terms[0]}',
-            )
-        )
-    rank = {"direct": 0, "scoped": 1, "component": 2}
-    matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
-    return matched[: diagnostic_rules.get("max_evidence_per_claim", 3)]
-
-
-def material_diagnostic_branches(
-    query, query_constraints, selected_videos, diagnostic_rules
-):
-    requested_variants = query_constraints.get("technique_variant", [])
-    required_axes = {
-        axis
         for variant in requested_variants
-        for axis in diagnostic_rules.get("required_context_by_technique", {}).get(
-            variant, []
-        )
-    }
-    branch_axes = diagnostic_rules.get("material_branch_axes", {})
-    branches = []
-    for axis_name, axis_rule in branch_axes.items():
-        if axis_name in query_constraints:
-            continue
-        if axis_name not in required_axes and not any(
-            term.replace(" ", "").lower() in query.replace(" ", "").lower()
-            for term in axis_rule.get("trigger_terms", [])
-        ):
-            continue
-        labels_by_value = {}
-        for video in selected_videos:
-            if claim_scope_directness(video, diagnostic_rules) == "incompatible":
-                continue
-            values = video.get("constraint_scope", {}).get(axis_name, {}).get(
-                "values", []
-            )
-            for value in values:
-                if value in axis_rule.get("values", {}):
-                    labels_by_value.setdefault(value, []).append(video["label"])
-        if axis_name not in required_axes and len(labels_by_value) < 2:
-            continue
-        branch_values = []
-        for value, label in axis_rule.get("values", {}).items():
-            branch_values.append(
-                {
-                    "value": value,
-                    "label": label,
-                    "eligible_video_labels": labels_by_value.get(value, []),
-                }
-            )
-        branches.append(
-            {
-                "id": f"B{len(branches) + 1}",
-                "axis": axis_name,
-                "label": axis_rule["label"],
-                "query_label": axis_rule.get("query_label", axis_rule["label"]),
-                "status": "conditional",
-                "question": axis_rule["question"],
-                "branches": branch_values,
-            }
-        )
-    return branches
-
-
-def build_diagnostic_contract(
-    search_module,
-    query,
-    plan,
-    question_interpretation,
-    boundary,
-    selected_videos,
-    diagnostic_rules,
-    resolved_question_ids=None,
-    resolved_answers=None,
-):
-    resolved_question_ids = set(resolved_question_ids or [])
-    resolved_answers = list(resolved_answers or [])
-    intent_frame = question_interpretation["intent_frame"]
-    user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
-    observed_symptoms = diagnostic_observed_symptoms(
-        search_module,
-        query,
-        intent_frame,
-        user_hypotheses,
-        diagnostic_rules,
-    )
-    selected_by_label = {video["label"]: video for video in selected_videos}
-    claim_map = []
-    query_units = question_interpretation.get("query_units") or [query]
-    for unit in query_units:
-        evidence_entries = [
-            evidence
-            for video in selected_videos
-            if (
-                evidence := query_unit_evidence(
-                    video,
-                    question_interpretation["strategy"],
-                    question_interpretation["constraints"],
-                    diagnostic_rules,
-                )
-            )
-            and (
-                unit in video.get("matched_query_units", [])
-                or len(query_units) == 1
-            )
-        ][: diagnostic_rules.get("max_evidence_per_claim", 3)]
-        claim_map.append(
-            {
-                "claim_id": f"Q{len(claim_map) + 1}",
-                "kind": "question_unit",
-                "text": unit,
-                "status": "supported" if evidence_entries else "unsupported",
-                "evidence": evidence_entries,
-                "eligible_video_labels": [
-                    item["label"] for item in evidence_entries
-                ],
-                "confidence_ceiling": confidence_ceiling(
-                    evidence_entries, selected_by_label
-                ),
-            }
-        )
-
-    mechanism_by_id = {
-        item["id"]: item for item in diagnostic_rules.get("mechanisms", [])
-    }
-    hypothesis_mechanism_ids = set()
-    for hypothesis in user_hypotheses:
-        mechanism = diagnostic_mechanism_for_text(
-            search_module, hypothesis["text"], diagnostic_rules
-        )
-        evidence_entries = (
-            mechanism_evidence(
-                search_module,
-                mechanism,
-                selected_videos,
-                question_interpretation["constraints"],
-                diagnostic_rules,
-            )
-            if mechanism
-            else []
-        )
-        if mechanism:
-            hypothesis_mechanism_ids.add(mechanism["id"])
-        hypothesis.update(
-            {
-                "mechanism_id": mechanism["id"] if mechanism else None,
-                "status": "conditional" if evidence_entries else "unverified",
-                "eligible_video_labels": [
-                    item["label"] for item in evidence_entries
-                ],
-                "reason": (
-                    "source evidence supports this as a possible mechanism, but the user's own movement has not been observed"
-                    if evidence_entries
-                    else "no selected source directly verifies this proposed cause"
-                ),
-            }
-        )
-        claim_map.append(
-            {
-                "claim_id": hypothesis["id"],
-                "kind": "user_hypothesis",
-                "text": hypothesis["text"],
-                "status": hypothesis["status"],
-                "evidence": evidence_entries,
-                "eligible_video_labels": hypothesis["eligible_video_labels"],
-                "confidence_ceiling": confidence_ceiling(
-                    evidence_entries, selected_by_label
-                ),
-            }
-        )
-
-    normalized_query = search_module.normalize(query)
-    supported_mechanisms = []
-    for mechanism in diagnostic_rules.get("mechanisms", []):
-        if mechanism["id"] in hypothesis_mechanism_ids:
-            continue
-        if not any(
-            search_module.normalize(term) in normalized_query
-            for term in mechanism.get("query_terms", [])
-        ):
-            continue
-        evidence_entries = mechanism_evidence(
-            search_module,
-            mechanism,
-            selected_videos,
-            question_interpretation["constraints"],
-            diagnostic_rules,
-        )
-        if not evidence_entries:
-            continue
-        mechanism_record = {
-            "id": f"M{len(supported_mechanisms) + 1}",
-            "mechanism_id": mechanism["id"],
-            "label": mechanism["label"],
-            "status": "conditional",
-            "eligible_video_labels": [
-                item["label"] for item in evidence_entries
-            ],
-            "reason": "source-supported diagnostic branch; verify against the user's actual movement before attributing cause",
-        }
-        supported_mechanisms.append(mechanism_record)
-        claim_map.append(
-            {
-                "claim_id": mechanism_record["id"],
-                "kind": "supported_mechanism",
-                "text": mechanism["label"],
-                "status": "conditional",
-                "evidence": evidence_entries,
-                "eligible_video_labels": mechanism_record[
-                    "eligible_video_labels"
-                ],
-                "confidence_ceiling": confidence_ceiling(
-                    evidence_entries, selected_by_label
-                ),
-            }
-        )
-
-    branches = material_diagnostic_branches(
-        query,
-        question_interpretation["constraints"],
-        selected_videos,
-        diagnostic_rules,
-    )
-    diagnostic_question = bool(
-        observed_symptoms
-        or user_hypotheses
-        or question_interpretation["strategy"] == "literal_symptom_first"
-    )
-    material_unknowns = []
-    for ambiguity in question_interpretation.get("ambiguities", []):
-        ambiguity_name = re.sub(r"[^a-z0-9_]+", "_", ambiguity["name"].lower())
-        material_unknowns.append(
-            {
-                "id": f"unknown.ambiguity.{ambiguity_name}",
-                "type": "terminology_or_scenario_ambiguity",
-                "description": ambiguity.get("required_statement", ambiguity)
-                if isinstance(ambiguity, dict)
-                else str(ambiguity),
-                "required_for_unique_diagnosis": True,
-            }
-        )
-    for branch in branches:
-        material_unknowns.append(
-            {
-                "id": f'unknown.branch.{branch["axis"]}',
-                "type": f'branch_axis:{branch["axis"]}',
-                "description": branch["label"],
-                "required_for_unique_diagnosis": True,
-            }
-        )
-    if diagnostic_question:
-        material_unknowns.append(
-            {
-                "id": "unknown.user_movement_observation",
-                "type": "user_movement_observation",
-                "description": "the user's actual contact, racket, body, and movement sequence has not been observed",
-                "required_for_unique_diagnosis": True,
-            }
-        )
-
-    clarification_requests = []
-    for branch in branches:
-        question_id = f'clarify.branch.{branch["axis"]}'
-        if question_id in resolved_question_ids:
-            continue
-        clarification_requests.append(
-            {
-                "question_id": question_id,
-                "unknown_type": f'branch_axis:{branch["axis"]}',
-                "question": branch["question"],
-                "query_label": branch["query_label"],
-                "purpose": f'{branch["label"]}会改变适用的诊断分支和视频证据。',
-                "materially_affects": ["diagnosis", "evidence_selection"],
-                "answer_format": "free_text_with_one_branch_value",
-                "answer_cues": [
-                    item["label"].removesuffix("分支")
-                    for item in branch["branches"]
-                ],
-            }
-        )
-    for mechanism_record in supported_mechanisms:
-        mechanism = mechanism_by_id[mechanism_record["mechanism_id"]]
-        question = mechanism.get("observation_question")
-        question_id = f'clarify.mechanism.{mechanism["id"]}'
-        if (
-            question
-            and question_id not in resolved_question_ids
-            and question not in {
-                item["question"] for item in clarification_requests
-            }
-        ):
-            clarification_requests.append(
-                {
-                    "question_id": question_id,
-                    "unknown_type": "user_movement_observation",
-                    "question": question,
-                    "query_label": mechanism["label"],
-                    "purpose": mechanism.get(
-                        "observation_purpose",
-                        "用于缩小证据支持的排查范围；不能单凭文字观察确认唯一原因。",
-                    ),
-                    "materially_affects": ["diagnosis", "evidence_selection"],
-                    "answer_format": "focused_free_text_observation",
-                    "answer_cues": mechanism.get("answer_cues", []),
-                }
-            )
-    if diagnostic_question and not clarification_requests and not resolved_question_ids:
-        clarification_requests.append(
-            {
-                "question_id": "clarify.user_movement_video",
-                "unknown_type": "user_movement_observation",
-                "question": "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。",
-                "query_label": "用户连续动作视频观察",
-                "purpose": "用于观察完整动作链并确认用户自己的实际动作；没有连续视频时只能给出条件性排查。",
-                "materially_affects": ["unique_cause_confirmation"],
-                "answer_format": "continuous_user_video",
-                "answer_cues": [],
-            }
-        )
-    clarification_requests = clarification_requests[
-        : diagnostic_rules.get("max_clarification_questions", 3)
+        for term in variant_axis.get("values", {}).get(variant, [])
     ]
-    questions = [item["question"] for item in clarification_requests]
-    has_useful_evidence = any(
-        claim["evidence"] for claim in claim_map if claim["kind"] != "user_hypothesis"
+    hints = (
+        entry.get("candidate", {})
+        .get("transcript_retrieval", {})
+        .get("chunk_hints", [])
     )
-    ask_first = bool(
-        question_interpretation.get("ambiguities")
-        and not has_useful_evidence
-        and boundary["type"] == "none"
-    )
-    clarification_action = (
-        "ask_first"
-        if ask_first
-        else (
-            "answer_conditionally"
-            if material_unknowns or branches
-            else "answer_now"
-        )
-    )
-
-    completeness_items = []
-    for claim in claim_map:
-        if claim["kind"] == "question_unit":
-            status = "must_answer"
-        elif claim["status"] in {"unverified", "unsupported"}:
-            status = "unresolved"
-        else:
-            status = "conditional"
-        completeness_items.append(
-            {
-                "item_id": claim["claim_id"],
-                "text": claim["text"],
-                "status": status,
-                "required_treatment": (
-                    "answer with mapped evidence or explicitly state the evidence gap"
-                    if status == "must_answer"
-                    else (
-                        "state that this remains unverified; do not silently accept or omit it"
-                        if status == "unresolved"
-                        else "explain as a conditional branch, not as the confirmed cause"
-                    )
+    segments = search_module.video_transcript_segments(video)
+    if hints:
+        segment_indexes = {
+            index
+            for hint in hints
+            for index in range(
+                max(0, int(hint.get("start_segment", 0))),
+                min(
+                    len(segments),
+                    int(hint.get("end_segment", len(segments))),
                 ),
-            }
+            )
+        }
+        evidence_text = "".join(
+            str(segments[index].get("text") or "")
+            for index in sorted(segment_indexes)
         )
-    for branch in branches:
-        completeness_items.append(
-            {
-                "item_id": branch["id"],
-                "text": branch["label"],
-                "status": "conditional",
-                "required_treatment": "cover every evidenced branch separately until the missing context is supplied",
-            }
+    else:
+        evidence_text = "".join(
+            str(segment.get("text") or "") for segment in segments
         )
-
-    return {
-        "diagnostic_model": {
-            "observed_symptoms": observed_symptoms,
-            "clarification_observations": [
-                {
-                    "question_id": item["question_id"],
-                    "question": item["question"],
-                    "text": item["answer"],
-                    "source": "user_clarification_text",
-                    "verification_status": "reported_not_video_verified",
-                }
-                for item in resolved_answers
-                if item["unknown_type"] == "user_movement_observation"
-            ],
-            "user_hypotheses": user_hypotheses,
-            "supported_mechanisms": supported_mechanisms,
-            "material_branches": branches,
-            "do_not_claim_unique_cause": diagnostic_question,
-            "unique_cause_confirmation_requires_user_video": diagnostic_question,
-        },
-        "clarification_decision": {
-            "action": clarification_action,
-            "can_provide_useful_answer_now": has_useful_evidence or boundary["type"] != "none",
-            "material_unknowns": material_unknowns,
-            "questions": questions,
-            "clarification_requests": clarification_requests,
-            "question_limit": diagnostic_rules.get("max_clarification_questions", 3),
-        },
-        "claim_evidence_map": claim_map,
-        "completeness_contract": {
-            "items": completeness_items,
-            "unresolved_item_ids": [
-                item["item_id"]
-                for item in completeness_items
-                if item["status"] == "unresolved"
-            ],
-            "silent_omission_forbidden": True,
-            "complete_answer_definition": "cover every must_answer item, preserve every conditional branch, and name every unresolved evidence gap; completeness is not answer length",
-        },
-    }
+    normalized_evidence = search_module.normalize(evidence_text)
+    if not any(
+        search_module.normalize(term) in normalized_evidence
+        for term in variant_terms
+        if search_module.normalize(term)
+    ):
+        return "automatic_expansion_named_variant_missing_from_query_chunks"
+    return None
 
 
 def prepare_answer_context(
@@ -3743,6 +559,8 @@ def prepare_answer_context(
         )
     elif clarification_answers is not None:
         raise ValueError("clarification_answers requires continue_from")
+    user_query = query
+    query = canonicalize_retrieval_query(query, rules)
     explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
@@ -3789,8 +607,27 @@ def prepare_answer_context(
     if use_topic_navigation:
         retrieval_queries.extend(navigation["suggested_search_queries"][:3])
         retrieval_queries = list(dict.fromkeys(retrieval_queries))
+    if include_rejected:
+        retrieval_query_budget = {
+            "configured_budget": rules.get("retrieval_query_budget", 24),
+            "hard_limit": rules.get("retrieval_query_hard_limit", 48),
+            "generated_query_count": len(retrieval_queries),
+            "executed_query_count": len(retrieval_queries),
+            "truncated": False,
+            "omitted_query_count": 0,
+            "missing_required_units": [],
+            "diagnostic_override": True,
+        }
+    else:
+        retrieval_queries, retrieval_query_budget = budget_retrieval_queries(
+            search_module,
+            retrieval_queries,
+            plan,
+            retrieval_base_query,
+            rules,
+        )
 
-    payloads = [
+    payload_iterator = (
         search_module.search(
             unit,
             limit=rules["top_rank_acceptance"],
@@ -3801,8 +638,11 @@ def prepare_answer_context(
             feedback_dir=feedback_dir,
         )
         for unit in retrieval_queries
-    ]
-    merged = merge_candidates(payloads, retrieval_queries)
+    )
+    primary_payload = next(payload_iterator)
+    merged = merge_candidates(
+        chain([primary_payload], payload_iterator), retrieval_queries
+    )
     videos = {video["video_id"]: video for video in knowledge["videos"]}
     actor_context = query_actor_context(search_module, actor_query, rules)
     requested_constraints = actor_context["target_constraints"]
@@ -3816,7 +656,9 @@ def prepare_answer_context(
                 {"video_id": video_id, "reasons": ["video_missing_from_knowledge"]}
             )
             continue
-        constraint_scope = video_constraint_scope(search_module, video, rules)
+        constraint_scope = search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.get(video_id)
+        if constraint_scope is None:
+            constraint_scope = video_constraint_scope(search_module, video, rules)
         constraint_result = constraint_decision(
             search_module,
             query,
@@ -3919,6 +761,17 @@ def prepare_answer_context(
                     else "matched_requested_action_scope_support_only"
                 )
             ]
+        variant_failure = automatic_expansion_variant_failure(
+            search_module,
+            video,
+            entry,
+            requested_constraints,
+            constraint_result[4],
+            rules,
+        )
+        if variant_failure:
+            keep = False
+            reasons = [variant_failure]
         unrequested_scope = unrequested_specific_scope(
             constraint_result[2], constraint_scope, rules
         )
@@ -3979,6 +832,52 @@ def prepare_answer_context(
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=lambda entry: selected_sort_key(entry, rules))
+    accepted, cluster_duplicates = search_module.cap_content_clusters(
+        accepted,
+        candidate_getter=lambda entry: entry["candidate"],
+    )
+    rejected.extend(
+        {
+            **duplicate["item"],
+            "selection_reasons": ["content_cluster_duplicate"],
+            "duplicate_of_video_id": duplicate["representative"]["video_id"],
+            "duplicate_content_cluster_id": duplicate["cluster_id"],
+        }
+        for duplicate in cluster_duplicates
+    )
+    automatic_limit = rules.get(
+        "automatic_expansion_selection_limit", 3
+    )
+    cohort_kept = []
+    cohort_suppressed = []
+    automatic_count = 0
+    for entry in accepted:
+        if (
+            entry["candidate"].get("retrieval_cohort")
+            == "automatic_expansion"
+        ):
+            automatic_count += 1
+            if automatic_count > automatic_limit:
+                cohort_suppressed.append(entry)
+                continue
+        cohort_kept.append(entry)
+    accepted = cohort_kept
+    rejected.extend(
+        {
+            **entry,
+            "selection_reasons": [
+                "automatic_expansion_selection_limit_exceeded"
+            ],
+        }
+        for entry in cohort_suppressed
+    )
+    accepted, supplemental_rejected = apply_supplemental_evidence_policy(
+        accepted,
+        plan,
+        boundary,
+        rules,
+    )
+    rejected.extend(supplemental_rejected)
     exact_entries = [
         entry
         for entry in accepted
@@ -3992,6 +891,12 @@ def prepare_answer_context(
             "supporting_video_limits_by_technique_variant", {}
         ).get(requested_variants[0], support_limit)
     support_limit = min(support_limit, max_videos)
+    if explicit_max_videos and not exact_entries:
+        # An explicit evidence budget should remain usable when the corpus has
+        # no exact/core source. Returning only the default supporting cap can
+        # hide a valid response-oriented source even though the caller asked
+        # for a larger bounded set.
+        support_limit = max_videos
     exact_limit = rules.get("max_exact_videos", max_videos)
     if explicit_max_videos:
         exact_limit = (
@@ -4029,12 +934,26 @@ def prepare_answer_context(
     rejected.extend(policy_excluded_entries)
     selected_entries = eligible_entries[:max_videos]
     selected_ids = [item["video_id"] for item in selected_entries]
-    lookup = search_module.lookup_videos(
-        selected_ids,
-        query=query,
-        local_personalization=local_personalization,
-        feedback_dir=feedback_dir,
-        segment_limit=segment_limit,
+    lookup = (
+        search_module.lookup_videos(
+            selected_ids,
+            query=query,
+            local_personalization=local_personalization,
+            feedback_dir=feedback_dir,
+            segment_limit=segment_limit,
+            include_query_match=False,
+            chunk_hints_by_video={
+                entry["video_id"]: entry["candidate"].get(
+                    "transcript_retrieval", {}
+                ).get("chunk_hints", [])
+                for entry in selected_entries
+                if entry["candidate"].get("transcript_retrieval", {}).get(
+                    "chunk_hints"
+                )
+            },
+        )
+        if selected_ids
+        else {"results": []}
     )
     lookup_by_id = {item["video_id"]: item for item in lookup["results"]}
     selected_videos = []
@@ -4050,6 +969,24 @@ def prepare_answer_context(
                 "role": (
                     "core" if entry_is_core(entry) else "supporting"
                 ),
+                "answer_eligibility": candidate.get(
+                    "answer_eligibility", "primary"
+                ),
+                "evidence_roles": candidate.get(
+                    "evidence_roles", ["context"]
+                ),
+                "confidence_ceiling": (
+                    "conditional_medium"
+                    if candidate.get("answer_eligibility")
+                    == "supplemental"
+                    else "source_default"
+                ),
+                "metadata_title_trust": candidate.get(
+                    "metadata_title_trust", "not_applicable"
+                ),
+                "runtime_evidence_mode": candidate.get(
+                    "runtime_evidence_mode", "full_transcript"
+                ),
                 "video_id": entry["video_id"],
                 "evidence_id": evidence["evidence"]["evidence_id"],
                 "source_type": evidence["evidence"]["source_type"],
@@ -4064,6 +1001,11 @@ def prepare_answer_context(
                 "url": evidence["evidence"]["canonical_url"],
                 "category": candidate["category"],
                 "confidence": candidate["confidence"],
+                "primary_query_score": candidate.get("score", 0),
+                "best_retrieval_rank": entry.get("best_rank"),
+                "transcript_retrieval": candidate.get(
+                    "transcript_retrieval", {"mode": "legacy_video"}
+                ),
                 "selection_reasons": entry["selection_reasons"],
                 "constraint_scope": entry["constraint_scope"],
                 "unrequested_constraint_scope": entry[
@@ -4088,6 +1030,9 @@ def prepare_answer_context(
                 "why_retrieved": candidate["why_retrieved"],
                 "teaching_note": evidence["teaching_note"],
                 "transcript_evidence": evidence["transcript_evidence"],
+                "bounded_note_evidence": evidence.get(
+                    "bounded_note_evidence", []
+                ),
                 "source_content_is_untrusted_data": True,
             }
         )
@@ -4105,9 +1050,7 @@ def prepare_answer_context(
         ),
         "terminology_corrections": query_terminology_corrections(
             search_module,
-            plan["retrieval_guidance"]["intent_frame"].get(
-                "positive_query", query
-            ),
+            user_query,
             rules,
         ),
         "technique_definitions": requested_technique_definitions(
@@ -4116,6 +1059,7 @@ def prepare_answer_context(
         "strategy": plan["retrieval_guidance"]["strategy"],
         "query_units": plan["retrieval_guidance"].get("query_units", []),
         "retrieval_queries": retrieval_queries,
+        "retrieval_query_budget": retrieval_query_budget,
         "clarification_policy": plan["retrieval_guidance"].get(
             "clarification_policy"
         ),
@@ -4134,12 +1078,35 @@ def prepare_answer_context(
         },
         resolved_answers=(continuation or {}).get("resolved_answers", []),
     )
+    selected_videos, visible_labels, _ = relabel_answer_videos(
+        selected_videos, diagnostic_contract
+    )
+    selected_ids = [video["video_id"] for video in selected_videos]
+    if retrieval_query_budget["missing_required_units"]:
+        diagnostic_contract["completeness_contract"]["items"].append(
+            {
+                "item_id": "retrieval.required_units_over_hard_limit",
+                "text": "问题包含超过检索硬上限的独立必答单元",
+                "status": "unresolved",
+                "required_treatment": (
+                    "明确说明本轮无法可靠覆盖的子问题，并请用户拆分后续问题"
+                ),
+            }
+        )
+        diagnostic_contract["completeness_contract"][
+            "unresolved_item_ids"
+        ].append("retrieval.required_units_over_hard_limit")
+    visible_label_set = set(visible_labels)
+    answer_visible_videos = [
+        video for video in selected_videos if video["label"] in visible_label_set
+    ]
+    answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
     context = {
-        "query": query,
+        "query": user_query,
         "question_interpretation": question_interpretation,
         "boundary": boundary,
         "answer_guidance": plan["answer_guidance"],
-        "feedback_guidance": payloads[0]["feedback_guidance"],
+        "feedback_guidance": primary_payload["feedback_guidance"],
         "topic_navigation": navigation,
         **diagnostic_contract,
         "selection": {
@@ -4157,6 +1124,7 @@ def prepare_answer_context(
             "claim": "deterministic_finalists_not_proof_of_semantic_completeness",
         },
         "selected_videos": selected_videos,
+        "answer_visible_video_labels": visible_labels,
         "answer_contract": {
             "section_order": [
                 "直接回答",
@@ -4167,7 +1135,7 @@ def prepare_answer_context(
                 "置信边界",
             ],
             "citation_rules": [
-                "只引用 selected_videos；不得把被拒绝候选恢复为证据。",
+                "只引用 answer_visible_video_labels 对应的视频；selected_videos 中未映射到 claim 的检索 finalist 仅供审计，不得出现在回答中。",
                 "每个 V 标签只对应一个 evidence_id，并在答案中只输出一次 canonical URL。当前抖音条目的 evidence_id 等于 video_id；直播切片等新来源使用自己的稳定 evidence_id。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
@@ -4182,18 +1150,22 @@ def prepare_answer_context(
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
                 "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
                 "逐项执行 answer_turn_contract：正文承认每条 resolved_clarifications，不得重复询问 resolved_question_ids_must_not_be_reasked，并逐条提出 pending_clarifications；本轮引用只能来自契约绑定的最新 evidence_state。",
-                "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；selected_videos 只是全局引用白名单。",
+                "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；answer_visible_video_labels 是回答全局引用白名单。",
+                "answer_eligibility=primary 的证据优先；supplemental 只可补足主证据未覆盖的概念、纠错、训练、装备、条件或反例，不能单独扩张为普遍结论。",
+                "metadata_title_trust=limited 时标题只用于弱召回，不能作为技术结论证据；只能引用 bounded_note_evidence、transcript_evidence 或 teaching_note 中实际命中的时间戳窗口。",
                 "逐项完成 completeness_contract；must_answer、conditional 和 unresolved 项都不得静默省略。",
             ],
-            "feedback_prompt": feedback_module.build_feedback_hint(selected_videos),
+            "feedback_prompt": feedback_module.build_feedback_hint(
+                answer_visible_videos
+            ),
             "feedback_prompt_rules": [
                 "每次回答必须在最后逐字输出 feedback_prompt。",
-                "不得添加本轮 selected_videos 中不存在的 V 标签。",
+                "不得添加本轮 answer_visible_video_labels 中不存在的 V 标签。",
                 "同一对话中的后续反馈必须绑定原问题、完整回答、精确 V 映射和用户原话，再按 feedback-workflow.md 解析与确认。",
             ],
             "final_audit": {
                 "required_for": ["diagnostic_answer", "multi_claim_answer"],
-                "command": "python3 scripts/audit_answer.py \"用户的完整原问题\" --context context.json --answer answer.md",
+                "command": "python3 scripts/audit_answer.py \"用户的完整原问题\" --context context.json --packet answer-packet.json --answer answer.md",
                 "pass_condition": "passed is true; never edit the prepared context to make a draft pass",
                 "scope": "deterministic known-contract gate, not proof that every semantic error is absent",
             },
@@ -4210,6 +1182,29 @@ def prepare_answer_context(
     context["answer_plan"] = build_closed_answer_plan(
         context, load_reviewed_evidence_atoms()
     )
+    answer_packet_runtime = load_sibling(
+        "liuhui_answer_packet_visibility", "answer_packet.py"
+    )
+    planned_visible_labels = answer_packet_runtime.packet_visible_video_labels(
+        context["answer_plan"], context["claim_evidence_map"]
+    )
+    selected_videos, visible_labels, final_label_map = relabel_answer_videos(
+        selected_videos,
+        diagnostic_contract,
+        visible_labels=planned_visible_labels,
+    )
+    _remap_contract_video_labels(context["answer_plan"], final_label_map)
+    context["answer_visible_video_labels"] = visible_labels
+    answer_visible_videos = [
+        video
+        for video in selected_videos
+        if video["label"] in set(visible_labels)
+    ]
+    answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
+    context["answer_contract"]["feedback_prompt"] = (
+        feedback_module.build_feedback_hint(answer_visible_videos)
+    )
+    context["answer_turn_contract"] = build_answer_turn_contract(context)
     if include_rejected:
         context["rejected_candidates"] = [
             {
@@ -4241,227 +1236,22 @@ def prepare_answer_context(
     return context
 
 
-def atom_scope_matches(atom, constraints):
-    for axis, required_values in atom.get("scope", {}).items():
-        if not set(required_values).issubset(set(constraints.get(axis, []))):
-            return False
-    return True
-
-
-def atom_window_is_reviewed(atom, selected_video):
-    available = {
-        (item.get("timestamp"), item.get("text"))
-        for item in selected_video.get("teaching_note", {}).get("evidence", [])
-    }
-    return all(
-        (window.get("timestamp"), window.get("text")) in available
-        for window in atom.get("evidence_windows", [])
-    )
-
-
 def build_closed_answer_plan(context, atoms):
-    constraints = context["question_interpretation"].get("constraints", {})
-    selected_by_id = {
-        item["evidence_id"]: item for item in context.get("selected_videos", [])
-    }
-    selected_atoms = []
-    directives = []
-    for claim in context.get("claim_evidence_map", []):
-        eligible_ids = {item["evidence_id"] for item in claim.get("evidence", [])}
-        matches = []
-        for atom in atoms:
-            evidence_id = atom.get("evidence_id")
-            if (
-                atom.get("claim_kind") != claim.get("kind")
-                or atom.get("canonical_claim") != claim.get("text")
-                or evidence_id not in eligible_ids
-                or evidence_id not in selected_by_id
-                or not atom_scope_matches(atom, constraints)
-            ):
-                continue
-            if not atom_window_is_reviewed(atom, selected_by_id[evidence_id]):
-                raise ValueError(
-                    f"reviewed evidence atom {atom['atom_id']} has a stale evidence window"
-                )
-            planned_atom = dict(atom)
-            planned_atom["video_label"] = selected_by_id[evidence_id]["label"]
-            matches.append(planned_atom)
-            selected_atoms.append(planned_atom)
-        if matches:
-            mode = "compose_from_reviewed_atoms"
-        elif claim.get("status") in {"unsupported", "unverified"}:
-            mode = "state_evidence_gap"
-        else:
-            mode = "contract_only_no_new_technical_detail"
-        directives.append(
-            {
-                "claim_id": claim["claim_id"],
-                "status": claim["status"],
-                "mode": mode,
-                "atom_ids": [item["atom_id"] for item in matches],
-                "confidence_ceiling": claim["confidence_ceiling"],
-            }
-        )
-    selected_atoms.sort(key=lambda item: item["atom_id"])
-    if selected_atoms:
-        technical_claim_policy = "selected_reviewed_atoms_only"
-        planner_mode = "reviewed_atoms_closed"
-    else:
-        technical_claim_policy = "claim_scoped_source_evidence_only"
-        planner_mode = "claim_evidence_fallback"
-        for directive, claim in zip(directives, context["claim_evidence_map"]):
-            if claim.get("evidence"):
-                directive["mode"] = "compose_from_claim_scoped_source"
-    return {
-        "schema_version": ANSWER_PLAN_SCHEMA_VERSION,
-        "mode": planner_mode,
-        "selected_evidence_atoms": selected_atoms,
-        "claim_directives": directives,
-        "composer_contract": {
-            "technical_claim_policy": technical_claim_policy,
-            "allowed_atom_ids": [item["atom_id"] for item in selected_atoms],
-            "unknown_atom_ids_forbidden": True,
-            "uncovered_claim_policy": "state_the_evidence_gap_or_limit_the_answer_to_the_nontechnical_contract",
-            "generic_badminton_knowledge_as_source_forbidden": True,
-            "conditions_and_confidence_ceilings_must_be_preserved": True,
-        },
-    }
-
-
-def compact_interpretation(interpretation):
-    return {
-        key: interpretation[key]
-        for key in (
-            "intent_frame",
-            "constraints",
-            "actor_context",
-            "ambiguities",
-            "terminology_corrections",
-            "technique_definitions",
-            "query_units",
-            "clarification_policy",
-        )
-        if key in interpretation
-    }
-
-
-def compact_answer_guidance(guidance):
-    return {
-        key: guidance[key]
-        for key in (
-            "mode",
-            "label",
-            "text_obligations",
-            "video_obligations",
-            "global_obligations",
-        )
-        if key in guidance
-    }
-
-
-def compact_video(video, planned_atoms, include_fallback_windows):
-    windows = []
-    seen = set()
-    for atom in planned_atoms:
-        if atom["evidence_id"] != video["evidence_id"]:
-            continue
-        for window in atom.get("evidence_windows", []):
-            key = (window["timestamp"], window["text"])
-            if key not in seen:
-                windows.append(window)
-                seen.add(key)
-    if include_fallback_windows:
-        source_windows = list(
-            video.get("teaching_note", {}).get("evidence", [])
-        ) + list(video.get("transcript_evidence", []))
-        for source_window in source_windows:
-            timestamp = source_window.get("timestamp")
-            text = source_window.get("text")
-            key = (timestamp, text)
-            if timestamp and text and key not in seen:
-                windows.append({"timestamp": timestamp, "text": text})
-                seen.add(key)
-    return {
-        key: video.get(key)
-        for key in (
-            "label",
-            "role",
-            "video_id",
-            "evidence_id",
-            "source_type",
-            "parent_source_id",
-            "clip_start_seconds",
-            "clip_end_seconds",
-            "title",
-            "url",
-            "confidence",
-            "claim_scope_policy",
-            "additional_scope_requires_conditioning",
-        )
-    } | {"evidence_windows": windows}
+    return load_sibling(
+        "liuhui_answer_packet", "answer_packet.py"
+    ).build_closed_answer_plan(context, atoms)
 
 
 def build_answer_packet(context, audit_context_reference=None):
-    digest = canonical_json_digest(context)
-    plan = context["answer_plan"]
-    turn = context["answer_turn_contract"]
-    packet = {
-        "schema_version": ANSWER_PACKET_SCHEMA_VERSION,
-        "packet_type": "liuhui_badminton_answer_packet",
-        "audit_context": {
-            "digest_algorithm": "sha256_canonical_json",
-            "digest": digest,
-            "reference": (
-                str(audit_context_reference) if audit_context_reference else None
-            ),
-        },
-        "query": {
-            "original": turn["original_query"],
-            "effective": turn["effective_query"],
-            "turn_number": turn["turn_number"],
-        },
-        "question_interpretation": compact_interpretation(
-            context["question_interpretation"]
-        ),
-        "boundary": context["boundary"],
-        "diagnostic_model": context["diagnostic_model"],
-        "clarification_decision": context["clarification_decision"],
-        "answer_turn": {
-            "resolved_clarifications": turn["resolved_clarifications"],
-            "pending_clarifications": turn["pending_clarifications"],
-            "resolved_question_ids_must_not_be_reasked": turn[
-                "resolved_question_ids_must_not_be_reasked"
-            ],
-        },
-        "claim_evidence_map": context["claim_evidence_map"],
-        "completeness_contract": context["completeness_contract"],
-        "answer_plan": plan,
-        "answer_guidance": compact_answer_guidance(context["answer_guidance"]),
-        "selected_videos": [
-            compact_video(video, plan["selected_evidence_atoms"], False)
-            if plan["mode"] == "reviewed_atoms_closed"
-            else compact_video(video, [], True)
-            for video in context["selected_videos"]
-        ],
-        "feedback_prompt": context["answer_contract"]["feedback_prompt"],
-    }
-    return packet
+    return load_sibling(
+        "liuhui_answer_packet", "answer_packet.py"
+    ).build_answer_packet(context, audit_context_reference)
 
 
 def validate_answer_packet(packet, context):
-    if packet.get("schema_version") != ANSWER_PACKET_SCHEMA_VERSION:
-        raise ValueError("unsupported answer_packet schema_version")
-    if packet.get("packet_type") != "liuhui_badminton_answer_packet":
-        raise ValueError("invalid answer_packet type")
-    expected_digest = canonical_json_digest(context)
-    if packet.get("audit_context", {}).get("digest") != expected_digest:
-        raise ValueError("answer_packet audit context digest mismatch")
-    expected = build_answer_packet(
-        context, packet.get("audit_context", {}).get("reference")
-    )
-    if packet != expected:
-        raise ValueError("answer_packet projection does not match audit context")
-    return True
+    return load_sibling(
+        "liuhui_answer_packet", "answer_packet.py"
+    ).validate_answer_packet(packet, context)
 
 
 def main():
@@ -4534,7 +1324,7 @@ def main():
         if args.answer_packet
         else payload
     )
-    print(json.dumps(output, ensure_ascii=False, indent=2))
+    print(json.dumps(output, ensure_ascii=False, separators=(",", ":")))
 
 
 if __name__ == "__main__":

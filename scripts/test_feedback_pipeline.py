@@ -74,7 +74,23 @@ class FeedbackPipelineTests(unittest.TestCase):
         )
         self.assertTrue(saved_path.exists())
 
-    def test_answer_context_rejects_gaps_and_duplicate_video_ids(self):
+    def test_bilibili_urls_and_mapping_specs_use_stable_evidence_ids(self):
+        self.assertEqual(
+            self.feedback.extract_video_ids(
+                "见 https://www.bilibili.com/video/BV16G411y7Rs/"
+            ),
+            ["bilibili:BV16G411y7Rs"],
+        )
+        self.assertEqual(
+            self.feedback.parse_video_spec("V1=BV16G411y7Rs"),
+            ("V1", "bilibili:BV16G411y7Rs"),
+        )
+        self.assertIn(
+            "https://www.bilibili.com/video/BV16G411y7Rs/",
+            self.feedback.github_video_lines(["bilibili:BV16G411y7Rs"]),
+        )
+
+    def test_answer_context_preserves_legacy_sparse_labels_and_rejects_duplicate_video_ids(self):
         with self.assertRaisesRegex(ValueError, "exact Skill answer text"):
             self.feedback.create_answer_context(
                 question="测试",
@@ -82,16 +98,36 @@ class FeedbackPipelineTests(unittest.TestCase):
                 answer_text="",
                 queue_dir=self.queue_dir,
             )
-        with self.assertRaisesRegex(ValueError, "contiguous"):
-            self.feedback.create_answer_context(
-                question="测试",
-                answer_text="测试回答",
-                video_specs=[
-                    "V1=7661940775983482097",
-                    "V3=7659991105622862457",
-                ],
-                queue_dir=self.queue_dir,
-            )
+        legacy = self.feedback.create_answer_context(
+            question="测试",
+            answer_text="测试回答",
+            video_specs=[
+                "V5=7659991105622862457",
+                "V2=7661940775983482097",
+                "V3=7614167503938610417",
+            ],
+            queue_dir=self.queue_dir,
+        )
+        self.assertEqual(
+            [video["ref"] for video in legacy["videos"]],
+            ["V2", "V3", "V5"],
+        )
+        recorded = self.feedback.submit_feedback(
+            legacy["answer_id"],
+            "V5 不相关",
+            queue_dir=self.queue_dir,
+        )
+        self.assertEqual(
+            recorded["signals"]["irrelevant_video_refs"], ["V5"]
+        )
+        self.assertEqual(
+            next(
+                video["video_id"]
+                for video in recorded["presented_videos"]
+                if video["ref"] == "V5"
+            ),
+            "7659991105622862457",
+        )
         with self.assertRaisesRegex(ValueError, "multiple references"):
             self.feedback.create_answer_context(
                 question="测试",

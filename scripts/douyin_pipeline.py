@@ -49,6 +49,15 @@ QUEUE_STATUSES = {
         "description": "Local transcription failed; inspect media and retry.",
         "failure": True,
     },
+    "transcription_quarantined": {
+        "stage": "transcription",
+        "description": (
+            "Transcription exhausted its automatic retries; explicitly force "
+            "a recovery after fixing the media or environment."
+        ),
+        "failure": True,
+        "terminal": True,
+    },
     "skipped_non_teaching": {
         "stage": "classification",
         "description": "Known non-teaching item retained only for accounting.",
@@ -61,6 +70,7 @@ TEMPORARY_MEDIA_FIELDS = {
     "media_asset_kind",
     "media_asset_source",
     "media_asset_url",
+    "media_cache_key",
     "media_download_method",
 }
 

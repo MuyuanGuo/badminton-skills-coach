@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import copy
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+from evidence_admission import infer_evidence_roles
 from project_artifacts import atomic_write_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE_PATH = ROOT / "data" / "processing" / "douyin_queue.json"
 TRANSCRIPT_ROOT = ROOT / "data" / "transcripts" / "douyin"
+DOUYIN_TRANSCRIPT_CACHE_ENV = "BSC_DOUYIN_TRANSCRIPT_CACHE_DIR"
 CURATED_PATH = ROOT / "data" / "knowledge" / "pilot_teaching_notes.json"
 REVIEW_ANNOTATIONS_PATH = ROOT / "data" / "review" / "visual_review_annotations.json"
 QUALITY_RULES_PATH = ROOT / "config" / "knowledge_quality_rules.json"
 OUTPUT_PATH = ROOT / "data" / "knowledge" / "douyin_knowledge_base.json"
+BILIBILI_KNOWLEDGE_PATH = ROOT / "data" / "knowledge" / "bilibili_knowledge_base.json"
 
 
 def timestamp(seconds):
@@ -35,6 +40,40 @@ def canonicalize_asr_text(text, rules):
     for source in sorted(replacements, key=len, reverse=True):
         canonical = canonical.replace(source, replacements[source])
     return canonical
+
+
+def repeated_drill_cue(text, duration, rules):
+    """Return a verified lexical drill cue candidate, without judging ASR.
+
+    Exact punctuation-delimited repetition is compacted for runtime retrieval.
+    Bilibili's stricter quality gate separately checks model confidence and
+    speech probability before excluding it from hallucination risk.
+    """
+
+    config = (rules or {}).get("bilibili_unattended", {})
+    canonical = canonicalize_asr_text(text, rules or {})
+    tokens = [
+        normalize
+        for item in re.split(r"[，,、。！？!?；;\s]+", canonical)
+        if (normalize := re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]+", "", item))
+    ]
+    if not tokens or len(set(tokens)) != 1:
+        return None
+    minimum_count = int(config.get("minimum_drill_repeat_count", 5))
+    terms = {
+        re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]+", "", str(item))
+        for item in config.get("drill_repeat_terms", [])
+    }
+    cue = tokens[0]
+    cue_rate = len(tokens) / duration if duration > 0 else float("inf")
+    if (
+        len(tokens) < minimum_count
+        or cue not in terms
+        or cue_rate < float(config.get("minimum_drill_cues_per_second", 0.2))
+        or cue_rate > float(config.get("maximum_drill_cues_per_second", 4.0))
+    ):
+        return None
+    return {"cue": cue, "count": len(tokens), "cue_rate": cue_rate}
 
 
 def evidence_window(segments, index, rules):
@@ -176,10 +215,13 @@ def runtime_transcript_segments(segments, rules=None):
     for segment in segments:
         raw_text = re.sub(r"\s+", " ", str(segment.get("text") or "")).strip()
         text = canonicalize_asr_text(raw_text, rules or {})
-        if not text:
-            continue
         start = round(float(segment.get("start") or 0), 2)
         end = round(float(segment.get("end") or start), 2)
+        drill = repeated_drill_cue(text, max(0.0, end - start), rules or {})
+        if drill:
+            text = f"{drill['cue']}（连续训练口令×{drill['count']}）"
+        if not text:
+            continue
         item = {
                 "start": start,
                 "end": end,
@@ -188,6 +230,8 @@ def runtime_transcript_segments(segments, rules=None):
             }
         if text != raw_text:
             item["raw_text"] = raw_text
+        if drill:
+            item["repetition_count"] = drill["count"]
         compact.append(item)
     return compact
 
@@ -232,7 +276,33 @@ def topic_terms(item, rules):
     return sorted(set(matched), key=lambda term: (-len(term), term))
 
 
-def automatic_note(item, segments, rules):
+def normalize_provenance_text(text, rules):
+    return re.sub(
+        r"\s+",
+        "",
+        canonicalize_asr_text(text, rules),
+    ).lower()
+
+
+def filter_evidence_by_provenance(evidence, provenance_text, rules):
+    """Keep only evidence that remains a contiguous excerpt of the raw source."""
+
+    normalized_source = normalize_provenance_text(provenance_text, rules)
+    accepted = []
+    rejected = 0
+    for item in evidence:
+        normalized_evidence = normalize_provenance_text(
+            item.get("text", ""),
+            rules,
+        )
+        if normalized_evidence and normalized_evidence in normalized_source:
+            accepted.append(item)
+        else:
+            rejected += 1
+    return accepted, rejected
+
+
+def automatic_note(item, segments, rules, provenance_text=None):
     evidence_rules = rules["evidence"]
     teaching_pattern = compile_terms(evidence_rules["teaching_terms"])
     topic_values = topic_terms(item, rules)
@@ -284,6 +354,41 @@ def automatic_note(item, segments, rules):
         evidence_rules["action_cue_limit"],
         rules,
     )
+    provenance_rejections = {
+        "key_evidence": 0,
+        "coverage_evidence": 0,
+        "error_evidence": 0,
+        "action_cues": 0,
+    }
+    if provenance_text is not None:
+        key_evidence, provenance_rejections["key_evidence"] = (
+            filter_evidence_by_provenance(
+                key_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        coverage_evidence, provenance_rejections["coverage_evidence"] = (
+            filter_evidence_by_provenance(
+                coverage_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        error_evidence, provenance_rejections["error_evidence"] = (
+            filter_evidence_by_provenance(
+                error_evidence,
+                provenance_text,
+                rules,
+            )
+        )
+        action_cues, provenance_rejections["action_cues"] = (
+            filter_evidence_by_provenance(
+                action_cues,
+                provenance_text,
+                rules,
+            )
+        )
     canonical_segments = [
         canonicalize_asr_text(segment["text"], rules) for segment in segments
     ]
@@ -337,6 +442,10 @@ def automatic_note(item, segments, rules):
             "unique_teaching_terms": unique_teaching_terms,
             "instruction_signal_matches": instruction_signal_matches,
             "evidence_text_characters": evidence_text_characters,
+            "provenance_rejected_evidence_count": sum(
+                provenance_rejections.values()
+            ),
+            "provenance_rejections": provenance_rejections,
             "passed": not issues,
             "issues": issues,
         },
@@ -370,11 +479,13 @@ def apply_review_annotation(record, review_annotation):
             "note": "人工视觉复核：非教学视频，不作为教练证据使用。",
         }
     elif status == "low_value":
-        record["processing_status"] = "low_value"
+        record["processing_status"] = "ready"
         record["confidence"] = "reviewed_low_value"
         note = record.get("teaching_note") or {}
         note["review_summary"] = review_annotation["review_notes"]
-        note["note"] = "人工视觉复核：存在教学内容，但证据价值不足，不进入回答检索。"
+        note["note"] = (
+            "人工视觉复核：存在教学内容，但只可在主证据覆盖不足或需要补充条件、纠错、训练与反例时使用。"
+        )
         record["teaching_note"] = note
     elif status == "needs_correction":
         record["processing_status"] = "needs_correction"
@@ -443,7 +554,26 @@ def apply_review_annotation(record, review_annotation):
     return record
 
 
-def build_record(item, transcript_path, transcript, curated, review_annotations, rules):
+def portable_transcript_reference(transcript_path, transcript_root):
+    transcript_path = Path(transcript_path)
+    transcript_root = Path(transcript_root)
+    try:
+        relative = transcript_path.relative_to(transcript_root)
+    except ValueError:
+        return str(transcript_path.relative_to(ROOT))
+    return str(Path("data/transcripts/douyin") / relative)
+
+
+def build_record(
+    item,
+    transcript_path,
+    transcript,
+    curated,
+    review_annotations,
+    rules,
+    *,
+    transcript_root=TRANSCRIPT_ROOT,
+):
     segments = transcript.get("segments") or []
     transcript_quality = assess_transcript(transcript, rules)
     automatic = automatic_note(item, segments, rules)
@@ -468,6 +598,9 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
         "video_id": item["video_id"],
         "evidence_id": item["video_id"],
         "source_type": "douyin_video",
+        "retrieval_cohort": item.get(
+            "retrieval_cohort", "stable_baseline"
+        ),
         "canonical_url": item["url"],
         "parent_source_id": None,
         "clip_start_seconds": None,
@@ -479,7 +612,10 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
         "duration_seconds": round(transcript.get("duration") or 0, 1),
         "processing_status": initial_status,
         "confidence": initial_confidence,
-        "transcript_file": str(transcript_path.relative_to(ROOT)),
+        "transcript_file": portable_transcript_reference(
+            transcript_path,
+            transcript_root,
+        ),
         "quality": {
             "transcript": transcript_quality,
             "automatic_evidence": automatic["quality"],
@@ -508,9 +644,38 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
     review_annotation = review_annotations.get(item["video_id"])
     if review_annotation:
         apply_review_annotation(record, review_annotation)
+    record["answer_eligibility"] = (
+        "supplemental"
+        if record.get("review_status") == "low_value"
+        and record["processing_status"] == "ready"
+        else (
+            "primary"
+            if record["processing_status"] == "ready"
+            else "none"
+        )
+    )
+    record["evidence_roles"] = infer_evidence_roles(
+        record.get("category"),
+        record.get("retrieval_title") or record.get("title"),
+        record.get("teaching_note"),
+    )
+    record["metadata_title_trust"] = (
+        "reviewed"
+        if record.get("review_status") == "approved" or is_curated
+        else "not_applicable"
+    )
     transcript_backed = (
         record["processing_status"] == "ready"
         and record["confidence"] != "visual_reviewed"
+    )
+    record["runtime_evidence_mode"] = (
+        "full_transcript"
+        if transcript_backed
+        else (
+            "reviewed_visual_summary"
+            if record["processing_status"] == "ready"
+            else "quarantined"
+        )
     )
     scoped_segments = filter_segments_by_time_ranges(
         segments,
@@ -522,7 +687,15 @@ def build_record(item, transcript_path, transcript, curated, review_annotations,
     return record
 
 
-def build_knowledge(queue, curated_data, review_annotations_data, transcripts, rules):
+def build_knowledge(
+    queue,
+    curated_data,
+    review_annotations_data,
+    transcripts,
+    rules,
+    *,
+    transcript_root=TRANSCRIPT_ROOT,
+):
     curated = {item["video_id"]: item for item in curated_data["videos"]}
     review_annotations = {
         item["video_id"]: item
@@ -540,7 +713,15 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
             continue
         transcript = json.loads(transcript_path.read_text(encoding="utf-8"))
         records.append(
-            build_record(item, transcript_path, transcript, curated, review_annotations, rules)
+            build_record(
+                item,
+                transcript_path,
+                transcript,
+                curated,
+                review_annotations,
+                rules,
+                transcript_root=transcript_root,
+            )
         )
     if missing_transcripts:
         raise SystemExit("Missing transcripts: " + ", ".join(missing_transcripts))
@@ -550,7 +731,7 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
         status_counts[status] = status_counts.get(status, 0) + 1
     return {
         "version": 1,
-        "evidence_schema_version": 1,
+        "evidence_schema_version": 2,
         "scope": "刘辉羽毛球抖音教学视频",
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "quality_rules_version": rules["version"],
@@ -558,6 +739,18 @@ def build_knowledge(queue, curated_data, review_annotations_data, transcripts, r
         "knowledge_counts": {
             "videos": len(records),
             **status_counts,
+            "primary": sum(
+                item.get("answer_eligibility") == "primary"
+                for item in records
+            ),
+            "supplemental": sum(
+                item.get("answer_eligibility") == "supplemental"
+                for item in records
+            ),
+            "answer_ineligible": sum(
+                item.get("answer_eligibility") == "none"
+                for item in records
+            ),
             "curated": sum(item["confidence"] == "curated" for item in records),
             "visual_reviewed": sum(item["confidence"] == "visual_reviewed" for item in records),
             "reviewed_transcript": sum(
@@ -592,7 +785,75 @@ def reconcile_updated_at(candidate, existing=None, now=None):
     return candidate, True
 
 
+def merge_bilibili_knowledge(douyin, bilibili):
+    if not bilibili:
+        return douyin
+    merged = copy.deepcopy(douyin)
+    merged["scope"] = "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）"
+    merged["videos"] = douyin["videos"] + bilibili.get("videos", [])
+    status_counts = {}
+    for record in merged["videos"]:
+        status = record["processing_status"]
+        status_counts[status] = status_counts.get(status, 0) + 1
+    merged["source_queue_counts"] = {
+        "douyin": douyin.get("queue_counts", {}),
+        "bilibili": bilibili.get("queue_counts", {}),
+    }
+    merged["source_counts"] = {
+        source: sum(
+            item.get("source_type") == source for item in merged["videos"]
+        )
+        for source in ["douyin_video", "bilibili_video"]
+    }
+    merged["knowledge_counts"] = {
+        "videos": len(merged["videos"]),
+        **status_counts,
+        "primary": sum(
+            item.get("answer_eligibility") == "primary"
+            for item in merged["videos"]
+        ),
+        "supplemental": sum(
+            item.get("answer_eligibility") == "supplemental"
+            for item in merged["videos"]
+        ),
+        "answer_ineligible": sum(
+            item.get("answer_eligibility") == "none"
+            for item in merged["videos"]
+        ),
+        "curated": sum(item["confidence"] == "curated" for item in merged["videos"]),
+        "visual_reviewed": sum(
+            item["confidence"] == "visual_reviewed" for item in merged["videos"]
+        ),
+        "reviewed_transcript": sum(
+            item["confidence"] == "reviewed_transcript" for item in merged["videos"]
+        ),
+        "transcript_segment_videos": sum(
+            bool(item.get("transcript_segments")) for item in merged["videos"]
+        ),
+        "transcript_segments": sum(
+            len(item.get("transcript_segments") or []) for item in merged["videos"]
+        ),
+    }
+    return merged
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--transcript-cache-dir",
+        type=Path,
+        default=(
+            Path(os.environ[DOUYIN_TRANSCRIPT_CACHE_ENV]).expanduser()
+            if os.environ.get(DOUYIN_TRANSCRIPT_CACHE_ENV)
+            else TRANSCRIPT_ROOT
+        ),
+        help=(
+            "Readable Douyin transcript root "
+            f"(default: {DOUYIN_TRANSCRIPT_CACHE_ENV} or repository data)"
+        ),
+    )
+    args = parser.parse_args()
+    transcript_root = args.transcript_cache_dir.resolve()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     curated_data = json.loads(CURATED_PATH.read_text(encoding="utf-8"))
     review_annotations_data = (
@@ -601,10 +862,23 @@ def main():
         else {"items": []}
     )
     rules = json.loads(QUALITY_RULES_PATH.read_text(encoding="utf-8"))
-    transcripts = {path.stem: path for path in TRANSCRIPT_ROOT.rglob("*.json")}
+    transcripts = {
+        path.stem: path for path in transcript_root.rglob("*.json")
+    }
     output = build_knowledge(
-        queue, curated_data, review_annotations_data, transcripts, rules
+        queue,
+        curated_data,
+        review_annotations_data,
+        transcripts,
+        rules,
+        transcript_root=transcript_root,
     )
+    bilibili = (
+        json.loads(BILIBILI_KNOWLEDGE_PATH.read_text(encoding="utf-8"))
+        if BILIBILI_KNOWLEDGE_PATH.exists()
+        else None
+    )
+    output = merge_bilibili_knowledge(output, bilibili)
     existing = (
         json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
         if OUTPUT_PATH.exists()

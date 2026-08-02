@@ -6,284 +6,151 @@
 
 ![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)
 
-面向 Codex 的证据驱动羽毛球教练 Skill：把公开教学视频变成可检索、可引用、可回归验证的训练建议，并给出值得观看的视频、时间戳和证据边界。
+面向 Codex 的证据型羽毛球教练 Skill。你描述真实的技术、步法、战术、器材或训练问题，它会从已处理的抖音和 B 站教学资料中给出诊断、训练建议、值得观看的视频、时间戳和证据边界。
 
-[安装最新版](#安装稳定版) · [查看实际回答](#实际回答示例) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
+[安装 2.0.0](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-这是 **1.5.0 稳定版**。GitHub `main` 分支和 [`v1.5.0` Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v1.5.0) 提供当前正式版本；`develop` 用于后续增量维护。本项目不是刘辉本人，也不代表其个人观点或背书。
+这是 **2.0.0 稳定版**。GitHub main 分支和 [v2.0.0 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0) 提供正式版本；develop 用于后续开发。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
 
-## 30 秒了解它
+## 30 秒开始使用
 
-安装稳定版并重启 Codex 后，直接描述比赛或训练中的真实问题：
+安装并重启 Codex 后，直接说出你的场景：
 
-```text
-$liuhui-badminton-coach 我后场已经被动，来不及正常架拍，
-怎样把球回到底线？请区分正手头顶和反手处理，并给训练方法。
-```
+~~~text
+$liuhui-badminton-coach 我是业余中级双打选手。
+对手杀到反手身体附近时，我挡网经常冒高。
+请帮我区分拍面、击球点和到位问题，并给一个有陪练、每次 20 分钟的训练方案。
+~~~
 
-Skill 会先拆分场景与动作边界，再从已审核教学证据中选择视频；文字负责诊断和训练安排，视频负责展示空间动作。没有动作视频时，它会给排查顺序，但不会假装确认你的实际动作。
+Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分“来源明确说了什么”和“还需要看你的动作视频才能确认什么”。回答中的视频会带稳定 V 标签、evidence_id、规范链接和可用时间戳。
 
-## 实际回答示例
+## 2.0.0 带来了什么
 
-下面是维护者审核用例 `AQ001` 的精简展示，原始评测保存了完整回答、视频映射和禁用结论：
+- 同时使用抖音与 B 站知识库，覆盖技术动作、全场步法、单双打战术、网前小技术、发接发、装备与训练。
+- 只让通过来源、转写、证据质量和去重门禁的视频进入回答；标题和关键词只负责召回，不能单独证明技术结论。
+- 781 条主证据优先回答，175 条受限补充证据只在命中实际时间戳窗口时补足概念、条件、训练或器材信息。
+- 多问题回答不再被误解为“整篇最多 3 个视频”：每个结论最多 3 条最强证据，独立子问题或实质场景分支可以展示更多；简单问题不会为了凑数增加重复视频。
+- 本地反馈默认只保存在用户机器，确认前不会影响个性化；公开反馈还需要脱敏、明确授权、来源复核和回归测试。
+- 回答模型只读取紧凑 answer packet，完整上下文用于最终审计，两者由 SHA-256 绑定。
 
-> **问题：** 后场被动来不及架拍，怎么把球打到底线？
->
-> **诊断摘要：** 真正被动时不要硬补主动球的大架拍和完整侧身。拍子应更早从身体下方让到身后；击球点越低、越靠后，准备和挥拍幅度也要相应缩短，但拍速和力量传递不能丢。
->
-> **训练重点：** 先做“正常准备 → 听到被动指令 → 球拍从下方到身后 → 向上击球”的无球转换，再由陪练从半被动逐渐增加来球深度。每球只检查判断是否及时、框架是否匹配击球点、缩短动作后拍速是否仍然充分。
->
-> **证据示例：** [正手被动高远](https://www.douyin.com/video/7558912953539071292)，重点看 `00:27–00:40` 从下方到身后的引拍路线，以及 `01:54–02:03` 提前击球。
-
-完整回答还会区分正手头顶与反手被动、列出置信边界，并为每个引用视频提供稳定 `evidence_id` 和观看重点。
-
-## 项目亮点
-
-- **证据边界优先的 RAG**：视频标题和关键词只用于召回，具体技术结论必须落到教学笔记或带时间戳的转写窗口。
-- **从原始来源到 Skill 的完整流水线**：增量发现、分类、下载、转写、质量审核、知识库重建、索引生成、问答验证和发布均可脚本化运行。
-- **意图与场景约束**：保留正手/反手、前后场、单双打、主动/被动、目标动作、事件链和角色关系，减少相邻技术串线。
-- **反馈闭环**：本地反馈和 GitHub Issue 使用同一审核模型；确认后的错误会进入评测集，优先修复通用机制，而不是堆叠关键词补丁。
-- **可审计输出**：回答只引用当前轮次分配的 `V1...Vn` 标签、稳定 `evidence_id` 和规范链接，拒绝未审核或证据不足的视频。
-
-## 规模与当前基线
+## 当前知识与质量基线
 
 | 指标 | 当前值 | 说明 |
 | --- | ---: | --- |
-| 已处理公开视频 | 475 | 来源处理记录，不等同于全部教学内容 |
-| 可用于回答的教学视频 | 354 | 仅 `processing_status: ready` 可进入证据池 |
-| 转写证据 | 335 | 通过转写质量门禁 |
-| 视觉复核兜底 | 19 | 无法可靠依赖语音时使用人工摘要 |
-| 回答质量黄金用例 | 57/57 | 已维护者审核，含文本、边界、视频和禁用结论 |
-| 上下文评测 | 1.0 | 候选召回、选中召回、核心视频命中率均为当前基线 |
-| 硬负例误选 | 0 | 当前回归集中的不相关视频未被选中 |
-| 前向盲测 | 3/3 | 两轮共 8 条未见问法连续通过 |
-| 公共反馈信号 | 0 | 尚无真实 GitHub 反馈被晋升 |
+| 已处理公开视频 | 1245 | 完整来源目录，不等于全部可回答内容 |
+| B 站完整来源目录 | 767 | 599 条回答就绪、168 条策略排除或质量隔离、0 条待处理 |
+| 可用于回答的教学视频 | 956 | 只有 ready 内容进入证据池 |
+| 主证据 / 受限补充证据 | 781 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
+| 转写证据 | 763 | 7,724/7,724 条转写证据包含时间戳 |
+| 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
+| 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
+| 回答质量黄金用例 | 57/57 | 覆盖文字、边界、视频和禁用结论 |
+| 查询理解 | 143/143 | 结构化意图回归集 |
+| 语言变体稳健性 | 30/30 | 5 类问题、15 个基础案例 |
+| 硬负例误选 | 0 | 当前回归集共 194 个硬负例 |
+| 当前运行时独立生成审计 | 3/3 | 生成与复核由两个隔离任务完成 |
+| 公共反馈信号 | 0 | 反馈闭环已就绪，但不虚构真实用户数据 |
 
-上下文指标衡量的是问题理解、证据候选和最终视频选择，不等同于所有自然语言回答都已经人工审核。真实用户反馈仍是发现新错误类型的主要入口。
+这些数字描述当前受控语料和评测集，不表示所有自然语言问题都已经验证。具体回答仍以当轮证据和置信边界为准。
 
-## 系统架构
+## 安装稳定版
 
-```mermaid
-flowchart TD
-    A["抖音主页增量观察"] --> B["分类台账与处理队列"]
-    B --> C["下载与元数据核验"]
-    B --> D["转写或人工视觉复核"]
-    C --> E["结构化知识库"]
-    D --> E
-    E --> F["主题图谱、检索索引与质量信号"]
-    Q["用户自然语言问题"] --> G["意图与场景边界解析"]
-    G --> H["多查询召回、冲突过滤与最终选择"]
-    F --> H
-    H --> I["带视频、时间戳和证据边界的回答上下文"]
-    I --> J["Codex Skill 回答"]
-    J --> K["用户反馈与人工审核"]
-    K --> L["回归用例与通用机制修复"]
-    L --> F
-```
+日常使用需要 Python 3.10 或更高版本，不需要 OpenAI API key，也不需要安装转写依赖。
 
-运行时入口是 `skills/liuhui-badminton-coach/scripts/prepare_answer_context.py`。它先解析意图和边界，再做多查询召回、场景冲突过滤、候选合并、最终选择和证据窗口定位；低层 `search_knowledge.py` 只用于诊断，不应替代该入口。
-
-## 技术设计
-
-### 证据模型
-
-- `data/knowledge/douyin_knowledge_base.json` 是构建产物，保存视频状态、教学笔记、转写质量、主题和稳定链接。
-- `references/knowledge-base.json`、`retrieval-index.json`、`topic-map.json` 是随 Skill 发布的运行时副本。
-- `curated`、`reviewed_transcript`、`visual_reviewed` 表示不同证据强度；自动转写不是人工事实。
-- 具体结论必须有直接教学证据。标题、标签、主题归属和 n-gram 命中只能作为导航或召回线索。
-- 临时 CDN 地址、原始媒体、完整转写和本地用户反馈不进入 Git。
-
-### 问答编排
-
-每个问题只运行一次 `prepare_answer_context.py --answer-packet --audit-context context.json`。回答模型读取紧凑 `answer_packet`，完整上下文只用于最终审计和检索诊断；两者由 canonical JSON SHA-256 绑定。紧凑包删除检索评分、匹配词和重复策略文本，但不减少内部召回候选。
-
-按以下顺序读取：
-
-1. `question_interpretation`：确认正向意图、排除项、症状、事件链和拆分问题。
-2. `boundary`：先声明证据边界和适用条件。
-3. `answer_plan`：已评审范围只允许转述选中的证据原子；未覆盖范围保留 claim 级证据兼容模式，不得补入通用常识。
-4. `claim_evidence_map` 与 `completeness_contract`：限定逐结论引文、置信上限和不得遗漏的分支。
-5. `selected_videos`：这是唯一可以引用的视频集合，紧凑包只保留回答所需证据窗口。
-6. `feedback_prompt`：按当前回答动态生成 `V1...Vn` 反馈提示。
-
-这套边界专门防止“反手被动高远”召回正手内容、把发球问题交给后场击球视频，或把“杀球后来不及上网”降级成无关的泛网前步法。
-
-## 使用 Skill
-
-### 安装稳定版
-
-```bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/liuhui-badminton-coach-1.5.0.zip \
-  -o /tmp/liuhui-badminton-coach-1.5.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v1.5.0/SHA256SUMS.txt \
+~~~bash
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
+  -o /tmp/liuhui-badminton-coach-2.0.0.zip
+curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-1.5.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
-```
+~~~
 
-安装后运行：
+安装后检查：
 
-```bash
+~~~bash
 python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
-```
+~~~
 
-重新启动 Codex 后使用：
+然后重启 Codex。升级时可以重复安装命令；安装器会验证文件，并以新版本替换 Skill。
 
-```text
-$liuhui-badminton-coach 我是业余中级双打选手。对手杀到反手身体附近时，
-我挡网的拍面容易翻，回球经常冒高。请诊断原因，并给一个有陪练、每次 20 分钟的训练方案。
-```
+## 怎样提问效果最好
 
-### 如何提问效果最好
+推荐提供：
 
-推荐自然描述以下信息：
+- 你的水平，以及单打还是双打。
+- 来球、场区、正反手、主动或被动状态。
+- 你当前怎样处理，实际出现了什么症状。
+- 想改善的动作、战术或结果。
+- 是否能独练、有陪练或教练、每次可用多久。
 
-`水平 + 单打/双打 + 来球与场区 + 当前处理 + 具体症状 + 想改善的目标 + 训练条件`
+例如：
 
-尤其适合：
+~~~text
+我单打反手后场被动，来不及正常架拍，回球总不到底线。
+请区分判断慢、到位晚和发力问题，并给我能独练的步骤。
+~~~
 
-- 指定动作或变体：反手被动高远、遁地炮、杀上网、接杀挡网、双打接发。
-- 带因果链的诊断：“我杀球后经常来不及接下一拍网前球，单打应该怎样启动？”
-- 有明确条件的对比：“正手和反手被动高远在来不及架拍时分别怎么处理？”
-- 可执行的训练设计：说明是否独练、是否有陪练、每次可用时长和当前水平。
+~~~text
+双打接发时我习惯正手握拍，反手区容易顶不住。
+请说明握拍转换、站位和前三拍选择，并给对应视频。
+~~~
 
-宽泛问题只能得到宽泛证据；没有动作视频时，Skill 可以给症状排查顺序，但不能确认实际动作。它不用于医学诊断、效果保证、泛器材推荐或冒充刘辉本人。
+没有你的连续动作视频时，Skill 可以给证据支持的排查顺序，但不会声称已经确认唯一原因。它不用于医学诊断、效果保证、泛化购物推荐，也不会冒充刘辉或宣称得到其认可。
 
-## 评测与质量门禁
+## 视频为什么有时超过 3 条
 
-快速检查：
+“1–3 条”是单个结论的证据上限，不是整篇回答的总上限。一个简单问题通常只需要少量视频；复杂问题如果包含不同动作、单双打分支、技术与步法两个独立子问题，或需要主证据与受限补充证据承担不同作用，就可能展示更多。
 
-```bash
-python3 scripts/doctor.py
-python3 scripts/validate_project.py
-PYTHONPATH=scripts python3 -m unittest discover -s scripts -p 'test_*.py'
-```
+回答只展示最终 answer packet 中的视频，每条恰好一次，并按用途连续编号为 V1…Vn。内容簇去重、逐结论证据门和整篇 16 条候选硬上限会阻止重复或失控扩张。
 
-回答相关变更至少运行：
+## 反馈与隐私
 
-```bash
-python3 scripts/evaluate_answer_quality.py
-python3 scripts/evaluate_answer_context.py
-python3 scripts/evaluate_answer_audit.py
-python3 scripts/evaluate_diagnostic_answer_contract.py
-python3 scripts/evaluate_forward_test_results.py
-python3 scripts/evaluate_query_understanding.py
-python3 scripts/evaluate_query_equivalence.py
-```
+回答末尾会给出适用于当前标签的反馈格式，例如：
 
-完整构建与验证：
+~~~text
+V2 最有价值；V4 不相关；第 2 点结论不对；
+回答漏了“被动情况下如何处理”；
+你理解错了，我真正问的是“单打杀上网”。
+~~~
 
-```bash
-python3 scripts/run_full_update_pipeline.py
-python3 scripts/validate_project.py
-```
+明确反馈会先进入本地待确认队列。只有在你确认解析无误后，它才会影响本地个性化。记录器保留回答当时的精确标签映射；旧回答即使使用 V2、V3、V5 这样的稀疏标签，也不会被偷偷重编号或错绑到其他视频。
 
-每次质量迭代都要同时检查：
+若愿意公开分享，请使用 [Skill feedback Issue 模板](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml)。只有经过脱敏、授权、来源复核和回归测试的信号才可能进入公开 Skill；用户反馈不会直接变成羽毛球技术事实。
 
-- 正确候选是否被召回并进入最终集合。
-- 反例、相邻动作和不同角色的视频是否被排除。
-- 文本结论是否有直接证据，视频说明是否有观看重点。
-- 至少两轮此前未入库的问法是否连续通过。
-- 运行时指纹、审核维度和证据摘要是否被保存。
+## 来源与边界
 
-当前评测验证的是“可证据化的回答上下文”和维护者审核的答案快照。真实回答审计还需要保存原问题、完整回答、视频映射及人工指出的错误，不能只看检索分数。
+仓库不发布原始媒体、完整转写目录、临时 Cookie、平台凭据、模型缓存或用户本地反馈。公开链接仅作为来源引用。软件与自动化使用 [MIT License](LICENSE)；第三方视频、音频、标题、创作者名称、缩略图和转写不属于 MIT 授权范围，详见 [NOTICE](NOTICE)。
 
-## 反馈与回归闭环
+### 新数据怎样进入回答
 
-每次回答末尾都会提供当前轮次可用的反馈格式，例如：
+~~~mermaid
+flowchart LR
+    B["来源准入与媒体校验"] --> C["可解码媒体"]
+    C --> D["确定性ASR"]
+    D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]
+    P --> E["结构化知识库（含隔离审计记录）"]
+    E --> A["回答资格分层：primary / supplemental / none"]
+    A --> KG["概念-主题-证据角色图谱"]
+    A --> F["45秒 chunk-first + 受限窗口检索"]
+    F --> R["回答 packet 与最终审计"]
+~~~
 
-```text
-V2 不相关；第 2 点结论不对；回答漏了“被动情况下如何处理”。
-你理解错了，我真正问的是“被动后场如何尽快完成架拍”。
-```
+新增转写不会写入模型权重或成为 Codex 的会话记忆。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。完整通过的记录成为 `primary`；有直接教学窗口但元数据或适用范围需要收窄的记录成为 `supplemental`。来源、安全、转写质量或重复门禁失败时，系统保留审计状态并保持 `answer_eligibility: none`；只有生成级一致性门禁失败时，才回滚本轮生成产物。
 
-维护者处理真实错误时必须保留：原问题、Skill 完整回答或出错片段、当前 `V` 映射、稳定 `evidence_id` 和具体错误。先确认现有评测为什么没发现，再判断是意图、边界、证据、排序还是回答表达问题；新错误类型要先扩展评测，再修通用机制和回归案例。
+维护者恢复未完成的 B 站流水线只使用一个入口：
 
-本地反馈：
+~~~bash
+python3 scripts/run_bilibili_update_pipeline.py --install
+~~~
 
-```bash
-python3 skills/liuhui-badminton-coach/scripts/feedback.py list --status pending_review
-python3 skills/liuhui-badminton-coach/scripts/feedback.py review \
-  --feedback-id FEEDBACK_ID \
-  --decision accepted \
-  --note "已核对问题、视频和来源证据"
-```
+维护和贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)，发布校验与 SBOM 说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)，完整工程设计与开发评测请查看 develop 分支。
 
-GitHub 反馈请使用 [Skill feedback Issue 模板](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml)，只提交用户确认可以公开的脱敏内容。公共信号只有在来源、隐私、人工核证和回归测试均通过后才会晋升。
+## 分支与发布
 
-## 数据更新与维护
-
-维护侧入口：
-
-```text
-scripts/check_douyin_updates.py          增量主页观察与入队
-scripts/check_maintenance_health.py     知识新鲜度、积压和盲测健康检查
-scripts/process_douyin_ready_batch.py   下载、转写、重建和质量门禁
-scripts/run_full_update_pipeline.py     规则/笔记修改后的全量重建
-scripts/doctor.py                       环境与路径诊断
-scripts/validate_project.py             项目完整性验证
-scripts/package_skill_release.py        Skill 打包与校验和
-scripts/generate_release_sbom.py        CycloneDX 文件级 SBOM
-```
-
-新视频使用增量快照 `data/tmp/douyin_profile_incremental_snapshot.json`，它只记录本次观察到的近期卡片，不是完整主页归档。新视频的标准流程是：
-
-```text
-增量检查 -> 分类复核 -> 入队 -> 下载/转写 -> Review notes -> 知识库重建 -> 评测 -> PR
-```
-
-每周维护检查会审计主页观察、知识构建、处理队列、分类复核和盲测时间；也可以随时手动运行：
-
-```bash
-python3 scripts/check_maintenance_health.py --fail-on overdue
-```
-
-只修改规则、笔记或知识库结构时运行：
-
-```bash
-python3 scripts/run_full_update_pipeline.py
-```
-
-维护贡献请从 `develop` 创建短生命周期分支，提交与风险匹配的回归用例，不提交原始媒体、完整转写、临时 Cookie、模型缓存或用户本地反馈。详细约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。
-
-## 分支与发布模型
-
-- 稳定版：`main` / `v1.5.0`
-- 当前分支：`main`
-- 发布状态：`stable`
-- `develop`：下一版本的技术开发基线，README 使用 `unreleased` 文案。
-- `v1.5.0`：当前正式 Release；develop 上的实验性规则和未发布评测不代表稳定版行为。
-
-发布前必须在 `develop` 完成完整门禁，再通过 `develop -> main` 的发布 PR 更新版本号、构建产物和 README。发布后的紧急修复可以直接走小范围 PR，但下一轮开发仍需同步回 `develop`。
-
-## 仓库结构
-
-```text
-skills/liuhui-badminton-coach/   可安装 Skill、运行时参考文件和脚本
-data/                            来源索引、队列、审核记录和评测数据
-config/                          分类、检索、回答、训练与反馈规则
-scripts/                         入库、重建、评测、验证和发布工具
-docs/                            中英双语 GitHub Pages 项目网站
-output/                          知识图谱、审核报告和可视化产物
-```
-
-核心运行时文件：
-
-- `SKILL.md`：回答规范、证据边界和反馈协议。
-- `references/knowledge-base.json`：353 条可用教学证据。
-- `references/retrieval-index.json`：高召回检索索引。
-- `references/answer-selection-rules.json`：意图边界、条件轴和候选选择规则。
-- `references/diagnostic-answer-rules.json`：症状、假设、澄清、逐条证据与完备性规则。
-- `references/answer-audit-rules.json`：最终答案的证据、置信度、分支、完备性和引用门禁。
-- `scripts/prepare_answer_context.py`：唯一的问答上下文入口。
-- `scripts/audit_answer.py`：发送前的最终答案审计入口。
-
-## 技术栈与边界
-
-Python 3、Codex Skills、JSON 规则与构建产物、faster-whisper、Chrome DevTools Protocol、yt-dlp、Node.js、Draw.io/Mermaid 和 GitHub Actions。
-
-正式 Release 使用确定性 ZIP、SHA-256、CycloneDX SBOM 和 GitHub Artifact Attestation 记录构建来源；校验方法见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。
-
-原创软件代码和自动化脚本采用 [MIT License](LICENSE)。第三方视频、音频、创作者名称、标题、缩略图、转写和其他来源材料不包含在 MIT 授权中，详见 [NOTICE](NOTICE)。安全问题请参阅 [SECURITY.md](SECURITY.md)。公开视频链接仅作为来源引用，使用者和贡献者应自行遵守平台规则、版权和隐私要求。
+- 稳定版：`main` / `v2.0.0`
+- 开发版：`develop`
+- 正式安装包：[v2.0.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0)
+- `main` README 面向使用者；`develop` README 面向招聘官、技术面试官和贡献者。

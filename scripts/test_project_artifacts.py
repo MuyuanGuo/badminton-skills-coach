@@ -6,6 +6,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -125,10 +126,11 @@ class ProjectArtifactsTests(unittest.TestCase):
         self.assertEqual(status["excluded_non_teaching_ads_equipment"], 3)
         self.assertEqual(
             status["public_videos_collected"],
-            status["ready_teaching_videos"]
+            status["ready_source_counts"]["douyin_video"]
             + status["pending_human_review_or_processing"]
             + status["excluded_non_teaching_ads_equipment"],
         )
+        self.assertEqual(status["ready_source_counts"]["other_sources"], 0)
 
     def test_noncanonical_public_video_link_is_rejected(self):
         index, teaching, knowledge = self.fixture()
@@ -151,9 +153,33 @@ class ProjectArtifactsTests(unittest.TestCase):
                     "parent_source_id": "live:2026-07-21",
                     "clip_start_seconds": 315,
                     "clip_end_seconds": 372,
+                    "processing_status": "ready",
+                    "answer_eligibility": "primary",
+                    "evidence_roles": ["context"],
                 }
             ]
         )
+        self.assertEqual(result, [evidence_id])
+
+    def test_source_neutral_evidence_accepts_canonical_bilibili_video(self):
+        evidence_id = "bilibili:BV16G411y7Rs"
+        result = self.module.validate_evidence_records([
+            {
+                "video_id": evidence_id,
+                "evidence_id": evidence_id,
+                "source_type": "bilibili_video",
+                "canonical_url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+                "url": "https://www.bilibili.com/video/BV16G411y7Rs/",
+                "source_video_id": "BV16G411y7Rs",
+                "uploader_profile_id": "1423436652",
+                "parent_source_id": None,
+                "clip_start_seconds": None,
+                "clip_end_seconds": None,
+                "processing_status": "ready",
+                "answer_eligibility": "primary",
+                "evidence_roles": ["context"],
+            }
+        ])
         self.assertEqual(result, [evidence_id])
 
     def test_source_neutral_clip_requires_parent_and_complete_range(self):
@@ -170,6 +196,9 @@ class ProjectArtifactsTests(unittest.TestCase):
                         "parent_source_id": None,
                         "clip_start_seconds": 400,
                         "clip_end_seconds": None,
+                        "processing_status": "ready",
+                        "answer_eligibility": "primary",
+                        "evidence_roles": ["context"],
                     }
                 ]
             )
@@ -190,9 +219,24 @@ class ProjectArtifactsTests(unittest.TestCase):
         )
         self.assertEqual(
             status["public_videos_collected"],
-            status["ready_teaching_videos"]
+            status["ready_source_counts"]["douyin_video"]
             + status["pending_human_review_or_processing"]
             + status["excluded_non_teaching_ads_equipment"],
+        )
+        bilibili_knowledge = json.loads(
+            (
+                ROOT
+                / "data"
+                / "knowledge"
+                / "bilibili_knowledge_base.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            status["ready_source_counts"]["other_sources"],
+            sum(
+                video.get("processing_status") == "ready"
+                for video in bilibili_knowledge["videos"]
+            ),
         )
 
     def test_reference_sync_rolls_back_after_partial_failure(self):
@@ -253,6 +297,99 @@ class ProjectArtifactsTests(unittest.TestCase):
             self.assertEqual(len(changed), len(self.module.SKILL_REFERENCE_PATHS))
             self.assertEqual(self.module.skill_reference_mismatches(root), [])
 
+    def test_artifact_rollback_guard_restores_changed_and_new_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            existing = root / "existing.json"
+            created = root / "created.json"
+            existing.write_text("before", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "injected build failure"):
+                with self.module.artifact_rollback_guard([existing, created]):
+                    existing.write_text("after", encoding="utf-8")
+                    created.write_text("temporary", encoding="utf-8")
+                    raise RuntimeError("injected build failure")
+            self.assertEqual(existing.read_text(encoding="utf-8"), "before")
+            self.assertFalse(created.exists())
+
+    def test_artifact_rollback_guard_restores_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            existing = root / "existing.json"
+            created = root / "created.json"
+            existing.write_text("before", encoding="utf-8")
+            with self.assertRaises(KeyboardInterrupt):
+                with self.module.artifact_rollback_guard([existing, created]):
+                    existing.write_text("after", encoding="utf-8")
+                    created.write_text("temporary", encoding="utf-8")
+                    raise KeyboardInterrupt()
+            self.assertEqual(existing.read_text(encoding="utf-8"), "before")
+            self.assertFalse(created.exists())
+
+    def test_atomic_write_bundle_rolls_back_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.json"
+            second = root / "second.json"
+            first.write_bytes(b"old-first")
+            second.write_bytes(b"old-second")
+            replace_count = 0
+
+            def interrupt_second_replace(source, destination):
+                nonlocal replace_count
+                replace_count += 1
+                if replace_count == 2:
+                    raise KeyboardInterrupt()
+                os.replace(source, destination)
+
+            with self.assertRaises(KeyboardInterrupt):
+                self.module.atomic_write_bundle(
+                    {
+                        first: b"new-first",
+                        second: b"new-second",
+                    },
+                    replace_func=interrupt_second_replace,
+                )
+            self.assertEqual(first.read_bytes(), b"old-first")
+            self.assertEqual(second.read_bytes(), b"old-second")
+
+    def test_atomic_write_bundle_cleans_staging_on_keyboard_interrupt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.json"
+            second = root / "second.json"
+            first.write_bytes(b"old-first")
+            second.write_bytes(b"old-second")
+            real_stage = self.module._stage_bytes
+            stage_count = 0
+
+            def interrupt_second_stage(path, data):
+                nonlocal stage_count
+                stage_count += 1
+                if stage_count == 2:
+                    raise KeyboardInterrupt()
+                return real_stage(path, data)
+
+            with (
+                mock.patch.object(
+                    self.module,
+                    "_stage_bytes",
+                    side_effect=interrupt_second_stage,
+                ),
+                self.assertRaises(KeyboardInterrupt),
+            ):
+                self.module.atomic_write_bundle(
+                    {
+                        first: b"new-first",
+                        second: b"new-second",
+                    }
+                )
+            self.assertEqual(first.read_bytes(), b"old-first")
+            self.assertEqual(second.read_bytes(), b"old-second")
+            self.assertEqual(
+                sorted(path.name for path in root.iterdir()),
+                ["first.json", "second.json"],
+            )
+
     def test_packaged_knowledge_removes_unbundled_transcript_paths(self):
         source = json.dumps(
             {
@@ -272,6 +409,37 @@ class ProjectArtifactsTests(unittest.TestCase):
         self.assertFalse(packaged["transcript_files_bundled"])
         self.assertTrue(packaged["runtime_transcript_segments_bundled"])
         self.assertNotIn("transcript_file", packaged["videos"][0])
+
+    def test_packaged_knowledge_compacts_bilibili_transcript_segments(self):
+        source = json.dumps(
+            {
+                "videos": [
+                    {
+                        "video_id": "bilibili:BV1fixture",
+                        "source_type": "bilibili_video",
+                        "transcript_segments": [
+                            {"start": 0.0, "end": 1.0, "text": "握拍"}
+                        ],
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ).encode()
+        packaged = json.loads(
+            self.module.skill_reference_bytes(
+                Path("data/knowledge/douyin_knowledge_base.json"), source
+            )
+        )
+        video = packaged["videos"][0]
+        self.assertNotIn("transcript_segments", video)
+        self.assertEqual(
+            json.loads(video["transcript_segments_json"]),
+            [{"start": 0.0, "end": 1.0, "text": "握拍"}],
+        )
+        self.assertEqual(
+            packaged["bilibili_transcript_segments_encoding"],
+            "json_string_v1",
+        )
 
     def test_reviewed_evidence_signals_match_reviewed_registry(self):
         expected = self.signal_builder.build_payload()
@@ -316,6 +484,171 @@ class ProjectArtifactsTests(unittest.TestCase):
                 for command in commands
             )
         )
+        for required_gate in (
+            "scripts/evaluate_feedback_lifecycle.py",
+            "scripts/evaluate_metamorphic_robustness.py",
+            "scripts/benchmark_runtime.py",
+        ):
+            self.assertTrue(
+                any(required_gate in command for command in commands),
+                required_gate,
+            )
+        self.assertIn(
+            self.update_pipeline.IMPACT_REPORT_PATH,
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
+        self.assertIn(
+            ROOT
+            / "skills/liuhui-badminton-coach/references/topic-index.md",
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
+        self.assertIn(
+            ROOT / "output/video-link-health.json",
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
+
+    def test_full_update_pipeline_writes_exact_build_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger_path = root / "data/bilibili_classification_ledger.json"
+            queue_path = root / "data/processing/bilibili_queue.json"
+            knowledge_path = (
+                root / "data/knowledge/bilibili_knowledge_base.json"
+            )
+            manifest_path = root / "data/knowledge/build_manifest.json"
+            queue_path.parent.mkdir(parents=True)
+            manifest_path.parent.mkdir(parents=True)
+            build_id = "a" * 64
+            ledger_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {
+                                "bvid": "BV1Required",
+                                "decision": (
+                                    "required_transcription_policy"
+                                ),
+                            },
+                            {
+                                "bvid": "BV1Excluded",
+                                "decision": (
+                                    "excluded_transcription_policy"
+                                ),
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {
+                                "video_id": "BV1Required",
+                                "status": "transcribed",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {"source_video_id": "BV1Required"}
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "build_id": build_id,
+                        "corpus": {"pending_count": 0},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            receipt = root / "receipt.json"
+            with mock.patch.object(self.update_pipeline, "ROOT", root):
+                returned = self.update_pipeline.write_validation_receipt(
+                    receipt
+                )
+            self.assertEqual(returned, build_id)
+            self.assertEqual(
+                json.loads(receipt.read_text(encoding="utf-8")),
+                {"schema_version": 1, "build_id": build_id},
+            )
+
+    def test_full_update_pipeline_rejects_partial_bilibili_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger_path = root / "data/bilibili_classification_ledger.json"
+            queue_path = root / "data/processing/bilibili_queue.json"
+            knowledge_path = (
+                root / "data/knowledge/bilibili_knowledge_base.json"
+            )
+            manifest_path = root / "data/knowledge/build_manifest.json"
+            queue_path.parent.mkdir(parents=True)
+            manifest_path.parent.mkdir(parents=True)
+            ledger_path.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {
+                                "bvid": "BV1Missing",
+                                "decision": (
+                                    "required_transcription_policy"
+                                ),
+                            },
+                            {
+                                "bvid": "BV1Excluded",
+                                "decision": (
+                                    "excluded_transcription_policy"
+                                ),
+                            },
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {
+                                "video_id": "BV1Missing",
+                                "status": "downloaded",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            knowledge_path.write_text(
+                json.dumps({"videos": []}),
+                encoding="utf-8",
+            )
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "build_id": "a" * 64,
+                        "corpus": {"pending_count": 0},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with mock.patch.object(self.update_pipeline, "ROOT", root):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "every policy-required video",
+                ):
+                    self.update_pipeline.write_validation_receipt(
+                        root / "receipt.json"
+                    )
 
 
 if __name__ == "__main__":

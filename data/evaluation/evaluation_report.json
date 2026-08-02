@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "1.5.0",
-  "baseline_version": "v1.5.0",
+  "development_version": "2.0.0",
+  "baseline_version": "v2.0.0",
   "build": {
-    "id": "c06c9913945acbed",
-    "inputs_sha256": "3c40d9dd357760680ad1a1a70697f1e3361eb842115d6ceaadfed27fff96c722",
-    "runtime_sha256": "32b784f5d661bc735f43db4a5b5511d5ef940d8fe2c0f75dbe39df0ad3e0d2b8"
+    "id": "80d7cf0a34d0df58",
+    "inputs_sha256": "de6bbb8787185f806fba26f072dbbac8bce5858fab1f315e32fa0825082cf633",
+    "runtime_sha256": "8e93d52de52ebf66856e0778d5a44307e1232ed370d14a5f12e0816effab5145"
   },
   "summary": {
     "status": "pass",
-    "suites": 10,
-    "baseline_metrics": 44,
+    "suites": 13,
+    "baseline_metrics": 48,
     "regressions": 0
   },
   "evaluations": {
@@ -34,6 +34,8 @@
       "selection_truncated_cases": 0
     },
     "answer_quality": {
+      "measurement_type": "reviewed_static_answer_snapshots",
+      "current_model_generation_claimed": false,
       "cases": 57,
       "status_counts": {
         "maintainer_reviewed": 57
@@ -74,39 +76,151 @@
       "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
     },
+    "feedback_lifecycle": {
+      "status": "pass",
+      "queue_statuses": 5,
+      "promoted_signals": 0,
+      "promoted_regression_cases": 0,
+      "adversarial_contract_checks": 7,
+      "adversarial_contracts_passed": 7,
+      "contract_accuracy": 1.0,
+      "leaked_private_fields": [],
+      "signals_missing_reverified_provenance": [],
+      "failures": []
+    },
     "retrieval": {
       "cases": 57,
       "expected_videos": 173,
       "found_videos": 173,
       "candidate_recall": 1.0,
-      "primary_top_k": 0.9629629629629629,
-      "mean_reciprocal_rank": 0.7492504409171076,
-      "mean_ndcg_at_k": 0.8643728349002483,
-      "mean_known_precision_at_k": 0.5895989974937345,
-      "average_review_candidate_count": 12.298245614035087,
+      "primary_top_k": 0.9444444444444444,
+      "mean_reciprocal_rank": 0.6915871508464101,
+      "mean_ndcg_at_k": 0.8189941183349295,
+      "mean_known_precision_at_k": 0.429908103592314,
+      "average_review_candidate_count": 14.385964912280702,
       "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
+      "unjudged_new_source_exposure": {
+        "candidate_videos": 592,
+        "top_k_count": 81,
+        "top_k_rate": 0.11842105263157894,
+        "max_top_k_per_case": 3,
+        "review_count": 116,
+        "review_rate": 0.14146341463414633,
+        "max_review_per_case": 3,
+        "limits": {
+          "max_top_k_rate": 0.12,
+          "max_top_k_per_case": 3,
+          "max_review_rate": 0.15,
+          "max_review_per_case": 3
+        }
+      },
+      "evaluation_views": {
+        "production": {
+          "source_scope": "all_admitted_sources",
+          "ranking_metrics": "informational_when_gold_judgments_are_incomplete"
+        },
+        "stable_regression": {
+          "source_types": [
+            "douyin_video"
+          ],
+          "retrieval_cohorts": [
+            "stable_baseline"
+          ],
+          "purpose": "apples_to_apples_retrieval_regression"
+        }
+      },
+      "stable_regression": {
+        "cases": 57,
+        "expected_videos": 173,
+        "found_videos": 173,
+        "candidate_recall": 1.0,
+        "primary_top_k": 0.9629629629629629,
+        "mean_reciprocal_rank": 0.7492504409171076,
+        "mean_ndcg_at_k": 0.8639416260380391,
+        "mean_known_precision_at_k": 0.5807739044581149,
+        "average_review_candidate_count": 12.456140350877194,
+        "hard_negative_count": 194,
+        "hard_negative_top_k_violations": 0,
+        "hard_negative_review_violations": 0,
+        "top_k": 12
+      },
       "top_k": 12
     },
+    "metamorphic_robustness": {
+      "base_cases": 15,
+      "variants": 30,
+      "case_types": {
+        "diagnosis": 3,
+        "evidence_boundary": 3,
+        "tactics": 3,
+        "technical_action": 3,
+        "training_plan": 3
+      },
+      "passed": 30,
+      "pass_rate": 1.0,
+      "failure_taxonomy": {},
+      "failed": []
+    },
     "video_comprehension": {
-      "ready_videos": 354,
-      "understood_videos": 354,
+      "ready_videos": 956,
+      "understood_videos": 956,
       "understanding_coverage": 1.0,
-      "transcript_backed": 335,
-      "automatic_transcript": 329,
+      "transcript_backed": 763,
+      "automatic_transcript": 757,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
+      "evidence_provenance": {
+        "transcript_evidence_items": 9540,
+        "timestamped_transcript_evidence_items": 9540,
+        "transcript_timestamp_coverage": 1.0,
+        "reviewed_visual_observation_items": 19,
+        "synthesized_principle_items": 15,
+        "noncanonical_asr_occurrence_count": 0,
+        "noncanonical_asr_terms": {}
+      },
+      "automated_review_backlog": {},
       "runtime_lookup_coverage": 1.0,
       "failure_count": 0
     },
     "forward_tests": {
+      "measurement_type": "historical_generation_review",
+      "current_runtime_match": false,
+      "current_runtime_generation_claimed": false,
       "critical_cases": 3,
       "blind_passes": 3,
       "unseen_rounds": 6,
       "unseen_cases": 24,
       "consecutive_passes": 6,
       "failed": []
+    },
+    "live_generation": {
+      "measurement_type": "current_answer_runtime_generation_review",
+      "review_status": "current_reviewed",
+      "snapshot_integrity_status": "valid_review_snapshot",
+      "current_runtime_match": true,
+      "current_runtime_generation_claimed": true,
+      "release_eligible": true,
+      "runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
+      "runtime_fingerprint_scope": "answer_semantics",
+      "reviewed_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
+      "current_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
+      "reviewed_artifact_runtime_fingerprint": "563de5812b1c8683ebaee79209fb9c17b4e6503b8a8dfe2a27045686b93d9c42",
+      "current_artifact_runtime_fingerprint": "a516523836482fbc7b79c235d36e3108c28a05e4b9d97958be4744346cdbe653",
+      "artifact_runtime_match": false,
+      "critical_cases": 3,
+      "independently_reviewed": 3,
+      "current_runtime_audits_rerun": true,
+      "passed": 3,
+      "minimum_manual_score": 5,
+      "failed": [],
+      "generator": {
+        "provider": "OpenAI",
+        "model": "Codex",
+        "model_version": "GPT-5"
+      },
+      "reviewer": "/root/forward_legacy_feedback:release-v2.0.0-independent-reviewer"
     }
   },
   "baseline_comparison": [
@@ -116,6 +230,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -124,6 +239,7 @@
       "baseline": 21,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -132,6 +248,7 @@
       "baseline": true,
       "direction": "equal",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -140,6 +257,7 @@
       "baseline": true,
       "direction": "equal",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -148,6 +266,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -156,6 +275,7 @@
       "baseline": 57,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -164,6 +284,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -172,6 +293,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -180,6 +302,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -188,6 +311,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -196,6 +320,7 @@
       "baseline": 0,
       "direction": "at_most",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -204,6 +329,7 @@
       "baseline": 57,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -212,6 +338,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -220,6 +347,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -228,6 +356,7 @@
       "baseline": 57,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -236,6 +365,7 @@
       "baseline": [],
       "direction": "equal",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -244,6 +374,7 @@
       "baseline": [],
       "direction": "equal",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -252,6 +383,7 @@
       "baseline": 2,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -260,6 +392,7 @@
       "baseline": 2,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -268,6 +401,7 @@
       "baseline": 143,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -276,6 +410,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -284,6 +419,7 @@
       "baseline": 14,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -292,6 +428,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -300,6 +437,7 @@
       "baseline": 13,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -308,6 +446,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -316,6 +455,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -324,6 +464,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -332,38 +473,79 @@
       "baseline": 57,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
-      "metric": "retrieval.primary_top_k",
+      "metric": "retrieval.stable_regression.primary_top_k",
       "current": 0.9629629629629629,
       "baseline": 0.9629629629629629,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
-      "metric": "retrieval.mean_reciprocal_rank",
+      "metric": "retrieval.stable_regression.mean_reciprocal_rank",
       "current": 0.7492504409171076,
       "baseline": 0.7492504409171076,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
-      "metric": "retrieval.mean_ndcg_at_k",
-      "current": 0.8643728349002483,
-      "baseline": 0.8643728349002483,
+      "metric": "retrieval.stable_regression.mean_ndcg_at_k",
+      "current": 0.8639416260380391,
+      "baseline": 0.8639416260380391,
       "direction": "at_least",
       "tolerance": 0.002,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
-      "metric": "retrieval.average_review_candidate_count",
-      "current": 12.298245614035087,
-      "baseline": 12.298245614035087,
+      "metric": "retrieval.stable_regression.average_review_candidate_count",
+      "current": 12.456140350877194,
+      "baseline": 12.456140350877194,
       "direction": "at_most",
-      "tolerance": 0.1,
+      "tolerance": 0.25,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
+      "current": 0.11842105263157894,
+      "baseline": 0.12,
+      "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "retrieval.unjudged_new_source_exposure.limits.max_top_k_rate",
+      "passed": true
+    },
+    {
+      "metric": "retrieval.unjudged_new_source_exposure.max_top_k_per_case",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "retrieval.unjudged_new_source_exposure.limits.max_top_k_per_case",
+      "passed": true
+    },
+    {
+      "metric": "retrieval.unjudged_new_source_exposure.review_rate",
+      "current": 0.14146341463414633,
+      "baseline": 0.15,
+      "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "retrieval.unjudged_new_source_exposure.limits.max_review_rate",
+      "passed": true
+    },
+    {
+      "metric": "retrieval.unjudged_new_source_exposure.max_review_per_case",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "retrieval.unjudged_new_source_exposure.limits.max_review_per_case",
       "passed": true
     },
     {
@@ -372,6 +554,7 @@
       "baseline": 0,
       "direction": "at_most",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -380,14 +563,16 @@
       "baseline": 0,
       "direction": "at_most",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 354,
-      "baseline": 354,
+      "current": 956,
+      "baseline": 956,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -396,14 +581,16 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 335,
-      "baseline": 335,
+      "current": 763,
+      "baseline": 763,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -412,6 +599,7 @@
       "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -420,6 +608,7 @@
       "baseline": 0,
       "direction": "at_most",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -428,6 +617,7 @@
       "baseline": 3,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -436,6 +626,7 @@
       "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -444,6 +635,7 @@
       "baseline": 24,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -452,6 +644,7 @@
       "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     },
     {
@@ -460,6 +653,7 @@
       "baseline": [],
       "direction": "equal",
       "tolerance": 0,
+      "contract_source": "stable_baseline",
       "passed": true
     }
   ]

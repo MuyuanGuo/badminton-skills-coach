@@ -5,8 +5,10 @@ import json
 import os
 import re
 import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 
+from evidence_admission import validate_answer_evidence_fields
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,6 +24,10 @@ SKILL_REFERENCE_PATHS = (
     (
         Path("data/knowledge/retrieval_index.json"),
         Path("skills/liuhui-badminton-coach/references/retrieval-index.json"),
+    ),
+    (
+        Path("data/knowledge/evidence_graph.json"),
+        Path("skills/liuhui-badminton-coach/references/evidence-graph.json"),
     ),
     (
         Path("config/retrieval_rules.json"),
@@ -165,6 +171,29 @@ def validate_evidence_records(records, label="Knowledge base"):
                 raise ArtifactConsistencyError(
                     f"{label} Douyin evidence {evidence_id!r} is not canonical"
                 )
+        if source_type == "bilibili_video":
+            source_video_id = str(record.get("source_video_id") or "")
+            expected_evidence_id = f"bilibili:{source_video_id}"
+            expected_url = f"https://www.bilibili.com/video/{source_video_id}/"
+            if (
+                not re.fullmatch(r"BV[0-9A-Za-z]{10}", source_video_id)
+                or evidence_id != expected_evidence_id
+                or record.get("video_id") != expected_evidence_id
+                or canonical_url != expected_url
+                or record.get("url") != expected_url
+                or record.get("uploader_profile_id") != "1423436652"
+                or parent_source_id is not None
+                or start is not None
+            ):
+                raise ArtifactConsistencyError(
+                    f"{label} Bilibili evidence {evidence_id!r} is not canonical"
+                )
+        try:
+            validate_answer_evidence_fields(record)
+        except ValueError as error:
+            raise ArtifactConsistencyError(
+                f"{label} evidence {evidence_id!r} has invalid answer admission: {error}"
+            ) from error
         evidence_ids.append(evidence_id)
     if len(evidence_ids) != len(set(evidence_ids)):
         raise ArtifactConsistencyError(f"{label} contains duplicate evidence IDs")
@@ -202,7 +231,31 @@ def derive_project_status(video_index, teaching_filter, knowledge):
     teaching_ids = _record_ids(
         teaching_filter.get("videos", []), "Teaching-filter output"
     )
-    knowledge_ids = _record_ids(knowledge.get("videos", []), "Knowledge base")
+    knowledge_records = knowledge.get("videos", [])
+    has_evidence_schema = all(
+        all(
+            field in record
+            for field in [
+                "evidence_id",
+                "source_type",
+                "canonical_url",
+                "parent_source_id",
+                "clip_start_seconds",
+                "clip_end_seconds",
+            ]
+        )
+        for record in knowledge_records
+    )
+    knowledge_ids = (
+        validate_evidence_records(knowledge_records, "Knowledge base")
+        if has_evidence_schema
+        else _record_ids(knowledge_records, "Knowledge base")
+    )
+    douyin_knowledge_ids = [
+        str(record["video_id"])
+        for record in knowledge_records
+        if record.get("source_type", "douyin_video") == "douyin_video"
+    ]
 
     counts = teaching_filter.get("counts", {})
     collected = len(index_ids)
@@ -229,7 +282,7 @@ def derive_project_status(video_index, teaching_filter, knowledge):
 
     index_id_set = set(index_ids)
     teaching_id_set = set(teaching_ids)
-    knowledge_id_set = set(knowledge_ids)
+    knowledge_id_set = set(douyin_knowledge_ids)
     if not teaching_id_set.issubset(index_id_set):
         raise ArtifactConsistencyError(
             "Teaching-filter output references videos missing from the index"
@@ -241,20 +294,24 @@ def derive_project_status(video_index, teaching_filter, knowledge):
 
     status_counts = {status: 0 for status in sorted(ALLOWED_KNOWLEDGE_STATUSES)}
     ready_by_id = {}
-    for video in knowledge.get("videos", []):
+    douyin_status_counts = {status: 0 for status in sorted(ALLOWED_KNOWLEDGE_STATUSES)}
+    for video in knowledge_records:
         status = video.get("processing_status")
         if status not in ALLOWED_KNOWLEDGE_STATUSES:
             raise ArtifactConsistencyError(
                 f"Knowledge video {video['video_id']} has unknown status: {status!r}"
             )
         status_counts[status] += 1
+        if video.get("source_type", "douyin_video") == "douyin_video":
+            douyin_status_counts[status] += 1
         if status in READY_STATUSES:
             ready_by_id[str(video["video_id"])] = video
 
     ready = sum(status_counts[status] for status in READY_STATUSES)
     ready_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in READY_STATUSES
     }
     if not ready_ids.issubset(teaching_id_set):
@@ -263,12 +320,14 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         )
     knowledge_pending_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in PENDING_KNOWLEDGE_STATUSES
     }
     knowledge_excluded_ids = {
         str(video["video_id"])
-        for video in knowledge.get("videos", [])
+        for video in knowledge_records
+        if video.get("source_type", "douyin_video") == "douyin_video"
         if video.get("processing_status") in EXCLUDED_KNOWLEDGE_STATUSES
     }
     knowledge_pending = len(knowledge_pending_ids & teaching_id_set)
@@ -278,7 +337,10 @@ def derive_project_status(video_index, teaching_filter, knowledge):
     excluded = pre_pipeline_excluded + post_pipeline_excluded
     pending = filter_review + pipeline_pending + knowledge_pending
 
-    if collected != ready + pending + excluded:
+    douyin_ready = sum(
+        douyin_status_counts[status] for status in READY_STATUSES
+    )
+    if collected != douyin_ready + pending + excluded:
         raise ArtifactConsistencyError(
             "Collected videos do not equal ready plus pending plus excluded videos"
         )
@@ -299,6 +361,10 @@ def derive_project_status(video_index, teaching_filter, knowledge):
         "excluded_non_teaching_ads_equipment": excluded,
         "pending_human_review_or_processing": pending,
         "ready_teaching_videos": ready,
+        "ready_source_counts": {
+            "douyin_video": douyin_ready,
+            "other_sources": ready - douyin_ready,
+        },
         "processed_pipeline_videos": len(knowledge_ids),
         "kept_teaching_candidates": kept_teaching,
         "pre_pipeline_excluded": pre_pipeline_excluded,
@@ -330,7 +396,7 @@ def _stage_bytes(path, data):
         mode = path.stat().st_mode & 0o777 if path.exists() else 0o644
         temporary_path.chmod(mode)
         return temporary_path
-    except Exception:
+    except BaseException:
         temporary_path.unlink(missing_ok=True)
         raise
 
@@ -342,13 +408,15 @@ def atomic_write_bundle(payloads, replace_func=os.replace):
     originals = {
         path: path.read_bytes() if path.exists() else None for path in normalized
     }
-    staged = {path: _stage_bytes(path, data) for path, data in normalized.items()}
+    staged = {}
     replaced = []
     try:
+        for path, data in normalized.items():
+            staged[path] = _stage_bytes(path, data)
         for path, temporary_path in staged.items():
             replace_func(temporary_path, path)
             replaced.append(path)
-    except Exception:
+    except BaseException:
         for path in reversed(replaced):
             original = originals[path]
             if original is None:
@@ -366,6 +434,30 @@ def atomic_write_text(path, text):
     atomic_write_bundle({Path(path): text.encode("utf-8")})
 
 
+@contextmanager
+def artifact_rollback_guard(paths):
+    """Restore a declared artifact set when a multi-command build fails."""
+
+    normalized = tuple(dict.fromkeys(Path(path) for path in paths))
+    originals = {
+        path: path.read_bytes() if path.exists() else None for path in normalized
+    }
+    try:
+        yield
+    except BaseException:
+        restore_payloads = {
+            path: content
+            for path, content in originals.items()
+            if content is not None
+        }
+        if restore_payloads:
+            atomic_write_bundle(restore_payloads)
+        for path, content in originals.items():
+            if content is None:
+                path.unlink(missing_ok=True)
+        raise
+
+
 def skill_reference_bytes(source_relative, source_bytes):
     """Build the portable Skill payload for a canonical reference source."""
 
@@ -375,8 +467,18 @@ def skill_reference_bytes(source_relative, source_bytes):
     payload = json.loads(source_bytes.decode("utf-8"))
     for video in payload.get("videos", []):
         video.pop("transcript_file", None)
+        if (
+            video.get("source_type") == "bilibili_video"
+            and "transcript_segments" in video
+        ):
+            video["transcript_segments_json"] = json.dumps(
+                video.pop("transcript_segments"),
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
     payload["transcript_files_bundled"] = False
     payload["runtime_transcript_segments_bundled"] = True
+    payload["bilibili_transcript_segments_encoding"] = "json_string_v1"
     return (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 

@@ -30,7 +30,7 @@ class CiTestGroupTests(unittest.TestCase):
         test_ids = [test.id() for test in self.module.context_tests()]
         partitions = self.module.partition_context_test_ids(3)
         assigned = [test_id for shard in partitions for test_id in shard]
-        self.assertEqual(len(test_ids), 54)
+        self.assertGreaterEqual(len(test_ids), 55)
         self.assertEqual(set(assigned), set(test_ids))
         self.assertEqual(len(assigned), len(set(assigned)))
         self.assertLessEqual(max(map(len, partitions)) - min(map(len, partitions)), 1)

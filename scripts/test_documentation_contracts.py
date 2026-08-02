@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+import json
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+README_ZH = ROOT / "README.md"
+README_EN = ROOT / "README.en.md"
+SKILL = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
+ANSWER_WORKFLOW = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "answer-workflow.md"
+)
+RECOVERY_COMMAND = (
+    "python3 scripts/run_bilibili_update_pipeline.py --install"
+)
+
+
+class DocumentationContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.readme_zh = README_ZH.read_text(encoding="utf-8")
+        cls.readme_en = README_EN.read_text(encoding="utf-8")
+        cls.skill = SKILL.read_text(encoding="utf-8")
+        cls.answer_workflow = ANSWER_WORKFLOW.read_text(encoding="utf-8")
+        cls.release_channel = json.loads(
+            (ROOT / "config" / "feedback_rules.json").read_text(
+                encoding="utf-8"
+            )
+        )["channel"]
+
+    def test_readme_audience_matches_release_channel(self):
+        if self.release_channel == "development":
+            self.assertIn(
+                "`develop` README 面向招聘官、技术面试官和贡献者",
+                self.readme_zh,
+            )
+            self.assertIn(
+                "The `develop` README targets recruiters, technical "
+                "interviewers, and contributors",
+                self.readme_en,
+            )
+        else:
+            self.assertIn("`main` README 面向使用者", self.readme_zh)
+            self.assertIn(
+                "The `main` README targets Skill users", self.readme_en
+            )
+
+    def test_bilibili_causal_chain_is_serial_and_bilingual(self):
+        for marker in (
+            'C --> D["确定性ASR"]',
+            'D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]',
+            'P --> E["结构化知识库（含隔离审计记录）"]',
+            'E --> A["回答资格分层',
+            'A --> KG["概念-主题-证据角色图谱',
+            'A --> F["45秒 chunk-first + 受限窗口检索',
+        ):
+            self.assertIn(marker, self.readme_zh)
+        for marker in (
+            'C --> D["Deterministic ASR"]',
+            'D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]',
+            'P --> E["Structured knowledge, including quarantine audit records"]',
+            'E --> A["Answer admission layers',
+            'A --> KG["Concept-topic-evidence-role graph',
+            'A --> F["45-second chunk-first plus bounded-window retrieval',
+        ):
+            self.assertIn(marker, self.readme_en)
+        self.assertNotIn('B --> D["确定性ASR', self.readme_zh)
+        self.assertNotIn('B --> D["Deterministic ASR', self.readme_en)
+
+    def test_new_text_memory_boundary_is_explicit_and_bilingual(self):
+        for marker in (
+            "新增转写不会写入模型权重或成为 Codex 的会话记忆",
+            "原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答",
+            "完整通过的记录成为 `primary`",
+            "成为 `supplemental`",
+        ):
+            self.assertIn(marker, self.readme_zh)
+        for marker in (
+            "A new transcript does not update model weights or become Codex "
+            "conversational memory",
+            "A raw `.json`, `.srt`, or `.txt` file alone changes no answer",
+            "A fully aligned record becomes `primary`",
+            "becomes `supplemental`",
+        ):
+            self.assertIn(marker, self.readme_en)
+
+    def test_automatic_isolation_and_rollback_are_distinct(self):
+        for marker in (
+            "保留审计状态并保持 `answer_eligibility: none`",
+            "受限补充证据",
+            "才回滚本轮生成产物",
+        ):
+            self.assertIn(marker, self.readme_zh)
+        for marker in (
+            "audit state is retained with `answer_eligibility: none`",
+            "bounded supplemental evidence",
+            "still roll back the generated artifacts for that run",
+        ):
+            self.assertIn(marker, self.readme_en)
+
+    def test_recovery_has_one_documented_entry_point(self):
+        self.assertEqual(self.readme_zh.count(RECOVERY_COMMAND), 1)
+        self.assertEqual(self.readme_en.count(RECOVERY_COMMAND), 1)
+        self.assertNotIn(RECOVERY_COMMAND, self.skill)
+        self.assertNotIn(RECOVERY_COMMAND, self.answer_workflow)
+
+    def test_runtime_docs_forbid_raw_transcript_shortcuts(self):
+        self.assertIn(
+            "New transcript files do not update model weights or memory",
+            self.skill,
+        )
+        self.assertIn(
+            "never read raw transcript files to fill an evidence gap",
+            self.skill,
+        )
+        self.assertIn(
+            "A transcript file on disk is not answer evidence",
+            self.answer_workflow,
+        )
+        self.assertIn(
+            "never inspect raw transcripts to repair a missing claim",
+            self.answer_workflow,
+        )
+        self.assertLessEqual(len(self.skill.encode("utf-8")), 12_000)
+
+
+if __name__ == "__main__":
+    unittest.main()

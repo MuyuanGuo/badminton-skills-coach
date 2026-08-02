@@ -25,7 +25,7 @@ After continuation, use `diagnostic_model.clarification_observations` as user-re
 
 Use `answer_turn_contract` as the handoff between context generation, answer composition, and final audit. Its `original_query` is the only valid question argument for `audit_answer.py`; `effective_query` is retrieval input, not replacement wording. Explicitly acknowledge every resolved answer, do not repeat any resolved question, and include every pending question rather than using a generic “请补充”. Each pending request must retain a non-empty `purpose`. The contract's evidence state and digest must match this turn's `selected_videos` and `claim_evidence_map`, so a prior turn's V labels and evidence IDs are never valid by inheritance.
 
-The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
+The answer packet exposes the same requirements as `query`, `answer_turn`, `claim_evidence_map`, and `completeness_contract` without retrieval scores and repeated policy prose. Evidence window text is stored once in `evidence_windows`; resolve the `window_ids` on atoms and selected videos through that table. In `reviewed_atoms_closed` mode, the planner/composer boundary is closed: only `selected_evidence_atoms[].verbalizable_claim` may become a technical conclusion, and every condition, scope, referenced evidence window, and confidence ceiling must remain attached. If an item has no selected atom, state the evidence gap or limit the response to the nontechnical contract. In `claim_evidence_fallback` mode, atom review has not yet covered that scope; preserve the existing claim-level allowlist and use only the compact source evidence windows.
 
 ## Diagnostic Contract
 
@@ -60,6 +60,8 @@ Still give purpose, a small set of reliable observation points, common errors, a
 
 `selected_videos` is the citation allowlist. Each item already contains a stable label, role, canonical URL, selection reasons, matched query units, teaching note, and query-matched transcript evidence.
 
+A transcript file on disk is not answer evidence and does not update model memory. Use it only after the validated release has packaged it as `ready` evidence and the current `claim_evidence_map` selects its window; never inspect raw transcripts to repair a missing claim.
+
 - `core` directly supports the complete question or one complete split query unit under exact requested conditions.
 - `supporting` covers a component, generic mechanism, reviewed evidence lead, or retrieval expansion. It cannot silently inherit conditions absent from the source.
 - `concept_match: exact_question` may support the complete question. `exact_query_unit` supports only its matched split unit. `component_support`, `reviewed_support`, and `expanded_support` support only their evidenced component or mechanism.
@@ -84,16 +86,16 @@ Use the following order, omitting only sections that truly do not apply:
 1. **直接回答**: answer the actual question and identify the situation.
 2. **文字解释**: synthesize all distinct supported points; for diagnosis, distinguish verified source mechanisms from the user's still-unverified cause and give observable checks. Do not copy transcripts line by line.
 3. **适用边界**: state conditions that change the advice.
-4. **核心视频与观看重点**: strongest one to three evidence items, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
-5. **完整相关视频**: every other selected worthwhile video, grouped by subtopic when long. Reuse labels and do not repeat URLs.
+4. **核心视频与观看重点**: strongest one to three evidence items overall, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
+5. **完整相关视频**: every other item in the packet's `selected_videos`, grouped by subtopic when long. Reuse labels and do not repeat URLs. More than three videos are expected when distinct claims, material scenario branches, or non-duplicate evidence roles require different sources; never truncate this list merely because the core section already has three.
 6. **置信边界**: separate source-backed facts, reasonable synthesis, and what requires watching the source or the user's own video.
 
-One claim may cite at most three strongest sources. A video URL appears once in the answer. A `V` label maps to one video for that answer turn and is never recycled for another video.
+One claim may cite at most three strongest sources, while an answer may contain more than three across distinct claims or branches. A simple claim should not gain redundant corroborating videos merely to increase the count. A video URL appears once in the answer. A `V` label maps to one video for that answer turn and is never recycled for another video.
 
 Before sending a diagnostic or other multi-claim answer, run the bundled final-answer auditor with the exact original question, the unmodified context JSON, and the final draft:
 
 ```bash
-python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --answer answer.md
+python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --packet answer-packet.json --answer answer.md
 ```
 
 Revise every reported error and rerun until `passed` is true. Do not weaken the context or edit its claim mappings to make a draft pass. This deterministic audit catches known contract violations; it does not replace source reading or human judgment.

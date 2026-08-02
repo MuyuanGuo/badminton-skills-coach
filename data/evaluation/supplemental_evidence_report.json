@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "corpus": {
+    "primary": 781,
+    "supplemental": 175,
+    "graph_edges": 17687
+  },
+  "positive_bounded_case": {
+    "query": "初学者低磅应该选高弹线还是耐打线？",
+    "selected": true,
+    "claim_visible": true,
+    "matched_window_count": 2
+  },
+  "weak_overlap_rejected": true,
+  "primary_preferred": true,
+  "maximum_supplemental_selected": 1,
+  "answer_packet_bytes": 6995,
+  "failures": []
+}

@@ -15,8 +15,12 @@ concurrency:
 
 jobs:
   static-and-unit:
-    name: Static and unit tests
+    name: Static and unit tests (Python ${{ matrix.python }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12"]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -24,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.12"
+          python-version: "${{ matrix.python }}"
 
       - name: Compile Python sources
         run: python -m compileall -q scripts skills/liuhui-badminton-coach/scripts
@@ -72,9 +76,37 @@ jobs:
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_feedback_signals.py
 
-      - name: Validate compact answer packets
+      - name: Audit feedback lifecycle
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_feedback_lifecycle.py
+
+      - name: Evaluate metamorphic robustness
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_metamorphic_robustness.py
+
+      - name: Enforce runtime performance budgets
+        if: matrix.kind == 'evaluations'
+        run: python scripts/benchmark_runtime.py
+
+      - name: Enforce 20-case compact answer-packet gate
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_answer_packet.py
+
+      - name: Validate Bilibili retrieval canaries
+        if: matrix.kind == 'evaluations'
+        run: python scripts/evaluate_bilibili_canaries.py
+
+      - name: Generate Bilibili mechanical wiring canaries
+        if: matrix.kind == 'evaluations'
+        run: >-
+          python scripts/generate_bilibili_wiring_canaries.py
+          --output "$RUNNER_TEMP/bilibili-wiring-canaries.json"
+
+      - name: Validate Bilibili mechanical wiring canaries
+        if: matrix.kind == 'evaluations'
+        run: >-
+          python scripts/evaluate_bilibili_wiring_canaries.py
+          "$RUNNER_TEMP/bilibili-wiring-canaries.json"
 
       - name: Run answer-context regression shard
         if: matrix.kind == 'context'
@@ -106,6 +138,7 @@ jobs:
 
       - name: Run DOM regression tests
         run: |
+          node scripts/test_bilibili_profile_snapshot_dom.mjs
           node scripts/test_douyin_profile_snapshot_dom.mjs
           node scripts/test_douyin_video_media_assets_dom.mjs
           node scripts/test_export_douyin_cookies_cdp.mjs

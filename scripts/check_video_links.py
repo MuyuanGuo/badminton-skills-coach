@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Check canonical Douyin links, with optional non-blocking network sampling."""
+"""Check canonical source links, with optional non-blocking network sampling."""
 
 import argparse
 import json
+import re
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -12,16 +13,33 @@ from project_artifacts import atomic_write_text
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "data" / "douyin_video_index.json"
+BILIBILI_INDEX_PATH = ROOT / "data" / "bilibili_video_index.json"
 OUTPUT_PATH = ROOT / "output" / "video-link-health.json"
 
 
 def syntax_check(videos):
     invalid = []
     for video in videos:
-        video_id = str(video.get("video_id", ""))
-        expected = f"https://www.douyin.com/video/{video_id}"
-        if not video_id.isdigit() or not 18 <= len(video_id) <= 20 or video.get("url") != expected:
-            invalid.append(video_id or "missing")
+        bvid = str(video.get("bvid") or "")
+        if bvid:
+            evidence_id = str(video.get("video_id") or "")
+            expected = f"https://www.bilibili.com/video/{bvid}/"
+            valid = (
+                evidence_id == f"bilibili:{bvid}"
+                and re.fullmatch(r"BV[0-9A-Za-z]{10}", bvid)
+                and video.get("url") == expected
+            )
+            identifier = evidence_id or bvid
+        else:
+            identifier = str(video.get("video_id", ""))
+            expected = f"https://www.douyin.com/video/{identifier}"
+            valid = (
+                identifier.isdigit()
+                and 18 <= len(identifier) <= 20
+                and video.get("url") == expected
+            )
+        if not valid:
+            invalid.append(identifier or "missing")
     return sorted(set(invalid))
 
 
@@ -65,7 +83,8 @@ def fetch_status(url, timeout):
 
 def build_report(network=False, sample_size=5, timeout=10):
     index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-    videos = index["videos"]
+    bilibili_index = json.loads(BILIBILI_INDEX_PATH.read_text(encoding="utf-8"))
+    videos = index["videos"] + bilibili_index["videos"]
     invalid = syntax_check(videos)
     checks = []
     if network:
@@ -79,6 +98,14 @@ def build_report(network=False, sample_size=5, timeout=10):
             )
     return {
         "source_collected_at": index.get("collected_at"),
+        "source_updated_at": {
+            "douyin": index.get("collected_at"),
+            "bilibili": bilibili_index.get("updated_at"),
+        },
+        "source_video_counts": {
+            "douyin": len(index["videos"]),
+            "bilibili": len(bilibili_index["videos"]),
+        },
         "indexed_video_count": len(videos),
         "canonical_syntax_invalid_video_ids": invalid,
         "network_check_requested": network,
@@ -111,7 +138,7 @@ def main():
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if report["canonical_syntax_invalid_video_ids"]:
-        raise SystemExit("Canonical Douyin link validation failed")
+        raise SystemExit("Canonical source link validation failed")
 
 
 if __name__ == "__main__":

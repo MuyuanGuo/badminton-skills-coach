@@ -1,5 +1,7 @@
-#!/usr/bin/env python3
+import json
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 import process_douyin_ready_batch as batch_processor
@@ -11,7 +13,7 @@ from douyin_pipeline import (
 )
 from process_douyin_ready_batch import unexpected_dirty_paths
 from report_pipeline_status import next_action
-from run_full_update_pipeline import validation_commands
+from run_full_update_pipeline import build_commands, validation_commands
 
 
 class DouyinClassificationRulesTest(unittest.TestCase):
@@ -113,10 +115,73 @@ class DouyinClassificationRulesTest(unittest.TestCase):
         ), patch.object(
             batch_processor,
             "rebuild_and_validate",
-            side_effect=lambda: events.append("validate"),
+            side_effect=lambda **kwargs: events.append(
+                ("validate", kwargs)
+            ),
         ):
             batch_processor.finalize_transcribed_batch("batch-049", ["123"])
-        self.assertEqual(events, ["cleanup", "validate"])
+        self.assertEqual(
+            events,
+            [
+                "cleanup",
+                ("validate", {"rebuild_bilibili": False}),
+            ],
+        )
+
+    def test_transcribed_batch_is_resumable_after_generation_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            transcript_root = root / "transcripts"
+            batch_dir = transcript_root / "batch-052"
+            batch_dir.mkdir(parents=True)
+            (batch_dir / "123.json").write_text("{}", encoding="utf-8")
+            (batch_dir / "ignored.txt").write_text("", encoding="utf-8")
+            queue_path = root / "queue.json"
+            queue_path.write_text(
+                json.dumps(
+                    {
+                        "items": [
+                            {"video_id": "123", "status": "transcribed"},
+                            {"video_id": "456", "status": "transcribed"},
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with patch.object(batch_processor, "TRANSCRIPT_ROOT", transcript_root), patch.object(
+                batch_processor, "QUEUE_PATH", queue_path
+            ):
+                items = batch_processor.transcribed_batch_items(
+                    "batch-052", requested_video_ids=["123"]
+                )
+        self.assertEqual([item["video_id"] for item in items], ["123"])
+
+    def test_douyin_incremental_gate_reuses_bilibili_build(self):
+        commands = [
+            " ".join(map(str, command))
+            for command in build_commands(rebuild_bilibili=False)
+        ]
+        self.assertFalse(
+            any("build_bilibili_knowledge.py" in command for command in commands)
+        )
+        self.assertTrue(
+            any("build_douyin_knowledge.py" in command for command in commands)
+        )
+        validation = [
+            " ".join(map(str, command))
+            for command in validation_commands(
+                raw_transcript_sources=("douyin_video",)
+            )
+        ]
+        comprehension = next(
+            command
+            for command in validation
+            if "evaluate_video_comprehension.py" in command
+        )
+        self.assertIn(
+            "--require-raw-transcript-source douyin_video",
+            comprehension,
+        )
 
     def test_full_maintenance_gate_covers_answer_and_video_quality(self):
         commands = [" ".join(map(str, command)) for command in validation_commands()]

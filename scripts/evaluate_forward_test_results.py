@@ -18,6 +18,15 @@ CONTINUATION_CASES_PATH = (
     ROOT / "data" / "evaluation" / "diagnostic_answer_continuation_cases.json"
 )
 SKILL_ROOT = Path("skills/liuhui-badminton-coach")
+ANSWER_RUNTIME_EXCLUDED = {
+    Path("agents/openai.yaml"),
+    Path("references/build-manifest.json"),
+}
+VERSION_ONLY_FEEDBACK_FIELDS = {
+    "skill_version",
+    "channel",
+    "stable_version",
+}
 MIN_CONSECUTIVE_UNSEEN_ROUNDS = 3
 MIN_CASES_PER_UNSEEN_ROUND = 4
 REQUIRED_REVIEW_DIMENSIONS = {
@@ -51,6 +60,41 @@ def runtime_fingerprint(root=ROOT):
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
         digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def answer_runtime_fingerprint(root=ROOT):
+    """Hash answer semantics while excluding release-only Skill metadata."""
+
+    digest = hashlib.sha256()
+    root = Path(root)
+    skill_root = root / SKILL_ROOT
+    paths = sorted(
+        path
+        for path in skill_root.rglob("*")
+        if path.is_file()
+        and "__pycache__" not in path.parts
+        and path.suffix not in {".pyc", ".pyo"}
+        and path.relative_to(skill_root) not in ANSWER_RUNTIME_EXCLUDED
+    )
+    for path in paths:
+        relative_to_skill = path.relative_to(skill_root)
+        relative = path.relative_to(root).as_posix()
+        content = path.read_bytes()
+        if relative_to_skill == Path("references/feedback-rules.json"):
+            payload = json.loads(content)
+            for field in VERSION_ONLY_FEEDBACK_FIELDS:
+                payload.pop(field, None)
+            content = json.dumps(
+                payload,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(content)
         digest.update(b"\0")
     return digest.hexdigest()
 
@@ -207,10 +251,12 @@ def validate_forward_results(
     fingerprint,
     diagnostic_cases_payload=None,
     continuation_cases_payload=None,
+    require_current_runtime=True,
 ):
     if payload.get("version") != 3:
         raise ForwardTestValidationError("Forward-test result version is unsupported")
-    if payload.get("runtime_fingerprint") != fingerprint:
+    runtime_matches = payload.get("runtime_fingerprint") == fingerprint
+    if require_current_runtime and not runtime_matches:
         raise ForwardTestValidationError(
             "Forward-test results are stale for the current Skill runtime"
         )
@@ -292,7 +338,11 @@ def validate_forward_results(
         ),
     )
     return {
-        "runtime_fingerprint": fingerprint,
+        "recorded_runtime_fingerprint": payload.get("runtime_fingerprint"),
+        "current_runtime_fingerprint": fingerprint,
+        "current_runtime_match": runtime_matches,
+        "measurement_type": "historical_generation_review",
+        "current_runtime_generation_claimed": False,
         "critical_cases": len(critical_ids),
         "blind_passes": len(results),
         "failed": [],
@@ -302,10 +352,18 @@ def validate_forward_results(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate blind forward tests for the current Skill runtime."
+        description="Validate historical blind forward tests; current-runtime release generations use validate_live_generation_results.py."
     )
     parser.add_argument("--results", type=Path, default=RESULTS_PATH)
     parser.add_argument("--print-fingerprint", action="store_true")
+    parser.add_argument(
+        "--require-current-runtime",
+        action="store_true",
+        help=(
+            "Require the historical result fingerprint to match the current Skill. "
+            "Release gating should normally use validate_live_generation_results.py."
+        ),
+    )
     args = parser.parse_args()
     fingerprint = runtime_fingerprint()
     if args.print_fingerprint:
@@ -319,6 +377,7 @@ def main():
         fingerprint,
         load_json(DIAGNOSTIC_CASES_PATH),
         load_json(CONTINUATION_CASES_PATH),
+        require_current_runtime=args.require_current_runtime,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

@@ -52,6 +52,7 @@ python3 scripts/test_douyin_pipeline.py
 python3 scripts/test_search_knowledge.py
 python3 scripts/evaluate_answer_policy.py
 python3 scripts/evaluate_query_equivalence.py
+python3 scripts/evaluate_metamorphic_robustness.py
 python3 scripts/evaluate_answer_quality.py \
   --answers data/evaluation/answer_quality_answers.json \
   --min-approved 57 \
@@ -60,10 +61,42 @@ python3 scripts/evaluate_answer_quality.py \
   --require-complete-answer-coverage \
   --require-critical-answer-coverage \
   --require-manual-review
-python3 scripts/evaluate_forward_test_results.py
+python3 scripts/evaluate_feedback_lifecycle.py
+python3 scripts/evaluate_forward_test_results.py  # historical records only
+python3 scripts/validate_live_generation_results.py
 python3 scripts/evaluate_retrieval.py
+python3 scripts/benchmark_runtime.py
 python3 scripts/validate_project.py
 ```
+
+`run_full_update_pipeline.py` wraps generated artifacts in a rollback guard and
+writes `output/update-impact-report.json` only after every gate succeeds. Review
+that local report for video-status, retrieval-ID, queue, and build-ID changes
+before publishing an update.
+
+Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再始终使用项目虚拟
+环境运行系统校验器，避免误用不含维护依赖的系统 Python：
+
+```bash
+.venv/bin/pip install -r requirements-transcription.txt
+.venv/bin/python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" \
+  skills/liuhui-badminton-coach
+```
+
+`answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前模型即时生成。
+打 Release tag 前，还必须由独立任务生成并由不同审阅者复核
+`data/evaluation/live_generation_results.json`，再运行：
+
+```bash
+python3 scripts/validate_live_generation_results.py
+```
+
+该结果必须覆盖 `critical_answer_snapshots.json` 的全部用例并绑定当前 Skill
+运行时指纹；任何运行时代码或参考文件变更都会使旧结果失效。
+
+转写依赖由 `requirements-transcription.in` 声明直接约束，并在
+`requirements-transcription.txt` 中完整锁定。升级时必须重新解析整个依赖闭包、
+运行转写相关测试，并同步检查 Release SBOM。
 
 ## Pull Request
 

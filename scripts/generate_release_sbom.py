@@ -15,6 +15,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_URL = "https://github.com/MuyuanGuo/badminton-skills-coach"
 VERSION_PATTERN = re.compile(r"v?\d+\.\d+\.\d+(?:-dev\.\d+)?")
+LOCK_PATH = ROOT / "requirements-transcription.txt"
+PIN_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)==([A-Za-z0-9_.+!-]+)")
 
 
 def sha256_bytes(content):
@@ -54,6 +56,36 @@ def source_timestamp(source_commit):
     return parsed.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def locked_optional_dependencies(path=LOCK_PATH):
+    dependencies = []
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        match = PIN_PATTERN.fullmatch(stripped)
+        if not match:
+            raise ValueError(f"Unpinned transcription dependency: {stripped}")
+        name, version = match.groups()
+        normalized_name = name.lower().replace("_", "-")
+        dependencies.append(
+            {
+                "type": "library",
+                "bom-ref": f"pkg:pypi/{normalized_name}@{version}",
+                "name": normalized_name,
+                "version": version,
+                "scope": "optional",
+                "purl": f"pkg:pypi/{normalized_name}@{version}",
+                "properties": [
+                    {
+                        "name": "liuhui-badminton-coach:purpose",
+                        "value": "optional-maintainer-transcription",
+                    }
+                ],
+            }
+        )
+    return dependencies
+
+
 def build_sbom(archive_path, version, source_commit=None):
     archive_path = Path(archive_path)
     normalized_version = version.strip().removeprefix("v")
@@ -64,13 +96,13 @@ def build_sbom(archive_path, version, source_commit=None):
 
     archive_digest = sha256_bytes(archive_path.read_bytes())
     package_ref = f"pkg:generic/liuhui-badminton-coach@{normalized_version}"
-    components = []
+    file_components = []
     with zipfile.ZipFile(archive_path) as archive:
         for name in sorted(archive.namelist()):
             if name.endswith("/"):
                 continue
             content = archive.read(name)
-            components.append(
+            file_components.append(
                 {
                     "type": "file",
                     "bom-ref": f"file:{name}",
@@ -78,6 +110,8 @@ def build_sbom(archive_path, version, source_commit=None):
                     "hashes": [{"alg": "SHA-256", "content": sha256_bytes(content)}],
                 }
             )
+    optional_components = locked_optional_dependencies()
+    components = [*file_components, *optional_components]
 
     serial = uuid.uuid5(uuid.NAMESPACE_URL, f"{REPOSITORY_URL}:{archive_digest}")
     properties = [
@@ -123,8 +157,14 @@ def build_sbom(archive_path, version, source_commit=None):
         "dependencies": [
             {
                 "ref": package_ref,
-                "dependsOn": [component["bom-ref"] for component in components],
+                "dependsOn": [
+                    component["bom-ref"] for component in file_components
+                ],
             }
+        ]
+        + [
+            {"ref": component["bom-ref"], "dependsOn": []}
+            for component in optional_components
         ],
     }
 
