@@ -18,6 +18,7 @@ from build_douyin_knowledge import (
     canonicalize_asr_text,
     clean_title,
     reconcile_updated_at,
+    repeated_drill_cue,
     runtime_transcript_segments,
 )
 from batch_transcribe_directory import (
@@ -513,6 +514,8 @@ def assess_bilibili_transcript(
     title_content_segments=None,
 ):
     result = assess_transcript(transcript, rules)
+    result["assessment_rules_version"] = rules.get("version")
+    result["assessment_rules_sha256"] = stable_payload_hash(rules)
     issues = list(result.get("issues") or [])
     config = rules.get("bilibili_unattended", {})
     integrity = transcript_integrity(transcript, rules)
@@ -691,10 +694,52 @@ def assess_bilibili_transcript(
             max(1, int(config.get("minimum_internal_repeat_count", 3)) - 1),
         )
     )
-    internal_repeated_characters = sum(
-        len(match.group(0)) - len(match.group(1))
-        for text in normalized_segments
-        for match in internal_repeat_pattern.finditer(text)
+    internal_repeated_by_segment = [
+        sum(
+            len(match.group(0)) - len(match.group(1))
+            for match in internal_repeat_pattern.finditer(
+                normalize_text(segment.get("text") or "")
+            )
+        )
+        for segment in segments
+    ]
+    internal_repeated_characters = sum(internal_repeated_by_segment)
+    verified_drill_repeat_characters = 0
+    for index, segment in enumerate(segments):
+        duration_seconds = max(
+            0.0,
+            float(segment.get("end") or 0)
+            - float(segment.get("start") or 0),
+        )
+        drill = repeated_drill_cue(
+            segment.get("text") or "",
+            duration_seconds,
+            rules,
+        )
+        metric = metrics[index] if index < len(metrics) else None
+        if (
+            drill
+            and isinstance(metric, dict)
+            and metric.get("avg_logprob", float("-inf"))
+            >= float(config.get("minimum_drill_repeat_avg_logprob", -0.5))
+            and metric.get("no_speech_prob", 1.0)
+            <= float(
+                config.get(
+                    "maximum_drill_repeat_no_speech_probability", 0.55
+                )
+            )
+        ):
+            verified_drill_repeat_characters += (
+                internal_repeated_by_segment[index]
+            )
+    raw_internal_repeated_ratio = (
+        internal_repeated_characters / total_characters
+        if total_characters
+        else 0
+    )
+    internal_repeated_characters = max(
+        0,
+        internal_repeated_characters - verified_drill_repeat_characters,
     )
     internal_repeated_ratio = (
         internal_repeated_characters / total_characters
@@ -712,6 +757,15 @@ def assess_bilibili_transcript(
     )
     result["internal_repeat_character_ratio"] = round(
         internal_repeated_ratio, 4
+    )
+    result["raw_internal_repeat_character_ratio"] = round(
+        raw_internal_repeated_ratio, 4
+    )
+    result["verified_drill_repeat_character_ratio"] = round(
+        verified_drill_repeat_characters / total_characters
+        if total_characters
+        else 0,
+        4,
     )
     result["repetition_risk_ratio"] = round(repetition_risk, 4)
     if repetition_risk > float(

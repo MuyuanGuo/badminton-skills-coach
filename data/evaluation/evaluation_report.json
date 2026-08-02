@@ -4,9 +4,9 @@
   "development_version": "2.0.0-dev.1",
   "baseline_version": "v1.5.0",
   "build": {
-    "id": "036ae4925aadc530",
-    "inputs_sha256": "59976f7633d8e40fba1e641fd7a27011451bd85a0403428402a5e41d2b22f73e",
-    "runtime_sha256": "f679998c76e139896da40ea4e5c66a6d3006958c630a5ad8b03fdc34c892c889"
+    "id": "db7174926721c6ee",
+    "inputs_sha256": "aae14ab332226ab6b1c0f71baa8933e77ad4d0cd4ab0f28c6d4cafb66c939f4e",
+    "runtime_sha256": "73b971b1d519eb65831d799ad177d373e43d57e4e32f3f39b1658c15bce87541"
   },
   "summary": {
     "status": "pass",
@@ -102,9 +102,9 @@
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
-        "candidate_videos": 583,
-        "top_k_count": 80,
-        "top_k_rate": 0.11695906432748537,
+        "candidate_videos": 592,
+        "top_k_count": 81,
+        "top_k_rate": 0.11842105263157894,
         "max_top_k_per_case": 3,
         "review_count": 116,
         "review_rate": 0.14146341463414633,
@@ -164,16 +164,16 @@
       "failed": []
     },
     "video_comprehension": {
-      "ready_videos": 946,
-      "understood_videos": 946,
+      "ready_videos": 956,
+      "understood_videos": 956,
       "understanding_coverage": 1.0,
-      "transcript_backed": 760,
-      "automatic_transcript": 754,
+      "transcript_backed": 763,
+      "automatic_transcript": 757,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "evidence_provenance": {
-        "transcript_evidence_items": 9489,
-        "timestamped_transcript_evidence_items": 9489,
+        "transcript_evidence_items": 9540,
+        "timestamped_transcript_evidence_items": 9540,
         "transcript_timestamp_coverage": 1.0,
         "reviewed_visual_observation_items": 19,
         "synthesized_principle_items": 15,
@@ -202,12 +202,12 @@
       "current_runtime_match": false,
       "current_runtime_generation_claimed": false,
       "release_eligible": false,
-      "runtime_fingerprint": "1d6c972ad007a934347540615ece4adcd4acca2ea319da618aa7bc4a7b9d1998",
+      "runtime_fingerprint": "0612a787aeba86292d38e8687e93366c39dfb9165602df48373594642cfdac27",
       "runtime_fingerprint_scope": "answer_semantics",
       "reviewed_answer_runtime_fingerprint": "f9b3be7a4d114ff9d508e17e890a15065837731e81484531b7d790b136c430ad",
-      "current_answer_runtime_fingerprint": "1d6c972ad007a934347540615ece4adcd4acca2ea319da618aa7bc4a7b9d1998",
+      "current_answer_runtime_fingerprint": "0612a787aeba86292d38e8687e93366c39dfb9165602df48373594642cfdac27",
       "reviewed_artifact_runtime_fingerprint": "e9c195d2bddef9833082a546aa96ff53a059a327b1fa788d62e925c976375ec4",
-      "current_artifact_runtime_fingerprint": "5d54f2986ff8049a791e1f978ba20fbf04c6d974006859f9643fc846dab734bc",
+      "current_artifact_runtime_fingerprint": "e3e706a73f66f5154772ea34bb52d9abc4a8b5fa5dd02db85ef5a89d001fb1b5",
       "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
@@ -514,7 +514,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
-      "current": 0.11695906432748537,
+      "current": 0.11842105263157894,
       "baseline": 0.12,
       "direction": "at_most",
       "tolerance": 0,
@@ -568,7 +568,7 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 946,
+      "current": 956,
       "baseline": 354,
       "direction": "at_least",
       "tolerance": 0,
@@ -586,7 +586,7 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 760,
+      "current": 763,
       "baseline": 335,
       "direction": "at_least",
       "tolerance": 0,

@@ -1,13 +1,13 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton diagnostic Q&A from a 1014-video processed Douyin+Bilibili knowledge base, centered on public 刘辉 coaching material and user-confirmed Bilibili technical collections, with 946 answer-eligible teaching videos split into 779 primary and 167 bounded supplemental sources. Use to diagnose what a player is really asking, separate symptoms from assumed causes, explain strokes, footwork, equipment, or tactics, and map claims to timestamped evidence. Preserve source identity, confidence, and stable V1...Vn citations; never impersonate 刘辉 or claim endorsement.
+description: Evidence-backed badminton diagnostic Q&A from a 1014-video processed Douyin+Bilibili knowledge base, centered on public 刘辉 coaching material and user-confirmed Bilibili technical collections, with 956 answer-eligible teaching videos split into 781 primary and 175 bounded supplemental sources. Use to diagnose what a player is really asking, separate symptoms from assumed causes, explain strokes, footwork, equipment, or tactics, and map claims to timestamped evidence. Preserve source identity, confidence, and stable V1...Vn citations; never impersonate 刘辉 or claim endorsement.
 ---
 
 # 刘辉羽毛球教练
 
 ## Scope
 
-Base coaching claims on `references/knowledge-base.json`: 1014 processed videos, including 946 `ready` answer-eligible entries and 0 awaiting visual review. Of these, 779 are `primary`; 167 are `supplemental` sources limited to already-bounded timestamped evidence windows. Runtime evidence comprises 760 full-transcript records, 167 bounded-note records, and 19 reviewed visual summaries. Use `primary` first. Use `supplemental` only when the packet selects it to fill an uncovered concept, condition, correction, practice, equipment, or corroboration role. Records with `answer_eligibility=none` are never answer evidence.
+Base coaching claims on `references/knowledge-base.json`: 1014 processed videos, including 956 `ready` answer-eligible entries and 0 awaiting visual review. Of these, 781 are `primary`; 175 are `supplemental` sources limited to already-bounded timestamped evidence windows. Runtime evidence comprises 763 full-transcript records, 174 bounded-note records, and 19 reviewed visual summaries. Use `primary` first. Use `supplemental` only when the packet selects it to fill an uncovered concept, condition, correction, practice, equipment, or corroboration role. Records with `answer_eligibility=none` are never answer evidence.
 
 Preserve each record's source identity: `verified_collection_policy` and `verified_video_policy` mean the user required storage by collection or individual BVID and do not prove 刘辉 authorship. This Skill summarizes public teaching material. It is not 刘辉 and must not imply that he reviewed, approved, or endorsed a generated answer.
 
@@ -111,7 +111,7 @@ For ordinary answers, end with the exact packet `feedback_prompt` and only label
 
 - `scripts/prepare_answer_context.py`: required answer entry point.
 - `scripts/audit_answer.py`: final contract gate.
-- `references/knowledge-base.json`: 1014 processed entries, including 779 primary, 167 bounded supplemental, and 68 answer-ineligible records.
+- `references/knowledge-base.json`: 1014 processed entries, including 781 primary, 175 bounded supplemental, and 58 answer-ineligible records.
 - `references/evidence-graph.json`: compact concept-topic-role graph separating primary and supplemental support without duplicating transcript text.
 - `references/reviewed-evidence-atoms.json`: reviewed verbalizable claims and source windows.
 - `references/evidence-scope-guide.md`: detailed named-technique and scenario boundaries for fallback or retrieval diagnosis only.

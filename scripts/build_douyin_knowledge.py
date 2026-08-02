@@ -42,6 +42,40 @@ def canonicalize_asr_text(text, rules):
     return canonical
 
 
+def repeated_drill_cue(text, duration, rules):
+    """Return a verified lexical drill cue candidate, without judging ASR.
+
+    Exact punctuation-delimited repetition is compacted for runtime retrieval.
+    Bilibili's stricter quality gate separately checks model confidence and
+    speech probability before excluding it from hallucination risk.
+    """
+
+    config = (rules or {}).get("bilibili_unattended", {})
+    canonical = canonicalize_asr_text(text, rules or {})
+    tokens = [
+        normalize
+        for item in re.split(r"[，,、。！？!?；;\s]+", canonical)
+        if (normalize := re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]+", "", item))
+    ]
+    if not tokens or len(set(tokens)) != 1:
+        return None
+    minimum_count = int(config.get("minimum_drill_repeat_count", 5))
+    terms = {
+        re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]+", "", str(item))
+        for item in config.get("drill_repeat_terms", [])
+    }
+    cue = tokens[0]
+    cue_rate = len(tokens) / duration if duration > 0 else float("inf")
+    if (
+        len(tokens) < minimum_count
+        or cue not in terms
+        or cue_rate < float(config.get("minimum_drill_cues_per_second", 0.2))
+        or cue_rate > float(config.get("maximum_drill_cues_per_second", 4.0))
+    ):
+        return None
+    return {"cue": cue, "count": len(tokens), "cue_rate": cue_rate}
+
+
 def evidence_window(segments, index, rules):
     start = max(0, index - 1)
     end = min(len(segments), index + 2)
@@ -181,10 +215,13 @@ def runtime_transcript_segments(segments, rules=None):
     for segment in segments:
         raw_text = re.sub(r"\s+", " ", str(segment.get("text") or "")).strip()
         text = canonicalize_asr_text(raw_text, rules or {})
-        if not text:
-            continue
         start = round(float(segment.get("start") or 0), 2)
         end = round(float(segment.get("end") or start), 2)
+        drill = repeated_drill_cue(text, max(0.0, end - start), rules or {})
+        if drill:
+            text = f"{drill['cue']}（连续训练口令×{drill['count']}）"
+        if not text:
+            continue
         item = {
                 "start": start,
                 "end": end,
@@ -193,6 +230,8 @@ def runtime_transcript_segments(segments, rules=None):
             }
         if text != raw_text:
             item["raw_text"] = raw_text
+        if drill:
+            item["repetition_count"] = drill["count"]
         compact.append(item)
     return compact
 

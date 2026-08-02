@@ -123,7 +123,7 @@ def compact_quality(quality):
         return None
     transcript = quality.get("transcript", {})
     automatic = quality.get("automatic_evidence", {})
-    return {
+    compact = {
         "transcript": {
             "passed": transcript.get("passed"),
             "issues": transcript.get("issues", []),
@@ -138,6 +138,16 @@ def compact_quality(quality):
             "teaching_term_matches": automatic.get("teaching_term_matches"),
         },
     }
+    bounded_recovery = quality.get("bounded_note_recovery") or {}
+    if bounded_recovery:
+        compact["bounded_note_recovery"] = {
+            "passed": bounded_recovery.get("passed"),
+            "roles": bounded_recovery.get("roles", []),
+            "supported_window_count": bounded_recovery.get(
+                "supported_window_count"
+            ),
+        }
+    return compact
 
 def compact_teaching_note(note):
     evidence_fields = {

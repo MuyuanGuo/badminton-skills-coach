@@ -295,6 +295,20 @@ def apply_supplemental_evidence_policy(
                 or candidate.get("matched_equivalent_terms")
             )
         )
+        runtime_evidence_channels = {
+            "teaching_note_lexicon",
+            "teaching_note_ngram",
+            "full_transcript_lexicon",
+            "full_transcript_ngram",
+            "chunk_transcript_lexicon",
+            "chunk_transcript_ngram",
+        }
+        limited_metadata_transcript_match = bool(
+            candidate.get("metadata_title_trust") == "limited"
+            and set(candidate.get("retrieval_channels", []))
+            & runtime_evidence_channels
+            and entry.get("concept_match") == "exact_question"
+        )
         reason = None
         if tier in allowed_tiers and has_direct_match:
             if not primary_entries:
@@ -308,7 +322,11 @@ def apply_supplemental_evidence_policy(
             elif roles & (required_roles - covered_roles):
                 reason = "supplemental_fills_requested_evidence_role"
             elif (
-                (tier == "direct" or bounded_note_direct_match)
+                (
+                    tier == "direct"
+                    or bounded_note_direct_match
+                    or limited_metadata_transcript_match
+                )
                 and entry_is_core(entry)
                 and corroboration_count < 1
             ):

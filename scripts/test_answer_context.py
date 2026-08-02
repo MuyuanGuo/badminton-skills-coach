@@ -702,6 +702,24 @@ class AnswerContextTests(unittest.TestCase):
             {item["video_id"] for item in weak_title_overlap["selected_videos"]},
         )
 
+    def test_full_transcript_supplemental_can_corroborate_exact_claim(self):
+        context = self.context_module.prepare_answer_context(
+            "高远球髋带腿还是脚蹬地顶着髋？",
+            local_personalization=False,
+        )
+        supplemental = next(
+            item
+            for item in context["selected_videos"]
+            if item["video_id"] == "bilibili:BV1hByrBCEcE"
+        )
+        self.assertEqual(supplemental["answer_eligibility"], "supplemental")
+        self.assertEqual(
+            supplemental["runtime_evidence_mode"], "full_transcript"
+        )
+        self.assertIn(
+            supplemental["label"], context["answer_visible_video_labels"]
+        )
+
     def test_query_actor_context_separates_opponent_and_player_actions(self):
         backhand = self.context_module.query_actor_context(
             self.search_module,

@@ -63,11 +63,11 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Metric | Current baseline |
 | --- | ---: |
 | Processed public videos | 1245 |
-| Bilibili full source catalog | 767: 589 answer-ready, 178 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 946 |
-| Primary / bounded supplemental evidence | 779 / 167 |
-| Transcript-backed evidence | 760 |
-| Bounded timestamp-window evidence | 167 |
+| Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
+| Ready teaching videos | 956 |
+| Primary / bounded supplemental evidence | 781 / 175 |
+| Transcript-backed evidence | 763 |
+| Bounded timestamp-window evidence | 174 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
 | Query-understanding cases | 143/143 |
@@ -76,9 +76,9 @@ The model reads a compact evidence packet instead of full retrieval diagnostics,
 | Latest independently reviewed generations | 3/3; new runtime review pending |
 | Promoted public feedback signals | 0 |
 
-All 7,697 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
+All 7,724 transcript evidence items have timestamps. The zero public-feedback count is intentional: the machine-enforced lifecycle is ready, but the project does not invent real user data.
 
-The balanced performance gate covers five question types. After expanding to 946 answer-eligible sources, the latest local run measured `232.11 ms` search P95, `1,552.47 ms` answer-context P95, `175.79 MB` traced peak memory, and an `81.87%` average answer-packet reduction. These remain inside the `750 ms`, `2,500 ms`, `192 MB`, and minimum `50%` reduction gates. They are development-machine measurements, not cross-platform performance promises.
+The balanced performance gate covers five question types. After expanding to 956 answer-eligible sources, the latest local run measured `182.52 ms` search P95, `1,453.24 ms` answer-context P95, `176.50 MB` traced peak memory, and an `82.05%` average answer-packet reduction. These remain inside the `750 ms`, `2,500 ms`, `192 MB`, and minimum `50%` reduction gates. They are development-machine measurements, not cross-platform performance promises.
 
 See the [evaluation report](https://muyuanguo.github.io/badminton-skills-coach/evaluation/) for the latest generation snapshot with completed independent human review. The deterministic regression and performance gates above describe this branch; generation review for the new runtime remains pending independent human review.
 
@@ -94,7 +94,7 @@ flowchart TD
     D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
     P --> E["Structured knowledge, including quarantine audit records"]
     E --> A["Answer admission layers<br/>primary / supplemental / none"]
-    A --> KG["Concept-topic-evidence-role graph<br/>17,589 relationships"]
+    A --> KG["Concept-topic-evidence-role graph<br/>17,687 relationships"]
     A --> F["45-second chunk-first plus bounded-window retrieval<br/>cross-source clusters and cluster-aware DF"]
     Q["Natural-language question"] --> G["Intent, actor, and scenario parser"]
     G --> H["Multi-query recall"]

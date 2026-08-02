@@ -121,6 +121,76 @@ class BilibiliWriterLockTests(unittest.TestCase):
 
 
 class BilibiliRetryStateTests(unittest.TestCase):
+    def test_force_reacquires_transcribed_item_for_quality_recovery(self):
+        processor = load("process_bilibili_candidates")
+        bvid = "BV16G411y7Rs"
+        verification = {
+            "status": "verified_collection_policy",
+            "source_metadata": {
+                "title": "反手发力",
+                "description": "",
+                "tags": [],
+                "duration_seconds": 10.0,
+            },
+        }
+        record = {
+            "bvid": bvid,
+            "video_id": f"bilibili:{bvid}",
+            "url": f"https://www.bilibili.com/video/{bvid}/",
+            "title": "反手发力",
+            "decision": "required_transcription_policy",
+            "collection_policy": {"basis": "collection"},
+            "classification_rules_version": 3,
+            "classification_rules_hash": "a" * 64,
+            "knowledge_admission_eligible": True,
+            "origin_verification": verification,
+        }
+        existing = {
+            "video_id": bvid,
+            "status": "transcribed",
+            "transcript_model": "small",
+            "attempts": 0,
+            "media_sha256": "old",
+        }
+        validation = {
+            "media_bytes": 8192,
+            "media_sha256": "b" * 64,
+            "media_validation_version": 2,
+            "media_decoded_frame_count": 10,
+            "media_decoded_samples": 1024,
+            "media_duration_seconds": 10.0,
+        }
+        with (
+            mock.patch.object(
+                processor, "may_enter_knowledge_base", return_value=True
+            ),
+            mock.patch.object(
+                processor,
+                "completed_media",
+                return_value=(
+                    Path("/tmp")
+                    / f"{processor.media_storage_key(bvid)}.m4a",
+                    validation,
+                ),
+            ),
+        ):
+            outcome = processor.process_candidate(
+                record,
+                existing,
+                metadata_only=False,
+                cooldown_minutes=30,
+                force_reacquire=True,
+            )
+
+        item = outcome["queue_item"]
+        self.assertEqual(outcome["result"]["status"], "downloaded")
+        self.assertTrue(outcome["result"]["media_reused"])
+        self.assertEqual(
+            item["media_recovery_audit"][-1]["reason"],
+            "forced_transcript_quality_recovery",
+        )
+        self.assertEqual(item["transcription_force_recoveries"], 1)
+
     def test_blocked_auth_is_nonterminal_and_force_can_resume_it(self):
         pipeline = load("bilibili_pipeline")
         processor = load("process_bilibili_candidates")
@@ -885,6 +955,45 @@ class BilibiliOrchestratorContractTests(unittest.TestCase):
 
 
 class BilibiliCollisionSafeStorageTests(unittest.TestCase):
+    def test_force_reuses_completed_media_for_a_transcribed_item(self):
+        candidates = load("process_bilibili_candidates")
+        video_id = "BV1DSNFz2Ets"
+        record = BilibiliParallelAcquisitionTests.record(video_id)
+        existing = {
+            "video_id": video_id,
+            "status": "transcribed",
+            "media_path": None,
+            "attempts": 2,
+            "transcription_attempts": 1,
+        }
+        media = Path(f"/tmp/{video_id}.m4a")
+        validation = {"media_bytes": 9000, "media_sha256": "b" * 64}
+        with (
+            mock.patch.object(
+                candidates, "may_enter_knowledge_base", return_value=True
+            ),
+            mock.patch.object(
+                candidates, "completed_media", return_value=(media, validation)
+            ),
+            mock.patch.object(candidates, "download_audio") as download,
+        ):
+            outcome = candidates.process_candidate(
+                copy.deepcopy(record),
+                copy.deepcopy(existing),
+                metadata_only=False,
+                cooldown_minutes=30,
+                force_reacquire=True,
+            )
+
+        download.assert_not_called()
+        self.assertEqual(outcome["result"]["status"], "downloaded")
+        self.assertTrue(outcome["result"]["media_reused"])
+        self.assertEqual(outcome["queue_item"]["status"], "downloaded")
+        self.assertEqual(
+            outcome["queue_item"]["media_recovery_audit"][-1]["reason"],
+            "forced_transcript_quality_recovery",
+        )
+
     def test_explicit_force_relocates_failed_media_and_preserves_asr_audit(self):
         candidates = load("process_bilibili_candidates")
         storage = load("bilibili_storage")

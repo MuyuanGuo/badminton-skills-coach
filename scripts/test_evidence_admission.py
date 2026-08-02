@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
+import json
 import unittest
+from pathlib import Path
 
-from evidence_admission import answer_admission, validate_answer_evidence_fields
+from evidence_admission import (
+    answer_admission,
+    assess_bounded_note_recovery,
+    validate_answer_evidence_fields,
+)
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class EvidenceAdmissionTests(unittest.TestCase):
@@ -48,6 +57,46 @@ class EvidenceAdmissionTests(unittest.TestCase):
                     "evidence_roles": ["correction"],
                 }
             )
+
+    def test_corpus_canary_recovers_only_domain_supported_windows(self):
+        rules = json.loads(
+            (ROOT / "config/knowledge_quality_rules.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        knowledge = json.loads(
+            (ROOT / "data/knowledge/bilibili_knowledge_base.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        audited = {
+            "bilibili:BV19nkvYeES8",
+            "bilibili:BV1LCaAzYE3U",
+            "bilibili:BV1MwbFeCE67",
+            "bilibili:BV1er421W7WE",
+            "bilibili:BV1gZ421a72b",
+            "bilibili:BV1hByrBCEcE",
+            "bilibili:BV1ju411b7kh",
+            "bilibili:BV1p2gazqEhj",
+            "bilibili:BV1pgv4BPEdm",
+            "bilibili:BV1qe411B73P",
+        }
+        expected = {
+            "bilibili:BV19nkvYeES8",
+            "bilibili:BV1LCaAzYE3U",
+            "bilibili:BV1MwbFeCE67",
+            "bilibili:BV1er421W7WE",
+            "bilibili:BV1ju411b7kh",
+            "bilibili:BV1pgv4BPEdm",
+            "bilibili:BV1qe411B73P",
+        }
+        actual = {
+            item["video_id"]
+            for item in knowledge["videos"]
+            if item["video_id"] in audited
+            and assess_bounded_note_recovery(item, rules)["passed"]
+        }
+        self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":

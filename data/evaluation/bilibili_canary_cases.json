@@ -46,6 +46,11 @@
       "id": "bili-smash-angle",
       "query": "杀球压不下去，怎么让杀球下压？",
       "expected_evidence_id": "bilibili:BV1vx4y1A71t"
+    },
+    {
+      "id": "bili-hip-leg-force-order",
+      "query": "高远球髋带腿还是脚蹬地顶着髋？",
+      "expected_evidence_id": "bilibili:BV1hByrBCEcE"
     }
   ],
   "thresholds": {

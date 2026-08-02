@@ -4,8 +4,8 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
 - Videos: `1014`
-- Assigned videos: `946`
-- Multi-topic videos: `451`
+- Assigned videos: `956`
+- Multi-topic videos: `454`
 
 ## How To Use
 
@@ -20,9 +20,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 后场击球、被动处理、杀吊突击与架拍框架。
 
-- Matched videos: `423`
+- Matched videos: `424`
 
-- **被动后场与高远**: `131` videos, `131` ready, `0` needs visual review.
+- **被动后场与高远**: `132` videos, `132` ready, `0` needs visual review.
   Keywords: 被动后场, 反手高远, 后高点, 摆脱, 高远, 底线
   Representative videos:
   - 让反手高远爆炸的秘诀！正确的反手框架加上神仙操作！学员想学反手杀！先把反手高远打透 [ready/primary] https://www.bilibili.com/video/BV1ZbcUzDEd6/
@@ -69,14 +69,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 搓、勾、推、扑、挑、放网及网前持拍框架。
 
-- Matched videos: `94`
+- Matched videos: `95`
 
-- **搓球与滚网**: `15` videos, `15` ready, `0` needs visual review.
+- **搓球与滚网**: `16` videos, `16` ready, `0` needs visual review.
   Keywords: 搓球, 滚网, 平搓
   Representative videos:
   - 滚网搓球 双打网前有人看守时有奇效 [ready/primary] https://www.douyin.com/video/7509355373729762619
   - 平搓远网 平搓可以根据情况加力减力，手臂也可以适当的介入辅助 [ready/primary] https://www.douyin.com/video/7411850466457292084
-  - 搓球的方向很重要，网前搓球第一集 [ready/primary] https://www.douyin.com/video/7052148706681883907
+  - 羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓 [ready/primary] https://www.bilibili.com/video/BV1ia4uziEAQ/
 - **勾球与变线**: `19` videos, `19` ready, `0` needs visual review.
   Keywords: 勾球, 勾对角, 网前变线
   Representative videos:
@@ -147,9 +147,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 启动、回动、不同步型、重心与场区移动。
 
-- Matched videos: `88`
+- Matched videos: `90`
 
-- **启动与预动**: `38` videos, `38` ready, `0` needs visual review.
+- **启动与预动**: `39` videos, `39` ready, `0` needs visual review.
   Keywords: 启动, 预动, 起动, 第一步
   Representative videos:
   - 打球时启动是听击球声吗？到底什么才是正确的启动时机！没有童子功基础的要仔细听了，不然再打十年你可能还是不会启动 [ready/primary] https://www.bilibili.com/video/BV1H1421Q75w/
@@ -161,7 +161,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 这属于为了下一拍更好衔接的步法，也是使用率最高的 [ready/primary] https://www.douyin.com/video/7229889111706848544
   - 并不是说一定要一步回位。而是体现向左回动，左脚的重要性 [ready/primary] https://www.douyin.com/video/7059589039694957864
   - 1 白鞋白胶布2低重心步法回动3低重心步法训练，这是我自创训练 [ready/primary] https://www.douyin.com/video/7085169366005714217
-- **交叉步、并步与垫步**: `18` videos, `18` ready, `0` needs visual review.
+- **交叉步、并步与垫步**: `19` videos, `19` ready, `0` needs visual review.
   Keywords: 交叉步, 并步, 垫步, 马来步
   Representative videos:
   - 初学用并步or交叉步？实战步法不是你想的那样 [ready/primary] https://www.bilibili.com/video/BV1oH4y1n7s7/
@@ -173,7 +173,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 1 白鞋白胶布2低重心步法回动3低重心步法训练，这是我自创训练 [ready/primary] https://www.douyin.com/video/7085169366005714217
   - 后场就是刻意练的被动步法，不是不积极，主要练回动的节奏感 [ready/primary] https://www.douyin.com/video/7280727710740139264
   - 大家练习的时候注意安全，一定多看两遍，发球机是艾迪宝 [ready/primary] https://www.douyin.com/video/7275536378321014051
-- **场区移动**: `5` videos, `5` ready, `0` needs visual review.
+- **场区移动**: `6` videos, `6` ready, `0` needs visual review.
   Keywords: 前后步法, 网前步法, 后场步法, 正手区步法, 反手区步法
   Representative videos:
   - 正手区前后步法（基础版） 正手区前后步法种类非常多，这是一种比较简单合理的步法，而且教学对象是左手，左右手的同学们都能看 [ready/primary] https://www.douyin.com/video/7567860375287303035
@@ -190,7 +190,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `378`
+- Matched videos: `379`
 
 - **放松、传导与爆发**: `53` videos, `53` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -204,7 +204,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready/primary] https://www.douyin.com/video/7494729488699559225
   - 爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调 [ready/primary] https://www.douyin.com/video/7492357671853526329
   - 学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率 [ready/primary] https://www.douyin.com/video/7057722299855801641
-- **小臂旋转与手腕**: `111` videos, `111` ready, `0` needs visual review.
+- **小臂旋转与手腕**: `112` videos, `112` ready, `0` needs visual review.
   Keywords: 内旋, 外旋, 小臂旋转, 手腕
   Representative videos:
   - 后场发力手腕怎么用？如此这般 终于会用手腕了！羽毛球大发力手腕力传导的方法 [ready/primary] https://www.bilibili.com/video/BV1bF6SYtEGz/
@@ -216,7 +216,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 跳杀怎样有滞空感？最高点击球对吗？滞空详细教学完整版 [ready/primary] https://www.bilibili.com/video/BV1y4421F7KV/
   - 跳杀找不到击球点怎么办？ 找正确的击球点最快的方法！真的绝了 [ready/primary] https://www.bilibili.com/video/BV1DW4y1A7fx/
   - 注意击球点要在起跳的高点击，而不是向上的过程中，45度起跳是更容易的起跳杀球，视频中的侧身跳杀对身体要求更多，腿有伤，大家忽略高度😂 [ready/primary] https://www.douyin.com/video/7055491154288102667
-- **挥拍路径**: `143` videos, `143` ready, `0` needs visual review.
+- **挥拍路径**: `144` videos, `144` ready, `0` needs visual review.
   Keywords: 挥拍路径, 基础挥拍, 随挥, 随摆, 半程, 全程, 大臂
   Representative videos:
   - 甩大臂vs随摆！大臂是如何带动小臂发力的！正确的羽毛球发力核心动作怎么做 [ready/primary] https://www.bilibili.com/video/BV1P4DGYrE8B/
@@ -350,7 +350,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 单打线路、落点、节奏、攻防转换与目的性。
 
-- Matched videos: `33`
+- Matched videos: `35`
 
 - **线路与落点选择**: `7` videos, `7` ready, `0` needs visual review.
   Keywords: 单打线路, 落点选择, 直线还是斜线, 四方球, 调动
@@ -374,7 +374,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 单打防守反击 [ready/primary] https://www.douyin.com/video/7602766054809333617
   - 吊球和刹球要相互配合使用，拉扯对手防守的站位，一味的强攻很容易被防反 [ready/primary] https://www.douyin.com/video/7115241358255803683
   - 杀球瞄准 杀球瞄准 卢迦彧的杀球不是那种很重的，所以落点上就尤为重要，比赛中非常容易被防守反击!中间涉及到了张指导的肖像权，已经经过了前辈本人的同意! [ready/primary] https://www.douyin.com/video/7659348110628345210
-- **单打综合待细分**: `18` videos, `18` ready, `0` needs visual review.
+- **单打综合待细分**: `20` videos, `20` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 减少失误 一个球总失误，除了动作不熟练，还有可能是人的节奏和球速不匹配，因为节奏陌生而产生的失误 [ready/primary] https://www.douyin.com/video/7630800123594285305
@@ -385,9 +385,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。
 
-- Matched videos: `66`
+- Matched videos: `69`
 
-- **球拍选择与重量**: `62` videos, `62` ready, `0` needs visual review.
+- **球拍选择与重量**: `65` videos, `65` ready, `0` needs visual review.
   Keywords: 选择球拍, 球拍重量, 重量球拍, 拍重, 球拍
   Representative videos:
   - 解读新手为何爱打3u球拍？球拍重量与发力的关系！听劝 新手想快速学会发力 选5u就对了 [ready/primary] https://www.bilibili.com/video/BV1VejRziExt/
@@ -406,14 +406,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 训练设计、动作纠错、实战复盘、恢复与体能。
 
-- Matched videos: `114`
+- Matched videos: `117`
 
-- **专项训练方法**: `20` videos, `20` ready, `0` needs visual review.
+- **专项训练方法**: `22` videos, `22` ready, `0` needs visual review.
   Keywords: 多球训练, 训练方法, 练习方法, 分解练习, 专项训练
   Representative videos:
+  - 羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓 [ready/primary] https://www.bilibili.com/video/BV1ia4uziEAQ/
   - 4点控1点私教课教学(二)！羽毛球单打多球训练！第一部分可主页搜索 [ready/primary] https://www.bilibili.com/video/BV12M4m1m7kv/
   - 业余挥拍训练方法！羽毛球发力时正确的内旋是什么样的 [ready/primary] https://www.bilibili.com/video/BV15d6MBEEmK/
-  - 什么是变速？ 怎么做手上变速和脚上的变速！附送高质量吊上网训练方法 [ready/primary] https://www.bilibili.com/video/BV1WV4y1v7tM/
 - **常见错误纠正**: `18` videos, `18` ready, `0` needs visual review.
   Keywords: 常见错误, 纠正, 错误动作, 改正, 做不好
   Representative videos:
@@ -430,7 +430,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 如何快速恢复对抗能力 觉得训练的时候实在不行了，就可以直接最后一个项目了 [ready/primary] https://www.douyin.com/video/7432633273060314408
   - 职业运动员上网因为身体能力强，大部分采用跨步，但是依然每局还是能见到垫步的出现 [ready/primary] https://www.douyin.com/video/7099644893269839144
   - 业余跳杀教学！握拍和站位起跳纠错！练跳杀要先练体能啊 [ready/primary] https://www.bilibili.com/video/BV136c5zjEUE/
-- **教学与训练综合待细分**: `70` videos, `70` ready, `0` needs visual review.
+- **教学与训练综合待细分**: `71` videos, `71` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 假动作可以不用，但是不能不会哦，要不拿什么耍帅😂，喜欢的留言直播间带走 [ready/primary] https://www.douyin.com/video/7061422431386324264
