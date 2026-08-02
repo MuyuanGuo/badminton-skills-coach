@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
+import json
 import subprocess
 import sys
 import tempfile
@@ -28,8 +29,14 @@ class DoctorAndInstallerTests(unittest.TestCase):
     def test_packaged_skill_passes_dependency_free_doctor_profile(self):
         checks = self.doctor.skill_checks(SKILL_ROOT, run_smoke=True)
         result = self.doctor.summarize("skill", checks)
+        release_rules = json.loads(
+            (ROOT / "config" / "feedback_rules.json").read_text(encoding="utf-8")
+        )
         self.assertTrue(result["ok"])
-        self.assertEqual(result["version"]["installed_version"], "2.0.0-dev.1")
+        self.assertEqual(
+            result["version"]["installed_version"],
+            release_rules["skill_version"],
+        )
         self.assertRegex(result["version"]["build_id"], r"^[0-9a-f]{64}$")
         self.assertFalse(result["api_key_required"])
         self.assertEqual(result["summary"]["failed"], 0)

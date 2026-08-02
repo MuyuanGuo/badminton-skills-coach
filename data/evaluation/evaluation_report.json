@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.0.0-dev.1",
-  "baseline_version": "v1.5.0",
+  "development_version": "2.0.0",
+  "baseline_version": "v2.0.0",
   "build": {
-    "id": "81401c4f309c46e7",
-    "inputs_sha256": "06849289e0a95ed91b483f1988c2a22f810ad6d60d36be09e3d822eabf0c18a7",
-    "runtime_sha256": "57cec2b0f9aa3036e250f9a83e5cab3bbe0c60c4069a1c07c995f62938d4db80"
+    "id": "80d7cf0a34d0df58",
+    "inputs_sha256": "de6bbb8787185f806fba26f072dbbac8bce5858fab1f315e32fa0825082cf633",
+    "runtime_sha256": "8e93d52de52ebf66856e0778d5a44307e1232ed370d14a5f12e0816effab5145"
   },
   "summary": {
     "status": "pass",
@@ -207,8 +207,8 @@
       "reviewed_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
       "current_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
       "reviewed_artifact_runtime_fingerprint": "563de5812b1c8683ebaee79209fb9c17b4e6503b8a8dfe2a27045686b93d9c42",
-      "current_artifact_runtime_fingerprint": "563de5812b1c8683ebaee79209fb9c17b4e6503b8a8dfe2a27045686b93d9c42",
-      "artifact_runtime_match": true,
+      "current_artifact_runtime_fingerprint": "a516523836482fbc7b79c235d36e3108c28a05e4b9d97958be4744346cdbe653",
+      "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
       "current_runtime_audits_rerun": true,
@@ -497,7 +497,7 @@
     {
       "metric": "retrieval.stable_regression.mean_ndcg_at_k",
       "current": 0.8639416260380391,
-      "baseline": 0.8643728349002483,
+      "baseline": 0.8639416260380391,
       "direction": "at_least",
       "tolerance": 0.002,
       "contract_source": "stable_baseline",
@@ -506,7 +506,7 @@
     {
       "metric": "retrieval.stable_regression.average_review_candidate_count",
       "current": 12.456140350877194,
-      "baseline": 12.298245614035087,
+      "baseline": 12.456140350877194,
       "direction": "at_most",
       "tolerance": 0.25,
       "contract_source": "stable_baseline",
@@ -569,7 +569,7 @@
     {
       "metric": "video_comprehension.ready_videos",
       "current": 956,
-      "baseline": 354,
+      "baseline": 956,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -587,7 +587,7 @@
     {
       "metric": "video_comprehension.transcript_backed",
       "current": 763,
-      "baseline": 335,
+      "baseline": 763,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
