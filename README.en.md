@@ -161,6 +161,8 @@ The answering model consumes, in order:
 
 Canonical JSON SHA-256 binds the compact packet to the complete context, preventing the model’s evidence input from drifting away from the audited object.
 
+There is no three-video cap per answer. Each claim may map to at most three strongest sources, while complex questions can expose more videos for independent subquestions, material scenario branches, or complementary evidence roles. The answer still obeys a 16-finalist hard ceiling, content-cluster deduplication, and claim-level evidence gates. Every `selected_videos` item in the compact packet must appear once, and answer-visible sources are relabeled contiguously as `V1...Vn` by usefulness. The feedback recorder also preserves exact sparse labels such as `V2`, `V3`, and `V5` from legacy answers instead of silently rebinding them.
+
 ### Feedback and privacy
 
 Local feedback remains on the user’s machine by default. Public feedback requires separate sanitization and sharing consent. Promotion verifies source-body hashes, private-field exclusion, lifecycle state, provenance revalidation, and adversarial transfer cases. Feedback can identify errors, but it never becomes badminton truth by itself.

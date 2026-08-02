@@ -161,11 +161,14 @@ def parse_video_spec(spec):
     matched = re.fullmatch(r"[Vv]\s*0*(\d+)", reference)
     if not matched:
         raise ValueError(f"Invalid video reference: {reference}")
+    reference_number = int(matched.group(1))
+    if reference_number < 1:
+        raise ValueError(f"Invalid video reference: {reference}")
     if re.fullmatch(r"BV[0-9A-Za-z]{10}", video_id):
         video_id = f"bilibili:{video_id}"
     if not re.fullmatch(r"(?:\d{18,20}|bilibili:BV[0-9A-Za-z]{10})", video_id):
         raise ValueError(f"Invalid evidence ID: {video_id}")
-    return normalize_ref(matched.group(1)), video_id
+    return normalize_ref(reference_number), video_id
 
 
 def validate_video_mappings(video_specs, core_refs, knowledge):
@@ -176,9 +179,9 @@ def validate_video_mappings(video_specs, core_refs, knowledge):
         raise ValueError("Video references must be unique")
     if len(video_ids) != len(set(video_ids)):
         raise ValueError("The same video ID cannot receive multiple references")
-    expected = [f"V{index}" for index in range(1, len(mappings) + 1)]
-    if sorted(references, key=ref_sort_key) != expected:
-        raise ValueError("Video references must be contiguous and start at V1")
+    # Current answer packets use contiguous V1...Vn labels. Preserve exact
+    # sparse mappings from older answers as well: renumbering V2/V3/V5 while
+    # recording feedback would silently bind the user's words to other videos.
 
     ready_videos = {
         video["video_id"]: video

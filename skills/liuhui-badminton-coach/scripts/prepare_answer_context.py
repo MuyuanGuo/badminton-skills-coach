@@ -391,6 +391,73 @@ def answer_visible_video_labels(claim_evidence_map):
     return labels
 
 
+def _remap_contract_video_labels(value, label_map):
+    """Remap only structured video-label fields in a diagnostic contract."""
+
+    if isinstance(value, dict):
+        eligible = value.get("eligible_video_labels")
+        if isinstance(eligible, list):
+            value["eligible_video_labels"] = [
+                label_map.get(label, label) for label in eligible
+            ]
+        if value.get("evidence_id") and value.get("label") in label_map:
+            value["label"] = label_map[value["label"]]
+        if value.get("video_label") in label_map:
+            value["video_label"] = label_map[value["video_label"]]
+        for child in value.values():
+            _remap_contract_video_labels(child, label_map)
+    elif isinstance(value, list):
+        for child in value:
+            _remap_contract_video_labels(child, label_map)
+
+
+def relabel_answer_videos(
+    selected_videos,
+    diagnostic_contract,
+    visible_labels=None,
+):
+    """Put answer-visible videos first and assign a contiguous usefulness order."""
+
+    selected_by_label = {
+        video["label"]: video for video in selected_videos
+    }
+    if len(selected_by_label) != len(selected_videos):
+        raise ValueError("selected video labels must be unique")
+    if visible_labels is None:
+        visible_labels = answer_visible_video_labels(
+            diagnostic_contract["claim_evidence_map"]
+        )
+    unknown_labels = [
+        label for label in visible_labels if label not in selected_by_label
+    ]
+    if unknown_labels:
+        raise ValueError(
+            "claim evidence references unknown selected video labels: "
+            + ", ".join(unknown_labels)
+        )
+    visible_set = set(visible_labels)
+    ordered_old_labels = [
+        *visible_labels,
+        *[
+            video["label"]
+            for video in selected_videos
+            if video["label"] not in visible_set
+        ],
+    ]
+    label_map = {
+        old_label: f"V{index}"
+        for index, old_label in enumerate(ordered_old_labels, start=1)
+    }
+    for video in selected_videos:
+        video["label"] = label_map[video["label"]]
+    _remap_contract_video_labels(diagnostic_contract, label_map)
+    return (
+        selected_videos,
+        [f"V{index}" for index in range(1, len(visible_labels) + 1)],
+        label_map,
+    )
+
+
 def automatic_expansion_variant_failure(
     search_module,
     video,
@@ -1011,6 +1078,10 @@ def prepare_answer_context(
         },
         resolved_answers=(continuation or {}).get("resolved_answers", []),
     )
+    selected_videos, visible_labels, _ = relabel_answer_videos(
+        selected_videos, diagnostic_contract
+    )
+    selected_ids = [video["video_id"] for video in selected_videos]
     if retrieval_query_budget["missing_required_units"]:
         diagnostic_contract["completeness_contract"]["items"].append(
             {
@@ -1025,13 +1096,11 @@ def prepare_answer_context(
         diagnostic_contract["completeness_contract"][
             "unresolved_item_ids"
         ].append("retrieval.required_units_over_hard_limit")
-    visible_labels = answer_visible_video_labels(
-        diagnostic_contract["claim_evidence_map"]
-    )
     visible_label_set = set(visible_labels)
     answer_visible_videos = [
         video for video in selected_videos if video["label"] in visible_label_set
     ]
+    answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
     context = {
         "query": user_query,
         "question_interpretation": question_interpretation,
@@ -1113,6 +1182,29 @@ def prepare_answer_context(
     context["answer_plan"] = build_closed_answer_plan(
         context, load_reviewed_evidence_atoms()
     )
+    answer_packet_runtime = load_sibling(
+        "liuhui_answer_packet_visibility", "answer_packet.py"
+    )
+    planned_visible_labels = answer_packet_runtime.packet_visible_video_labels(
+        context["answer_plan"], context["claim_evidence_map"]
+    )
+    selected_videos, visible_labels, final_label_map = relabel_answer_videos(
+        selected_videos,
+        diagnostic_contract,
+        visible_labels=planned_visible_labels,
+    )
+    _remap_contract_video_labels(context["answer_plan"], final_label_map)
+    context["answer_visible_video_labels"] = visible_labels
+    answer_visible_videos = [
+        video
+        for video in selected_videos
+        if video["label"] in set(visible_labels)
+    ]
+    answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
+    context["answer_contract"]["feedback_prompt"] = (
+        feedback_module.build_feedback_hint(answer_visible_videos)
+    )
+    context["answer_turn_contract"] = build_answer_turn_contract(context)
     if include_rejected:
         context["rejected_candidates"] = [
             {

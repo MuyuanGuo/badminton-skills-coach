@@ -663,7 +663,10 @@ def build_answer_packet(context, audit_context_reference=None):
             plan["selected_evidence_atoms"],
             video["label"] in fallback_labels,
         )
-        for video in context["selected_videos"]
+        for video in sorted(
+            context["selected_videos"],
+            key=lambda item: int(item["label"][1:]),
+        )
         if video["label"] in visible_labels
     ]
     windows, window_ids_by_key, compact_videos = normalized_evidence_windows(

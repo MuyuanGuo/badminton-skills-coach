@@ -163,7 +163,10 @@ class AnswerContextTests(unittest.TestCase):
             {"query": "正手握拍应该怎么握"},
         )["payload"]
         self.assertEqual(
-            [item["label"] for item in context["selected_videos"]],
+            sorted(
+                (item["label"] for item in context["selected_videos"]),
+                key=lambda label: int(label[1:]),
+            ),
             [
                 f"V{index}"
                 for index in range(1, len(context["selected_videos"]) + 1)
@@ -173,6 +176,43 @@ class AnswerContextTests(unittest.TestCase):
             len({item["video_id"] for item in context["selected_videos"]}),
             len(context["selected_videos"]),
         )
+
+    def test_answer_visible_labels_are_contiguous_and_can_exceed_three(self):
+        context = self.context_module.prepare_answer_context(
+            "杀球下网而且不重，架拍、击球点、握拍、步法和发力分别怎么检查？",
+            local_personalization=False,
+        )
+        visible_labels = context["answer_visible_video_labels"]
+        self.assertGreater(len(visible_labels), 3)
+        self.assertEqual(
+            visible_labels,
+            [f"V{index}" for index in range(1, len(visible_labels) + 1)],
+        )
+        packet = self.context_module.build_answer_packet(context)
+        self.assertEqual(
+            [video["label"] for video in packet["selected_videos"]],
+            visible_labels,
+        )
+        self.assertIn("V5 不相关", packet["feedback_prompt"])
+
+    def test_closed_plan_visibility_is_contiguous_and_packet_aligned(self):
+        context = self.context_module.prepare_answer_context(
+            "来不及接网前小球或者网前吊球怎么办",
+            local_personalization=False,
+        )
+        packet = self.context_module.build_answer_packet(context)
+        packet_labels = [
+            video["label"] for video in packet["selected_videos"]
+        ]
+        self.assertEqual(
+            packet_labels,
+            context["answer_visible_video_labels"],
+        )
+        self.assertEqual(
+            packet_labels,
+            [f"V{index}" for index in range(1, len(packet_labels) + 1)],
+        )
+        self.context_module.validate_answer_packet(packet, context)
 
     def test_reviewed_grip_evidence_survives_supporting_video_budget(self):
         context = self.module.prepare_case_context(

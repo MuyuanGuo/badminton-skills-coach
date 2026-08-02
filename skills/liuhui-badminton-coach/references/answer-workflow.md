@@ -86,11 +86,11 @@ Use the following order, omitting only sections that truly do not apply:
 1. **直接回答**: answer the actual question and identify the situation.
 2. **文字解释**: synthesize all distinct supported points; for diagnosis, distinguish verified source mechanisms from the user's still-unverified cause and give observable checks. Do not copy transcripts line by line.
 3. **适用边界**: state conditions that change the advice.
-4. **核心视频与观看重点**: strongest one to three evidence items, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
-5. **完整相关视频**: every other selected worthwhile video, grouped by subtopic when long. Reuse labels and do not repeat URLs.
+4. **核心视频与观看重点**: strongest one to three evidence items overall, with reason, observation target, timestamp or clip range when available, stable evidence ID, and canonical URL.
+5. **完整相关视频**: every other item in the packet's `selected_videos`, grouped by subtopic when long. Reuse labels and do not repeat URLs. More than three videos are expected when distinct claims, material scenario branches, or non-duplicate evidence roles require different sources; never truncate this list merely because the core section already has three.
 6. **置信边界**: separate source-backed facts, reasonable synthesis, and what requires watching the source or the user's own video.
 
-One claim may cite at most three strongest sources. A video URL appears once in the answer. A `V` label maps to one video for that answer turn and is never recycled for another video.
+One claim may cite at most three strongest sources, while an answer may contain more than three across distinct claims or branches. A simple claim should not gain redundant corroborating videos merely to increase the count. A video URL appears once in the answer. A `V` label maps to one video for that answer turn and is never recycled for another video.
 
 Before sending a diagnostic or other multi-claim answer, run the bundled final-answer auditor with the exact original question, the unmodified context JSON, and the final draft:
 

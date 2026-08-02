@@ -16,6 +16,13 @@ RUNTIME_PATH = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+AUDITOR_PATH = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "audit_answer.py"
+)
 
 
 def load_runtime():
@@ -25,10 +32,20 @@ def load_runtime():
     return module
 
 
+def load_auditor():
+    spec = importlib.util.spec_from_file_location(
+        "answer_packet_auditor", AUDITOR_PATH
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 class AnswerPacketTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.runtime = load_runtime()
+        cls.auditor = load_auditor()
         cls.context = cls.runtime.prepare_answer_context(
             "双打接杀挡网总冒高，是拍面还是击球点问题？",
             local_personalization=False,
@@ -43,6 +60,7 @@ class AnswerPacketTests(unittest.TestCase):
             self.packet["audit_context"]["digest"],
             self.runtime.canonical_json_digest(self.context),
         )
+        self.auditor.validate_packet_binding(self.packet, self.context)
 
     def test_tampered_packet_or_context_is_rejected(self):
         packet = copy.deepcopy(self.packet)
