@@ -3,7 +3,7 @@
 # The installed Skill runtime does not require these packages.
 anyio==4.14.1
 av==18.0.0
-certifi==2026.6.17
+certifi==2026.7.22
 click==8.4.2
 coloredlogs==15.0.1
 ctranslate2==4.8.1
