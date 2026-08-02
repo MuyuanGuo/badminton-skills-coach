@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 import unittest
 from pathlib import Path
 
@@ -26,17 +27,28 @@ class DocumentationContractTests(unittest.TestCase):
         cls.readme_en = README_EN.read_text(encoding="utf-8")
         cls.skill = SKILL.read_text(encoding="utf-8")
         cls.answer_workflow = ANSWER_WORKFLOW.read_text(encoding="utf-8")
+        cls.release_channel = json.loads(
+            (ROOT / "config" / "feedback_rules.json").read_text(
+                encoding="utf-8"
+            )
+        )["channel"]
 
-    def test_develop_readmes_keep_recruiter_audience_contract(self):
-        self.assertIn(
-            "`develop` README 面向招聘官、技术面试官和贡献者",
-            self.readme_zh,
-        )
-        self.assertIn(
-            "The `develop` README targets recruiters, technical interviewers, "
-            "and contributors",
-            self.readme_en,
-        )
+    def test_readme_audience_matches_release_channel(self):
+        if self.release_channel == "development":
+            self.assertIn(
+                "`develop` README 面向招聘官、技术面试官和贡献者",
+                self.readme_zh,
+            )
+            self.assertIn(
+                "The `develop` README targets recruiters, technical "
+                "interviewers, and contributors",
+                self.readme_en,
+            )
+        else:
+            self.assertIn("`main` README 面向使用者", self.readme_zh)
+            self.assertIn(
+                "The `main` README targets Skill users", self.readme_en
+            )
 
     def test_bilibili_causal_chain_is_serial_and_bilingual(self):
         for marker in (
