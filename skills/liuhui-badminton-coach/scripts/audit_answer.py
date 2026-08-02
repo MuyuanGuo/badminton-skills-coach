@@ -3,6 +3,7 @@
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 from pathlib import Path
@@ -12,6 +13,8 @@ SKILL_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
+LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 2
 
 
 def load_json(path):
@@ -184,8 +187,22 @@ def canonical_json_digest(payload):
     return hashlib.sha256(encoded).hexdigest()
 
 
+def load_answer_packet_runtime():
+    path = Path(__file__).with_name("answer_packet.py")
+    spec = importlib.util.spec_from_file_location(
+        "liuhui_answer_packet_audit_binding", path
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def validate_packet_binding(packet, context):
-    if packet.get("schema_version") != 1:
+    schema_version = packet.get("schema_version")
+    if schema_version == CURRENT_ANSWER_PACKET_SCHEMA_VERSION:
+        load_answer_packet_runtime().validate_answer_packet(packet, context)
+        return
+    if schema_version != LEGACY_ANSWER_PACKET_SCHEMA_VERSION:
         raise ValueError("unsupported answer_packet schema_version")
     if packet.get("packet_type") != "liuhui_badminton_answer_packet":
         raise ValueError("invalid answer_packet type")

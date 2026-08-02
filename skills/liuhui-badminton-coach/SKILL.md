@@ -75,7 +75,7 @@ Use these sections only when applicable:
 5. **完整相关视频**
 6. **置信边界**
 
-For each cited item, keep its assigned `V1...Vn`, give a concise relevance reason and viewing focus, include an available timestamp or clip range, its stable `evidence_id`, and its canonical URL once. Prefer one to three strongest sources per claim. Keep other worthwhile selected sources in the complete list without duplicating claims.
+For each cited item, keep its assigned `V1...Vn`, give a concise relevance reason and viewing focus, include an available timestamp or clip range, its stable `evidence_id`, and its canonical URL once. One to three is a per-claim evidence cap, never a three-video answer cap. Output every item in the packet's `selected_videos` exactly once: put the strongest one to three overall in the core section and every remaining selected item in the complete list, grouped by subtopic when useful. Do not add videos merely to increase the count.
 
 If no video is selected, give the supported boundary or state that the indexed archive lacks reliable evidence. Never fill the gap with generic knowledge presented as 刘辉's teaching.
 
