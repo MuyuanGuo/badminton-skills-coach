@@ -767,7 +767,29 @@ def process_candidate(
         elif existing and existing.get("status") == "transcribed":
             expected_duration = verification["source_metadata"]["duration_seconds"]
             sync_queue_classification(existing, record, verification)
-            if not existing.get("media_path"):
+            if force_reacquire:
+                media, validation = completed_media(bvid, expected_duration)
+                media_reused = media is not None
+                if media is None:
+                    media, validation = download_audio(
+                        record["url"],
+                        bvid,
+                        expected_duration,
+                    )
+                existing = recovered_queue_item(
+                    record,
+                    verification,
+                    media,
+                    validation,
+                    existing,
+                    reason="forced_transcript_quality_recovery",
+                    forced=True,
+                )
+                update_processing_state(record, stage="downloaded", terminal=False)
+                result["status"] = "downloaded"
+                result["media_recovered"] = True
+                result["media_reused"] = media_reused
+            elif not existing.get("media_path"):
                 # Finalized transcripts deliberately release temporary media.
                 # Their transcript/source integrity is enforced during build.
                 existing["origin_verification"] = verification
@@ -981,7 +1003,10 @@ def main():
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Ignore next_retry_at for explicitly requested BVIDs",
+        help=(
+            "Reacquire explicitly requested transcribed BVIDs or ignore "
+            "next_retry_at for failed acquisition"
+        ),
     )
     parser.add_argument(
         "--failure-circuit-threshold",
@@ -1051,6 +1076,7 @@ def main():
         )
         and (
             args.existing_queue_only
+            or (args.force and item["bvid"] in requested)
             or (queue_by_id.get(item["bvid"]) or {}).get("status")
             != "transcribed"
         )

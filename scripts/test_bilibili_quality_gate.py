@@ -142,6 +142,23 @@ class BilibiliQualityGateTests(unittest.TestCase):
             "步法与移动",
         )
 
+    def test_hip_mechanics_asr_canonicalization_is_phrase_bounded(self):
+        raw = (
+            "有人说用宽带腿，也有人说蹬地带转宽。"
+            "你宽是能独立动的吗？宽先躲，脚蹬地顶着宽。"
+        )
+        canonical = self.builder.canonicalize_asr_text(raw, self.rules)
+
+        self.assertIn("用髋带腿", canonical)
+        self.assertIn("蹬地带转髋", canonical)
+        self.assertIn("你髋是能独立动的吗", canonical)
+        self.assertIn("髋先动", canonical)
+        self.assertIn("脚蹬地顶着髋", canonical)
+        self.assertEqual(
+            self.builder.canonicalize_asr_text("球场宽度", self.rules),
+            "球场宽度",
+        )
+
     def test_release_cohort_is_independent_from_recipe_compatibility(self):
         current = self.transcript()
         current_item = {
@@ -517,6 +534,61 @@ class BilibiliQualityGateTests(unittest.TestCase):
         )
         self.assertGreater(
             quality["internal_repeat_character_ratio"], 0.15
+        )
+        self.assertIn(
+            "repeated_segment_hallucination_risk", quality["issues"]
+        )
+
+    def test_confident_paced_technical_drill_repetition_is_not_hallucination(self):
+        payload = self.transcript()
+        payload["segments"][0].update(
+            {"start": 0.0, "end": 10.0, "text": "展挫," * 12}
+        )
+        payload["segment_quality_metrics"][0] = {
+            "avg_logprob": -0.1,
+            "no_speech_prob": 0.2,
+            "compression_ratio": 4.0,
+        }
+        payload["full_text"] = "".join(
+            item["text"] for item in payload["segments"]
+        )
+        quality = self.builder.assess_bilibili_transcript(
+            payload,
+            self.rules,
+            evidence_id="bilibili:BV1test00001",
+            title="展搓训练",
+        )
+        self.assertGreater(
+            quality["verified_drill_repeat_character_ratio"], 0
+        )
+        self.assertNotIn(
+            "repeated_segment_hallucination_risk", quality["issues"]
+        )
+
+    def test_drill_exemption_does_not_mask_unrelated_internal_repetition(self):
+        payload = self.transcript()
+        payload["segments"][0].update(
+            {"start": 0.0, "end": 10.0, "text": "展挫," * 12}
+        )
+        payload["segment_quality_metrics"][0] = {
+            "avg_logprob": -0.1,
+            "no_speech_prob": 0.2,
+            "compression_ratio": 4.0,
+        }
+        for index, segment in enumerate(payload["segments"][1:], start=1):
+            segment["text"] = "感谢大家观看" * 8 + f"第{index}组"
+        payload["full_text"] = "".join(
+            item["text"] for item in payload["segments"]
+        )
+        quality = self.builder.assess_bilibili_transcript(
+            payload,
+            self.rules,
+            evidence_id="bilibili:BV1test00001",
+            title="展搓训练",
+        )
+        self.assertGreater(
+            quality["raw_internal_repeat_character_ratio"],
+            quality["verified_drill_repeat_character_ratio"],
         )
         self.assertIn(
             "repeated_segment_hallucination_risk", quality["issues"]

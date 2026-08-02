@@ -234,6 +234,9 @@ def mark_transcribed(item, payload):
     }
     changed = any(item.get(key) != value for key, value in values.items())
     item.update(values)
+    if "transcription_recovery_required_model" in item:
+        item.pop("transcription_recovery_required_model")
+        changed = True
     changed = normalize_transcribed_media_state(item) or changed
     if changed:
         item["last_attempt_at"] = now_iso()
@@ -278,7 +281,7 @@ def quarantine_exhausted_transcription(item):
         item["transcription_isolated_at"] = now_iso()
 
 
-def prepare_forced_transcription_retry(item):
+def prepare_forced_transcription_retry(item, model_name=None):
     item["status"] = "downloaded"
     item["transcription_retry_attempts"] = 0
     item["transcription_retryable"] = True
@@ -289,6 +292,8 @@ def prepare_forced_transcription_retry(item):
     item["last_force_recovery_at"] = now_iso()
     item["error"] = None
     item["error_stage"] = None
+    if model_name:
+        item["transcription_recovery_required_model"] = model_name
 
 
 def relative_source(media, cache_root=None):
@@ -634,6 +639,7 @@ def transcribe_directory(
     for media in files:
         video_id = video_ids_by_media[media]
         item = queue_items.get(video_id)
+        forced_recovery = force and video_id in requested
         if (
             item
             and item.get("status") == "transcription_failed"
@@ -646,11 +652,14 @@ def transcribe_directory(
         ):
             quarantine_exhausted_transcription(item)
             queue_changed = True
-        if item and item.get("status") == "transcription_quarantined":
-            if force and video_id in requested:
-                prepare_forced_transcription_retry(item)
-                queue_changed = True
+        if item and forced_recovery:
+            if item.get("status") != "downloaded":
+                prepare_forced_transcription_retry(item, model_name=model_name)
             else:
+                item["transcription_recovery_required_model"] = model_name
+            queue_changed = True
+        if item and item.get("status") == "transcription_quarantined":
+            if not forced_recovery:
                 isolated.append(video_id)
                 continue
         actionable_files.append(media)
@@ -662,6 +671,9 @@ def transcribe_directory(
     for media in files:
         video_id = video_ids_by_media[media]
         target_dir = output_dirs_by_video_id[video_id]
+        if force and video_id in requested:
+            pending.append(media)
+            continue
         transcript_candidates = [
             *primary_transcripts.get(video_id, []),
             *fallback_transcripts.get(video_id, []),
@@ -689,6 +701,12 @@ def transcribe_directory(
             source_path = candidate
             break
         if payload is None:
+            pending.append(media)
+            continue
+        required_model = (
+            queue_items.get(video_id) or {}
+        ).get("transcription_recovery_required_model")
+        if required_model and payload.get("model") != required_model:
             pending.append(media)
             continue
         try:
@@ -739,6 +757,26 @@ def transcribe_directory(
     failed = []
     model = None
     if pending:
+        conflicting_models = sorted(
+            {
+                str(queue_items.get(video_ids_by_media[media], {}).get(
+                    "transcription_recovery_required_model"
+                ))
+                for media in pending
+                if queue_items.get(video_ids_by_media[media], {}).get(
+                    "transcription_recovery_required_model"
+                )
+                and queue_items.get(video_ids_by_media[media], {}).get(
+                    "transcription_recovery_required_model"
+                ) != model_name
+            }
+        )
+        if conflicting_models:
+            raise ValueError(
+                "Pending recovery requires model(s) "
+                + ", ".join(conflicting_models)
+                + f"; current model is {model_name}"
+            )
         try:
             model = model_factory(model_name)
         except Exception as error:
@@ -778,6 +816,13 @@ def transcribe_directory(
         video_id = video_ids_by_media[media]
         transcript_dir = output_dirs_by_video_id[video_id]
         item_started = time.monotonic()
+        required_model = (
+            queue_items.get(video_id) or {}
+        ).get("transcription_recovery_required_model")
+        if required_model and model_name != required_model:
+            raise ValueError(
+                f"Recovery for {video_id} requires model {required_model}"
+            )
         source_fingerprint = media_fingerprint(media)
         validate_media_against_queue(
             media,
@@ -977,7 +1022,10 @@ def main():
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Recover quarantined items; requires at least one --video-id",
+        help=(
+            "Rerun ASR for explicit video IDs even when a valid transcript "
+            "already exists"
+        ),
     )
     args = parser.parse_args()
     if args.max_attempts <= 0:

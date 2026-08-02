@@ -348,28 +348,34 @@ def audit_bounded_note_evidence(
 ):
     """Audit a supplemental record as bounded evidence, not a full transcript.
 
-    Admission remains strict: only title-alignment advisories may lower a safe,
-    provenance-backed transcript to supplemental status.  Runtime retrieval is
-    then limited to the committed timestamped teaching-note windows.
+    Admission remains strict: title-alignment advisories or a passed bounded
+    domain-note recovery may lower a safe, provenance-backed source to
+    supplemental status. Runtime retrieval is limited to committed timestamped
+    teaching-note windows.
     """
 
     failures = []
     quality = video.get("quality") or {}
     transcript_quality = quality.get("transcript") or {}
     advisory, blocking = split_transcript_issues(transcript_quality.get("issues"))
+    bounded_recovery = quality.get("bounded_note_recovery") or {}
+    automatic_passed = (
+        (quality.get("automatic_evidence") or {}).get("passed") is True
+    )
+    recovery_passed = bounded_recovery.get("passed") is True
     if video.get("answer_eligibility") != "supplemental":
         append_failure(failures, "bounded_note_not_supplemental")
     if video.get("runtime_evidence_mode") != "bounded_note_windows":
         append_failure(failures, "invalid_bounded_note_runtime_mode")
     if video.get("metadata_title_trust") != "limited":
         append_failure(failures, "bounded_note_title_trust_not_limited")
-    if not advisory or blocking:
+    if blocking or (not advisory and not recovery_passed):
         append_failure(failures, "bounded_note_has_invalid_transcript_issues")
     if (quality.get("origin_verification") or {}).get("passed") is not True:
         append_failure(failures, "bounded_note_origin_not_verified")
     if (quality.get("source_content_safety") or {}).get("passed") is not True:
         append_failure(failures, "bounded_note_source_content_not_safe")
-    if (quality.get("automatic_evidence") or {}).get("passed") is not True:
+    if not automatic_passed and not recovery_passed:
         append_failure(failures, "bounded_note_automatic_evidence_not_passed")
     if video.get("transcript_segments"):
         append_failure(failures, "bounded_note_contains_runtime_transcript")
@@ -567,7 +573,18 @@ def audit_video_content(
         transcript_quality = quality.get("transcript") or {}
         evidence_quality = quality.get("automatic_evidence") or {}
         if source_kind == "automatic_transcript":
-            if transcript_quality.get("passed") is not True:
+            admission = video.get("automatic_admission") or {}
+            supplemental_advisory_accepted = (
+                video.get("answer_eligibility") == "supplemental"
+                and video.get("runtime_evidence_mode") == "full_transcript"
+                and transcript_quality.get("evidence_passed") is True
+                and admission.get("answer_evidence_eligible") is True
+                and admission.get("answer_eligibility") == "supplemental"
+            )
+            if (
+                transcript_quality.get("passed") is not True
+                and not supplemental_advisory_accepted
+            ):
                 failures.append("transcript_quality_not_passed")
             if evidence_quality.get("passed") is not True:
                 failures.append("automatic_evidence_quality_not_passed")

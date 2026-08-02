@@ -67,6 +67,57 @@ def queue_payload(video_id, media_path, status="downloaded"):
 
 
 class TranscriptionRecoveryTests(unittest.TestCase):
+    def test_force_reruns_valid_transcript_with_requested_recovery_model(self):
+        video_id = "BV16G411y7Rs"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            media = media_dir / f"{video_id}.m4a"
+            media.write_bytes(b"audio")
+            old_payload = {
+                "video_id": video_id,
+                "source_file": str(media),
+                **media_fingerprint(media),
+                "model": "small",
+                "language": "zh",
+                "language_probability": 1.0,
+                "duration": 2.0,
+                "segments": [
+                    {"start": 0.0, "end": 2.0, "text": "旧转写"}
+                ],
+                "full_text": "旧转写",
+            }
+            write_transcript_outputs(output_dir, old_payload)
+            queue_path = root / "queue.json"
+            queue_path.write_text(
+                json.dumps(
+                    queue_payload(video_id, str(media), status="transcribed")
+                ),
+                encoding="utf-8",
+            )
+
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_name="medium",
+                model_factory=lambda _name: FakeModel(),
+                video_ids=[video_id],
+                force=True,
+            )
+
+            self.assertEqual(result["attempted"], 1)
+            self.assertEqual(result["transcribed"], 1)
+            recovered = json.loads(
+                (output_dir / f"{video_id}.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(recovered["model"], "medium")
+            item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
+            self.assertEqual(item["transcript_model"], "medium")
+            self.assertNotIn("transcription_recovery_required_model", item)
+
     def test_external_transcript_root_is_preferred_with_repository_fallback(self):
         with tempfile.TemporaryDirectory() as directory:
             project_root = Path(directory) / "project"
@@ -785,6 +836,57 @@ class TranscriptionRecoveryTests(unittest.TestCase):
             self.assertEqual(item["transcription_retry_attempts"], 0)
             self.assertEqual(item["transcription_force_recoveries"], 1)
             self.assertEqual(item["transcription_attempts"], 3)
+
+    def test_force_explicitly_retranscribes_a_completed_item_with_new_model(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            media_dir = root / "media"
+            output_dir = root / "output"
+            media_dir.mkdir()
+            media = media_dir / "completed.m4a"
+            media.write_bytes(b"audio")
+            queue = queue_payload(
+                "completed",
+                str(media),
+                status="transcribed",
+            )
+            queue["items"][0].update(
+                {
+                    "media_sha256": media_fingerprint(media)["source_sha256"],
+                    "media_bytes": media.stat().st_size,
+                    "transcript_model": "small",
+                }
+            )
+            queue_path = root / "queue.json"
+            queue_path.write_text(json.dumps(queue), encoding="utf-8")
+            old_payload = transcriber.payload_from_model(
+                media,
+                "small",
+                FakeModel(),
+                source_fingerprint=media_fingerprint(media),
+                video_id="completed",
+            )
+            write_transcript_outputs(output_dir, old_payload)
+
+            result = transcribe_directory(
+                media_dir,
+                output_dir,
+                queue_path=queue_path,
+                model_name="medium",
+                model_factory=lambda _name: FakeModel(),
+                video_ids=["completed"],
+                force=True,
+            )
+            item = json.loads(queue_path.read_text(encoding="utf-8"))["items"][0]
+            transcript = json.loads(
+                (output_dir / "completed.json").read_text(encoding="utf-8")
+            )
+
+            self.assertEqual(result["transcribed"], 1)
+            self.assertEqual(transcript["model"], "medium")
+            self.assertEqual(item["transcript_model"], "medium")
+            self.assertEqual(item["transcription_force_recoveries"], 1)
+            self.assertNotIn("transcription_recovery_required_model", item)
 
     def test_legacy_failure_at_limit_is_quarantined_without_an_extra_attempt(self):
         with tempfile.TemporaryDirectory() as directory:

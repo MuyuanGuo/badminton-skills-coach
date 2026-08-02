@@ -4,19 +4,19 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-01T07:10:29.448460+00:00",
+  "source_updated_at": "2026-08-01T18:13:07.670513+00:00",
   "video_count": 1014,
-  "indexable_video_count": 946,
-  "assigned_video_count": 946,
+  "indexable_video_count": 956,
+  "assigned_video_count": 956,
   "unassigned_video_ids": [],
-  "fallback_assigned_video_count": 176,
-  "multi_topic_video_count": 451,
+  "fallback_assigned_video_count": 179,
+  "multi_topic_video_count": 454,
   "categories": [
     {
       "name": "后场技术",
       "description": "后场击球、被动处理、杀吊突击与架拍框架。",
       "discipline": "general",
-      "video_count": 423,
+      "video_count": 424,
       "subtopics": [
         {
           "name": "被动后场与高远",
@@ -30,8 +30,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 131,
-          "ready_count": 131,
+          "video_count": 132,
+          "ready_count": 132,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1ZbcUzDEd6",
@@ -156,6 +156,7 @@
             "bilibili:BV128EwzLE7H",
             "bilibili:BV1wZqrBLET2",
             "bilibili:BV1oC4y1i7Bk",
+            "bilibili:BV1hByrBCEcE",
             "bilibili:BV1fJdZY6EMy",
             "bilibili:BV1EzU3YdEYs",
             "bilibili:BV1wzisB8E7k",
@@ -1516,7 +1517,7 @@
       "name": "网前技术",
       "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 94,
+      "video_count": 95,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -1527,12 +1528,13 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 16,
+          "ready_count": 16,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7509355373729762619",
             "7411850466457292084",
+            "bilibili:BV1ia4uziEAQ",
             "7052148706681883907",
             "7071800926553541922",
             "bilibili:BV14f1eYhES4",
@@ -1596,6 +1598,29 @@
               "assignment_method": "rule_match"
             },
             {
+              "video_id": "bilibili:BV1ia4uziEAQ",
+              "title": "羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓",
+              "url": "https://www.bilibili.com/video/BV1ia4uziEAQ/",
+              "category": "网前技术",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
+              "topic": "羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓",
+              "score": 19,
+              "match_basis": {
+                "title": 2,
+                "focus": 2,
+                "evidence": 1
+              },
+              "assignment_method": "rule_match"
+            },
+            {
               "video_id": "7052148706681883907",
               "title": "搓球的方向很重要，网前搓球第一集",
               "url": "https://www.douyin.com/video/7052148706681883907",
@@ -1633,30 +1658,6 @@
                 "title": 1,
                 "focus": 1,
                 "evidence": 2
-              },
-              "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "bilibili:BV14f1eYhES4",
-              "title": "龙卷风搓球教学！羽毛球单打网前黄金技术！不可将就的必学技能",
-              "url": "https://www.bilibili.com/video/BV14f1eYhES4/",
-              "category": "单打战术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "answer_eligibility": "primary",
-              "evidence_roles": [
-                "action",
-                "correction",
-                "mechanism",
-                "principle",
-                "tactics"
-              ],
-              "topic": "龙卷风搓球教学！羽毛球单打网前黄金技术！不可将就的必学技能",
-              "score": 10,
-              "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 1
               },
               "assignment_method": "rule_match"
             }
@@ -3017,7 +3018,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 88,
+      "video_count": 90,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -3029,8 +3030,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 38,
-          "ready_count": 38,
+          "video_count": 39,
+          "ready_count": 39,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1H1421Q75w",
@@ -3066,6 +3067,7 @@
             "7106697344128748835",
             "7475440958130097466",
             "bilibili:BV1kM4m167Yv",
+            "bilibili:BV1ia4uziEAQ",
             "7271452082337598760",
             "bilibili:BV1Mu411T7bE",
             "bilibili:BV1EM4m1a7of",
@@ -3355,8 +3357,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 19,
+          "ready_count": 19,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1oH4y1n7s7",
@@ -3376,6 +3378,7 @@
             "7343069490126540084",
             "bilibili:BV12C4benEDo",
             "bilibili:BV1Em4y1g7D7",
+            "bilibili:BV19nkvYeES8",
             "bilibili:BV19Q4y1w7oH"
           ],
           "representative_videos": [
@@ -3643,15 +3646,16 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 5,
-          "ready_count": 5,
+          "video_count": 6,
+          "ready_count": 6,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7567860375287303035",
             "7406541084219821312",
             "bilibili:BV1uBvfBNEV4",
             "bilibili:BV1UBt3zPEQX",
-            "bilibili:BV19Q4y1w7oH"
+            "bilibili:BV19Q4y1w7oH",
+            "bilibili:BV19nkvYeES8"
           ],
           "representative_videos": [
             {
@@ -3913,7 +3917,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 378,
+      "video_count": 379,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -4309,8 +4313,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 111,
-          "ready_count": 111,
+          "video_count": 112,
+          "ready_count": 112,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1bF6SYtEGz",
@@ -4334,6 +4338,7 @@
             "bilibili:BV17TJhzmE18",
             "7567155406117533051",
             "bilibili:BV1YgUpYLE82",
+            "bilibili:BV1a64y1P76h",
             "bilibili:BV1eH4y1Y7si",
             "bilibili:BV1Rx4y1B7u1",
             "bilibili:BV1tDrUYtE46",
@@ -4758,14 +4763,15 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 143,
-          "ready_count": 143,
+          "video_count": 144,
+          "ready_count": 144,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1P4DGYrE8B",
             "bilibili:BV1EADqYPEjo",
             "7322291358931127592",
             "7383154379915906319",
+            "bilibili:BV1a64y1P76h",
             "7393550140465777960",
             "7170144521781562662",
             "7397746202562956559",
@@ -5004,25 +5010,26 @@
               "assignment_method": "rule_match"
             },
             {
-              "video_id": "7393550140465777960",
-              "title": "日常纠错反手过渡 总结，大臂不要上下晃，尤其是够的太高完了击球的时候还掉下来，保持住大臂的高度",
-              "url": "https://www.douyin.com/video/7393550140465777960",
-              "category": "握拍与基本动作",
+              "video_id": "bilibili:BV1a64y1P76h",
+              "title": "发力时怎样让大臂停住？ 内旋动作原理和训练方法！好不好用自己试下就知道啦",
+              "url": "https://www.bilibili.com/video/BV1a64y1P76h/",
+              "category": "发力与身体运用",
               "confidence": "medium",
               "processing_status": "ready",
               "answer_eligibility": "primary",
               "evidence_roles": [
                 "action",
                 "correction",
-                "equipment",
+                "mechanism",
+                "practice",
                 "principle"
               ],
-              "topic": "日常纠错反手过渡 总结",
+              "topic": "发力时怎样让大臂停住？ 内旋动作原理和训练方法！好不好用自己试下就知道啦",
               "score": 23,
               "match_basis": {
-                "title": 2,
-                "focus": 0,
-                "evidence": 11
+                "title": 1,
+                "focus": 1,
+                "evidence": 14
               },
               "assignment_method": "rule_match"
             }
@@ -7312,7 +7319,7 @@
       "name": "单打战术",
       "description": "单打线路、落点、节奏、攻防转换与目的性。",
       "discipline": "singles",
-      "video_count": 33,
+      "video_count": 35,
       "subtopics": [
         {
           "name": "线路与落点选择",
@@ -7753,8 +7760,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 18,
-          "ready_count": 18,
+          "video_count": 20,
+          "ready_count": 20,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7630800123594285305",
@@ -7770,8 +7777,10 @@
             "bilibili:BV1bZRqYcEN7",
             "7078117752275225891",
             "7089632297791671587",
+            "bilibili:BV1MwbFeCE67",
             "bilibili:BV1dh4y1S7W4",
             "bilibili:BV1er4y1o7Ry",
+            "bilibili:BV1pgv4BPEdm",
             "bilibili:BV1UZRqYcEVH",
             "bilibili:BV1Ld6MBEETC",
             "bilibili:BV1eqUPBWEk1"
@@ -7899,7 +7908,7 @@
       "name": "装备选择",
       "description": "与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。",
       "discipline": "general",
-      "video_count": 66,
+      "video_count": 69,
       "subtopics": [
         {
           "name": "球拍选择与重量",
@@ -7912,8 +7921,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 62,
-          "ready_count": 62,
+          "video_count": 65,
+          "ready_count": 65,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1VejRziExt",
@@ -7969,7 +7978,9 @@
             "bilibili:BV1uk4y1n7BG",
             "bilibili:BV1gw411N772",
             "bilibili:BV11kmPY2Esb",
+            "bilibili:BV1ju411b7kh",
             "bilibili:BV16MMQz7EK9",
+            "bilibili:BV1er421W7WE",
             "bilibili:BV14eBTBoExK",
             "bilibili:BV1z4421S776",
             "bilibili:BV1xybQzLEZV",
@@ -7977,7 +7988,8 @@
             "bilibili:BV1ks421w7Cj",
             "bilibili:BV14PPhzdEwu",
             "bilibili:BV1Cj411n7zV",
-            "bilibili:BV1B99TYtEXv"
+            "bilibili:BV1B99TYtEXv",
+            "bilibili:BV1qe411B73P"
           ],
           "representative_videos": [
             {
@@ -8238,7 +8250,7 @@
       "name": "训练与纠错",
       "description": "训练设计、动作纠错、实战复盘、恢复与体能。",
       "discipline": "general",
-      "video_count": 114,
+      "video_count": 117,
       "subtopics": [
         {
           "name": "专项训练方法",
@@ -8251,15 +8263,17 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 20,
-          "ready_count": 20,
+          "video_count": 22,
+          "ready_count": 22,
           "needs_visual_review_count": 0,
           "video_ids": [
+            "bilibili:BV1ia4uziEAQ",
             "bilibili:BV12M4m1m7kv",
             "bilibili:BV15d6MBEEmK",
             "bilibili:BV1WV4y1v7tM",
             "bilibili:BV1EwsbeaEmo",
             "7541623926234811705",
+            "bilibili:BV1a64y1P76h",
             "bilibili:BV1Ym42157sK",
             "bilibili:BV18KqWYmEx7",
             "bilibili:BV1kVq8B1E8R",
@@ -8277,6 +8291,29 @@
             "bilibili:BV1fJdZY6EMy"
           ],
           "representative_videos": [
+            {
+              "video_id": "bilibili:BV1ia4uziEAQ",
+              "title": "羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓",
+              "url": "https://www.bilibili.com/video/BV1ia4uziEAQ/",
+              "category": "网前技术",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "practice",
+                "principle"
+              ],
+              "topic": "羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓",
+              "score": 10,
+              "match_basis": {
+                "title": 1,
+                "focus": 1,
+                "evidence": 1
+              },
+              "assignment_method": "rule_match"
+            },
             {
               "video_id": "bilibili:BV12M4m1m7kv",
               "title": "4点控1点私教课教学(二)！羽毛球单打多球训练！第一部分可主页搜索",
@@ -8364,29 +8401,6 @@
                 "principle"
               ],
               "topic": "原动力启动步教学！训练方法实操篇",
-              "score": 9,
-              "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 0
-              },
-              "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "7541623926234811705",
-              "title": "反手高远球 提供一个训练方法，方法不唯一",
-              "url": "https://www.douyin.com/video/7541623926234811705",
-              "category": "后场技术",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "answer_eligibility": "primary",
-              "evidence_roles": [
-                "action",
-                "correction",
-                "practice",
-                "principle"
-              ],
-              "topic": "反手高远球 提供一个训练方法",
               "score": 9,
               "match_basis": {
                 "title": 1,
@@ -8742,8 +8756,8 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 70,
-          "ready_count": 70,
+          "video_count": 71,
+          "ready_count": 71,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7061422431386324264",
@@ -8798,6 +8812,7 @@
             "7200944470446050599",
             "7148267452877638944",
             "7500519808157371711",
+            "bilibili:BV1LCaAzYE3U",
             "bilibili:BV16PtzzcEW6",
             "bilibili:BV1tGwezFEMm",
             "bilibili:BV1mL411Q7QA",

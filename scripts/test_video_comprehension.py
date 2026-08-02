@@ -392,6 +392,44 @@ class VideoComprehensionTests(unittest.TestCase):
         self.assertNotIn("automatic_evidence_quality_not_passed", audit["failures"])
         self.assertNotIn("missing_teaching_evidence", audit["failures"])
 
+    def test_full_transcript_supplemental_accepts_only_advisory_quality(self):
+        video = self.transcript_video("")
+        video.update(
+            {
+                "source_type": "bilibili_video",
+                "confidence": "supplemental_transcript",
+                "answer_eligibility": "supplemental",
+                "runtime_evidence_mode": "full_transcript",
+                "automatic_admission": {
+                    "answer_evidence_eligible": True,
+                    "answer_eligibility": "supplemental",
+                    "disposition": "supplemental_title_alignment",
+                },
+            }
+        )
+        video["quality"]["transcript"].update(
+            {
+                "passed": False,
+                "evidence_passed": True,
+                "issues": [
+                    "title_technical_concept_not_supported_by_transcript"
+                ],
+            }
+        )
+
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+        )
+        self.assertNotIn("transcript_quality_not_passed", audit["failures"])
+
+        video["quality"]["transcript"]["evidence_passed"] = False
+        audit = self.module.audit_video_content(
+            video,
+            indexed_video_ids={video["video_id"]},
+        )
+        self.assertIn("transcript_quality_not_passed", audit["failures"])
+
     def supplemental_video(self):
         return {
             "video_id": "bilibili:BV1Supplemental",

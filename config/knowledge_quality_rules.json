@@ -1,7 +1,14 @@
 {
-  "version": 11,
+  "version": 13,
   "asr_canonicalization": {
+    "你宽是能独立动的吗": "你髋是能独立动的吗",
+    "脚蹬地顶着宽": "脚蹬地顶着髋",
+    "宽先躲": "髋先动",
+    "宽先动": "髋先动",
+    "用宽带腿": "用髋带腿",
+    "蹬地带转宽": "蹬地带转髋",
     "攀头": "拍头",
+    "展挫": "展搓",
     "架盘": "架拍",
     "架攀": "架拍",
     "握盘": "握拍",
@@ -74,6 +81,14 @@
     "minimum_internal_repeat_unit_characters": 4,
     "maximum_internal_repeat_unit_characters": 32,
     "minimum_internal_repeat_count": 3,
+    "drill_repeat_terms": [
+      "搓", "展搓", "收搓", "抽", "挡", "擋", "杀", "殺", "退", "跳"
+    ],
+    "minimum_drill_repeat_count": 5,
+    "minimum_drill_cues_per_second": 0.2,
+    "maximum_drill_cues_per_second": 4.0,
+    "minimum_drill_repeat_avg_logprob": -0.5,
+    "maximum_drill_repeat_no_speech_probability": 0.55,
     "required_recipe_fields": [
       "schema_version",
       "engine",
@@ -98,8 +113,21 @@
         "temperature": 0.0,
         "device": "cpu",
         "compute_type": "int8"
+      },
+      {
+        "schema_version": 1,
+        "engine": "faster-whisper",
+        "model": "medium",
+        "language": "zh",
+        "beam_size": 5,
+        "vad_filter": true,
+        "condition_on_previous_text": false,
+        "temperature": 0.0,
+        "device": "cpu",
+        "compute_type": "int8"
       }
     ],
+    "quality_recovery_models": ["medium"],
     "stable_retrieval_evidence_ids": [
       "bilibili:BV12N411v7qo",
       "bilibili:BV16G411y7Rs",
@@ -109,7 +137,8 @@
       "bilibili:BV1t94y1a7La",
       "bilibili:BV1tM4y1B7z8",
       "bilibili:BV1tw411U7PV",
-      "bilibili:BV1vx4y1A71t"
+      "bilibili:BV1vx4y1A71t",
+      "bilibili:BV1hByrBCEcE"
     ],
     "legacy_metricless_transcript_sha256": {
       "bilibili:BV12N411v7qo": "cd244b8d424fb56fc14d4e3302efff84f4ae7b9bbc8bef93cf818c2bdcb3154d",
@@ -147,6 +176,9 @@
       "正手高远球",
       "反手高远球",
       "高远球",
+      "搓球",
+      "展搓",
+      "收搓",
       "接发球",
       "四方球",
       "过渡球",
@@ -251,6 +283,60 @@
       "因为", "因為", "所以", "如果", "这样", "這樣", "应该", "應該",
       "需要", "一定", "首先", "然后", "然後", "先", "再", "注意", "记住",
       "記住", "尽量", "盡量", "必须", "必須", "可以", "不能", "不要", "练习", "訓練"
-    ]
+    ],
+    "bounded_note_recovery": {
+      "version": 1,
+      "allowed_automatic_evidence_issues": [
+        "missing_key_evidence",
+        "too_few_teaching_term_matches",
+        "single_term_without_instruction_signal",
+        "insufficient_context_for_single_match"
+      ],
+      "minimum_window_characters": 12,
+      "minimum_total_supported_characters": 24,
+      "instruction_terms": [
+        "应该", "應該", "需要", "一定", "首先", "然后", "然後", "先", "再",
+        "注意", "记住", "記住", "尽量", "盡量", "必须", "必須", "可以",
+        "不能", "不要", "因为", "因為", "所以", "如果", "推荐", "推薦",
+        "区别", "區別", "适合", "適合", "要求", "优点", "優點", "缺点",
+        "缺點", "更快", "更慢", "减少", "減少", "避免", "就是", "方法", "只能"
+      ],
+      "roles": {
+        "action": {
+          "minimum_supported_windows": 2,
+          "terms": [
+            "马来步", "馬來步", "后撤步", "後撤步", "倒退步", "退步", "后场",
+            "後場", "弧度", "变速", "變速", "后场高球", "後場高球", "平高球",
+            "假拍", "停顿", "停頓"
+          ]
+        },
+        "equipment": {
+          "minimum_supported_windows": 2,
+          "terms": [
+            "球拍", "平衡点", "平衡點", "平点", "底胶", "底膠", "5u", "4u",
+            "拍头", "拍頭", "参数", "參數", "正品", "授权", "授權", "线孔",
+            "線孔", "logo", "保障", "质保", "質保", "重量", "中杆", "中桿"
+          ]
+        },
+        "safety_boundary": {
+          "minimum_supported_windows": 1,
+          "terms": [
+            "安全", "躲", "护脸", "護臉", "保护", "保護", "挡脸", "擋臉",
+            "抽脸", "抽臉"
+          ]
+        },
+        "tactics": {
+          "minimum_supported_windows": 2,
+          "terms": [
+            "31分", "开局", "開局", "战线", "戰線", "失误", "失誤", "稳住",
+            "穩住", "打稳", "打穩", "节奏", "節奏", "状态", "狀態", "球路"
+          ]
+        },
+        "mechanism": {
+          "minimum_supported_windows": 2,
+          "terms": ["髋", "髖", "蹬地", "发力", "發力", "内旋", "內旋"]
+        }
+      }
+    }
   }
 }

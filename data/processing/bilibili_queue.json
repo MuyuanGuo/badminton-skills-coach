@@ -1,7 +1,7 @@
 {
   "version": 1,
   "platform": "bilibili",
-  "updated_at": "2026-07-30T00:05:48.927781+00:00",
+  "updated_at": "2026-08-01T17:35:13.774710+00:00",
   "counts": {
     "transcribed": 602
   },
@@ -25790,16 +25790,32 @@
       "attempts": 0,
       "error": null,
       "error_stage": null,
-      "downloaded_at": "2026-07-29T10:25:43.347849+00:00",
-      "transcript_model": "small",
-      "transcript_language": "zh",
-      "transcript_source_sha256": "088e6ff7cc5be1ea6706bab658482e3a8b6ea4bb70351684e7d3a1b122c3f4a1",
-      "transcript_source_bytes": 2818840,
-      "transcript_text_characters": 555,
+      "downloaded_at": "2026-08-01T15:46:22.160881+00:00",
+      "transcription_attempts": 0,
       "transcription_retry_attempts": 0,
       "transcription_retryable": false,
       "transcription_isolated_at": null,
-      "last_attempt_at": "2026-07-29T12:37:28.850355+00:00"
+      "media_recoveries": 1,
+      "transcription_force_recoveries": 1,
+      "media_recovery_audit": [
+        {
+          "recovered_at": "2026-08-01T15:46:22.160910+00:00",
+          "reason": "forced_transcript_quality_recovery",
+          "forced": true,
+          "previous_status": "transcribed",
+          "previous_media_path": null,
+          "previous_media_cache_key": null,
+          "previous_media_sha256": "088e6ff7cc5be1ea6706bab658482e3a8b6ea4bb70351684e7d3a1b122c3f4a1",
+          "transcription_attempts": 0,
+          "transcription_retry_attempts": 0
+        }
+      ],
+      "transcript_model": "medium",
+      "transcript_language": "zh",
+      "transcript_source_sha256": "088e6ff7cc5be1ea6706bab658482e3a8b6ea4bb70351684e7d3a1b122c3f4a1",
+      "transcript_source_bytes": 2818840,
+      "transcript_text_characters": 549,
+      "last_attempt_at": "2026-08-01T15:49:22.536657+00:00"
     },
     {
       "platform": "bilibili",
@@ -30504,22 +30520,38 @@
       "media_packet_count": 3891,
       "media_decoded_frame_count": 3891,
       "media_decoded_samples": 3984384,
-      "media_bytes": 1046989,
-      "media_sha256": "771d5896b112fcef2d6b8da5811a771eac34468e921082c00e08e69204005a24",
+      "media_bytes": 1745511,
+      "media_sha256": "54ed0d8d788997b03f46da3407a9a3b0945223ce8734510f93754b5c0cd26cf1",
       "duration_seconds": 90.349,
       "attempts": 0,
       "error": null,
       "error_stage": null,
-      "downloaded_at": "2026-07-29T14:11:37.909504+00:00",
-      "transcript_model": "small",
-      "transcript_language": "zh",
-      "transcript_source_sha256": "771d5896b112fcef2d6b8da5811a771eac34468e921082c00e08e69204005a24",
-      "transcript_source_bytes": 1046989,
-      "transcript_text_characters": 286,
+      "downloaded_at": "2026-08-01T17:34:50.124878+00:00",
+      "transcription_attempts": 0,
       "transcription_retry_attempts": 0,
       "transcription_retryable": false,
       "transcription_isolated_at": null,
-      "last_attempt_at": "2026-07-29T17:15:24.749978+00:00"
+      "media_recoveries": 1,
+      "transcription_force_recoveries": 1,
+      "media_recovery_audit": [
+        {
+          "recovered_at": "2026-08-01T17:34:50.125635+00:00",
+          "reason": "forced_transcript_quality_recovery",
+          "forced": true,
+          "previous_status": "transcribed",
+          "previous_media_path": null,
+          "previous_media_cache_key": null,
+          "previous_media_sha256": "771d5896b112fcef2d6b8da5811a771eac34468e921082c00e08e69204005a24",
+          "transcription_attempts": 0,
+          "transcription_retry_attempts": 0
+        }
+      ],
+      "transcript_model": "medium",
+      "transcript_language": "zh",
+      "transcript_source_sha256": "54ed0d8d788997b03f46da3407a9a3b0945223ce8734510f93754b5c0cd26cf1",
+      "transcript_source_bytes": 1745511,
+      "transcript_text_characters": 312,
+      "last_attempt_at": "2026-08-01T17:35:13.774250+00:00"
     },
     {
       "platform": "bilibili",
@@ -31445,16 +31477,32 @@
       "attempts": 0,
       "error": null,
       "error_stage": null,
-      "downloaded_at": "2026-07-29T14:19:02.678371+00:00",
-      "transcript_model": "small",
-      "transcript_language": "zh",
-      "transcript_source_sha256": "fb2e5ee0fc8fc12d49e595e093617fdb1972a20bed2bddc7546c1d20b9e65d72",
-      "transcript_source_bytes": 1791286,
-      "transcript_text_characters": 534,
+      "downloaded_at": "2026-08-01T15:47:07.464770+00:00",
+      "transcription_attempts": 0,
       "transcription_retry_attempts": 0,
       "transcription_retryable": false,
       "transcription_isolated_at": null,
-      "last_attempt_at": "2026-07-29T17:12:26.122794+00:00"
+      "media_recoveries": 1,
+      "transcription_force_recoveries": 1,
+      "media_recovery_audit": [
+        {
+          "recovered_at": "2026-08-01T15:47:07.464788+00:00",
+          "reason": "forced_transcript_quality_recovery",
+          "forced": true,
+          "previous_status": "transcribed",
+          "previous_media_path": null,
+          "previous_media_cache_key": null,
+          "previous_media_sha256": "fb2e5ee0fc8fc12d49e595e093617fdb1972a20bed2bddc7546c1d20b9e65d72",
+          "transcription_attempts": 0,
+          "transcription_retry_attempts": 0
+        }
+      ],
+      "transcript_model": "medium",
+      "transcript_language": "zh",
+      "transcript_source_sha256": "fb2e5ee0fc8fc12d49e595e093617fdb1972a20bed2bddc7546c1d20b9e65d72",
+      "transcript_source_bytes": 1791286,
+      "transcript_text_characters": 611,
+      "last_attempt_at": "2026-08-01T15:51:49.452674+00:00"
     },
     {
       "platform": "bilibili",

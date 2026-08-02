@@ -66,6 +66,7 @@ def run(command, *, env=None):
 
 def build_commands(*, rebuild_bilibili=True):
     commands = [
+        [sys.executable, "scripts/refresh_bilibili_recovery_records.py"],
         [sys.executable, "scripts/migrate_bilibili_evidence_admission.py"],
         [sys.executable, "scripts/build_douyin_knowledge.py"],
         [sys.executable, "scripts/build_topic_index.py"],

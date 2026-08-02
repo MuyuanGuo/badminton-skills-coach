@@ -2,9 +2,9 @@
   "schema_version": 1,
   "status": "pass",
   "corpus": {
-    "primary": 779,
-    "supplemental": 167,
-    "graph_edges": 17589
+    "primary": 781,
+    "supplemental": 175,
+    "graph_edges": 17687
   },
   "positive_bounded_case": {
     "query": "初学者低磅应该选高弹线还是耐打线？",

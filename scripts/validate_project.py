@@ -1088,7 +1088,12 @@ for video in douyin_knowledge["videos"]:
         expected_quality_fields.update(
             {"origin_verification", "source_content_safety"}
         )
-    if set(video.get("quality", {})) != expected_quality_fields:
+    actual_quality_fields = set(video.get("quality", {}))
+    if (
+        not expected_quality_fields.issubset(actual_quality_fields)
+        or actual_quality_fields - expected_quality_fields
+        > {"bounded_note_recovery"}
+    ):
         raise SystemExit(f"Knowledge quality audit is missing for {video['video_id']}")
     if video["confidence"] == "medium" and (
         not video["quality"]["transcript"]["passed"]

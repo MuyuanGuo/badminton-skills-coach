@@ -14,6 +14,7 @@ CONTEXT_PATH = (
     / "skills/liuhui-badminton-coach/scripts/prepare_answer_context.py"
 )
 GRAPH_PATH = ROOT / "data/knowledge/evidence_graph.json"
+KNOWLEDGE_PATH = ROOT / "data/knowledge/douyin_knowledge_base.json"
 OUTPUT_PATH = ROOT / "data/evaluation/supplemental_evidence_report.json"
 POSITIVE_ID = "bilibili:BV1VJ4m1b7U7"
 WEAK_OVERLAP_ID = "bilibili:BV1BDRCYFEFr"
@@ -86,9 +87,18 @@ def evaluate():
 
     graph = json.loads(GRAPH_PATH.read_text(encoding="utf-8"))
     graph_counts = graph["counts"]
-    if graph_counts["primary_videos"] != 779:
+    knowledge = json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8"))
+    expected_primary = sum(
+        item.get("answer_eligibility") == "primary"
+        for item in knowledge.get("videos", [])
+    )
+    expected_supplemental = sum(
+        item.get("answer_eligibility") == "supplemental"
+        for item in knowledge.get("videos", [])
+    )
+    if graph_counts["primary_videos"] != expected_primary:
         failures.append("graph_primary_count_mismatch")
-    if graph_counts["supplemental_videos"] != 167:
+    if graph_counts["supplemental_videos"] != expected_supplemental:
         failures.append("graph_supplemental_count_mismatch")
     return {
         "schema_version": 1,
