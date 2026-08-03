@@ -24,6 +24,31 @@ OUTPUT_PATH = (
 )
 STORE_SCHEMA_VERSION = 2
 APPLICATION_ID = 0x4C484243  # "LHBC"
+LOGICAL_TABLES = (
+    ("store_metadata", ("key", "value"), ("key",)),
+    ("knowledge_metadata", ("key", "value"), ("key",)),
+    ("retrieval_metadata", ("key", "value"), ("key",)),
+    ("chunk_metadata", ("key", "value"), ("key",)),
+    (
+        "knowledge_videos",
+        ("position", "video_id", "payload"),
+        ("position",),
+    ),
+    (
+        "transcript_payloads",
+        ("position", "video_id", "payload"),
+        ("position",),
+    ),
+    ("search_videos", ("position", "video_id", "payload"), ("position",)),
+    (
+        "retrieval_videos",
+        ("position", "video_id", "payload"),
+        ("position",),
+    ),
+    ("chunks", ("position", "payload"), ("position",)),
+    ("video_ngram_postings", ("gram", "payload"), ("gram",)),
+    ("chunk_ngram_postings", ("gram", "payload"), ("gram",)),
+)
 
 
 def canonical_json(value):
@@ -41,6 +66,78 @@ def sha256(path):
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _update_logical_digest(digest, value):
+    encoded = canonical_json(value).encode("utf-8")
+    digest.update(len(encoded).to_bytes(8, "big"))
+    digest.update(encoded)
+
+
+def logical_sha256(path):
+    """Hash the store schema and ordered contents, independent of SQLite pages."""
+    path = Path(path)
+    uri = f"file:{path.resolve().as_posix()}?mode=ro&immutable=1"
+    connection = sqlite3.connect(uri, uri=True)
+    try:
+        digest = hashlib.sha256()
+        _update_logical_digest(
+            digest,
+            {
+                "application_id": connection.execute(
+                    "PRAGMA application_id"
+                ).fetchone()[0],
+                "user_version": connection.execute("PRAGMA user_version").fetchone()[0],
+            },
+        )
+        expected_tables = sorted(table for table, _, _ in LOGICAL_TABLES)
+        actual_tables = sorted(
+            row[0]
+            for row in connection.execute(
+                "SELECT name FROM sqlite_schema "
+                "WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+            )
+        )
+        if actual_tables != expected_tables:
+            raise ValueError(
+                "runtime store table set mismatch: "
+                f"expected {expected_tables!r}, got {actual_tables!r}"
+            )
+
+        for table, columns, order_by in LOGICAL_TABLES:
+            table_info = list(connection.execute(f'PRAGMA table_info("{table}")'))
+            indexes = []
+            for index_row in connection.execute(f'PRAGMA index_list("{table}")'):
+                index_name = index_row[1]
+                indexes.append(
+                    {
+                        "unique": index_row[2],
+                        "origin": index_row[3],
+                        "partial": index_row[4],
+                        "columns": list(
+                            connection.execute(f'PRAGMA index_info("{index_name}")')
+                        ),
+                    }
+                )
+            indexes.sort(key=canonical_json)
+            _update_logical_digest(
+                digest,
+                {
+                    "table": table,
+                    "columns": table_info,
+                    "indexes": indexes,
+                },
+            )
+
+            select_columns = ", ".join(f'"{column}"' for column in columns)
+            ordering = ", ".join(f'"{column}"' for column in order_by)
+            for row in connection.execute(
+                f'SELECT {select_columns} FROM "{table}" ORDER BY {ordering}'
+            ):
+                _update_logical_digest(digest, row)
+        return digest.hexdigest()
+    finally:
+        connection.close()
 
 
 def insert_metadata(connection, table, payload, excluded=()):

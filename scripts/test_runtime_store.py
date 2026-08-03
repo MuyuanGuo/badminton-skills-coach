@@ -38,16 +38,18 @@ class RuntimeStoreTests(unittest.TestCase):
         )
         self.assertEqual(result["status"], "ok")
 
-    def test_build_is_byte_deterministic(self):
+    def test_build_is_logically_deterministic(self):
         with tempfile.TemporaryDirectory() as directory:
             rebuilt = Path(directory) / "runtime-store.sqlite3"
-            result = self.builder.build_store(
+            self.builder.build_store(
                 self.builder.KNOWLEDGE_PATH,
                 self.builder.RETRIEVAL_INDEX_PATH,
                 rebuilt,
             )
-            self.assertEqual(result["sha256"], self.builder.sha256(STORE_PATH))
-            self.assertEqual(rebuilt.read_bytes(), STORE_PATH.read_bytes())
+            self.assertEqual(
+                self.builder.logical_sha256(rebuilt),
+                self.builder.logical_sha256(STORE_PATH),
+            )
 
     def test_lazy_views_match_canonical_rows_without_full_materialization(self):
         store = self.runtime.RuntimeStore(STORE_PATH)

@@ -18,7 +18,7 @@ class TranscriptionSupplyChainTests(unittest.TestCase):
             requirements = [
                 index
                 for index, line in enumerate(lines)
-                if re.match(r"^[A-Za-z0-9_.-]+==[^ ]+ \\$", line)
+                if re.match(r"^[A-Za-z0-9_.-]+==\S+(?:\s+;\s+.+)? \\$", line)
             ]
             self.assertTrue(requirements, relative)
             for index in requirements:
