@@ -1,0 +1,58 @@
+"""Authoritative inventory for the portable Skill release."""
+
+RUNTIME_SKILL_PATHS = {
+    "SKILL.md",
+    "agents/openai.yaml",
+    "references/answer-audit-rules.json",
+    "references/answer-modality-rules.json",
+    "references/answer-selection-rules.json",
+    "references/answer-workflow.md",
+    "references/build-manifest.json",
+    "references/continuation.md",
+    "references/diagnosis.md",
+    "references/diagnostic-answer-rules.json",
+    "references/evidence-scope-guide.md",
+    "references/feedback-rules.json",
+    "references/feedback-signals.json",
+    "references/feedback-workflow.md",
+    "references/practice-plan-rules.json",
+    "references/practice.md",
+    "references/retrieval-rules.json",
+    "references/reviewed-evidence-atoms.json",
+    "references/reviewed-evidence-signals.json",
+    "references/runtime-store.sqlite3",
+    "references/topic-index.md",
+    "references/topic-map.json",
+    "scripts/audit_answer.py",
+    "scripts/answer_candidate_selection.py",
+    "scripts/answer_constraints.py",
+    "scripts/answer_continuation.py",
+    "scripts/answer_packet.py",
+    "scripts/answer_retrieval_plan.py",
+    "scripts/answer_scope.py",
+    "scripts/answer_selection_policy.py",
+    "scripts/diagnostic_contract.py",
+    "scripts/doctor.py",
+    "scripts/feedback.py",
+    "scripts/feedback_ranking.py",
+    "scripts/install.py",
+    "scripts/navigate_topics.py",
+    "scripts/prepare_answer_context.py",
+    "scripts/query_planning.py",
+    "scripts/render_answer.py",
+    "scripts/retrieval_projection.py",
+    "scripts/retrieval_ranking.py",
+    "scripts/runtime_store.py",
+    "scripts/search_knowledge.py",
+    "scripts/token_budget.py",
+}
+
+# These deterministic mirrors are useful for maintainer parity checks. They are
+# deliberately excluded from releases: runtime queries use the immutable store.
+MAINTAINER_ONLY_SKILL_PATHS = {
+    "references/evidence-graph.json",
+    "references/knowledge-base.json",
+    "references/retrieval-index.json",
+}
+
+ROOT_RELEASE_PATHS = {"LICENSE", "LICENSE-DATA", "NOTICE"}

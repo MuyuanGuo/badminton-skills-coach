@@ -25,10 +25,26 @@ RUNTIME_PATH = (
     / "prepare_answer_context.py"
 )
 SKILL_PATH = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
+TOKEN_BUDGET_PATH = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "token_budget.py"
+)
 
 
 def load_runtime():
     spec = importlib.util.spec_from_file_location("answer_packet_eval", RUNTIME_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_token_budget():
+    spec = importlib.util.spec_from_file_location(
+        "answer_packet_token_budget", TOKEN_BUDGET_PATH
+    )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -66,15 +82,19 @@ def resolve_case_registry(registry, source_registry):
         "query_source_registry",
         "minimum_case_count",
         "maximum_skill_instruction_bytes",
+        "maximum_skill_instruction_tokens",
         "maximum_answer_packet_bytes",
         "maximum_p95_answer_packet_bytes",
+        "maximum_answer_packet_tokens",
+        "maximum_p95_answer_packet_tokens",
+        "token_estimator",
         "minimum_average_byte_reduction",
         "minimum_case_byte_reduction",
         "cases",
     }
     if set(registry) != expected_registry_fields:
         raise ValueError("answer packet registry contains unexpected fields")
-    if registry.get("schema_version") != 1:
+    if registry.get("schema_version") != 2:
         raise ValueError("unsupported answer packet case schema_version")
     if registry.get("measurement_scope") != MEASUREMENT_SCOPE:
         raise ValueError("answer packet measurement_scope is invalid")
@@ -151,6 +171,7 @@ def resolve_case_registry(registry, source_registry):
                 "case_id": case_id,
                 "source_case_id": source_case_id,
                 "query": query,
+                "case_type": source_case.get("case_type", "unspecified"),
             }
         )
 
@@ -161,8 +182,11 @@ def resolve_case_registry(registry, source_registry):
 
     positive_limits = [
         "maximum_skill_instruction_bytes",
+        "maximum_skill_instruction_tokens",
         "maximum_answer_packet_bytes",
         "maximum_p95_answer_packet_bytes",
+        "maximum_answer_packet_tokens",
+        "maximum_p95_answer_packet_tokens",
     ]
     if any(
         not isinstance(registry.get(field), int)
@@ -176,6 +200,13 @@ def resolve_case_registry(registry, source_registry):
         > registry["maximum_answer_packet_bytes"]
     ):
         raise ValueError("answer packet P95 limit cannot exceed the hard cap")
+    if (
+        registry["maximum_p95_answer_packet_tokens"]
+        > registry["maximum_answer_packet_tokens"]
+    ):
+        raise ValueError("answer packet token P95 limit cannot exceed the hard cap")
+    if registry.get("token_estimator") != "codex-conservative-unicode-v1":
+        raise ValueError("answer packet token estimator is unsupported")
     for field in [
         "minimum_average_byte_reduction",
         "minimum_case_byte_reduction",
@@ -203,7 +234,11 @@ def load_case_registry(cases_path=CASES_PATH):
 def evaluate(cases_path=CASES_PATH):
     registry, cases = load_case_registry(cases_path)
     runtime = load_runtime()
+    token_budget = load_token_budget()
     skill_instruction_bytes = len(SKILL_PATH.read_bytes())
+    skill_instruction_tokens = token_budget.estimate_text_tokens(
+        SKILL_PATH.read_text(encoding="utf-8")
+    )
     results = []
     for case in cases:
         started = time.perf_counter()
@@ -215,6 +250,8 @@ def evaluate(cases_path=CASES_PATH):
         construction_ms = (time.perf_counter() - started) * 1000
         full_bytes = encoded_size(context)
         packet_bytes = encoded_size(packet)
+        full_tokens = token_budget.estimate_json_tokens(context)
+        packet_tokens = token_budget.estimate_json_tokens(packet)
         reduction = 1 - packet_bytes / full_bytes
         results.append(
             {
@@ -222,6 +259,9 @@ def evaluate(cases_path=CASES_PATH):
                 "source_case_id": case["source_case_id"],
                 "full_context_bytes": full_bytes,
                 "answer_packet_bytes": packet_bytes,
+                "full_context_estimated_tokens": full_tokens,
+                "answer_packet_estimated_tokens": packet_tokens,
+                "case_type": case["case_type"],
                 "byte_reduction": round(reduction, 6),
                 "construction_ms": round(construction_ms, 3),
                 "reviewed_atom_count": len(
@@ -238,17 +278,38 @@ def evaluate(cases_path=CASES_PATH):
     construction_measurements = measurement_summary(
         [item["construction_ms"] for item in results]
     )
+    packet_token_measurements = measurement_summary(
+        [item["answer_packet_estimated_tokens"] for item in results]
+    )
+    token_measurements_by_case_type = {
+        case_type: measurement_summary(
+            [
+                item["answer_packet_estimated_tokens"]
+                for item in results
+                if item["case_type"] == case_type
+            ]
+        )
+        for case_type in sorted({item["case_type"] for item in results})
+    }
     minimum_case_count = registry["minimum_case_count"]
     hard_cap = registry["maximum_answer_packet_bytes"]
     p95_cap = registry["maximum_p95_answer_packet_bytes"]
+    token_hard_cap = registry["maximum_answer_packet_tokens"]
+    token_p95_cap = registry["maximum_p95_answer_packet_tokens"]
     sample_count_passed = packet_measurements["n"] >= minimum_case_count
     hard_cap_passed = packet_measurements["max"] <= hard_cap
     p95_passed = packet_measurements["p95"] <= p95_cap
+    token_hard_cap_passed = packet_token_measurements["max"] <= token_hard_cap
+    token_p95_passed = packet_token_measurements["p95"] <= token_p95_cap
     passed = (
         skill_instruction_bytes <= registry["maximum_skill_instruction_bytes"]
+        and skill_instruction_tokens
+        <= registry["maximum_skill_instruction_tokens"]
         and sample_count_passed
         and hard_cap_passed
         and p95_passed
+        and token_hard_cap_passed
+        and token_p95_passed
         and average >= registry["minimum_average_byte_reduction"]
         and minimum >= registry["minimum_case_byte_reduction"]
     )
@@ -261,11 +322,18 @@ def evaluate(cases_path=CASES_PATH):
         "sample_count_passed": sample_count_passed,
         "hard_cap_passed": hard_cap_passed,
         "p95_passed": p95_passed,
+        "token_hard_cap_passed": token_hard_cap_passed,
+        "token_p95_passed": token_p95_passed,
         "minimum_case_count": minimum_case_count,
         "skill_instruction_bytes": skill_instruction_bytes,
+        "skill_instruction_estimated_tokens": skill_instruction_tokens,
         "maximum_skill_instruction_bytes": registry[
             "maximum_skill_instruction_bytes"
         ],
+        "maximum_skill_instruction_tokens": registry[
+            "maximum_skill_instruction_tokens"
+        ],
+        "token_estimator": token_budget.ESTIMATOR_ID,
         "answer_packet_hard_cap_bytes": hard_cap,
         "maximum_answer_packet_bytes": registry[
             "maximum_answer_packet_bytes"
@@ -275,6 +343,15 @@ def evaluate(cases_path=CASES_PATH):
         ],
         "answer_packet_maximum_bytes": packet_measurements["max"],
         "answer_packet_p95_bytes": packet_measurements["p95"],
+        "maximum_answer_packet_tokens": token_hard_cap,
+        "maximum_p95_answer_packet_tokens": token_p95_cap,
+        "answer_packet_maximum_estimated_tokens": packet_token_measurements[
+            "max"
+        ],
+        "answer_packet_p95_estimated_tokens": packet_token_measurements[
+            "p95"
+        ],
+        "answer_packet_tokens_by_case_type": token_measurements_by_case_type,
         "construction_maximum_ms": round(
             construction_measurements["max"], 3
         ),

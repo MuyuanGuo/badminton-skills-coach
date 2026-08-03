@@ -7,7 +7,11 @@ import os
 import re
 from pathlib import Path
 
-import fcntl
+try:
+    import fcntl
+except ImportError:  # Windows
+    fcntl = None
+    import msvcrt
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,8 +47,15 @@ def acquire_bilibili_pipeline_lock():
     PIPELINE_LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
     handle = PIPELINE_LOCK_PATH.open("a+", encoding="utf-8")
     try:
-        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
+        if fcntl is not None:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        else:
+            handle.seek(0)
+            handle.write("0")
+            handle.flush()
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+    except (BlockingIOError, OSError):
         handle.close()
         raise RuntimeError(
             "Another Bilibili pipeline writer holds "

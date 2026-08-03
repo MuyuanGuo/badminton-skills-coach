@@ -51,6 +51,18 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
             hypotheses["击球点"]["eligible_video_labels"],
         )
 
+    def test_enumerated_diagnostic_request_preserves_each_hypothesis(self):
+        runtime = self.module.load_runtime()
+        context = runtime.prepare_answer_context(
+            "请帮我区分拍面、击球点和到位问题。",
+            local_personalization=False,
+        )
+        hypotheses = self.module.hypothesis_by_text(context)
+        self.assertEqual(set(hypotheses), {"拍面", "击球点", "到位"})
+        self.assertEqual(hypotheses["拍面"]["status"], "conditional")
+        self.assertEqual(hypotheses["击球点"]["status"], "conditional")
+        self.assertIn(hypotheses["到位"]["status"], {"conditional", "unverified"})
+
     def test_mechanism_claim_requires_requested_action_scope(self):
         runtime = self.module.load_runtime()
         context = runtime.prepare_answer_context(

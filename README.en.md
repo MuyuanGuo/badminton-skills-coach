@@ -3,6 +3,7 @@
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
+[![Data/source terms](https://img.shields.io/badge/data%20%26%20sources-separate%20terms-6b5b95.svg)](LICENSE-DATA)
 
 ![Badminton Skills Coach: evidence-backed badminton video knowledge base](.github/assets/social-preview.jpg)
 
@@ -10,7 +11,7 @@ An evidence-backed badminton coaching Skill for Codex. Describe a real technique
 
 [Install 2.0.0](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
 
-Version 2.0.0 is the stable release on main and [v2.0.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0). Ongoing work lives on develop. This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
+You are viewing the `develop` branch; the current development version is **2.1.0-dev.1** and its release status is **unreleased**. Stable installs remain on main and [v2.0.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0). This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
 ## Start in 30 seconds
 
@@ -33,6 +34,7 @@ The Skill reconstructs who did what, the incoming shot, and the requested action
 - “One to three videos” is a per-claim evidence cap, not a three-video answer cap. Materially different subquestions or scenario branches may expose more sources; simple answers are never padded with duplicates.
 - Local feedback stays on the user's machine by default and affects personalization only after confirmation. Public feedback requires separate sanitization, consent, source verification, and regression tests.
 - The model reads a compact answer packet while the complete context remains authoritative for final audit; canonical JSON SHA-256 binds the two.
+- Runtime review priors live in a separate registry from `data/evaluation/answer_quality_cases.json`; evaluation scripts default to unassisted retrieval mode so gold cases cannot silently feed the reported metric.
 
 ## Current evidence and quality baseline
 
@@ -59,10 +61,12 @@ All 7,724 transcript evidence items have timestamps. These figures describe the 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
 ~~~bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
   -o /tmp/liuhui-badminton-coach-2.0.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SBOM.cdx.json \
+  -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
 unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
@@ -76,6 +80,19 @@ python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 ~~~
 
 Restart Codex after installation. Re-running the installer safely upgrades the installed Skill after validating the package.
+
+Windows PowerShell uses the same release and SHA-256 verification:
+
+~~~powershell
+$v = "2.0.0"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
+Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
+Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
+$expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
+$actual = (Get-FileHash "$env:TEMP/liuhui-badminton-coach-$v.zip" -Algorithm SHA256).Hash.ToLower()
+if ($actual -ne $expected) { throw "SHA-256 mismatch" }
+$stage = Join-Path $env:TEMP "liuhui-skill-install"; Expand-Archive "$env:TEMP/liuhui-badminton-coach-$v.zip" $stage -Force
+python "$stage/liuhui-badminton-coach/scripts/install.py"
+~~~
 
 ## Ask better questions
 
@@ -113,7 +130,9 @@ To share sanitized public feedback, use the [Skill feedback Issue template](http
 
 ## Sources and boundaries
 
-The repository does not ship original media, complete transcript directories, temporary cookies, platform credentials, model caches, or local user feedback. Public links are source citations. Original software and automation use the [MIT License](LICENSE); third-party video, audio, titles, creator names, thumbnails, and transcripts are outside that grant. See [NOTICE](NOTICE).
+The repository does not ship original media, raw transcript directories, temporary cookies, platform credentials, model caches, or local user feedback. The installable archive contains only derived indexes and locatable evidence data required at runtime. Original software and documentation use the [MIT License](LICENSE); third-party video, audio, titles, creator names, thumbnails, and transcripts are outside that grant. See the [Data and Source-Material Notice](LICENSE-DATA) and [NOTICE](NOTICE).
+
+Maintenance batches download, transcribe, and validate without committing or pushing by default. Publishing requires explicit `--commit --push`, and only an artifact allowlist may be staged.
 
 ### How new data reaches an answer
 
@@ -124,8 +143,8 @@ flowchart LR
     D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
     P --> E["Structured knowledge, including quarantine audit records"]
     E --> A["Answer admission layers: primary / supplemental / none"]
-    A --> KG["Concept-topic-evidence-role graph"]
-    A --> F["45-second chunk-first plus bounded-window retrieval"]
+    A --> S["Read-only SQLite runtime evidence store"]
+    S --> F["45-second chunk-first plus bounded-window retrieval"]
     F --> R["Answer packet and final audit"]
 ~~~
 
@@ -137,6 +156,11 @@ Maintainers resume an incomplete Bilibili pipeline through one recovery entry po
 python3 scripts/run_bilibili_update_pipeline.py --install
 ~~~
 
-For maintenance and contributions, see [CONTRIBUTING.md](CONTRIBUTING.md). Release verification and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). The recruiter-facing architecture, evaluation, and engineering narrative remains on develop.
+Runtime boundaries and module-loading constraints are documented in [ARCHITECTURE.md](ARCHITECTURE.md). For maintenance and contributions, see [CONTRIBUTING.en.md](CONTRIBUTING.en.md) ([中文](CONTRIBUTING.md)). Release verification, signed tags, and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). Documentation on every branch must describe that branch's actual code, not an unreleased design.
 
-The `main` README targets Skill users; the `develop` README targets recruiters, technical interviewers, and contributors.
+- Current branch: `develop`
+- Current development version: `2.1.0-dev.1`
+- Release status: `unreleased`
+- Stable release: `main` / `v2.0.0`
+
+`main` is the stable release source and `develop` is the integration branch. Both use the same evidence and governance standards.

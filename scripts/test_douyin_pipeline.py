@@ -1,3 +1,4 @@
+import inspect
 import json
 import tempfile
 import unittest
@@ -13,7 +14,11 @@ from douyin_pipeline import (
 )
 from process_douyin_ready_batch import unexpected_dirty_paths
 from report_pipeline_status import next_action
-from run_full_update_pipeline import build_commands, validation_commands
+from run_full_update_pipeline import (
+    build_commands,
+    rebuild_and_validate,
+    validation_commands,
+)
 
 
 class DouyinClassificationRulesTest(unittest.TestCase):
@@ -106,6 +111,43 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             ["README.md", "notes/private.txt"],
         )
 
+    def test_batch_commit_is_opt_in_and_push_requires_commit(self):
+        with patch.object(
+            batch_processor.subprocess,
+            "check_output",
+            return_value="data/processing/douyin_queue.json\n",
+        ), patch.object(batch_processor, "run") as run_command:
+            result = batch_processor.commit_if_changed(
+                "test batch",
+                commit=False,
+                push=False,
+            )
+        self.assertEqual(result, {"committed": False, "pushed": False})
+        run_command.assert_not_called()
+        with self.assertRaisesRegex(ValueError, "requires --commit"):
+            batch_processor.commit_if_changed(
+                "test batch",
+                commit=False,
+                push=True,
+            )
+
+    def test_batch_commit_rejects_paths_outside_artifact_allowlist(self):
+        with patch.object(
+            batch_processor.subprocess,
+            "check_output",
+            return_value="notes/private.txt\n",
+        ), patch.object(
+            batch_processor,
+            "git_changed_paths",
+            return_value=["notes/private.txt"],
+        ):
+            with self.assertRaisesRegex(RuntimeError, "allowlist"):
+                batch_processor.commit_if_changed(
+                    "test batch",
+                    commit=True,
+                    push=False,
+                )
+
     def test_successful_batch_cleans_temporary_state_before_full_validation(self):
         events = []
         with patch.object(
@@ -186,10 +228,6 @@ class DouyinClassificationRulesTest(unittest.TestCase):
     def test_full_maintenance_gate_covers_answer_and_video_quality(self):
         commands = [" ".join(map(str, command)) for command in validation_commands()]
         for required in [
-            "evaluate_answer_context.py",
-            "evaluate_answer_quality.py",
-            "evaluate_query_understanding.py",
-            "evaluate_retrieval.py",
             "evaluate_video_comprehension.py --require-raw-transcripts",
             "build_manifest.py --check",
             "validate_project.py",
@@ -199,6 +237,10 @@ class DouyinClassificationRulesTest(unittest.TestCase):
                 any(required in command for command in commands),
                 required,
             )
+        self.assertIn(
+            "scripts/collect_evaluation_results.py",
+            inspect.getsource(rebuild_and_validate),
+        )
 
     def test_applied_update_report_advances_to_media_extraction(self):
         action = next_action(

@@ -22,7 +22,14 @@ from media_assets import (
     redact_urls,
     validate_batch_name,
 )
-from run_full_update_pipeline import rebuild_and_validate
+from run_full_update_pipeline import (
+    UPDATE_ARTIFACT_PATHS,
+    rebuild_and_validate,
+)
+from project_update_lock import (
+    LOCK_OWNER_ENV as PROJECT_LOCK_OWNER_ENV,
+    acquire_project_update_lock,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +44,11 @@ ALLOWED_INITIAL_DIRTY_PATHS = {
     "data/processing/douyin_discovery_state.json",
     "data/processing/douyin_queue.json",
     "output/classification-drift-report.json",
+}
+ALLOWED_COMMIT_PATHS = ALLOWED_INITIAL_DIRTY_PATHS | {
+    str(path.relative_to(ROOT)) for path in UPDATE_ARTIFACT_PATHS
+} | {
+    "data/processing/douyin_queue.json",
 }
 
 
@@ -203,7 +215,6 @@ def download_ready_items(batch, items):
             queue_item["error_stage"] = "download"
             queue_item["last_attempt_at"] = now_iso()
             failed.append(video_id)
-            write_queue(queue)
             continue
         try:
             asset_url = read_download_config(
@@ -218,7 +229,6 @@ def download_ready_items(batch, items):
             queue_item["error_stage"] = "download"
             queue_item["last_attempt_at"] = now_iso()
             failed.append(video_id)
-            write_queue(queue)
             continue
         completed = subprocess.run(
             [
@@ -272,6 +282,7 @@ def download_ready_items(batch, items):
             queue_item["error_stage"] = None
             queue_item["last_attempt_at"] = now_iso()
             downloaded.append(video_id)
+    if items:
         write_queue(queue)
     return downloaded, failed
 
@@ -306,28 +317,61 @@ def finalize_transcribed_batch(batch, video_ids):
     return cleanup
 
 
-def commit_if_changed(message, push):
+def commit_if_changed(
+    message,
+    *,
+    commit=False,
+    push=False,
+    initial_paths=None,
+):
+    if push and not commit:
+        raise ValueError("--push requires --commit")
     status = subprocess.check_output(
         ["git", "status", "--short"],
         cwd=ROOT,
         text=True,
     ).strip()
+    if not commit:
+        return {"committed": False, "pushed": False}
     if not status:
         print("No tracked changes to commit.", flush=True)
-        return
-    run(["git", "add", "."])
+        return {"committed": False, "pushed": False}
+    changed_paths = git_changed_paths()
+    preexisting = sorted(set(changed_paths) & set(initial_paths or []))
+    if preexisting:
+        raise RuntimeError(
+            "refusing to mix pre-existing worktree changes into the batch commit: "
+            + ", ".join(preexisting)
+        )
+    unexpected = sorted(set(changed_paths) - ALLOWED_COMMIT_PATHS)
+    if unexpected:
+        raise RuntimeError(
+            "refusing to commit paths outside the batch artifact allowlist: "
+            + ", ".join(unexpected)
+        )
+    run(["git", "add", "--", *changed_paths])
     run(["git", "diff", "--cached", "--stat"])
     run(["git", "commit", "-m", message])
     if push:
         run(["git", "push"])
+    return {"committed": True, "pushed": push}
 
 
-def main():
+def _main():
     parser = argparse.ArgumentParser(
         description="Download, transcribe, validate, clean, and commit one Douyin media_ready batch."
     )
     parser.add_argument("batch", help="Batch name, for example batch-009")
-    parser.add_argument("--no-push", action="store_true", help="Commit locally but skip git push")
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="Commit generated batch artifacts after validation",
+    )
+    parser.add_argument(
+        "--push",
+        action="store_true",
+        help="Push the commit after --commit (never enabled by default)",
+    )
     parser.add_argument(
         "--preflight-only",
         action="store_true",
@@ -375,6 +419,8 @@ def main():
         help="Node.js executable passed to the anonymous browser downloader",
     )
     args = parser.parse_args()
+    if args.push and not args.commit:
+        parser.error("--push requires --commit")
     if args.video_id and not args.auto_download:
         parser.error("--video-id requires --auto-download")
     try:
@@ -542,9 +588,11 @@ def main():
             args.batch,
             [item["video_id"] for item in resumable],
         )
-        commit_if_changed(
+        commit_result = commit_if_changed(
             f"Process Douyin teaching {args.batch}",
-            push=not args.no_push,
+            commit=args.commit,
+            push=args.push,
+            initial_paths=dirty_paths,
         )
         print(
             json.dumps(
@@ -553,7 +601,7 @@ def main():
                     "after": queue_counts(),
                     "validated": True,
                     "resumed_post_transcription": True,
-                    "pushed": not args.no_push,
+                    **commit_result,
                 },
                 ensure_ascii=False,
             ),
@@ -653,18 +701,36 @@ def main():
         [item["video_id"] for item in items],
     )
 
-    commit_if_changed(
+    commit_result = commit_if_changed(
         f"Process Douyin teaching {args.batch}",
-        push=not args.no_push,
+        commit=args.commit,
+        push=args.push,
+        initial_paths=dirty_paths,
     )
 
     print(json.dumps({
         "batch": args.batch,
         "after": queue_counts(),
         "validated": True,
-        "pushed": not args.no_push,
+        **commit_result,
     }, ensure_ascii=False), flush=True)
     return 0
+
+
+def main():
+    project_lock = acquire_project_update_lock()
+    previous_owner = os.environ.get(PROJECT_LOCK_OWNER_ENV)
+    os.environ[PROJECT_LOCK_OWNER_ENV] = "1"
+    try:
+        return _main()
+    finally:
+        if previous_owner is None:
+            os.environ.pop(PROJECT_LOCK_OWNER_ENV, None)
+        else:
+            os.environ[PROJECT_LOCK_OWNER_ENV] = previous_owner
+        close = getattr(project_lock, "close", None)
+        if close is not None:
+            close()
 
 
 if __name__ == "__main__":

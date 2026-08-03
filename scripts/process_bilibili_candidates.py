@@ -1038,7 +1038,7 @@ def main():
         ROOT,
         override=args.media_cache_dir,
     )
-    pipeline_lock = acquire_bilibili_pipeline_lock()
+    _pipeline_lock = acquire_bilibili_pipeline_lock()
     if args.max_items is not None and args.max_items <= 0:
         parser.error("--max-items must be positive")
     if args.checkpoint_every <= 0:

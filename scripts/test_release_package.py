@@ -52,15 +52,21 @@ class ReleasePackageTests(unittest.TestCase):
                 )
                 self.assertIn("liuhui-badminton-coach/LICENSE", names)
                 self.assertIn("liuhui-badminton-coach/NOTICE", names)
-                knowledge = json.loads(
-                    archive.read(
-                        "liuhui-badminton-coach/references/knowledge-base.json"
-                    )
+                self.assertIn(
+                    "liuhui-badminton-coach/references/runtime-store.sqlite3",
+                    names,
                 )
-                self.assertFalse(knowledge["transcript_files_bundled"])
-                self.assertTrue(knowledge["runtime_transcript_segments_bundled"])
-                self.assertFalse(
-                    any("transcript_file" in video for video in knowledge["videos"])
+                self.assertNotIn(
+                    "liuhui-badminton-coach/references/knowledge-base.json",
+                    names,
+                )
+                self.assertNotIn(
+                    "liuhui-badminton-coach/references/retrieval-index.json",
+                    names,
+                )
+                self.assertNotIn(
+                    "liuhui-badminton-coach/references/evidence-graph.json",
+                    names,
                 )
 
                 extract_root = Path(first_directory) / "extracted"

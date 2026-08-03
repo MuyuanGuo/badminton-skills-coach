@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,9 @@ MODULE_PATH = ROOT / "scripts" / "generate_evaluation_report.py"
 
 
 def load_module():
+    scripts_dir = str(MODULE_PATH.parent)
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
     spec = importlib.util.spec_from_file_location("evaluation_report_tested", MODULE_PATH)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -95,6 +99,23 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_skips_explicitly_invalidated_metrics(self):
+        evaluations = {"suite": {"contaminated": 0.1, "valid": 1.0}}
+        baseline = {
+            "invalidated_metrics": {
+                "suite.contaminated": "evaluation fixture leakage"
+            },
+            "metrics": {
+                "suite.contaminated": {
+                    "value": 1.0,
+                    "direction": "at_least",
+                },
+                "suite.valid": {"value": 1.0, "direction": "at_least"},
+            },
+        }
+        comparisons = self.module.compare_baseline(evaluations, baseline)
+        self.assertEqual([item["metric"] for item in comparisons], ["suite.valid"])
+
     def test_baseline_comparison_can_use_fingerprinted_policy_limit(self):
         evaluations = {
             "suite": {
@@ -148,6 +169,9 @@ class EvaluationReportTests(unittest.TestCase):
         committed = self.module.load_json(
             self.module.REPORT_PATH
         )["evaluations"]
+        committed["answer_context"].setdefault(
+            "evaluation_fixture_isolation", True
+        )
         exposure = committed["retrieval"][
             "unjudged_new_source_exposure"
         ]
@@ -224,7 +248,10 @@ class EvaluationReportTests(unittest.TestCase):
             "summary": {"status": "pass", "baseline_metrics": 8},
             "evaluations": {
                 "answer_policy": {"accuracy": 1.0},
-                "answer_context": {"selected_video_recall": 1.0},
+                "answer_context": {
+                    "candidate_recall": 1.0,
+                    "selected_video_recall": 1.0,
+                },
                 "answer_quality": {
                     "automatic_pass_rate": 1.0,
                     "passed": 57,

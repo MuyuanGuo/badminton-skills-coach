@@ -16,9 +16,8 @@ SKILL_ROOT = ROOT / "skills" / "liuhui-badminton-coach"
 class SkillPortabilityTests(unittest.TestCase):
     def test_skill_documents_its_runtime_working_directory(self):
         skill_text = (SKILL_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("## Runtime Path", skill_text)
-        self.assertIn("directory containing this `SKILL.md`", skill_text)
-        self.assertIn("Never assume a fixed home-directory installation path", skill_text)
+        self.assertIn("Resolve the Skill root from this file", skill_text)
+        self.assertIn("Do not assume an installation path", skill_text)
 
     def test_bundled_commands_run_outside_the_skill_directory(self):
         with tempfile.TemporaryDirectory() as temporary:

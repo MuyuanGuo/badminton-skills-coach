@@ -1,0 +1,19 @@
+DATA AND SOURCE-MATERIAL NOTICE
+
+The MIT License in LICENSE applies to this repository's original software and
+documentation. It does not grant rights in third-party videos, audio,
+transcripts, titles, thumbnails, or other source material referenced or
+represented by the knowledge and evaluation data.
+
+Copyright and other rights in that source material remain with their respective
+owners. The runtime store contains derived metadata, timestamped
+transcript-derived retrieval segments for admitted public teaching videos, and
+bounded evidence windows for limited sources. Those data support local search,
+claim scoping, and source verification; they are not a grant of permission to
+republish the underlying works. Users and redistributors are responsible for
+complying with applicable law and the source platforms' terms.
+
+Dataset structure, schemas, and original annotations authored in this project
+are provided under the MIT License to the extent the project owner has rights
+to license them. No endorsement by 刘辉, Douyin, Bilibili, or any source owner
+is stated or implied.

@@ -5,6 +5,10 @@ import argparse
 import importlib.util
 import json
 import math
+import os
+import resource
+import subprocess
+import sys
 import time
 import tracemalloc
 from collections import defaultdict
@@ -83,6 +87,24 @@ def json_size(payload):
     )
 
 
+def resident_memory_mb():
+    value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    # macOS reports bytes; Linux and the other Unix variants report KiB.
+    bytes_value = value if os.uname().sysname == "Darwin" else value * 1024
+    return round(bytes_value / (1024 * 1024), 3)
+
+
+def cold_start_probe(query):
+    completed = subprocess.run(
+        [sys.executable, str(Path(__file__).resolve()), "--child", query],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+    return json.loads(completed.stdout)
+
+
 def benchmark(
     budgets_path=BUDGETS_PATH,
     cases_path=CASES_PATH,
@@ -150,6 +172,10 @@ def benchmark(
         )
     _, peak_bytes = tracemalloc.get_traced_memory()
     tracemalloc.stop()
+    cold_results = [
+        cold_start_probe(item["query"])
+        for item in queries[: benchmark_config.get("cold_start_queries", 2)]
+    ]
     result = {
         "schema_version": 1,
         "query_count": len(queries),
@@ -162,6 +188,19 @@ def benchmark(
         },
         "memory": {
             "peak_traced_mb": round(peak_bytes / (1024 * 1024), 3),
+            "cold_peak_rss_mb": max(
+                (item["peak_rss_mb"] for item in cold_results),
+                default=None,
+            ),
+        },
+        "cold_start": {
+            "samples": len(cold_results),
+            "module_load": latency_summary(
+                [item["module_load_ms"] for item in cold_results]
+            ),
+            "answer_context": latency_summary(
+                [item["answer_context_ms"] for item in cold_results]
+            ),
         },
         "answer_packet": {
             "minimum_reduction": round(min(packet_reductions), 4),
@@ -205,6 +244,21 @@ def budget_violations(result):
             budgets["peak_traced_memory_mb"],
             "at_most",
         ),
+        "cold_peak_rss_mb": (
+            result["memory"]["cold_peak_rss_mb"],
+            budgets["cold_peak_rss_mb"],
+            "at_most",
+        ),
+        "cold_module_load_p95_ms": (
+            result["cold_start"]["module_load"]["p95_ms"],
+            budgets["cold_module_load_p95_ms"],
+            "at_most",
+        ),
+        "cold_answer_context_p95_ms": (
+            result["cold_start"]["answer_context"]["p95_ms"],
+            budgets["cold_answer_context_p95_ms"],
+            "at_most",
+        ),
         "minimum_answer_packet_reduction": (
             result["answer_packet"]["minimum_reduction"],
             budgets["minimum_answer_packet_reduction"],
@@ -230,7 +284,24 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--budgets", type=Path, default=BUDGETS_PATH)
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
+    parser.add_argument("--child", help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if args.child:
+        module, module_load_ms = timed_load_context_module()
+        started = time.perf_counter()
+        module.prepare_answer_context(args.child, local_personalization=False)
+        print(
+            json.dumps(
+                {
+                    "module_load_ms": round(module_load_ms, 3),
+                    "answer_context_ms": round(
+                        (time.perf_counter() - started) * 1000, 3
+                    ),
+                    "peak_rss_mb": resident_memory_mb(),
+                }
+            )
+        )
+        return
     result = benchmark(args.budgets, args.cases)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if result["violations"]:

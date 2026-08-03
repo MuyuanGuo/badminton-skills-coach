@@ -68,7 +68,7 @@ def dynamic_term_statistics(
                 },
             )
         return document_frequency, by_video
-    for video in knowledge["videos"]:
+    for video in iter_search_videos(knowledge):
         if video.get("processing_status") != "ready":
             continue
         if (
@@ -90,8 +90,11 @@ def dynamic_term_statistics(
             ),
         }
         if video["video_id"] not in transcript_excluded_video_ids:
+            search_transcript = video.get("_runtime_search_transcript")
             field_text["transcript"] = normalize(
-                "".join(
+                search_transcript
+                if search_transcript is not None
+                else "".join(
                     segment.get("text", "")
                     for segment in video.get("transcript_segments", [])
                 )
@@ -283,6 +286,10 @@ def chunk_first_config(retrieval_index):
 
 
 def chunk_gram_postings(chunk_index, gram):
+    posting_lookup = getattr(chunk_index, "lookup_ngram_postings", None)
+    if posting_lookup is not None:
+        encoded = posting_lookup([gram]).get(gram)
+        return [] if encoded is None else decode_chunk_ngram_postings(encoded)
     vocabulary = chunk_index.get("ngram_vocabulary") or []
     postings = chunk_index.get("ngram_postings") or []
     position = bisect.bisect_left(vocabulary, gram)
@@ -888,7 +895,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     }
 
     ranked = []
-    for video in knowledge["videos"]:
+    for video in iter_search_videos(knowledge):
         if video["processing_status"] in {"not_teaching", "low_value"}:
             continue
         record = records.get(video["video_id"])
@@ -1350,7 +1357,11 @@ def apply_retrieval_policy(
         "retrieval_guidance": retrieval_guidance,
     }
     policy_api = SimpleNamespace(normalize=normalize, flatten=flatten)
-    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    videos = knowledge_video_map(
+        knowledge,
+        [candidate["video_id"] for candidate in ranked],
+        full=False,
+    )
     rejected_counts = Counter()
     requested_constraints = selection_module.query_constraints(
         policy_api, expansion["positive_query"], selection_rules

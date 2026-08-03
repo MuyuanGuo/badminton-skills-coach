@@ -18,7 +18,7 @@ DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 1
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
-ANSWER_PACKET_SCHEMA_VERSION = 1
+ANSWER_PACKET_SCHEMA_VERSION = 3
 ANSWER_PLAN_SCHEMA_VERSION = 1
 _SIBLING_MODULES = {}
 _STATIC_RESOURCE_CACHE = {}
@@ -77,9 +77,14 @@ def load_reviewed_evidence_signals():
         return _STATIC_RESOURCE_CACHE["reviewed_evidence_signals"]
     if not REVIEWED_EVIDENCE_PATH.exists():
         return []
-    signals = json.loads(REVIEWED_EVIDENCE_PATH.read_text(encoding="utf-8")).get(
-        "signals", []
-    )
+    payload = json.loads(REVIEWED_EVIDENCE_PATH.read_text(encoding="utf-8"))
+    if (
+        payload.get("registry_type")
+        != "operational_feedback_runtime_prior"
+        or payload.get("evaluation_case_ids_forbidden") is not True
+    ):
+        return []
+    signals = payload.get("signals", [])
     _STATIC_RESOURCE_CACHE["reviewed_evidence_signals"] = signals
     return signals
 
@@ -113,8 +118,6 @@ def load_reviewed_evidence_atoms():
 _answer_continuation = load_sibling(
     "liuhui_answer_continuation", "answer_continuation.py"
 )
-_answer_continuation.CLARIFICATION_STATE_SCHEMA_VERSION = CLARIFICATION_STATE_SCHEMA_VERSION
-_answer_continuation.ANSWER_TURN_CONTRACT_SCHEMA_VERSION = ANSWER_TURN_CONTRACT_SCHEMA_VERSION
 canonical_json_digest = _answer_continuation.canonical_json_digest
 clarification_state_digest = _answer_continuation.clarification_state_digest
 validate_clarification_state = _answer_continuation.validate_clarification_state
@@ -128,7 +131,6 @@ build_answer_turn_contract = _answer_continuation.build_answer_turn_contract
 _answer_retrieval_plan = load_sibling(
     "liuhui_answer_retrieval_plan", "answer_retrieval_plan.py"
 )
-_answer_retrieval_plan.load_reviewed_evidence_signals = load_reviewed_evidence_signals
 reviewed_evidence_priorities = _answer_retrieval_plan.reviewed_evidence_priorities
 planned_queries = _answer_retrieval_plan.planned_queries
 budget_retrieval_queries = _answer_retrieval_plan.budget_retrieval_queries
@@ -200,9 +202,6 @@ entry_question_concept_coverage = (
     _answer_constraints.entry_question_concept_coverage
 )
 diversify_support_entries = _answer_constraints.diversify_support_entries
-_answer_retrieval_plan.explicit_constraint_terms = explicit_constraint_terms
-_answer_retrieval_plan.query_actor_context = query_actor_context
-_answer_retrieval_plan.required_focus_groups = required_focus_groups
 
 
 def apply_supplemental_evidence_policy(
@@ -531,6 +530,171 @@ def automatic_expansion_variant_failure(
     return None
 
 
+def evaluate_candidate_for_query_unit(
+    search_module,
+    query,
+    plan,
+    boundary,
+    entry,
+    video,
+    rules,
+    actor_context,
+    constraint_scope,
+):
+    """Evaluate one candidate against one independently planned query unit."""
+
+    requested_constraints = actor_context["target_constraints"]
+    constraint_result = constraint_decision(
+        search_module,
+        query,
+        plan,
+        video,
+        rules,
+        requested=requested_constraints,
+        scope=constraint_scope,
+    )
+    keep, reasons = selection_decision(
+        search_module,
+        query,
+        plan,
+        boundary,
+        entry,
+        video,
+        rules,
+        constraint_result=constraint_result,
+    )
+    actor_failures = non_target_actor_condition_failures(
+        search_module,
+        actor_context,
+        constraint_scope,
+        video,
+        rules,
+    )
+    if actor_failures:
+        keep = False
+        reasons = actor_failures
+    derived_failures = derived_player_constraint_failures(
+        actor_context["derived_player_constraints"],
+        constraint_scope,
+        rules,
+    )
+    if derived_failures:
+        keep = False
+        reasons = derived_failures
+    action_failures = requested_action_scope_failures(
+        search_module,
+        actor_context,
+        video,
+        rules,
+    )
+    action_reason_may_replace = keep or set(reasons).issubset(
+        {
+            "recall_safeguard_only",
+            "no_direct_or_supporting_question_evidence",
+        }
+    )
+    if (
+        action_failures
+        and not actor_failures
+        and not derived_failures
+        and action_reason_may_replace
+    ):
+        keep = False
+        reasons = action_failures
+    action_fallback_scope_supported = all(
+        constraint_result[4].get(axis_name)
+        in {"exact", "mixed_support", "incidental_support"}
+        and constraint_scope.get(axis_name, {}).get("source")
+        in {
+            "primary_metadata",
+            "reviewed_context",
+            "primary_and_reviewed",
+            "reviewed_override",
+            "category",
+        }
+        for axis_name in requested_constraints
+    )
+    if (
+        actor_context.get("requested_action_scopes")
+        and not action_failures
+        and not actor_failures
+        and not derived_failures
+        and not keep
+        and set(reasons).issubset(
+            {
+                "recall_safeguard_only",
+                "no_direct_or_supporting_question_evidence",
+                "literal_symptom_or_mechanism_not_supported",
+            }
+        )
+        and constraint_result[0]
+        and action_fallback_scope_supported
+        and (
+            concept_decision(search_module, plan, entry, video, rules)
+            != "none"
+            or set(actor_context.get("requested_action_scopes", []))
+            == {"positioning"}
+        )
+        and has_instructional_evidence(video)
+    ):
+        keep = True
+        reasons = [
+            (
+                "matched_inferred_target_action_scope"
+                if actor_context.get("inferred_target_action")
+                else "matched_requested_action_scope_support_only"
+            )
+        ]
+    variant_failure = automatic_expansion_variant_failure(
+        search_module,
+        video,
+        entry,
+        requested_constraints,
+        constraint_result[4],
+        rules,
+    )
+    if variant_failure:
+        keep = False
+        reasons = [variant_failure]
+    unrequested_scope = unrequested_specific_scope(
+        constraint_result[2], constraint_scope, rules
+    )
+    ranking_scope = unrequested_ranking_scope(
+        constraint_result[2], constraint_scope, rules
+    )
+    concept_match = concept_decision(
+        search_module, plan, entry, video, rules
+    )
+    focus_match = entry_focus_match(
+        search_module, plan, entry, video, rules
+    )
+    symptom_match = symptom_decision(search_module, plan, video, rules)
+    if (
+        symptom_match == "none"
+        and entry.get("reviewed_evidence_rank", 2) <= 1
+        and concept_match != "none"
+    ):
+        symptom_match = "reviewed_mechanism"
+    return {
+        "keep": keep,
+        "reasons": list(reasons),
+        "constraint_result": constraint_result,
+        "unrequested_scope": unrequested_scope,
+        "ranking_scope": ranking_scope,
+        "action_failures": action_failures,
+        "concept_match": concept_match,
+        "focus_match": focus_match,
+        "symptom_match": symptom_match,
+        "actor_context_rank": partner_context_rank(
+            search_module, actor_context, video, rules
+        ),
+        "inferred_target_action_match": bool(
+            actor_context.get("inferred_target_action")
+            and not action_failures
+        ),
+    }
+
+
 def prepare_answer_context(
     query,
     max_videos=None,
@@ -584,7 +748,22 @@ def prepare_answer_context(
         retrieval_index,
         retrieval_rules,
         rules,
+        load_reviewed_evidence_signals(),
     )
+    normalized_positive_query = search_module.normalize(positive_query)
+    for atom in load_reviewed_evidence_atoms():
+        aliases = {
+            atom.get("canonical_claim", ""),
+            *atom.get("claim_aliases", []),
+        }
+        if any(
+            search_module.normalize(alias) in normalized_positive_query
+            for alias in aliases
+            if alias
+        ):
+            evidence_id = atom.get("evidence_id")
+            if evidence_id:
+                reviewed_priorities[evidence_id] = 0
     navigation = None
     retrieval_queries = planned_queries(
         search_module, plan, retrieval_base_query, rules
@@ -643,9 +822,63 @@ def prepare_answer_context(
     merged = merge_candidates(
         chain([primary_payload], payload_iterator), retrieval_queries
     )
-    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    videos = search_module.knowledge_video_map(knowledge, merged)
     actor_context = query_actor_context(search_module, actor_query, rules)
     requested_constraints = actor_context["target_constraints"]
+    boundary = classify_boundary(
+        positive_query,
+        rules,
+        requested_constraints=requested_constraints,
+    )
+    query_units = plan["retrieval_guidance"].get("query_units") or [query]
+    coherent_actor_sequence = bool(
+        actor_context.get("inferred_target_action")
+        and actor_context.get("event_chain")
+        and "同时" not in retrieval_base_query
+    )
+    diagnostic_query_units = (
+        [actor_context["target_action_query"]]
+        if coherent_actor_sequence and len(query_units) > 1
+        else query_units
+    )
+    split_multi_issue = (
+        plan["retrieval_guidance"].get("strategy") == "split_multi_issue"
+        and len(query_units) > 1
+        and not coherent_actor_sequence
+    )
+    unit_evaluation_specs = []
+    if split_multi_issue:
+        for unit in query_units:
+            unit_plan = search_module.plan_query(unit)
+            unit_plan["retrieval_guidance"]["strategy"] = "split_multi_issue"
+            unit_plan["retrieval_guidance"]["query_units"] = [unit]
+            unit_intent = unit_plan["retrieval_guidance"]["intent_frame"]
+            unit_actor_query = unit_intent.get(
+                "actor_query", unit_intent.get("positive_query", unit)
+            )
+            unit_evaluation_specs.append(
+                {
+                    "unit": unit,
+                    "plan": unit_plan,
+                    "actor_context": query_actor_context(
+                        search_module, unit_actor_query, rules
+                    ),
+                    "boundary": classify_boundary(unit, rules),
+                }
+            )
+    else:
+        unit_evaluation_specs = [
+            {
+                "unit": (
+                    retrieval_base_query
+                    if coherent_actor_sequence
+                    else query_units[0]
+                ),
+                "plan": plan,
+                "actor_context": actor_context,
+                "boundary": boundary,
+            }
+        ]
     accepted = []
     rejected = []
     for video_id, entry in merged.items():
@@ -659,149 +892,66 @@ def prepare_answer_context(
         constraint_scope = search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.get(video_id)
         if constraint_scope is None:
             constraint_scope = video_constraint_scope(search_module, video, rules)
-        constraint_result = constraint_decision(
-            search_module,
-            query,
-            plan,
-            video,
-            rules,
-            requested=requested_constraints,
-            scope=constraint_scope,
-        )
-        keep, reasons = selection_decision(
-            search_module,
-            query,
-            plan,
-            boundary,
-            entry,
-            video,
-            rules,
-            constraint_result=constraint_result,
-        )
-        actor_failures = non_target_actor_condition_failures(
-            search_module,
-            actor_context,
-            constraint_scope,
-            video,
-            rules,
-        )
-        if actor_failures:
-            keep = False
-            reasons = actor_failures
-        derived_failures = derived_player_constraint_failures(
-            actor_context["derived_player_constraints"],
-            constraint_scope,
-            rules,
-        )
-        if derived_failures:
-            keep = False
-            reasons = derived_failures
-        action_failures = requested_action_scope_failures(
-            search_module,
-            actor_context,
-            video,
-            rules,
-        )
-        action_reason_may_replace = keep or set(reasons).issubset(
+        evaluations = [
             {
-                "recall_safeguard_only",
-                "no_direct_or_supporting_question_evidence",
+                **spec,
+                "evaluation": evaluate_candidate_for_query_unit(
+                    search_module,
+                    spec["unit"],
+                    spec["plan"],
+                    spec["boundary"],
+                    entry,
+                    video,
+                    rules,
+                    spec["actor_context"],
+                    constraint_scope,
+                ),
             }
-        )
-        if (
-            action_failures
-            and not actor_failures
-            and not derived_failures
-            and action_reason_may_replace
-        ):
-            keep = False
-            reasons = action_failures
-        action_fallback_axes = set(requested_constraints)
-        action_fallback_scope_supported = all(
-            constraint_result[4].get(axis_name)
-            in {"exact", "mixed_support", "incidental_support"}
-            and constraint_scope.get(axis_name, {}).get("source")
-            in {
-                "primary_metadata",
-                "reviewed_context",
-                "primary_and_reviewed",
-                "reviewed_override",
-                "category",
-            }
-            for axis_name in action_fallback_axes
-        )
-        if (
-            actor_context.get("requested_action_scopes")
-            and not action_failures
-            and not actor_failures
-            and not derived_failures
-            and not keep
-            and set(reasons).issubset(
-                {
-                    "recall_safeguard_only",
-                    "no_direct_or_supporting_question_evidence",
-                    "literal_symptom_or_mechanism_not_supported",
-                }
-            )
-            and constraint_result[0]
-            and action_fallback_scope_supported
-            and (
-                concept_decision(search_module, plan, entry, video, rules)
-                != "none"
-                or set(actor_context.get("requested_action_scopes", []))
-                == {"positioning"}
-            )
-            and has_instructional_evidence(video)
-        ):
-            keep = True
-            reasons = [
-                (
-                    "matched_inferred_target_action_scope"
-                    if actor_context.get("inferred_target_action")
-                    else "matched_requested_action_scope_support_only"
+            for spec in unit_evaluation_specs
+        ]
+        kept_evaluations = [
+            item for item in evaluations if item["evaluation"]["keep"]
+        ]
+        chosen = (kept_evaluations or evaluations)[0]
+        evaluation = chosen["evaluation"]
+        keep = bool(kept_evaluations)
+        reasons = list(evaluation["reasons"])
+        if not keep and len(evaluations) > 1:
+            reasons = list(
+                dict.fromkeys(
+                    reason
+                    for item in evaluations
+                    for reason in item["evaluation"]["reasons"]
                 )
-            ]
-        variant_failure = automatic_expansion_variant_failure(
-            search_module,
-            video,
-            entry,
-            requested_constraints,
-            constraint_result[4],
-            rules,
-        )
-        if variant_failure:
-            keep = False
-            reasons = [variant_failure]
-        unrequested_scope = unrequested_specific_scope(
-            constraint_result[2], constraint_scope, rules
-        )
-        ranking_scope = unrequested_ranking_scope(
-            constraint_result[2], constraint_scope, rules
-        )
+            )
+        constraint_result = evaluation["constraint_result"]
+        supported_units = [item["unit"] for item in kept_evaluations]
+        query_unit_constraint_matches = {
+            item["unit"]: item["evaluation"]["constraint_result"][4]
+            for item in evaluations
+        }
         record = {
             **entry,
             "video_id": video_id,
             "selection_reasons": list(reasons),
             "constraint_scope": constraint_scope,
-            "unrequested_constraint_scope": unrequested_scope,
-            "unrequested_ranking_scope": ranking_scope,
-            "inferred_target_action_match": bool(
-                actor_context.get("inferred_target_action")
-                and not action_failures
-            ),
+            "unrequested_constraint_scope": evaluation[
+                "unrequested_scope"
+            ],
+            "unrequested_ranking_scope": evaluation["ranking_scope"],
+            "inferred_target_action_match": evaluation[
+                "inferred_target_action_match"
+            ],
+            "supported_query_units": supported_units,
+            "query_unit_constraint_matches": query_unit_constraint_matches,
         }
         record["constraint_match"] = constraint_result[4]
-        record["actor_context_rank"] = partner_context_rank(
-            search_module,
-            actor_context,
-            video,
-            rules,
-        )
-        if keep and unrequested_scope:
+        record["actor_context_rank"] = evaluation["actor_context_rank"]
+        if keep and evaluation["unrequested_scope"]:
             record["selection_reasons"].append(
                 "unrequested_specific_scenario_support_only"
             )
-        if keep and ranking_scope:
+        if keep and evaluation["ranking_scope"]:
             record["selection_reasons"].append(
                 "unrequested_additional_scope_requires_conditioning"
             )
@@ -814,21 +964,13 @@ def prepare_answer_context(
             record["selection_reasons"].append(
                 "matched_inferred_target_action_scope"
             )
-        record["concept_match"] = concept_decision(
-            search_module, plan, entry, video, rules
+        record["concept_match"] = evaluation["concept_match"]
+        record["focus_match"] = evaluation["focus_match"]
+        record["symptom_match"] = evaluation["symptom_match"]
+        record["matched_query_units"] = sorted(
+            set(supported_units)
+            or {item["query"] for item in entry["matches"]}
         )
-        record["focus_match"] = entry_focus_match(
-            search_module, plan, entry, video, rules
-        )
-        record["symptom_match"] = symptom_decision(
-            search_module, plan, video, rules
-        )
-        if (
-            record["symptom_match"] == "none"
-            and entry.get("reviewed_evidence_rank", 2) <= 1
-            and record["concept_match"] != "none"
-        ):
-            record["symptom_match"] = "reviewed_mechanism"
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=lambda entry: selected_sort_key(entry, rules))
@@ -905,7 +1047,10 @@ def prepare_answer_context(
             else max_videos - support_limit
         )
     selected_exact_entries = exact_entries[:exact_limit]
-    if plan["retrieval_guidance"].get("strategy") == "split_multi_issue":
+    if (
+        split_multi_issue
+        or len(question_concept_anchors(search_module, plan)) > 1
+    ):
         support_entries = diversify_support_entries(
             search_module,
             plan,
@@ -1015,8 +1160,14 @@ def prepare_answer_context(
                     "unrequested_ranking_scope"
                 ],
                 "constraint_match": entry["constraint_match"],
+                "query_unit_constraint_matches": entry.get(
+                    "query_unit_constraint_matches", {}
+                ),
                 "concept_match": entry["concept_match"],
                 "reviewed_evidence_rank": entry["reviewed_evidence_rank"],
+                "inferred_target_action_match": entry.get(
+                    "inferred_target_action_match", False
+                ),
                 "focus_match": entry["focus_match"],
                 "symptom_match": entry["symptom_match"],
                 "claim_scope_policy": entry_claim_scope_policy(entry),
@@ -1024,8 +1175,9 @@ def prepare_answer_context(
                     entry.get("unrequested_constraint_scope")
                     or entry.get("unrequested_ranking_scope")
                 ),
-                "matched_query_units": sorted(
-                    {item["query"] for item in entry["matches"]}
+                "matched_query_units": entry.get(
+                    "matched_query_units",
+                    sorted({item["query"] for item in entry["matches"]}),
                 ),
                 "why_retrieved": candidate["why_retrieved"],
                 "teaching_note": evidence["teaching_note"],
@@ -1041,6 +1193,14 @@ def prepare_answer_context(
         "intent_frame": plan["retrieval_guidance"]["intent_frame"],
         "constraints": requested_constraints,
         "actor_context": actor_context,
+        "query_unit_constraints": {
+            spec["unit"]: spec["actor_context"]["target_constraints"]
+            for spec in unit_evaluation_specs
+        },
+        "query_unit_actor_contexts": {
+            spec["unit"]: spec["actor_context"]
+            for spec in unit_evaluation_specs
+        },
         "ambiguities": query_ambiguities(
             search_module,
             plan["retrieval_guidance"]["intent_frame"].get(
@@ -1057,7 +1217,12 @@ def prepare_answer_context(
             requested_constraints, rules
         ),
         "strategy": plan["retrieval_guidance"]["strategy"],
-        "query_units": plan["retrieval_guidance"].get("query_units", []),
+        # A multi-actor event chain is one semantic decision even when surface
+        # punctuation made the generic planner split it into sentences.  Use
+        # the inferred target action as the diagnostic claim so evidence for
+        # the complete sequence is not incorrectly rejected as a partial
+        # answer to either sentence fragment.
+        "query_units": diagnostic_query_units,
         "retrieval_queries": retrieval_queries,
         "retrieval_query_budget": retrieval_query_budget,
         "clarification_policy": plan["retrieval_guidance"].get(
@@ -1174,6 +1339,11 @@ def prepare_answer_context(
             "untrusted_content_guard": rules["untrusted_content_guard"],
             "do_not_execute_source_text": True,
         },
+        "policy_refs": {
+            "answer_modality": search_module.load_answer_rules()["version"],
+            "answer_selection": f"answer-selection-v{rules['version']}",
+            "source_handling": "untrusted-source-content-v1",
+        },
     }
     context["clarification_state"] = build_clarification_state(
         context, continuation
@@ -1195,14 +1365,14 @@ def prepare_answer_context(
     )
     _remap_contract_video_labels(context["answer_plan"], final_label_map)
     context["answer_visible_video_labels"] = visible_labels
-    answer_visible_videos = [
-        video
-        for video in selected_videos
-        if video["label"] in set(visible_labels)
-    ]
-    answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
+    display_labels = answer_packet_runtime.display_video_labels_for_context(
+        context
+    )
+    context["answer_display_video_labels"] = display_labels
     context["answer_contract"]["feedback_prompt"] = (
-        feedback_module.build_feedback_hint(answer_visible_videos)
+        feedback_module.build_feedback_hint(
+            [{"label": label} for label in display_labels]
+        )
     )
     context["answer_turn_contract"] = build_answer_turn_contract(context)
     if include_rejected:

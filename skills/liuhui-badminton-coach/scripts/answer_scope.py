@@ -157,13 +157,19 @@ def _query_actor_marker_suppressed(query, match, rules):
         token, []
     ):
         window_start = max(0, match.start() - len(phrase) + 1)
-        phrase_start = query.find(phrase, window_start, match.start() + 1)
-        if (
-            phrase_start >= 0
-            and phrase_start <= match.start()
-            and match.end() <= phrase_start + len(phrase)
-        ):
-            return True
+        window_end = min(len(query), match.end() + len(phrase) - 1)
+        phrase_start = query.find(phrase, window_start, window_end)
+        while phrase_start >= 0:
+            if (
+                phrase_start <= match.start()
+                and match.end() <= phrase_start + len(phrase)
+            ):
+                return True
+            phrase_start = query.find(
+                phrase,
+                phrase_start + 1,
+                window_end,
+            )
     return False
 
 
@@ -659,6 +665,12 @@ def _query_target_action_context(
         action_constraints = _query_constraints_from_text(
             search_module, action_query, rules
         )
+        for axis_name, values in sequence_implication.get(
+            "derived_constraints", {}
+        ).items():
+            action_constraints[axis_name] = sorted(
+                set(action_constraints.get(axis_name, [])) | set(values)
+            )
         return {
             "target_action_query": action_query,
             "target_condition_query": (
@@ -849,6 +861,24 @@ def query_actor_context(search_module, query, rules):
         actor_text[target_actor],
         actor_constraints.get(target_actor, {}),
         rules,
+    )
+    scope_by_name = {
+        item["name"]: item
+        for item in rules.get("target_action_scopes", [])
+    }
+    target_action_context["scope_boundary_statements"] = list(
+        dict.fromkeys(
+            statement
+            for scope_name in target_action_context.get(
+                "requested_action_scopes", []
+            )
+            for statement in [
+                scope_by_name.get(scope_name, {}).get(
+                    "answer_boundary_statement"
+                )
+            ]
+            if statement
+        )
     )
     if target_action_context.get("inferred_target_action"):
         if not target_action_context.get("retain_prior_player_constraints", True):

@@ -4,6 +4,10 @@
 import hashlib
 import json
 
+
+CLARIFICATION_STATE_SCHEMA_VERSION = 1
+ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
+
 def canonical_json_digest(payload):
     encoded = json.dumps(
         payload,
@@ -109,7 +113,13 @@ def normalize_clarification_answers(payload):
     return normalized
 
 
-def answer_resolves_request(search_module, answer, request, explicit_binding):
+def answer_resolves_request(
+    search_module,
+    answer,
+    request,
+    explicit_binding,
+    diagnostic_rules=None,
+):
     normalized = search_module.normalize(answer)
     inconclusive = {
         search_module.normalize(item)
@@ -117,6 +127,15 @@ def answer_resolves_request(search_module, answer, request, explicit_binding):
     }
     if not normalized or normalized in inconclusive:
         return False
+    if request.get("answer_format") == "continuous_user_video":
+        unavailable_terms = (diagnostic_rules or {}).get(
+            "video_unavailable_terms", []
+        )
+        if any(
+            search_module.normalize(term) in normalized
+            for term in unavailable_terms
+        ):
+            return True
     if explicit_binding:
         return True
     cues = request.get("answer_cues", [])
@@ -159,7 +178,11 @@ def resolve_continuation(
     for item in answers:
         request = requests_by_id[item["question_id"]]
         if not answer_resolves_request(
-            search_module, item["answer"], request, explicit_binding
+            search_module,
+            item["answer"],
+            request,
+            explicit_binding,
+            diagnostic_rules,
         ):
             raise ValueError(
                 f'clarification reply does not resolve {item["question_id"]}'

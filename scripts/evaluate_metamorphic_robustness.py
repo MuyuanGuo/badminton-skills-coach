@@ -4,6 +4,7 @@
 import argparse
 import importlib.util
 import json
+import os
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -75,7 +76,14 @@ def interpretation_signature(context):
     }
 
 
+def selected_video_ids(context):
+    """Return the observable retrieval result used by metamorphic checks."""
+
+    return {item["video_id"] for item in context["selected_videos"]}
+
+
 def evaluate(cases_path=CASES_PATH, cases_per_type=DEFAULT_CASES_PER_TYPE):
+    os.environ.setdefault("LIUHUI_RETRIEVAL_EVAL_MODE", "unassisted")
     context_module = load_context_module()
     selected_cases = select_balanced_cases(
         load_cases(cases_path),
@@ -92,7 +100,7 @@ def evaluate(cases_path=CASES_PATH, cases_per_type=DEFAULT_CASES_PER_TYPE):
             local_personalization=False,
         )
         baseline_signature = interpretation_signature(baseline)
-        required_ids = set(case["gold"]["required_video_ids"])
+        baseline_selected_ids = selected_video_ids(baseline)
         irrelevant_ids = set(case["gold"]["irrelevant_video_ids"])
 
         for variant in harmless_variants(case["query"]):
@@ -105,9 +113,7 @@ def evaluate(cases_path=CASES_PATH, cases_per_type=DEFAULT_CASES_PER_TYPE):
                 baseline_signature["requested_action_scopes"]
                 or baseline_signature["constraints"]
             )
-            selected_ids = {
-                item["video_id"] for item in context["selected_videos"]
-            }
+            selected_ids = selected_video_ids(context)
             checks = {
                 "answer_mode_changed": (
                     signature["answer_mode"] == baseline_signature["answer_mode"]
@@ -127,7 +133,13 @@ def evaluate(cases_path=CASES_PATH, cases_per_type=DEFAULT_CASES_PER_TYPE):
                 "constraint_changed": (
                     signature["constraints"] == baseline_signature["constraints"]
                 ),
-                "required_evidence_missing": required_ids.issubset(selected_ids),
+                # This suite tests invariance under harmless wording changes.
+                # Gold relevance belongs to the independent retrieval suite;
+                # comparing against it here leaked evaluation fixtures into a
+                # second gate and mislabeled ordinary misses as instability.
+                "selected_evidence_changed": (
+                    selected_ids == baseline_selected_ids
+                ),
                 "hard_negative_selected": not bool(irrelevant_ids & selected_ids),
             }
             failures = [name for name, passed in checks.items() if not passed]

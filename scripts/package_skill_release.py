@@ -10,6 +10,11 @@ import zipfile
 from pathlib import Path
 
 from project_artifacts import atomic_write_text
+from release_inventory import (
+    MAINTAINER_ONLY_SKILL_PATHS,
+    ROOT_RELEASE_PATHS,
+    RUNTIME_SKILL_PATHS,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,50 +24,7 @@ FIXED_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 SKIPPED_NAMES = {".DS_Store", "__pycache__"}
 VERSION_PATTERN = re.compile(r"v?\d+\.\d+\.\d+(?:-dev\.\d+)?")
 FEEDBACK_RULES_PATH = ROOT / "config" / "feedback_rules.json"
-SKILL_RELEASE_PATHS = {
-    "SKILL.md",
-    "agents/openai.yaml",
-    "references/answer-audit-rules.json",
-    "references/answer-modality-rules.json",
-    "references/answer-selection-rules.json",
-    "references/answer-workflow.md",
-    "references/build-manifest.json",
-    "references/diagnostic-answer-rules.json",
-    "references/evidence-scope-guide.md",
-    "references/evidence-graph.json",
-    "references/feedback-rules.json",
-    "references/feedback-signals.json",
-    "references/feedback-workflow.md",
-    "references/knowledge-base.json",
-    "references/practice-plan-rules.json",
-    "references/practice-plan-template.md",
-    "references/retrieval-index.json",
-    "references/retrieval-rules.json",
-    "references/reviewed-evidence-atoms.json",
-    "references/reviewed-evidence-signals.json",
-    "references/topic-index.md",
-    "references/topic-map.json",
-    "scripts/audit_answer.py",
-    "scripts/answer_candidate_selection.py",
-    "scripts/answer_constraints.py",
-    "scripts/answer_continuation.py",
-    "scripts/answer_packet.py",
-    "scripts/answer_retrieval_plan.py",
-    "scripts/answer_scope.py",
-    "scripts/answer_selection_policy.py",
-    "scripts/diagnostic_contract.py",
-    "scripts/doctor.py",
-    "scripts/feedback.py",
-    "scripts/feedback_ranking.py",
-    "scripts/install.py",
-    "scripts/navigate_topics.py",
-    "scripts/prepare_answer_context.py",
-    "scripts/query_planning.py",
-    "scripts/retrieval_projection.py",
-    "scripts/retrieval_ranking.py",
-    "scripts/search_knowledge.py",
-}
-ROOT_RELEASE_PATHS = {"LICENSE", "NOTICE"}
+SKILL_RELEASE_PATHS = RUNTIME_SKILL_PATHS
 
 
 def release_files():
@@ -75,7 +37,8 @@ def release_files():
         )
         and path.suffix not in {".pyc", ".pyo"}
     }
-    unexpected = sorted(discovered - SKILL_RELEASE_PATHS)
+    known_skill_paths = SKILL_RELEASE_PATHS | MAINTAINER_ONLY_SKILL_PATHS
+    unexpected = sorted(discovered - known_skill_paths)
     missing = sorted(SKILL_RELEASE_PATHS - discovered)
     missing_root = sorted(
         relative for relative in ROOT_RELEASE_PATHS if not (ROOT / relative).is_file()

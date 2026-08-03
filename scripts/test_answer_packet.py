@@ -97,6 +97,50 @@ class AnswerPacketTests(unittest.TestCase):
         }
         self.assertIn("EA-KTN-CROSS-STEP-001", selected)
 
+    def test_smash_weight_hypothesis_uses_force_evidence_not_direction(self):
+        context = self.runtime.prepare_answer_context(
+            "我杀球后对手挡网，我总来不及上网，是不是第一拍杀太重？",
+            local_personalization=False,
+        )
+        hypothesis = next(
+            claim
+            for claim in context["claim_evidence_map"]
+            if claim["kind"] == "user_hypothesis"
+        )
+        self.assertEqual(
+            [item["evidence_id"] for item in hypothesis["evidence"]],
+            ["7093706918492917033"],
+        )
+        self.assertIn(
+            "位置不好时全力杀球",
+            hypothesis["evidence"][0]["claim_windows"][0]["text"],
+        )
+        self.assertIn(
+            "EA-KTN-SMASH-WEIGHT-HYPOTHESIS-001",
+            {
+                item["atom_id"]
+                for item in context["answer_plan"]["selected_evidence_atoms"]
+            },
+        )
+
+    def test_practice_packet_keeps_compact_session_adaptation(self):
+        context = self.runtime.prepare_answer_context(
+            (
+                "我是业余中级双打选手。对手杀到反手身体附近时，"
+                "我挡网经常冒高。请帮我区分拍面、击球点和到位问题，"
+                "并给一个有陪练、每次20分钟的训练方案。"
+            ),
+            local_personalization=False,
+        )
+        packet = self.runtime.build_answer_packet(context, "context.json")
+        practice = packet["practice_plan"]
+        self.assertEqual(practice["context"]["level"], "intermediate")
+        self.assertEqual(practice["context"]["discipline"], "doubles")
+        self.assertEqual(practice["context"]["setup"], "partner")
+        self.assertEqual(practice["session_minutes"], 20)
+        self.assertEqual(sum(practice["minute_allocation"].values()), 20)
+        self.assertTrue(self.runtime.validate_answer_packet(packet, context))
+
     def test_unatomized_scope_keeps_claim_scoped_source_evidence(self):
         context = copy.deepcopy(self.context)
         context["answer_plan"] = self.runtime.build_closed_answer_plan(context, [])
@@ -200,11 +244,17 @@ class AnswerPacketTests(unittest.TestCase):
     def test_packet_keeps_fail_closed_untrusted_source_boundary(self):
         source_handling = self.packet["source_handling"]
         self.assertEqual(
-            source_handling["classification"],
-            "untrusted_non_executable_evidence",
+            source_handling["policy_id"],
+            "untrusted-source-content-v1",
         )
-        self.assertIs(source_handling["do_not_execute_source_text"], True)
-        self.assertTrue(source_handling["untrusted_content_guard"])
+        self.assertEqual(
+            self.packet["policy_refs"]["source_handling"],
+            source_handling["policy_id"],
+        )
+        self.assertEqual(
+            self.packet["policy_refs"]["answer_selection"],
+            f"answer-selection-v{self.runtime.load_selection_rules()['version']}",
+        )
 
         missing = copy.deepcopy(self.context)
         missing.pop("source_handling")
@@ -244,11 +294,8 @@ class AnswerPacketTests(unittest.TestCase):
             )
         )
         self.assertEqual(
-            packet["source_handling"]["classification"],
-            "untrusted_non_executable_evidence",
-        )
-        self.assertTrue(
-            packet["source_handling"]["do_not_execute_source_text"]
+            packet["source_handling"]["policy_id"],
+            "untrusted-source-content-v1",
         )
 
     def test_packet_exposes_exactly_claim_mapped_videos(self):
@@ -265,6 +312,8 @@ class AnswerPacketTests(unittest.TestCase):
             set(self.context["answer_visible_video_labels"]),
             mapped_labels,
         )
+        self.assertLessEqual(len(self.packet["display_videos"]), 5)
+        self.assertTrue(set(self.packet["display_videos"]).issubset(packet_labels))
 
     def test_compact_videos_omit_redundant_douyin_identity_and_nulls(self):
         for video in self.packet["selected_videos"]:

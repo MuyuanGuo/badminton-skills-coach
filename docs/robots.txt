@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://muyuanguo.github.io/badminton-skills-coach/sitemap.xml

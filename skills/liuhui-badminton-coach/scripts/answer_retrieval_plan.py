@@ -2,7 +2,18 @@
 """Retrieval-query budgeting, reviewed priorities, and candidate merging."""
 
 import json
-from itertools import chain
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from answer_constraints import (
+    explicit_constraint_terms,
+    query_actor_context,
+    required_focus_groups,
+)
 
 MAX_MERGED_CHUNK_HINTS = 8
 
@@ -13,6 +24,7 @@ def reviewed_evidence_priorities(
     retrieval_index,
     retrieval_rules,
     rules,
+    reviewed_signals=(),
 ):
     priorities = {}
     current_normalized = search_module.normalize(query)
@@ -27,7 +39,7 @@ def reviewed_evidence_priorities(
     minimum_similarity = rules.get(
         "reviewed_evidence_min_strict_similarity", 0.35
     )
-    for signal in load_reviewed_evidence_signals():
+    for signal in reviewed_signals:
         reviewed_query = signal["query"]
         exact_query = (
             current_normalized
@@ -82,55 +94,70 @@ def planned_queries(search_module, plan, original_query, rules=None):
 
     guidance = plan["retrieval_guidance"]
     units = guidance.get("query_units") or []
-    queries = [original_query, *units]
+    queries = [original_query]
     for unit in units or [original_query]:
         unit_plan = search_module.plan_query(unit)
         expansion = unit_plan["query_expansion"]
-        queries.extend(expansion.get("primary_terms", []))
-        queries.extend(expansion.get("original_terms", []))
+        unit_queries = [
+            unit,
+            *expansion.get("primary_terms", []),
+            *expansion.get("original_terms", []),
+        ]
         symptoms = expansion["intent_frame"].get("literal_symptoms", [])
         if not symptoms:
-            queries.extend(
+            unit_queries.extend(
                 item["term"]
                 for item in expansion.get("related_terms", [])
                 if item["weight"] >= 0.45
             )
         if symptoms and expansion.get("primary_terms"):
-            queries.append(
+            unit_queries.append(
                 " ".join([expansion["primary_terms"][0], *symptoms])
             )
         if guidance.get("strategy") == "split_multi_issue":
             for group in expansion.get("matched_synonym_groups", []):
                 present = [term for term in group if term in unit]
                 if present:
-                    queries.append(max(present, key=len))
-    queries = list(dict.fromkeys(query.strip() for query in queries if query.strip()))
-    if not rules:
-        return queries
-    intent_frame = plan["retrieval_guidance"]["intent_frame"]
-    positive_query = intent_frame.get(
-        "positive_query", original_query
-    )
-    actor_query = intent_frame.get("actor_query", positive_query)
-    actor_context = query_actor_context(search_module, actor_query, rules)
-    constraints = explicit_constraint_terms(search_module, positive_query, rules)
-    constrained_queries = []
-    for query in queries:
-        if query == original_query:
-            constrained_queries.append(query)
+                    unit_queries.append(max(present, key=len))
+        unit_queries = list(
+            dict.fromkeys(
+                query.strip() for query in unit_queries if query.strip()
+            )
+        )
+        if not rules:
+            queries.extend(unit_queries)
             continue
-        normalized_query = search_module.normalize(query)
-        missing = [
-            term
-            for term in constraints
-            if search_module.normalize(term) not in normalized_query
-        ]
-        constrained_queries.append(" ".join([*missing, query]).strip())
-    constrained_queries.extend(
-        query for query in queries[1:] if query not in constrained_queries
-    )
-    constrained_queries.extend(actor_context["derived_search_terms"])
-    return list(dict.fromkeys(constrained_queries))
+        intent_frame = unit_plan["retrieval_guidance"]["intent_frame"]
+        positive_query = intent_frame.get("positive_query", unit)
+        actor_query = intent_frame.get("actor_query", positive_query)
+        actor_context = query_actor_context(
+            search_module, actor_query, rules
+        )
+        constraints = explicit_constraint_terms(
+            search_module, positive_query, rules
+        )
+        constrained_unit_queries = []
+        for unit_query in unit_queries:
+            if unit_query == unit:
+                constrained_unit_queries.append(unit_query)
+                continue
+            normalized_query = search_module.normalize(unit_query)
+            missing = [
+                term
+                for term in constraints
+                if search_module.normalize(term) not in normalized_query
+            ]
+            constrained_unit_queries.append(
+                " ".join([*missing, unit_query]).strip()
+            )
+        constrained_unit_queries.extend(
+            unit_query
+            for unit_query in unit_queries[1:]
+            if unit_query not in constrained_unit_queries
+        )
+        constrained_unit_queries.extend(actor_context["derived_search_terms"])
+        queries.extend(constrained_unit_queries)
+    return list(dict.fromkeys(query for query in queries if query.strip()))
 
 
 def budget_retrieval_queries(search_module, queries, plan, original_query, rules):
@@ -138,6 +165,22 @@ def budget_retrieval_queries(search_module, queries, plan, original_query, rules
     hard_limit = rules.get("retrieval_query_hard_limit", 48)
     units = plan["retrieval_guidance"].get("query_units") or []
     protected_texts = [original_query, *units]
+    # Actor/action parsing can deliberately reinterpret a symptom query.  Keep
+    # those compact semantic anchors inside the budget; otherwise verbose
+    # lexical composites can crowd them out and undo the reinterpretation.
+    if rules.get("query_actor_markers"):
+        for unit in units or [original_query]:
+            unit_plan = search_module.plan_query(unit)
+            intent = unit_plan["retrieval_guidance"]["intent_frame"]
+            positive_query = intent.get("positive_query", unit)
+            actor_query = intent.get("actor_query", positive_query)
+            actor_context = query_actor_context(
+                search_module, actor_query, rules
+            )
+            protected_texts.extend(
+                actor_context.get("derived_search_terms", [])
+            )
+    protected_texts = list(dict.fromkeys(protected_texts))
     protected_normalized = {
         search_module.normalize(item) for item in protected_texts if item.strip()
     }
@@ -148,6 +191,72 @@ def budget_retrieval_queries(search_module, queries, plan, original_query, rules
     ]
     remaining = [query for query in queries if query not in protected]
     target = min(hard_limit, max(soft_budget, len(protected)))
+    if len(protected) < target and remaining:
+        term_priority = {}
+        low_information_terms = set()
+        for unit in units or [original_query]:
+            unit_plan = search_module.plan_query(unit)
+            expansion = unit_plan["query_expansion"]
+            intent = expansion.get("intent_frame", {})
+            low_information = {
+                *intent.get("scenarios", []),
+                *intent.get("levels", []),
+            }
+            low_information_terms.update(
+                search_module.normalize(term) for term in low_information
+            )
+            primary = set(expansion.get("primary_terms", []))
+            synonym_terms = {
+                term
+                for group in expansion.get("matched_synonym_groups", [])
+                for term in group
+                if search_module.normalize(term)
+                in search_module.normalize(unit)
+            }
+            related = {
+                item["term"]: float(item.get("weight", 0))
+                for item in expansion.get("related_terms", [])
+            }
+            for term in {
+                *expansion.get("original_terms", []),
+                *primary,
+                *synonym_terms,
+                *related,
+            }:
+                score = (
+                    (4.0 if term in synonym_terms else 0.0)
+                    + (3.0 if term in primary else 0.0)
+                    + related.get(term, 0.0) * 4.0
+                    - (2.0 if term in low_information else 0.0)
+                    + min(len(search_module.normalize(term)), 4) * 0.1
+                )
+                term_priority[search_module.normalize(term)] = max(
+                    term_priority.get(search_module.normalize(term), 0.0), score
+                )
+
+        def query_priority(item):
+            normalized = search_module.normalize(item)
+            matched_term_score = max(
+                (
+                    score
+                    for term, score in term_priority.items()
+                    if term and term in normalized
+                ),
+                default=0.0,
+            )
+            if (
+                normalized in term_priority
+                and normalized not in low_information_terms
+            ):
+                matched_term_score += 6.0
+            # Prefer a focused atom/composite over broad profile-only shards.
+            return (
+                -matched_term_score,
+                -min(len(normalized), 24),
+                queries.index(item),
+            )
+
+        remaining = sorted(remaining, key=query_priority)
     selected = [*protected, *remaining][:target]
     selected_normalized = {
         search_module.normalize(query) for query in selected

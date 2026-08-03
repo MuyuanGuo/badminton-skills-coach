@@ -4,7 +4,7 @@ import hashlib
 import json
 import math
 import os
-import resource
+import re
 import sys
 import tempfile
 import time
@@ -25,24 +25,49 @@ from douyin_pipeline import (
     validate_queue_statuses,
     write_json,
 )
+from queue_wal import QueueWAL
+
+try:
+    import resource
+except ImportError:  # Windows has no resource module.
+    resource = None
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MEDIA_SUFFIXES = {".mp4", ".m4a", ".mp3", ".wav", ".webm"}
 DEFAULT_MAX_TRANSCRIPTION_ATTEMPTS = 3
+MODEL_CONFIG_PATH = ROOT / "config" / "transcription_models.json"
+
+
+def transcription_model_spec(model_name):
+    config = json.loads(MODEL_CONFIG_PATH.read_text(encoding="utf-8"))
+    try:
+        spec = config["models"][model_name]
+    except (KeyError, TypeError) as error:
+        raise ValueError(f"Unpinned transcription model: {model_name}") from error
+    repository = str(spec.get("repository") or "")
+    revision = str(spec.get("revision") or "")
+    if not repository or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        raise ValueError(f"Invalid pinned transcription model: {model_name}")
+    return {"repository": repository, "revision": revision}
 
 
 def peak_resident_memory_mb():
+    if resource is None:
+        return 0.0
     maximum_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     bytes_per_unit = 1 if sys.platform == "darwin" else 1024
     return round(maximum_rss * bytes_per_unit / (1024 * 1024), 1)
 
 
 def transcription_recipe(model_name):
+    spec = transcription_model_spec(model_name)
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "engine": "faster-whisper",
         "model": model_name,
+        "model_repository": spec["repository"],
+        "model_revision": spec["revision"],
         "language": "zh",
         "beam_size": 5,
         "vad_filter": True,
@@ -51,6 +76,16 @@ def transcription_recipe(model_name):
         "device": "cpu",
         "compute_type": "int8",
     }
+
+
+def legacy_transcription_recipe(model_name):
+    """Describe the old recipe without claiming an unobserved model revision."""
+
+    recipe = transcription_recipe(model_name)
+    recipe["schema_version"] = 1
+    recipe.pop("model_repository")
+    recipe.pop("model_revision")
+    return recipe
 
 
 def srt_time(seconds):
@@ -563,6 +598,8 @@ def transcript_directories(output_dir, video_ids):
 def default_model_factory(model_name):
     from faster_whisper import WhisperModel
 
+    spec = transcription_model_spec(model_name)
+
     available_cpus = os.cpu_count() or 1
     configured_workers = os.environ.get("BSC_WHISPER_WORKERS")
     workers = int(configured_workers) if configured_workers else 1
@@ -583,7 +620,8 @@ def default_model_factory(model_name):
             "must not exceed the available CPU count"
         )
     return WhisperModel(
-        model_name,
+        spec["repository"],
+        revision=spec["revision"],
         device="cpu",
         compute_type="int8",
         cpu_threads=cpu_threads,
@@ -613,6 +651,10 @@ def transcribe_directory(
     output_dir.mkdir(parents=True, exist_ok=True)
     requested = set(video_ids or [])
     queue = json.loads(queue_path.read_text(encoding="utf-8")) if queue_path else None
+    queue_wal = QueueWAL(queue_path) if queue is not None else None
+    if queue_wal is not None and queue_wal.replay(queue):
+        save_queue(queue_path, queue)
+        queue_wal.clear()
     queue_items = {item["video_id"]: item for item in queue["items"]} if queue else {}
     discovered_files = discover_media_files(media_dir, queue_items)
     files, video_ids_by_media = resolve_media_files(
@@ -739,6 +781,7 @@ def transcribe_directory(
 
     if queue is not None and queue_changed:
         save_queue(queue_path, queue)
+        queue_wal.clear()
 
     print(
         json.dumps(
@@ -904,6 +947,7 @@ def transcribe_directory(
                 payload, item_elapsed = future.result()
                 if video_id in queue_items:
                     mark_transcribed(queue_items[video_id], payload)
+                    queue_wal.record(queue_items[video_id])
                 transcribed.append(video_id)
                 elapsed = time.monotonic() - batch_started
                 processed_audio_seconds += float(payload["duration"])
@@ -960,6 +1004,7 @@ def transcribe_directory(
                         error,
                         max_attempts=max_attempts,
                     )
+                    queue_wal.record(queue_items[video_id])
                 else:
                     terminal = False
                 failed.append(video_id)
@@ -974,8 +1019,9 @@ def transcribe_directory(
                     ),
                     flush=True,
                 )
-            if queue is not None:
+            if queue is not None and queue_wal.should_checkpoint():
                 save_queue(queue_path, queue)
+                queue_wal.clear()
             submit_next()
     except BaseException:
         for future in futures:
@@ -984,6 +1030,10 @@ def transcribe_directory(
         raise
     else:
         executor.shutdown(wait=True)
+
+    if queue is not None and queue_wal.pending_events:
+        save_queue(queue_path, queue)
+        queue_wal.clear()
 
     return {
         "media_files": media_file_count,
@@ -1032,7 +1082,7 @@ def main():
         parser.error("--max-attempts must be positive")
     if args.force and not args.video_id:
         parser.error("--force requires at least one --video-id")
-    pipeline_lock = (
+    _pipeline_lock = (
         acquire_bilibili_pipeline_lock()
         if args.queue
         and args.queue.resolve()

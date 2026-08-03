@@ -13,6 +13,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://muyuanguo.github.io/badminton-skills-coach/">
   <link rel="alternate" hreflang="en" href="https://muyuanguo.github.io/badminton-skills-coach/en/">
+  <link rel="alternate" hreflang="x-default" href="https://muyuanguo.github.io/badminton-skills-coach/">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -122,10 +124,12 @@
         </div>
         <div class="code-panel">
           <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制命令</button></div>
-          <pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
+          <pre id="install-code"><code>curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
   -o /tmp/liuhui-badminton-coach-2.0.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SBOM.cdx.json \
+  -o /tmp/SBOM.cdx.json
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
 unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
@@ -152,7 +156,7 @@ python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
   <footer class="site-footer">
     <div class="shell footer-grid">
       <div><strong>Badminton Skills Coach</strong><p>独立的证据型知识工程项目，不代表刘辉本人或其背书。</p></div>
-      <div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">下载最新版</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach">GitHub</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/NOTICE">内容边界</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.md">安全策略</a></div>
+      <div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">下载最新版</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach">GitHub</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/LICENSE-DATA">数据与来源条款</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.md">安全策略</a></div>
     </div>
   </footer>
   <script src="./site.js"></script>
