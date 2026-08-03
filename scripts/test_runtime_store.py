@@ -71,9 +71,22 @@ class RuntimeStoreTests(unittest.TestCase):
             self.assertNotIn("transcript_segments", raw_payload)
             self.assertNotIn("transcript_segments_json", raw_payload)
             self.assertEqual(store.retrieval_videos[-1], retrieval["videos"][-1])
+            self.assertEqual(
+                store.chunks.get_many_positions([2, 0, 2]),
+                {
+                    0: retrieval["chunk_index"]["chunks"][0],
+                    2: retrieval["chunk_index"]["chunks"][2],
+                },
+            )
             self.assertIsNone(store.knowledge_videos._decoded_rows)
             self.assertIsNone(store.transcript_payloads._decoded_rows)
+            self.assertIsNone(store.search_videos._decoded_rows)
             self.assertIsNone(store.retrieval_videos._decoded_rows)
+            self.assertIsNone(store.chunks._decoded_rows)
+            list(store.search_videos)
+            list(store.chunks)
+            self.assertIsNone(store.search_videos._decoded_rows)
+            self.assertIsNone(store.chunks._decoded_rows)
         finally:
             store.close()
             store.close()

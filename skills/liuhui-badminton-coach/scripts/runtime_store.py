@@ -24,32 +24,13 @@ class SQLiteJsonSequence(Sequence):
         *,
         id_column=None,
         lookup_table=None,
-        cache_all=False,
     ):
         self._connection = connection
         self._table = table
         self._id_column = id_column
         self._lookup_table = lookup_table or table
-        self._cache_all = cache_all
         self._decoded_rows = None
-        self._decoded_by_id = None
         self._length = None
-
-    def _ensure_cache(self):
-        if not self._cache_all or self._decoded_rows is not None:
-            return
-        rows = list(
-            self._connection.execute(
-                f"SELECT {self._id_column or 'position'}, payload "
-                f"FROM {self._table} ORDER BY position"
-            )
-        )
-        self._decoded_rows = tuple(json.loads(payload) for _, payload in rows)
-        if self._id_column:
-            self._decoded_by_id = {
-                str(item_id): value
-                for (item_id, _), value in zip(rows, self._decoded_rows)
-            }
 
     def __len__(self):
         if self._length is None:
@@ -67,18 +48,12 @@ class SQLiteJsonSequence(Sequence):
         return json.loads(row[0])
 
     def __iter__(self):
-        self._ensure_cache()
-        if self._decoded_rows is not None:
-            return iter(self._decoded_rows)
         cursor = self._connection.execute(
             f"SELECT payload FROM {self._table} ORDER BY position"
         )
         return (self._decode(row) for row in cursor)
 
     def __getitem__(self, index):
-        self._ensure_cache()
-        if self._decoded_rows is not None:
-            return self._decoded_rows[index]
         if isinstance(index, slice):
             start, stop, step = index.indices(len(self))
             if step != 1:
@@ -106,10 +81,6 @@ class SQLiteJsonSequence(Sequence):
         if not self._id_column:
             raise TypeError("this runtime-store sequence has no stable ID")
         table = self._lookup_table if full else self._table
-        if table == self._table:
-            self._ensure_cache()
-            if self._decoded_by_id is not None:
-                return self._decoded_by_id.get(str(item_id), default)
         row = self._connection.execute(
             f"SELECT payload FROM {table} WHERE {self._id_column} = ?",
             (str(item_id),),
@@ -124,14 +95,6 @@ class SQLiteJsonSequence(Sequence):
             return []
         found: dict[str, Any] = {}
         table = self._lookup_table if full else self._table
-        if table == self._table:
-            self._ensure_cache()
-            if self._decoded_by_id is not None:
-                return [
-                    self._decoded_by_id[item_id]
-                    for item_id in ordered_ids
-                    if item_id in self._decoded_by_id
-                ]
         # Stay below SQLite's conservative cross-platform parameter limit.
         for offset in range(0, len(ordered_ids), 900):
             batch = ordered_ids[offset : offset + 900]
@@ -143,6 +106,26 @@ class SQLiteJsonSequence(Sequence):
             )
             found.update((str(item_id), json.loads(payload)) for item_id, payload in rows)
         return [found[item_id] for item_id in ordered_ids if item_id in found]
+
+    def get_many_positions(self, indexes):
+        ordered_indexes = list(dict.fromkeys(int(index) for index in indexes))
+        if not ordered_indexes:
+            return {}
+        found: dict[int, Any] = {}
+        # Stay below SQLite's conservative cross-platform parameter limit.
+        for offset in range(0, len(ordered_indexes), 900):
+            batch = ordered_indexes[offset : offset + 900]
+            placeholders = ",".join("?" for _ in batch)
+            rows = self._connection.execute(
+                f"SELECT position, payload FROM {self._table} "
+                f"WHERE position IN ({placeholders})",
+                batch,
+            )
+            found.update(
+                (int(position), json.loads(payload))
+                for position, payload in rows
+            )
+        return found
 
 
 class SQLiteIdMapping(Mapping):
@@ -344,14 +327,11 @@ class RuntimeStore:
             self.connection,
             "search_videos",
             id_column="video_id",
-            cache_all=True,
         )
         self.retrieval_videos = SQLiteJsonSequence(
             self.connection, "retrieval_videos", id_column="video_id"
         )
-        self.chunks = SQLiteJsonSequence(
-            self.connection, "chunks", cache_all=True
-        )
+        self.chunks = SQLiteJsonSequence(self.connection, "chunks")
         self.chunk_index = SQLiteChunkIndex(self)
         self.knowledge = SQLiteMetadata(
             self.connection,

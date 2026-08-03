@@ -356,10 +356,18 @@ def prepared_retrieval_index(retrieval_index):
     cached = _PREPARED_RETRIEVAL_CACHE.get(cache_key)
     if cached is not None and cached[0] is retrieval_index:
         return cached[1]
-    records = retrieval_index["videos"]
+    record_list = []
+    records = {}
+    video_ids = []
+    for item in retrieval_index["videos"]:
+        video_id = item["video_id"]
+        record_list.append(item)
+        records[video_id] = item
+        video_ids.append(video_id)
     prepared = {
-        "records": {item["video_id"]: item for item in records},
-        "video_ids": [item["video_id"] for item in records],
+        "record_list": record_list,
+        "records": records,
+        "video_ids": video_ids,
     }
     chunk_index = retrieval_index.get("chunk_index") or {}
     chunk_config = chunk_index.get("config") or {}
@@ -371,31 +379,30 @@ def prepared_retrieval_index(retrieval_index):
         or chunk_allowed_sources
     )
     chunks = chunk_index.get("chunks") or []
-    cluster_chunk_indexes = frozenset(
-        index
-        for index, chunk in enumerate(chunks)
-        if isinstance(chunk.get("video_index"), int)
-        and 0 <= chunk["video_index"] < len(records)
-        and records[chunk["video_index"]].get("source_type")
-        in chunk_cluster_sources
-    )
-    scoring_chunk_indexes = frozenset(
-        index
-        for index in cluster_chunk_indexes
-        if records[chunks[index]["video_index"]].get("source_type")
-        in chunk_allowed_sources
-    )
+    cluster_chunk_indexes = set()
+    scoring_chunk_indexes = set()
+    clustered_video_ids = set()
+    indexed_video_ids = set()
+    for index, chunk in enumerate(chunks):
+        video_index = chunk.get("video_index")
+        if not isinstance(video_index, int) or not (
+            0 <= video_index < len(record_list)
+        ):
+            continue
+        record = record_list[video_index]
+        source_type = record.get("source_type")
+        if source_type not in chunk_cluster_sources:
+            continue
+        cluster_chunk_indexes.add(index)
+        clustered_video_ids.add(record["video_id"])
+        if source_type in chunk_allowed_sources:
+            scoring_chunk_indexes.add(index)
+            indexed_video_ids.add(record["video_id"])
     prepared["chunk"] = {
-        "cluster_indexes": cluster_chunk_indexes,
-        "scoring_indexes": scoring_chunk_indexes,
-        "clustered_video_ids": {
-            records[chunks[index]["video_index"]]["video_id"]
-            for index in cluster_chunk_indexes
-        },
-        "indexed_video_ids": {
-            records[chunks[index]["video_index"]]["video_id"]
-            for index in scoring_chunk_indexes
-        },
+        "cluster_indexes": frozenset(cluster_chunk_indexes),
+        "scoring_indexes": frozenset(scoring_chunk_indexes),
+        "clustered_video_ids": clustered_video_ids,
+        "indexed_video_ids": indexed_video_ids,
     }
     if "ngram_vocabulary" not in retrieval_index:
         prepared["forward_gram_sets"] = {
@@ -404,7 +411,7 @@ def prepared_retrieval_index(retrieval_index):
                 "teaching_note": set(item.get("teaching_note_ngrams", [])),
                 "transcript": set(item.get("transcript_ngrams", [])),
             }
-            for item in records
+            for item in record_list
         }
     _PREPARED_RETRIEVAL_CACHE.clear()
     _PREPARED_RETRIEVAL_CACHE[cache_key] = (
@@ -1037,7 +1044,7 @@ def lookup_videos(
 ):
     knowledge, retrieval_index, rules = load_resources()
     videos = knowledge_video_map(knowledge, video_ids)
-    records = {item["video_id"]: item for item in retrieval_index["videos"]}
+    records = prepared_retrieval_index(retrieval_index)["records"]
     candidates = {}
     expansion = None
     feedback_guidance = None

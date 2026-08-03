@@ -305,11 +305,10 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     chunks = chunk_index.get("chunks") or []
     if not chunks:
         return {}
-    records = retrieval_index["videos"]
     config = chunk_first_config(retrieval_index)
-    prepared_chunk = prepared_retrieval_index(retrieval_index).get(
-        "chunk", {}
-    )
+    prepared_index = prepared_retrieval_index(retrieval_index)
+    records = prepared_index["record_list"]
+    prepared_chunk = prepared_index.get("chunk", {})
     allowed_chunk_indexes = prepared_chunk.get(
         "cluster_indexes", frozenset()
     )
@@ -335,6 +334,12 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
         candidate_indexes.update(indexes)
     if not candidate_indexes:
         return {}
+    get_many_positions = getattr(chunks, "get_many_positions", None)
+    candidate_chunks = (
+        get_many_positions(sorted(candidate_indexes))
+        if get_many_positions is not None
+        else {index: chunks[index] for index in sorted(candidate_indexes)}
+    )
 
     cluster_count = max(1, int(chunk_index.get("cluster_count") or 0))
     stable_cluster_count = max(
@@ -374,7 +379,9 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     stable_gram_cluster_df = {}
     stable_gram_weights = {}
     for gram, indexes in query_postings.items():
-        cluster_ids = {chunks[index]["cluster_id"] for index in indexes}
+        cluster_ids = {
+            candidate_chunks[index]["cluster_id"] for index in indexes
+        }
         gram_cluster_df[gram] = len(cluster_ids)
         gram_weights[gram] = math.log(
             1
@@ -382,9 +389,9 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
             / (gram_cluster_df[gram] + 1)
         )
         stable_cluster_ids = {
-            chunks[index]["stable_cluster_id"]
+            candidate_chunks[index]["stable_cluster_id"]
             for index in indexes
-            if chunks[index].get("stable_cluster_id")
+            if candidate_chunks[index].get("stable_cluster_id")
         }
         stable_gram_cluster_df[gram] = len(stable_cluster_ids)
         stable_gram_weights[gram] = math.log(
@@ -396,7 +403,7 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     stable_total_gram_weight = sum(stable_gram_weights.values())
     matches_by_video = {}
     for chunk_index_value in sorted(candidate_indexes):
-        chunk = chunks[chunk_index_value]
+        chunk = candidate_chunks[chunk_index_value]
         record = records[chunk["video_index"]]
         stable_chunk = (
             record.get("retrieval_cohort", "stable_baseline")
