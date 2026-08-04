@@ -1,18 +1,23 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.0.0",
+  "development_version": "2.1.0-dev.1",
   "baseline_version": "v2.0.0",
   "build": {
-    "id": "80d7cf0a34d0df58",
-    "inputs_sha256": "de6bbb8787185f806fba26f072dbbac8bce5858fab1f315e32fa0825082cf633",
-    "runtime_sha256": "8e93d52de52ebf66856e0778d5a44307e1232ed370d14a5f12e0816effab5145"
+    "id": "5a60e9d82faa721b",
+    "inputs_sha256": "b386527e0be55343514dde9fc28a78a8594c5cf636e6c33bb8513bbe1ad70989",
+    "runtime_sha256": "d917be5805ffeeee0f82d979bc6290daad7046b63125248fb0993740882a22c3"
   },
   "summary": {
     "status": "pass",
-    "suites": 13,
-    "baseline_metrics": 48,
-    "regressions": 0
+    "suites": 14,
+    "baseline_metrics": 47,
+    "regressions": 0,
+    "invalidated_baseline_metrics": 2
+  },
+  "invalidated_baseline_metrics": {
+    "answer_context.selected_video_recall": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json",
+    "answer_context.primary_selected_rate": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json"
   },
   "evaluations": {
     "answer_policy": {
@@ -26,12 +31,13 @@
       "cases": 57,
       "expected_videos": 173,
       "candidate_recall": 1.0,
-      "selected_video_recall": 1.0,
-      "primary_selected_rate": 1.0,
+      "selected_video_recall": 0.7976878612716763,
+      "primary_selected_rate": 0.8518518518518519,
       "answer_mode_accuracy": 1.0,
       "context_evidence_coverage": 1.0,
       "hard_negative_selected_violations": 0,
-      "selection_truncated_cases": 0
+      "selection_truncated_cases": 0,
+      "evaluation_fixture_isolation": true
     },
     "answer_quality": {
       "measurement_type": "reviewed_static_answer_snapshots",
@@ -75,6 +81,17 @@
       "expected_violations": 11,
       "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
+    },
+    "bilibili_positive_retrieval": {
+      "measurement_type": "source_reviewed_positive_retrieval_gold",
+      "runtime_use_forbidden": true,
+      "source_type": "bilibili_video",
+      "case_count": 30,
+      "passed": true,
+      "pass_rate": 1.0,
+      "retrieval_hit_rate_at_k": 1.0,
+      "claim_mapping_rate": 1.0,
+      "failure_count": 0
     },
     "feedback_lifecycle": {
       "status": "pass",
@@ -196,31 +213,31 @@
       "failed": []
     },
     "live_generation": {
-      "measurement_type": "current_answer_runtime_generation_review",
-      "review_status": "current_reviewed",
+      "measurement_type": "historical_generation_review",
+      "review_status": "historical_stale",
       "snapshot_integrity_status": "valid_review_snapshot",
-      "current_runtime_match": true,
-      "current_runtime_generation_claimed": true,
-      "release_eligible": true,
-      "runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
+      "current_runtime_match": false,
+      "current_runtime_generation_claimed": false,
+      "release_eligible": false,
+      "runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
       "runtime_fingerprint_scope": "answer_semantics",
-      "reviewed_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
-      "current_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
-      "reviewed_artifact_runtime_fingerprint": "563de5812b1c8683ebaee79209fb9c17b4e6503b8a8dfe2a27045686b93d9c42",
-      "current_artifact_runtime_fingerprint": "a516523836482fbc7b79c235d36e3108c28a05e4b9d97958be4744346cdbe653",
+      "reviewed_answer_runtime_fingerprint": "1f254290f242f94e2f8eccd8b36f0d52c6eb27fa331e0cf95cecb0893c4bd2e9",
+      "current_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
+      "reviewed_artifact_runtime_fingerprint": "b40b6ce8f4bcf3c56530ad19ae57c76c704a030f7e68a34dac85d705a01ce456",
+      "current_artifact_runtime_fingerprint": "e97abe4227766659651b91cc964fc4abd5e322e6fc82d4cf0482b2c8562e09df",
       "artifact_runtime_match": false,
       "critical_cases": 3,
       "independently_reviewed": 3,
-      "current_runtime_audits_rerun": true,
+      "current_runtime_audits_rerun": false,
       "passed": 3,
-      "minimum_manual_score": 5,
+      "minimum_manual_score": 4,
       "failed": [],
       "generator": {
         "provider": "OpenAI",
         "model": "Codex",
         "model_version": "GPT-5"
       },
-      "reviewer": "/root/forward_legacy_feedback:release-v2.0.0-independent-reviewer"
+      "reviewer": "Codex isolated release review /root/unseen_forward_test:v47-contract-final"
     }
   },
   "baseline_comparison": [
@@ -279,24 +296,6 @@
       "passed": true
     },
     {
-      "metric": "answer_context.selected_video_recall",
-      "current": 1.0,
-      "baseline": 1.0,
-      "direction": "at_least",
-      "tolerance": 0,
-      "contract_source": "stable_baseline",
-      "passed": true
-    },
-    {
-      "metric": "answer_context.primary_selected_rate",
-      "current": 1.0,
-      "baseline": 1.0,
-      "direction": "at_least",
-      "tolerance": 0,
-      "contract_source": "stable_baseline",
-      "passed": true
-    },
-    {
       "metric": "answer_context.answer_mode_accuracy",
       "current": 1.0,
       "baseline": 1.0,
@@ -319,6 +318,15 @@
       "current": 0,
       "baseline": 0,
       "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.evaluation_fixture_isolation",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
       "tolerance": 0,
       "contract_source": "stable_baseline",
       "passed": true

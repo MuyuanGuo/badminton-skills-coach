@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 README_ZH = ROOT / "README.md"
 README_EN = ROOT / "README.en.md"
+LANDING_PAGE = ROOT / "docs" / "index.html"
 SKILL = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 ANSWER_WORKFLOW = (
     ROOT
@@ -25,6 +26,7 @@ class DocumentationContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.readme_zh = README_ZH.read_text(encoding="utf-8")
         cls.readme_en = README_EN.read_text(encoding="utf-8")
+        cls.landing_page = LANDING_PAGE.read_text(encoding="utf-8")
         cls.skill = SKILL.read_text(encoding="utf-8")
         cls.answer_workflow = ANSWER_WORKFLOW.read_text(encoding="utf-8")
         cls.release_channel = json.loads(
@@ -35,20 +37,11 @@ class DocumentationContractTests(unittest.TestCase):
 
     def test_readme_audience_matches_release_channel(self):
         if self.release_channel == "development":
-            self.assertIn(
-                "`develop` README 面向招聘官、技术面试官和贡献者",
-                self.readme_zh,
-            )
-            self.assertIn(
-                "The `develop` README targets recruiters, technical "
-                "interviewers, and contributors",
-                self.readme_en,
-            )
+            self.assertIn("`develop` 是集成分支", self.readme_zh)
+            self.assertIn("`develop` is the integration branch", self.readme_en)
         else:
-            self.assertIn("`main` README 面向使用者", self.readme_zh)
-            self.assertIn(
-                "The `main` README targets Skill users", self.readme_en
-            )
+            self.assertIn("`main` 是稳定发布来源", self.readme_zh)
+            self.assertIn("`main` is the stable release source", self.readme_en)
 
     def test_bilibili_causal_chain_is_serial_and_bilingual(self):
         for marker in (
@@ -56,8 +49,8 @@ class DocumentationContractTests(unittest.TestCase):
             'D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]',
             'P --> E["结构化知识库（含隔离审计记录）"]',
             'E --> A["回答资格分层',
-            'A --> KG["概念-主题-证据角色图谱',
-            'A --> F["45秒 chunk-first + 受限窗口检索',
+            'A --> S["只读 SQLite 运行时证据存储',
+            'S --> F["45秒 chunk-first + 受限窗口检索',
         ):
             self.assertIn(marker, self.readme_zh)
         for marker in (
@@ -65,8 +58,8 @@ class DocumentationContractTests(unittest.TestCase):
             'D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]',
             'P --> E["Structured knowledge, including quarantine audit records"]',
             'E --> A["Answer admission layers',
-            'A --> KG["Concept-topic-evidence-role graph',
-            'A --> F["45-second chunk-first plus bounded-window retrieval',
+            'A --> S["Read-only SQLite runtime evidence store',
+            'S --> F["45-second chunk-first plus bounded-window retrieval',
         ):
             self.assertIn(marker, self.readme_en)
         self.assertNotIn('B --> D["确定性ASR', self.readme_zh)
@@ -109,6 +102,15 @@ class DocumentationContractTests(unittest.TestCase):
         self.assertNotIn(RECOVERY_COMMAND, self.skill)
         self.assertNotIn(RECOVERY_COMMAND, self.answer_workflow)
 
+    def test_install_snippets_download_and_verify_the_sbom_fail_closed(self):
+        for document in (self.readme_zh, self.readme_en, self.landing_page):
+            self.assertIn("SBOM.cdx.json", document)
+            self.assertIn("--fail", document)
+            self.assertIn("--show-error", document)
+            self.assertIn("--location", document)
+            self.assertIn("--retry 3", document)
+            self.assertNotIn("curl -L ", document)
+
     def test_runtime_docs_forbid_raw_transcript_shortcuts(self):
         self.assertIn(
             "New transcript files do not update model weights or memory",
@@ -127,6 +129,33 @@ class DocumentationContractTests(unittest.TestCase):
             self.answer_workflow,
         )
         self.assertLessEqual(len(self.skill.encode("utf-8")), 12_000)
+
+    def test_site_has_accessibility_and_discovery_basics(self):
+        for relative in ("404.html", "favicon.svg", "robots.txt", "sitemap.xml"):
+            self.assertTrue((ROOT / "docs" / relative).is_file(), relative)
+        for relative in ("index.html", "en/index.html", "evaluation/index.html"):
+            page = (ROOT / "docs" / relative).read_text(encoding="utf-8")
+            self.assertIn('rel="icon"', page)
+            self.assertIn('href="#main"', page)
+        evaluation = (
+            ROOT / "docs" / "evaluation" / "index.html"
+        ).read_text(encoding="utf-8")
+        self.assertIn("blob/main/data/evaluation/evaluation_report.json", evaluation)
+        self.assertNotIn("blob/develop/", evaluation)
+
+    def test_governance_and_data_terms_are_bilingual_and_linked(self):
+        for relative in (
+            "CONTRIBUTING.md",
+            "CONTRIBUTING.en.md",
+            "SECURITY.md",
+            "SECURITY.en.md",
+            "LICENSE-DATA",
+            ".github/REPOSITORY_SETTINGS.md",
+            ".github/labels.yml",
+        ):
+            self.assertTrue((ROOT / relative).is_file(), relative)
+        for document in (self.readme_zh, self.readme_en):
+            self.assertIn("LICENSE-DATA", document)
 
 
 if __name__ == "__main__":

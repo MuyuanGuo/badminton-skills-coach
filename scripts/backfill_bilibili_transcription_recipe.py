@@ -9,7 +9,7 @@ from pathlib import Path
 from batch_transcribe_directory import (
     load_valid_transcript,
     transcript_directories,
-    transcription_recipe,
+    legacy_transcription_recipe,
     write_transcript_outputs,
 )
 from bilibili_storage import (
@@ -117,7 +117,7 @@ def main():
         if not eligible_for_backfill(payload, queue_item):
             skipped.append(bvid)
             continue
-        payload["transcription_recipe"] = transcription_recipe(payload["model"])
+        payload["transcription_recipe"] = legacy_transcription_recipe(payload["model"])
         if not args.check:
             preferred_root = transcript_roots[0]
             try:

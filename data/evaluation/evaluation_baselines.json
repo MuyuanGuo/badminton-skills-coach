@@ -566,6 +566,10 @@
     },
     "v2.0.0": {
       "description": "Stable release v2.0.0 quality floor",
+      "invalidated_metrics": {
+        "answer_context.selected_video_recall": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json",
+        "answer_context.primary_selected_rate": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json"
+      },
       "metrics": {
         "answer_policy.accuracy": {
           "value": 1.0,
@@ -610,6 +614,10 @@
         "answer_context.hard_negative_selected_violations": {
           "value": 0,
           "direction": "at_most"
+        },
+        "answer_context.evaluation_fixture_isolation": {
+          "value": true,
+          "direction": "equal"
         },
         "answer_quality.regression_ready": {
           "value": 57,

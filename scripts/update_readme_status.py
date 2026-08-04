@@ -552,40 +552,13 @@ def update_skill_status_text(skill, knowledge):
     )
     skill = replace_one(
         skill,
-        r"\d+ processed videos, including \d+ `ready` answer-eligible entries and \d+ awaiting visual review",
+        r"The corpus contains \d+ primary sources, \d+ bounded supplemental sources, and \d+ answer-ineligible records\.",
         (
-            f"{counts['processed']} processed videos, including {counts['ready']} `ready` "
-            f"answer-eligible entries and {counts['pending_visual']} awaiting visual review"
+            f"The corpus contains {counts['primary']} primary sources, "
+            f"{counts['supplemental']} bounded supplemental sources, and "
+            f"{counts['processed'] - counts['ready']} answer-ineligible records."
         ),
-        "Skill scope archive counts",
-    )
-    skill = replace_one(
-        skill,
-        r"Of these, \d+ are `primary`; \d+ are `supplemental` sources",
-        (
-            f"Of these, {counts['primary']} are `primary`; "
-            f"{counts['supplemental']} are `supplemental` sources"
-        ),
-        "Skill scope admission split",
-    )
-    skill = replace_one(
-        skill,
-        r"Runtime evidence comprises \d+ full-transcript records, \d+ bounded-note records, and \d+ reviewed visual summaries",
-        (
-            f"Runtime evidence comprises {counts['transcript']} full-transcript records, "
-            f"{counts['bounded']} bounded-note records, and {counts['visual']} reviewed visual summaries"
-        ),
-        "Skill runtime evidence modes",
-    )
-    skill = replace_one(
-        skill,
-        r"`references/knowledge-base\.json`: \d+ processed entries, including \d+ primary, \d+ bounded supplemental, and \d+ answer-ineligible records\.",
-        (
-            f"`references/knowledge-base.json`: {counts['processed']} processed entries, "
-            f"including {counts['primary']} primary, {counts['supplemental']} bounded supplemental, "
-            f"and {counts['processed'] - counts['ready']} answer-ineligible records."
-        ),
-        "Skill resource admission counts",
+        "Skill compact corpus counts",
     )
     return skill
 

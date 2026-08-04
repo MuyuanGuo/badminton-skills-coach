@@ -1,5 +1,7 @@
 # 贡献指南
 
+[English](CONTRIBUTING.en.md)
+
 感谢你帮助改进 Badminton Skills Coach。这个仓库优先接受可验证、范围清楚且不会引入版权或隐私风险的改动。
 
 ## 可以贡献什么
@@ -78,7 +80,8 @@ Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再�
 环境运行系统校验器，避免误用不含维护依赖的系统 Python：
 
 ```bash
-.venv/bin/pip install -r requirements-transcription.txt
+.venv/bin/pip install --require-hashes -r requirements-transcription.txt
+.venv/bin/pip install --require-hashes -r requirements-dev.txt
 .venv/bin/python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" \
   skills/liuhui-badminton-coach
 ```

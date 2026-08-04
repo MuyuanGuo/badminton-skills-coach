@@ -727,7 +727,7 @@ class ChunkRetrievalTests(unittest.TestCase):
             "evidence_windows": {},
             "required_claim_contract": "不可删除" * 6000,
         }
-        with self.assertRaisesRegex(ValueError, "hard byte budget"):
+        with self.assertRaisesRegex(ValueError, "hard size budget"):
             self.answer_packet.enforce_answer_packet_budget(packet)
 
     def test_dynamic_term_scan_skips_chunk_indexed_long_transcripts(self):

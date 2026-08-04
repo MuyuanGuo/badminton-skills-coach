@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
 """Compatibility facade for answer scope and candidate-selection policies."""
 
-import importlib.util
+import sys
 from pathlib import Path
 
-
 SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-
-def _load(name, filename):
-    spec = importlib.util.spec_from_file_location(name, SCRIPT_DIR / filename)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_scope = _load("liuhui_answer_scope", "answer_scope.py")
-_candidate = _load(
-    "liuhui_answer_candidate_selection",
-    "answer_candidate_selection.py",
-)
+import answer_candidate_selection as _candidate
+import answer_scope as _scope
 structured_video_text = _scope.structured_video_text
 structured_constraint_text = _scope.structured_constraint_text
 axis_values = _scope.axis_values

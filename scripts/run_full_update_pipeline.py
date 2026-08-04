@@ -23,6 +23,10 @@ from project_artifacts import (
     atomic_write_text,
     sync_skill_references,
 )
+from project_update_lock import (
+    LOCK_OWNER_ENV as PROJECT_LOCK_OWNER_ENV,
+    acquire_project_update_lock,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,6 +36,7 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "data/knowledge/topic_index.json",
     ROOT / "skills/liuhui-badminton-coach/references/topic-index.md",
     ROOT / "data/knowledge/retrieval_index.json",
+    ROOT / "skills/liuhui-badminton-coach/references/runtime-store.sqlite3",
     ROOT / "data/knowledge/evidence_graph.json",
     ROOT / "data/knowledge/knowledge_graph_summary.json",
     ROOT / "data/knowledge/build_manifest.json",
@@ -71,6 +76,7 @@ def build_commands(*, rebuild_bilibili=True):
         [sys.executable, "scripts/build_douyin_knowledge.py"],
         [sys.executable, "scripts/build_topic_index.py"],
         [sys.executable, "scripts/build_retrieval_index.py"],
+        [sys.executable, "scripts/build_runtime_store.py"],
         [sys.executable, "scripts/build_evidence_graph.py"],
         [sys.executable, "scripts/build_visual_review_queue.py"],
         [sys.executable, "scripts/generate_knowledge_graph.py"],
@@ -96,37 +102,13 @@ def validation_commands(*, raw_transcript_sources=None):
             ["--require-raw-transcript-source", source]
         )
     return [
-        [sys.executable, "scripts/evaluate_bilibili_canaries.py"],
         [sys.executable, "scripts/evaluate_supplemental_evidence_policy.py"],
         [sys.executable, "scripts/apply_answer_quality_review_notes.py", "--dry-run"],
-        [sys.executable, "scripts/evaluate_answer_policy.py"],
-        [sys.executable, "scripts/evaluate_answer_context.py"],
-        [sys.executable, "scripts/evaluate_answer_audit.py"],
-        [sys.executable, "scripts/evaluate_diagnostic_answer_contract.py"],
-        [
-            sys.executable,
-            "scripts/evaluate_answer_quality.py",
-            "--answers",
-            "data/evaluation/answer_quality_answers.json",
-            "--min-approved",
-            "57",
-            "--min-answer-snapshots",
-            "57",
-            "--min-answer-snapshot-coverage",
-            "1.0",
-            "--require-complete-answer-coverage",
-            "--require-critical-answer-coverage",
-            "--require-manual-review",
-        ],
         [sys.executable, "scripts/evaluate_feedback_signals.py"],
-        [sys.executable, "scripts/evaluate_feedback_lifecycle.py"],
-        [sys.executable, "scripts/evaluate_query_understanding.py"],
-        [sys.executable, "scripts/evaluate_query_equivalence.py"],
-        [sys.executable, "scripts/evaluate_metamorphic_robustness.py"],
-        [sys.executable, "scripts/evaluate_retrieval.py"],
         [sys.executable, "scripts/benchmark_runtime.py"],
-        [sys.executable, "scripts/evaluate_forward_test_results.py"],
+        [sys.executable, "scripts/evaluate_answer_packet.py"],
         video_comprehension,
+        [sys.executable, "scripts/build_runtime_store.py", "--check"],
         [sys.executable, "scripts/build_manifest.py", "--check"],
         [sys.executable, "scripts/check_video_links.py"],
         ["node", "scripts/test_douyin_profile_snapshot_dom.mjs"],
@@ -318,7 +300,7 @@ def write_validation_receipt(path):
     return build_id
 
 
-def main():
+def _main():
     parser = argparse.ArgumentParser(
         description="Run the local Liu Hui Skill update pipeline from an optional profile snapshot through validation."
     )
@@ -336,20 +318,28 @@ def main():
         default=[],
         help="Limit --auto-download to one queued video ID; repeatable",
     )
-    parser.add_argument("--no-push", action="store_true", help="Pass through to process_douyin_ready_batch.py")
+    parser.add_argument(
+        "--commit",
+        action="store_true",
+        help="Commit generated batch artifacts after validation",
+    )
+    parser.add_argument(
+        "--push",
+        action="store_true",
+        help="Push the batch commit after --commit (never enabled by default)",
+    )
     parser.add_argument(
         "--validation-receipt",
         type=Path,
         help="Write the validated build ID after the complete rebuild succeeds",
     )
     args = parser.parse_args()
+    if args.push and not args.commit:
+        parser.error("--push requires --commit")
     if args.video_id and not args.auto_download:
         parser.error("--video-id requires --auto-download")
     if args.batch and args.validation_receipt:
         parser.error("--validation-receipt requires a complete rebuild")
-    pipeline_lock = acquire_bilibili_pipeline_lock()
-    os.environ[PIPELINE_LOCK_OWNER_ENV] = "1"
-
     if args.snapshot:
         command = [
             sys.executable,
@@ -371,8 +361,10 @@ def main():
             command.append("--auto-download")
         for video_id in args.video_id:
             command.extend(["--video-id", video_id])
-        if args.no_push:
-            command.append("--no-push")
+        if args.commit:
+            command.append("--commit")
+        if args.push:
+            command.append("--push")
         run(command)
     else:
         rebuild_and_validate()
@@ -380,6 +372,31 @@ def main():
             write_validation_receipt(args.validation_receipt)
 
     print(json.dumps({"status": "ok"}, ensure_ascii=False))
+
+
+def main():
+    project_lock = acquire_project_update_lock()
+    previous_project_owner = os.environ.get(PROJECT_LOCK_OWNER_ENV)
+    previous_pipeline_owner = os.environ.get(PIPELINE_LOCK_OWNER_ENV)
+    os.environ[PROJECT_LOCK_OWNER_ENV] = "1"
+    pipeline_lock = None
+    try:
+        pipeline_lock = acquire_bilibili_pipeline_lock()
+        os.environ[PIPELINE_LOCK_OWNER_ENV] = "1"
+        return _main()
+    finally:
+        for key, value in (
+            (PROJECT_LOCK_OWNER_ENV, previous_project_owner),
+            (PIPELINE_LOCK_OWNER_ENV, previous_pipeline_owner),
+        ):
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+        for handle in (pipeline_lock, project_lock):
+            close = getattr(handle, "close", None)
+            if close is not None:
+                close()
 
 
 if __name__ == "__main__":

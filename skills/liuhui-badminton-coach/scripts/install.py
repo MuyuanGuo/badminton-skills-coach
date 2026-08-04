@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import fcntl
 import json
 import os
 import shutil
@@ -10,9 +9,20 @@ import tempfile
 import uuid
 from pathlib import Path
 
+try:
+    import fcntl
+except ImportError:  # Windows
+    fcntl = None
+    import msvcrt
+
 
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
-REQUIRED_FILES = ["SKILL.md", "scripts/doctor.py", "references/knowledge-base.json"]
+REQUIRED_FILES = [
+    "SKILL.md",
+    "scripts/doctor.py",
+    "scripts/runtime_store.py",
+    "references/runtime-store.sqlite3",
+]
 
 
 def default_destination():
@@ -50,11 +60,18 @@ class installation_lock:
         )
         self.handle = lock_path.open("a+", encoding="utf-8")
         try:
-            fcntl.flock(
-                self.handle.fileno(),
-                fcntl.LOCK_EX | fcntl.LOCK_NB,
-            )
-        except BlockingIOError as error:
+            if fcntl is not None:
+                fcntl.flock(
+                    self.handle.fileno(),
+                    fcntl.LOCK_EX | fcntl.LOCK_NB,
+                )
+            else:
+                self.handle.seek(0)
+                self.handle.write("0")
+                self.handle.flush()
+                self.handle.seek(0)
+                msvcrt.locking(self.handle.fileno(), msvcrt.LK_NBLCK, 1)
+        except (BlockingIOError, OSError) as error:
             self.handle.close()
             self.handle = None
             raise ValueError(

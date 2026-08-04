@@ -18,10 +18,26 @@ def load_module(name, path):
     return module
 
 
-def main():
-    registry = json.loads(CASES_PATH.read_text(encoding="utf-8"))
-    if registry.get("schema_version") != 1:
-        raise SystemExit("Unsupported Bilibili canary schema")
+def evaluate(cases_path=CASES_PATH):
+    registry = json.loads(Path(cases_path).read_text(encoding="utf-8"))
+    if registry.get("schema_version") != 2:
+        raise ValueError("Unsupported Bilibili positive-gold schema")
+    cases = registry.get("cases")
+    if (
+        not isinstance(cases, list)
+        or len(cases) < registry.get("minimum_case_count", 30)
+        or registry.get("runtime_use_forbidden") is not True
+    ):
+        raise ValueError("Bilibili positive gold is underpowered or not isolated")
+    if any(
+        set(case) != {"id", "query", "expected_evidence_id", "review"}
+        or case.get("review", {}).get("status") != "source_reviewed"
+        or case.get("review", {}).get("basis")
+        != "transcript_and_title_alignment"
+        or not str(case.get("expected_evidence_id", "")).startswith("bilibili:")
+        for case in cases
+    ):
+        raise ValueError("Bilibili positive gold contains an unreviewed case")
     thresholds = registry["thresholds"]
     search = load_module(
         "bilibili_canary_search",
@@ -33,7 +49,7 @@ def main():
     )
     results = []
     failures = []
-    for case in registry["cases"]:
+    for case in cases:
         query = case["query"]
         expected = case["expected_evidence_id"]
         retrieval = search.search(
@@ -104,17 +120,39 @@ def main():
             {"case_id": case["id"], "reason": reason}
             for reason in case_failures
         )
+    pass_rate = (len(results) - len({item["case_id"] for item in failures})) / max(1, len(results))
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
+        "measurement_type": "source_reviewed_positive_retrieval_gold",
+        "runtime_use_forbidden": True,
+        "source_type": "bilibili_video",
         "case_count": len(results),
-        "passed": not failures,
+        "passed": pass_rate >= thresholds["minimum_pass_rate"],
+        "pass_rate": round(pass_rate, 6),
+        "retrieval_hit_rate_at_k": round(
+            sum(item["expected_evidence_id"] in item["retrieval_top_ids"] for item in results)
+            / max(1, len(results)),
+            6,
+        ),
+        "claim_mapping_rate": round(
+            sum(item["claim_mapped"] for item in results) / max(1, len(results)),
+            6,
+        ),
         "failure_count": len(failures),
         "thresholds": thresholds,
         "results": results,
         "failures": failures,
     }
+    return report
+
+
+def main():
+    try:
+        report = evaluate()
+    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as error:
+        raise SystemExit(str(error)) from error
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    return 1 if failures else 0
+    return 0 if report["passed"] else 1
 
 
 if __name__ == "__main__":

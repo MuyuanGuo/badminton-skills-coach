@@ -14,9 +14,52 @@ concurrency:
   cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 jobs:
+  changes:
+    name: Classify change scope
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      full: ${{ steps.scope.outputs.full }}
+      docs_only: ${{ steps.scope.outputs.docs_only }}
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Classify pull-request paths
+        id: scope
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            echo "full=true" >> "$GITHUB_OUTPUT"
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          full=false
+          for path in "${changed[@]}"; do
+            case "$path" in
+              docs/*|*.md|LICENSE|LICENSE-*|NOTICE) ;;
+              *) full=true ;;
+            esac
+          done
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+          if [ "$full" = false ]; then
+            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
   static-and-unit:
     name: Static and unit tests (Python ${{ matrix.python }})
+    needs: changes
+    if: needs.changes.outputs.full == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -30,6 +73,22 @@ jobs:
         with:
           python-version: "${{ matrix.python }}"
 
+      - name: Install hash-locked quality tools
+        run: python -m pip install --require-hashes -r requirements-dev.txt
+
+      - name: Lint Python sources
+        run: ruff check scripts skills/liuhui-badminton-coach/scripts
+
+      - name: Type-check architecture-critical modules
+        run: >-
+          mypy
+          scripts/project_update_lock.py
+          scripts/queue_wal.py
+          scripts/release_inventory.py
+          skills/liuhui-badminton-coach/scripts/runtime_store.py
+          skills/liuhui-badminton-coach/scripts/token_budget.py
+          skills/liuhui-badminton-coach/scripts/render_answer.py
+
       - name: Compile Python sources
         run: python -m compileall -q scripts skills/liuhui-badminton-coach/scripts
 
@@ -38,7 +97,10 @@ jobs:
 
   core-evaluations:
     name: Core evaluations (${{ matrix.name }})
+    needs: changes
+    if: needs.changes.outputs.full == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -72,18 +134,6 @@ jobs:
         if: matrix.kind == 'evaluations'
         run: python scripts/generate_evaluation_report.py --check --evaluations "$RUNNER_TEMP/core-evaluations.json"
 
-      - name: Evaluate feedback signals
-        if: matrix.kind == 'evaluations'
-        run: python scripts/evaluate_feedback_signals.py
-
-      - name: Audit feedback lifecycle
-        if: matrix.kind == 'evaluations'
-        run: python scripts/evaluate_feedback_lifecycle.py
-
-      - name: Evaluate metamorphic robustness
-        if: matrix.kind == 'evaluations'
-        run: python scripts/evaluate_metamorphic_robustness.py
-
       - name: Enforce runtime performance budgets
         if: matrix.kind == 'evaluations'
         run: python scripts/benchmark_runtime.py
@@ -91,10 +141,6 @@ jobs:
       - name: Enforce 20-case compact answer-packet gate
         if: matrix.kind == 'evaluations'
         run: python scripts/evaluate_answer_packet.py
-
-      - name: Validate Bilibili retrieval canaries
-        if: matrix.kind == 'evaluations'
-        run: python scripts/evaluate_bilibili_canaries.py
 
       - name: Generate Bilibili mechanical wiring canaries
         if: matrix.kind == 'evaluations'
@@ -117,7 +163,10 @@ jobs:
 
   artifact-validation:
     name: Artifact validation
+    needs: changes
+    if: needs.changes.outputs.full == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -126,6 +175,12 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          package-manager-cache: false
 
       - name: Run artifact tests
         run: python scripts/run_ci_tests.py artifacts
@@ -146,22 +201,56 @@ jobs:
       - name: Validate repository artifacts
         run: python scripts/validate_project.py
 
+  docs-validation:
+    name: Documentation-only validation
+    needs: changes
+    if: needs.changes.outputs.docs_only == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          package-manager-cache: false
+
+      - name: Run documentation contracts
+        run: python scripts/test_documentation_contracts.py
+
+      - name: Run DOM regression tests
+        run: |
+          node scripts/test_bilibili_profile_snapshot_dom.mjs
+          node scripts/test_douyin_profile_snapshot_dom.mjs
+          node scripts/test_douyin_video_media_assets_dom.mjs
+
   validate:
     name: validate
     if: always()
     needs:
+      - changes
       - static-and-unit
       - core-evaluations
       - artifact-validation
+      - docs-validation
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Require every validation group to pass
         env:
           STATIC_RESULT: ${{ needs.static-and-unit.result }}
           CORE_RESULT: ${{ needs.core-evaluations.result }}
           ARTIFACT_RESULT: ${{ needs.artifact-validation.result }}
+          DOCS_RESULT: ${{ needs.docs-validation.result }}
         run: |
-          for result in "$STATIC_RESULT" "$CORE_RESULT" "$ARTIFACT_RESULT"; do
+          for result in "$STATIC_RESULT" "$CORE_RESULT" "$ARTIFACT_RESULT" "$DOCS_RESULT"; do
             case "$result" in
               success|skipped) ;;
               *) echo "Validation dependency finished with: $result" >&2; exit 1 ;;

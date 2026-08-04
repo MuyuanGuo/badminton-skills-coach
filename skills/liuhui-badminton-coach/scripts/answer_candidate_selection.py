@@ -1,34 +1,24 @@
 #!/usr/bin/env python3
 """Candidate evidence matching, thresholds, focus checks, and selection decisions."""
 
-import importlib.util
+import sys
 from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-
-def _load_scope():
-    spec = importlib.util.spec_from_file_location(
-        "liuhui_answer_candidate_scope",
-        SCRIPT_DIR / "answer_scope.py",
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-_scope = _load_scope()
-axis_values = _scope.axis_values
-constraint_decision = _scope.constraint_decision
-named_technique_comparison_focus_failures = (
-    _scope.named_technique_comparison_focus_failures
+from answer_scope import (  # noqa: E402
+    axis_values,
+    constraint_decision,
+    named_technique_comparison_focus_failures,
+    primary_video_constraint_text,
+    query_axis_values,
+    required_constraint_support_failures,
+    structured_video_text,
+    substantive_instruction_text,
 )
-primary_video_constraint_text = _scope.primary_video_constraint_text
-query_axis_values = _scope.query_axis_values
-required_constraint_support_failures = _scope.required_constraint_support_failures
-structured_video_text = _scope.structured_video_text
-substantive_instruction_text = _scope.substantive_instruction_text
 
 def is_direct_question_match(search_module, plan, match):
     if match.get("query_index") == 0:
@@ -562,7 +552,6 @@ def selection_decision(
         ):
             return False, ["receive_grip_query_requires_adaptation_evidence"]
 
-    strategy = plan["retrieval_guidance"]["strategy"]
     symptoms = plan["retrieval_guidance"]["intent_frame"].get(
         "literal_symptoms", []
     )

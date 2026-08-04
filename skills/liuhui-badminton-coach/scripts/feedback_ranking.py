@@ -558,9 +558,14 @@ def apply_feedback_layers(
             "skipped_record_count": 0,
         }
 
+    requested_video_ids = {
+        item["video_id"] for item in ranked
+    } | set(global_adjustments) | set(local_adjustments)
     videos = {
-        video["video_id"]: video
-        for video in knowledge["videos"]
+        video_id: video
+        for video_id, video in knowledge_video_map(
+            knowledge, requested_video_ids, full=False
+        ).items()
         if video["processing_status"] == "ready"
     }
     candidates = {item["video_id"]: dict(item) for item in ranked}

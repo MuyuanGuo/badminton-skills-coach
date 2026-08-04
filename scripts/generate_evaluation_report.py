@@ -13,6 +13,7 @@ import evaluate_answer_context
 import evaluate_answer_audit
 import evaluate_answer_policy
 import evaluate_answer_quality
+import evaluate_bilibili_canaries
 import evaluate_diagnostic_answer_contract
 import evaluate_forward_test_results
 import evaluate_feedback_lifecycle
@@ -37,6 +38,7 @@ EVALUATION_SUITES = {
     "query_understanding",
     "diagnostic_answer_contract",
     "answer_audit",
+    "bilibili_positive_retrieval",
     "feedback_lifecycle",
     "retrieval",
     "metamorphic_robustness",
@@ -50,6 +52,7 @@ CORE_EVALUATORS = (
     "evaluate_answer_context.py",
     "evaluate_answer_policy.py",
     "evaluate_answer_quality.py",
+    "evaluate_bilibili_canaries.py",
     "evaluate_diagnostic_answer_contract.py",
     "evaluate_forward_test_results.py",
     "evaluate_feedback_lifecycle.py",
@@ -70,6 +73,7 @@ EVALUATION_INPUTS = (
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/answer_quality_cases.json",
+    "data/evaluation/bilibili_canary_cases.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/diagnostic_answer_continuation_cases.json",
@@ -264,6 +268,7 @@ def collect_evaluations(root=ROOT):
     understanding = evaluate_query_understanding.evaluate()
     diagnostic = evaluate_diagnostic_answer_contract.evaluate()
     answer_audit = evaluate_answer_audit.evaluate()
+    bilibili_positive = evaluate_bilibili_canaries.evaluate()
     feedback_lifecycle = evaluate_feedback_lifecycle.evaluate()
     retrieval = evaluate_retrieval.evaluate(12)
     metamorphic = evaluate_metamorphic_robustness.evaluate()
@@ -292,6 +297,7 @@ def collect_evaluations(root=ROOT):
                 "context_evidence_coverage",
                 "hard_negative_selected_violations",
                 "selection_truncated_cases",
+                "evaluation_fixture_isolation",
             )
         },
         "answer_quality": {
@@ -343,6 +349,20 @@ def collect_evaluations(root=ROOT):
                 "expected_violations",
                 "expected_violations_detected",
                 "violation_detection_rate",
+            )
+        },
+        "bilibili_positive_retrieval": {
+            key: bilibili_positive[key]
+            for key in (
+                "measurement_type",
+                "runtime_use_forbidden",
+                "source_type",
+                "case_count",
+                "passed",
+                "pass_rate",
+                "retrieval_hit_rate_at_k",
+                "claim_mapping_rate",
+                "failure_count",
             )
         },
         "feedback_lifecycle": {
@@ -436,7 +456,10 @@ def metric_value(evaluations, path):
 
 def compare_baseline(evaluations, baseline):
     comparisons = []
+    invalidated = set(baseline.get("invalidated_metrics", {}))
     for path, contract in baseline["metrics"].items():
+        if path in invalidated:
+            continue
         current = metric_value(evaluations, path)
         expected_source = contract.get("value_source")
         if expected_source is None:
@@ -511,7 +534,13 @@ def build_report(root=ROOT, evaluations=None):
             "suites": len(evaluations),
             "baseline_metrics": len(comparisons),
             "regressions": len(regressions),
+            "invalidated_baseline_metrics": len(
+                baseline.get("invalidated_metrics", {})
+            ),
         },
+        "invalidated_baseline_metrics": baseline.get(
+            "invalidated_metrics", {}
+        ),
         "evaluations": evaluations,
         "baseline_comparison": comparisons,
     }
@@ -543,6 +572,7 @@ def render_html(report):
         "query_understanding": "Query understanding",
         "diagnostic_answer_contract": "Diagnostic answer contract",
         "answer_audit": "Final-answer audit",
+        "bilibili_positive_retrieval": "Bilibili positive retrieval gold",
         "feedback_lifecycle": "Feedback lifecycle",
         "retrieval": "Evidence retrieval",
         "metamorphic_robustness": "Metamorphic robustness",
@@ -558,12 +588,16 @@ def render_html(report):
     }
     featured = {
         "answer_policy": ("accuracy", "Mode accuracy"),
-        "answer_context": ("selected_video_recall", "Selected-video recall"),
+        "answer_context": ("candidate_recall", "Leakage-free candidate recall"),
         "answer_quality": ("automatic_pass_rate", "Snapshot pass rate"),
         "query_equivalence": ("passed_families", "Families passed"),
         "query_understanding": ("accuracy", "Intent accuracy"),
         "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
         "answer_audit": ("violation_detection_rate", "Violation detection"),
+        "bilibili_positive_retrieval": (
+            "retrieval_hit_rate_at_k",
+            "Source-reviewed hit rate@3",
+        ),
         "feedback_lifecycle": ("contract_accuracy", "Feedback contracts"),
         "retrieval": (
             "stable_regression.mean_ndcg_at_k",
@@ -607,9 +641,10 @@ def render_html(report):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Deterministic evaluation report for Badminton Skills Coach.">
   <title>Evaluation Report | Badminton Skills Coach</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
     :root {{ color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --bg:#090d0c; --panel:#111816; --ink:#f3f6f4; --muted:#a7b0ac; --line:rgba(255,255,255,.12); --mint:#79dbc5; --yellow:#f3dc55; }}
-    * {{ box-sizing:border-box; }} body {{ margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }} a {{ color:var(--mint); }} .shell {{ width:min(1080px,calc(100% - 32px)); margin:auto; }}
+    * {{ box-sizing:border-box; }} body {{ margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }} a {{ color:var(--mint); }} a:focus-visible {{ outline:3px solid var(--yellow); outline-offset:3px; }} .shell {{ width:min(1080px,calc(100% - 32px)); margin:auto; }} .skip-link {{ position:fixed; left:8px; top:8px; transform:translateY(-180%); padding:8px 12px; color:#07110e; background:var(--yellow); z-index:5; }} .skip-link:focus {{ transform:none; }}
     header {{ border-bottom:1px solid var(--line); background:#0d1311; }} nav {{ min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:20px; }} nav a {{ text-decoration:none; font-weight:750; }}
     main {{ padding:64px 0 80px; }} .eyebrow {{ color:var(--mint); font:800 12px/1.2 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.12em; }} h1 {{ max-width:780px; margin:14px 0 18px; font-size:clamp(38px,7vw,72px); line-height:1.02; letter-spacing:0; }} .lede {{ max-width:760px; color:var(--muted); font-size:18px; }}
     .summary {{ display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 62px; border-block:1px solid var(--line); }} .summary div {{ padding:22px 18px; border-right:1px solid var(--line); }} .summary div:last-child {{ border:0; }} .summary strong,.summary span {{ display:block; }} .summary strong {{ font-size:28px; }} .summary span {{ color:var(--muted); font-size:13px; }}
@@ -619,11 +654,12 @@ def render_html(report):
   </style>
 </head>
 <body>
-  <header><nav class="shell"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/develop/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
-  <main class="shell">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header><nav class="shell" aria-label="Evaluation navigation"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
+  <main class="shell" id="main">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. Metrics known to have been produced by evaluation-to-runtime leakage are explicitly invalidated, never silently treated as current quality claims. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

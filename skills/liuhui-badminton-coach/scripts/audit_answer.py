@@ -3,10 +3,16 @@
 
 import argparse
 import hashlib
-import importlib.util
 import json
 import re
+import sys
 from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import answer_packet as answer_packet_runtime
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -14,7 +20,8 @@ DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
-CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 2
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 3
+LEGACY_BOUND_PACKET_SCHEMA_VERSION = 2
 
 
 def load_json(path):
@@ -187,20 +194,18 @@ def canonical_json_digest(payload):
     return hashlib.sha256(encoded).hexdigest()
 
 
-def load_answer_packet_runtime():
-    path = Path(__file__).with_name("answer_packet.py")
-    spec = importlib.util.spec_from_file_location(
-        "liuhui_answer_packet_audit_binding", path
-    )
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def validate_packet_binding(packet, context):
     schema_version = packet.get("schema_version")
     if schema_version == CURRENT_ANSWER_PACKET_SCHEMA_VERSION:
-        load_answer_packet_runtime().validate_answer_packet(packet, context)
+        answer_packet_runtime.validate_answer_packet(packet, context)
+        return
+    if schema_version == LEGACY_BOUND_PACKET_SCHEMA_VERSION:
+        if packet.get("packet_type") != "liuhui_badminton_answer_packet":
+            raise ValueError("invalid answer_packet type")
+        if packet.get("audit_context", {}).get("digest") != canonical_json_digest(
+            context
+        ):
+            raise ValueError("answer_packet audit context digest mismatch")
         return
     if schema_version != LEGACY_ANSWER_PACKET_SCHEMA_VERSION:
         raise ValueError("unsupported answer_packet schema_version")
@@ -379,6 +384,15 @@ def audit_answer(question, context, answer, rules=None):
         else:
             auditable_answer = answer.rstrip()[: -len(feedback_prompt)].rstrip()
     units = answer_units(auditable_answer)
+    # A resolved clarification is a faithful acknowledgement of user input,
+    # not a new technical assertion. Do not let overlapping words in that line
+    # satisfy a claim or exceed its confidence ceiling.
+    nontechnical_prefixes = ("你已补充：", "问题解释：", "证据边界：")
+    technical_units = [
+        unit
+        for unit in units
+        if not unit.lstrip().startswith(nontechnical_prefixes)
+    ]
     claims = context.get("claim_evidence_map", [])
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
     selected_by_label, selected_by_evidence_id = selected_video_maps(context)
@@ -437,7 +451,7 @@ def audit_answer(question, context, answer, rules=None):
                 details={"evidence_id": evidence_id},
             )
 
-    for unit in units:
+    for unit in technical_units:
         unit_labels = labels_in(unit, label_pattern)
         unit_claims = matched_claims(unit, claims, rules, marker_pattern)
         for claim in unit_claims:
@@ -535,7 +549,9 @@ def audit_answer(question, context, answer, rules=None):
 
     coverage = []
     for item in context.get("completeness_contract", {}).get("items", []):
-        covered_units = item_coverage(item, context, units, rules, marker_pattern)
+        covered_units = item_coverage(
+            item, context, technical_units, rules, marker_pattern
+        )
         covered = bool(covered_units)
         coverage.append(
             {

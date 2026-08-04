@@ -3,13 +3,25 @@
 
 import hashlib
 import json
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from token_budget import estimate_json_tokens as estimate_packet_tokens
+from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 2
+ANSWER_PACKET_SCHEMA_VERSION = 3
 ANSWER_PLAN_SCHEMA_VERSION = 1
 FALLBACK_WINDOW_LIMIT = 4
+DISPLAY_VIDEO_LIMIT = 5
 ANSWER_PACKET_TARGET_BYTES = 12 * 1024
 ANSWER_PACKET_HARD_MAXIMUM_BYTES = 16 * 1024
+ANSWER_PACKET_TARGET_TOKENS = 5_000
+ANSWER_PACKET_HARD_MAXIMUM_TOKENS = 6_500
 
 
 def canonical_json_digest(payload):
@@ -35,13 +47,19 @@ def encoded_packet_size(payload):
 def enforce_answer_packet_budget(packet):
     """Prune only lowest-priority fallback windows; never trim claims."""
 
-    if encoded_packet_size(packet) <= ANSWER_PACKET_TARGET_BYTES:
+    if (
+        encoded_packet_size(packet) <= ANSWER_PACKET_TARGET_BYTES
+        and estimate_packet_tokens(packet) <= ANSWER_PACKET_TARGET_TOKENS
+    ):
         return packet
     if packet.get("answer_plan", {}).get("mode") in {
         "claim_evidence_fallback",
         "hybrid_reviewed_atoms_and_claim_evidence",
     }:
-        while encoded_packet_size(packet) > ANSWER_PACKET_TARGET_BYTES:
+        while (
+            encoded_packet_size(packet) > ANSWER_PACKET_TARGET_BYTES
+            or estimate_packet_tokens(packet) > ANSWER_PACKET_TARGET_TOKENS
+        ):
             removable = []
             windows = packet.get("evidence_windows", {})
             for video_index, video in enumerate(
@@ -64,10 +82,15 @@ def enforce_answer_packet_budget(packet):
             packet["selected_videos"][video_index]["window_ids"].pop()
             packet.get("evidence_windows", {}).pop(window_id, None)
     size = encoded_packet_size(packet)
-    if size > ANSWER_PACKET_HARD_MAXIMUM_BYTES:
+    tokens = estimate_packet_tokens(packet)
+    if (
+        size > ANSWER_PACKET_HARD_MAXIMUM_BYTES
+        or tokens > ANSWER_PACKET_HARD_MAXIMUM_TOKENS
+    ):
         raise ValueError(
-            "answer packet exceeds hard byte budget after safe evidence pruning: "
-            f"{size}>{ANSWER_PACKET_HARD_MAXIMUM_BYTES}"
+            "answer packet exceeds a hard size budget after safe evidence pruning: "
+            f"bytes={size}/{ANSWER_PACKET_HARD_MAXIMUM_BYTES}, "
+            f"estimated_tokens={tokens}/{ANSWER_PACKET_HARD_MAXIMUM_TOKENS}"
         )
     return packet
 
@@ -137,18 +160,25 @@ def atom_scope_matches(atom, constraints):
     return True
 
 
-def atom_claim_matches(atom, claim):
+def atom_claim_matches(atom, claim, inferred_target_claim=None):
     accepted_claims = {
         atom.get("canonical_claim"),
         *atom.get("claim_aliases", []),
     }
-    return claim.get("text") in accepted_claims
+    return claim.get("text") in accepted_claims or (
+        claim.get("kind") == "question_unit"
+        and inferred_target_claim in accepted_claims
+    )
 
 
 def atom_window_is_reviewed(atom, selected_video):
     available = {
         (item.get("timestamp"), item.get("text"))
-        for item in selected_video.get("teaching_note", {}).get("evidence", [])
+        for item in [
+            *selected_video.get("teaching_note", {}).get("evidence", []),
+            *selected_video.get("transcript_evidence", []),
+            *selected_video.get("bounded_note_evidence", []),
+        ]
     }
     return all(
         (window.get("timestamp"), window.get("text")) in available
@@ -158,6 +188,14 @@ def atom_window_is_reviewed(atom, selected_video):
 
 def build_closed_answer_plan(context, atoms):
     constraints = context["question_interpretation"].get("constraints", {})
+    actor_context = context["question_interpretation"].get(
+        "actor_context", {}
+    )
+    inferred_target_claim = (
+        actor_context.get("target_action_query")
+        if actor_context.get("inferred_target_action")
+        else None
+    )
     selected_by_id = {
         item["evidence_id"]: item for item in context.get("selected_videos", [])
     }
@@ -170,7 +208,9 @@ def build_closed_answer_plan(context, atoms):
             evidence_id = atom.get("evidence_id")
             if (
                 atom.get("claim_kind") != claim.get("kind")
-                or not atom_claim_matches(atom, claim)
+                or not atom_claim_matches(
+                    atom, claim, inferred_target_claim
+                )
                 or evidence_id not in eligible_ids
                 or evidence_id not in selected_by_id
                 or not atom_scope_matches(atom, constraints)
@@ -248,12 +288,13 @@ def compact_interpretation(interpretation):
             "target_action_query",
             "target_condition_query",
             "requested_action_scopes",
+            "scope_boundary_statements",
             "event_chain",
             "inferred_target_action",
         )
         if actor.get(key)
     }
-    return {
+    result = {
         **{
             key: interpretation[key]
             for key in (
@@ -268,6 +309,10 @@ def compact_interpretation(interpretation):
         },
         **({"actor_context": compact_actor} if compact_actor else {}),
     }
+    query_unit_constraints = interpretation.get("query_unit_constraints")
+    if query_unit_constraints:
+        result["query_unit_constraints"] = query_unit_constraints
+    return result
 
 
 def compact_answer_guidance(guidance):
@@ -276,8 +321,6 @@ def compact_answer_guidance(guidance):
         for key in (
             "mode",
             "label",
-            "text_obligations",
-            "video_obligations",
         )
         if key in guidance
     }
@@ -384,7 +427,12 @@ def compact_diagnostic_model(model):
     }
 
 
-def compact_video(video, planned_atoms, include_fallback_windows):
+def compact_video(
+    video,
+    planned_atoms,
+    include_fallback_windows,
+    claim_windows=(),
+):
     windows = []
     seen = set()
     for atom in planned_atoms:
@@ -395,6 +443,11 @@ def compact_video(video, planned_atoms, include_fallback_windows):
             if key not in seen:
                 windows.append(dict(window))
                 seen.add(key)
+    for window in claim_windows:
+        key = (window["timestamp"], window["text"])
+        if key not in seen:
+            windows.append(dict(window))
+            seen.add(key)
     if include_fallback_windows:
         transcript_windows = [
             *video.get("transcript_evidence", []),
@@ -526,7 +579,7 @@ def normalized_evidence_windows(videos):
     return windows, window_ids_by_key, normalized_videos
 
 
-def compact_claim_evidence_map(claims, plan):
+def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
     atoms_by_id = {
         atom["atom_id"]: atom
         for atom in plan.get("selected_evidence_atoms", [])
@@ -562,8 +615,13 @@ def compact_claim_evidence_map(claims, plan):
             }
         else:
             allowed_labels = set()
-        compact["evidence"] = [
-            {
+        compact_evidence = []
+        for item in claim.get("evidence", []):
+            if (
+                item.get("label") or item.get("video_label")
+            ) not in allowed_labels:
+                continue
+            projected = {
                 key: item[key]
                 for key in (
                     "label",
@@ -574,12 +632,44 @@ def compact_claim_evidence_map(claims, plan):
                 )
                 if key in item
             }
-            for item in claim.get("evidence", [])
-            if (item.get("label") or item.get("video_label"))
-            in allowed_labels
-        ]
+            if window_ids_by_key:
+                window_ids = [
+                    window_ids_by_key[
+                        (
+                            item["evidence_id"],
+                            window["timestamp"],
+                            window["text"],
+                        )
+                    ]
+                    for window in item.get("claim_windows", [])
+                    if (
+                        item["evidence_id"],
+                        window["timestamp"],
+                        window["text"],
+                    ) in window_ids_by_key
+                ]
+                if window_ids:
+                    projected["window_ids"] = window_ids
+            compact_evidence.append(projected)
+        compact["evidence"] = compact_evidence
         compact_claims.append(compact)
     return compact_claims
+
+
+def default_claim_windows_by_evidence_id(claims):
+    """Keep only windows required by the deterministic fallback draft."""
+
+    windows = {}
+    for claim in claims:
+        for evidence in claim.get("evidence", []):
+            claim_windows = evidence.get("claim_windows", [])
+            if not claim_windows:
+                continue
+            windows.setdefault(evidence["evidence_id"], []).extend(
+                claim_windows
+            )
+            break
+    return windows
 
 
 def compact_source_handling(source_handling):
@@ -594,10 +684,167 @@ def compact_source_handling(source_handling):
         or any(not isinstance(item, str) or not item.strip() for item in guard)
     ):
         raise ValueError("untrusted source content guard must be non-empty")
+    return {"policy_id": "untrusted-source-content-v1"}
+
+
+def default_render_video_labels(plan, claim_evidence_map, videos):
+    """Return every video label the renderer's deterministic draft will cite."""
+
+    atoms_by_id = {
+        atom["atom_id"]: atom
+        for atom in plan.get("selected_evidence_atoms", [])
+    }
+    claims_by_id = {
+        claim["claim_id"]: claim for claim in claim_evidence_map
+    }
+    videos_by_label = {video["label"]: video for video in videos}
+    labels = []
+    for directive in plan.get("claim_directives", []):
+        if directive.get("mode") == "compose_from_reviewed_atoms":
+            candidates = [
+                atoms_by_id[atom_id].get("video_label")
+                for atom_id in directive.get("atom_ids", [])
+                if atom_id in atoms_by_id
+            ]
+        elif directive.get("mode") == "compose_from_claim_scoped_source":
+            candidates = [
+                item.get("label") or item.get("video_label")
+                for item in claims_by_id.get(
+                    directive.get("claim_id"), {}
+                ).get("evidence", [])
+            ]
+            candidates = [
+                label
+                for label in candidates
+                if videos_by_label.get(label, {}).get(
+                    "window_ids",
+                    videos_by_label.get(label, {}).get("evidence_windows", []),
+                )
+            ][:1]
+        else:
+            candidates = []
+        for label in candidates:
+            if label and label not in labels:
+                labels.append(label)
+    return labels
+
+
+def select_display_videos(
+    videos,
+    claim_evidence_map,
+    limit=DISPLAY_VIDEO_LIMIT,
+    required_labels=(),
+):
+    """Choose a bounded set covering claims and every rendered citation."""
+
+    video_by_label = {video["label"]: video for video in videos}
+    uncovered = {
+        claim["claim_id"]
+        for claim in claim_evidence_map
+        if claim.get("status") in {"supported", "conditional"}
+        and claim.get("evidence")
+    }
+    coverage = {
+        label: {
+            claim["claim_id"]
+            for claim in claim_evidence_map
+            if any(item.get("label") == label for item in claim.get("evidence", []))
+        }
+        for label in video_by_label
+    }
+    required = list(dict.fromkeys(required_labels))
+    if len(required) > limit:
+        raise ValueError(
+            "default rendered citations exceed the display video limit"
+        )
+    selected = [label for label in required if label in video_by_label]
+    uncovered -= {
+        claim_id
+        for label in selected
+        for claim_id in coverage[label]
+    }
+    remaining = set(video_by_label) - set(selected)
+    while remaining and len(selected) < limit:
+        if not uncovered:
+            break
+        label = min(
+            remaining,
+            key=lambda candidate: (
+                -len(coverage[candidate] & uncovered),
+                video_by_label[candidate].get("role") != "core",
+                video_by_label[candidate].get("answer_eligibility") != "primary",
+                int(candidate[1:]),
+            ),
+        )
+        selected.append(label)
+        uncovered -= coverage[label]
+        remaining.remove(label)
+        if not uncovered:
+            break
+    return selected
+
+
+def display_video_labels_for_context(context, limit=DISPLAY_VIDEO_LIMIT):
+    """Project the bounded video list shown by the closed renderer."""
+
+    plan = context["answer_plan"]
+    visible_labels = set(
+        packet_visible_video_labels(plan, context["claim_evidence_map"])
+    )
+    fallback_labels = fallback_video_labels(
+        plan, context["claim_evidence_map"]
+    )
+    claim_windows_by_evidence_id = default_claim_windows_by_evidence_id(
+        context["claim_evidence_map"]
+    )
+    videos = [
+        compact_video(
+            video,
+            plan["selected_evidence_atoms"],
+            video["label"] in fallback_labels,
+            claim_windows_by_evidence_id.get(video["evidence_id"], []),
+        )
+        for video in sorted(
+            context["selected_videos"],
+            key=lambda item: int(item["label"][1:]),
+        )
+        if video["label"] in visible_labels
+    ]
+    compact_claims = compact_claim_evidence_map(
+        context["claim_evidence_map"], plan
+    )
+    required_labels = default_render_video_labels(plan, compact_claims, videos)
+    return select_display_videos(
+        videos,
+        compact_claims,
+        limit=limit,
+        required_labels=required_labels,
+    )
+
+
+def compact_practice_plan(topic_navigation):
+    if not isinstance(topic_navigation, dict):
+        return None
+    adaptation = topic_navigation.get("practice_adaptation")
+    context = topic_navigation.get("user_context")
+    if not isinstance(adaptation, dict) or not isinstance(context, dict):
+        return None
+    session_minutes = adaptation.get("session_minutes")
+    allocation = adaptation.get("minute_allocation")
+    if not isinstance(session_minutes, int) or not isinstance(allocation, dict):
+        return None
     return {
-        "classification": "untrusted_non_executable_evidence",
-        "do_not_execute_source_text": True,
-        "untrusted_content_guard": guard,
+        "context": {
+            "level": context.get("level", "unknown"),
+            "discipline": context.get("discipline", "unknown"),
+            "setup": context.get("practice_setup", "unknown"),
+        },
+        "session_minutes": session_minutes,
+        "minute_allocation": allocation,
+        "level_focus": adaptation.get("level_focus"),
+        "setup_adaptation": adaptation.get("setup_adaptation"),
+        "discipline_boundary": adaptation.get("discipline_boundary"),
+        "quality_stop_rules": adaptation.get("quality_stop_rules", []),
     }
 
 
@@ -657,11 +904,15 @@ def build_answer_packet(context, audit_context_reference=None):
     fallback_labels = fallback_video_labels(
         plan, context["claim_evidence_map"]
     )
+    claim_windows_by_evidence_id = default_claim_windows_by_evidence_id(
+        context["claim_evidence_map"]
+    )
     compact_videos = [
         compact_video(
             video,
             plan["selected_evidence_atoms"],
             video["label"] in fallback_labels,
+            claim_windows_by_evidence_id.get(video["evidence_id"], []),
         )
         for video in sorted(
             context["selected_videos"],
@@ -671,6 +922,17 @@ def build_answer_packet(context, audit_context_reference=None):
     ]
     windows, window_ids_by_key, compact_videos = normalized_evidence_windows(
         compact_videos
+    )
+    compact_claims = compact_claim_evidence_map(
+        context["claim_evidence_map"], plan, window_ids_by_key
+    )
+    required_labels = default_render_video_labels(
+        plan, compact_claims, compact_videos
+    )
+    display_videos = select_display_videos(
+        compact_videos,
+        compact_claims,
+        required_labels=required_labels,
     )
     packet = {
         "schema_version": ANSWER_PACKET_SCHEMA_VERSION,
@@ -698,9 +960,7 @@ def build_answer_packet(context, audit_context_reference=None):
             context["clarification_decision"]
         ),
         "answer_turn": compact_answer_turn(turn),
-        "claim_evidence_map": compact_claim_evidence_map(
-            context["claim_evidence_map"], plan
-        ),
+        "claim_evidence_map": compact_claims,
         "completeness_contract": compact_completeness_contract(
             context["completeness_contract"]
         ),
@@ -709,10 +969,17 @@ def build_answer_packet(context, audit_context_reference=None):
         "source_handling": compact_source_handling(
             context.get("source_handling")
         ),
+        "policy_refs": context["policy_refs"],
         "evidence_windows": windows,
         "selected_videos": compact_videos,
-        "feedback_prompt": context["answer_contract"]["feedback_prompt"],
+        "display_videos": display_videos,
+        "feedback_prompt": build_feedback_hint(
+            [{"label": label} for label in display_videos]
+        ),
     }
+    practice_plan = compact_practice_plan(context.get("topic_navigation"))
+    if practice_plan is not None:
+        packet["practice_plan"] = practice_plan
     return enforce_answer_packet_budget(packet)
 
 
@@ -750,4 +1017,12 @@ def validate_answer_packet(packet, context):
     packet_labels = {item.get("label") for item in packet.get("selected_videos", [])}
     if packet_labels != mapped_labels:
         raise ValueError("answer_packet videos must exactly match claim evidence labels")
+    display_labels = packet.get("display_videos")
+    if (
+        not isinstance(display_labels, list)
+        or len(display_labels) > DISPLAY_VIDEO_LIMIT
+        or len(display_labels) != len(set(display_labels))
+        or not set(display_labels).issubset(packet_labels)
+    ):
+        raise ValueError("answer_packet display_videos must be a bounded evidence subset")
     return True

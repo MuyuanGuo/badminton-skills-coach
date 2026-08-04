@@ -2,6 +2,17 @@
 
 Read this file only for `claim_evidence_fallback` composition or retrieval diagnosis. In `reviewed_atoms_closed` mode, the packet's reviewed atoms already define the allowed claims and conditions.
 
+For retrieval diagnosis, inspect the deterministic plan without turning
+rejected results into answer evidence:
+
+```bash
+python3 scripts/search_knowledge.py "用户问题" --plan-only
+```
+
+Use returned `retrieval_guidance` and `--include-rejected` context only to
+explain a miss or scope rejection. They are audit data, not an alternate
+evidence pool.
+
 ## Named Stroke Variants
 
 Preserve active/passive, singles/doubles, forehand/backhand, level, and court-position distinctions. Treat `挑球`, `过渡球`, `挡杀/接杀`, named smash variants (`普通杀球`, `普通反手杀球`, `反手转圈杀`, `反手跳杀`, `点杀`, `跳杀`, `重杀`, `快杀`, `遁地炮`, `定杀`, `轻杀`, `劈杀`, `霸王杀`), and named drop variants (`普通吊球`, `劈吊`, `滑板`) as distinct actions or variants. When the user names one, require direct support instead of an incidental mention, broad same-side source, or generic tactics.

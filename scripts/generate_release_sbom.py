@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_URL = "https://github.com/MuyuanGuo/badminton-skills-coach"
 VERSION_PATTERN = re.compile(r"v?\d+\.\d+\.\d+(?:-dev\.\d+)?")
 LOCK_PATH = ROOT / "requirements-transcription.txt"
-PIN_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)==([A-Za-z0-9_.+!-]+)")
+PIN_PATTERN = re.compile(r"([A-Za-z0-9_.-]+)==([A-Za-z0-9_.+!-]+)(?:\s+\\)?")
 
 
 def sha256_bytes(content):
@@ -60,7 +60,11 @@ def locked_optional_dependencies(path=LOCK_PATH):
     dependencies = []
     for line in Path(path).read_text(encoding="utf-8").splitlines():
         stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
+        if (
+            not stripped
+            or stripped.startswith("#")
+            or stripped.startswith("--hash=sha256:")
+        ):
             continue
         match = PIN_PATTERN.fullmatch(stripped)
         if not match:
@@ -117,6 +121,10 @@ def build_sbom(archive_path, version, source_commit=None):
     properties = [
         {"name": "source.repository", "value": REPOSITORY_URL},
         {"name": "archive.sha256", "value": archive_digest},
+        {
+            "name": "sbom.scope",
+            "value": "runtime release files; optional maintainer lock components are non-runtime",
+        },
     ]
     if source_commit:
         properties.append({"name": "source.commit", "value": source_commit})

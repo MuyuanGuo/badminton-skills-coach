@@ -1,5 +1,5 @@
 {
-  "version": 41,
+  "version": 47,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -20,8 +20,8 @@
     }
   },
   "default_max_selected_videos": 16,
-  "retrieval_query_budget": 24,
-  "retrieval_query_hard_limit": 48,
+  "retrieval_query_budget": 8,
+  "retrieval_query_hard_limit": 12,
   "max_exact_videos": 12,
   "max_supporting_videos": 4,
   "automatic_expansion_selection_limit": 3,
@@ -58,7 +58,7 @@
     ["接发", "发球"]
   ],
   "query_actor_markers": {
-    "opponent": ["对手", "对方", "对面", "人家", "其他人", "别人", "陪练给我", "陪练向我", "发球机给我", "发球机向我", "陪练", "发球机", "他", "她"],
+    "opponent": ["对手", "对方", "对面", "人家", "其他人", "别人", "陪练给我", "陪练向我", "发球机给我", "发球机向我", "他", "她"],
     "partner": ["搭档", "队友", "同伴", "搭子"],
     "player": [
       "我应该",
@@ -81,7 +81,9 @@
     ]
   },
   "query_actor_marker_suppressions": {
-    "他": ["其他", "吉他"]
+    "他": ["其他", "吉他"],
+    "搭档": ["帮搭档", "替搭档", "保护搭档"],
+    "队友": ["帮队友", "替队友", "保护队友"]
   },
   "query_actor_pronoun_markers": ["他", "她"],
   "query_actor_object_pronoun_prefixes": ["压", "打", "推", "攻", "针对", "盯", "追"],
@@ -89,6 +91,8 @@
   "query_actor_object_pronoun_restore_prefixes": ["帮", "替"],
   "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
   "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
+  "cross_variant_transfer_terms": ["互相代替", "互相替代", "互借", "照搬", "直接套用", "能代替", "可代替", "来证明"],
+  "cross_evidence_transfer_axes": ["technique_variant", "stroke_side", "pressure_state", "tactical_phase"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
   "opponent_response_implications": [
     {
@@ -156,6 +160,42 @@
     }
   ],
   "multi_actor_sequence_implications": [
+    {
+      "name": "front_player_partner_both_advance_rearcourt_gap",
+      "events": [
+        {"actor": "player", "role": "coverage_condition", "terms": ["我在前场封网", "前场我封网", "前场封网"]},
+        {"actor": "partner", "role": "prior_action", "terms": ["后场杀球后也往前冲", "后场杀球", "杀球后也往前冲"]},
+        {"actor": "opponent", "role": "response", "terms": ["挑直线", "挑球"]},
+        {"actor": "player", "role": "target_action", "terms": ["主要该调整我", "该调整我", "调整我还是搭档", "我还是搭档的站位"]}
+      ],
+      "canonical_action_query": "双打轮转补位责任",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位 后置站位", "双打 直线空档 搭档中场", "双打 前封后攻 轮转"],
+      "retain_prior_player_constraints": false,
+      "reason": "前场球员、后场搭档和对手挑直线构成同一轮转责任问题；必须保留双方站位比较，不得只回答前场球员的封网动作。"
+    },
+    {
+      "name": "drop_recover_forward_start_sequence",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["正手吊直线", "吊直线", "吊球"]},
+        {"actor": "player", "role": "recovery", "terms": ["回中"]},
+        {"actor": "opponent", "role": "response", "terms": ["放网", "放短"]},
+        {"actor": "player", "role": "target_action", "terms": ["再启动接", "上网启动", "启动接"]}
+      ],
+      "canonical_action_query": "吊球后回中与向前启动衔接",
+      "derived_constraints": {
+        "discipline": ["singles"],
+        "stroke_side": ["forehand"],
+        "shot_family": ["drop"],
+        "court_zone": ["rearcourt"],
+        "shot_direction": ["straight"]
+      },
+      "requested_action_scopes": ["drop_recover_forward_sequence"],
+      "search_terms": ["单打 吊球 回中 上网启动", "吊球后 回中 向前启动"],
+      "retain_prior_player_constraints": false,
+      "reason": "吊球、回中、对手放网和再次向前启动是同一连续动作链；没有整链证据时不得用只覆盖吊球的来源判断应先改哪一段。"
+    },
     {
       "name": "lift_partner_forecourt_opponent_push_behind_rotation",
       "events": [
@@ -310,7 +350,8 @@
       "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
       "source_terms": ["杀上网"],
       "source_suppressions": ["不让你做杀上网", "不要做杀上网", "不是杀上网", "对手针对杀上网回远网"],
-      "source_override_terms": []
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受‘杀球—上网’完整序列的直接或分段证据；反手被动高远、动态低架、泛杀球和泛上网都不能单独证明本题。"
     },
     {
       "name": "forward_reception_movement",
@@ -319,7 +360,8 @@
       "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
       "source_terms": ["正手往前的高速实战步法", "正手网前步法", "中场上网搓球", "职业运动员上网因为身体能力强"],
       "source_suppressions": ["杀上网", "杀球之后", "快速突击", "高质量防守", "冲劲儿过猛"],
-      "source_override_terms": []
+      "source_override_terms": [],
+      "answer_boundary_statement": "现有直接来源主要覆盖正手前场和不同距离的向前移动；杀上网是另一种特定衔接，反手被动高远也不能证明本题。"
     },
     {
       "name": "positioning",
@@ -328,16 +370,28 @@
       "search_terms": ["站位"],
       "source_terms": ["站位", "站哪里", "站在哪"],
       "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位", "对手前后站位", "对方前后站位", "他前后站位", "对手平行站位", "对方平行站位", "他平行站位"],
-      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"]
+      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"],
+      "answer_boundary_statement": "本题只接受目标球员自身站位的直接证据；对手或搭档站位只能作为条件，不能替代目标球员的站位依据。"
     },
     {
       "name": "team_coverage_rotation",
-      "query_terms": ["补位", "补", "补哪里", "补哪边", "轮转", "协防", "帮", "保护", "保护队友", "保护搭档", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"],
+      "query_terms": ["补位", "补哪里", "补哪边", "站哪里补", "站哪边补", "补他", "补她", "补空档", "帮搭档", "帮队友", "替搭档", "替队友", "轮转", "协防", "保护", "保护队友", "保护搭档", "守哪里", "守哪边", "守前面", "守在前面", "留前面", "留在前面", "留前场", "顶在前面", "一起退", "往后退", "回撤", "退回去"],
       "query_context_terms": ["双打", "搭档", "队友", "同伴", "搭子", "我们"],
       "search_terms": ["双打 轮转 补位"],
       "source_terms": ["补位", "轮转", "协防", "保护队友", "保护搭档", "保护好队友", "搭档处理", "队友的位置"],
       "source_suppressions": [],
-      "source_override_terms": []
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受双打补位、轮转或协防责任的直接证据；个人泛步法和单打站位不能证明本方两人的责任分配。"
+    },
+    {
+      "name": "drop_recover_forward_sequence",
+      "query_terms": ["吊球后回中与向前启动衔接"],
+      "query_context_terms": ["单打", "吊球", "回中", "启动"],
+      "search_terms": ["单打 吊球 回中 上网启动"],
+      "source_terms": ["吊球后回中再向前启动", "吊球回中后再上网"],
+      "source_suppressions": [],
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题必须按‘吊球—回中—对手回网前—向前启动’顺序覆盖完整衔接；只讲吊球、回中或泛上网的来源不能单独证明整条链。"
     }
   ],
   "constraint_axes": [
@@ -439,7 +493,7 @@
         "forecourt": ["赶不到网前", "赶到网前", "跟不上网前", "跟到网前"],
         "rearcourt": ["发后场", "偷后场", "发高远"]
       },
-      "query_target_prefixes": ["打到", "吊到", "吊", "推到", "推", "挑到", "挑", "放到", "压到", "送到", "拨到", "落到", "落在", "发", "偷"]
+      "query_target_prefixes": ["打到", "吊到", "吊", "推到", "推", "挑到", "挑", "放到", "压到", "送到", "拨到", "落到", "落在", "只到", "只能到", "发", "偷"]
     },
     {
       "name": "technique_variant",

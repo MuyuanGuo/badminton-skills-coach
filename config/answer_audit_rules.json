@@ -76,7 +76,7 @@
     "not_full_question_proof",
     "not_unrestricted"
   ],
-  "claim_marker_pattern": "\\[(?P<claim_id>[QHMB][1-9]\\d*)\\]",
+  "claim_marker_pattern": "\\[(?P<claim_id>[QHMB][1-9]\\d*(?:\\.[A-Za-z0-9_-]+)?)\\]",
   "video_label_pattern": "(?<![A-Za-z0-9])V(?P<number>[1-9]\\d*)(?![A-Za-z0-9])",
   "evidence_id_pattern": "(?<![A-Za-z0-9:])(?:\\d{18,20}|bilibili:BV[0-9A-Za-z]{10})(?![A-Za-z0-9])",
   "coverage_stop_phrases": [

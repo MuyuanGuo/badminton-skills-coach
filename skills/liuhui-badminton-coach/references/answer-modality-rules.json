@@ -1,5 +1,5 @@
 {
-  "version": "answer-modality-v3",
+  "version": "answer-modality-v4",
   "description": "根据用户问题判断文字解释与视频演示的合理分工。三种模式都必须给出文字答案和相关视频，只调整两者承担的内容。",
   "default_mode": "balanced",
   "decision": {
@@ -150,6 +150,9 @@
     }
   },
   "workflow": {
+    "context_only_unit_patterns": [
+      "^(?:我是|我属于|我的水平(?:是|大概是)?|目前是).*(?:选手|球友|爱好者|水平)$"
+    ],
     "boundary_signals": [
       "疼",
       "痛",

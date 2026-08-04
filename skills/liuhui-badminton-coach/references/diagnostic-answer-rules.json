@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 8,
   "description": "Deterministic rules for separating observed symptoms, user hypotheses, source-supported diagnostic branches, clarification needs, and claim-level evidence.",
   "hypothesis_patterns": [
     {
@@ -8,9 +8,14 @@
     },
     {
       "type": "alternative_cause_question",
-      "pattern": "是(?P<left>[^，,。？?！!]+?)还是(?P<right>[^，,。？?！!]+?)(?:问题|的原因|导致的)?(?:[？?！!]|$)"
+      "pattern": "是(?P<left>[^。？?！!]+?)(?:，|,)?还是(?P<right>[^，,。？?！!]+?)(?:问题|的原因|导致的)?(?:[？?！!]|$)"
+    },
+    {
+      "type": "enumerated_cause_request",
+      "pattern": "(?:区分|排查|判断|检查)(?P<hypothesis_list>[^。？?！!]+?)(?:问题|原因)(?=[，,。？?！!]|$)"
     }
   ],
+  "video_unavailable_terms": ["没有连续动作视频", "没有动作视频", "没有视频", "暂时没有视频", "无法提供视频", "不能提供视频", "只能按文字排查"],
   "symptom_terms": [
     "来不及",
     "到得太晚",
@@ -19,6 +24,8 @@
     "出界",
     "下网",
     "不到位",
+    "只到中场",
+    "只能到中场",
     "打不远",
     "接不到",
     "跟不上",
@@ -36,7 +43,7 @@
       "id": "racket_face_control",
       "label": "拍面方向与控制",
       "query_terms": ["拍面"],
-      "evidence_terms": ["拍面对准", "拍面向上", "拍面", "转一点"],
+      "evidence_terms": ["拍面对准", "拍面向上", "拍面摊开向上", "拍面", "转一点"],
       "observation_question": "请回看触球瞬间：拍面是明显朝上，还是接近竖直？球刚离开拍面时，是陡着向上，还是比较平地向前？",
       "observation_purpose": "用于判断球是否在离拍时就带有过大的向上角度，从而决定是否优先检查拍面角度；不能单凭这项观察确认唯一原因。",
       "answer_cues": ["明显朝上", "接近竖直", "陡着向上", "平地向前", "比较平"]
@@ -51,8 +58,8 @@
     },
     {
       "id": "footwork_speed",
-      "label": "步法移动速度",
-      "query_terms": ["步法太慢", "脚下太慢", "移动太慢", "跑得慢"],
+      "label": "移动与到位",
+      "query_terms": ["步法太慢", "脚下太慢", "移动太慢", "跑得慢", "到位"],
       "evidence_terms": ["步法太慢", "脚下太慢", "移动速度慢", "跑得慢"],
       "observation_question": "你是第一步没启动，还是已经启动但最后一步仍到不了位？",
       "answer_cues": ["第一步", "没启动", "最后一步", "到不了位"]
@@ -68,7 +75,7 @@
     {
       "id": "movement_transition",
       "label": "上一拍后的重心与衔接路线",
-      "query_terms": ["杀上网", "杀球后", "上网", "回位", "脱节"],
+      "query_terms": ["杀上网", "杀球后", "回位", "脱节"],
       "evidence_terms": ["从后向前的惯性", "杀完球之后人直接向前走", "杀完上网", "顺势前跟", "交叉步", "脚下脱节", "下一拍更好"],
       "observation_question": "杀球落地后重心是在向前、停在原地，还是先向后或向侧面回收？",
       "answer_cues": ["向前", "原地", "向后", "侧面", "回收"]
@@ -86,6 +93,12 @@
       "label": "上一拍球路与留给衔接的时间",
       "query_terms": ["杀上网", "杀球后", "来不及上网", "脱节", "杀太重", "第一拍杀太重", "重杀"],
       "evidence_terms": ["位置不好时全力杀球", "球过去的快回来也快", "软压打跟进", "轻杀打先机", "斜线或者中路的杀上网"],
+      "hypothesis_evidence_term_groups": [
+        {
+          "query_terms": ["杀太重", "第一拍杀太重", "重杀"],
+          "evidence_terms": ["位置不好时全力杀球", "球过去的快回来也快", "软压打跟进", "轻杀打先机"]
+        }
+      ],
       "observation_question": "出现问题时上一拍是重杀、轻杀还是软压，落点走直线、中路还是斜线？",
       "answer_cues": ["重杀", "轻杀", "软压", "直线", "中路", "斜线"]
     },
@@ -105,6 +118,15 @@
       "observation_question": "请看整段飞行弧线：球的最高点是在本方场区、球网上方，还是对方场区？",
       "observation_purpose": "用于判断弧线最高点是否过晚、过网余量是否过大，从而决定是否优先检查出球弧线；不能单凭这项观察确认唯一原因。",
       "answer_cues": ["本方场区", "球网上方", "对方场区", "最高点"]
+    },
+    {
+      "id": "grip_tension",
+      "label": "握拍松紧与发力传递",
+      "query_terms": ["握得太紧", "握拍太紧", "抓得太紧", "太紧"],
+      "evidence_terms": ["握拍太紧", "握得太紧", "抓得太紧", "放松握拍", "放松发力", "手指发力"],
+      "observation_question": "准备时手指是否持续攥紧拍柄，还是只在触球前后短暂收紧？",
+      "observation_purpose": "用于区分持续紧握与触球瞬间收紧；不能单凭文字确认它是唯一原因。",
+      "answer_cues": ["持续攥紧", "短暂收紧", "放松", "触球"]
     }
   ],
   "material_branch_axes": {

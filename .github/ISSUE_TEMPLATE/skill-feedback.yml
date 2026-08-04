@@ -94,7 +94,7 @@ body:
     attributes:
       label: 版本信息
       description: 例如 v2.0.0 或提交哈希；不知道可填写 unknown。
-      placeholder: 2.0.0
+      placeholder: 2.1.0-dev.1
     validations:
       required: true
 

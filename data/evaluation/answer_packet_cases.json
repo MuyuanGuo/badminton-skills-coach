@@ -1,11 +1,15 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "measurement_scope": "answer_packet_projection_size_and_construction",
   "query_source_registry": "data/evaluation/answer_quality_cases.json",
   "minimum_case_count": 20,
   "maximum_skill_instruction_bytes": 12000,
+  "maximum_skill_instruction_tokens": 3600,
   "maximum_answer_packet_bytes": 16384,
   "maximum_p95_answer_packet_bytes": 12288,
+  "maximum_answer_packet_tokens": 6500,
+  "maximum_p95_answer_packet_tokens": 5000,
+  "token_estimator": "codex-conservative-unicode-v1",
   "minimum_average_byte_reduction": 0.5,
   "minimum_case_byte_reduction": 0.45,
   "cases": [

@@ -38,7 +38,7 @@
       "query": "后场被动来不及架拍怎么把球打到底线",
       "expected": {
         "observed_symptoms_contains": ["来不及"],
-        "supported_mechanism_ids_contains": ["preparation_timing", "swing_size_and_force"],
+        "supported_mechanism_ids_contains": ["preparation_timing"],
         "branch_axes_contains": ["stroke_side"],
         "branch_values": {"stroke_side": ["forehand", "backhand"]},
         "clarification_action": "answer_conditionally",

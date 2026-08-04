@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "models": {
+    "small": {
+      "repository": "Systran/faster-whisper-small",
+      "revision": "536b0662742c02347bc0e980a01041f333bce120"
+    },
+    "medium": {
+      "repository": "Systran/faster-whisper-medium",
+      "revision": "08e178d48790749d25932bbc082711ddcfdfbc4f"
+    }
+  }
+}

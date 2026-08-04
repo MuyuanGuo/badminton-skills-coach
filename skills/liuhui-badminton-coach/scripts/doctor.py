@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import shutil
+import sqlite3
 import subprocess
 import sys
 import urllib.error
@@ -48,20 +49,25 @@ REQUIRED_SKILL_FILES = [
     "scripts/feedback_ranking.py",
     "scripts/prepare_answer_context.py",
     "scripts/query_planning.py",
+    "scripts/render_answer.py",
     "scripts/retrieval_projection.py",
     "scripts/retrieval_ranking.py",
+    "scripts/runtime_store.py",
     "scripts/search_knowledge.py",
+    "scripts/token_budget.py",
     "scripts/navigate_topics.py",
     "scripts/feedback.py",
-    "references/knowledge-base.json",
-    "references/retrieval-index.json",
+    "references/runtime-store.sqlite3",
     "references/retrieval-rules.json",
     "references/answer-modality-rules.json",
     "references/answer-selection-rules.json",
     "references/answer-audit-rules.json",
     "references/answer-workflow.md",
+    "references/continuation.md",
+    "references/diagnosis.md",
     "references/build-manifest.json",
     "references/practice-plan-rules.json",
+    "references/practice.md",
     "references/feedback-rules.json",
     "references/feedback-signals.json",
     "references/topic-map.json",
@@ -439,59 +445,74 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
         )
     )
 
-    knowledge = payloads.get("references/knowledge-base.json", {})
-    retrieval = payloads.get("references/retrieval-index.json", {})
+    runtime_path = skill_root / "references" / "runtime-store.sqlite3"
+    runtime_errors = []
+    runtime_detail = "runtime store unavailable"
     try:
-        ready_ids = {
-            str(video["video_id"])
-            for video in knowledge["videos"]
-            if video["processing_status"] == "ready"
-        }
-        retrieval_ids = {str(video["video_id"]) for video in retrieval["videos"]}
-        aligned = bool(ready_ids) and ready_ids == retrieval_ids
-        detail = f"ready={len(ready_ids)}, retrieval={len(retrieval_ids)}"
-    except (KeyError, TypeError):
-        aligned = False
-        detail = "knowledge or retrieval schema is invalid"
+        uri = f"file:{runtime_path.resolve().as_posix()}?mode=ro&immutable=1"
+        connection = sqlite3.connect(uri, uri=True)
+        try:
+            if connection.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+                runtime_errors.append("quick_check")
+            if connection.execute("PRAGMA application_id").fetchone()[0] != 0x4C484243:
+                runtime_errors.append("application_id")
+            if connection.execute("PRAGMA user_version").fetchone()[0] != 2:
+                runtime_errors.append("schema_version")
+            metadata = {
+                key: json.loads(value)
+                for key, value in connection.execute(
+                    "SELECT key, value FROM store_metadata"
+                )
+            }
+            table_counts = {
+                table: int(
+                    connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+                )
+                for table in (
+                    "knowledge_videos",
+                    "transcript_payloads",
+                    "retrieval_videos",
+                    "chunks",
+                )
+            }
+            expected_counts = {
+                "knowledge_videos": metadata.get("knowledge_video_count"),
+                "transcript_payloads": metadata.get(
+                    "transcript_payload_count"
+                ),
+                "retrieval_videos": metadata.get("retrieval_video_count"),
+                "chunks": metadata.get("chunk_count"),
+            }
+            if table_counts != expected_counts or any(
+                not count for count in table_counts.values()
+            ):
+                runtime_errors.append("table_counts")
+            knowledge_ids = {
+                row[0]
+                for row in connection.execute("SELECT video_id FROM knowledge_videos")
+            }
+            retrieval_ids = {
+                row[0]
+                for row in connection.execute("SELECT video_id FROM retrieval_videos")
+            }
+            if not retrieval_ids.issubset(knowledge_ids):
+                runtime_errors.append("video_alignment")
+            runtime_detail = (
+                f"videos={table_counts['knowledge_videos']}, "
+                f"transcripts={table_counts['transcript_payloads']}, "
+                f"chunks={table_counts['chunks']}, schema=2"
+            )
+        finally:
+            connection.close()
+    except (OSError, sqlite3.DatabaseError, TypeError, ValueError) as error:
+        runtime_errors.append(type(error).__name__)
+        runtime_detail = str(error)
     checks.append(
         check(
-            "knowledge_alignment",
-            aligned,
-            detail,
-            "Reinstall a release whose knowledge base and retrieval index were packaged together.",
-        )
-    )
-    chunk_errors = (
-        validate_chunk_index(knowledge, retrieval)
-        if aligned and retrieval.get("chunk_index")
-        else []
-    )
-    checks.append(
-        check(
-            "chunk_index",
-            not chunk_errors,
-            (
-                f"chunks={retrieval['chunk_index'].get('chunk_count')}, "
-                f"clusters={retrieval['chunk_index'].get('cluster_count')}"
-                if retrieval.get("chunk_index") and not chunk_errors
-                else "legacy retrieval index; chunk-first fallback remains available"
-                if not retrieval.get("chunk_index")
-                else "; ".join(chunk_errors[:12])
-            ),
-            "Rebuild and reinstall the Skill so chunk postings match the bundled transcript segments.",
-        )
-    )
-    cohort_errors = validate_retrieval_cohorts(retrieval) if aligned else []
-    checks.append(
-        check(
-            "retrieval_cohorts",
-            not cohort_errors,
-            (
-                "stable and automatic expansion statistics are aligned"
-                if not cohort_errors
-                else "; ".join(cohort_errors[:12])
-            ),
-            "Rebuild and reinstall the Skill so cohort statistics match the bundled retrieval records.",
+            "runtime_store",
+            not runtime_errors,
+            runtime_detail if not runtime_errors else "; ".join(runtime_errors),
+            "Reinstall a release with an intact immutable runtime store.",
         )
     )
 
@@ -531,42 +552,6 @@ def skill_checks(skill_root=SKILL_ROOT, run_smoke=True):
             else "; ".join(artifact_errors)
             or "manifest build_id mismatch",
             "Reinstall a complete release or rebuild its deterministic manifest.",
-        )
-    )
-
-    portable_knowledge = (
-        knowledge.get("transcript_files_bundled") is False
-        and not any("transcript_file" in video for video in knowledge.get("videos", []))
-    )
-    checks.append(
-        check(
-            "portable_knowledge_paths",
-            portable_knowledge,
-            "no unavailable maintainer transcript paths are bundled",
-            "Reinstall the Skill from a package built by the current release pipeline.",
-        )
-    )
-    transcript_backed_ready = [
-        video
-        for video in knowledge.get("videos", [])
-        if video.get("processing_status") == "ready"
-        and video.get("runtime_evidence_mode", "full_transcript")
-        == "full_transcript"
-    ]
-    runtime_segments_complete = (
-        knowledge.get("runtime_transcript_segments_bundled") is True
-        and transcript_backed_ready
-        and all(
-            video_transcript_segments(video)
-            for video in transcript_backed_ready
-        )
-    )
-    checks.append(
-        check(
-            "runtime_transcript_evidence",
-            bool(runtime_segments_complete),
-            f"timestamped segments bundled for {len(transcript_backed_ready)} transcript-backed ready videos",
-            "Rebuild and reinstall the Skill so query-time transcript evidence is available.",
         )
     )
 
@@ -724,7 +709,7 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                     check_name,
                     completed.returncode == 0,
                     completed.stdout.strip() or completed.stderr.strip()[-600:],
-                    f"{python_path} -m pip install -r {repo_root / 'requirements-transcription.txt'}",
+                    f"{python_path} -m pip install --require-hashes -r {repo_root / 'requirements-transcription.txt'}",
                 )
             )
         faster_whisper_ok = dependency_results["faster_whisper"]
@@ -759,11 +744,14 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                 str(python_path),
                 "-c",
                 (
-                    "import sys; from faster_whisper import WhisperModel; "
-                    "WhisperModel(sys.argv[1], device='cpu', compute_type='int8', "
-                    "local_files_only=True); print('model ready')"
+                    "import json, pathlib, sys; from faster_whisper import WhisperModel; "
+                    "config=json.loads(pathlib.Path(sys.argv[1]).read_text()); "
+                    "spec=config['models']['small']; "
+                    "WhisperModel(spec['repository'], revision=spec['revision'], "
+                    "device='cpu', compute_type='int8', local_files_only=True); "
+                    "print('model ready')"
                 ),
-                "small",
+                str(repo_root / "config" / "transcription_models.json"),
             ],
             text=True,
             capture_output=True,
@@ -777,9 +765,8 @@ def transcription_checks(repo_root, override=None, include_curl=True):
                 model_completed.stdout.strip()
                 or model_completed.stderr.strip()[-600:],
                 (
-                    f"Warm the model cache with {python_path} -c "
-                    '"from faster_whisper import WhisperModel; '
-                    "WhisperModel('small', device='cpu', compute_type='int8')\""
+                    "Run scripts/batch_transcribe_directory.py once after installing "
+                    "the hash-locked requirements; it warms the pinned revision."
                 ),
             )
         )
@@ -803,6 +790,7 @@ def maintainer_checks(repo_root, transcription=False, override=None):
         "data/knowledge/douyin_knowledge_base.json",
         "scripts/validate_project.py",
         "requirements-transcription.txt",
+        "config/transcription_models.json",
     ]
     missing = [path for path in required_paths if not (repo_root / path).exists()]
     checks = [

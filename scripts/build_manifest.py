@@ -12,6 +12,7 @@ from project_artifacts import (
     derive_project_status,
     validate_evidence_records,
 )
+from release_inventory import ROOT_RELEASE_PATHS, RUNTIME_SKILL_PATHS
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,16 +52,12 @@ def load_json(relative):
 
 def skill_artifacts():
     artifacts = []
-    for path in sorted(SKILL_ROOT.rglob("*")):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(SKILL_ROOT).as_posix()
+    for relative in sorted(RUNTIME_SKILL_PATHS):
         if relative in SELF_PATHS:
             continue
-        if any(part in SKIPPED_PARTS for part in path.relative_to(SKILL_ROOT).parts):
-            continue
-        if path.suffix in {".pyc", ".pyo"}:
-            continue
+        path = SKILL_ROOT / relative
+        if not path.is_file():
+            raise FileNotFoundError(path)
         artifacts.append(
             {
                 "path": relative,
@@ -85,6 +82,7 @@ def rule_artifacts():
         "config/retrieval_rules.json",
         "config/reviewed_evidence_atoms.json",
         "config/reviewed_evidence_signals.json",
+        "config/transcription_models.json",
     ]
     rules = []
     for relative in paths:
@@ -92,7 +90,7 @@ def rule_artifacts():
         rules.append(
             {
                 "path": relative,
-                "version": payload.get("version"),
+                "version": payload.get("version", payload.get("schema_version")),
                 "sha256": sha256_file(ROOT / relative),
             }
         )
@@ -246,6 +244,7 @@ def build_manifest_payload():
                     "data/knowledge/evidence_graph.json",
                     "data/knowledge/topic_index.json",
                     "data/knowledge/knowledge_graph_summary.json",
+                    "data/review/retrieval_priors.json",
                 ]
             },
         },
@@ -256,7 +255,7 @@ def build_manifest_payload():
                 "bytes": (ROOT / relative).stat().st_size,
                 "sha256": sha256_file(ROOT / relative),
             }
-            for relative in ["LICENSE", "NOTICE"]
+            for relative in sorted(ROOT_RELEASE_PATHS)
         ],
         "link_integrity": link_integrity(video_index, knowledge, bilibili_index),
         "skill_artifacts": skill_artifacts(),

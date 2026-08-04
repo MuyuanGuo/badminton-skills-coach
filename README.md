@@ -3,6 +3,7 @@
 [![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
+[![数据与来源条款](https://img.shields.io/badge/data%20%26%20sources-separate%20terms-6b5b95.svg)](LICENSE-DATA)
 
 ![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)
 
@@ -10,7 +11,7 @@
 
 [安装 2.0.0](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-这是 **2.0.0 稳定版**。GitHub main 分支和 [v2.0.0 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0) 提供正式版本；develop 用于后续开发。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
+你正在查看 `develop` 分支；当前开发版本是 **2.1.0-dev.1**，发布状态为 **unreleased**。稳定安装仍由 GitHub main 分支和 [v2.0.0 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0) 提供。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
 
 ## 30 秒开始使用
 
@@ -32,6 +33,7 @@ Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分�
 - 多问题回答不再被误解为“整篇最多 3 个视频”：每个结论最多 3 条最强证据，独立子问题或实质场景分支可以展示更多；简单问题不会为了凑数增加重复视频。
 - 本地反馈默认只保存在用户机器，确认前不会影响个性化；公开反馈还需要脱敏、明确授权、来源复核和回归测试。
 - 回答模型只读取紧凑 answer packet，完整上下文用于最终审计，两者由 SHA-256 绑定。
+- 运行时审核先验与 `data/evaluation/answer_quality_cases.json` 分离；评测脚本默认以无先验模式报告检索质量，避免用评测金标准反哺指标。
 
 ## 当前知识与质量基线
 
@@ -58,10 +60,12 @@ Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分�
 日常使用需要 Python 3.10 或更高版本，不需要 OpenAI API key，也不需要安装转写依赖。
 
 ~~~bash
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
   -o /tmp/liuhui-badminton-coach-2.0.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SBOM.cdx.json \
+  -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
 unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
@@ -75,6 +79,19 @@ python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 ~~~
 
 然后重启 Codex。升级时可以重复安装命令；安装器会验证文件，并以新版本替换 Skill。
+
+Windows PowerShell 使用同一发布物和 SHA-256：
+
+~~~powershell
+$v = "2.0.0"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
+Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
+Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
+$expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
+$actual = (Get-FileHash "$env:TEMP/liuhui-badminton-coach-$v.zip" -Algorithm SHA256).Hash.ToLower()
+if ($actual -ne $expected) { throw "SHA-256 mismatch" }
+$stage = Join-Path $env:TEMP "liuhui-skill-install"; Expand-Archive "$env:TEMP/liuhui-badminton-coach-$v.zip" $stage -Force
+python "$stage/liuhui-badminton-coach/scripts/install.py"
+~~~
 
 ## 怎样提问效果最好
 
@@ -122,7 +139,9 @@ V2 最有价值；V4 不相关；第 2 点结论不对；
 
 ## 来源与边界
 
-仓库不发布原始媒体、完整转写目录、临时 Cookie、平台凭据、模型缓存或用户本地反馈。公开链接仅作为来源引用。软件与自动化使用 [MIT License](LICENSE)；第三方视频、音频、标题、创作者名称、缩略图和转写不属于 MIT 授权范围，详见 [NOTICE](NOTICE)。
+仓库不发布原始媒体、原始转写目录、临时 Cookie、平台凭据、模型缓存或用户本地反馈。安装包只含运行所需的派生索引和可定位证据数据。软件与原创文档使用 [MIT License](LICENSE)；第三方视频、音频、标题、创作者名称、缩略图和转写不属于该授权，详见 [数据与来源材料声明](LICENSE-DATA) 和 [NOTICE](NOTICE)。
+
+维护批处理默认只下载、转写和验证，不会自动 commit 或 push；需要发布时显式使用 `--commit --push`，且只允许提交生成物白名单。
 
 ### 新数据怎样进入回答
 
@@ -133,8 +152,8 @@ flowchart LR
     D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]
     P --> E["结构化知识库（含隔离审计记录）"]
     E --> A["回答资格分层：primary / supplemental / none"]
-    A --> KG["概念-主题-证据角色图谱"]
-    A --> F["45秒 chunk-first + 受限窗口检索"]
+    A --> S["只读 SQLite 运行时证据存储"]
+    S --> F["45秒 chunk-first + 受限窗口检索"]
     F --> R["回答 packet 与最终审计"]
 ~~~
 
@@ -146,11 +165,13 @@ flowchart LR
 python3 scripts/run_bilibili_update_pipeline.py --install
 ~~~
 
-维护和贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)，发布校验与 SBOM 说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)，完整工程设计与开发评测请查看 develop 分支。
+运行时边界与模块加载约束见 [ARCHITECTURE.md](ARCHITECTURE.md)。维护和贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)（[English](CONTRIBUTING.en.md)），发布校验、签名标签和 SBOM 说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。所有分支的说明都必须与该分支实际代码一致，不把未发布设计写成现有能力。
 
 ## 分支与发布
 
+- 当前分支：`develop`
+- 当前开发版本：`2.1.0-dev.1`
+- 发布状态：`unreleased`
 - 稳定版：`main` / `v2.0.0`
-- 开发版：`develop`
 - 正式安装包：[v2.0.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.0.0)
-- `main` README 面向使用者；`develop` README 面向招聘官、技术面试官和贡献者。
+- `main` 是稳定发布来源；`develop` 是集成分支。两个分支均使用同一套可验证事实和治理文档。
