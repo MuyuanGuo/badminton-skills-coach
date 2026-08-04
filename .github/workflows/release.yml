@@ -42,7 +42,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Require current independently reviewed model generations
+      - name: Require reproducible current-runtime release answers
         run: python scripts/validate_live_generation_results.py
 
       - name: Package archive and generate SBOM

@@ -293,6 +293,8 @@ for runtime_file in [
     ROOT / "scripts" / "package_skill_release.py",
     ROOT / "scripts" / "build_manifest.py",
     ROOT / "scripts" / "check_video_links.py",
+    ROOT / "scripts" / "generate_release_answer_results.py",
+    ROOT / "scripts" / "validate_live_generation_results.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "doctor.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "install.py",
     ROOT

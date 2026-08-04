@@ -23,6 +23,15 @@ class ReleaseWorkflowContractTests(unittest.TestCase):
         self.assertIn("release $RELEASE_TAG already exists", self.workflow)
         self.assertIn("gh release create", self.workflow)
 
+    def test_release_requires_reproducible_current_runtime_answers(self):
+        self.assertIn(
+            "Require reproducible current-runtime release answers", self.workflow
+        )
+        self.assertIn(
+            "python scripts/validate_live_generation_results.py", self.workflow
+        )
+        self.assertNotIn("independently reviewed model generations", self.workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

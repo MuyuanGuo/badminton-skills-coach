@@ -40,6 +40,17 @@ Answer-quality changes additionally require an unseen forward test and, when
 comparing `main` with `develop`, the blinded paired evaluation documented in
 the Chinese guide. Do not copy holdout answers into runtime rules or priors.
 
+Before tagging a release, regenerate and validate the critical release answers:
+
+```bash
+python3 scripts/generate_release_answer_results.py
+python3 scripts/validate_live_generation_results.py
+```
+
+The snapshot binds the complete and answer-semantic runtime fingerprints, pins
+the trusted renderer and full-context auditor by SHA-256, and must reproduce
+every answer byte for byte while passing the current final-answer audit.
+
 ## Pull request description
 
 Explain the motivation, affected runtime/data paths, tests actually run, and

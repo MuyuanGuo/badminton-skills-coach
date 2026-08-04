@@ -1,24 +1,21 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.0-dev.1",
-  "baseline_version": "v2.0.0",
+  "development_version": "2.1.0",
+  "baseline_version": "v2.1.0",
   "build": {
-    "id": "5a60e9d82faa721b",
-    "inputs_sha256": "b386527e0be55343514dde9fc28a78a8594c5cf636e6c33bb8513bbe1ad70989",
-    "runtime_sha256": "d917be5805ffeeee0f82d979bc6290daad7046b63125248fb0993740882a22c3"
+    "id": "518daea504fe06ac",
+    "inputs_sha256": "4fae3951a08374f3585149625070179d79ca37bfa4b5389e5e639ad530a08027",
+    "runtime_sha256": "304f79f61f98fc181052a31547ed4df6dcf1c131f4213a7172011d9d4bf157a1"
   },
   "summary": {
     "status": "pass",
     "suites": 14,
-    "baseline_metrics": 47,
+    "baseline_metrics": 54,
     "regressions": 0,
-    "invalidated_baseline_metrics": 2
+    "invalidated_baseline_metrics": 0
   },
-  "invalidated_baseline_metrics": {
-    "answer_context.selected_video_recall": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json",
-    "answer_context.primary_selected_rate": "v2.0.0 runtime ranking priors were generated directly from answer_quality_cases.json"
-  },
+  "invalidated_baseline_metrics": {},
   "evaluations": {
     "answer_policy": {
       "cases": 21,
@@ -213,31 +210,40 @@
       "failed": []
     },
     "live_generation": {
-      "measurement_type": "historical_generation_review",
-      "review_status": "historical_stale",
-      "snapshot_integrity_status": "valid_review_snapshot",
-      "current_runtime_match": false,
-      "current_runtime_generation_claimed": false,
-      "release_eligible": false,
+      "measurement_type": "current_runtime_automated_generation_validation",
+      "validation_status": "current_validated",
+      "snapshot_integrity_status": "valid_generation_snapshot",
+      "current_runtime_match": true,
+      "current_runtime_generation_claimed": true,
+      "release_eligible": true,
       "runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
       "runtime_fingerprint_scope": "answer_semantics",
-      "reviewed_answer_runtime_fingerprint": "1f254290f242f94e2f8eccd8b36f0d52c6eb27fa331e0cf95cecb0893c4bd2e9",
+      "generation_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
       "current_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
-      "reviewed_artifact_runtime_fingerprint": "b40b6ce8f4bcf3c56530ad19ae57c76c704a030f7e68a34dac85d705a01ce456",
-      "current_artifact_runtime_fingerprint": "e97abe4227766659651b91cc964fc4abd5e322e6fc82d4cf0482b2c8562e09df",
-      "artifact_runtime_match": false,
+      "generation_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
+      "current_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
+      "current_answer_runtime_match": true,
+      "current_artifact_runtime_match": true,
+      "generator_implementation_match": true,
+      "validator_implementation_match": true,
       "critical_cases": 3,
-      "independently_reviewed": 3,
-      "current_runtime_audits_rerun": false,
+      "generated_answers": 3,
+      "automatically_validated": 3,
+      "automated_audit_pass_rate": 1.0,
+      "current_runtime_audits_rerun": true,
+      "current_renderer_reproduced": true,
       "passed": 3,
-      "minimum_manual_score": 4,
       "failed": [],
       "generator": {
-        "provider": "OpenAI",
-        "model": "Codex",
-        "model_version": "GPT-5"
+        "type": "deterministic_answer_renderer",
+        "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
+        "implementation_sha256": "cc6606370de0f5a7147ea7343fda0cf91e2db9862da7a22419720dfa63321326"
       },
-      "reviewer": "Codex isolated release review /root/unseen_forward_test:v47-contract-final"
+      "validation": {
+        "method": "current_runtime_full_context_audit",
+        "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
+        "implementation_sha256": "d0ee7457092197716dbebd041a87c8085fc8663ff38346a64daf7c3f57f389e3"
+      }
     }
   },
   "baseline_comparison": [
@@ -290,6 +296,24 @@
       "metric": "answer_context.cases",
       "current": 57,
       "baseline": 57,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.selected_video_recall",
+      "current": 0.7976878612716763,
+      "baseline": 0.7976878612716763,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.primary_selected_rate",
+      "current": 0.8518518518518519,
+      "baseline": 0.8518518518518519,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -404,6 +428,15 @@
       "passed": true
     },
     {
+      "metric": "query_understanding.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
       "metric": "query_understanding.cases",
       "current": 143,
       "baseline": 143,
@@ -413,7 +446,7 @@
       "passed": true
     },
     {
-      "metric": "query_understanding.accuracy",
+      "metric": "diagnostic_answer_contract.accuracy",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -431,7 +464,16 @@
       "passed": true
     },
     {
-      "metric": "diagnostic_answer_contract.accuracy",
+      "metric": "answer_audit.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.violation_detection_rate",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -449,16 +491,7 @@
       "passed": true
     },
     {
-      "metric": "answer_audit.accuracy",
-      "current": 1.0,
-      "baseline": 1.0,
-      "direction": "at_least",
-      "tolerance": 0,
-      "contract_source": "stable_baseline",
-      "passed": true
-    },
-    {
-      "metric": "answer_audit.violation_detection_rate",
+      "metric": "bilibili_positive_retrieval.retrieval_hit_rate_at_k",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -657,6 +690,42 @@
     },
     {
       "metric": "forward_tests.failed",
+      "current": [],
+      "baseline": [],
+      "direction": "equal",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.current_runtime_match",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.critical_cases",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.automated_audit_pass_rate",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.failed",
       "current": [],
       "baseline": [],
       "direction": "equal",
