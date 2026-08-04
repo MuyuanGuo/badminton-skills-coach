@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import copy
+import importlib.util
 import json
 import unittest
 from pathlib import Path
@@ -8,6 +9,20 @@ import bilibili_wiring_canary as canary
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNTIME_STORE_MODULE = (
+    ROOT / "skills/liuhui-badminton-coach/scripts/runtime_store.py"
+)
+RUNTIME_STORE_PATH = (
+    ROOT / "skills/liuhui-badminton-coach/references/runtime-store.sqlite3"
+)
+RETRIEVAL_INDEX_PATH = ROOT / "data/knowledge/retrieval_index.json"
+
+
+def load_module(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class FakeSearch:
@@ -193,6 +208,18 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
         )
         self.assertEqual(case["expected_cluster_ids"], ["CCprimary"])
         canary.validate_registry(first)
+
+    def test_runtime_store_retrieval_hash_matches_canonical_json(self):
+        runtime = load_module("wiring_canary_runtime_store", RUNTIME_STORE_MODULE)
+        store = runtime.RuntimeStore(RUNTIME_STORE_PATH)
+        try:
+            canonical = json.loads(RETRIEVAL_INDEX_PATH.read_text(encoding="utf-8"))
+            self.assertEqual(
+                canary.stable_payload_hash(store.retrieval_index),
+                canary.stable_payload_hash(canonical),
+            )
+        finally:
+            store.close()
 
     def test_committed_json_schema_matches_runtime_contract(self):
         schema = json.loads(
