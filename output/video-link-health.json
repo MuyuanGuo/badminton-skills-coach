@@ -1,14 +1,14 @@
 {
-  "source_collected_at": "2026-08-01T04:45:16.696385+00:00",
+  "source_collected_at": "2026-08-08T06:01:58.768251+00:00",
   "source_updated_at": {
-    "douyin": "2026-08-01T04:45:16.696385+00:00",
+    "douyin": "2026-08-08T06:01:58.768251+00:00",
     "bilibili": "2026-07-28T05:38:24.783529+00:00"
   },
   "source_video_counts": {
-    "douyin": 478,
+    "douyin": 480,
     "bilibili": 767
   },
-  "indexed_video_count": 1245,
+  "indexed_video_count": 1247,
   "canonical_syntax_invalid_video_ids": [],
   "network_check_requested": false,
   "sample_size": 0,

@@ -4,13 +4,13 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-01T18:13:07.670513+00:00",
-  "video_count": 1014,
-  "indexable_video_count": 956,
-  "assigned_video_count": 956,
+  "source_updated_at": "2026-08-08T06:46:52.411336+00:00",
+  "video_count": 1016,
+  "indexable_video_count": 958,
+  "assigned_video_count": 958,
   "unassigned_video_ids": [],
-  "fallback_assigned_video_count": 179,
-  "multi_topic_video_count": 454,
+  "fallback_assigned_video_count": 180,
+  "multi_topic_video_count": 455,
   "categories": [
     {
       "name": "后场技术",
@@ -3018,7 +3018,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 90,
+      "video_count": 91,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -3777,11 +3777,12 @@
           "keywords": [],
           "context_any": [],
           "is_fallback": true,
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 16,
+          "ready_count": 16,
           "needs_visual_review_count": 0,
           "video_ids": [
             "7167546787073477900",
+            "7670988159002607355",
             "7304104136306412835",
             "bilibili:BV1cM4m1Y7f3",
             "bilibili:BV1Az4y147ob",
@@ -3810,6 +3811,29 @@
                 "context"
               ],
               "topic": "挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？",
+              "score": 0,
+              "match_basis": {
+                "title": 0,
+                "focus": 0,
+                "evidence": 0
+              },
+              "assignment_method": "category_fallback"
+            },
+            {
+              "video_id": "7670988159002607355",
+              "title": "下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断",
+              "url": "https://www.douyin.com/video/7670988159002607355",
+              "category": "步法与移动",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
+              "topic": "下手步伐加速 右手球员的右脚就算在很快的节奏里",
               "score": 0,
               "match_basis": {
                 "title": 0,
@@ -3885,29 +3909,6 @@
                 "evidence": 0
               },
               "assignment_method": "category_fallback"
-            },
-            {
-              "video_id": "bilibili:BV1su4m1F7PS",
-              "title": "反手网前高速步法教学！ 先动左腿和先动右腿差别这么大",
-              "url": "https://www.bilibili.com/video/BV1su4m1F7PS/",
-              "category": "步法与移动",
-              "confidence": "medium",
-              "processing_status": "ready",
-              "answer_eligibility": "primary",
-              "evidence_roles": [
-                "action",
-                "correction",
-                "mechanism",
-                "principle"
-              ],
-              "topic": "反手网前高速步法教学！ 先动左腿和先动右腿差别这么大",
-              "score": 0,
-              "match_basis": {
-                "title": 0,
-                "focus": 0,
-                "evidence": 0
-              },
-              "assignment_method": "category_fallback"
             }
           ]
         }
@@ -3917,7 +3918,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 379,
+      "video_count": 380,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -4313,8 +4314,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 112,
-          "ready_count": 112,
+          "video_count": 113,
+          "ready_count": 113,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1bF6SYtEGz",
@@ -4387,6 +4388,7 @@
             "bilibili:BV1vCcTzcEPE",
             "7593661008519810289",
             "bilibili:BV14f1eYhES4",
+            "7670386617265352293",
             "bilibili:BV1Se411Y775",
             "bilibili:BV1B5ftBXEx9",
             "7541623926234811705",
@@ -7908,7 +7910,7 @@
       "name": "装备选择",
       "description": "与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。",
       "discipline": "general",
-      "video_count": 69,
+      "video_count": 70,
       "subtopics": [
         {
           "name": "球拍选择与重量",
@@ -7921,8 +7923,8 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 65,
-          "ready_count": 65,
+          "video_count": 66,
+          "ready_count": 66,
           "needs_visual_review_count": 0,
           "video_ids": [
             "bilibili:BV1VejRziExt",
@@ -7943,6 +7945,7 @@
             "7052912740955999499",
             "7063638911301520680",
             "7122277769202896163",
+            "7670386617265352293",
             "7315610620424883496",
             "7511934047901846841",
             "7530102529830800699",

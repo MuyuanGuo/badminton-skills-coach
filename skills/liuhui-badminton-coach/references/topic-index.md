@@ -3,9 +3,9 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `1014`
-- Assigned videos: `956`
-- Multi-topic videos: `454`
+- Videos: `1016`
+- Assigned videos: `958`
+- Multi-topic videos: `455`
 
 ## How To Use
 
@@ -147,7 +147,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 启动、回动、不同步型、重心与场区移动。
 
-- Matched videos: `90`
+- Matched videos: `91`
 
 - **启动与预动**: `39` videos, `39` ready, `0` needs visual review.
   Keywords: 启动, 预动, 起动, 第一步
@@ -179,18 +179,18 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 正手区前后步法（基础版） 正手区前后步法种类非常多，这是一种比较简单合理的步法，而且教学对象是左手，左右手的同学们都能看 [ready/primary] https://www.douyin.com/video/7567860375287303035
   - 正手网前步法 当然还要注意左手的摆放和重心的控制，但是时间有限，直播的时候讲吧 [ready/primary] https://www.douyin.com/video/7406541084219821312
   - 羽毛球后撤步示范！跳杀起跳方法！业余最好用的万能退后场步法！不可错过的步法课 [ready/primary] https://www.bilibili.com/video/BV1uBvfBNEV4/
-- **步法综合待细分**: `15` videos, `15` ready, `0` needs visual review.
+- **步法综合待细分**: `16` videos, `16` ready, `0` needs visual review.
   Keywords: none
   Representative videos:
   - 挂臂三招，由我腿伤时所创，专门用于步法慢的或者懒得动的人，属于绝活技能，绝对不伤腕，想学哪个？还有我是正经教还是扫着地教？ [ready/primary] https://www.douyin.com/video/7167546787073477900
+  - 下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断 [ready/primary] https://www.douyin.com/video/7670988159002607355
   - 保护身位，信息不明朗少打斜线，无视错别字，视频拿到的时候就是这样的 [ready/primary] https://www.douyin.com/video/7304104136306412835
-  - 关于重心转换的真相！羽毛球步法和发力调配重心的技巧 [ready/primary] https://www.bilibili.com/video/BV1cM4m1Y7f3/
 
 ### 发力与身体运用
 
 放松传导、身体旋转、内外旋、击球空间与挥拍路径。
 
-- Matched videos: `379`
+- Matched videos: `380`
 
 - **放松、传导与爆发**: `53` videos, `53` ready, `0` needs visual review.
   Keywords: 放松发力, 力量传导, 爆发, 打透, 鞭甩
@@ -204,7 +204,7 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
   - 腰腹发力 手放好位置，感受腰腹发力的方向，只有把方向做对，击球才能有效果 [ready/primary] https://www.douyin.com/video/7494729488699559225
   - 爆改球友 转髋还有问题，不过可以先熟悉动作了，其他的问题可以有了转髋后再微调 [ready/primary] https://www.douyin.com/video/7492357671853526329
   - 学会腰腹带动后，反而是肩伤的高发期，充分的开肩扩胸架拍可减少受伤的概率 [ready/primary] https://www.douyin.com/video/7057722299855801641
-- **小臂旋转与手腕**: `112` videos, `112` ready, `0` needs visual review.
+- **小臂旋转与手腕**: `113` videos, `113` ready, `0` needs visual review.
   Keywords: 内旋, 外旋, 小臂旋转, 手腕
   Representative videos:
   - 后场发力手腕怎么用？如此这般 终于会用手腕了！羽毛球大发力手腕力传导的方法 [ready/primary] https://www.bilibili.com/video/BV1bF6SYtEGz/
@@ -385,9 +385,9 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。
 
-- Matched videos: `69`
+- Matched videos: `70`
 
-- **球拍选择与重量**: `65` videos, `65` ready, `0` needs visual review.
+- **球拍选择与重量**: `66` videos, `66` ready, `0` needs visual review.
   Keywords: 选择球拍, 球拍重量, 重量球拍, 拍重, 球拍
   Representative videos:
   - 解读新手为何爱打3u球拍？球拍重量与发力的关系！听劝 新手想快速学会发力 选5u就对了 [ready/primary] https://www.bilibili.com/video/BV1VejRziExt/

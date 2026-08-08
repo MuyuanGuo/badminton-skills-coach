@@ -43,11 +43,11 @@ The Skill reconstructs who did what, the incoming shot, and the requested action
 
 | Metric | Current baseline |
 | --- | ---: |
-| Processed public videos | 1245 |
+| Processed public videos | 1247 |
 | Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 956 |
-| Primary / bounded supplemental evidence | 781 / 175 |
-| Transcript-backed evidence | 763 |
+| Ready teaching videos | 958 |
+| Primary / bounded supplemental evidence | 783 / 175 |
+| Transcript-backed evidence | 765 |
 | Bounded timestamp-window evidence | 174 |
 | Reviewed visual-summary fallbacks | 19 |
 | Maintainer-reviewed answer cases | 57/57 |
@@ -57,7 +57,7 @@ The Skill reconstructs who did what, the incoming shot, and the requested action
 | Current-runtime reproducible release answers | 3/3 |
 | Promoted public feedback signals | 0 |
 
-All 7,724 transcript evidence items have timestamps. These figures describe the controlled corpus and evaluation set; they do not claim that every possible natural-language question has already been tested.
+All 7,744 transcript evidence items have timestamps. These figures describe the controlled corpus and evaluation set; they do not claim that every possible natural-language question has already been tested.
 
 ## Install
 

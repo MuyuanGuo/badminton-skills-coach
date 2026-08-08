@@ -2,25 +2,25 @@
   "version": "knowledge-graph-v2",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-01T18:13:07.670513+00:00",
-  "video_count": 1014,
-  "indexable_video_count": 956,
-  "assigned_video_count": 956,
-  "multi_topic_video_count": 454,
+  "source_updated_at": "2026-08-08T06:46:52.411336+00:00",
+  "video_count": 1016,
+  "indexable_video_count": 958,
+  "assigned_video_count": 958,
+  "multi_topic_video_count": 455,
   "evidence_graph": {
     "source": "data/knowledge/evidence_graph.json",
     "schema_version": 2,
     "counts": {
-      "video_nodes": 956,
+      "video_nodes": 958,
       "concept_nodes": 326,
       "topic_nodes": 58,
       "role_nodes": 9,
-      "primary_videos": 781,
+      "primary_videos": 783,
       "supplemental_videos": 175,
-      "video_concept_edges": 11841,
-      "video_topic_edges": 1656,
-      "video_role_edges": 4190,
-      "total_edges": 17687
+      "video_concept_edges": 11857,
+      "video_topic_edges": 1659,
+      "video_role_edges": 4199,
+      "total_edges": 17715
     }
   },
   "categories": [
@@ -763,7 +763,7 @@
       "name": "步法与移动",
       "description": "启动、回动、不同步型、重心与场区移动。",
       "discipline": "general",
-      "video_count": 90,
+      "video_count": 91,
       "subtopics": [
         {
           "name": "启动与预动",
@@ -975,8 +975,8 @@
         {
           "name": "步法综合待细分",
           "keywords": [],
-          "video_count": 15,
-          "ready_count": 15,
+          "video_count": 16,
+          "ready_count": 16,
           "is_fallback": true,
           "representative_videos": [
             {
@@ -989,21 +989,21 @@
               "score": 0
             },
             {
+              "video_id": "7670988159002607355",
+              "title": "下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断",
+              "url": "https://www.douyin.com/video/7670988159002607355",
+              "confidence": "medium",
+              "category": "步法与移动",
+              "duration_seconds": 146.1,
+              "score": 0
+            },
+            {
               "video_id": "7304104136306412835",
               "title": "保护身位，信息不明朗少打斜线，无视错别字，视频拿到的时候就是这样的",
               "url": "https://www.douyin.com/video/7304104136306412835",
               "confidence": "medium",
               "category": "步法与移动",
               "duration_seconds": 151.7,
-              "score": 0
-            },
-            {
-              "video_id": "bilibili:BV1cM4m1Y7f3",
-              "title": "关于重心转换的真相！羽毛球步法和发力调配重心的技巧",
-              "url": "https://www.bilibili.com/video/BV1cM4m1Y7f3/",
-              "confidence": "medium",
-              "category": "步法与移动",
-              "duration_seconds": 377.9,
               "score": 0
             }
           ]
@@ -1014,7 +1014,7 @@
       "name": "发力与身体运用",
       "description": "放松传导、身体旋转、内外旋、击球空间与挥拍路径。",
       "discipline": "general",
-      "video_count": 379,
+      "video_count": 380,
       "subtopics": [
         {
           "name": "放松、传导与爆发",
@@ -1108,8 +1108,8 @@
             "小臂旋转",
             "手腕"
           ],
-          "video_count": 112,
-          "ready_count": 112,
+          "video_count": 113,
+          "ready_count": 113,
           "is_fallback": false,
           "representative_videos": [
             {
@@ -2120,7 +2120,7 @@
       "name": "装备选择",
       "description": "与动作能力直接相关的球拍、球线和参数选择，不包含商品推广。",
       "discipline": "general",
-      "video_count": 69,
+      "video_count": 70,
       "subtopics": [
         {
           "name": "球拍选择与重量",
@@ -2131,8 +2131,8 @@
             "拍重",
             "球拍"
           ],
-          "video_count": 65,
-          "ready_count": 65,
+          "video_count": 66,
+          "ready_count": 66,
           "is_fallback": false,
           "representative_videos": [
             {

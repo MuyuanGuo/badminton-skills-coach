@@ -209,6 +209,39 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
         self.assertEqual(case["expected_cluster_ids"], ["CCprimary"])
         canary.validate_registry(first)
 
+    def test_registry_shards_are_deterministic_and_cover_every_case_once(self):
+        registry = self.generated_registry()
+        base_case = registry["cases"][0]
+        cases = []
+        for index in range(7):
+            case = copy.deepcopy(base_case)
+            case["case_id"] = f"mechanical-{index}"
+            case["case_sha256"] = canary.stable_payload_hash(
+                {
+                    key: value
+                    for key, value in case.items()
+                    if key != "case_sha256"
+                }
+            )
+            cases.append(case)
+        registry["cases"] = cases
+        registry["case_count"] = len(cases)
+
+        shards = [
+            canary.shard_registry(registry, index, 3)
+            for index in range(3)
+        ]
+        self.assertEqual([shard["case_count"] for shard in shards], [3, 2, 2])
+        self.assertEqual(
+            sorted(case["case_id"] for shard in shards for case in shard["cases"]),
+            sorted(case["case_id"] for case in cases),
+        )
+        self.assertEqual(shards[0], canary.shard_registry(registry, 0, 3))
+        with self.assertRaisesRegex(ValueError, "shard count"):
+            canary.shard_registry(registry, 0, 0)
+        with self.assertRaisesRegex(ValueError, "shard index"):
+            canary.shard_registry(registry, 3, 3)
+
     def test_runtime_store_retrieval_hash_matches_canonical_json(self):
         runtime = load_module("wiring_canary_runtime_store", RUNTIME_STORE_MODULE)
         store = runtime.RuntimeStore(RUNTIME_STORE_PATH)

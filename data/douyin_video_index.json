@@ -2,10 +2,24 @@
   "profile": "刘辉羽毛球",
   "profile_declared_works": 460,
   "profile_url": "https://www.douyin.com/user/MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA?from_tab_name=main",
-  "collected_at": "2026-08-01T04:45:16.696385+00:00",
-  "collected_unique_links": 478,
+  "collected_at": "2026-08-08T06:01:58.768251+00:00",
+  "collected_unique_links": 480,
   "note": "Updated by scripts/check_douyin_updates.py from observed homepage metadata.",
   "videos": [
+    {
+      "video_id": "7670988159002607355",
+      "url": "https://www.douyin.com/video/7670988159002607355",
+      "title": "1.3万 下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "1.3万 下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练"
+    },
+    {
+      "video_id": "7670386617265352293",
+      "url": "https://www.douyin.com/video/7670386617265352293",
+      "title": "1.0万 00:00 / 01:16 反手甩动进阶 不是不能纯顶，是要分情况和结合自身的力量，握着顶会让发力变大，但是相应的出拍速度会削弱#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+      "teaching_candidate": "unknown",
+      "raw_text": "1.0万 00:00 / 01:16 反手甩动进阶 不是不能纯顶，是要分情况和结合自身的力量，握着顶会让发力变大，但是相应的出拍速度会削弱#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球"
+    },
     {
       "video_id": "7668741102412834545",
       "url": "https://www.douyin.com/video/7668741102412834545",
