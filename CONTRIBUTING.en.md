@@ -44,6 +44,14 @@ Answer-quality changes additionally require an unseen forward test and, when
 comparing `main` with `develop`, the blinded paired evaluation documented in
 the Chinese guide. Do not copy holdout answers into runtime rules or priors.
 
+After branching from a fully validated `develop`, first synchronize stable metadata,
+the bilingual READMEs, website install links, Issue templates, and the versioned quality
+baseline:
+
+```bash
+python3 scripts/prepare_stable_release.py
+```
+
 Before tagging a release, regenerate and validate the critical release answers:
 
 ```bash

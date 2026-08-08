@@ -90,6 +90,13 @@ Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再�
 ```
 
 `answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前运行时即时生成。
+从已通过完整验证的 `develop` 创建发布分支后，先运行发布准备脚本；它会同步稳定版
+元数据、双语 README、网站安装链接、Issue 模板和版本化质量基线：
+
+```bash
+python3 scripts/prepare_stable_release.py
+```
+
 打 Release tag 前，必须使用受信任的确定性 renderer 为全部关键案例重建
 `data/evaluation/live_generation_results.json`，再运行当前运行时验证：
 
