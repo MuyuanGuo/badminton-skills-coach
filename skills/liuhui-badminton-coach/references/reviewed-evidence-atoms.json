@@ -4,6 +4,38 @@
   "description": "Maintainer-reviewed claim atoms that the answer composer may verbalize without inventing new technical detail.",
   "atoms": [
     {
+      "atom_id": "EA-DOUBLES-COVERAGE-RESPONSIBILITY-001",
+      "canonical_claim": "双打前封后攻的轮转责任",
+      "claim_aliases": [
+        "主要该调整我还是搭档的站位",
+        "双打轮转补位责任"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "team",
+      "action": "team_coverage_rotation",
+      "scope": {
+        "discipline": ["doubles"]
+      },
+      "conditions": [
+        "前场队员已在前场或边线处理球",
+        "搭档应保留中场和对角覆盖",
+        "不得扩张为所有双打轮转的唯一站位"
+      ],
+      "verbalizable_claim": "来源场景中，前场队员先抬拍保护最薄弱的直线位置，搭档留在中场处理中路和对角；若对手回对角，前场队员再向后轮转。两人同时前冲造成后场空档时，不能只调整前场封网者，应先恢复搭档的中场覆盖，再按回球线路轮转。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7656927370758796145",
+      "evidence_windows": [
+        {
+          "timestamp": "00:15-00:27",
+          "text": "那这个时候我们第一时间往斜线跑其实也是来不及的那既然也来不及还会暴露出来一个特别重要的直线空档因为这个时候我的搭档在中场"
+        },
+        {
+          "timestamp": "00:49-01:06",
+          "text": "根本不怕对角线我向后轮转就可以了那如果对方起两个后场怎么办我队友站的位置完全不害怕斜线的平球和直线的高球"
+        }
+      ]
+    },
+    {
       "atom_id": "EA-FORWARD-START-001",
       "canonical_claim": "前场来球来不及到位",
       "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
@@ -62,7 +94,7 @@
       "action": "forecourt_running_rhythm",
       "scope": {},
       "conditions": ["追前场来球", "最后确认步仍需根据来球调整"],
-      "verbalizable_claim": "追前场球时第一启动可以快，但最后一个确认步不能预设死，要保留根据来球继续调整的余地。",
+      "verbalizable_claim": "追前场球时第一启动可以快，途中要让跑动节奏匹配来球速度；最后一个确认步不能预设死，要保留根据来球继续调整的余地。",
       "confidence_ceiling": "moderate",
       "evidence_id": "7642648621985030138",
       "evidence_windows": [
@@ -109,8 +141,8 @@
         "technique_variant": ["kill_to_net"],
         "tactical_phase": ["attack"]
       },
-      "conditions": ["已经决定杀球后只向前衔接", "不覆盖需要停步、回收或转守的其他选择"],
-      "verbalizable_claim": "如果这一拍已经决定杀球后只向前衔接，视觉复核来源展示的核心步法是交叉步。",
+      "conditions": ["已经决定杀球后继续向前衔接"],
+      "verbalizable_claim": "如果已经决定杀球后继续向前衔接，视觉复核来源展示的核心步法是交叉步；先核对杀球落地后的第一步是否及时向前进入交叉步，平衡情况仍需连续视频确认。需要停步、回收或转守时，不能机械前冲。",
       "confidence_ceiling": "moderate",
       "evidence_id": "7065157571816000809",
       "evidence_windows": [
@@ -158,7 +190,7 @@
         "tactical_phase": ["attack"]
       },
       "conditions": ["杀上网会带来由后向前的惯性", "到中路后线路选择必须结合自己与对手的位置"],
-      "verbalizable_claim": "杀上网本身会带来由后向前的惯性；到中路后，衔接线路要结合自己与对手的位置选择，不能把前冲当成不分情形的固定线路。",
+      "verbalizable_claim": "杀上网本身会带来由后向前的惯性；到中路后，衔接线路要结合自己与对手的位置选择，并保留停止前冲或转守的选择，不能把前冲当成不分情形的固定线路。",
       "confidence_ceiling": "moderate",
       "evidence_id": "7092959332047785250",
       "evidence_windows": [
@@ -189,6 +221,37 @@
       },
       "conditions": ["位置不好时", "全力杀球会缩短下一拍准备时间"],
       "verbalizable_claim": "位置不好时全力杀球会让球更快回来并使脚下脱节；软压可以在保持下压的同时给下一拍衔接留出时间。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7093706918492917033",
+      "evidence_windows": [
+        {
+          "timestamp": "00:52-01:00",
+          "text": "来 试试位置不好时全力杀球球过去的快回来也快 会让我们脚下脱节"
+        },
+        {
+          "timestamp": "01:01-01:07",
+          "text": "我们使用软压打跟进的方式可以让我们在保证下压的同时下一排更好行阶"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-KTN-SMASH-WEIGHT-HYPOTHESIS-001",
+      "canonical_claim": "第一拍杀太重",
+      "claim_aliases": ["杀太重", "重杀导致来不及上网"],
+      "claim_kind": "user_hypothesis",
+      "actor": "player",
+      "action": "smash_weight_and_recovery_time",
+      "scope": {
+        "shot_family": ["smash"],
+        "technique_variant": ["kill_to_net"],
+        "tactical_phase": ["attack"]
+      },
+      "conditions": [
+        "位置不好时",
+        "全力杀球会缩短下一拍准备时间",
+        "不能据此确认用户的唯一原因"
+      ],
+      "verbalizable_claim": "位置不好时，全力杀球会让球更快回来并使脚下脱节；因此第一拍杀得太重是需要核对的条件性分支，但不能仅凭文字确认它就是你的唯一原因。",
       "confidence_ceiling": "moderate",
       "evidence_id": "7093706918492917033",
       "evidence_windows": [

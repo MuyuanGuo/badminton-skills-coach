@@ -1,19 +1,21 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.0.0",
-  "baseline_version": "v2.0.0",
+  "development_version": "2.1.0",
+  "baseline_version": "v2.1.0",
   "build": {
-    "id": "80d7cf0a34d0df58",
-    "inputs_sha256": "de6bbb8787185f806fba26f072dbbac8bce5858fab1f315e32fa0825082cf633",
-    "runtime_sha256": "8e93d52de52ebf66856e0778d5a44307e1232ed370d14a5f12e0816effab5145"
+    "id": "518daea504fe06ac",
+    "inputs_sha256": "4fae3951a08374f3585149625070179d79ca37bfa4b5389e5e639ad530a08027",
+    "runtime_sha256": "304f79f61f98fc181052a31547ed4df6dcf1c131f4213a7172011d9d4bf157a1"
   },
   "summary": {
     "status": "pass",
-    "suites": 13,
-    "baseline_metrics": 48,
-    "regressions": 0
+    "suites": 14,
+    "baseline_metrics": 54,
+    "regressions": 0,
+    "invalidated_baseline_metrics": 0
   },
+  "invalidated_baseline_metrics": {},
   "evaluations": {
     "answer_policy": {
       "cases": 21,
@@ -26,12 +28,13 @@
       "cases": 57,
       "expected_videos": 173,
       "candidate_recall": 1.0,
-      "selected_video_recall": 1.0,
-      "primary_selected_rate": 1.0,
+      "selected_video_recall": 0.7976878612716763,
+      "primary_selected_rate": 0.8518518518518519,
       "answer_mode_accuracy": 1.0,
       "context_evidence_coverage": 1.0,
       "hard_negative_selected_violations": 0,
-      "selection_truncated_cases": 0
+      "selection_truncated_cases": 0,
+      "evaluation_fixture_isolation": true
     },
     "answer_quality": {
       "measurement_type": "reviewed_static_answer_snapshots",
@@ -75,6 +78,17 @@
       "expected_violations": 11,
       "expected_violations_detected": 11,
       "violation_detection_rate": 1.0
+    },
+    "bilibili_positive_retrieval": {
+      "measurement_type": "source_reviewed_positive_retrieval_gold",
+      "runtime_use_forbidden": true,
+      "source_type": "bilibili_video",
+      "case_count": 30,
+      "passed": true,
+      "pass_rate": 1.0,
+      "retrieval_hit_rate_at_k": 1.0,
+      "claim_mapping_rate": 1.0,
+      "failure_count": 0
     },
     "feedback_lifecycle": {
       "status": "pass",
@@ -196,31 +210,40 @@
       "failed": []
     },
     "live_generation": {
-      "measurement_type": "current_answer_runtime_generation_review",
-      "review_status": "current_reviewed",
-      "snapshot_integrity_status": "valid_review_snapshot",
+      "measurement_type": "current_runtime_automated_generation_validation",
+      "validation_status": "current_validated",
+      "snapshot_integrity_status": "valid_generation_snapshot",
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
+      "runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
       "runtime_fingerprint_scope": "answer_semantics",
-      "reviewed_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
-      "current_answer_runtime_fingerprint": "ffedc11e2563edf7a3bd044f8d73e116b3359821d00ea1bf2541988ef39e3be0",
-      "reviewed_artifact_runtime_fingerprint": "563de5812b1c8683ebaee79209fb9c17b4e6503b8a8dfe2a27045686b93d9c42",
-      "current_artifact_runtime_fingerprint": "a516523836482fbc7b79c235d36e3108c28a05e4b9d97958be4744346cdbe653",
-      "artifact_runtime_match": false,
+      "generation_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
+      "current_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
+      "generation_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
+      "current_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
+      "current_answer_runtime_match": true,
+      "current_artifact_runtime_match": true,
+      "generator_implementation_match": true,
+      "validator_implementation_match": true,
       "critical_cases": 3,
-      "independently_reviewed": 3,
+      "generated_answers": 3,
+      "automatically_validated": 3,
+      "automated_audit_pass_rate": 1.0,
       "current_runtime_audits_rerun": true,
+      "current_renderer_reproduced": true,
       "passed": 3,
-      "minimum_manual_score": 5,
       "failed": [],
       "generator": {
-        "provider": "OpenAI",
-        "model": "Codex",
-        "model_version": "GPT-5"
+        "type": "deterministic_answer_renderer",
+        "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
+        "implementation_sha256": "cc6606370de0f5a7147ea7343fda0cf91e2db9862da7a22419720dfa63321326"
       },
-      "reviewer": "/root/forward_legacy_feedback:release-v2.0.0-independent-reviewer"
+      "validation": {
+        "method": "current_runtime_full_context_audit",
+        "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
+        "implementation_sha256": "d0ee7457092197716dbebd041a87c8085fc8663ff38346a64daf7c3f57f389e3"
+      }
     }
   },
   "baseline_comparison": [
@@ -280,8 +303,8 @@
     },
     {
       "metric": "answer_context.selected_video_recall",
-      "current": 1.0,
-      "baseline": 1.0,
+      "current": 0.7976878612716763,
+      "baseline": 0.7976878612716763,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -289,8 +312,8 @@
     },
     {
       "metric": "answer_context.primary_selected_rate",
-      "current": 1.0,
-      "baseline": 1.0,
+      "current": 0.8518518518518519,
+      "baseline": 0.8518518518518519,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -319,6 +342,15 @@
       "current": 0,
       "baseline": 0,
       "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.evaluation_fixture_isolation",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
       "tolerance": 0,
       "contract_source": "stable_baseline",
       "passed": true
@@ -396,6 +428,15 @@
       "passed": true
     },
     {
+      "metric": "query_understanding.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
       "metric": "query_understanding.cases",
       "current": 143,
       "baseline": 143,
@@ -405,7 +446,7 @@
       "passed": true
     },
     {
-      "metric": "query_understanding.accuracy",
+      "metric": "diagnostic_answer_contract.accuracy",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -423,7 +464,16 @@
       "passed": true
     },
     {
-      "metric": "diagnostic_answer_contract.accuracy",
+      "metric": "answer_audit.accuracy",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_audit.violation_detection_rate",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -441,16 +491,7 @@
       "passed": true
     },
     {
-      "metric": "answer_audit.accuracy",
-      "current": 1.0,
-      "baseline": 1.0,
-      "direction": "at_least",
-      "tolerance": 0,
-      "contract_source": "stable_baseline",
-      "passed": true
-    },
-    {
-      "metric": "answer_audit.violation_detection_rate",
+      "metric": "bilibili_positive_retrieval.retrieval_hit_rate_at_k",
       "current": 1.0,
       "baseline": 1.0,
       "direction": "at_least",
@@ -649,6 +690,42 @@
     },
     {
       "metric": "forward_tests.failed",
+      "current": [],
+      "baseline": [],
+      "direction": "equal",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.current_runtime_match",
+      "current": true,
+      "baseline": true,
+      "direction": "equal",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.critical_cases",
+      "current": 3,
+      "baseline": 3,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.automated_audit_pass_rate",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "live_generation.failed",
       "current": [],
       "baseline": [],
       "direction": "equal",

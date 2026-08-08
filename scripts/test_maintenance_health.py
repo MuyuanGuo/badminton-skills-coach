@@ -62,7 +62,11 @@ class MaintenanceHealthTests(unittest.TestCase):
             }
         )
         self.assertEqual(report["status"], "attention")
-        queue_check = next(item for item in report["checks"] if item["id"] == "processing_queue")
+        queue_check = next(
+            item
+            for item in report["checks"]
+            if item["id"] == "douyin_processing_queue_state"
+        )
         self.assertEqual(queue_check["failed_video_ids"], ["1"])
         self.assertEqual(queue_check["pending_video_ids"], ["2"])
         self.assertIn("failed queue items", report["next_action"])
@@ -76,8 +80,24 @@ class MaintenanceHealthTests(unittest.TestCase):
     def test_markdown_summary_includes_all_checks(self):
         summary = self.module.markdown_summary(self.report())
         self.assertIn("Knowledge maintenance health", summary)
-        self.assertIn("`profile_observation`", summary)
-        self.assertIn("`classification_review`", summary)
+        self.assertIn("`douyin_profile_snapshot_freshness`", summary)
+        self.assertIn("`douyin_classification_review_state`", summary)
+
+    def test_bilibili_freshness_queue_and_install_drift_are_visible(self):
+        report = self.report(
+            bilibili_archive={"generated_at": "2026-07-21T00:00:00+00:00"},
+            bilibili_knowledge={"updated_at": "2026-07-21T00:00:00+00:00"},
+            bilibili_queue={
+                "items": [{"video_id": "BV1234567890", "status": "downloaded"}]
+            },
+            repo_manifest={"build_id": "repo"},
+            installed_manifest={"build_id": "installed"},
+        )
+        ids = {item["id"] for item in report["checks"]}
+        self.assertIn("bilibili_profile_snapshot_freshness", ids)
+        self.assertIn("bilibili_processing_queue_state", ids)
+        self.assertIn("installed_skill_build_alignment", ids)
+        self.assertEqual(report["status"], "attention")
 
 
 if __name__ == "__main__":

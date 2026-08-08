@@ -13,6 +13,7 @@ import evaluate_answer_context
 import evaluate_answer_audit
 import evaluate_answer_policy
 import evaluate_answer_quality
+import evaluate_bilibili_canaries
 import evaluate_diagnostic_answer_contract
 import evaluate_forward_test_results
 import evaluate_feedback_lifecycle
@@ -37,6 +38,7 @@ EVALUATION_SUITES = {
     "query_understanding",
     "diagnostic_answer_contract",
     "answer_audit",
+    "bilibili_positive_retrieval",
     "feedback_lifecycle",
     "retrieval",
     "metamorphic_robustness",
@@ -50,6 +52,7 @@ CORE_EVALUATORS = (
     "evaluate_answer_context.py",
     "evaluate_answer_policy.py",
     "evaluate_answer_quality.py",
+    "evaluate_bilibili_canaries.py",
     "evaluate_diagnostic_answer_contract.py",
     "evaluate_forward_test_results.py",
     "evaluate_feedback_lifecycle.py",
@@ -58,6 +61,7 @@ CORE_EVALUATORS = (
     "evaluate_retrieval.py",
     "evaluate_metamorphic_robustness.py",
     "evaluate_video_comprehension.py",
+    "generate_release_answer_results.py",
     "validate_live_generation_results.py",
 )
 EVALUATION_INPUTS = (
@@ -70,6 +74,7 @@ EVALUATION_INPUTS = (
     "data/evaluation/answer_modality_cases.json",
     "data/evaluation/answer_quality_answers.json",
     "data/evaluation/answer_quality_cases.json",
+    "data/evaluation/bilibili_canary_cases.json",
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/diagnostic_answer_continuation_cases.json",
@@ -127,11 +132,11 @@ def fingerprint_paths(root=ROOT):
     }
 
 
-def summarize_generation_review(live_payload, root=ROOT):
-    """Report review freshness without weakening the strict release validator."""
+def summarize_generation_validation(live_payload, root=ROOT):
+    """Report reproducible-generation freshness and automated audit status."""
 
     root = Path(root)
-    snapshot = validate_live_generation_results.inspect_review_snapshot(
+    snapshot = validate_live_generation_results.inspect_generation_snapshot(
         live_payload, root=root
     )
     current = snapshot["current_runtime_match"]
@@ -144,18 +149,15 @@ def summarize_generation_review(live_payload, root=ROOT):
         if current
         else snapshot
     )
-    live_scores = [
-        score
-        for item in live_payload["cases"]
-        for score in item["manual_scores"].values()
-    ]
     return {
         "measurement_type": (
-            "current_answer_runtime_generation_review"
+            "current_runtime_automated_generation_validation"
             if current
-            else "historical_generation_review"
+            else "historical_generation_snapshot"
         ),
-        "review_status": "current_reviewed" if current else "historical_stale",
+        "validation_status": (
+            "current_validated" if current else "historical_stale"
+        ),
         "snapshot_integrity_status": snapshot["status"],
         "current_runtime_match": current,
         "current_runtime_generation_claimed": current,
@@ -164,32 +166,51 @@ def summarize_generation_review(live_payload, root=ROOT):
             "current_answer_runtime_fingerprint"
         ],
         "runtime_fingerprint_scope": "answer_semantics",
-        "reviewed_answer_runtime_fingerprint": snapshot[
-            "reviewed_answer_runtime_fingerprint"
+        "generation_answer_runtime_fingerprint": snapshot[
+            "generation_answer_runtime_fingerprint"
         ],
         "current_answer_runtime_fingerprint": snapshot[
             "current_answer_runtime_fingerprint"
         ],
-        "reviewed_artifact_runtime_fingerprint": snapshot[
-            "reviewed_artifact_runtime_fingerprint"
+        "generation_artifact_runtime_fingerprint": snapshot[
+            "generation_artifact_runtime_fingerprint"
         ],
         "current_artifact_runtime_fingerprint": snapshot[
             "current_artifact_runtime_fingerprint"
         ],
-        "artifact_runtime_match": snapshot["artifact_runtime_match"],
+        "current_answer_runtime_match": snapshot[
+            "current_answer_runtime_match"
+        ],
+        "current_artifact_runtime_match": snapshot[
+            "current_artifact_runtime_match"
+        ],
+        "generator_implementation_match": snapshot[
+            "generator_implementation_match"
+        ],
+        "validator_implementation_match": snapshot[
+            "validator_implementation_match"
+        ],
         "critical_cases": snapshot["critical_cases"],
-        "independently_reviewed": snapshot["independently_reviewed"],
+        "generated_answers": snapshot["generated_answers"],
+        "automatically_validated": (
+            validated["automatically_validated"] if current else 0
+        ),
+        "automated_audit_pass_rate": (
+            validated["automated_audit_pass_rate"] if current else None
+        ),
         "current_runtime_audits_rerun": validated[
             "current_runtime_audits_rerun"
         ],
-        "passed": len(live_payload["cases"]),
-        "minimum_manual_score": min(live_scores),
+        "current_renderer_reproduced": validated[
+            "current_renderer_reproduced"
+        ],
+        "passed": validated["automatically_validated"] if current else 0,
         "failed": [],
         "generator": {
             key: live_payload["generator"][key]
-            for key in ("provider", "model", "model_version")
+            for key in ("type", "implementation", "implementation_sha256")
         },
-        "reviewer": live_payload["review"]["reviewer"],
+        "validation": dict(live_payload["validation"]),
     }
 
 
@@ -256,7 +277,7 @@ def collect_evaluations(root=ROOT):
     live_payload = validate_live_generation_results.load_json(
         root / "data/evaluation/live_generation_results.json"
     )
-    live_result = summarize_generation_review(live_payload, root=root)
+    live_result = summarize_generation_validation(live_payload, root=root)
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
@@ -264,6 +285,7 @@ def collect_evaluations(root=ROOT):
     understanding = evaluate_query_understanding.evaluate()
     diagnostic = evaluate_diagnostic_answer_contract.evaluate()
     answer_audit = evaluate_answer_audit.evaluate()
+    bilibili_positive = evaluate_bilibili_canaries.evaluate()
     feedback_lifecycle = evaluate_feedback_lifecycle.evaluate()
     retrieval = evaluate_retrieval.evaluate(12)
     metamorphic = evaluate_metamorphic_robustness.evaluate()
@@ -292,6 +314,7 @@ def collect_evaluations(root=ROOT):
                 "context_evidence_coverage",
                 "hard_negative_selected_violations",
                 "selection_truncated_cases",
+                "evaluation_fixture_isolation",
             )
         },
         "answer_quality": {
@@ -343,6 +366,20 @@ def collect_evaluations(root=ROOT):
                 "expected_violations",
                 "expected_violations_detected",
                 "violation_detection_rate",
+            )
+        },
+        "bilibili_positive_retrieval": {
+            key: bilibili_positive[key]
+            for key in (
+                "measurement_type",
+                "runtime_use_forbidden",
+                "source_type",
+                "case_count",
+                "passed",
+                "pass_rate",
+                "retrieval_hit_rate_at_k",
+                "claim_mapping_rate",
+                "failure_count",
             )
         },
         "feedback_lifecycle": {
@@ -436,7 +473,10 @@ def metric_value(evaluations, path):
 
 def compare_baseline(evaluations, baseline):
     comparisons = []
+    invalidated = set(baseline.get("invalidated_metrics", {}))
     for path, contract in baseline["metrics"].items():
+        if path in invalidated:
+            continue
         current = metric_value(evaluations, path)
         expected_source = contract.get("value_source")
         if expected_source is None:
@@ -511,7 +551,13 @@ def build_report(root=ROOT, evaluations=None):
             "suites": len(evaluations),
             "baseline_metrics": len(comparisons),
             "regressions": len(regressions),
+            "invalidated_baseline_metrics": len(
+                baseline.get("invalidated_metrics", {})
+            ),
         },
+        "invalidated_baseline_metrics": baseline.get(
+            "invalidated_metrics", {}
+        ),
         "evaluations": evaluations,
         "baseline_comparison": comparisons,
     }
@@ -543,27 +589,32 @@ def render_html(report):
         "query_understanding": "Query understanding",
         "diagnostic_answer_contract": "Diagnostic answer contract",
         "answer_audit": "Final-answer audit",
+        "bilibili_positive_retrieval": "Bilibili positive retrieval gold",
         "feedback_lifecycle": "Feedback lifecycle",
         "retrieval": "Evidence retrieval",
         "metamorphic_robustness": "Metamorphic robustness",
         "video_comprehension": "Video comprehension",
         "forward_tests": "Historical generation reviews",
         "live_generation": (
-            "Current-runtime generations"
+            "Current-runtime release answers"
             if evaluations["live_generation"].get(
                 "current_runtime_generation_claimed"
             )
-            else "Historical generation review"
+            else "Historical release-answer snapshot"
         ),
     }
     featured = {
         "answer_policy": ("accuracy", "Mode accuracy"),
-        "answer_context": ("selected_video_recall", "Selected-video recall"),
+        "answer_context": ("candidate_recall", "Leakage-free candidate recall"),
         "answer_quality": ("automatic_pass_rate", "Snapshot pass rate"),
         "query_equivalence": ("passed_families", "Families passed"),
         "query_understanding": ("accuracy", "Intent accuracy"),
         "diagnostic_answer_contract": ("accuracy", "Diagnostic contract accuracy"),
         "answer_audit": ("violation_detection_rate", "Violation detection"),
+        "bilibili_positive_retrieval": (
+            "retrieval_hit_rate_at_k",
+            "Source-reviewed hit rate@3",
+        ),
         "feedback_lifecycle": ("contract_accuracy", "Feedback contracts"),
         "retrieval": (
             "stable_regression.mean_ndcg_at_k",
@@ -572,7 +623,10 @@ def render_html(report):
         "metamorphic_robustness": ("pass_rate", "Harmless variants passed"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
-        "live_generation": ("minimum_manual_score", "Minimum review score"),
+        "live_generation": (
+            "automated_audit_pass_rate",
+            "Automated full-context audit",
+        ),
     }
     rows = []
     comparisons_by_suite = {}
@@ -607,9 +661,10 @@ def render_html(report):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Deterministic evaluation report for Badminton Skills Coach.">
   <title>Evaluation Report | Badminton Skills Coach</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
     :root {{ color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --bg:#090d0c; --panel:#111816; --ink:#f3f6f4; --muted:#a7b0ac; --line:rgba(255,255,255,.12); --mint:#79dbc5; --yellow:#f3dc55; }}
-    * {{ box-sizing:border-box; }} body {{ margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }} a {{ color:var(--mint); }} .shell {{ width:min(1080px,calc(100% - 32px)); margin:auto; }}
+    * {{ box-sizing:border-box; }} body {{ margin:0; color:var(--ink); background:var(--bg); line-height:1.55; }} a {{ color:var(--mint); }} a:focus-visible {{ outline:3px solid var(--yellow); outline-offset:3px; }} .shell {{ width:min(1080px,calc(100% - 32px)); margin:auto; }} .skip-link {{ position:fixed; left:8px; top:8px; transform:translateY(-180%); padding:8px 12px; color:#07110e; background:var(--yellow); z-index:5; }} .skip-link:focus {{ transform:none; }}
     header {{ border-bottom:1px solid var(--line); background:#0d1311; }} nav {{ min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:20px; }} nav a {{ text-decoration:none; font-weight:750; }}
     main {{ padding:64px 0 80px; }} .eyebrow {{ color:var(--mint); font:800 12px/1.2 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.12em; }} h1 {{ max-width:780px; margin:14px 0 18px; font-size:clamp(38px,7vw,72px); line-height:1.02; letter-spacing:0; }} .lede {{ max-width:760px; color:var(--muted); font-size:18px; }}
     .summary {{ display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 62px; border-block:1px solid var(--line); }} .summary div {{ padding:22px 18px; border-right:1px solid var(--line); }} .summary div:last-child {{ border:0; }} .summary strong,.summary span {{ display:block; }} .summary strong {{ font-size:28px; }} .summary span {{ color:var(--muted); font-size:13px; }}
@@ -619,11 +674,12 @@ def render_html(report):
   </style>
 </head>
 <body>
-  <header><nav class="shell"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/develop/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
-  <main class="shell">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header><nav class="shell" aria-label="Evaluation navigation"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
+  <main class="shell" id="main">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. Metrics known to have been produced by evaluation-to-runtime leakage are explicitly invalidated, never silently treated as current quality claims. Tagged releases regenerate every critical answer with the trusted renderer, bind it to the full and answer-semantic runtime fingerprints, and rerun the full-context audit.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

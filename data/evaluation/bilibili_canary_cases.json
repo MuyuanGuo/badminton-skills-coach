@@ -1,61 +1,44 @@
 {
-  "schema_version": 1,
-  "description": "Automatic Bilibili source canaries. They prove retrieval and packet wiring, not human-judged coaching semantics.",
+  "schema_version": 2,
+  "description": "Independent positive Bilibili retrieval gold. Cases are source-reviewed and evaluation-only; IDs and judgments are forbidden as runtime ranking inputs.",
+  "minimum_case_count": 30,
+  "runtime_use_forbidden": true,
   "cases": [
-    {
-      "id": "bili-start-direction",
-      "query": "启动总是反应不过来，怎么判断往哪蹬地？",
-      "expected_evidence_id": "bilibili:BV12N411v7qo"
-    },
-    {
-      "id": "bili-backhand-narrow-edge",
-      "query": "反手发力为什么要捏两个窄边？",
-      "expected_evidence_id": "bilibili:BV16G411y7Rs"
-    },
-    {
-      "id": "bili-passive-backhand",
-      "query": "反手被动球应该怎么处理？",
-      "expected_evidence_id": "bilibili:BV1TT411r7Ft"
-    },
-    {
-      "id": "bili-universal-backhand-grip",
-      "query": "反手万能握拍怎么快速变拍？",
-      "expected_evidence_id": "bilibili:BV1aw411179M"
-    },
-    {
-      "id": "bili-clear-correction",
-      "query": "高远球改动作为什么总是改不过来？",
-      "expected_evidence_id": "bilibili:BV1es4y1K7PV"
-    },
-    {
-      "id": "bili-waist-cut",
-      "query": "正反手切腰技巧是什么？",
-      "expected_evidence_id": "bilibili:BV1t94y1a7La"
-    },
-    {
-      "id": "bili-singles-core",
-      "query": "羽毛球单打制胜的核心思路是什么？",
-      "expected_evidence_id": "bilibili:BV1tM4y1B7z8"
-    },
-    {
-      "id": "bili-backhand-transition",
-      "query": "反手过渡球的高级握拍技巧是什么？",
-      "expected_evidence_id": "bilibili:BV1tw411U7PV"
-    },
-    {
-      "id": "bili-smash-angle",
-      "query": "杀球压不下去，怎么让杀球下压？",
-      "expected_evidence_id": "bilibili:BV1vx4y1A71t"
-    },
-    {
-      "id": "bili-hip-leg-force-order",
-      "query": "高远球髋带腿还是脚蹬地顶着髋？",
-      "expected_evidence_id": "bilibili:BV1hByrBCEcE"
-    }
+    {"id":"bili-start-direction","query":"启动总是反应不过来，怎么判断往哪蹬地？","expected_evidence_id":"bilibili:BV12N411v7qo","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-narrow-edge","query":"反手发力为什么要捏两个窄边？","expected_evidence_id":"bilibili:BV16G411y7Rs","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-passive-backhand","query":"反手被动球应该怎么处理？","expected_evidence_id":"bilibili:BV1TT411r7Ft","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-universal-backhand-grip","query":"反手万能握拍怎么快速变拍？","expected_evidence_id":"bilibili:BV1aw411179M","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-clear-correction","query":"高远球改动作为什么总是改不过来？","expected_evidence_id":"bilibili:BV1es4y1K7PV","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-waist-cut","query":"正反手切腰技巧是什么？","expected_evidence_id":"bilibili:BV1t94y1a7La","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-singles-core","query":"羽毛球单打制胜的核心思路是什么？","expected_evidence_id":"bilibili:BV1tM4y1B7z8","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-transition","query":"反手过渡球的高级握拍技巧是什么？","expected_evidence_id":"bilibili:BV1tw411U7PV","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-smash-angle","query":"杀球压不下去，怎么让杀球下压？","expected_evidence_id":"bilibili:BV1vx4y1A71t","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-hip-leg-force-order","query":"高远球髋带腿还是脚蹬地顶着髋？","expected_evidence_id":"bilibili:BV1hByrBCEcE","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-no-forced-pronation","query":"为什么说羽毛球发力不能刻意做内旋，正确内旋怎么做？","expected_evidence_id":"bilibili:BV11F411D7s4","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-singles-return-serve","query":"单打接发球有哪些比较通用的球路组合？","expected_evidence_id":"bilibili:BV114421U7iV","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-china-jump","query":"正手后场中国跳步法基础版和高阶版怎么做？","expected_evidence_id":"bilibili:BV13s421A7JR","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-smash-wrist-frame","query":"大发力杀球架拍要不要立腕？","expected_evidence_id":"bilibili:BV12Z4y1n7b4","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-mixed-doubles-smash","query":"业余混双男搭档为什么不能一味重杀？","expected_evidence_id":"bilibili:BV14F4m137TN","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-passive-deformation","query":"被动时动作变形，怎么解决动作变形并发力？","expected_evidence_id":"bilibili:BV1764y1A79d","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-heavy-fast-smash","query":"大发力杀球里，重杀和快杀的核心动作有什么区别？","expected_evidence_id":"bilibili:BV14m4y1376B","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-defense-grip","query":"反手接杀怎么握拍，大拇指顶在哪里？","expected_evidence_id":"bilibili:BV18V3Ez2ECs","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-serve-push-defense","query":"如何破解单打发球被推？发球球路怎么安排？","expected_evidence_id":"bilibili:BV192aAz8EJL","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-clear-stability","query":"反手高远球如何提高稳定性，高架拍和低架拍怎么选？","expected_evidence_id":"bilibili:BV1Ai756oEbD","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-forehand-grip","query":"羽毛球正手正确握拍怎么抓，准备握拍和发力握拍有什么区别？","expected_evidence_id":"bilibili:BV19WqPYYEY9","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-net-cross","query":"网前反手勾对角的动作原理是什么？","expected_evidence_id":"bilibili:BV15k4y1G7LM","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-backhand-low-power","query":"低手位反手被动高远怎么用贴拍和闪动回拉发力？","expected_evidence_id":"bilibili:BV19wXyB5E8G","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-dropped-elbow","query":"后场发力为什么会掉肘，两种情况分别怎么改？","expected_evidence_id":"bilibili:BV16H4y1E7YC","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-smash-net","query":"杀球总下网怎么办，平杀和尖杀怎么控制？","expected_evidence_id":"bilibili:BV1AG411X7FR","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-split-step-rhythm","query":"接杀接吊时启动步节奏应该怎么练？","expected_evidence_id":"bilibili:BV16hQ4BqENy","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-return-serve-rush","query":"双打对手接发太凶抢网，怎么限制？","expected_evidence_id":"bilibili:BV1Ac411q7eJ","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-racket-u","query":"雷霆80球拍3U、4U、5U应该按什么阶段选？","expected_evidence_id":"bilibili:BV11kmPY2Esb","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-close-racket-power","query":"贴拍发力和短发力怎么做，怎样用于提速变速？","expected_evidence_id":"bilibili:BV17t2wYxEF3","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}},
+    {"id":"bili-forehand-net-spin","query":"正手网前展搓的基础动作怎么做？","expected_evidence_id":"bilibili:BV17uxLzXEqc","review":{"status":"source_reviewed","reviewer_role":"codex-remediation-agent","basis":"transcript_and_title_alignment"}}
   ],
   "thresholds": {
     "retrieval_top_k": 3,
     "minimum_claim_window_rank": 2,
-    "maximum_packet_bytes": 16384
+    "maximum_packet_bytes": 16384,
+    "minimum_pass_rate": 1.0
   }
 }

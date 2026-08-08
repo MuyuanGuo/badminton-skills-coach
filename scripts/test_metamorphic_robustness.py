@@ -41,6 +41,18 @@ class MetamorphicRobustnessTests(unittest.TestCase):
         self.assertEqual(len(selected), 15)
         self.assertEqual(set(counts.values()), {3})
 
+    def test_selected_video_ids_uses_runtime_output_not_gold_fixture(self):
+        context = {
+            "selected_videos": [
+                {"video_id": "runtime-a"},
+                {"video_id": "runtime-b"},
+            ]
+        }
+        self.assertEqual(
+            self.module.selected_video_ids(context),
+            {"runtime-a", "runtime-b"},
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,6 +4,10 @@ Use this workflow only for answers produced with this Skill and for explicit use
 
 ## Before sending an answer
 
+`feedback_guidance`, `global_promoted_feedback`, and
+`local_accepted_feedback` may change bounded ranking or presentation, but they
+are never teaching evidence. Every label and feedback record is scoped to that answer turn only.
+
 1. Assign every confirmed worthwhile video exactly one stable, contiguous label: `V1`, `V2`, and so on. Current answer packets order these labels by answer usefulness after removing audit-only finalists.
 2. Keep the same label when a core video appears again in the complete related-video list.
 3. Order labels by answer usefulness, not by raw retrieval rank.
@@ -109,7 +113,7 @@ python3 scripts/feedback.py export-github \
   --output /path/to/issue-body.md
 ```
 
-The export contains only the separately approved sanitized question, sanitized answer excerpt, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original local question, original answer, or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Do not mark it as uploaded until a real public Issue URL exists.
+The export contains only the separately approved sanitized question, sanitized answer excerpt, video IDs and links, parsed issue types, version, and privacy confirmation. It does not include the original local question, original answer, or raw feedback. It also does not upload anything: show the returned submission URL and Issue body to the user, and wait for the user to submit it. Never upload local feedback without explicit consent, and do not mark it as uploaded until a real public Issue URL exists.
 
 After a public Issue exists in the canonical repository, fetch and import it through the GitHub API:
 

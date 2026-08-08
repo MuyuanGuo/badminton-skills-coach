@@ -40,6 +40,9 @@ class RuntimeBenchmarkTests(unittest.TestCase):
                 "search_p95_ms": 10,
                 "answer_context_p95_ms": 10,
                 "peak_traced_memory_mb": 10,
+                "cold_peak_rss_mb": 10,
+                "cold_module_load_p95_ms": 10,
+                "cold_answer_context_p95_ms": 10,
                 "minimum_answer_packet_reduction": 0.5,
             },
             "latency": {
@@ -51,11 +54,15 @@ class RuntimeBenchmarkTests(unittest.TestCase):
                     "answer_context",
                 )
             },
-            "memory": {"peak_traced_mb": 11},
+            "cold_start": {
+                "module_load": {"p95_ms": 11},
+                "answer_context": {"p95_ms": 11},
+            },
+            "memory": {"peak_traced_mb": 11, "cold_peak_rss_mb": 11},
             "answer_packet": {"minimum_reduction": 0.4},
         }
         violations = self.module.budget_violations(result)
-        self.assertEqual(len(violations), 6)
+        self.assertEqual(len(violations), 9)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 import argparse
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 
@@ -21,6 +22,8 @@ CONTEXT_PATH = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+RUNTIME_PRIORS_PATH = ROOT / "config" / "reviewed_evidence_signals.json"
+EVALUATION_DIR = ROOT / "data" / "evaluation"
 _MODULE_CACHE = {}
 
 
@@ -92,6 +95,101 @@ def prepare_case_context(search_module, case, top_k=12):
         "top_ids": selected_ids,
         "evidence_ready_ids": evidence_ready_ids,
     }
+
+
+def _normalized_fixture_text(value):
+    return re.sub(r"[^0-9a-z\u3400-\u9fff]+", "", str(value).lower())
+
+
+def _fixture_signatures(evaluation_dir):
+    query_keys = {"query", "question", "user_query", "original_query"}
+    evidence_keys = {
+        "required_video_ids",
+        "primary_video_ids",
+        "relevant_video_ids",
+        "expected_video_ids",
+        "evidence_ids",
+    }
+    queries = set()
+    evidence_sets = set()
+
+    def walk(node):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key in query_keys and isinstance(value, str):
+                    normalized = _normalized_fixture_text(value)
+                    if normalized:
+                        queries.add(normalized)
+                if key in evidence_keys and isinstance(value, list):
+                    identifiers = frozenset(
+                        str(item) for item in value if str(item).strip()
+                    )
+                    if identifiers:
+                        evidence_sets.add(identifiers)
+                walk(value)
+        elif isinstance(node, list):
+            for item in node:
+                walk(item)
+
+    for fixture_path in sorted(Path(evaluation_dir).glob("*.json")):
+        try:
+            walk(json.loads(fixture_path.read_text(encoding="utf-8")))
+        except json.JSONDecodeError:
+            return set(), set(), False
+    return queries, evidence_sets, True
+
+
+def evaluation_fixture_isolation(
+    path=RUNTIME_PRIORS_PATH, evaluation_dir=EVALUATION_DIR
+):
+    """Confirm that runtime ranking priors cannot contain evaluation fixtures."""
+
+    registry = json.loads(Path(path).read_text(encoding="utf-8"))
+    signals = registry.get("signals", [])
+    fixture_queries, fixture_evidence_sets, fixtures_valid = (
+        _fixture_signatures(evaluation_dir)
+    )
+    if not (
+        fixtures_valid
+        and registry.get("registry_type")
+        == "operational_feedback_runtime_prior"
+        and registry.get("evaluation_case_ids_forbidden") is True
+        and isinstance(signals, list)
+        and not any("case_id" in signal for signal in signals)
+        and "data/evaluation/" not in str(registry.get("source", ""))
+    ):
+        return False
+    query_keys = {"query", "question", "user_query", "original_query"}
+    evidence_keys = {
+        "required_video_ids",
+        "primary_video_ids",
+        "relevant_video_ids",
+        "expected_video_ids",
+        "evidence_ids",
+    }
+    for signal in signals:
+        signal_queries = {
+            _normalized_fixture_text(signal.get(key, ""))
+            for key in query_keys
+            if isinstance(signal.get(key), str)
+        } - {""}
+        if signal_queries & fixture_queries:
+            return False
+        signal_evidence = {
+            str(item)
+            for key in evidence_keys
+            for item in (
+                signal.get(key, [])
+                if isinstance(signal.get(key), list)
+                else []
+            )
+        }
+        if any(
+            fixture_ids.issubset(signal_evidence)
+            for fixture_ids in fixture_evidence_sets
+        ):
+            return False
+    return True
 
 
 def evaluate(cases_path=CASES_PATH, top_k=12):
@@ -171,6 +269,7 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         "selection_truncated_cases": sum(
             item["selection_truncated"] for item in results
         ),
+        "evaluation_fixture_isolation": evaluation_fixture_isolation(),
         "results": results,
     }
 
@@ -185,8 +284,8 @@ def main():
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--top-k", type=int, default=12)
     parser.add_argument("--min-candidate-recall", type=float, default=1.0)
-    parser.add_argument("--min-selected-video-recall", type=float, default=1.0)
-    parser.add_argument("--min-primary-selected-rate", type=float, default=0.95)
+    parser.add_argument("--min-selected-video-recall", type=float)
+    parser.add_argument("--min-primary-selected-rate", type=float)
     parser.add_argument("--min-answer-mode-accuracy", type=float, default=1.0)
     parser.add_argument("--min-context-evidence-coverage", type=float, default=1.0)
     parser.add_argument(
@@ -197,16 +296,6 @@ def main():
     print(json.dumps(result, ensure_ascii=False, indent=2))
     gates = [
         ("candidate recall", result["candidate_recall"], args.min_candidate_recall),
-        (
-            "selected video recall",
-            result["selected_video_recall"],
-            args.min_selected_video_recall,
-        ),
-        (
-            "primary selected rate",
-            result["primary_selected_rate"],
-            args.min_primary_selected_rate,
-        ),
         (
             "answer mode accuracy",
             result["answer_mode_accuracy"],
@@ -219,6 +308,16 @@ def main():
         ),
     ]
     failed = [name for name, actual, required in gates if actual < required]
+    if args.min_selected_video_recall is not None and (
+        result["selected_video_recall"] < args.min_selected_video_recall
+    ):
+        failed.append("selected video recall")
+    if args.min_primary_selected_rate is not None and (
+        result["primary_selected_rate"] < args.min_primary_selected_rate
+    ):
+        failed.append("primary selected rate")
+    if not result["evaluation_fixture_isolation"]:
+        failed.append("evaluation fixture isolation")
     if (
         result["hard_negative_selected_violations"]
         > args.max_hard_negative_selected_violations

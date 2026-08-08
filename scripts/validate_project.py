@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import re
+import sqlite3
 import struct
 import xml.etree.ElementTree as ET
 from collections import Counter
@@ -41,11 +42,9 @@ compile_command = (
 if compile_command not in workflow_text:
     raise SystemExit("CI does not compile all Python source directories")
 for required_ci_command in [
-    "python scripts/evaluate_feedback_lifecycle.py",
-    "python scripts/evaluate_metamorphic_robustness.py",
+    "python scripts/collect_evaluation_results.py",
     "python scripts/benchmark_runtime.py",
     "python scripts/evaluate_answer_packet.py",
-    "python scripts/evaluate_bilibili_canaries.py",
     "python scripts/generate_bilibili_wiring_canaries.py",
     "python scripts/evaluate_bilibili_wiring_canaries.py",
     "node scripts/test_bilibili_profile_snapshot_dom.mjs",
@@ -70,6 +69,7 @@ json_paths = [
     "config/retrieval_rules.json",
     "config/runtime_performance_budgets.json",
     "config/reviewed_evidence_signals.json",
+    "config/transcription_models.json",
     "data/knowledge/build_manifest.json",
     "data/douyin_teaching_filtered.json",
     "data/douyin_classification_ledger.json",
@@ -105,6 +105,7 @@ json_paths = [
     "data/knowledge/knowledge_graph_summary.json",
     "data/review/visual_review_annotations.json",
     "data/review/visual_review_queue.json",
+    "data/review/retrieval_priors.json",
     "data/processing/douyin_queue.json",
     "data/processing/douyin_discovery_state.json",
     "data/processing/bilibili_origin_review_queue.json",
@@ -285,12 +286,15 @@ if not (ROOT / "scripts" / "apply_answer_quality_review_notes.py").exists():
     raise SystemExit("Answer quality review application script is missing")
 for runtime_file in [
     ROOT / "requirements-transcription.txt",
+    ROOT / "requirements-dev.txt",
     ROOT / "scripts" / "doctor.py",
     ROOT / "scripts" / "install_skill.py",
     ROOT / "scripts" / "media_assets.py",
     ROOT / "scripts" / "package_skill_release.py",
     ROOT / "scripts" / "build_manifest.py",
     ROOT / "scripts" / "check_video_links.py",
+    ROOT / "scripts" / "generate_release_answer_results.py",
+    ROOT / "scripts" / "validate_live_generation_results.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "doctor.py",
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "install.py",
     ROOT
@@ -358,9 +362,35 @@ for runtime_file in [
     / "liuhui-badminton-coach"
     / "scripts"
     / "audit_answer.py",
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "scripts"
+    / "render_answer.py",
 ]:
     if not runtime_file.exists():
         raise SystemExit(f"Runtime setup file is missing: {runtime_file.relative_to(ROOT)}")
+
+runtime_store_path = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "runtime-store.sqlite3"
+)
+runtime_store = None
+try:
+    runtime_store = sqlite3.connect(
+        f"file:{runtime_store_path.resolve().as_posix()}?mode=ro&immutable=1",
+        uri=True,
+    )
+    if runtime_store.execute("PRAGMA quick_check").fetchone()[0] != "ok":
+        raise SystemExit("Runtime SQLite store failed quick_check")
+    if runtime_store.execute("PRAGMA application_id").fetchone()[0] != 0x4C484243:
+        raise SystemExit("Runtime SQLite store has an invalid application_id")
+finally:
+    if runtime_store is not None:
+        runtime_store.close()
 
 expected_manifest = manifest_bytes()
 for manifest_path in [
@@ -733,6 +763,7 @@ required_target_action_scope_fields = {
     "source_terms",
     "source_suppressions",
     "source_override_terms",
+    "answer_boundary_statement",
 }
 for scope in target_action_scopes:
     if set(scope) != required_target_action_scope_fields:
@@ -742,6 +773,7 @@ for scope in target_action_scopes:
         or not scope["query_terms"]
         or not scope["search_terms"]
         or not scope["source_terms"]
+        or not scope["answer_boundary_statement"]
     ):
         raise SystemExit("Target action scope cannot be empty")
 reception_implications = answer_selection_rules.get(
@@ -942,6 +974,7 @@ if set(answer_modality_rules.get("workflow", {})) != {
     "multi_issue_connectors",
     "relational_signals",
     "minimum_multi_issue_concepts",
+    "context_only_unit_patterns",
 }:
     raise SystemExit("Answer workflow routing rules are incomplete")
 if set(
@@ -1648,18 +1681,45 @@ if not topic_markdown.exists():
 if "## Topic Map" not in topic_markdown.read_text(encoding="utf-8"):
     raise SystemExit("Skill topic index markdown is missing the topic map")
 
+feedback_workflow = (
+    ROOT
+    / "skills"
+    / "liuhui-badminton-coach"
+    / "references"
+    / "feedback-workflow.md"
+)
 skill_text = (
     ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 ).read_text(encoding="utf-8")
+skill_contract_text = "\n".join(
+    [
+        skill_text,
+        (
+            ROOT
+            / "skills"
+            / "liuhui-badminton-coach"
+            / "references"
+            / "answer-workflow.md"
+        ).read_text(encoding="utf-8"),
+        feedback_workflow.read_text(encoding="utf-8"),
+        (
+            ROOT
+            / "skills"
+            / "liuhui-badminton-coach"
+            / "references"
+            / "evidence-scope-guide.md"
+        ).read_text(encoding="utf-8"),
+    ]
+)
 for required_answer_contract in [
     "text_primary",
     "balanced",
     "video_primary",
-    "Never return a link-only answer",
+    "not a link-only answer",
     "核心视频与观看重点",
     "evidence_id",
     "canonical URL",
-    "temporary CDN media URLs",
+    "temporary CDN",
     "完整相关视频",
     "V1",
     "scripts/feedback.py record",
@@ -1669,25 +1729,20 @@ for required_answer_contract in [
     "--no-local-personalization",
     "--plan-only",
     "retrieval_guidance",
-    "export-github --confirm-public",
-    "did not upload anything",
+    "export-github",
+    "--confirm-public",
+    "does not upload anything",
     "Never upload local feedback without explicit consent",
     "scoped to that answer turn only",
 ]:
-    if required_answer_contract not in skill_text:
+    if required_answer_contract not in skill_contract_text:
         raise SystemExit(
-            f"Skill text/video answer contract is missing: {required_answer_contract}"
+            "Modular Skill answer contract is missing: "
+            f"{required_answer_contract}"
         )
 
 feedback_script = (
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "feedback.py"
-)
-feedback_workflow = (
-    ROOT
-    / "skills"
-    / "liuhui-badminton-coach"
-    / "references"
-    / "feedback-workflow.md"
 )
 if not feedback_script.exists() or not feedback_workflow.exists():
     raise SystemExit("Skill feedback scripts or workflow are missing")
@@ -1779,22 +1834,22 @@ if len(feedback_cases["cases"]) < 8:
 if not set(feedback_cases["video_map"].values()).issubset(ready_video_ids):
     raise SystemExit("Feedback parser evaluation references a non-ready video")
 
-practice_template = (
+practice_reference = (
     ROOT
     / "skills"
     / "liuhui-badminton-coach"
     / "references"
-    / "practice-plan-template.md"
+    / "practice.md"
 )
-if not practice_template.exists():
-    raise SystemExit("Skill practice-plan template is missing")
-practice_template_text = practice_template.read_text(encoding="utf-8")
+if not practice_reference.exists():
+    raise SystemExit("Skill practice reference is missing")
+practice_template_text = practice_reference.read_text(encoding="utf-8")
 for required_heading in [
-    "今日 15 分钟",
-    "3 天修正",
-    "2 周巩固",
-    "来源证据",
-    "fallback, not a fixed prescription",
+    "default to 15 minutes only when absent",
+    "three-day correction progression",
+    "two-week consolidation progression",
+    "mapped source videos",
+    "bounded synthesis",
     "solo fallback",
 ]:
     if required_heading not in practice_template_text:

@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_DIR = Path(__file__).resolve().parent
 KNOWLEDGE_PATH = ROOT / "references" / "knowledge-base.json"
 RETRIEVAL_INDEX_PATH = ROOT / "references" / "retrieval-index.json"
+RUNTIME_STORE_PATH = ROOT / "references" / "runtime-store.sqlite3"
 RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 ANSWER_RULES_PATH = ROOT / "references" / "answer-modality-rules.json"
 FEEDBACK_RULES_PATH = ROOT / "references" / "feedback-rules.json"
@@ -164,8 +165,6 @@ def load_answer_rules():
 def load_selection_module():
     global _SELECTION_MODULE
     if _SELECTION_MODULE is None:
-        import importlib.util
-
         spec = importlib.util.spec_from_file_location(
             "liuhui_retrieval_selection_policy", SELECTION_SCRIPT_PATH
         )
@@ -283,12 +282,34 @@ def hashed_ngrams(text, sizes):
 def load_resources():
     global _RESOURCE_CACHE
     if _RESOURCE_CACHE is None:
-        _RESOURCE_CACHE = (
-            json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8")),
-            json.loads(RETRIEVAL_INDEX_PATH.read_text(encoding="utf-8")),
-            json.loads(RULES_PATH.read_text(encoding="utf-8")),
-        )
+        rules = json.loads(RULES_PATH.read_text(encoding="utf-8"))
+        if RUNTIME_STORE_PATH.exists():
+            runtime_store = load_component(
+                "liuhui_runtime_store", "runtime_store.py"
+            ).RuntimeStore(RUNTIME_STORE_PATH)
+            _RESOURCE_CACHE = (
+                runtime_store.knowledge,
+                runtime_store.retrieval_index,
+                rules,
+            )
+        else:
+            _RESOURCE_CACHE = (
+                json.loads(KNOWLEDGE_PATH.read_text(encoding="utf-8")),
+                json.loads(RETRIEVAL_INDEX_PATH.read_text(encoding="utf-8")),
+                rules,
+            )
     return _RESOURCE_CACHE
+
+
+def knowledge_video_map(knowledge, video_ids=None, *, full=True):
+    runtime_store = load_component(
+        "liuhui_runtime_store", "runtime_store.py"
+    )
+    return runtime_store.video_map(knowledge, video_ids, full=full)
+
+
+def iter_search_videos(knowledge):
+    return knowledge.get("search_videos", knowledge["videos"])
 
 
 def decode_video_ngram_postings(encoded):
@@ -335,10 +356,18 @@ def prepared_retrieval_index(retrieval_index):
     cached = _PREPARED_RETRIEVAL_CACHE.get(cache_key)
     if cached is not None and cached[0] is retrieval_index:
         return cached[1]
-    records = retrieval_index["videos"]
+    record_list = []
+    records = {}
+    video_ids = []
+    for item in retrieval_index["videos"]:
+        video_id = item["video_id"]
+        record_list.append(item)
+        records[video_id] = item
+        video_ids.append(video_id)
     prepared = {
-        "records": {item["video_id"]: item for item in records},
-        "video_ids": [item["video_id"] for item in records],
+        "record_list": record_list,
+        "records": records,
+        "video_ids": video_ids,
     }
     chunk_index = retrieval_index.get("chunk_index") or {}
     chunk_config = chunk_index.get("config") or {}
@@ -350,31 +379,30 @@ def prepared_retrieval_index(retrieval_index):
         or chunk_allowed_sources
     )
     chunks = chunk_index.get("chunks") or []
-    cluster_chunk_indexes = frozenset(
-        index
-        for index, chunk in enumerate(chunks)
-        if isinstance(chunk.get("video_index"), int)
-        and 0 <= chunk["video_index"] < len(records)
-        and records[chunk["video_index"]].get("source_type")
-        in chunk_cluster_sources
-    )
-    scoring_chunk_indexes = frozenset(
-        index
-        for index in cluster_chunk_indexes
-        if records[chunks[index]["video_index"]].get("source_type")
-        in chunk_allowed_sources
-    )
+    cluster_chunk_indexes = set()
+    scoring_chunk_indexes = set()
+    clustered_video_ids = set()
+    indexed_video_ids = set()
+    for index, chunk in enumerate(chunks):
+        video_index = chunk.get("video_index")
+        if not isinstance(video_index, int) or not (
+            0 <= video_index < len(record_list)
+        ):
+            continue
+        record = record_list[video_index]
+        source_type = record.get("source_type")
+        if source_type not in chunk_cluster_sources:
+            continue
+        cluster_chunk_indexes.add(index)
+        clustered_video_ids.add(record["video_id"])
+        if source_type in chunk_allowed_sources:
+            scoring_chunk_indexes.add(index)
+            indexed_video_ids.add(record["video_id"])
     prepared["chunk"] = {
-        "cluster_indexes": cluster_chunk_indexes,
-        "scoring_indexes": scoring_chunk_indexes,
-        "clustered_video_ids": {
-            records[chunks[index]["video_index"]]["video_id"]
-            for index in cluster_chunk_indexes
-        },
-        "indexed_video_ids": {
-            records[chunks[index]["video_index"]]["video_id"]
-            for index in scoring_chunk_indexes
-        },
+        "cluster_indexes": frozenset(cluster_chunk_indexes),
+        "scoring_indexes": frozenset(scoring_chunk_indexes),
+        "clustered_video_ids": clustered_video_ids,
+        "indexed_video_ids": indexed_video_ids,
     }
     if "ngram_vocabulary" not in retrieval_index:
         prepared["forward_gram_sets"] = {
@@ -383,7 +411,7 @@ def prepared_retrieval_index(retrieval_index):
                 "teaching_note": set(item.get("teaching_note_ngrams", [])),
                 "transcript": set(item.get("transcript_ngrams", [])),
             }
-            for item in records
+            for item in record_list
         }
     _PREPARED_RETRIEVAL_CACHE.clear()
     _PREPARED_RETRIEVAL_CACHE[cache_key] = (
@@ -396,6 +424,28 @@ def prepared_retrieval_index(retrieval_index):
 def inverted_ngram_matches(retrieval_index, grams):
     """Return document frequencies and per-video channel matches for query grams."""
     prepared = prepared_retrieval_index(retrieval_index)
+    posting_lookup = getattr(retrieval_index, "lookup_ngram_postings", None)
+    if posting_lookup is not None:
+        document_frequency = Counter()
+        matches = {}
+        video_ids = prepared["video_ids"]
+        for gram, encoded in posting_lookup(grams).items():
+            gram_postings = decode_video_ngram_postings(encoded)
+            document_frequency[gram] = len(gram_postings)
+            for record_index, channel_mask in gram_postings:
+                video_id = video_ids[record_index]
+                channels = matches.setdefault(
+                    video_id,
+                    {"title": set(), "teaching_note": set(), "transcript": set()},
+                )
+                if channel_mask & 1:
+                    channels["title"].add(gram)
+                if channel_mask & 2:
+                    channels["teaching_note"].add(gram)
+                if channel_mask & 4:
+                    channels["transcript"].add(gram)
+        return document_frequency, matches
+
     vocabulary = retrieval_index.get("ngram_vocabulary")
     postings = retrieval_index.get("ngram_postings")
     if vocabulary is None or postings is None:
@@ -608,6 +658,8 @@ _retrieval_ranking.inverted_candidate_ids = inverted_candidate_ids
 _retrieval_ranking.inverted_ngram_matches = inverted_ngram_matches
 _retrieval_ranking.prepared_retrieval_index = prepared_retrieval_index
 _retrieval_ranking.decode_chunk_ngram_postings = decode_chunk_ngram_postings
+_retrieval_ranking.knowledge_video_map = knowledge_video_map
+_retrieval_ranking.iter_search_videos = iter_search_videos
 _retrieval_ranking.load_selection_policy = load_selection_policy
 _retrieval_ranking.TIER_ORDER = TIER_ORDER
 _retrieval_ranking._VIDEO_CONSTRAINT_SCOPE_CACHE = _VIDEO_CONSTRAINT_SCOPE_CACHE
@@ -636,6 +688,7 @@ _feedback_ranking.load_local_feedback_records = load_local_feedback_records
 _feedback_ranking.assign_review_budget = assign_review_budget
 _feedback_ranking.candidate_sort_key = candidate_sort_key
 _feedback_ranking.refresh_score_breakdown = refresh_score_breakdown
+_feedback_ranking.knowledge_video_map = knowledge_video_map
 _feedback_ranking.TIER_ORDER = TIER_ORDER
 character_grams = _feedback_ranking.character_grams
 jaccard = _feedback_ranking.jaccard
@@ -770,6 +823,7 @@ def search(
     manifest_limit=DEFAULT_MANIFEST_LIMIT,
     local_personalization=True,
     feedback_dir=None,
+    enforce_retrieval_policy=True,
 ):
     if recall_mode not in {"exhaustive", "balanced"}:
         raise ValueError(f"Unsupported recall mode: {recall_mode}")
@@ -802,15 +856,25 @@ def search(
         local_personalization=local_personalization,
         feedback_dir=feedback_dir,
     )
-    ranked, retrieval_policy = apply_retrieval_policy(
-        query,
-        ranked,
-        expansion,
-        knowledge,
-        retrieval_guidance,
-        rules,
-    )
-    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    if enforce_retrieval_policy:
+        ranked, retrieval_policy = apply_retrieval_policy(
+            query,
+            ranked,
+            expansion,
+            knowledge,
+            retrieval_guidance,
+            rules,
+        )
+    else:
+        for candidate in ranked:
+            candidate["retrieval_policy_eligible"] = True
+            candidate["retrieval_policy_reasons"] = []
+        retrieval_policy = {
+            "deferred_to_answer_context_selection": True,
+            "eligible_candidate_count": len(ranked),
+            "rejected_candidate_count": 0,
+            "exhaustive_candidates_preserved": True,
+        }
     eligible_ranked = [
         item for item in ranked if item["retrieval_policy_eligible"]
     ]
@@ -827,6 +891,11 @@ def search(
         surfaced_ranked = cohort_capped_ranked[:limit]
     else:
         surfaced_ranked = []
+    surfaced_video_ids = [
+        item["video_id"]
+        for item in (surfaced_ranked if manifest_offset == 0 else [])
+    ]
+    videos = knowledge_video_map(knowledge, surfaced_video_ids)
     accessible_candidate_count = (
         len(ranked)
         if recall_mode == "exhaustive"
@@ -974,8 +1043,8 @@ def lookup_videos(
     chunk_hints_by_video=None,
 ):
     knowledge, retrieval_index, rules = load_resources()
-    videos = {video["video_id"]: video for video in knowledge["videos"]}
-    records = {item["video_id"]: item for item in retrieval_index["videos"]}
+    videos = knowledge_video_map(knowledge, video_ids)
+    records = prepared_retrieval_index(retrieval_index)["records"]
     candidates = {}
     expansion = None
     feedback_guidance = None

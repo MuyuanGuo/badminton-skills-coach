@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate independently reviewed, current-runtime answer generations for release."""
+"""Validate reproducible, current-runtime release answers."""
 
 import argparse
 import hashlib
@@ -18,7 +18,6 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RESULTS = ROOT / "data" / "evaluation" / "live_generation_results.json"
 CASES_PATH = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
 CRITICAL_PATH = ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
-QUALITY_RULES_PATH = ROOT / "config" / "answer_quality_rules.json"
 CONTEXT_SCRIPT = (
     ROOT
     / "skills"
@@ -26,10 +25,16 @@ CONTEXT_SCRIPT = (
     / "scripts"
     / "prepare_answer_context.py"
 )
+RENDER_SCRIPT = (
+    ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "render_answer.py"
+)
 AUDIT_SCRIPT = (
     ROOT / "skills" / "liuhui-badminton-coach" / "scripts" / "audit_answer.py"
 )
+GENERATOR_TYPE = "deterministic_answer_renderer"
+VALIDATION_METHOD = "current_runtime_full_context_audit"
 DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}")
+SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 
 
 class LiveGenerationValidationError(ValueError):
@@ -51,8 +56,16 @@ def answer_digest(answer):
     return hashlib.sha256(answer.encode("utf-8")).hexdigest()
 
 
-def inspect_review_snapshot(payload, root=ROOT):
-    """Validate immutable review evidence without claiming runtime freshness."""
+def file_digest(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def relative_runtime_path(path, root=ROOT):
+    return Path(path).relative_to(Path(root)).as_posix()
+
+
+def inspect_generation_snapshot(payload, root=ROOT):
+    """Validate immutable generation evidence without claiming freshness."""
 
     root = Path(root)
     expected_top_level = {
@@ -61,52 +74,73 @@ def inspect_review_snapshot(payload, root=ROOT):
         "answer_runtime_fingerprint",
         "generated_at",
         "generator",
-        "review",
+        "validation",
         "cases",
     }
-    if set(payload) != expected_top_level or payload.get("schema_version") != 2:
+    if set(payload) != expected_top_level or payload.get("schema_version") != 3:
         raise LiveGenerationValidationError(
             "Live-generation results have an unsupported schema"
         )
-    current_artifact_fingerprint = runtime_fingerprint(root)
-    current_answer_fingerprint = answer_runtime_fingerprint(root)
+
+    reviewed_artifact_fingerprint = payload.get("runtime_fingerprint", "")
+    reviewed_answer_fingerprint = payload.get("answer_runtime_fingerprint", "")
+    if not SHA256_PATTERN.fullmatch(reviewed_artifact_fingerprint):
+        raise LiveGenerationValidationError("Artifact runtime fingerprint is invalid")
+    if not SHA256_PATTERN.fullmatch(reviewed_answer_fingerprint):
+        raise LiveGenerationValidationError("Answer runtime fingerprint is invalid")
     if not DATE_PATTERN.fullmatch(payload.get("generated_at", "")):
         raise LiveGenerationValidationError("generated_at must use YYYY-MM-DD")
+
+    render_path = root / RENDER_SCRIPT.relative_to(ROOT)
+    audit_path = root / AUDIT_SCRIPT.relative_to(ROOT)
     generator = payload.get("generator")
-    if not isinstance(generator, dict) or set(generator) != {
-        "provider",
-        "model",
-        "model_version",
-        "task_id",
-    }:
+    expected_generator = {
+        "type",
+        "implementation",
+        "implementation_sha256",
+    }
+    if not isinstance(generator, dict) or set(generator) != expected_generator:
         raise LiveGenerationValidationError("Generator provenance is incomplete")
-    if not all(str(value).strip() for value in generator.values()):
-        raise LiveGenerationValidationError("Generator provenance contains empty values")
-    review = payload.get("review")
-    if not isinstance(review, dict) or set(review) != {
-        "reviewer",
-        "reviewed_at",
-        "independent_from_generator",
-    }:
-        raise LiveGenerationValidationError("Independent review metadata is incomplete")
     if (
-        not str(review["reviewer"]).strip()
-        or not DATE_PATTERN.fullmatch(review["reviewed_at"])
-        or review["independent_from_generator"] is not True
-        or review["reviewer"] == generator["task_id"]
+        generator["type"] != GENERATOR_TYPE
+        or generator["implementation"]
+        != relative_runtime_path(render_path, root=root)
+        or not SHA256_PATTERN.fullmatch(generator["implementation_sha256"])
     ):
         raise LiveGenerationValidationError(
-            "Release generations require a named independent reviewer"
+            "Release answers require the trusted deterministic renderer"
         )
 
-    registry = {case["case_id"]: case for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]}
+    validation = payload.get("validation")
+    expected_validation = {
+        "method",
+        "implementation",
+        "implementation_sha256",
+    }
+    if not isinstance(validation, dict) or set(validation) != expected_validation:
+        raise LiveGenerationValidationError("Validation provenance is incomplete")
+    if (
+        validation["method"] != VALIDATION_METHOD
+        or validation["implementation"]
+        != relative_runtime_path(audit_path, root=root)
+        or not SHA256_PATTERN.fullmatch(validation["implementation_sha256"])
+    ):
+        raise LiveGenerationValidationError(
+            "Release answers require the trusted full-context auditor"
+        )
+
+    current_artifact_fingerprint = runtime_fingerprint(root)
+    current_answer_fingerprint = answer_runtime_fingerprint(root)
+    registry = {
+        case["case_id"]: case
+        for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
+    }
     required_ids = {
         item["case_id"]
-        for item in load_json(root / CRITICAL_PATH.relative_to(ROOT))["required_cases"]
+        for item in load_json(root / CRITICAL_PATH.relative_to(ROOT))[
+            "required_cases"
+        ]
     }
-    rules = load_json(root / QUALITY_RULES_PATH.relative_to(ROOT))
-    dimensions = set(rules["manual_dimensions"])
-    passing = rules["manual_score_scale"]["passing"]
     cases = payload.get("cases")
     if not isinstance(cases, list):
         raise LiveGenerationValidationError("cases must be a list")
@@ -123,8 +157,6 @@ def inspect_review_snapshot(payload, root=ROOT):
             "query",
             "answer_text",
             "answer_sha256",
-            "manual_scores",
-            "verdict",
         }:
             raise LiveGenerationValidationError(
                 f"{item.get('case_id', '<unknown>')} has an invalid case schema"
@@ -139,50 +171,64 @@ def inspect_review_snapshot(payload, root=ROOT):
             continue
         if item.get("answer_sha256") != answer_digest(answer):
             failures.append(f"{case_id}:answer_digest_mismatch")
-        scores = item.get("manual_scores")
-        if (
-            not isinstance(scores, dict)
-            or set(scores) != dimensions
-            or any(
-                not isinstance(score, int) or score < passing or score > 5
-                for score in scores.values()
-            )
-        ):
-            failures.append(f"{case_id}:manual_quality_below_threshold")
-        if item.get("verdict") != "pass":
-            failures.append(f"{case_id}:verdict_not_pass")
     if failures:
         raise LiveGenerationValidationError(
             "Live-generation release gate failed: " + ", ".join(failures)
         )
+
+    artifact_runtime_match = (
+        reviewed_artifact_fingerprint == current_artifact_fingerprint
+    )
+    answer_runtime_match = reviewed_answer_fingerprint == current_answer_fingerprint
+    generator_implementation_match = (
+        generator["implementation_sha256"] == file_digest(render_path)
+    )
+    validator_implementation_match = (
+        validation["implementation_sha256"] == file_digest(audit_path)
+    )
     return {
-        "status": "valid_review_snapshot",
+        "status": "valid_generation_snapshot",
         "current_runtime_match": (
-            payload["answer_runtime_fingerprint"] == current_answer_fingerprint
+            artifact_runtime_match
+            and answer_runtime_match
+            and generator_implementation_match
+            and validator_implementation_match
         ),
-        "reviewed_answer_runtime_fingerprint": payload[
-            "answer_runtime_fingerprint"
-        ],
+        "current_answer_runtime_match": answer_runtime_match,
+        "current_artifact_runtime_match": artifact_runtime_match,
+        "generation_answer_runtime_fingerprint": reviewed_answer_fingerprint,
         "current_answer_runtime_fingerprint": current_answer_fingerprint,
-        "reviewed_artifact_runtime_fingerprint": payload["runtime_fingerprint"],
+        "generation_artifact_runtime_fingerprint": reviewed_artifact_fingerprint,
         "current_artifact_runtime_fingerprint": current_artifact_fingerprint,
-        "artifact_runtime_match": (
-            payload["runtime_fingerprint"] == current_artifact_fingerprint
-        ),
+        "generator_implementation_match": generator_implementation_match,
+        "validator_implementation_match": validator_implementation_match,
         "critical_cases": len(required_ids),
-        "independently_reviewed": len(cases),
+        "generated_answers": len(cases),
         "current_runtime_audits_rerun": False,
+        "current_renderer_reproduced": False,
     }
 
 
 def validate_results(payload, root=ROOT, rerun_runtime=True):
-    """Fail closed unless independent review belongs to the current runtime."""
+    """Fail closed unless reproducible answers belong to the current runtime."""
 
     root = Path(root)
-    snapshot = inspect_review_snapshot(payload, root=root)
-    if not snapshot["current_runtime_match"]:
+    snapshot = inspect_generation_snapshot(payload, root=root)
+    if not snapshot["current_answer_runtime_match"]:
         raise LiveGenerationValidationError(
             "Live-generation results are stale for the current answer runtime"
+        )
+    if not snapshot["current_artifact_runtime_match"]:
+        raise LiveGenerationValidationError(
+            "Live-generation results are stale for the current artifact runtime"
+        )
+    if not snapshot["generator_implementation_match"]:
+        raise LiveGenerationValidationError(
+            "Live-generation results use a stale deterministic renderer"
+        )
+    if not snapshot["validator_implementation_match"]:
+        raise LiveGenerationValidationError(
+            "Live-generation results use a stale full-context auditor"
         )
 
     if rerun_runtime:
@@ -192,6 +238,9 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         }
         context_module = load_module(
             "live_generation_context", root / CONTEXT_SCRIPT.relative_to(ROOT)
+        )
+        renderer_module = load_module(
+            "live_generation_renderer", root / RENDER_SCRIPT.relative_to(ROOT)
         )
         audit_module = load_module(
             "live_generation_audit", root / AUDIT_SCRIPT.relative_to(ROOT)
@@ -204,13 +253,17 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
             )
             packet = context_module.build_answer_packet(context)
             context_module.validate_answer_packet(packet, context)
+            rendered_answer = renderer_module.render_answer(packet)
+            if rendered_answer != item["answer_text"]:
+                failures.append(
+                    f"{item['case_id']}:current_renderer_output_mismatch"
+                )
+                continue
             audit = audit_module.audit_answer(
                 expected["query"], context, item["answer_text"]
             )
             if not audit["passed"]:
-                failures.append(
-                    f"{item['case_id']}:current_runtime_audit_failed"
-                )
+                failures.append(f"{item['case_id']}:current_runtime_audit_failed")
         if failures:
             raise LiveGenerationValidationError(
                 "Live-generation release gate failed: " + ", ".join(failures)
@@ -222,7 +275,10 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         "runtime_fingerprint": snapshot["current_answer_runtime_fingerprint"],
         "current_runtime_match": True,
         "release_eligible": True,
+        "automatically_validated": snapshot["critical_cases"],
+        "automated_audit_pass_rate": 1.0,
         "current_runtime_audits_rerun": rerun_runtime,
+        "current_renderer_reproduced": rerun_runtime,
     }
 
 

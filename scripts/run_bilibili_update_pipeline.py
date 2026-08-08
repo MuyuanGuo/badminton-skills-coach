@@ -21,6 +21,10 @@ from bilibili_storage import (
     bilibili_transcript_cache_root,
     bilibili_transcript_roots,
 )
+from project_update_lock import (
+    LOCK_OWNER_ENV as PROJECT_LOCK_OWNER_ENV,
+    acquire_project_update_lock,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARCHIVE = (
@@ -74,7 +78,7 @@ def load_status():
     return json.loads(completed.stdout)
 
 
-def main():
+def _main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--snapshot",
@@ -173,9 +177,6 @@ def main():
         parser.error(
             "--install requires a complete transcription and validated release run"
         )
-    pipeline_lock = acquire_bilibili_pipeline_lock()
-    os.environ[PIPELINE_LOCK_OWNER_ENV] = "1"
-
     if not args.skip_ingest:
         if not args.snapshot.exists():
             parser.error(f"snapshot does not exist: {args.snapshot}")
@@ -336,6 +337,31 @@ def main():
     if not bilibili.get("all_videos_terminal") and not args.allow_partial:
         return 2
     return 0 if args.allow_partial else (1 if acquisition_incomplete else 0)
+
+
+def main():
+    project_lock = acquire_project_update_lock()
+    previous_project_owner = os.environ.get(PROJECT_LOCK_OWNER_ENV)
+    previous_pipeline_owner = os.environ.get(PIPELINE_LOCK_OWNER_ENV)
+    os.environ[PROJECT_LOCK_OWNER_ENV] = "1"
+    pipeline_lock = None
+    try:
+        pipeline_lock = acquire_bilibili_pipeline_lock()
+        os.environ[PIPELINE_LOCK_OWNER_ENV] = "1"
+        return _main()
+    finally:
+        for key, value in (
+            (PROJECT_LOCK_OWNER_ENV, previous_project_owner),
+            (PIPELINE_LOCK_OWNER_ENV, previous_pipeline_owner),
+        ):
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+        for handle in (pipeline_lock, project_lock):
+            close = getattr(handle, "close", None)
+            if close is not None:
+                close()
 
 
 if __name__ == "__main__":

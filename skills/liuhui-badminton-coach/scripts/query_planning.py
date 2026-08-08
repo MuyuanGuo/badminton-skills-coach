@@ -475,6 +475,16 @@ def split_query_units(query, workflow_rules):
             ]
             if len(connector_units) >= 2:
                 units = connector_units
+    content_units = [
+        unit
+        for unit in units
+        if not any(
+            re.fullmatch(pattern, unit)
+            for pattern in workflow_rules.get("context_only_unit_patterns", [])
+        )
+    ]
+    if content_units:
+        units = content_units
     return units or [query.strip()]
 
 def build_query_plan(query, expansion, answer_rules=None):

@@ -124,7 +124,12 @@ def transcript_integrity(transcript, rules):
             "metadata_complete": False,
         }
     )
-    required = config.get("required_recipe_fields", [])
+    required = list(config.get("required_recipe_fields", []))
+    recipe_schema = recipe.get("schema_version") if isinstance(recipe, dict) else None
+    if isinstance(recipe_schema, int) and recipe_schema >= int(
+        config.get("revision_required_from_recipe_schema", 2)
+    ):
+        required.extend(["model_repository", "model_revision"])
     recipe_complete = (
         isinstance(recipe, dict)
         and all(key in recipe for key in required)
@@ -1332,7 +1337,7 @@ def main():
         ROOT,
         override=args.transcript_cache_dir,
     )
-    pipeline_lock = acquire_bilibili_pipeline_lock()
+    _pipeline_lock = acquire_bilibili_pipeline_lock()
     queue = json.loads(QUEUE_PATH.read_text(encoding="utf-8"))
     ledger = json.loads(LEDGER_PATH.read_text(encoding="utf-8"))
     validate_queue_classification_policy(queue, ledger)

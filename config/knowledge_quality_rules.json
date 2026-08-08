@@ -101,6 +101,7 @@
       "device",
       "compute_type"
     ],
+    "revision_required_from_recipe_schema": 2,
     "accepted_transcription_recipes": [
       {
         "schema_version": 1,
@@ -118,6 +119,34 @@
         "schema_version": 1,
         "engine": "faster-whisper",
         "model": "medium",
+        "language": "zh",
+        "beam_size": 5,
+        "vad_filter": true,
+        "condition_on_previous_text": false,
+        "temperature": 0.0,
+        "device": "cpu",
+        "compute_type": "int8"
+      },
+      {
+        "schema_version": 2,
+        "engine": "faster-whisper",
+        "model": "small",
+        "model_repository": "Systran/faster-whisper-small",
+        "model_revision": "536b0662742c02347bc0e980a01041f333bce120",
+        "language": "zh",
+        "beam_size": 5,
+        "vad_filter": true,
+        "condition_on_previous_text": false,
+        "temperature": 0.0,
+        "device": "cpu",
+        "compute_type": "int8"
+      },
+      {
+        "schema_version": 2,
+        "engine": "faster-whisper",
+        "model": "medium",
+        "model_repository": "Systran/faster-whisper-medium",
+        "model_revision": "08e178d48790749d25932bbc082711ddcfdfbc4f",
         "language": "zh",
         "beam_size": 5,
         "vad_filter": true,

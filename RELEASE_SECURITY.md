@@ -6,7 +6,7 @@ Formal Badminton Skills Coach releases publish a deterministic Skill archive tog
 - `SBOM.cdx.json` lists every file inside the archive with a SHA-256 digest, records the source repository, version, archive digest, and source commit, and enumerates the fully pinned optional transcription environment as optional PyPI components.
 - GitHub Actions creates a signed artifact attestation that binds the archive and SBOM to the repository, workflow, commit, and tag that produced them.
 
-These signals establish origin and detect tampering. They do not claim that the software is free of defects or that third-party teaching content is covered by the repository's MIT license.
+These signals establish origin and detect tampering. They do not claim that the software is free of defects or that third-party teaching content is covered by the repository's MIT license. The exact boundary is defined in [LICENSE-DATA](LICENSE-DATA).
 
 ## Verify downloaded files
 
@@ -38,14 +38,31 @@ Replace `<version>` with the version being downloaded. Older releases created be
 ## Reproducible package construction
 
 `scripts/package_skill_release.py` uses an explicit fail-closed file allowlist, includes
-`LICENSE` and `NOTICE`, sorts files, normalizes archive timestamps and permissions,
+`LICENSE`, `LICENSE-DATA`, and `NOTICE`, sorts files, normalizes archive timestamps and permissions,
 and validates the completed ZIP. Unexpected or missing Skill files stop packaging.
 `scripts/generate_release_sbom.py` hashes the exact files in that ZIP rather than
 describing the working tree indirectly.
 
 The release workflow runs the deterministic project validation gate and then requires
-fresh model-generated answers for every critical answer case. Those answers must be
-bound to the current Skill runtime, pass the final-answer audit, and carry passing
-scores from a reviewer independent of the generator. Only then does the workflow
-package the Skill, generate the SBOM, sign the archive/SBOM relationship with GitHub
-Artifact Attestations, and upload the assets to the matching tag.
+fresh reproducible answers for every critical answer case. The committed snapshot
+records both the complete Skill runtime fingerprint and the answer-semantic runtime
+fingerprint, pins the trusted renderer and full-context auditor by path and SHA-256,
+and stores a digest for every answer. At release time the workflow reconstructs every
+answer from the current runtime, requires byte-for-byte renderer reproduction, and
+reruns the final-answer audit against the complete context. Only then does the
+workflow package the Skill, generate the SBOM, sign the archive/SBOM relationship
+with GitHub Artifact Attestations, and upload the assets to the matching tag.
+
+## GitHub-hosted enforcement
+
+The release tag must be cryptographically signed; the workflow verifies it with
+`git verify-tag`. The release job targets the protected `release` environment and
+refuses to overwrite an existing release. Branch protection, protected tag rules,
+environment reviewers, repository About text, topics, and label synchronization
+must be configured in GitHub according to [.github/REPOSITORY_SETTINGS.md](.github/REPOSITORY_SETTINGS.md).
+
+The transcription and development environments are installed with
+`pip --require-hashes`. Faster-whisper model repositories and immutable revisions
+are recorded in `config/transcription_models.json`; new transcripts record the
+repository and revision in recipe schema 2. Historical schema-1 recipes are not
+silently upgraded.

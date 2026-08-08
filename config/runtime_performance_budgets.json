@@ -3,14 +3,18 @@
   "benchmark": {
     "cases_per_type": 2,
     "warmup_queries": 2,
-    "memory_queries": 5
+    "memory_queries": 5,
+    "cold_start_queries": 2
   },
   "budgets": {
-    "module_load_p95_ms": 1000.0,
-    "query_plan_p95_ms": 250.0,
-    "search_p95_ms": 750.0,
-    "answer_context_p95_ms": 2500.0,
-    "peak_traced_memory_mb": 192.0,
-    "minimum_answer_packet_reduction": 0.5
+    "module_load_p95_ms": 250.0,
+    "query_plan_p95_ms": 100.0,
+    "search_p95_ms": 600.0,
+    "answer_context_p95_ms": 2200.0,
+    "peak_traced_memory_mb": 96.0,
+    "cold_peak_rss_mb": 128.0,
+    "cold_module_load_p95_ms": 500.0,
+    "cold_answer_context_p95_ms": 3200.0,
+    "minimum_answer_packet_reduction": 0.7
   }
 }

@@ -105,6 +105,37 @@ def hashed_ngrams(text, sizes):
     return grams
 
 
+def build_lexicon_prefix_index(lexicon):
+    """Index normalized terms by their first bigram for bounded matching."""
+
+    by_prefix = defaultdict(list)
+    normalized = {}
+    for term in sorted(lexicon):
+        value = normalize(term)
+        if not value:
+            continue
+        normalized[term] = value
+        by_prefix[value[: min(2, len(value))]].append(term)
+    return {key: tuple(value) for key, value in by_prefix.items()}, normalized
+
+
+def lexicon_term_frequencies(normalized_text, prefix_index, normalized_terms):
+    """Return the same non-overlapping counts as the former full scan."""
+
+    prefixes = set(normalized_text) | {
+        normalized_text[index : index + 2]
+        for index in range(max(0, len(normalized_text) - 1))
+    }
+    candidates = {
+        term for prefix in prefixes for term in prefix_index.get(prefix, ())
+    }
+    return {
+        term: normalized_text.count(normalized_terms[term])
+        for term in sorted(candidates)
+        if normalized_terms[term] in normalized_text
+    }
+
+
 CHUNK_TARGET_SECONDS = 45.0
 CHUNK_MINIMUM_SECONDS = 25.0
 CHUNK_MAXIMUM_SECONDS = 75.0
@@ -343,9 +374,7 @@ def assign_content_clusters(chunks):
 
 def build_chunk_index(records, knowledge, lexicon, sizes):
     chunks = []
-    normalized_lexicon = [
-        (term, normalize(term)) for term in sorted(lexicon)
-    ]
+    prefix_index, normalized_terms = build_lexicon_prefix_index(lexicon)
     record_indexes = {
         record["video_id"]: index for index, record in enumerate(records)
     }
@@ -369,12 +398,9 @@ def build_chunk_index(records, knowledge, lexicon, sizes):
             chunk_id = (
                 f"{video['evidence_id']}#t{start_ms:09d}-{end_ms:09d}"
             )
-            frequencies = {
-                term: normalized_text.count(normalized_term)
-                for term, normalized_term in normalized_lexicon
-                if normalized_term in normalized_text
-            }
-            matched_terms = list(frequencies)
+            frequencies = lexicon_term_frequencies(
+                normalized_text, prefix_index, normalized_terms
+            )
             shingles = text_shingles(normalized_text)
             simhash = simhash64(shingles)
             chunks.append(
@@ -542,6 +568,8 @@ def build_index(knowledge, topic_index, rules):
         lexicon.add(topic["subtopic"])
         lexicon.add(topic["category"])
 
+    prefix_index, normalized_terms = build_lexicon_prefix_index(lexicon)
+
     sizes = rules["retrieval"]["transcript_ngram_sizes"]
     records = []
     topic_counts = Counter()
@@ -603,9 +631,10 @@ def build_index(knowledge, topic_index, rules):
             ),
         }
         evidence_searchable = "".join(field_text.values())
-        matched_terms = sorted(
-            term for term in lexicon if normalize(term) in evidence_searchable
+        matched_term_frequencies = lexicon_term_frequencies(
+            evidence_searchable, prefix_index, normalized_terms
         )
+        matched_terms = list(matched_term_frequencies)
         field_term_frequencies = {}
         for field, text in field_text.items():
             frequencies = {
@@ -619,10 +648,10 @@ def build_index(knowledge, topic_index, rules):
                         and video.get("retrieval_cohort")
                         == "automatic_expansion"
                     )
-                    else text.count(normalize(term))
+                    else text.count(normalized_terms[term])
                 )
                 for term in matched_terms
-                if normalize(term) in text
+                if normalized_terms[term] in text
             }
             field_term_frequencies[field] = frequencies
             field_length_totals[field] += len(text)

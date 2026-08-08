@@ -68,7 +68,7 @@ def dynamic_term_statistics(
                 },
             )
         return document_frequency, by_video
-    for video in knowledge["videos"]:
+    for video in iter_search_videos(knowledge):
         if video.get("processing_status") != "ready":
             continue
         if (
@@ -90,8 +90,11 @@ def dynamic_term_statistics(
             ),
         }
         if video["video_id"] not in transcript_excluded_video_ids:
+            search_transcript = video.get("_runtime_search_transcript")
             field_text["transcript"] = normalize(
-                "".join(
+                search_transcript
+                if search_transcript is not None
+                else "".join(
                     segment.get("text", "")
                     for segment in video.get("transcript_segments", [])
                 )
@@ -283,6 +286,10 @@ def chunk_first_config(retrieval_index):
 
 
 def chunk_gram_postings(chunk_index, gram):
+    posting_lookup = getattr(chunk_index, "lookup_ngram_postings", None)
+    if posting_lookup is not None:
+        encoded = posting_lookup([gram]).get(gram)
+        return [] if encoded is None else decode_chunk_ngram_postings(encoded)
     vocabulary = chunk_index.get("ngram_vocabulary") or []
     postings = chunk_index.get("ngram_postings") or []
     position = bisect.bisect_left(vocabulary, gram)
@@ -298,11 +305,10 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     chunks = chunk_index.get("chunks") or []
     if not chunks:
         return {}
-    records = retrieval_index["videos"]
     config = chunk_first_config(retrieval_index)
-    prepared_chunk = prepared_retrieval_index(retrieval_index).get(
-        "chunk", {}
-    )
+    prepared_index = prepared_retrieval_index(retrieval_index)
+    records = prepared_index["record_list"]
+    prepared_chunk = prepared_index.get("chunk", {})
     allowed_chunk_indexes = prepared_chunk.get(
         "cluster_indexes", frozenset()
     )
@@ -328,6 +334,12 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
         candidate_indexes.update(indexes)
     if not candidate_indexes:
         return {}
+    get_many_positions = getattr(chunks, "get_many_positions", None)
+    candidate_chunks = (
+        get_many_positions(sorted(candidate_indexes))
+        if get_many_positions is not None
+        else {index: chunks[index] for index in sorted(candidate_indexes)}
+    )
 
     cluster_count = max(1, int(chunk_index.get("cluster_count") or 0))
     stable_cluster_count = max(
@@ -367,7 +379,9 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     stable_gram_cluster_df = {}
     stable_gram_weights = {}
     for gram, indexes in query_postings.items():
-        cluster_ids = {chunks[index]["cluster_id"] for index in indexes}
+        cluster_ids = {
+            candidate_chunks[index]["cluster_id"] for index in indexes
+        }
         gram_cluster_df[gram] = len(cluster_ids)
         gram_weights[gram] = math.log(
             1
@@ -375,9 +389,9 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
             / (gram_cluster_df[gram] + 1)
         )
         stable_cluster_ids = {
-            chunks[index]["stable_cluster_id"]
+            candidate_chunks[index]["stable_cluster_id"]
             for index in indexes
-            if chunks[index].get("stable_cluster_id")
+            if candidate_chunks[index].get("stable_cluster_id")
         }
         stable_gram_cluster_df[gram] = len(stable_cluster_ids)
         stable_gram_weights[gram] = math.log(
@@ -389,7 +403,7 @@ def chunk_query_scores(retrieval_index, expansion, query_grams, rules):
     stable_total_gram_weight = sum(stable_gram_weights.values())
     matches_by_video = {}
     for chunk_index_value in sorted(candidate_indexes):
-        chunk = chunks[chunk_index_value]
+        chunk = candidate_chunks[chunk_index_value]
         record = records[chunk["video_index"]]
         stable_chunk = (
             record.get("retrieval_cohort", "stable_baseline")
@@ -888,7 +902,7 @@ def rank_candidates(query, knowledge, retrieval_index, rules, mode="hybrid"):
     }
 
     ranked = []
-    for video in knowledge["videos"]:
+    for video in iter_search_videos(knowledge):
         if video["processing_status"] in {"not_teaching", "low_value"}:
             continue
         record = records.get(video["video_id"])
@@ -1350,7 +1364,11 @@ def apply_retrieval_policy(
         "retrieval_guidance": retrieval_guidance,
     }
     policy_api = SimpleNamespace(normalize=normalize, flatten=flatten)
-    videos = {video["video_id"]: video for video in knowledge["videos"]}
+    videos = knowledge_video_map(
+        knowledge,
+        [candidate["video_id"] for candidate in ranked],
+        full=False,
+    )
     rejected_counts = Counter()
     requested_constraints = selection_module.query_constraints(
         policy_api, expansion["positive_query"], selection_rules

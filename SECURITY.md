@@ -1,5 +1,7 @@
 # 安全策略
 
+[English](SECURITY.en.md)
+
 ## 支持范围
 
 - `main` 分支和最新稳定 Release：接受安全修复。

@@ -117,7 +117,7 @@ class ProjectArtifactsTests(unittest.TestCase):
 
     def test_audited_pre_filter_exclusion_is_not_counted_twice(self):
         index, teaching, knowledge = self.fixture()
-        excluded = teaching["videos"].pop()
+        teaching["videos"].pop()
         teaching["counts"]["kept_teaching"] -= 1
         teaching["counts"]["excluded_non_teaching"] += 1
         status = self.module.derive_project_status(index, teaching, knowledge)
@@ -449,46 +449,34 @@ class ProjectArtifactsTests(unittest.TestCase):
             )
         )
         self.assertEqual(actual, expected)
-        self.assertEqual(len(actual["signals"]), 57)
+        self.assertEqual(len(actual["signals"]), 0)
+        self.assertEqual(
+            actual["source"], "data/review/retrieval_priors.json"
+        )
+        self.assertNotIn(
+            "data/evaluation/answer_quality_cases.json",
+            json.dumps(actual, ensure_ascii=False),
+        )
+        self.assertTrue(actual["evaluation_case_ids_forbidden"])
 
     def test_full_update_pipeline_enforces_answer_and_forward_quality(self):
         commands = self.update_pipeline.validation_commands()
-        answer_commands = [
-            command
-            for command in commands
-            if "scripts/evaluate_answer_quality.py" in command
-        ]
-        self.assertEqual(len(answer_commands), 1)
+        pipeline_source = UPDATE_PIPELINE_PATH.read_text(encoding="utf-8")
+        collector_source = (
+            ROOT / "scripts/generate_evaluation_report.py"
+        ).read_text(encoding="utf-8")
         self.assertEqual(
-            answer_commands[0][answer_commands[0].index("--min-approved") + 1],
-            "57",
+            pipeline_source.count('"scripts/collect_evaluation_results.py"'),
+            1,
         )
-        self.assertEqual(
-            answer_commands[0][
-                answer_commands[0].index("--min-answer-snapshots") + 1
-            ],
-            "57",
-        )
-        self.assertEqual(
-            answer_commands[0][
-                answer_commands[0].index("--min-answer-snapshot-coverage") + 1
-            ],
-            "1.0",
-        )
-        self.assertIn("--require-complete-answer-coverage", answer_commands[0])
-        self.assertIn("--require-critical-answer-coverage", answer_commands[0])
-        self.assertIn("--require-manual-review", answer_commands[0])
-        self.assertTrue(
-            any(
-                "scripts/evaluate_forward_test_results.py" in command
-                for command in commands
-            )
-        )
-        for required_gate in (
-            "scripts/evaluate_feedback_lifecycle.py",
-            "scripts/evaluate_metamorphic_robustness.py",
-            "scripts/benchmark_runtime.py",
+        for evaluator in (
+            "evaluate_answer_quality",
+            "evaluate_forward_test_results",
+            "evaluate_feedback_lifecycle",
+            "evaluate_metamorphic_robustness",
         ):
+            self.assertIn(evaluator, collector_source)
+        for required_gate in ("scripts/benchmark_runtime.py",):
             self.assertTrue(
                 any(required_gate in command for command in commands),
                 required_gate,

@@ -13,6 +13,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://muyuanguo.github.io/badminton-skills-coach/en/">
   <link rel="alternate" hreflang="zh-CN" href="https://muyuanguo.github.io/badminton-skills-coach/">
+  <link rel="alternate" hreflang="x-default" href="https://muyuanguo.github.io/badminton-skills-coach/">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -28,7 +30,7 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="release-line"><span>Stable v2.0.0</span><span>Ready to install</span></p>
+          <p class="release-line"><span>Stable v2.1.0</span><span>Ready to install</span></p>
           <h1><span>Badminton</span><span>Skills Coach</span></h1>
           <p class="hero-thesis">Every specific claim should survive a replay.</p>
           <p class="lede">A Codex Skill that searches 956 Chinese badminton teaching videos and connects each answer to the original video, exact timestamps, and scenario boundaries.</p>
@@ -73,14 +75,16 @@
 
     <section class="section install-section" id="install">
       <div class="shell install-grid">
-        <div class="install-copy"><p class="eyebrow">Install v2.0.0</p><h2>Put the evidence coach in Codex.</h2><p>The installer runs its own doctor check, then atomically replaces an older version. Restart Codex when it finishes.</p><dl class="requirements"><div><dt>Runtime</dt><dd>Python 3.10+</dd></div><div><dt>API key</dt><dd>Not required</dd></div><div><dt>Original media</dt><dd>Not distributed</dd></div></dl></div>
-        <div class="code-panel"><div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">Copy command</button></div><pre id="install-code"><code>curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/liuhui-badminton-coach-2.0.0.zip \
-  -o /tmp/liuhui-badminton-coach-2.0.0.zip
-curl -L https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.0.0/SHA256SUMS.txt \
+        <div class="install-copy"><p class="eyebrow">Install v2.1.0</p><h2>Put the evidence coach in Codex.</h2><p>The installer runs its own doctor check, then atomically replaces an older version. Restart Codex when it finishes.</p><dl class="requirements"><div><dt>Runtime</dt><dd>Python 3.10+</dd></div><div><dt>API key</dt><dd>Not required</dd></div><div><dt>Original media</dt><dd>Not distributed</dd></div></dl></div>
+        <div class="code-panel"><div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">Copy command</button></div><pre id="install-code"><code>curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/liuhui-badminton-coach-2.1.0.zip \
+  -o /tmp/liuhui-badminton-coach-2.1.0.zip
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/SBOM.cdx.json \
+  -o /tmp/SBOM.cdx.json
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.0.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.1.0.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre><div class="code-footer"><span>SHA-256 published</span><span>Restart Codex when done</span></div></div>
       </div>
     </section>
@@ -91,7 +95,7 @@ python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre><di
     </section>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-grid"><div><strong>Badminton Skills Coach</strong><p>An independent knowledge-engineering project; not authored or endorsed by Liu Hui.</p></div><div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">Download latest</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach">GitHub</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/NOTICE">Source boundaries</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.md">Security</a></div></div></footer>
+  <footer class="site-footer"><div class="shell footer-grid"><div><strong>Badminton Skills Coach</strong><p>An independent knowledge-engineering project; not authored or endorsed by Liu Hui.</p></div><div class="footer-links"><a href="https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest">Download latest</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach">GitHub</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/LICENSE-DATA">Data/source terms</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/SECURITY.en.md">Security</a></div></div></footer>
   <script src="../site.js"></script>
 </body>
 </html>

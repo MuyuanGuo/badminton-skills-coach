@@ -9,6 +9,7 @@ import hashlib
 import json
 import re
 from collections import Counter, defaultdict
+from collections.abc import Mapping, Sequence
 
 
 SCHEMA_VERSION = 2
@@ -19,6 +20,20 @@ DEFAULT_THRESHOLDS = {
     "maximum_top_k_results_per_cluster": 1,
     "maximum_packet_videos_per_cluster": 1,
 }
+
+
+def stable_payload_default(value):
+    """Materialize portable lazy containers for canonical JSON hashing."""
+
+    if isinstance(value, Mapping):
+        return dict(value)
+    if isinstance(value, Sequence) and not isinstance(
+        value, (str, bytes, bytearray)
+    ):
+        return list(value)
+    raise TypeError(
+        f"Object of type {value.__class__.__name__} is not JSON serializable"
+    )
 
 
 def normalize(text):
@@ -34,6 +49,7 @@ def stable_payload_hash(payload):
             ensure_ascii=False,
             sort_keys=True,
             separators=(",", ":"),
+            default=stable_payload_default,
         ).encode("utf-8")
     ).hexdigest()
 

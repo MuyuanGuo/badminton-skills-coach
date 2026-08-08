@@ -372,7 +372,7 @@ def main():
         help="Persist a validated full-profile archive to this path when applying",
     )
     args = parser.parse_args()
-    pipeline_lock = acquire_bilibili_pipeline_lock()
+    _pipeline_lock = acquire_bilibili_pipeline_lock()
     raw_snapshot = load_json(args.snapshot)
     snapshot, archive_payload = normalize_snapshot_shape(raw_snapshot)
     validation = validate_snapshot(snapshot, load_json(SOURCE_PATH))

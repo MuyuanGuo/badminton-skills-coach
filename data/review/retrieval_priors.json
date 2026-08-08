@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "registry_type": "operational_feedback_runtime_prior",
+  "source": "data/review/retrieval_priors.json",
+  "evaluation_case_ids_forbidden": true,
+  "derivation_policy": "Only separately consented, promoted operational feedback may create a runtime prior. Evaluation queries, gold evidence IDs, and blind holdouts are forbidden.",
+  "signals": []
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,9 @@ MODULE_PATH = ROOT / "scripts" / "generate_evaluation_report.py"
 
 
 def load_module():
+    scripts_dir = str(MODULE_PATH.parent)
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
     spec = importlib.util.spec_from_file_location("evaluation_report_tested", MODULE_PATH)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -95,6 +99,23 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_skips_explicitly_invalidated_metrics(self):
+        evaluations = {"suite": {"contaminated": 0.1, "valid": 1.0}}
+        baseline = {
+            "invalidated_metrics": {
+                "suite.contaminated": "evaluation fixture leakage"
+            },
+            "metrics": {
+                "suite.contaminated": {
+                    "value": 1.0,
+                    "direction": "at_least",
+                },
+                "suite.valid": {"value": 1.0, "direction": "at_least"},
+            },
+        }
+        comparisons = self.module.compare_baseline(evaluations, baseline)
+        self.assertEqual([item["metric"] for item in comparisons], ["suite.valid"])
+
     def test_baseline_comparison_can_use_fingerprinted_policy_limit(self):
         evaluations = {
             "suite": {
@@ -148,6 +169,9 @@ class EvaluationReportTests(unittest.TestCase):
         committed = self.module.load_json(
             self.module.REPORT_PATH
         )["evaluations"]
+        committed["answer_context"].setdefault(
+            "evaluation_fixture_isolation", True
+        )
         exposure = committed["retrieval"][
             "unjudged_new_source_exposure"
         ]
@@ -176,38 +200,48 @@ class EvaluationReportTests(unittest.TestCase):
 
     def test_historical_generation_summary_never_runs_current_runtime_audit(self):
         payload = {
-            "cases": [{"manual_scores": {"quality": 4}}],
+            "cases": [{"case_id": "AQ055"}],
             "generator": {
-                "provider": "test",
-                "model": "test",
-                "model_version": "1",
+                "type": "deterministic_answer_renderer",
+                "implementation": "skills/example/render_answer.py",
+                "implementation_sha256": "a" * 64,
             },
-            "review": {"reviewer": "independent"},
+            "validation": {
+                "method": "current_runtime_full_context_audit",
+                "implementation": "skills/example/audit_answer.py",
+                "implementation_sha256": "b" * 64,
+            },
         }
         snapshot = {
-            "status": "valid_review_snapshot",
+            "status": "valid_generation_snapshot",
             "current_runtime_match": False,
-            "reviewed_answer_runtime_fingerprint": "reviewed-answer",
+            "current_answer_runtime_match": False,
+            "current_artifact_runtime_match": False,
+            "generation_answer_runtime_fingerprint": "generated-answer",
             "current_answer_runtime_fingerprint": "current-answer",
-            "reviewed_artifact_runtime_fingerprint": "reviewed-artifact",
+            "generation_artifact_runtime_fingerprint": "generated-artifact",
             "current_artifact_runtime_fingerprint": "current-artifact",
-            "artifact_runtime_match": False,
+            "generator_implementation_match": False,
+            "validator_implementation_match": False,
             "critical_cases": 1,
-            "independently_reviewed": 1,
+            "generated_answers": 1,
             "current_runtime_audits_rerun": False,
+            "current_renderer_reproduced": False,
         }
         with mock.patch.object(
             self.module.validate_live_generation_results,
-            "inspect_review_snapshot",
+            "inspect_generation_snapshot",
             return_value=snapshot,
         ), mock.patch.object(
             self.module.validate_live_generation_results,
             "validate_results",
         ) as strict:
-            summary = self.module.summarize_generation_review(payload)
+            summary = self.module.summarize_generation_validation(payload)
         strict.assert_not_called()
-        self.assertEqual(summary["measurement_type"], "historical_generation_review")
-        self.assertEqual(summary["review_status"], "historical_stale")
+        self.assertEqual(
+            summary["measurement_type"], "historical_generation_snapshot"
+        )
+        self.assertEqual(summary["validation_status"], "historical_stale")
         self.assertFalse(summary["current_runtime_generation_claimed"])
         self.assertFalse(summary["release_eligible"])
         self.assertFalse(summary["current_runtime_audits_rerun"])
@@ -224,7 +258,10 @@ class EvaluationReportTests(unittest.TestCase):
             "summary": {"status": "pass", "baseline_metrics": 8},
             "evaluations": {
                 "answer_policy": {"accuracy": 1.0},
-                "answer_context": {"selected_video_recall": 1.0},
+                "answer_context": {
+                    "candidate_recall": 1.0,
+                    "selected_video_recall": 1.0,
+                },
                 "answer_quality": {
                     "automatic_pass_rate": 1.0,
                     "passed": 57,
@@ -255,7 +292,7 @@ class EvaluationReportTests(unittest.TestCase):
                     "visual_review_fallback": 19,
                 },
                 "forward_tests": {"consecutive_passes": 3},
-                "live_generation": {"minimum_manual_score": 4},
+                "live_generation": {"automated_audit_pass_rate": 1.0},
             },
             "baseline_comparison": [
                 {"metric": f"{suite}.metric", "passed": True}
@@ -284,13 +321,16 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertEqual(page.count(">PASS<"), 14)
         self.assertIn("tbody td:nth-of-type(3)", page)
 
-    def test_rendered_html_labels_stale_generation_review_as_informational(self):
+    def test_rendered_html_labels_stale_generation_snapshot_as_informational(self):
         report = self.module.load_json(self.module.REPORT_PATH)
         report["evaluations"]["live_generation"][
             "current_runtime_generation_claimed"
         ] = False
+        report["evaluations"]["live_generation"][
+            "automated_audit_pass_rate"
+        ] = None
         page = self.module.render_html(report).decode("utf-8")
-        self.assertIn("Historical generation review", page)
+        self.assertIn("Historical release-answer snapshot", page)
         self.assertIn(">REVIEW<", page)
 
     def test_check_artifact_distinguishes_missing_stale_and_current(self):

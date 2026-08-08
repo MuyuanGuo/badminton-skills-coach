@@ -46,7 +46,7 @@ def main():
         ),
     )
     args = parser.parse_args()
-    pipeline_lock = acquire_bilibili_pipeline_lock()
+    _pipeline_lock = acquire_bilibili_pipeline_lock()
     media_root = (
         bilibili_media_cache_root(ROOT, override=args.media_cache_dir)
         if args.media_cache_dir is not None

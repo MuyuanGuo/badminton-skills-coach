@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Deterministic evaluation report for Badminton Skills Coach.">
   <title>Evaluation Report | Badminton Skills Coach</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <style>
     :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; --bg:#090d0c; --panel:#111816; --ink:#f3f6f4; --muted:#a7b0ac; --line:rgba(255,255,255,.12); --mint:#79dbc5; --yellow:#f3dc55; }
-    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--bg); line-height:1.55; } a { color:var(--mint); } .shell { width:min(1080px,calc(100% - 32px)); margin:auto; }
+    * { box-sizing:border-box; } body { margin:0; color:var(--ink); background:var(--bg); line-height:1.55; } a { color:var(--mint); } a:focus-visible { outline:3px solid var(--yellow); outline-offset:3px; } .shell { width:min(1080px,calc(100% - 32px)); margin:auto; } .skip-link { position:fixed; left:8px; top:8px; transform:translateY(-180%); padding:8px 12px; color:#07110e; background:var(--yellow); z-index:5; } .skip-link:focus { transform:none; }
     header { border-bottom:1px solid var(--line); background:#0d1311; } nav { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:20px; } nav a { text-decoration:none; font-weight:750; }
     main { padding:64px 0 80px; } .eyebrow { color:var(--mint); font:800 12px/1.2 ui-monospace,monospace; text-transform:uppercase; letter-spacing:.12em; } h1 { max-width:780px; margin:14px 0 18px; font-size:clamp(38px,7vw,72px); line-height:1.02; letter-spacing:0; } .lede { max-width:760px; color:var(--muted); font-size:18px; }
     .summary { display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 62px; border-block:1px solid var(--line); } .summary div { padding:22px 18px; border-right:1px solid var(--line); } .summary div:last-child { border:0; } .summary strong,.summary span { display:block; } .summary strong { font-size:28px; } .summary span { color:var(--muted); font-size:13px; }
@@ -17,11 +18,12 @@
   </style>
 </head>
 <body>
-  <header><nav class="shell"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/develop/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
-  <main class="shell">
-    <p class="eyebrow">EvalOps / build 80d7cf0a34d0df58</p>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header><nav class="shell" aria-label="Evaluation navigation"><a href="../">Badminton Skills Coach</a><a href="https://github.com/MuyuanGuo/badminton-skills-coach/blob/main/data/evaluation/evaluation_report.json">Raw JSON</a></nav></header>
+  <main class="shell" id="main">
+    <p class="eyebrow">EvalOps / build 518daea504fe06ac</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the 2.0.0 runtime with the versioned v2.0.0 baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
+    <p class="lede">This deterministic report compares the 2.1.0 runtime with the versioned v2.1.0 baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. Metrics known to have been produced by evaluation-to-runtime leakage are explicitly invalidated, never silently treated as current quality claims. Tagged releases regenerate every critical answer with the trusted renderer, bind it to the full and answer-semantic runtime fingerprints, and rerun the full-context audit.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>PASS</strong><span>Regression gate</span></div>
       <div><strong>956</strong><span>Ready videos</span></div>
@@ -29,17 +31,17 @@
       <div><strong>0</strong><span>Hard-negative violations</span></div>
     </section>
     <h2>Evaluation suites</h2>
-    <div class="table-wrap"><table><thead><tr><th>Suite</th><th>Featured metric</th><th>Current</th><th>Gate</th></tr></thead><tbody><tr><th scope="row">Answer policy</th><td>Mode accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer context</th><td>Selected-video recall</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer snapshots</th><td>Snapshot pass rate</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query equivalence</th><td>Families passed</td><td class="value">2</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query understanding</th><td>Intent accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Diagnostic answer contract</th><td>Diagnostic contract accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Final-answer audit</th><td>Violation detection</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Feedback lifecycle</th><td>Feedback contracts</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Evidence retrieval</th><td>Stable-view nDCG@12</td><td class="value">86.4%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Metamorphic robustness</th><td>Harmless variants passed</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Video comprehension</th><td>Evidence coverage</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Historical generation reviews</th><td>Consecutive rounds</td><td class="value">6</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Current-runtime generations</th><td>Minimum review score</td><td class="value">5</td><td><span class="status pass">PASS</span></td></tr></tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th>Suite</th><th>Featured metric</th><th>Current</th><th>Gate</th></tr></thead><tbody><tr><th scope="row">Answer policy</th><td>Mode accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer context</th><td>Leakage-free candidate recall</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Answer snapshots</th><td>Snapshot pass rate</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query equivalence</th><td>Families passed</td><td class="value">2</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Query understanding</th><td>Intent accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Diagnostic answer contract</th><td>Diagnostic contract accuracy</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Final-answer audit</th><td>Violation detection</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Bilibili positive retrieval gold</th><td>Source-reviewed hit rate@3</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Feedback lifecycle</th><td>Feedback contracts</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Evidence retrieval</th><td>Stable-view nDCG@12</td><td class="value">86.4%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Metamorphic robustness</th><td>Harmless variants passed</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Video comprehension</th><td>Evidence coverage</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Historical generation reviews</th><td>Consecutive rounds</td><td class="value">6</td><td><span class="status pass">PASS</span></td></tr><tr><th scope="row">Current-runtime release answers</th><td>Automated full-context audit</td><td class="value">100.0%</td><td><span class="status pass">PASS</span></td></tr></tbody></table></div>
     <h2>Coverage at a glance</h2>
     <div class="provenance">
       <div><strong>143/143</strong><br><span>query-understanding cases passed, including 86 adversarial cases</span></div>
       <div><strong>173/173</strong><br><span>expected evidence videos reached the candidate set</span></div>
       <div><strong>763</strong><br><span>transcript-backed videos, plus 19 reviewed visual fallbacks</span></div>
-      <div><strong>48</strong><br><span>versioned metrics enforced by the regression gate</span></div>
+      <div><strong>54</strong><br><span>versioned metrics enforced by the regression gate</span></div>
     </div>
     <h2>Reproducibility</h2>
-    <p>Input SHA-256<br><code>de6bbb8787185f806fba26f072dbbac8bce5858fab1f315e32fa0825082cf633</code></p>
-    <p>Runtime SHA-256<br><code>8e93d52de52ebf66856e0778d5a44307e1232ed370d14a5f12e0816effab5145</code></p>
+    <p>Input SHA-256<br><code>4fae3951a08374f3585149625070179d79ca37bfa4b5389e5e639ad530a08027</code></p>
+    <p>Runtime SHA-256<br><code>304f79f61f98fc181052a31547ed4df6dcf1c131f4213a7172011d9d4bf157a1</code></p>
   </main>
   <footer><div class="shell">Generated from committed artifacts. No wall-clock timestamp or external service is used.</div></footer>
 </body>

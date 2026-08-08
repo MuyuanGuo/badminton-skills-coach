@@ -1,5 +1,7 @@
 # 贡献指南
 
+[English](CONTRIBUTING.en.md)
+
 感谢你帮助改进 Badminton Skills Coach。这个仓库优先接受可验证、范围清楚且不会引入版权或隐私风险的改动。
 
 ## 可以贡献什么
@@ -78,21 +80,25 @@ Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再�
 环境运行系统校验器，避免误用不含维护依赖的系统 Python：
 
 ```bash
-.venv/bin/pip install -r requirements-transcription.txt
+.venv/bin/pip install --require-hashes -r requirements-transcription.txt
+.venv/bin/pip install --require-hashes -r requirements-dev.txt
 .venv/bin/python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" \
   skills/liuhui-badminton-coach
 ```
 
-`answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前模型即时生成。
-打 Release tag 前，还必须由独立任务生成并由不同审阅者复核
-`data/evaluation/live_generation_results.json`，再运行：
+`answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前运行时即时生成。
+打 Release tag 前，必须使用受信任的确定性 renderer 为全部关键案例重建
+`data/evaluation/live_generation_results.json`，再运行当前运行时验证：
 
 ```bash
+python3 scripts/generate_release_answer_results.py
 python3 scripts/validate_live_generation_results.py
 ```
 
-该结果必须覆盖 `critical_answer_snapshots.json` 的全部用例并绑定当前 Skill
-运行时指纹；任何运行时代码或参考文件变更都会使旧结果失效。
+该结果必须精确覆盖 `critical_answer_snapshots.json` 的全部用例，绑定完整 Skill
+运行时和回答语义运行时指纹，并固定 renderer 与完整上下文审计器的 SHA-256。
+发布验证会逐例重建答案、要求字节级一致，并重新运行最终答案审计；任何运行时
+代码、参考文件或受信任实现变更都会使旧结果失效。
 
 转写依赖由 `requirements-transcription.in` 声明直接约束，并在
 `requirements-transcription.txt` 中完整锁定。升级时必须重新解析整个依赖闭包、

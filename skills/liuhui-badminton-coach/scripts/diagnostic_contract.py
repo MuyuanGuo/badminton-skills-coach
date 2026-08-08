@@ -3,20 +3,34 @@
 
 import re
 
+
+def user_video_is_unavailable(query, diagnostic_rules):
+    normalized = re.sub(r"\s+", "", str(query).lower())
+    return any(
+        re.sub(r"\s+", "", term.lower()) in normalized
+        for term in diagnostic_rules.get("video_unavailable_terms", [])
+    )
+
 def extract_user_hypotheses(query, diagnostic_rules):
     """Return causes proposed by the user without treating them as facts."""
     hypotheses = []
     seen = set()
     for rule in diagnostic_rules.get("hypothesis_patterns", []):
         for match in re.finditer(rule["pattern"], query):
-            group_names = (
-                ["hypothesis"]
-                if rule["type"] == "single_cause_question"
-                else ["left", "right"]
-            )
+            if rule["type"] == "single_cause_question":
+                group_names = ["hypothesis"]
+            elif rule["type"] == "alternative_cause_question":
+                group_names = ["left", "right"]
+            elif rule["type"] == "enumerated_cause_request":
+                group_names = ["hypothesis_list"]
+            else:
+                continue
             for group_name in group_names:
                 raw_text = match.group(group_name).strip(" ，,。？?！!")
-                parts = re.split(r"[、]", raw_text)
+                parts = re.split(
+                    r"[、，,]|(?:以及|或者|和|与|或)",
+                    raw_text,
+                )
                 for text in parts:
                     text = re.sub(
                         r"(?:造成|导致|引起|带来)?的?(?:问题|原因)?$",
@@ -284,7 +298,10 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
         in {"exact_question_scope", "exact_query_unit_scope_only"}
     ):
         directness = "direct"
-    elif concept in {"exact_question", "exact_query_unit"}:
+    elif (
+        concept in {"exact_question", "exact_query_unit"}
+        or video.get("inferred_target_action_match")
+    ):
         directness = "scoped"
     else:
         directness = "component"
@@ -300,10 +317,24 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
     evidence = claim_evidence_entry(video, directness, reason)
     evidence["window_support"] = {
         **window_support,
+        "reviewed_evidence_source": (
+            video.get("reviewed_evidence_rank", 2) <= 1
+        ),
         "primary_query_score": float(video.get("primary_query_score") or 0),
         "best_retrieval_rank": video.get("best_retrieval_rank"),
     }
     return evidence
+
+
+def scoped_video_for_query_unit(video, unit):
+    """Use the constraint match calculated for this unit, if available."""
+
+    unit_matches = video.get("query_unit_constraint_matches", {})
+    if unit not in unit_matches:
+        return video
+    scoped = dict(video)
+    scoped["constraint_match"] = unit_matches[unit]
+    return scoped
 
 
 def mechanism_evidence(
@@ -312,6 +343,7 @@ def mechanism_evidence(
     selected_videos,
     query_constraints,
     diagnostic_rules,
+    claim_text=None,
 ):
     matched = []
     for video in selected_videos:
@@ -319,12 +351,52 @@ def mechanism_evidence(
             video, query_constraints, diagnostic_rules
         ):
             continue
-        evidence_text = selected_video_evidence_text(search_module, video)
-        terms = [
-            term
-            for term in mechanism.get("evidence_terms", [])
-            if search_module.normalize(term) in evidence_text
+        configured_terms = mechanism.get("evidence_terms", [])
+        if claim_text:
+            normalized_claim = search_module.normalize(claim_text)
+            matching_groups = [
+                group
+                for group in mechanism.get(
+                    "hypothesis_evidence_term_groups", []
+                )
+                if any(
+                    search_module.normalize(term) in normalized_claim
+                    for term in group.get("query_terms", [])
+                )
+            ]
+            if matching_groups:
+                configured_terms = list(
+                    dict.fromkeys(
+                        term
+                        for group in matching_groups
+                        for term in group.get("evidence_terms", [])
+                    )
+                )
+        source_windows = [
+            *video.get("transcript_evidence", []),
+            *video.get("bounded_note_evidence", []),
+            *video.get("teaching_note", {}).get("evidence", []),
         ]
+        matched_windows = []
+        for source_index, window in enumerate(source_windows):
+            normalized_text = search_module.normalize(window.get("text", ""))
+            terms = [
+                term
+                for term in configured_terms
+                if search_module.normalize(term) in normalized_text
+            ]
+            if terms and window.get("timestamp") and window.get("text"):
+                matched_windows.append(
+                    (
+                        -max(len(search_module.normalize(term)) for term in terms),
+                        min(configured_terms.index(term) for term in terms),
+                        source_index,
+                        window,
+                        terms,
+                    )
+                )
+        matched_windows.sort(key=lambda item: item[:3])
+        terms = matched_windows[0][4] if matched_windows else []
         if not terms:
             continue
         scope_directness = claim_scope_directness(video, diagnostic_rules)
@@ -337,13 +409,18 @@ def mechanism_evidence(
             "expanded_support",
         }:
             directness = "component" if directness == "scoped" else "scoped"
-        matched.append(
-            claim_evidence_entry(
-                video,
-                directness,
-                f'direct evidence text matches {mechanism["label"]}: {terms[0]}',
-            )
+        evidence = claim_evidence_entry(
+            video,
+            directness,
+            f'direct evidence text matches {mechanism["label"]}: {terms[0]}',
         )
+        evidence["claim_windows"] = [
+            {
+                "timestamp": matched_windows[0][3]["timestamp"],
+                "text": matched_windows[0][3]["text"],
+            }
+        ]
+        matched.append(evidence)
     rank = {"direct": 0, "scoped": 1, "component": 2}
     matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
     return matched[: diagnostic_rules.get("max_evidence_per_claim", 3)]
@@ -430,15 +507,21 @@ def build_diagnostic_contract(
     selected_by_label = {video["label"]: video for video in selected_videos}
     claim_map = []
     query_units = question_interpretation.get("query_units") or [query]
+    query_unit_constraints = question_interpretation.get(
+        "query_unit_constraints", {}
+    )
     for unit in query_units:
+        unit_constraints = query_unit_constraints.get(
+            unit, question_interpretation["constraints"]
+        )
         evidence_entries = [
             evidence
             for video in selected_videos
             if (
                 evidence := query_unit_evidence(
-                    video,
+                    scoped_video_for_query_unit(video, unit),
                     question_interpretation["strategy"],
-                    question_interpretation["constraints"],
+                    unit_constraints,
                     diagnostic_rules,
                 )
             )
@@ -447,14 +530,14 @@ def build_diagnostic_contract(
                 or len(query_units) == 1
             )
         ]
+        if boundary.get("type") == "cross_variant_evidence_transfer":
+            evidence_entries = []
         directness_rank = {"direct": 0, "scoped": 1, "component": 2}
         evidence_entries.sort(
             key=lambda item: (
                 -int(
                     bool(
-                        item["window_support"].get(
-                            "reviewed_evidence_fallback"
-                        )
+                        item["window_support"].get("reviewed_evidence_source")
                     )
                 ),
                 -item["window_support"]["rank"],
@@ -492,13 +575,32 @@ def build_diagnostic_contract(
         mechanism = diagnostic_mechanism_for_text(
             search_module, hypothesis["text"], diagnostic_rules
         )
+        hypothesis_unit = next(
+            (
+                unit
+                for unit in query_units
+                if search_module.normalize(hypothesis["text"])
+                in search_module.normalize(unit)
+            ),
+            None,
+        )
+        hypothesis_constraints = query_unit_constraints.get(
+            hypothesis_unit, question_interpretation["constraints"]
+        )
+        hypothesis_videos = [
+            scoped_video_for_query_unit(video, hypothesis_unit)
+            if hypothesis_unit
+            else video
+            for video in selected_videos
+        ]
         evidence_entries = (
             mechanism_evidence(
                 search_module,
                 mechanism,
-                selected_videos,
-                question_interpretation["constraints"],
+                hypothesis_videos,
+                hypothesis_constraints,
                 diagnostic_rules,
+                claim_text=hypothesis["text"],
             )
             if mechanism
             else []
@@ -533,7 +635,16 @@ def build_diagnostic_contract(
             }
         )
 
-    normalized_query = search_module.normalize(query)
+    actor_context = question_interpretation.get("actor_context", {})
+    mechanism_query = (
+        actor_context.get("target_action_query", query)
+        if actor_context.get("inferred_target_action")
+        else query
+    )
+    # Terms that describe a partner's prior shot or an opponent's response are
+    # conditions of a multi-actor decision, not evidence that the user is
+    # asking for a diagnosis of those actions.
+    normalized_query = search_module.normalize(mechanism_query)
     supported_mechanisms = []
     for mechanism in diagnostic_rules.get("mechanisms", []):
         if mechanism["id"] in hypothesis_mechanism_ids:
@@ -543,11 +654,32 @@ def build_diagnostic_contract(
             for term in mechanism.get("query_terms", [])
         ):
             continue
+        mechanism_unit = next(
+            (
+                unit
+                for unit in query_units
+                if any(
+                    search_module.normalize(term)
+                    in search_module.normalize(unit)
+                    for term in mechanism.get("query_terms", [])
+                )
+            ),
+            None,
+        )
+        mechanism_constraints = query_unit_constraints.get(
+            mechanism_unit, question_interpretation["constraints"]
+        )
+        mechanism_videos = [
+            scoped_video_for_query_unit(video, mechanism_unit)
+            if mechanism_unit
+            else video
+            for video in selected_videos
+        ]
         evidence_entries = mechanism_evidence(
             search_module,
             mechanism,
-            selected_videos,
-            question_interpretation["constraints"],
+            mechanism_videos,
+            mechanism_constraints,
             diagnostic_rules,
         )
         if not evidence_entries:
@@ -706,7 +838,13 @@ def build_diagnostic_contract(
                     "answer_cues": mechanism.get("answer_cues", []),
                 }
             )
-    if diagnostic_question and not clarification_requests and not resolved_question_ids:
+    video_unavailable = user_video_is_unavailable(query, diagnostic_rules)
+    if (
+        diagnostic_question
+        and not clarification_requests
+        and not resolved_question_ids
+        and not video_unavailable
+    ):
         clarification_requests.append(
             {
                 "question_id": "clarify.user_movement_video",
@@ -794,6 +932,7 @@ def build_diagnostic_contract(
             "material_branches": branches,
             "do_not_claim_unique_cause": diagnostic_question,
             "unique_cause_confirmation_requires_user_video": diagnostic_question,
+            "user_video_unavailable": video_unavailable,
         },
         "clarification_decision": {
             "action": clarification_action,
