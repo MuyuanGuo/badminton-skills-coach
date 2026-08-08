@@ -11,7 +11,7 @@ An evidence-backed badminton coaching Skill for Codex. Describe a real technique
 
 [Install 2.1.0](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
 
-**Version 2.1.0 is the stable release** on `main` and [v2.1.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.0); ongoing work continues on `develop`. This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
+You are viewing the `develop` branch; the current development version is **2.1.1-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.0). This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
 ## Start in 30 seconds
 
@@ -26,11 +26,13 @@ a 20-minute partner drill.
 
 The Skill reconstructs who did what, the incoming shot, and the requested action before retrieving evidence. Every displayed source has a turn-scoped V label, a stable evidence_id, a canonical link, and a timestamp when available.
 
-## What changed in 2.1.0
+## Current development build (2.1.1-dev.1)
+
+This branch collects unreleased data, runtime, and engineering changes on top of stable 2.1.0. It describes the development tree, not an already available stable package.
 
 - One answer-ready corpus now combines processed Douyin and Bilibili teaching material across strokes, full-court movement, singles and doubles tactics, net skills, serve/receive, equipment, and practice.
 - Titles and keywords recall candidates but cannot prove a technical claim. Source, transcript, evidence-quality, and duplicate gates decide whether a video may answer.
-- 781 primary sources lead. 175 bounded supplemental sources may fill a concept, condition, drill, or equipment gap only through matched timestamp windows.
+- 783 primary sources lead. 175 bounded supplemental sources may fill a concept, condition, drill, or equipment gap only through matched timestamp windows.
 - “One to three videos” is a per-claim evidence cap, not a three-video answer cap. Materially different subquestions or scenario branches may expose more sources; simple answers are never padded with duplicates.
 - Local feedback stays on the user's machine by default and affects personalization only after confirmation. Public feedback requires separate sanitization, consent, source verification, and regression tests.
 - The model reads a compact answer packet while the complete context remains authoritative for final audit; canonical JSON SHA-256 binds the two.
@@ -161,8 +163,10 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 Runtime boundaries and module-loading constraints are documented in [ARCHITECTURE.md](ARCHITECTURE.md). For maintenance and contributions, see [CONTRIBUTING.en.md](CONTRIBUTING.en.md) ([中文](CONTRIBUTING.md)). Release verification, signed tags, and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). Documentation on every branch must describe that branch's actual code, not an unreleased design.
 
+- Current branch: `develop`
+- Current development version: `2.1.1-dev.1`
+- Release status: `unreleased`
 - Stable release: `main` / `v2.1.0`
-- Development branch: `develop`
 - Installable package: [v2.1.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.0)
 
-`main` is the stable release source and `develop` is the integration branch. Both use the same evidence and governance standards.
+`main` is the stable release source and `develop` is the integration branch. Both use the same evidence and governance standards, while their README and version metadata must reflect their distinct states.

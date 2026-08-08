@@ -8,7 +8,11 @@ and respectful of privacy and third-party rights.
 ## Before opening a pull request
 
 1. Open an issue first for a large behavior or data change.
-2. Branch from `develop`; changes to `main` also go through a pull request.
+2. Branch from `develop`. Feature, data, documentation, and CI pull requests all
+   target `develop`. Only `release/*` release branches and emergency `hotfix/*`
+   branches may target `main`, always through a pull request. Every successfully
+   validated `main` update automatically opens a back-merge pull request to
+   `develop`; do not leave that synchronization outstanding.
 3. Never commit original media, raw transcript directories, temporary URLs,
    cookies, credentials, private conversations, or local feedback queues.
 4. Preserve canonical public source links and never claim endorsement by Liu

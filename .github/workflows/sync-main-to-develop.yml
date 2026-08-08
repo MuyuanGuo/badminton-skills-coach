@@ -1,0 +1,72 @@
+name: Propose main to develop sync
+
+on:
+  workflow_run:
+    workflows: ["Validate knowledge pipeline"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-main-to-develop
+  cancel-in-progress: false
+
+jobs:
+  propose-sync:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SYNC_BRANCH: automation/sync-main-to-develop
+    steps:
+      - name: Check out validated main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Prepare the next development state
+        run: |
+          python scripts/prepare_develop_sync.py
+          python scripts/build_manifest.py
+          python scripts/generate_release_answer_results.py --generated-at "$(date -u +%F)"
+
+      - name: Push the synchronization branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$SYNC_BRANCH"
+          git add README.md README.en.md config/feedback_rules.json \
+            skills/liuhui-badminton-coach/references/feedback-rules.json \
+            .github/ISSUE_TEMPLATE/bug-report.yml \
+            .github/ISSUE_TEMPLATE/question.yml \
+            .github/ISSUE_TEMPLATE/skill-feedback.yml \
+            data/knowledge/build_manifest.json \
+            skills/liuhui-badminton-coach/references/build-manifest.json \
+            data/evaluation/live_generation_results.json
+          git commit -m "Sync main into the next development version"
+          git push --force-with-lease origin "$SYNC_BRANCH"
+
+      - name: Create or update the develop synchronization PR
+        run: |
+          pr_url="$(gh pr list --state open --base develop --head "$SYNC_BRANCH" --json url --jq '.[0].url')"
+          if [ -z "$pr_url" ]; then
+            pr_url="$(gh pr create \
+              --base develop \
+              --head "$SYNC_BRANCH" \
+              --title "Sync validated main into develop" \
+              --body "Automated back-merge after a successful main validation. This also advances the development channel to the next patch prerelease while retaining the newly released stable install version.")"
+          fi
+          echo "Synchronization PR: $pr_url"
+
+      - name: Trigger full validation for the bot-created PR head
+        run: gh workflow run validate.yml --ref "$SYNC_BRANCH"

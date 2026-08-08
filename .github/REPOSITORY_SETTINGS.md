@@ -9,6 +9,14 @@ enforced from repository files alone:
 - Default branch: `main`; do not advertise `develop` as the source of stable facts.
 - Protect `main` and `develop`: require pull requests, the `validate` check,
   conversation resolution, no force-push, and no deletion.
+- Require the `branch-policy` check on `main`. Normal feature, data,
+  documentation, and CI pull requests target `develop`; only `release/*` and
+  emergency `hotfix/*` branches (including the equivalent `codex/` prefixes)
+  may target `main`, and they must originate in this repository.
+- Keep the `Propose main to develop sync` workflow enabled with permission to
+  create pull requests. Every successful validation of a `main` push must create
+  or update the `automation/sync-main-to-develop` PR and dispatch full validation
+  for that exact synchronization head.
 - Protect release tags matching `v*`: only maintainers may create them; tags must
   be cryptographically signed. Keep GitHub's registered signing key aligned with
   the public key in `.github/release-signers`; never commit the private key.

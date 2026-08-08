@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -29,11 +30,12 @@ class DocumentationContractTests(unittest.TestCase):
         cls.landing_page = LANDING_PAGE.read_text(encoding="utf-8")
         cls.skill = SKILL.read_text(encoding="utf-8")
         cls.answer_workflow = ANSWER_WORKFLOW.read_text(encoding="utf-8")
-        cls.release_channel = json.loads(
+        cls.version_metadata = json.loads(
             (ROOT / "config" / "feedback_rules.json").read_text(
                 encoding="utf-8"
             )
-        )["channel"]
+        )
+        cls.release_channel = cls.version_metadata["channel"]
 
     def test_readme_audience_matches_release_channel(self):
         if self.release_channel == "development":
@@ -42,6 +44,61 @@ class DocumentationContractTests(unittest.TestCase):
         else:
             self.assertIn("`main` 是稳定发布来源", self.readme_zh)
             self.assertIn("`main` is the stable release source", self.readme_en)
+
+    def test_versions_and_install_links_match_branch_metadata(self):
+        skill_version = self.version_metadata["skill_version"]
+        stable_version = self.version_metadata["stable_version"]
+        skill_rules = json.loads(
+            (
+                ROOT
+                / "skills"
+                / "liuhui-badminton-coach"
+                / "references"
+                / "feedback-rules.json"
+            ).read_text(encoding="utf-8")
+        )
+        self.assertEqual(skill_rules, self.version_metadata)
+
+        if self.release_channel == "development":
+            self.assertIn(
+                f"当前开发版本是 **{skill_version}**", self.readme_zh
+            )
+            self.assertIn(
+                f"current development version is **{skill_version}**",
+                self.readme_en,
+            )
+            self.assertIn("发布状态为 **unreleased**", self.readme_zh)
+            self.assertIn("release status is **unreleased**", self.readme_en)
+            development_core = tuple(
+                int(part) for part in skill_version.split("-", 1)[0].split(".")
+            )
+            stable_core = tuple(int(part) for part in stable_version.split("."))
+            self.assertGreater(development_core, stable_core)
+        else:
+            self.assertEqual(skill_version, stable_version)
+            self.assertIn(f"**{stable_version} 稳定版**", self.readme_zh)
+            self.assertIn(
+                f"**Version {stable_version} is the stable release**",
+                self.readme_en,
+            )
+
+        for document in (
+            self.readme_zh,
+            self.readme_en,
+            self.landing_page,
+            (ROOT / "docs" / "en" / "index.html").read_text(encoding="utf-8"),
+        ):
+            download_versions = set(
+                re.findall(r"releases/download/v(\d+\.\d+\.\d+)", document)
+            )
+            archive_versions = set(
+                re.findall(
+                    r"liuhui-badminton-coach-(\d+\.\d+\.\d+)\.zip",
+                    document,
+                )
+            )
+            self.assertEqual(download_versions, {stable_version})
+            self.assertEqual(archive_versions, {stable_version})
 
     def test_bilibili_causal_chain_is_serial_and_bilingual(self):
         for marker in (
