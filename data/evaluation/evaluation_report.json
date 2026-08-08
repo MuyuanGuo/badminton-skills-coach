@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.1-dev.1",
-  "baseline_version": "v2.1.0",
+  "development_version": "2.1.1",
+  "baseline_version": "v2.1.1",
   "build": {
-    "id": "559364414ccd0703",
-    "inputs_sha256": "59e4ef62fa45a22721f04e4251679dbbc4edbd9ddf9bfa8ef9db60542271a57f",
-    "runtime_sha256": "d77de96b9bef7b4866ad488da9dfd5d8339215cdaab94699eac231e4258313b2"
+    "id": "f76912bc2ffa0f7c",
+    "inputs_sha256": "34a757b070aed523e048ef66e7140405fd1d12281520c99e09169beb49f2ea0a",
+    "runtime_sha256": "d0a8979e20d591e6d981ca2a99a57783134dd4bdec08cd6998ab9100aa053076"
   },
   "summary": {
     "status": "pass",
@@ -220,8 +220,8 @@
       "runtime_fingerprint_scope": "answer_semantics",
       "generation_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
       "current_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
-      "generation_artifact_runtime_fingerprint": "68bdcd3b17c9be5e6a719a95df7d04cfc129e2849221279e2b3af41060ac630e",
-      "current_artifact_runtime_fingerprint": "68bdcd3b17c9be5e6a719a95df7d04cfc129e2849221279e2b3af41060ac630e",
+      "generation_artifact_runtime_fingerprint": "d3d575a37924bb015002ac61fc290ade0cce675868b4e88c563809d719499a98",
+      "current_artifact_runtime_fingerprint": "d3d575a37924bb015002ac61fc290ade0cce675868b4e88c563809d719499a98",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -610,7 +610,7 @@
     {
       "metric": "video_comprehension.ready_videos",
       "current": 958,
-      "baseline": 956,
+      "baseline": 958,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -628,7 +628,7 @@
     {
       "metric": "video_comprehension.transcript_backed",
       "current": 765,
-      "baseline": 763,
+      "baseline": 765,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
