@@ -40,6 +40,14 @@ jobs:
           python scripts/build_manifest.py
           python scripts/generate_release_answer_results.py --generated-at "$(date -u +%F)"
 
+      - name: Refresh development evaluation reports
+        run: |
+          python scripts/collect_evaluation_results.py \
+            --output "$RUNNER_TEMP/core-evaluations.json"
+          python scripts/generate_evaluation_report.py \
+            --write \
+            --evaluations "$RUNNER_TEMP/core-evaluations.json"
+
       - name: Push the synchronization branch
         run: |
           git config user.name "github-actions[bot]"
@@ -52,7 +60,9 @@ jobs:
             .github/ISSUE_TEMPLATE/skill-feedback.yml \
             data/knowledge/build_manifest.json \
             skills/liuhui-badminton-coach/references/build-manifest.json \
-            data/evaluation/live_generation_results.json
+            data/evaluation/live_generation_results.json \
+            data/evaluation/evaluation_report.json \
+            docs/evaluation/index.html
           git commit -m "Sync main into the next development version"
           git push --force-with-lease origin "$SYNC_BRANCH"
 

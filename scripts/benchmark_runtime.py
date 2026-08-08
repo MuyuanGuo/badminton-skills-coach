@@ -77,6 +77,15 @@ def latency_summary(values):
     }
 
 
+def per_query_medians(samples_by_query):
+    medians = []
+    for samples in samples_by_query:
+        if not samples:
+            raise ValueError("Every benchmark query requires latency samples")
+        medians.append(percentile(samples, 0.5))
+    return medians
+
+
 def json_size(payload):
     return len(
         json.dumps(
@@ -116,6 +125,9 @@ def benchmark(
         cases,
         benchmark_config["cases_per_type"],
     )
+    latency_repetitions = benchmark_config.get("latency_repetitions", 1)
+    if latency_repetitions < 1 or latency_repetitions % 2 == 0:
+        raise ValueError("latency_repetitions must be a positive odd integer")
     expected_query_count = (
         benchmark_config["cases_per_type"]
         * len({case["case_type"] for case in cases})
@@ -132,10 +144,14 @@ def benchmark(
             manifest_limit=60,
             local_personalization=False,
         )
+        context_module.prepare_answer_context(
+            item["query"],
+            local_personalization=False,
+        )
 
     plan_latencies = []
     search_latencies = []
-    context_latencies = []
+    context_samples_by_query = [[] for _ in queries]
     packet_reductions = []
     for item in queries:
         started = time.perf_counter()
@@ -150,18 +166,24 @@ def benchmark(
         )
         search_latencies.append((time.perf_counter() - started) * 1000)
 
-        started = time.perf_counter()
-        context = context_module.prepare_answer_context(
-            item["query"],
-            local_personalization=False,
-        )
-        context_latencies.append((time.perf_counter() - started) * 1000)
-        packet = context_module.build_answer_packet(context)
-        context_size = json_size(context)
-        packet_size = json_size(packet)
-        packet_reductions.append(
-            1 - (packet_size / context_size) if context_size else 0
-        )
+    for repetition in range(latency_repetitions):
+        for query_index, item in enumerate(queries):
+            started = time.perf_counter()
+            context = context_module.prepare_answer_context(
+                item["query"],
+                local_personalization=False,
+            )
+            context_samples_by_query[query_index].append(
+                (time.perf_counter() - started) * 1000
+            )
+            if repetition == 0:
+                packet = context_module.build_answer_packet(context)
+                context_size = json_size(context)
+                packet_size = json_size(packet)
+                packet_reductions.append(
+                    1 - (packet_size / context_size) if context_size else 0
+                )
+    context_latencies = per_query_medians(context_samples_by_query)
 
     tracemalloc.start()
     memory_context_module, _ = timed_load_context_module()
@@ -180,6 +202,13 @@ def benchmark(
         "schema_version": 1,
         "query_count": len(queries),
         "case_types": sorted({item["case_type"] for item in queries}),
+        "latency_sampling": {
+            "repetitions_per_query": latency_repetitions,
+            "raw_answer_context_samples": sum(
+                len(samples) for samples in context_samples_by_query
+            ),
+            "aggregation": "per_query_median",
+        },
         "latency": {
             "module_load": latency_summary([module_load_ms]),
             "query_plan": latency_summary(plan_latencies),

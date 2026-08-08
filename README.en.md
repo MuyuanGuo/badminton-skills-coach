@@ -9,9 +9,9 @@
 
 An evidence-backed badminton coaching Skill for Codex. Describe a real technique, footwork, tactics, equipment, or practice problem and it returns a diagnosis, actionable practice, relevant Douyin and Bilibili videos, timestamps, and explicit evidence boundaries.
 
-[Install 2.1.0](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
+[Install 2.1.1](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
 
-You are viewing the `develop` branch; the current development version is **2.1.1-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.0). This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
+You are viewing the `develop` branch; the current development version is **2.1.2-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1). This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
 ## Start in 30 seconds
 
@@ -26,9 +26,9 @@ a 20-minute partner drill.
 
 The Skill reconstructs who did what, the incoming shot, and the requested action before retrieving evidence. Every displayed source has a turn-scoped V label, a stable evidence_id, a canonical link, and a timestamp when available.
 
-## Current development build (2.1.1-dev.1)
+## Current development build (2.1.2-dev.1)
 
-This branch collects unreleased data, runtime, and engineering changes on top of stable 2.1.0. It describes the development tree, not an already available stable package.
+This branch collects unreleased data, runtime, and engineering changes on top of stable 2.1.1. It describes the development tree, not an already available stable package.
 
 - One answer-ready corpus now combines processed Douyin and Bilibili teaching material across strokes, full-court movement, singles and doubles tactics, net skills, serve/receive, equipment, and practice.
 - Titles and keywords recall candidates but cannot prove a technical claim. Source, transcript, evidence-quality, and duplicate gates decide whether a video may answer.
@@ -66,15 +66,15 @@ All 7,744 transcript evidence items have timestamps. These figures describe the 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
 ~~~bash
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/liuhui-badminton-coach-2.1.0.zip \
-  -o /tmp/liuhui-badminton-coach-2.1.0.zip
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/liuhui-badminton-coach-2.1.1.zip \
+  -o /tmp/liuhui-badminton-coach-2.1.1.zip
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.0/SBOM.cdx.json \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SBOM.cdx.json \
   -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.1.0.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.1.1.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ~~~
 
@@ -89,7 +89,7 @@ Restart Codex after installation. Re-running the installer safely upgrades the i
 Windows PowerShell uses the same release and SHA-256 verification:
 
 ~~~powershell
-$v = "2.1.0"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
+$v = "2.1.1"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
 Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
 Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
 $expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
@@ -164,9 +164,9 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 Runtime boundaries and module-loading constraints are documented in [ARCHITECTURE.md](ARCHITECTURE.md). For maintenance and contributions, see [CONTRIBUTING.en.md](CONTRIBUTING.en.md) ([中文](CONTRIBUTING.md)). Release verification, signed tags, and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). Documentation on every branch must describe that branch's actual code, not an unreleased design.
 
 - Current branch: `develop`
-- Current development version: `2.1.1-dev.1`
+- Current development version: `2.1.2-dev.1`
 - Release status: `unreleased`
-- Stable release: `main` / `v2.1.0`
-- Installable package: [v2.1.0](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.0)
+- Stable release: `main` / `v2.1.1`
+- Installable package: [v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1)
 
 `main` is the stable release source and `develop` is the integration branch. Both use the same evidence and governance standards, while their README and version metadata must reflect their distinct states.
