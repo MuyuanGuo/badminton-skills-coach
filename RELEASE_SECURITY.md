@@ -56,10 +56,14 @@ with GitHub Artifact Attestations, and upload the assets to the matching tag.
 ## GitHub-hosted enforcement
 
 The release tag must be cryptographically signed; the workflow verifies it with
-`git verify-tag`. The release job targets the protected `release` environment and
-refuses to overwrite an existing release. Branch protection, protected tag rules,
-environment reviewers, repository About text, topics, and label synchronization
-must be configured in GitHub according to [.github/REPOSITORY_SETTINGS.md](.github/REPOSITORY_SETTINGS.md).
+`git verify-tag`. Release tags use Git's SSH signature format. The trusted public
+key and `git` namespace are committed in `.github/release-signers`, while the
+private signing key remains outside the repository and GitHub Actions. The same
+public key is registered with GitHub as a signing key, not an authentication key.
+The release job targets the protected `release` environment and refuses to
+overwrite an existing release. Branch protection, protected tag rules, environment
+reviewers, repository About text, topics, and label synchronization must be
+configured in GitHub according to [.github/REPOSITORY_SETTINGS.md](.github/REPOSITORY_SETTINGS.md).
 
 The transcription and development environments are installed with
 `pip --require-hashes`. Faster-whisper model repositories and immutable revisions
