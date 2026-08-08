@@ -28,6 +28,35 @@ class ValidateWorkflowContractTests(unittest.TestCase):
         self.assertIn("--shard-index ${{ matrix.shard_index }}", self.workflow)
         self.assertIn("--shard-count ${{ matrix.shard_count }}", self.workflow)
 
+    def test_quality_gates_run_as_independent_matrix_jobs(self):
+        expected_jobs = {
+            "quality-report": "evaluations",
+            "runtime-performance": "performance",
+            "answer-packet": "answer_packet",
+        }
+        for name, kind in expected_jobs.items():
+            self.assertIn(
+                f"- name: {name}\n            kind: {kind}",
+                self.workflow,
+            )
+
+        expected_steps = {
+            "matrix.kind == 'evaluations'": 2,
+            "matrix.kind == 'performance'": 1,
+            "matrix.kind == 'answer_packet'": 1,
+        }
+        for condition, count in expected_steps.items():
+            self.assertEqual(self.workflow.count(f"if: {condition}"), count)
+
+        self.assertEqual(
+            self.workflow.count("python scripts/benchmark_runtime.py"),
+            1,
+        )
+        self.assertEqual(
+            self.workflow.count("python scripts/evaluate_answer_packet.py"),
+            1,
+        )
+
     def test_expensive_static_tools_run_once(self):
         self.assertEqual(self.workflow.count("if: matrix.python == '3.12'"), 2)
         self.assertIn("Lint Python sources", self.workflow)
