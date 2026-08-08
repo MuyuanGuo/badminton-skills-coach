@@ -37,6 +37,16 @@ class ReleaseWorkflowContractTests(unittest.TestCase):
         )
         self.assertNotIn("independently reviewed model generations", self.workflow)
 
+    def test_release_reuses_exact_sha_main_validation(self):
+        self.assertNotIn("uses: ./.github/workflows/validate.yml", self.workflow)
+        self.assertIn("actions: read", self.workflow)
+        self.assertIn("Reuse exact-SHA main validation", self.workflow)
+        self.assertIn(
+            "python3 scripts/require_successful_validation.py", self.workflow
+        )
+        self.assertIn('--sha "${{ github.sha }}"', self.workflow)
+        self.assertIn("--branch main", self.workflow)
+
     def test_release_signer_is_public_ssh_material_only(self):
         lines = self.release_signers.splitlines()
         self.assertEqual(len(lines), 1)

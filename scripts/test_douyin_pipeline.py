@@ -80,6 +80,13 @@ class DouyinClassificationRulesTest(unittest.TestCase):
         self.assertEqual(item["decision"], "保留：教学")
         self.assertEqual(item["primary_category"], "后场技术")
 
+    def test_footwork_synonym_is_explicit_teaching_content(self):
+        item = self.classify_title(
+            "下手步伐加速，右脚要有回复动作，不然连续节奏容易断"
+        )
+        self.assertEqual(item["decision"], "保留：教学")
+        self.assertEqual(item["primary_category"], "步法与移动")
+
     def test_transcribed_state_drops_only_temporary_media_fields(self):
         item = {
             "video_id": "123456789012345678",

@@ -4,9 +4,9 @@
   "development_version": "2.1.0",
   "baseline_version": "v2.1.0",
   "build": {
-    "id": "518daea504fe06ac",
-    "inputs_sha256": "4fae3951a08374f3585149625070179d79ca37bfa4b5389e5e639ad530a08027",
-    "runtime_sha256": "304f79f61f98fc181052a31547ed4df6dcf1c131f4213a7172011d9d4bf157a1"
+    "id": "458f225fbe6a5ed5",
+    "inputs_sha256": "3d9b9a6f4dc48fd2a8caaa328ae51efcc1286f04f0caf15767b9abce7b01afef",
+    "runtime_sha256": "426d6a81604710f34f842cc1c1ea1dcb0c6a0dfc20f038779b8cbae0ad5e9dbd"
   },
   "summary": {
     "status": "pass",
@@ -116,7 +116,7 @@
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
-        "candidate_videos": 592,
+        "candidate_videos": 594,
         "top_k_count": 81,
         "top_k_rate": 0.11842105263157894,
         "max_top_k_per_case": 3,
@@ -178,16 +178,16 @@
       "failed": []
     },
     "video_comprehension": {
-      "ready_videos": 956,
-      "understood_videos": 956,
+      "ready_videos": 958,
+      "understood_videos": 958,
       "understanding_coverage": 1.0,
-      "transcript_backed": 763,
-      "automatic_transcript": 757,
+      "transcript_backed": 765,
+      "automatic_transcript": 759,
       "reviewed_transcript": 6,
       "visual_review_fallback": 19,
       "evidence_provenance": {
-        "transcript_evidence_items": 9540,
-        "timestamped_transcript_evidence_items": 9540,
+        "transcript_evidence_items": 9560,
+        "timestamped_transcript_evidence_items": 9560,
         "transcript_timestamp_coverage": 1.0,
         "reviewed_visual_observation_items": 19,
         "synthesized_principle_items": 15,
@@ -216,12 +216,12 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
+      "runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
-      "current_answer_runtime_fingerprint": "1416f65e17b4d433edf85bfe39d1da0406bd84f1a3b5dbb193ff338bf4843a15",
-      "generation_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
-      "current_artifact_runtime_fingerprint": "dab5884338efd6d2ac009444eaa2b3f795f5480f0c0250ae5a813de2e27ed33b",
+      "generation_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
+      "current_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
+      "generation_artifact_runtime_fingerprint": "997aa3c71b11949010ceec07533464fdef2593dc183b61570a344f834313b892",
+      "current_artifact_runtime_fingerprint": "997aa3c71b11949010ceec07533464fdef2593dc183b61570a344f834313b892",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -609,7 +609,7 @@
     },
     {
       "metric": "video_comprehension.ready_videos",
-      "current": 956,
+      "current": 958,
       "baseline": 956,
       "direction": "at_least",
       "tolerance": 0,
@@ -627,7 +627,7 @@
     },
     {
       "metric": "video_comprehension.transcript_backed",
-      "current": 763,
+      "current": 765,
       "baseline": 763,
       "direction": "at_least",
       "tolerance": 0,
