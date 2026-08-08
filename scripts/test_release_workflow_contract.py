@@ -47,6 +47,12 @@ class ReleaseWorkflowContractTests(unittest.TestCase):
         self.assertIn('--sha "${{ github.sha }}"', self.workflow)
         self.assertIn("--branch main", self.workflow)
 
+    def test_release_tag_matches_stable_version_metadata(self):
+        self.assertGreaterEqual(
+            self.workflow.count("scripts/check_release_metadata.py"), 2
+        )
+        self.assertIn('--tag "$RELEASE_TAG"', self.workflow)
+
     def test_release_signer_is_public_ssh_material_only(self):
         lines = self.release_signers.splitlines()
         self.assertEqual(len(lines), 1)

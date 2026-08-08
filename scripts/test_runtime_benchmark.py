@@ -26,6 +26,17 @@ class RuntimeBenchmarkTests(unittest.TestCase):
         self.assertEqual(self.module.percentile([1, 2, 3, 4], 0.95), 4)
         self.assertEqual(self.module.percentile([4, 1, 3, 2], 0.5), 2)
 
+    def test_per_query_medians_filter_single_runner_spikes(self):
+        medians = self.module.per_query_medians(
+            [
+                [1000, 1010, 2900],
+                [900, 2400, 910],
+            ]
+        )
+        self.assertEqual(medians, [1010, 910])
+        with self.assertRaisesRegex(ValueError, "requires latency samples"):
+            self.module.per_query_medians([[1, 2, 3], []])
+
     def test_balanced_queries_cover_every_case_type(self):
         cases = self.module.load_json(self.module.CASES_PATH)["cases"]
         queries = self.module.balanced_queries(cases, 2)

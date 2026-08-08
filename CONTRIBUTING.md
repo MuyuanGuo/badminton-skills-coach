@@ -14,7 +14,10 @@
 ## 提交前
 
 1. 较大的功能改动请先创建 Issue，说明目标、范围和验证方法。
-2. 从 `develop` 创建短期分支；稳定修复也应通过 Pull Request 合入 `main`。
+2. 从 `develop` 创建短期分支，功能、数据、文档和 CI 改动的 Pull Request 均以
+   `develop` 为目标。只有 `release/*` 发布分支和紧急 `hotfix/*` 修复分支可通过
+   Pull Request 合入 `main`；`main` 每次成功验证后会自动建立回同步到 `develop`
+   的 Pull Request，禁止长期跳过回同步。
 3. 不要提交原始视频、音频、完整转写、临时媒体地址、私人聊天记录、联系方式或本地反馈队列。
 4. 涉及刘辉教学内容时，请保留公开视频链接和可核对的来源信息，不要声称获得本人背书。
 
@@ -87,6 +90,13 @@ Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再�
 ```
 
 `answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前运行时即时生成。
+从已通过完整验证的 `develop` 创建发布分支后，先运行发布准备脚本；它会同步稳定版
+元数据、双语 README、网站安装链接、Issue 模板和版本化质量基线：
+
+```bash
+python3 scripts/prepare_stable_release.py
+```
+
 打 Release tag 前，必须使用受信任的确定性 renderer 为全部关键案例重建
 `data/evaluation/live_generation_results.json`，再运行当前运行时验证：
 

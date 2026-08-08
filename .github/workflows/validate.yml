@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, develop]
   pull_request:
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -37,7 +38,7 @@ jobs:
           PUSH_BEFORE_SHA: ${{ github.event.before }}
           HEAD_SHA: ${{ github.sha }}
         run: |
-          if [ "$EVENT_NAME" = "workflow_call" ]; then
+          if [ "$EVENT_NAME" = "workflow_call" ] || [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             echo "static=true" >> "$GITHUB_OUTPUT"
             echo "artifact=true" >> "$GITHUB_OUTPUT"
             echo "quality=true" >> "$GITHUB_OUTPUT"
