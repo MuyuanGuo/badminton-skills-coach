@@ -6,6 +6,7 @@ from pathlib import PurePosixPath
 
 
 DOC_EXACT = {"LICENSE", "NOTICE"}
+VALIDATION_WORKFLOW = ".github/workflows/validate.yml"
 TOOLING_EXACT = {
     ".gitattributes",
     ".gitignore",
@@ -40,7 +41,7 @@ def is_tooling_only(path):
     value = normalize_path(path)
     name = PurePosixPath(value).name
     return (
-        value.startswith(".github/")
+        (value.startswith(".github/") and value != VALIDATION_WORKFLOW)
         or value in TOOLING_EXACT
         or (
             value.startswith("scripts/")

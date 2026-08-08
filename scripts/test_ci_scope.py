@@ -27,6 +27,17 @@ class CiScopeTests(unittest.TestCase):
             },
         )
 
+    def test_validation_workflow_change_runs_quality_evaluations(self):
+        self.assertEqual(
+            classify_paths([".github/workflows/validate.yml"]),
+            {
+                "static": True,
+                "artifact": True,
+                "quality": True,
+                "docs_only": False,
+            },
+        )
+
     def test_test_only_change_skips_expensive_knowledge_evaluations(self):
         scope = classify_paths(["scripts/test_release_workflow_contract.py"])
         self.assertTrue(scope["static"])
@@ -60,7 +71,7 @@ class CiScopeTests(unittest.TestCase):
                 )
 
     def test_mixed_docs_and_tooling_is_not_docs_only(self):
-        scope = classify_paths(["README.md", ".github/workflows/validate.yml"])
+        scope = classify_paths(["README.md", ".github/workflows/release.yml"])
         self.assertTrue(scope["static"])
         self.assertTrue(scope["artifact"])
         self.assertFalse(scope["quality"])
