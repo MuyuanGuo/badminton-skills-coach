@@ -7,7 +7,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from bilibili_wiring_canary import evaluate_registry
+from bilibili_wiring_canary import evaluate_registry, shard_registry
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,8 +29,19 @@ def main():
         type=Path,
         help="Optionally persist the complete per-case result JSON.",
     )
+    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("--shard-count", type=int, default=1)
     args = parser.parse_args()
     registry = json.loads(args.registry.read_text(encoding="utf-8"))
+    total_case_count = int(registry.get("case_count") or 0)
+    try:
+        registry = shard_registry(
+            registry,
+            args.shard_index,
+            args.shard_count,
+        )
+    except ValueError as error:
+        parser.error(str(error))
     search = load_module(
         "bilibili_mechanical_canary_search",
         SKILL_SCRIPTS / "search_knowledge.py",
@@ -52,6 +63,9 @@ def main():
         for key, value in result.items()
         if key not in {"results", "failures"}
     }
+    summary["shard_index"] = args.shard_index
+    summary["shard_count"] = args.shard_count
+    summary["total_case_count"] = total_case_count
     summary["surface_disposition_counts"] = dict(
         sorted(
             Counter(

@@ -61,6 +61,7 @@ CORE_EVALUATORS = (
     "evaluate_retrieval.py",
     "evaluate_metamorphic_robustness.py",
     "evaluate_video_comprehension.py",
+    "generate_release_answer_results.py",
     "validate_live_generation_results.py",
 )
 EVALUATION_INPUTS = (
@@ -131,11 +132,11 @@ def fingerprint_paths(root=ROOT):
     }
 
 
-def summarize_generation_review(live_payload, root=ROOT):
-    """Report review freshness without weakening the strict release validator."""
+def summarize_generation_validation(live_payload, root=ROOT):
+    """Report reproducible-generation freshness and automated audit status."""
 
     root = Path(root)
-    snapshot = validate_live_generation_results.inspect_review_snapshot(
+    snapshot = validate_live_generation_results.inspect_generation_snapshot(
         live_payload, root=root
     )
     current = snapshot["current_runtime_match"]
@@ -148,18 +149,15 @@ def summarize_generation_review(live_payload, root=ROOT):
         if current
         else snapshot
     )
-    live_scores = [
-        score
-        for item in live_payload["cases"]
-        for score in item["manual_scores"].values()
-    ]
     return {
         "measurement_type": (
-            "current_answer_runtime_generation_review"
+            "current_runtime_automated_generation_validation"
             if current
-            else "historical_generation_review"
+            else "historical_generation_snapshot"
         ),
-        "review_status": "current_reviewed" if current else "historical_stale",
+        "validation_status": (
+            "current_validated" if current else "historical_stale"
+        ),
         "snapshot_integrity_status": snapshot["status"],
         "current_runtime_match": current,
         "current_runtime_generation_claimed": current,
@@ -168,32 +166,51 @@ def summarize_generation_review(live_payload, root=ROOT):
             "current_answer_runtime_fingerprint"
         ],
         "runtime_fingerprint_scope": "answer_semantics",
-        "reviewed_answer_runtime_fingerprint": snapshot[
-            "reviewed_answer_runtime_fingerprint"
+        "generation_answer_runtime_fingerprint": snapshot[
+            "generation_answer_runtime_fingerprint"
         ],
         "current_answer_runtime_fingerprint": snapshot[
             "current_answer_runtime_fingerprint"
         ],
-        "reviewed_artifact_runtime_fingerprint": snapshot[
-            "reviewed_artifact_runtime_fingerprint"
+        "generation_artifact_runtime_fingerprint": snapshot[
+            "generation_artifact_runtime_fingerprint"
         ],
         "current_artifact_runtime_fingerprint": snapshot[
             "current_artifact_runtime_fingerprint"
         ],
-        "artifact_runtime_match": snapshot["artifact_runtime_match"],
+        "current_answer_runtime_match": snapshot[
+            "current_answer_runtime_match"
+        ],
+        "current_artifact_runtime_match": snapshot[
+            "current_artifact_runtime_match"
+        ],
+        "generator_implementation_match": snapshot[
+            "generator_implementation_match"
+        ],
+        "validator_implementation_match": snapshot[
+            "validator_implementation_match"
+        ],
         "critical_cases": snapshot["critical_cases"],
-        "independently_reviewed": snapshot["independently_reviewed"],
+        "generated_answers": snapshot["generated_answers"],
+        "automatically_validated": (
+            validated["automatically_validated"] if current else 0
+        ),
+        "automated_audit_pass_rate": (
+            validated["automated_audit_pass_rate"] if current else None
+        ),
         "current_runtime_audits_rerun": validated[
             "current_runtime_audits_rerun"
         ],
-        "passed": len(live_payload["cases"]),
-        "minimum_manual_score": min(live_scores),
+        "current_renderer_reproduced": validated[
+            "current_renderer_reproduced"
+        ],
+        "passed": validated["automatically_validated"] if current else 0,
         "failed": [],
         "generator": {
             key: live_payload["generator"][key]
-            for key in ("provider", "model", "model_version")
+            for key in ("type", "implementation", "implementation_sha256")
         },
-        "reviewer": live_payload["review"]["reviewer"],
+        "validation": dict(live_payload["validation"]),
     }
 
 
@@ -260,7 +277,7 @@ def collect_evaluations(root=ROOT):
     live_payload = validate_live_generation_results.load_json(
         root / "data/evaluation/live_generation_results.json"
     )
-    live_result = summarize_generation_review(live_payload, root=root)
+    live_result = summarize_generation_validation(live_payload, root=root)
 
     policy = evaluate_answer_policy.evaluate()
     context = evaluate_answer_context.evaluate()
@@ -579,11 +596,11 @@ def render_html(report):
         "video_comprehension": "Video comprehension",
         "forward_tests": "Historical generation reviews",
         "live_generation": (
-            "Current-runtime generations"
+            "Current-runtime release answers"
             if evaluations["live_generation"].get(
                 "current_runtime_generation_claimed"
             )
-            else "Historical generation review"
+            else "Historical release-answer snapshot"
         ),
     }
     featured = {
@@ -606,7 +623,10 @@ def render_html(report):
         "metamorphic_robustness": ("pass_rate", "Harmless variants passed"),
         "video_comprehension": ("understanding_coverage", "Evidence coverage"),
         "forward_tests": ("consecutive_passes", "Consecutive rounds"),
-        "live_generation": ("minimum_manual_score", "Minimum review score"),
+        "live_generation": (
+            "automated_audit_pass_rate",
+            "Automated full-context audit",
+        ),
     }
     rows = []
     comparisons_by_suite = {}
@@ -659,7 +679,7 @@ def render_html(report):
   <main class="shell" id="main">
     <p class="eyebrow">EvalOps / build {report["build"]["id"]}</p>
     <h1>Evidence quality, measured against a released baseline.</h1>
-    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. Metrics known to have been produced by evaluation-to-runtime leakage are explicitly invalidated, never silently treated as current quality claims. A stale independent generation review is informational here and never becomes a current-runtime claim; tagged releases still require the strict current-runtime review gate.</p>
+    <p class="lede">This deterministic report compares the {html.escape(report["development_version"])} runtime with the versioned {html.escape(report["baseline_version"])} baseline. Retrieval growth is measured through an all-source production view plus a stable-source regression view and a separate unjudged-source exposure budget. Static snapshots and historical generations remain labeled as such. Metrics known to have been produced by evaluation-to-runtime leakage are explicitly invalidated, never silently treated as current quality claims. Tagged releases regenerate every critical answer with the trusted renderer, bind it to the full and answer-semantic runtime fingerprints, and rerun the full-context audit.</p>
     <section class="summary" aria-label="Evaluation summary">
       <div><strong>{status.upper()}</strong><span>Regression gate</span></div>
       <div><strong>{video["ready_videos"]}</strong><span>Ready videos</span></div>

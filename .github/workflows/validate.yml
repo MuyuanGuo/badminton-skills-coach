@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, develop]
   pull_request:
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -19,7 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      full: ${{ steps.scope.outputs.full }}
+      static: ${{ steps.scope.outputs.static }}
+      artifact: ${{ steps.scope.outputs.artifact }}
+      quality: ${{ steps.scope.outputs.quality }}
       docs_only: ${{ steps.scope.outputs.docs_only }}
     steps:
       - name: Check out repository history
@@ -27,37 +30,44 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Classify pull-request paths
+      - name: Classify changed paths
         id: scope
         env:
           EVENT_NAME: ${{ github.event_name }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
           HEAD_SHA: ${{ github.sha }}
         run: |
-          if [ "$EVENT_NAME" != "pull_request" ]; then
-            echo "full=true" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT_NAME" = "workflow_call" ] || [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "static=true" >> "$GITHUB_OUTPUT"
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+            echo "quality=true" >> "$GITHUB_OUTPUT"
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          mapfile -t changed < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
-          full=false
-          for path in "${changed[@]}"; do
-            case "$path" in
-              docs/*|*.md|LICENSE|LICENSE-*|NOTICE) ;;
-              *) full=true ;;
-            esac
-          done
-          echo "full=$full" >> "$GITHUB_OUTPUT"
-          if [ "$full" = false ]; then
-            echo "docs_only=true" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            BASE_SHA="$PR_BASE_SHA"
           else
-            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            BASE_SHA="$PUSH_BEFORE_SHA"
           fi
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="$(git rev-parse "$HEAD_SHA^")"
+          fi
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          if [ "${#changed[@]}" -eq 0 ]; then
+            echo "No changed paths were found; failing closed to full validation." >&2
+            echo "static=true" >> "$GITHUB_OUTPUT"
+            echo "artifact=true" >> "$GITHUB_OUTPUT"
+            echo "quality=true" >> "$GITHUB_OUTPUT"
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python scripts/classify_ci_scope.py "${changed[@]}" >> "$GITHUB_OUTPUT"
 
   static-and-unit:
     name: Static and unit tests (Python ${{ matrix.python }})
     needs: changes
-    if: needs.changes.outputs.full == 'true'
+    if: needs.changes.outputs.static == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -77,9 +87,11 @@ jobs:
         run: python -m pip install --require-hashes -r requirements-dev.txt
 
       - name: Lint Python sources
+        if: matrix.python == '3.12'
         run: ruff check scripts skills/liuhui-badminton-coach/scripts
 
       - name: Type-check architecture-critical modules
+        if: matrix.python == '3.12'
         run: >-
           mypy
           scripts/project_update_lock.py
@@ -98,7 +110,7 @@ jobs:
   core-evaluations:
     name: Core evaluations (${{ matrix.name }})
     needs: changes
-    if: needs.changes.outputs.full == 'true'
+    if: needs.changes.outputs.quality == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -107,7 +119,10 @@ jobs:
         include:
           - name: quality-report
             kind: evaluations
-            shard_index: 0
+          - name: runtime-performance
+            kind: performance
+          - name: answer-packet
+            kind: answer_packet
           - name: answer-context-1
             kind: context
             shard_index: 0
@@ -117,6 +132,30 @@ jobs:
           - name: answer-context-3
             kind: context
             shard_index: 2
+          - name: bilibili-canary-1
+            kind: canary
+            shard_index: 0
+            shard_count: 6
+          - name: bilibili-canary-2
+            kind: canary
+            shard_index: 1
+            shard_count: 6
+          - name: bilibili-canary-3
+            kind: canary
+            shard_index: 2
+            shard_count: 6
+          - name: bilibili-canary-4
+            kind: canary
+            shard_index: 3
+            shard_count: 6
+          - name: bilibili-canary-5
+            kind: canary
+            shard_index: 4
+            shard_count: 6
+          - name: bilibili-canary-6
+            kind: canary
+            shard_index: 5
+            shard_count: 6
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -135,24 +174,26 @@ jobs:
         run: python scripts/generate_evaluation_report.py --check --evaluations "$RUNNER_TEMP/core-evaluations.json"
 
       - name: Enforce runtime performance budgets
-        if: matrix.kind == 'evaluations'
+        if: matrix.kind == 'performance'
         run: python scripts/benchmark_runtime.py
 
       - name: Enforce 20-case compact answer-packet gate
-        if: matrix.kind == 'evaluations'
+        if: matrix.kind == 'answer_packet'
         run: python scripts/evaluate_answer_packet.py
 
       - name: Generate Bilibili mechanical wiring canaries
-        if: matrix.kind == 'evaluations'
+        if: matrix.kind == 'canary'
         run: >-
           python scripts/generate_bilibili_wiring_canaries.py
           --output "$RUNNER_TEMP/bilibili-wiring-canaries.json"
 
       - name: Validate Bilibili mechanical wiring canaries
-        if: matrix.kind == 'evaluations'
+        if: matrix.kind == 'canary'
         run: >-
           python scripts/evaluate_bilibili_wiring_canaries.py
           "$RUNNER_TEMP/bilibili-wiring-canaries.json"
+          --shard-index ${{ matrix.shard_index }}
+          --shard-count ${{ matrix.shard_count }}
 
       - name: Run answer-context regression shard
         if: matrix.kind == 'context'
@@ -164,7 +205,7 @@ jobs:
   artifact-validation:
     name: Artifact validation
     needs: changes
-    if: needs.changes.outputs.full == 'true'
+    if: needs.changes.outputs.artifact == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

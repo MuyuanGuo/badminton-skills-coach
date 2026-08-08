@@ -568,6 +568,26 @@ def validate_registry(registry):
     return registry
 
 
+def shard_registry(registry, shard_index, shard_count):
+    """Return one deterministic modulo shard of a validated registry."""
+
+    validate_registry(registry)
+    if shard_count < 1:
+        raise ValueError("Mechanical canary shard count must be positive")
+    if not 0 <= shard_index < shard_count:
+        raise ValueError(
+            "Mechanical canary shard index must be within the shard count"
+        )
+    cases = registry["cases"][shard_index::shard_count]
+    if not cases:
+        raise ValueError("Mechanical canary shard must contain at least one case")
+    return {
+        **registry,
+        "case_count": len(cases),
+        "cases": cases,
+    }
+
+
 def packet_bytes(packet):
     return len(
         json.dumps(

@@ -8,13 +8,47 @@ on:
 permissions: {}
 
 jobs:
-  validate:
+  validated-main:
+    name: Reuse exact-SHA main validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
     permissions:
+      actions: read
       contents: read
-    uses: ./.github/workflows/validate.yml
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+
+      - name: Require the signed tag to point at main history
+        env:
+          SOURCE_COMMIT: ${{ github.sha }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$SOURCE_COMMIT" origin/main
+          git config gpg.format ssh
+          git config gpg.ssh.allowedSignersFile "$GITHUB_WORKSPACE/.github/release-signers"
+          git verify-tag "$RELEASE_TAG"
+
+      - name: Wait for successful validation of the exact main commit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/require_successful_validation.py
+          --repository "${{ github.repository }}"
+          --sha "${{ github.sha }}"
+          --workflow validate.yml
+          --branch main
+
+      - name: Require release tag and stable metadata to agree
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python3 scripts/check_release_metadata.py --tag "$RELEASE_TAG"
 
   release:
-    needs: validate
+    needs: validated-main
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: release
@@ -35,6 +69,8 @@ jobs:
         run: |
           git fetch --no-tags origin main
           git merge-base --is-ancestor "$SOURCE_COMMIT" origin/main
+          git config gpg.format ssh
+          git config gpg.ssh.allowedSignersFile "$GITHUB_WORKSPACE/.github/release-signers"
           git verify-tag "$RELEASE_TAG"
 
       - name: Set up Python
@@ -42,8 +78,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Require current independently reviewed model generations
+      - name: Require reproducible current-runtime release answers
         run: python scripts/validate_live_generation_results.py
+
+      - name: Recheck release tag and stable metadata
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/check_release_metadata.py --tag "$RELEASE_TAG"
 
       - name: Package archive and generate SBOM
         env:

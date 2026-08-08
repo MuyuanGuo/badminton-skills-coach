@@ -14,7 +14,10 @@
 ## 提交前
 
 1. 较大的功能改动请先创建 Issue，说明目标、范围和验证方法。
-2. 从 `develop` 创建短期分支；稳定修复也应通过 Pull Request 合入 `main`。
+2. 从 `develop` 创建短期分支，功能、数据、文档和 CI 改动的 Pull Request 均以
+   `develop` 为目标。只有 `release/*` 发布分支和紧急 `hotfix/*` 修复分支可通过
+   Pull Request 合入 `main`；`main` 每次成功验证后会自动建立回同步到 `develop`
+   的 Pull Request，禁止长期跳过回同步。
 3. 不要提交原始视频、音频、完整转写、临时媒体地址、私人聊天记录、联系方式或本地反馈队列。
 4. 涉及刘辉教学内容时，请保留公开视频链接和可核对的来源信息，不要声称获得本人背书。
 
@@ -86,16 +89,19 @@ Skill 元数据结构校验依赖 PyYAML。先安装锁定的维护环境，再�
   skills/liuhui-badminton-coach
 ```
 
-`answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前模型即时生成。
-打 Release tag 前，还必须由独立任务生成并由不同审阅者复核
-`data/evaluation/live_generation_results.json`，再运行：
+`answer_quality_answers.json` 是静态、人工审核过的回答快照，不代表当前运行时即时生成。
+打 Release tag 前，必须使用受信任的确定性 renderer 为全部关键案例重建
+`data/evaluation/live_generation_results.json`，再运行当前运行时验证：
 
 ```bash
+python3 scripts/generate_release_answer_results.py
 python3 scripts/validate_live_generation_results.py
 ```
 
-该结果必须覆盖 `critical_answer_snapshots.json` 的全部用例并绑定当前 Skill
-运行时指纹；任何运行时代码或参考文件变更都会使旧结果失效。
+该结果必须精确覆盖 `critical_answer_snapshots.json` 的全部用例，绑定完整 Skill
+运行时和回答语义运行时指纹，并固定 renderer 与完整上下文审计器的 SHA-256。
+发布验证会逐例重建答案、要求字节级一致，并重新运行最终答案审计；任何运行时
+代码、参考文件或受信任实现变更都会使旧结果失效。
 
 转写依赖由 `requirements-transcription.in` 声明直接约束，并在
 `requirements-transcription.txt` 中完整锁定。升级时必须重新解析整个依赖闭包、

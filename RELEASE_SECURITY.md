@@ -44,19 +44,26 @@ and validates the completed ZIP. Unexpected or missing Skill files stop packagin
 describing the working tree indirectly.
 
 The release workflow runs the deterministic project validation gate and then requires
-fresh model-generated answers for every critical answer case. Those answers must be
-bound to the current Skill runtime, pass the final-answer audit, and carry passing
-scores from a reviewer independent of the generator. Only then does the workflow
-package the Skill, generate the SBOM, sign the archive/SBOM relationship with GitHub
-Artifact Attestations, and upload the assets to the matching tag.
+fresh reproducible answers for every critical answer case. The committed snapshot
+records both the complete Skill runtime fingerprint and the answer-semantic runtime
+fingerprint, pins the trusted renderer and full-context auditor by path and SHA-256,
+and stores a digest for every answer. At release time the workflow reconstructs every
+answer from the current runtime, requires byte-for-byte renderer reproduction, and
+reruns the final-answer audit against the complete context. Only then does the
+workflow package the Skill, generate the SBOM, sign the archive/SBOM relationship
+with GitHub Artifact Attestations, and upload the assets to the matching tag.
 
 ## GitHub-hosted enforcement
 
 The release tag must be cryptographically signed; the workflow verifies it with
-`git verify-tag`. The release job targets the protected `release` environment and
-refuses to overwrite an existing release. Branch protection, protected tag rules,
-environment reviewers, repository About text, topics, and label synchronization
-must be configured in GitHub according to [.github/REPOSITORY_SETTINGS.md](.github/REPOSITORY_SETTINGS.md).
+`git verify-tag`. Release tags use Git's SSH signature format. The trusted public
+key and `git` namespace are committed in `.github/release-signers`, while the
+private signing key remains outside the repository and GitHub Actions. The same
+public key is registered with GitHub as a signing key, not an authentication key.
+The release job targets the protected `release` environment and refuses to
+overwrite an existing release. Branch protection, protected tag rules, environment
+reviewers, repository About text, topics, and label synchronization must be
+configured in GitHub according to [.github/REPOSITORY_SETTINGS.md](.github/REPOSITORY_SETTINGS.md).
 
 The transcription and development environments are installed with
 `pip --require-hashes`. Faster-whisper model repositories and immutable revisions

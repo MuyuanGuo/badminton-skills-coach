@@ -25,9 +25,6 @@ class LiveGenerationResultTests(unittest.TestCase):
         case_ids = ["AQ055", "AQ056", "AQ057"]
         registry = self.module.load_json(self.module.CASES_PATH)
         queries = {item["case_id"]: item["query"] for item in registry["cases"]}
-        dimensions = self.module.load_json(self.module.QUALITY_RULES_PATH)[
-            "manual_dimensions"
-        ]
         cases = []
         for case_id in case_ids:
             answer = f"{case_id} generated answer"
@@ -37,105 +34,115 @@ class LiveGenerationResultTests(unittest.TestCase):
                     "query": queries[case_id],
                     "answer_text": answer,
                     "answer_sha256": self.module.answer_digest(answer),
-                    "manual_scores": {dimension: 4 for dimension in dimensions},
-                    "verdict": "pass",
                 }
             )
+        render_path = self.module.RENDER_SCRIPT
+        audit_path = self.module.AUDIT_SCRIPT
         return {
-            "schema_version": 2,
-            "runtime_fingerprint": "reviewed-artifact",
-            "answer_runtime_fingerprint": "current-answer",
-            "generated_at": "2026-07-26",
+            "schema_version": 3,
+            "runtime_fingerprint": "a" * 64,
+            "answer_runtime_fingerprint": "b" * 64,
+            "generated_at": "2026-08-03",
             "generator": {
-                "provider": "test",
-                "model": "test-model",
-                "model_version": "1",
-                "task_id": "generator-task",
+                "type": self.module.GENERATOR_TYPE,
+                "implementation": self.module.relative_runtime_path(render_path),
+                "implementation_sha256": self.module.file_digest(render_path),
             },
-            "review": {
-                "reviewer": "independent-reviewer",
-                "reviewed_at": "2026-07-26",
-                "independent_from_generator": True,
+            "validation": {
+                "method": self.module.VALIDATION_METHOD,
+                "implementation": self.module.relative_runtime_path(audit_path),
+                "implementation_sha256": self.module.file_digest(audit_path),
             },
             "cases": cases,
         }
 
-    def test_valid_independently_reviewed_fixture_passes(self):
+    def test_valid_current_runtime_fixture_passes_without_rerun(self):
         payload = self.fixture()
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current-artifact"
+            self.module, "runtime_fingerprint", return_value="a" * 64
         ), mock.patch.object(
             self.module,
             "answer_runtime_fingerprint",
-            return_value="current-answer",
+            return_value="b" * 64,
         ):
             result = self.module.validate_results(payload, rerun_runtime=False)
         self.assertEqual(result["status"], "pass")
         self.assertEqual(result["critical_cases"], 3)
-        self.assertFalse(result["artifact_runtime_match"])
         self.assertTrue(result["release_eligible"])
+        self.assertEqual(result["automatically_validated"], 3)
+        self.assertFalse(result["current_runtime_audits_rerun"])
 
-    def test_stale_runtime_is_rejected(self):
+    def test_stale_answer_runtime_is_rejected(self):
         payload = self.fixture()
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current-artifact"
+            self.module, "runtime_fingerprint", return_value="a" * 64
         ), mock.patch.object(
             self.module,
             "answer_runtime_fingerprint",
-            return_value="new-answer-runtime",
+            return_value="c" * 64,
         ), self.assertRaisesRegex(
-            self.module.LiveGenerationValidationError, "stale"
+            self.module.LiveGenerationValidationError, "answer runtime"
+        ):
+            self.module.validate_results(payload, rerun_runtime=False)
+
+    def test_stale_artifact_runtime_is_rejected(self):
+        payload = self.fixture()
+        with mock.patch.object(
+            self.module, "runtime_fingerprint", return_value="c" * 64
+        ), mock.patch.object(
+            self.module,
+            "answer_runtime_fingerprint",
+            return_value="b" * 64,
+        ), self.assertRaisesRegex(
+            self.module.LiveGenerationValidationError, "artifact runtime"
         ):
             self.module.validate_results(payload, rerun_runtime=False)
 
     def test_stale_snapshot_integrity_is_preserved_without_current_claim(self):
         payload = self.fixture()
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current-artifact"
+            self.module, "runtime_fingerprint", return_value="c" * 64
         ), mock.patch.object(
             self.module,
             "answer_runtime_fingerprint",
-            return_value="new-answer-runtime",
+            return_value="d" * 64,
         ):
-            result = self.module.inspect_review_snapshot(payload)
-        self.assertEqual(result["status"], "valid_review_snapshot")
+            result = self.module.inspect_generation_snapshot(payload)
+        self.assertEqual(result["status"], "valid_generation_snapshot")
         self.assertFalse(result["current_runtime_match"])
         self.assertEqual(
-            result["reviewed_answer_runtime_fingerprint"], "current-answer"
+            result["generation_answer_runtime_fingerprint"], "b" * 64
         )
-        self.assertEqual(
-            result["current_answer_runtime_fingerprint"],
-            "new-answer-runtime",
-        )
+        self.assertEqual(result["current_answer_runtime_fingerprint"], "d" * 64)
         self.assertFalse(result["current_runtime_audits_rerun"])
 
-    def test_same_generator_and_reviewer_is_rejected(self):
+    def test_untrusted_generator_is_rejected(self):
         payload = self.fixture()
-        payload["review"]["reviewer"] = payload["generator"]["task_id"]
+        payload["generator"]["type"] = "untrusted_generator"
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current-artifact"
+            self.module, "runtime_fingerprint", return_value="a" * 64
         ), mock.patch.object(
             self.module,
             "answer_runtime_fingerprint",
-            return_value="current-answer",
+            return_value="b" * 64,
         ), self.assertRaisesRegex(
-            self.module.LiveGenerationValidationError, "independent"
+            self.module.LiveGenerationValidationError,
+            "trusted deterministic renderer",
         ):
             self.module.validate_results(payload, rerun_runtime=False)
 
-    def test_answer_mutation_and_low_scores_are_rejected(self):
+    def test_answer_mutation_is_rejected(self):
         payload = self.fixture()
         payload["cases"][0]["answer_text"] += " changed"
-        payload["cases"][1]["manual_scores"]["technical_correctness"] = 3
         with mock.patch.object(
-            self.module, "runtime_fingerprint", return_value="current-artifact"
+            self.module, "runtime_fingerprint", return_value="a" * 64
         ), mock.patch.object(
             self.module,
             "answer_runtime_fingerprint",
-            return_value="current-answer",
+            return_value="b" * 64,
         ), self.assertRaisesRegex(
             self.module.LiveGenerationValidationError,
-            "answer_digest_mismatch.*manual_quality_below_threshold",
+            "answer_digest_mismatch",
         ):
             self.module.validate_results(payload, rerun_runtime=False)
 

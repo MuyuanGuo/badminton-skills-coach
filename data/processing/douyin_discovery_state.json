@@ -1,12 +1,76 @@
 {
   "version": 1,
   "created_at": "2026-07-17T00:00:00+00:00",
-  "updated_at": "2026-08-01T04:45:16.696385+00:00",
+  "updated_at": "2026-08-08T06:01:59.136007+00:00",
   "baseline_index_count": 472,
   "counts": {
-    "classified_teaching": 6
+    "classified_teaching": 8
   },
   "items": [
+    {
+      "video_id": "7670988159002607355",
+      "status": "classified_teaching",
+      "decision": "保留：教学",
+      "decision_reason": "正文明确讲解右手球员下手步伐中右脚回复动作与连续节奏纠错，人工复核保留为教学。",
+      "discovered_at": "2026-08-08T06:01:58.768251+00:00",
+      "resolved_at": "2026-08-08T06:01:59.136007+00:00",
+      "resolution_note": "正文明确讲解右手球员下手步伐中右脚回复动作与连续节奏纠错，人工复核保留为教学。",
+      "classification": {
+        "video_id": "7670988159002607355",
+        "url": "https://www.douyin.com/video/7670988159002607355",
+        "title": "1.3万 下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+        "teaching_candidate": "unknown",
+        "raw_text": "1.3万 下手步伐加速 右手球员的右脚就算在很快的节奏里，也要尽量有一个回复的动作，不然节奏容易断#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+        "author_status": "主页最新作品区发现",
+        "decision": "保留：教学",
+        "decision_reason": "正文明确讲解右手球员下手步伐中右脚回复动作与连续节奏纠错，人工复核保留为教学。",
+        "primary_category": "",
+        "tags": "单打战术",
+        "classification_rules_version": 3,
+        "classification_rules_hash": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7",
+        "classification_signals": {
+          "ad_strong_content": false,
+          "ad_strong_hashtag_only": false,
+          "equipment": false,
+          "commerce": false,
+          "teaching": false,
+          "teaching_hashtag": true,
+          "explicit_non_teaching": false
+        }
+      }
+    },
+    {
+      "video_id": "7670386617265352293",
+      "status": "classified_teaching",
+      "decision": "保留：教学",
+      "decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "discovered_at": "2026-08-08T06:01:58.768251+00:00",
+      "resolved_at": null,
+      "resolution_note": null,
+      "classification": {
+        "video_id": "7670386617265352293",
+        "url": "https://www.douyin.com/video/7670386617265352293",
+        "title": "1.0万 00:00 / 01:16 反手甩动进阶 不是不能纯顶，是要分情况和结合自身的力量，握着顶会让发力变大，但是相应的出拍速度会削弱#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+        "teaching_candidate": "unknown",
+        "raw_text": "1.0万 00:00 / 01:16 反手甩动进阶 不是不能纯顶，是要分情况和结合自身的力量，握着顶会让发力变大，但是相应的出拍速度会削弱#羽毛球 #羽毛球教学 #羽毛球训练 #刘辉羽毛球",
+        "author_status": "主页最新作品区发现",
+        "decision": "保留：教学",
+        "decision_reason": "包含明确技术、训练、纠错或战术信号",
+        "primary_category": "发力与身体运用",
+        "tags": "发力与身体运用",
+        "classification_rules_version": 3,
+        "classification_rules_hash": "428148f60db879d626b4475225bd5eff54ede7857101cb0ac8f4e390ff6d71a7",
+        "classification_signals": {
+          "ad_strong_content": false,
+          "ad_strong_hashtag_only": false,
+          "equipment": false,
+          "commerce": false,
+          "teaching": true,
+          "teaching_hashtag": true,
+          "explicit_non_teaching": false
+        }
+      }
+    },
     {
       "video_id": "7668741102412834545",
       "status": "classified_teaching",
