@@ -10,7 +10,8 @@ enforced from repository files alone:
 - Protect `main` and `develop`: require pull requests, the `validate` check,
   conversation resolution, no force-push, and no deletion.
 - Protect release tags matching `v*`: only maintainers may create them; tags must
-  be cryptographically signed.
+  be cryptographically signed. Keep GitHub's registered signing key aligned with
+  the public key in `.github/release-signers`; never commit the private key.
 - Protect the `release` environment: required reviewer, deployment limited to
   protected tags, and no self-review.
 - Keep artifact attestations enabled and immutable releases enforced by the
