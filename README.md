@@ -11,7 +11,7 @@
 
 [安装 2.1.1](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-**2.1.1 稳定版**通过 GitHub `main` 分支和 [v2.1.1 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1) 提供；后续开发继续在 `develop`。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
+你正在查看 `develop` 分支；当前开发版本是 **2.1.2-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1)。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
 
 ## 30 秒开始使用
 
@@ -25,7 +25,9 @@ $liuhui-badminton-coach 我是业余中级双打选手。
 
 Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分“来源明确说了什么”和“还需要看你的动作视频才能确认什么”。回答中的视频会带稳定 V 标签、evidence_id、规范链接和可用时间戳。
 
-## 2.1.1 带来了什么
+## 当前开发版（2.1.2-dev.1）
+
+本分支在稳定版 2.1.1 基础上汇总尚未发布的数据、运行时与工程改动；以下内容描述当前开发树，不表示已经存在对应的稳定安装包。
 
 - 同时使用抖音与 B 站知识库，覆盖技术动作、全场步法、单双打战术、网前小技术、发接发、装备与训练。
 - 只让通过来源、转写、证据质量和去重门禁的视频进入回答；标题和关键词只负责召回，不能单独证明技术结论。
@@ -172,6 +174,9 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 ## 分支与发布
 
+- 当前分支：`develop`
+- 当前开发版本：`2.1.2-dev.1`
+- 发布状态：`unreleased`
 - 稳定版：`main` / `v2.1.1`
 - 正式安装包：[v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1)
 - `main` 是稳定发布来源；`develop` 是集成分支。两个分支使用同一套可验证事实和治理标准，但 README 与版本元数据必须反映各自状态。
