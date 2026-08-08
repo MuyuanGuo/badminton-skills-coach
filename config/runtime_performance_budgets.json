@@ -3,6 +3,7 @@
   "benchmark": {
     "cases_per_type": 2,
     "warmup_queries": 2,
+    "latency_repetitions": 3,
     "memory_queries": 5,
     "cold_start_queries": 2
   },
