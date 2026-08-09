@@ -139,6 +139,17 @@ class AnswerPacketTests(unittest.TestCase):
         self.assertEqual(practice["context"]["setup"], "partner")
         self.assertEqual(practice["session_minutes"], 20)
         self.assertEqual(sum(practice["minute_allocation"].values()), 20)
+        self.assertEqual(packet["schema_version"], 4)
+        self.assertEqual(len(practice["three_day_progression"]), 3)
+        self.assertEqual(len(practice["two_week_consolidation"]), 2)
+        self.assertGreaterEqual(len(practice["success_criteria"]), 2)
+        self.assertIn(
+            "practice.session",
+            {
+                item["kind"]
+                for item in packet["delivery_contract"]["items"]
+            },
+        )
         self.assertTrue(self.runtime.validate_answer_packet(packet, context))
 
     def test_unatomized_scope_keeps_claim_scoped_source_evidence(self):

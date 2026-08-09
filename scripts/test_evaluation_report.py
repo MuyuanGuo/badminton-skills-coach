@@ -72,6 +72,24 @@ class EvaluationReportTests(unittest.TestCase):
             self.module.EVALUATION_INPUTS,
         )
 
+    def test_runtime_fingerprint_uses_release_inventory_not_directory_scan(self):
+        self.assertIn("release_inventory.py", self.module.CORE_EVALUATORS)
+        expected = (
+            self.module.RUNTIME_SKILL_PATHS
+            | self.module.MAINTAINER_ONLY_SKILL_PATHS
+        )
+        self.assertIn("scripts/render_answer.py", expected)
+        self.assertIn("references/knowledge-base.json", expected)
+
+    def test_parallel_evaluation_plan_is_complete_and_bounded(self):
+        self.assertEqual(
+            set(self.module.EVALUATION_EXECUTION_ORDER)
+            | {"answer_quality", "forward_tests"},
+            self.module.EVALUATION_SUITES,
+        )
+        with self.assertRaisesRegex(ValueError, "workers must be positive"):
+            self.module.collect_independent_suites(workers=0)
+
     def test_baseline_comparison_honors_direction_and_tolerance(self):
         evaluations = {"suite": {"score": 0.98, "errors": 0, "ready": True}}
         baseline = {

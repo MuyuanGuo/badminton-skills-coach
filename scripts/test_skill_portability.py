@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
 import hashlib
-import shutil
+import importlib.util
 import subprocess
 import sys
 import tempfile
@@ -11,6 +11,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_ROOT = ROOT / "skills" / "liuhui-badminton-coach"
+INSTALLER_PATH = SKILL_ROOT / "scripts" / "install.py"
+
+
+def load_installer():
+    spec = importlib.util.spec_from_file_location(
+        "skill_portability_installer", INSTALLER_PATH
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class SkillPortabilityTests(unittest.TestCase):
@@ -24,7 +34,12 @@ class SkillPortabilityTests(unittest.TestCase):
             temporary_root = Path(temporary)
             installed_skill = temporary_root / "installed" / "liuhui-badminton-coach"
             external_workdir = temporary_root / "unrelated-project"
-            shutil.copytree(SKILL_ROOT, installed_skill)
+            installer = load_installer()
+            installer.copy_release_tree(
+                SKILL_ROOT,
+                installed_skill,
+                installer.source_artifact_paths(SKILL_ROOT),
+            )
             external_workdir.mkdir()
 
             search = subprocess.run(

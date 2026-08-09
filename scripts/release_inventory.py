@@ -31,6 +31,7 @@ RUNTIME_SKILL_PATHS = {
     "scripts/answer_retrieval_plan.py",
     "scripts/answer_scope.py",
     "scripts/answer_selection_policy.py",
+    "scripts/delivery_contract.py",
     "scripts/diagnostic_contract.py",
     "scripts/doctor.py",
     "scripts/feedback.py",

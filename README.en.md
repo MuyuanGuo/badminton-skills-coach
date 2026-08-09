@@ -41,6 +41,14 @@ This branch collects unreleased data, runtime, and engineering changes on top of
 - Python 3.10 and 3.12 use the same hash-locked maintenance dependencies, while generated artifacts, logical SQLite content, and canary hashes remain reproducible across environments.
 - Release answers are deterministically rebuilt for every critical case, bound to complete and answer-semantic runtime fingerprints, reproduced byte for byte, and re-audited against full context by the tag workflow.
 
+## Answer-completeness hardening on `develop`
+
+- Compound questions now preserve both source units and evidence units. Delivery instructions such as plans, check orders, and conditional branches are no longer searched as standalone technical questions.
+- Elliptical later units and mixed technical/delivery units inherit side, shot family, court zone, discipline, and other root scenario constraints while preserving explicit branch overrides such as direction; independently scoped questions remain isolated.
+- Answer packet v4 adds a typed `delivery_contract`. Exact minutes, three-day correction, two-week consolidation, success criteria, diagnostic comparisons, ordered checks, and tactical direction branches are independent required items.
+- The renderer produces each item and the auditor validates its internal semantics; a Q/D marker or raw source excerpt alone no longer satisfies a compound request.
+- The live release gate expands from three historical cases to those three plus diagnosis, practice, and tactics delivery cases, with deletion negative controls for every required delivery block.
+
 ## Current evidence and quality baseline
 
 | Metric | Current baseline |
@@ -56,7 +64,7 @@ This branch collects unreleased data, runtime, and engineering changes on top of
 | Query-understanding cases | 143/143 |
 | Metamorphic language variants | 30/30 |
 | Hard-negative selections | 0 of 194 |
-| Current-runtime reproducible release answers | 3/3 |
+| Current-runtime reproducible release answers | 6/6 |
 | Promoted public feedback signals | 0 |
 
 All 7,744 transcript evidence items have timestamps. These figures describe the controlled corpus and evaluation set; they do not claim that every possible natural-language question has already been tested.

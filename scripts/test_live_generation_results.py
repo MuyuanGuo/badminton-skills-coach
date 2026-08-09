@@ -22,9 +22,9 @@ class LiveGenerationResultTests(unittest.TestCase):
         cls.module = load_module()
 
     def fixture(self):
-        case_ids = ["AQ055", "AQ056", "AQ057"]
-        registry = self.module.load_json(self.module.CASES_PATH)
-        queries = {item["case_id"]: item["query"] for item in registry["cases"]}
+        case_ids = sorted(self.module.required_release_case_ids())
+        registry = self.module.release_case_registry()
+        queries = {case_id: item["query"] for case_id, item in registry.items()}
         cases = []
         for case_id in case_ids:
             answer = f"{case_id} generated answer"
@@ -67,9 +67,9 @@ class LiveGenerationResultTests(unittest.TestCase):
         ):
             result = self.module.validate_results(payload, rerun_runtime=False)
         self.assertEqual(result["status"], "pass")
-        self.assertEqual(result["critical_cases"], 3)
+        self.assertEqual(result["critical_cases"], 6)
         self.assertTrue(result["release_eligible"])
-        self.assertEqual(result["automatically_validated"], 3)
+        self.assertEqual(result["automatically_validated"], 6)
         self.assertFalse(result["current_runtime_audits_rerun"])
 
     def test_stale_answer_runtime_is_rejected(self):

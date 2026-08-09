@@ -2,11 +2,15 @@
 """Build deterministic machine-readable and human-readable evaluation reports."""
 
 import argparse
+import concurrent.futures
 import hashlib
 import html
 import json
 import os
+import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 
 import evaluate_answer_context
@@ -23,6 +27,7 @@ import evaluate_retrieval
 import evaluate_metamorphic_robustness
 import evaluate_video_comprehension
 import validate_live_generation_results
+from release_inventory import MAINTAINER_ONLY_SKILL_PATHS, RUNTIME_SKILL_PATHS
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +35,7 @@ BASELINE_PATH = ROOT / "data" / "evaluation" / "evaluation_baselines.json"
 REPORT_PATH = ROOT / "data" / "evaluation" / "evaluation_report.json"
 HTML_PATH = ROOT / "docs" / "evaluation" / "index.html"
 EVALUATION_RESULTS_SCHEMA_VERSION = 1
-EVALUATION_SUITES = {
+EVALUATION_SUITE_ORDER = (
     "answer_policy",
     "answer_context",
     "answer_quality",
@@ -45,7 +50,22 @@ EVALUATION_SUITES = {
     "video_comprehension",
     "forward_tests",
     "live_generation",
-}
+)
+EVALUATION_SUITES = set(EVALUATION_SUITE_ORDER)
+EVALUATION_EXECUTION_ORDER = (
+    "answer_context",
+    "bilibili_positive_retrieval",
+    "metamorphic_robustness",
+    "query_equivalence",
+    "diagnostic_answer_contract",
+    "retrieval",
+    "live_generation",
+    "video_comprehension",
+    "feedback_lifecycle",
+    "query_understanding",
+    "answer_audit",
+    "answer_policy",
+)
 CORE_EVALUATORS = (
     "build_douyin_knowledge.py",
     "evaluate_answer_audit.py",
@@ -62,6 +82,7 @@ CORE_EVALUATORS = (
     "evaluate_metamorphic_robustness.py",
     "evaluate_video_comprehension.py",
     "generate_release_answer_results.py",
+    "release_inventory.py",
     "validate_live_generation_results.py",
 )
 EVALUATION_INPUTS = (
@@ -78,6 +99,7 @@ EVALUATION_INPUTS = (
     "data/evaluation/critical_answer_snapshots.json",
     "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/diagnostic_answer_continuation_cases.json",
+    "data/evaluation/delivery_release_cases.json",
     "data/evaluation/evaluation_baselines.json",
     "data/evaluation/forward_test_results.json",
     "data/evaluation/live_generation_results.json",
@@ -119,12 +141,12 @@ def fingerprint_paths(root=ROOT):
     root = Path(root)
     input_paths = [root / relative for relative in EVALUATION_INPUTS]
     runtime_paths = [root / "scripts" / name for name in CORE_EVALUATORS]
+    skill_root = root / "skills" / "liuhui-badminton-coach"
     runtime_paths.extend(
-        path
-        for path in (root / "skills" / "liuhui-badminton-coach").rglob("*")
-        if path.is_file()
-        and "__pycache__" not in path.parts
-        and path.suffix not in {".pyc", ".pyo"}
+        skill_root / relative
+        for relative in sorted(
+            RUNTIME_SKILL_PATHS | MAINTAINER_ONLY_SKILL_PATHS
+        )
     )
     return {
         "inputs_sha256": hash_paths(input_paths, root),
@@ -214,8 +236,111 @@ def summarize_generation_validation(live_payload, root=ROOT):
     }
 
 
-def collect_evaluations(root=ROOT):
+def evaluate_independent_suite(name, root=ROOT):
     root = Path(root)
+    if name == "answer_policy":
+        return evaluate_answer_policy.evaluate()
+    if name == "answer_context":
+        return evaluate_answer_context.evaluate()
+    if name == "query_equivalence":
+        return evaluate_query_equivalence.evaluate()
+    if name == "query_understanding":
+        return evaluate_query_understanding.evaluate()
+    if name == "diagnostic_answer_contract":
+        return evaluate_diagnostic_answer_contract.evaluate()
+    if name == "answer_audit":
+        return evaluate_answer_audit.evaluate()
+    if name == "bilibili_positive_retrieval":
+        return evaluate_bilibili_canaries.evaluate()
+    if name == "feedback_lifecycle":
+        return evaluate_feedback_lifecycle.evaluate()
+    if name == "retrieval":
+        return evaluate_retrieval.evaluate(12)
+    if name == "metamorphic_robustness":
+        return evaluate_metamorphic_robustness.evaluate()
+    if name == "video_comprehension":
+        return evaluate_video_comprehension.evaluate(
+            run_retrieval_roundtrip=True,
+            run_semantic_probes=False,
+        )
+    if name == "live_generation":
+        payload = validate_live_generation_results.load_json(
+            root / "data/evaluation/live_generation_results.json"
+        )
+        return summarize_generation_validation(payload, root=root)
+    raise ValueError(f"unsupported independent evaluation suite: {name}")
+
+
+def timed_independent_suite(name, root=ROOT):
+    started = time.perf_counter()
+    result = evaluate_independent_suite(name, root=root)
+    return name, result, time.perf_counter() - started
+
+
+def run_independent_suite_subprocess(name, root=ROOT):
+    root = Path(root)
+    with tempfile.TemporaryDirectory(
+        prefix=f"badminton-evaluation-{name}-"
+    ) as directory:
+        output = Path(directory) / "result.json"
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                "--suite-worker",
+                name,
+                "--suite-root",
+                str(root),
+                "--suite-output",
+                str(output),
+            ],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode:
+            detail = (completed.stderr or completed.stdout).strip()
+            raise RuntimeError(f"evaluation suite {name} failed: {detail}")
+        payload = load_json(output)
+    if payload.get("suite") != name:
+        raise RuntimeError(f"evaluation suite {name} returned mismatched output")
+    return name, payload["result"], payload["duration_seconds"]
+
+
+def collect_independent_suites(root=ROOT, workers=1):
+    if workers < 1:
+        raise ValueError("evaluation workers must be positive")
+    root = Path(root)
+    results = {}
+    timings = {}
+    if workers == 1:
+        completed = (
+            timed_independent_suite(name, root)
+            for name in EVALUATION_EXECUTION_ORDER
+        )
+        for name, result, duration in completed:
+            results[name] = result
+            timings[name] = duration
+        return results, timings
+
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=min(workers, len(EVALUATION_EXECUTION_ORDER))
+    ) as executor:
+        futures = {
+            executor.submit(run_independent_suite_subprocess, name, root): name
+            for name in EVALUATION_EXECUTION_ORDER
+        }
+        for future in concurrent.futures.as_completed(futures):
+            name, result, duration = future.result()
+            results[name] = result
+            timings[name] = duration
+    return results, timings
+
+
+def collect_evaluations(root=ROOT, workers=1, timings=None):
+    root = Path(root)
+    answer_quality_started = time.perf_counter()
     registry = evaluate_answer_quality.load_json(
         root / "data/evaluation/answer_quality_cases.json"
     )
@@ -252,7 +377,9 @@ def collect_evaluations(root=ROOT):
     supplied_ids = {answer["case_id"] for answer in answers_payload["answers"]}
     answers_result["critical_snapshot_requirements"] = len(critical_ids)
     answers_result["missing_critical_case_ids"] = sorted(critical_ids - supplied_ids)
+    answer_quality_duration = time.perf_counter() - answer_quality_started
 
+    forward_started = time.perf_counter()
     forward_fingerprint = evaluate_forward_test_results.runtime_fingerprint(root)
     forward_result = evaluate_forward_test_results.validate_forward_results(
         evaluate_forward_test_results.load_json(
@@ -274,25 +401,29 @@ def collect_evaluations(root=ROOT):
         ),
         require_current_runtime=False,
     )
-    live_payload = validate_live_generation_results.load_json(
-        root / "data/evaluation/live_generation_results.json"
-    )
-    live_result = summarize_generation_validation(live_payload, root=root)
+    forward_duration = time.perf_counter() - forward_started
 
-    policy = evaluate_answer_policy.evaluate()
-    context = evaluate_answer_context.evaluate()
-    equivalence = evaluate_query_equivalence.evaluate()
-    understanding = evaluate_query_understanding.evaluate()
-    diagnostic = evaluate_diagnostic_answer_contract.evaluate()
-    answer_audit = evaluate_answer_audit.evaluate()
-    bilibili_positive = evaluate_bilibili_canaries.evaluate()
-    feedback_lifecycle = evaluate_feedback_lifecycle.evaluate()
-    retrieval = evaluate_retrieval.evaluate(12)
-    metamorphic = evaluate_metamorphic_robustness.evaluate()
-    comprehension = evaluate_video_comprehension.evaluate(
-        run_retrieval_roundtrip=True,
-        run_semantic_probes=False,
+    independent, independent_timings = collect_independent_suites(
+        root=root,
+        workers=workers,
     )
+    if timings is not None:
+        timings.update(independent_timings)
+        timings["answer_quality"] = answer_quality_duration
+        timings["forward_tests"] = forward_duration
+
+    policy = independent["answer_policy"]
+    context = independent["answer_context"]
+    equivalence = independent["query_equivalence"]
+    understanding = independent["query_understanding"]
+    diagnostic = independent["diagnostic_answer_contract"]
+    answer_audit = independent["answer_audit"]
+    bilibili_positive = independent["bilibili_positive_retrieval"]
+    feedback_lifecycle = independent["feedback_lifecycle"]
+    retrieval = independent["retrieval"]
+    metamorphic = independent["metamorphic_robustness"]
+    comprehension = independent["video_comprehension"]
+    live_result = independent["live_generation"]
 
     return {
         "answer_policy": {
@@ -719,12 +850,43 @@ def main():
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--write", action="store_true", help="Update committed reports.")
     mode.add_argument("--check", action="store_true", help="Fail when reports are stale.")
+    mode.add_argument(
+        "--suite-worker",
+        choices=EVALUATION_EXECUTION_ORDER,
+        help=argparse.SUPPRESS,
+    )
+    parser.add_argument("--suite-root", type=Path, help=argparse.SUPPRESS)
+    parser.add_argument("--suite-output", type=Path, help=argparse.SUPPRESS)
     parser.add_argument(
         "--evaluations",
         type=Path,
         help="Read precomputed evaluator results instead of running evaluators.",
     )
     args = parser.parse_args()
+
+    if args.suite_worker:
+        if not args.suite_output:
+            parser.error("--suite-worker requires --suite-output")
+        name, result, duration = timed_independent_suite(
+            args.suite_worker,
+            root=args.suite_root or ROOT,
+        )
+        args.suite_output.parent.mkdir(parents=True, exist_ok=True)
+        args.suite_output.write_text(
+            json.dumps(
+                {
+                    "suite": name,
+                    "duration_seconds": duration,
+                    "result": result,
+                },
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return
+    if args.suite_root or args.suite_output:
+        parser.error("--suite-root and --suite-output require --suite-worker")
 
     evaluations = (
         load_evaluation_results(args.evaluations) if args.evaluations else None

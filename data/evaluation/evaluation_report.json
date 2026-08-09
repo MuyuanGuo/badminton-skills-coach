@@ -4,9 +4,9 @@
   "development_version": "2.1.2-dev.1",
   "baseline_version": "v2.1.1",
   "build": {
-    "id": "7127e40fc73292bc",
-    "inputs_sha256": "23911bf5469e25aa0ed2e65180ff14b780f55a468f0e6d22a87062fe592adbd3",
-    "runtime_sha256": "27f656a80711d2dfb21f853a565ea73ddb436bae2be3f23961554914311db32a"
+    "id": "d2775b897c5d44d8",
+    "inputs_sha256": "d029320dc23a42aa9e2a6f8f78ca28d404e9e6a17e9e7338ac711f2d0d838818",
+    "runtime_sha256": "f823533621d15426c1d9f49dada5753916bffa26de476a2f4f3fa814417cfa42"
   },
   "summary": {
     "status": "pass",
@@ -216,33 +216,33 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
+      "runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
-      "current_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
-      "generation_artifact_runtime_fingerprint": "3cb7790d2249eedce83d470701f00d2d55e3c58ab3b5ef5dd389226566225a75",
-      "current_artifact_runtime_fingerprint": "3cb7790d2249eedce83d470701f00d2d55e3c58ab3b5ef5dd389226566225a75",
+      "generation_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
+      "current_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
+      "generation_artifact_runtime_fingerprint": "151b4ea5120a591927e943985950f392a453f074383117e496f3adac62dfb3d3",
+      "current_artifact_runtime_fingerprint": "151b4ea5120a591927e943985950f392a453f074383117e496f3adac62dfb3d3",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
       "validator_implementation_match": true,
-      "critical_cases": 3,
-      "generated_answers": 3,
-      "automatically_validated": 3,
+      "critical_cases": 6,
+      "generated_answers": 6,
+      "automatically_validated": 6,
       "automated_audit_pass_rate": 1.0,
       "current_runtime_audits_rerun": true,
       "current_renderer_reproduced": true,
-      "passed": 3,
+      "passed": 6,
       "failed": [],
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "cc6606370de0f5a7147ea7343fda0cf91e2db9862da7a22419720dfa63321326"
+        "implementation_sha256": "1daa6c3088ee3af90e8653f2d16c8c006812604a610983be612157c2add856c6"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "d0ee7457092197716dbebd041a87c8085fc8663ff38346a64daf7c3f57f389e3"
+        "implementation_sha256": "93191e00ba726f19dd6752220fa462b44b0cc61be2d3fa75e7fcc52aa47a7829"
       }
     }
   },
@@ -708,7 +708,7 @@
     },
     {
       "metric": "live_generation.critical_cases",
-      "current": 3,
+      "current": 6,
       "baseline": 3,
       "direction": "at_least",
       "tolerance": 0,

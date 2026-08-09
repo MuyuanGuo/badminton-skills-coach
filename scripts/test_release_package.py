@@ -9,7 +9,12 @@ import zipfile
 from pathlib import Path
 
 from generate_release_sbom import append_checksum, build_sbom
-from package_skill_release import archive_name, package_skill, release_files
+from package_skill_release import (
+    archive_name,
+    is_cloud_conflict_copy,
+    package_skill,
+    release_files,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +25,17 @@ RELEASE_VERSION = f"v{CURRENT_VERSION}"
 
 
 class ReleasePackageTests(unittest.TestCase):
+    def test_cloud_conflict_copy_is_ignored_only_when_canonical_file_exists(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            canonical = root / "build-manifest.json"
+            conflict = root / "build-manifest 2.json"
+            conflict.write_text("cloud placeholder", encoding="utf-8")
+            self.assertFalse(is_cloud_conflict_copy(conflict))
+            canonical.write_text("canonical", encoding="utf-8")
+            self.assertTrue(is_cloud_conflict_copy(conflict))
+            self.assertFalse(is_cloud_conflict_copy(canonical))
+
     def test_version_cannot_escape_output_directory(self):
         for version in ["", "../1.0.0", "1.0", "release-latest"]:
             with self.subTest(version=version), self.assertRaises(ValueError):

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "description": "Current-runtime release cases for typed delivery completeness, context inheritance, and semantic negative controls.",
+  "cases": [
+    {
+      "case_id": "DQ001",
+      "query": "我是右手持拍的业余中级男双选手，正手后场高远球经常只能到对方中场。我怀疑是没有转髋，也可能是击球点太低。请区分这两个假设和其他有证据支持的原因，给我现场检查顺序；没有连续动作视频时不要把原因说死。",
+      "required_delivery_kind_counts": {
+        "diagnosis.hypothesis_comparison": 1,
+        "diagnosis.ordered_checklist": 1,
+        "evidence.sources": 1,
+        "evidence.boundary": 1
+      },
+      "required_output_terms": ["没有转髋", "击球点太低", "现场检查顺序", "证据边界"],
+      "required_evidence_unit_count": 3,
+      "inherited_constraints": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["clear"],
+        "court_zone": ["rearcourt"],
+        "discipline": ["doubles"]
+      },
+      "forbidden_selected_video_ids": ["7524557392328461627"]
+    },
+    {
+      "case_id": "DQ002",
+      "query": "我是右手持拍的业余中级双打选手，对手杀到反手身体附近时，我挡网经常冒高。请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的训练方案，包含三天纠正、两周巩固和可观察成功标准。",
+      "required_delivery_kind_counts": {
+        "diagnosis.hypothesis_comparison": 1,
+        "practice.session": 1,
+        "practice.three_day": 1,
+        "practice.two_week": 1,
+        "practice.success_criteria": 1,
+        "practice.common_errors": 1,
+        "practice.stop_signals": 1
+      },
+      "required_output_terms": ["总计 20 分钟", "第1天", "第2天", "第3天", "第1周", "第2周", "成功标准", "常见错误", "停止与复核信号"],
+      "required_evidence_unit_count": 2,
+      "inherited_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_drop"],
+        "discipline": ["doubles"]
+      },
+      "forbidden_selected_video_ids": []
+    },
+    {
+      "case_id": "DQ003",
+      "query": "我是右手持拍的业余中级男双选手，平抽挡相持中被压反手身体位。什么时候应该挡直线、什么时候抽斜线、什么时候先回中路？请按来球高度、身体是否失衡和搭档位置给条件分支，并给相关视频和证据边界。",
+      "required_delivery_kind_counts": {
+        "tactics.direction_branch": 3,
+        "tactics.condition_axes": 1,
+        "evidence.sources": 1,
+        "evidence.boundary": 1
+      },
+      "required_output_terms": ["直线条件分支", "斜线条件分支", "中路条件分支", "来球高度", "身体是否失衡", "搭档位置", "证据边界"],
+      "required_evidence_unit_count": 2,
+      "inherited_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["drive"],
+        "discipline": ["doubles"]
+      },
+      "forbidden_selected_video_ids": ["7087759120761228578"]
+    }
+  ]
+}
