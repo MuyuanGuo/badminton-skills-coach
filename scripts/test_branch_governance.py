@@ -44,8 +44,13 @@ class BranchGovernanceTests(unittest.TestCase):
         self.assertIn("--base develop", self.sync)
         self.assertIn("automation/sync-main-to-develop", self.sync)
         self.assertIn('git switch -C "$SYNC_BRANCH" origin/develop', self.sync)
+        self.assertIn('git merge --no-ff --no-edit "$VALIDATED_MAIN_SHA"', self.sync)
+        self.assertIn('git diff --name-only --diff-filter=U', self.sync)
+        self.assertIn('if [ "$conflicts" != "README.md" ]', self.sync)
+        self.assertIn('git checkout --ours README.md', self.sync)
         self.assertIn(
-            'git merge --no-ff --no-edit "$VALIDATED_MAIN_SHA"', self.sync
+            "python scripts/readme_profiles.py --profile develop --write",
+            self.sync,
         )
         self.assertIn("if ! git diff --cached --quiet; then", self.sync)
         self.assertIn("--event pull_request", self.sync)

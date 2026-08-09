@@ -1,0 +1,224 @@
+<!-- README_PROFILE: develop -->
+# Badminton Skills Coach — Development
+
+[![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg?branch=develop)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
+[![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
+[![Python 3.10–3.12](https://img.shields.io/badge/python-3.10%E2%80%933.12-3776ab.svg)](requirements-dev.txt)
+[![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
+[![Data & sources: separate terms](https://img.shields.io/badge/data%20%26%20sources-separate%20terms-6b5b95.svg)](LICENSE-DATA)
+
+![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)
+
+这是面向开发者、维护者和招聘方的项目说明：它重点展示系统边界、证据模型、质量门禁、可复现性与工程取舍，而不是把稳定版安装说明当作主体。
+
+This README is written for engineers, maintainers, and recruiters. It emphasizes system boundaries, the evidence model, quality gates, reproducibility, and engineering trade-offs instead of centering the stable-user installation flow.
+
+你正在查看 `develop` 分支；当前开发版本是 **{{DEVELOPMENT_VERSION}}**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}})。
+
+You are viewing the `develop` branch; the current development version is **{{DEVELOPMENT_VERSION}}** and its release status is **unreleased**. Stable installs remain on `main` and [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}}).
+
+本项目独立开发，不是刘辉本人，也不代表刘辉或来源发布者的认可。 / This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
+
+## 招聘方快速阅读 / Recruiter snapshot
+
+| 关注点 / Signal | 当前实现 / Evidence in this repository |
+| --- | --- |
+| 产品判断 / Product judgment | 把“给几个羽毛球视频”收敛成有来源、范围、置信边界与反馈闭环的诊断产品。 / Turns “show me badminton videos” into a diagnostic product with provenance, scope, confidence boundaries, and a feedback loop. |
+| 数据工程 / Data engineering | 抖音与 B 站异构来源经过准入、媒体校验、确定性 ASR、质量隔离、证据分层和可复现构建。 / Heterogeneous Douyin and Bilibili sources pass admission, media validation, deterministic ASR, quarantine, evidence layering, and reproducible builds. |
+| 检索与回答 / Retrieval & answers | 查询被拆成角色、动作、条件与交付项；所有可回答视频参与组织，只有最有用且不重复的视频进入最终展示。 / Queries are decomposed into actors, actions, conditions, and delivery items; all answerable evidence informs synthesis while only the most useful non-duplicative videos are shown. |
+| 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
+| 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
+
+当前 build：`{{BUILD_ID_SHORT}}…`。`develop` is the integration branch；`main` is the stable release source。
+
+## 系统怎样工作 / How the system works
+
+用户问题不会直接变成一次关键词搜索。运行时先恢复“谁、在什么场景、做什么动作、想达到什么结果”，再把证据检索、答案合成和最终展示分开处理。
+
+A user question does not become one keyword search. The runtime first recovers who is acting, in which situation, performing what action, toward which result; it then separates evidence retrieval, answer synthesis, and final presentation.
+
+~~~mermaid
+flowchart LR
+    Q["用户问题 / User question"] --> U["查询理解：角色、动作、条件、交付项 / Query understanding"]
+    U --> C["候选召回 / Candidate retrieval"]
+    C --> E["可回答证据全集 / Answerable evidence set"]
+    E --> S["按结论合成 / Claim-level synthesis"]
+    S --> P["紧凑 answer packet"]
+    P --> R["确定性 renderer"]
+    R --> A["完整上下文 auditor"]
+    A --> O["答案与精选 V1…Vn / Answer and selected videos"]
+~~~
+
+关键不变量 / Key invariants:
+
+- 标题和关键词只能召回候选，不能证明技术结论。 / Titles and keywords may retrieve candidates but cannot prove a coaching claim.
+- `candidate → semantic_answerable → synthesis → selected/claim_mapped` 是不同集合，不能用最终展示列表代替完整证据集。 / Candidate, semantically answerable, synthesis, and selected/claim-mapped sets are distinct; the visible list cannot substitute for the complete evidence set.
+- 单个结论最多使用 1–3 条最强证据；整篇答案可以因独立子问题而展示更多。 / Each claim uses at most one to three strong sources; a full answer may show more for independent subproblems.
+- answer packet 与完整上下文通过 SHA-256 绑定；模型读取紧凑投影，审计器检查完整范围。 / The answer packet and full context are SHA-256 bound; the model sees the compact projection while the auditor checks the complete scope.
+
+## 数据与证据链 / Data and evidence chain
+
+~~~mermaid
+flowchart LR
+    B["来源准入与媒体校验"] --> C["可解码媒体"]
+    C --> D["确定性ASR"]
+    D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]
+    P --> E["结构化知识库（含隔离审计记录）"]
+    E --> A["回答资格分层：primary / supplemental / none"]
+    A --> S["只读 SQLite 运行时证据存储"]
+    S --> F["45秒 chunk-first + 受限窗口检索"]
+    F --> R["answer packet、renderer 与最终审计"]
+~~~
+
+~~~mermaid
+flowchart LR
+    B["Source admission and media validation"] --> C["Decodable media"]
+    C --> D["Deterministic ASR"]
+    D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
+    P --> E["Structured knowledge, including quarantine audit records"]
+    E --> A["Answer admission layers: primary / supplemental / none"]
+    A --> S["Read-only SQLite runtime evidence store"]
+    S --> F["45-second chunk-first plus bounded-window retrieval"]
+    F --> R["Answer packet, renderer, and final audit"]
+~~~
+
+新增转写不会写入模型权重或成为 Codex 的会话记忆。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。完整通过的记录成为 `primary`；有直接教学窗口但元数据或适用范围需要收窄的记录成为 `supplemental`。来源、安全、转写质量或重复门禁失败时，系统保留审计状态并保持 `answer_eligibility: none`；只有生成级一致性门禁失败时，才回滚本轮生成产物。
+
+A new transcript does not update model weights or become Codex conversational memory. A raw `.json`, `.srt`, or `.txt` file alone changes no answer. A fully aligned record becomes `primary`; a directly useful teaching window with narrower metadata or scope becomes `supplemental`. When provenance, safety, transcription quality, or duplicate gates fail, the audit state is retained with `answer_eligibility: none`; only generation-level consistency failures roll back the current generated artifact set.
+
+## 当前知识与质量基线 / Current knowledge and quality baseline
+
+以下数字由当前分支的受控数据与评估报告渲染，不代表所有自然语言问题都已得到验证。
+
+These values are rendered from the controlled data and evaluation report on this branch; they do not imply that every natural-language question has been validated.
+
+| 指标 | 当前值 | 说明 |
+| --- | ---: | --- |
+| 已处理公开视频 | {{PROCESSED_PUBLIC_VIDEO_COUNT}} | 完整来源目录，不等于全部可回答内容 |
+| B 站完整来源目录 | {{BILIBILI_CATALOG_COUNT}} | {{BILIBILI_READY_COUNT}} 条回答就绪、{{BILIBILI_ISOLATED_COUNT}} 条策略排除或质量隔离、{{BILIBILI_PENDING_COUNT}} 条待处理 |
+| 可用于回答的教学视频 | {{READY_VIDEO_COUNT}} | 只有 ready 内容进入证据池 |
+| 主证据 / 受限补充证据 | {{PRIMARY_VIDEO_COUNT}} / {{SUPPLEMENTAL_VIDEO_COUNT}} | 主证据优先；补充证据只使用命中的时间戳窗口 |
+| 转写证据 | {{TRANSCRIPT_VIDEO_COUNT}} | {{TRANSCRIPT_ITEM_COUNT}}/{{TRANSCRIPT_ITEM_COUNT}} 条转写证据包含时间戳 |
+| 受限时间戳窗口证据 | {{BOUNDED_VIDEO_COUNT}} | {{BOUNDED_ITEM_COUNT}} 条已提交窗口；标题不得作为结论证据 |
+| 视觉复核兜底 | {{VISUAL_VIDEO_COUNT}} | 语音不足时使用已审核视觉摘要 |
+| 回答质量黄金用例 | {{ANSWER_QUALITY_CASE_COUNT}}/{{ANSWER_QUALITY_CASE_COUNT}} | 覆盖技术、诊断、战术、训练与证据边界 |
+| 查询理解 | {{QUERY_UNDERSTANDING_CASE_COUNT}}/{{QUERY_UNDERSTANDING_CASE_COUNT}} | 结构化意图回归集 |
+| 语言变体稳健性 | {{METAMORPHIC_VARIANT_COUNT}}/{{METAMORPHIC_VARIANT_COUNT}} | 5 类问题的变形测试 |
+| 硬负例误选 | 0 | 当前黄金用例包含 {{HARD_NEGATIVE_COUNT}} 个显式硬负例 |
+| 当前运行时自动生成审计 | {{LIVE_GENERATION_CASE_COUNT}}/{{LIVE_GENERATION_CASE_COUNT}} | renderer 字节级复现，完整上下文逐例审计 |
+| 质量套件 / 强制基线指标 | {{EVALUATION_SUITE_COUNT}} / {{BASELINE_METRIC_COUNT}} | 任一强制指标回归都会阻断发布 |
+| 公共反馈信号 | {{PUBLIC_FEEDBACK_SIGNAL_COUNT}} | 不虚构真实用户数据 |
+
+| Metric | Current value |
+| --- | ---: |
+| Processed public videos | {{PROCESSED_PUBLIC_VIDEO_COUNT}} |
+| Bilibili full source catalog | {{BILIBILI_CATALOG_COUNT}}: {{BILIBILI_READY_COUNT}} answer-ready, {{BILIBILI_ISOLATED_COUNT}} policy-excluded or quality-isolated, {{BILIBILI_PENDING_COUNT}} pending |
+| Ready teaching videos | {{READY_VIDEO_COUNT}} |
+| Primary / bounded supplemental evidence | {{PRIMARY_VIDEO_COUNT}} / {{SUPPLEMENTAL_VIDEO_COUNT}} |
+| Transcript-backed evidence | {{TRANSCRIPT_VIDEO_COUNT}} |
+| Bounded timestamp-window evidence | {{BOUNDED_VIDEO_COUNT}} |
+| Reviewed visual-summary fallbacks | {{VISUAL_VIDEO_COUNT}} |
+| Answer-quality gold cases | {{ANSWER_QUALITY_CASE_COUNT}}/{{ANSWER_QUALITY_CASE_COUNT}} |
+| Query-understanding cases | {{QUERY_UNDERSTANDING_CASE_COUNT}}/{{QUERY_UNDERSTANDING_CASE_COUNT}} |
+| Metamorphic variants | {{METAMORPHIC_VARIANT_COUNT}}/{{METAMORPHIC_VARIANT_COUNT}} |
+| Current-runtime generated answer audits | {{LIVE_GENERATION_CASE_COUNT}}/{{LIVE_GENERATION_CASE_COUNT}} |
+| Evaluation suites / enforced baseline metrics | {{EVALUATION_SUITE_COUNT}} / {{BASELINE_METRIC_COUNT}} |
+
+All {{TRANSCRIPT_ITEM_COUNT}} transcript evidence items have timestamps.
+
+## 回答质量怎样被门禁 / How answer quality is gated
+
+质量报告不是单一“准确率”。它检查不同层次的失败模式：
+
+The quality report is not one accuracy number. It checks distinct failure modes:
+
+1. **问题理解 / Query understanding** — 角色、动作、条件、否定、承接关系和交付要求不能串线。
+2. **证据完整性 / Evidence completeness** — 所有可回答视频先进入语义证据集，再分别计算 synthesis、selected、claim-mapped 与 core recall。
+3. **展示选择 / Presentation selection** — 视频按结论用途、来源强度、重复簇和场景范围筛选，不用展示列表反向定义“可回答”。
+4. **答案契约 / Answer contract** — 诊断比较、训练剂量、成功标准、战术分支等 delivery item 必须真实出现在答案中。
+5. **独立审计 / Independent audit** — renderer 输出要逐字复现；auditor 使用完整上下文检查证据、边界、引用与缺失项。
+6. **鲁棒性 / Robustness** — 语言改写、硬负例、B 站正例、机械接线 canary、性能预算和 Python 3.10/3.12 兼容性共同阻断回归。
+
+每条新增硬门禁都有“故意破坏该指标时必须失败”的测试，防止配置存在但不生效。完整结果见 [evaluation report](docs/evaluation/index.html)。
+
+Every promoted hard gate has a regression test proving that deliberately breaking the metric fails the comparison, preventing inert configuration. See the [evaluation report](docs/evaluation/index.html) for current results.
+
+## 代码地图 / Repository map
+
+| 路径 / Path | 职责 / Responsibility |
+| --- | --- |
+| `skills/liuhui-badminton-coach/` | 可安装 Skill、运行时脚本和只读证据资产 / Installable Skill, runtime scripts, and read-only evidence artifacts |
+| `skills/.../scripts/prepare_answer_context.py` | 查询规划、证据分层与上下文构建 / Query planning, evidence layering, and context construction |
+| `skills/.../scripts/search_knowledge.py` | chunk-first 检索与受限证据窗口 / Chunk-first retrieval and bounded evidence windows |
+| `skills/.../scripts/render_answer.py` | 确定性答案 renderer / Deterministic answer renderer |
+| `skills/.../scripts/audit_answer.py` | 完整上下文回答审计 / Full-context answer auditor |
+| `data/evaluation/` | 黄金用例、运行时快照、基线与报告 / Gold cases, runtime snapshots, baselines, and reports |
+| `scripts/run_ci_tests.py` | fast、compatibility、context 与 artifact 测试分组 / Fast, compatibility, context, and artifact test groups |
+| `.github/workflows/validate.yml` | 变更范围分类与并行 CI 质量矩阵 / Change classification and parallel CI quality matrix |
+| `ARCHITECTURE.md` | 运行时、维护平面与模块边界 / Runtime, maintenance plane, and module boundaries |
+
+## 本地开发 / Local development
+
+~~~bash
+git clone https://github.com/MuyuanGuo/badminton-skills-coach.git
+cd badminton-skills-coach
+git switch develop
+python3 -m venv .venv
+.venv/bin/pip install --require-hashes -r requirements-dev.txt
+.venv/bin/ruff check scripts skills/liuhui-badminton-coach/scripts
+.venv/bin/python scripts/run_ci_tests.py fast --workers 2
+.venv/bin/python scripts/run_ci_tests.py compatibility --workers 2
+~~~
+
+完整质量报告比 fast 组更慢，适合作为 PR 或发布门禁：
+
+The full quality report is slower than the fast group and is intended for PR or release gating:
+
+~~~bash
+.venv/bin/python scripts/collect_evaluation_results.py --workers 2 --output /tmp/core-evaluations.json
+.venv/bin/python scripts/generate_evaluation_report.py --check --evaluations /tmp/core-evaluations.json
+.venv/bin/python scripts/benchmark_runtime.py
+.venv/bin/python scripts/evaluate_answer_packet.py
+~~~
+
+维护者恢复未完成的 B 站流水线只使用一个入口：
+
+Maintainers resume an incomplete Bilibili pipeline through one entry point:
+
+~~~bash
+python3 scripts/run_bilibili_update_pipeline.py --install
+~~~
+
+## 稳定版体验 / Try the stable release
+
+开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v{{STABLE_VERSION}}`：
+
+The development branch is not the end-user installation source. To try stable behavior, install `v{{STABLE_VERSION}}`:
+
+~~~bash
+base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v{{STABLE_VERSION}}"
+curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -o "/tmp/liuhui-badminton-coach-{{STABLE_VERSION}}.zip"
+curl --fail --show-error --location --retry 3 "$base/SHA256SUMS.txt" -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM.cdx.json
+(cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
+~~~
+
+## 分支、贡献与发布 / Branches, contribution, and release
+
+- 当前分支：`develop`
+- 当前开发版本：`{{DEVELOPMENT_VERSION}}`
+- 发布状态：`unreleased`
+- 稳定版：`main` / `v{{STABLE_VERSION}}`
+- Current branch: `develop`
+- Current development version: `{{DEVELOPMENT_VERSION}}`
+- Release status: `unreleased`
+- Stable release: `main` / `v{{STABLE_VERSION}}`
+- Installable package: [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}})
+
+`main` 是稳定发布来源，`develop` 是集成分支。`main` is the stable release source and `develop` is the integration branch. 发布候选从 `develop` 通过受保护 PR 进入 `main`；通过 exact-SHA 校验、签名标签、SBOM 和证明后才发布。合并后的 `main` 会自动提出回同步 PR，把稳定版本元数据切换回下一开发版本，同时保持两条分支各自的 README 受众。
+
+Release candidates move from `develop` to `main` through protected PRs and are published only after exact-SHA validation, a signed tag, an SBOM, and attestations. Validated `main` then proposes an automated back-merge that advances the next development version while preserving the distinct README audience on each branch.
+
+贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [ARCHITECTURE.md](ARCHITECTURE.md)。安全发布与签名说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。软件与原创文档使用 [MIT License](LICENSE)；第三方来源材料适用 [LICENSE-DATA](LICENSE-DATA) 与 [NOTICE](NOTICE)。
+
+Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md) and [ARCHITECTURE.md](ARCHITECTURE.md). See [RELEASE_SECURITY.md](RELEASE_SECURITY.md) for signing and release security. Software and original documentation use the [MIT License](LICENSE); third-party source material is governed separately by [LICENSE-DATA](LICENSE-DATA) and [NOTICE](NOTICE).

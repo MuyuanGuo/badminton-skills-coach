@@ -13,6 +13,7 @@ from prepare_develop_sync import (
     replace_once,
 )
 from project_artifacts import atomic_write_text
+from readme_profiles import write_readme_profile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -206,15 +207,11 @@ def prepare_stable_release(root=ROOT):
         )
         atomic_write_text(path, updated_text)
 
-    readme_zh = root / "README.md"
-    atomic_write_text(
-        readme_zh,
-        stable_readme_zh(
-            readme_zh.read_text(encoding="utf-8"),
-            previous_stable,
-            development_version,
-            release_version,
-        ),
+    write_readme_profile(
+        "main",
+        root=root,
+        stable_version=release_version,
+        development_version=release_version,
     )
     readme_en = root / "README.en.md"
     atomic_write_text(
