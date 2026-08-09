@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import copy
 import importlib.util
 import re
 import unittest
@@ -32,6 +33,10 @@ class RenderAnswerTests(unittest.TestCase):
 
     def test_default_render_uses_only_bound_atoms_and_exact_feedback(self):
         answer = self.renderer.render_answer(self.packet)
+        audit = self.auditor.audit_answer(
+            self.context["query"], self.context, answer
+        )
+        self.assertTrue(audit["passed"], audit["violations"])
         for atom in self.packet["answer_plan"]["selected_evidence_atoms"]:
             self.assertIn(atom["verbalizable_claim"], answer)
         self.assertTrue(answer.rstrip().endswith(self.packet["feedback_prompt"]))
@@ -146,6 +151,95 @@ class RenderAnswerTests(unittest.TestCase):
         self.assertNotEqual(answers[short_query], answers[chain_query])
         self.assertIn("对手：挡网", answers[chain_query])
         self.assertIn("杀球后被对手挡网", answers[chain_query])
+
+    def test_practice_delivery_is_rendered_and_missing_block_fails_audit(self):
+        query = (
+            "我是业余中级双打选手。对手杀到反手身体附近时，我挡网经常冒高。"
+            "请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的"
+            "训练方案，包含三天纠正、两周巩固和可观察成功标准。"
+        )
+        context = self.runtime.prepare_answer_context(
+            query, local_personalization=False
+        )
+        packet = self.runtime.build_answer_packet(context)
+        answer = self.renderer.render_answer(packet)
+        for required in (
+            "总计 20 分钟",
+            "第1天",
+            "第2天",
+            "第3天",
+            "第1周",
+            "第2周",
+            "成功标准",
+            "常见错误",
+            "停止与复核信号",
+        ):
+            self.assertIn(required, answer)
+        clean = self.auditor.audit_answer(query, context, answer)
+        self.assertTrue(clean["passed"], clean["violations"])
+        ids_by_kind = {
+            item["kind"]: item["delivery_id"]
+            for item in context["delivery_contract"]["items"]
+        }
+        three_day_id = ids_by_kind["practice.three_day"]
+        missing_three_day = "\n".join(
+            line
+            for line in answer.splitlines()
+            if not line.startswith(f"[{three_day_id}]")
+        )
+        failed = self.auditor.audit_answer(query, context, missing_three_day)
+        self.assertIn(
+            "missing_delivery_item",
+            {item["code"] for item in failed["violations"]},
+        )
+        criteria_id = ids_by_kind["practice.success_criteria"]
+        fake_criteria = "\n".join(
+            (
+                f"[{criteria_id}]成功标准：1）随便完成；2）感觉不错；3）继续加量。"
+                if line.startswith(f"[{criteria_id}]")
+                else line
+            )
+            for line in answer.splitlines()
+        )
+        semantic_failure = self.auditor.audit_answer(
+            query, context, fake_criteria
+        )
+        self.assertIn(
+            "invalid_success_criteria_delivery",
+            {item["code"] for item in semantic_failure["violations"]},
+        )
+        mismatched_packet = copy.deepcopy(packet)
+        session = next(
+            item
+            for item in mismatched_packet["delivery_contract"]["items"]
+            if item["kind"] == "practice.session"
+        )
+        session["parameters"]["session_minutes"] = 19
+        with self.assertRaisesRegex(ValueError, "does not match"):
+            self.renderer.render_answer(mismatched_packet)
+
+    def test_tactics_delivery_has_every_direction_and_condition_axis(self):
+        query = (
+            "我是右手持拍的业余中级男双选手，平抽挡相持中被压反手身体位。"
+            "什么时候应该挡直线、什么时候抽斜线、什么时候先回中路？"
+            "请按来球高度、身体是否失衡和搭档位置给条件分支，并给相关视频和证据边界。"
+        )
+        context = self.runtime.prepare_answer_context(
+            query, local_personalization=False
+        )
+        packet = self.runtime.build_answer_packet(context)
+        answer = self.renderer.render_answer(packet)
+        for required in (
+            "直线条件分支",
+            "斜线条件分支",
+            "中路条件分支",
+            "来球高度",
+            "身体是否失衡",
+            "搭档位置",
+        ):
+            self.assertIn(required, answer)
+        audit = self.auditor.audit_answer(query, context, answer)
+        self.assertTrue(audit["passed"], audit["violations"])
 
 
 if __name__ == "__main__":

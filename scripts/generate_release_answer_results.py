@@ -13,35 +13,27 @@ from evaluate_forward_test_results import (
 from project_artifacts import atomic_write_text
 from validate_live_generation_results import (
     AUDIT_SCRIPT,
-    CASES_PATH,
     CONTEXT_SCRIPT,
-    CRITICAL_PATH,
     DEFAULT_RESULTS,
     GENERATOR_TYPE,
     RENDER_SCRIPT,
     ROOT,
     VALIDATION_METHOD,
     answer_digest,
+    delivery_case_failures,
     file_digest,
-    load_json,
     load_module,
     relative_runtime_path,
+    release_case_registry,
+    required_release_case_ids,
     validate_results,
 )
 
 
 def build_results(root=ROOT, generated_at=None):
     root = Path(root)
-    registry = {
-        case["case_id"]: case
-        for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
-    }
-    required_ids = [
-        item["case_id"]
-        for item in load_json(root / CRITICAL_PATH.relative_to(ROOT))[
-            "required_cases"
-        ]
-    ]
+    registry = release_case_registry(root)
+    required_ids = sorted(required_release_case_ids(root))
     context_path = root / CONTEXT_SCRIPT.relative_to(ROOT)
     render_path = root / RENDER_SCRIPT.relative_to(ROOT)
     audit_path = root / AUDIT_SCRIPT.relative_to(ROOT)
@@ -63,6 +55,15 @@ def build_results(root=ROOT, generated_at=None):
         audit = audit_module.audit_answer(query, context, answer)
         if not audit["passed"]:
             failures.append(f"{case_id}:current_runtime_audit_failed")
+        failures.extend(
+            f"{case_id}:{failure}"
+            for failure in delivery_case_failures(
+                case,
+                context,
+                answer,
+                audit_module,
+            )
+        )
         cases.append(
             {
                 "case_id": case_id,
@@ -91,7 +92,10 @@ def build_results(root=ROOT, generated_at=None):
         },
         "cases": cases,
     }
-    validate_results(payload, root=root, rerun_runtime=True)
+    # Generation above has already built, rendered, audited, and mutation-tested
+    # every release case. Revalidate only the persisted snapshot contract here;
+    # the quality-report gate independently reruns the current runtime.
+    validate_results(payload, root=root, rerun_runtime=False)
     return payload
 
 

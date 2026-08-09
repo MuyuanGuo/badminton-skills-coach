@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -147,31 +148,74 @@ class ForwardTestResultTests(unittest.TestCase):
                 '{"build_id":"old"}',
                 encoding="utf-8",
             )
-            first = self.module.answer_runtime_fingerprint(temporary)
-            feedback.update(
-                {
-                    "skill_version": "2.0.0-dev.1",
-                    "channel": "development",
-                }
-            )
-            (references / "feedback-rules.json").write_text(
-                json.dumps(feedback),
-                encoding="utf-8",
-            )
-            (references / "build-manifest.json").write_text(
-                '{"build_id":"new"}',
-                encoding="utf-8",
-            )
-            self.assertEqual(
-                first,
-                self.module.answer_runtime_fingerprint(temporary),
-            )
+            runtime_paths = {
+                "SKILL.md",
+                "scripts/runtime.py",
+                "references/feedback-rules.json",
+                "references/build-manifest.json",
+            }
+            with mock.patch.object(
+                self.module,
+                "RUNTIME_SKILL_PATHS",
+                runtime_paths,
+            ), mock.patch.object(
+                self.module,
+                "MAINTAINER_ONLY_SKILL_PATHS",
+                set(),
+            ):
+                first = self.module.answer_runtime_fingerprint(temporary)
+                feedback.update(
+                    {
+                        "skill_version": "2.0.0-dev.1",
+                        "channel": "development",
+                    }
+                )
+                (references / "feedback-rules.json").write_text(
+                    json.dumps(feedback),
+                    encoding="utf-8",
+                )
+                (references / "build-manifest.json").write_text(
+                    '{"build_id":"new"}',
+                    encoding="utf-8",
+                )
+                self.assertEqual(
+                    first,
+                    self.module.answer_runtime_fingerprint(temporary),
+                )
 
-            (scripts / "runtime.py").write_text("VALUE = 2\n", encoding="utf-8")
-            self.assertNotEqual(
-                first,
-                self.module.answer_runtime_fingerprint(temporary),
+                (scripts / "runtime.py").write_text(
+                    "VALUE = 2\n", encoding="utf-8"
+                )
+                self.assertNotEqual(
+                    first,
+                    self.module.answer_runtime_fingerprint(temporary),
+                )
+
+    def test_runtime_fingerprint_ignores_unregistered_cloud_conflict_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            skill_root = Path(temporary) / self.module.SKILL_ROOT
+            references = skill_root / "references"
+            references.mkdir(parents=True)
+            (references / "tracked.json").write_text(
+                '{"tracked":true}', encoding="utf-8"
             )
+            conflict = references / "ignored cloud conflict.json"
+            conflict.write_text('{"ignored":true}', encoding="utf-8")
+            with mock.patch.object(
+                self.module,
+                "RUNTIME_SKILL_PATHS",
+                {"references/tracked.json"},
+            ), mock.patch.object(
+                self.module,
+                "MAINTAINER_ONLY_SKILL_PATHS",
+                set(),
+            ):
+                first = self.module.runtime_fingerprint(temporary)
+                conflict.write_text('{"ignored":false}', encoding="utf-8")
+                self.assertEqual(
+                    first,
+                    self.module.runtime_fingerprint(temporary),
+                )
 
     def test_stale_runtime_fingerprint_fails(self):
         result, critical, cases, query_cases = self.fixtures()

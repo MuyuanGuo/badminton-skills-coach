@@ -672,6 +672,11 @@ class ChunkRetrievalTests(unittest.TestCase):
                         self.answer_packet.ANSWER_PACKET_SCHEMA_VERSION
                     ),
                     "packet_type": "liuhui_badminton_answer_packet",
+                    "delivery_contract": {
+                        "schema_version": 1,
+                        "items": [],
+                        "required_ids": [],
+                    },
                     "selected_videos": [
                         {"content_cluster_ids": ["CC-same", "CC-one"]},
                         {"content_cluster_ids": ["CC-same", "CC-one"]},

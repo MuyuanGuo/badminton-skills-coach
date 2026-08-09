@@ -27,11 +27,24 @@ FEEDBACK_RULES_PATH = ROOT / "config" / "feedback_rules.json"
 SKILL_RELEASE_PATHS = RUNTIME_SKILL_PATHS
 
 
+def is_cloud_conflict_copy(path):
+    path = Path(path)
+    match = re.fullmatch(
+        r"(?P<base>.+) (?P<copy>[2-9]\d*)(?P<suffix>(?:\.[^/]+)?)",
+        path.name,
+    )
+    if not match:
+        return False
+    canonical = path.with_name(match.group("base") + match.group("suffix"))
+    return canonical.is_file()
+
+
 def release_files():
     discovered = {
         path.relative_to(SKILL_ROOT).as_posix()
         for path in SKILL_ROOT.rglob("*")
         if path.is_file()
+        and not is_cloud_conflict_copy(path)
         and not any(
             part in SKIPPED_NAMES for part in path.relative_to(SKILL_ROOT).parts
         )

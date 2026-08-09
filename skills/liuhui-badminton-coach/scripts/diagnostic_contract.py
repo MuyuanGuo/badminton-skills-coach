@@ -19,7 +19,11 @@ def extract_user_hypotheses(query, diagnostic_rules):
         for match in re.finditer(rule["pattern"], query):
             if rule["type"] == "single_cause_question":
                 group_names = ["hypothesis"]
-            elif rule["type"] == "alternative_cause_question":
+            elif rule["type"] in {
+                "alternative_cause_question",
+                "alternative_cause_statement",
+                "possible_alternative_statement",
+            }:
                 group_names = ["left", "right"]
             elif rule["type"] == "enumerated_cause_request":
                 group_names = ["hypothesis_list"]
@@ -37,7 +41,19 @@ def extract_user_hypotheses(query, diagnostic_rules):
                         "",
                         text,
                     ).strip()
-                    if not text or text in seen:
+                    text = re.sub(
+                        r"^(?:是|也?可能是?|或许是?)",
+                        "",
+                        text,
+                    ).strip()
+                    normalized_text = re.sub(r"\s+", "", text)
+                    invalid = any(
+                        re.fullmatch(pattern, normalized_text)
+                        for pattern in diagnostic_rules.get(
+                            "invalid_hypothesis_patterns", []
+                        )
+                    )
+                    if not text or invalid or text in seen:
                         continue
                     seen.add(text)
                     hypotheses.append(
@@ -511,8 +527,9 @@ def build_diagnostic_contract(
         "query_unit_constraints", {}
     )
     for unit in query_units:
-        unit_constraints = query_unit_constraints.get(
-            unit, question_interpretation["constraints"]
+        unit_constraints = (
+            query_unit_constraints.get(unit)
+            or question_interpretation["constraints"]
         )
         evidence_entries = [
             evidence
@@ -584,8 +601,9 @@ def build_diagnostic_contract(
             ),
             None,
         )
-        hypothesis_constraints = query_unit_constraints.get(
-            hypothesis_unit, question_interpretation["constraints"]
+        hypothesis_constraints = (
+            query_unit_constraints.get(hypothesis_unit)
+            or question_interpretation["constraints"]
         )
         hypothesis_videos = [
             scoped_video_for_query_unit(video, hypothesis_unit)
@@ -666,8 +684,9 @@ def build_diagnostic_contract(
             ),
             None,
         )
-        mechanism_constraints = query_unit_constraints.get(
-            mechanism_unit, question_interpretation["constraints"]
+        mechanism_constraints = (
+            query_unit_constraints.get(mechanism_unit)
+            or question_interpretation["constraints"]
         )
         mechanism_videos = [
             scoped_video_for_query_unit(video, mechanism_unit)

@@ -7,6 +7,8 @@ import json
 import re
 from pathlib import Path
 
+from release_inventory import MAINTAINER_ONLY_SKILL_PATHS, RUNTIME_SKILL_PATHS
+
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS_PATH = ROOT / "data" / "evaluation" / "forward_test_results.json"
@@ -48,12 +50,10 @@ def load_json(path):
 def runtime_fingerprint(root=ROOT):
     digest = hashlib.sha256()
     root = Path(root)
+    skill_root = root / SKILL_ROOT
     paths = sorted(
-        path
-        for path in (root / SKILL_ROOT).rglob("*")
-        if path.is_file()
-        and "__pycache__" not in path.parts
-        and path.suffix not in {".pyc", ".pyo"}
+        skill_root / relative
+        for relative in RUNTIME_SKILL_PATHS | MAINTAINER_ONLY_SKILL_PATHS
     )
     for path in paths:
         relative = path.relative_to(root).as_posix()
@@ -71,12 +71,9 @@ def answer_runtime_fingerprint(root=ROOT):
     root = Path(root)
     skill_root = root / SKILL_ROOT
     paths = sorted(
-        path
-        for path in skill_root.rglob("*")
-        if path.is_file()
-        and "__pycache__" not in path.parts
-        and path.suffix not in {".pyc", ".pyo"}
-        and path.relative_to(skill_root) not in ANSWER_RUNTIME_EXCLUDED
+        skill_root / relative
+        for relative in RUNTIME_SKILL_PATHS | MAINTAINER_ONLY_SKILL_PATHS
+        if Path(relative) not in ANSWER_RUNTIME_EXCLUDED
     )
     for path in paths:
         relative_to_skill = path.relative_to(skill_root)

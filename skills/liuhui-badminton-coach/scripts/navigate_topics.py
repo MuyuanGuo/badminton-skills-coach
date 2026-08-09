@@ -336,6 +336,13 @@ def practice_adaptation(context, rules):
         "level_focus": rules["levels"][context["level"]],
         "setup_adaptation": rules["practice_setups"][context["practice_setup"]],
         "discipline_boundary": rules["discipline_boundaries"][context["discipline"]],
+        "segment_labels": rules["segment_labels"],
+        "segment_instructions": rules["segment_instructions"],
+        "three_day_progression": rules["three_day_progression"],
+        "two_week_consolidation": rules["two_week_consolidation"],
+        "success_criteria": rules["success_criteria"],
+        "common_errors": rules["common_errors"],
+        "bounded_synthesis_statement": rules["bounded_synthesis_statement"],
         "quality_stop_rules": rules["quality_stop_rules"],
         "pain_boundary": (
             "问题包含疼痛或受伤信号：停止相关动作，先由合格医疗专业人士评估；本路径不作诊断。"

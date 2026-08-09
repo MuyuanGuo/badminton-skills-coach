@@ -18,7 +18,7 @@ DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 1
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
-ANSWER_PACKET_SCHEMA_VERSION = 3
+ANSWER_PACKET_SCHEMA_VERSION = 4
 ANSWER_PLAN_SCHEMA_VERSION = 1
 _SIBLING_MODULES = {}
 _STATIC_RESOURCE_CACHE = {}
@@ -137,6 +137,18 @@ budget_retrieval_queries = _answer_retrieval_plan.budget_retrieval_queries
 continuation_query_plan = _answer_retrieval_plan.continuation_query_plan
 topic_navigation = _answer_retrieval_plan.topic_navigation
 merge_candidates = _answer_retrieval_plan.merge_candidates
+
+
+_delivery_contract = load_sibling(
+    "liuhui_answer_delivery_contract", "delivery_contract.py"
+)
+analyze_query_units = _delivery_contract.analyze_query_units
+inherit_actor_context = _delivery_contract.inherit_actor_context
+should_inherit_root_context = (
+    _delivery_contract.should_inherit_root_context
+)
+build_delivery_contract = _delivery_contract.build_delivery_contract
+delivery_completeness_items = _delivery_contract.completeness_items
 
 
 _answer_constraints = load_sibling(
@@ -765,8 +777,24 @@ def prepare_answer_context(
             if evidence_id:
                 reviewed_priorities[evidence_id] = 0
     navigation = None
+    source_query_units = plan["retrieval_guidance"].get(
+        "query_units"
+    ) or [query]
+    query_unit_records = analyze_query_units(source_query_units)
+    evidence_query_units = [
+        item["evidence_query"]
+        for item in query_unit_records
+        if item["evidence_query"]
+    ] or [query]
+    retrieval_plan = {
+        **plan,
+        "retrieval_guidance": {
+            **plan["retrieval_guidance"],
+            "query_units": evidence_query_units,
+        },
+    }
     retrieval_queries = planned_queries(
-        search_module, plan, retrieval_base_query, rules
+        search_module, retrieval_plan, retrieval_base_query, rules
     )
     use_topic_navigation = plan["retrieval_guidance"].get(
         "use_topic_navigation"
@@ -801,7 +829,7 @@ def prepare_answer_context(
         retrieval_queries, retrieval_query_budget = budget_retrieval_queries(
             search_module,
             retrieval_queries,
-            plan,
+            retrieval_plan,
             retrieval_base_query,
             rules,
         )
@@ -830,7 +858,7 @@ def prepare_answer_context(
         rules,
         requested_constraints=requested_constraints,
     )
-    query_units = plan["retrieval_guidance"].get("query_units") or [query]
+    query_units = evidence_query_units
     coherent_actor_sequence = bool(
         actor_context.get("inferred_target_action")
         and actor_context.get("event_chain")
@@ -879,6 +907,38 @@ def prepare_answer_context(
                 "boundary": boundary,
             }
         ]
+    local_unit_actor_contexts = {
+        spec["unit"]: spec["actor_context"] for spec in unit_evaluation_specs
+    }
+    root_actor_context = next(
+        (
+            spec["actor_context"]
+            for spec in unit_evaluation_specs
+            if spec["actor_context"].get("target_constraints")
+        ),
+        actor_context,
+    )
+    unit_roles = {
+        item["evidence_query"]: item["role"]
+        for item in query_unit_records
+        if item["evidence_query"]
+    }
+    for spec in unit_evaluation_specs:
+        local_constraints = spec["actor_context"].get(
+            "target_constraints", {}
+        )
+        parent_context = (
+            root_actor_context
+            if should_inherit_root_context(
+                local_constraints,
+                unit_roles.get(spec["unit"], "evidence_question"),
+            )
+            else {}
+        )
+        spec["actor_context"] = inherit_actor_context(
+            parent_context,
+            spec["actor_context"],
+        )
     accepted = []
     rejected = []
     for video_id, entry in merged.items():
@@ -1197,6 +1257,13 @@ def prepare_answer_context(
             spec["unit"]: spec["actor_context"]["target_constraints"]
             for spec in unit_evaluation_specs
         },
+        "local_query_unit_constraints": {
+            unit: context.get("target_constraints", {})
+            for unit, context in local_unit_actor_contexts.items()
+        },
+        "inherited_context_constraints": root_actor_context.get(
+            "target_constraints", {}
+        ),
         "query_unit_actor_contexts": {
             spec["unit"]: spec["actor_context"]
             for spec in unit_evaluation_specs
@@ -1223,6 +1290,8 @@ def prepare_answer_context(
         # the complete sequence is not incorrectly rejected as a partial
         # answer to either sentence fragment.
         "query_units": diagnostic_query_units,
+        "source_query_units": source_query_units,
+        "query_unit_records": query_unit_records,
         "retrieval_queries": retrieval_queries,
         "retrieval_query_budget": retrieval_query_budget,
         "clarification_policy": plan["retrieval_guidance"].get(
@@ -1242,6 +1311,15 @@ def prepare_answer_context(
             for item in (continuation or {}).get("resolved_answers", [])
         },
         resolved_answers=(continuation or {}).get("resolved_answers", []),
+    )
+    delivery_contract = build_delivery_contract(
+        user_query,
+        question_interpretation,
+        diagnostic_contract["diagnostic_model"],
+        navigation,
+    )
+    diagnostic_contract["completeness_contract"]["items"].extend(
+        delivery_completeness_items(delivery_contract)
     )
     selected_videos, visible_labels, _ = relabel_answer_videos(
         selected_videos, diagnostic_contract
@@ -1273,6 +1351,7 @@ def prepare_answer_context(
         "answer_guidance": plan["answer_guidance"],
         "feedback_guidance": primary_payload["feedback_guidance"],
         "topic_navigation": navigation,
+        "delivery_contract": delivery_contract,
         **diagnostic_contract,
         "selection": {
             "high_recall_candidate_count": len(merged),

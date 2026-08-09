@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import importlib.util
 import json
-import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -38,7 +37,15 @@ class PublicFeedbackEndToEndTests(unittest.TestCase):
                 clean_codex_home / "skills" / "liuhui-badminton-coach"
             )
             installed_skill.parent.mkdir(parents=True)
-            shutil.copytree(SKILL_ROOT, installed_skill)
+            installer = load_module(
+                "public_e2e_installer",
+                SKILL_ROOT / "scripts" / "install.py",
+            )
+            installer.copy_release_tree(
+                SKILL_ROOT,
+                installed_skill,
+                installer.source_artifact_paths(SKILL_ROOT),
+            )
 
             private_question = "私人问题：我和固定球友训练时杀球总被嘲笑怎么办？"
             private_feedback = (

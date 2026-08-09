@@ -50,9 +50,42 @@
     "level",
     "session_minutes"
   ],
+  "segment_labels": {
+    "warm_up": "热身",
+    "isolated_cue": "单一线索",
+    "pressure_or_decision": "压力或判断",
+    "self_check": "自测"
+  },
+  "segment_instructions": {
+    "warm_up": "低速热身，确认无疼痛并保持平衡",
+    "isolated_cue": "固定来球，只练一个主要线索",
+    "pressure_or_decision": "稳定后只增加一个判断变量",
+    "self_check": "录像检查目标、平衡和下一拍"
+  },
+  "three_day_progression": [
+    {"label": "第1天", "instruction": "固定来球、低速重复单一线索"},
+    {"label": "第2天", "instruction": "加入一次移动或下一拍衔接"},
+    {"label": "第3天", "instruction": "加入二选一；不达标就退回第2天"}
+  ],
+  "two_week_consolidation": [
+    {"label": "第1周", "instruction": "固定来球稳定质量，达标后再加速"},
+    {"label": "第2周", "instruction": "加入随机线路或半场对抗"}
+  ],
+  "success_criteria": [
+    "连续8次至少6次达标",
+    "击球后保持平衡并准备下一拍",
+    "增加一个变量后仍能定位失败环节"
+  ],
+  "common_errors": [
+    "同时追多个技术点",
+    "动作变形或失衡后仍加速加量",
+    "只看单次结果，不录像核对下一拍"
+  ],
+  "bounded_synthesis_statement": "时间分配和进度是保守训练结构，不是来源固定处方，也不保证限期改善。",
   "quality_stop_rules": [
     "连续动作变形或失去平衡时停止当前组",
     "出现疼痛时停止相关动作，不用训练量覆盖疼痛",
-    "无法维持当前自测标准时降低速度、移动范围或来球变量"
+    "无法维持当前自测标准时降低速度、移动范围或来球变量",
+    "训练前后录像；看不全准备、触球和下一拍时重新取景"
   ]
 }

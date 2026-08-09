@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 from evaluate_forward_test_results import (
@@ -18,6 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RESULTS = ROOT / "data" / "evaluation" / "live_generation_results.json"
 CASES_PATH = ROOT / "data" / "evaluation" / "answer_quality_cases.json"
 CRITICAL_PATH = ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
+DELIVERY_CASES_PATH = (
+    ROOT / "data" / "evaluation" / "delivery_release_cases.json"
+)
 CONTEXT_SCRIPT = (
     ROOT
     / "skills"
@@ -62,6 +66,97 @@ def file_digest(path):
 
 def relative_runtime_path(path, root=ROOT):
     return Path(path).relative_to(Path(root)).as_posix()
+
+
+def release_case_registry(root=ROOT):
+    root = Path(root)
+    registry = {
+        case["case_id"]: case
+        for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
+    }
+    delivery_payload = load_json(root / DELIVERY_CASES_PATH.relative_to(ROOT))
+    if delivery_payload.get("schema_version") != 1:
+        raise LiveGenerationValidationError(
+            "Delivery release cases have an unsupported schema"
+        )
+    for case in delivery_payload.get("cases", []):
+        case_id = case.get("case_id")
+        if not case_id or case_id in registry:
+            raise LiveGenerationValidationError(
+                "Delivery release case IDs must be present and unique"
+            )
+        registry[case_id] = case
+    return registry
+
+
+def required_release_case_ids(root=ROOT):
+    root = Path(root)
+    historical = {
+        item["case_id"]
+        for item in load_json(root / CRITICAL_PATH.relative_to(ROOT))[
+            "required_cases"
+        ]
+    }
+    delivery = {
+        item["case_id"]
+        for item in load_json(root / DELIVERY_CASES_PATH.relative_to(ROOT))[
+            "cases"
+        ]
+    }
+    return historical | delivery
+
+
+def delivery_case_failures(case, context, answer, audit_module):
+    if "required_delivery_kind_counts" not in case:
+        return []
+    failures = []
+    actual_kinds = Counter(
+        item.get("kind")
+        for item in context.get("delivery_contract", {}).get("items", [])
+    )
+    expected_kinds = Counter(case["required_delivery_kind_counts"])
+    if actual_kinds != expected_kinds:
+        failures.append("delivery_kind_counts")
+    missing_terms = [
+        term for term in case.get("required_output_terms", []) if term not in answer
+    ]
+    if missing_terms:
+        failures.append("required_output_terms")
+    evidence_units = context.get("question_interpretation", {}).get(
+        "query_units", []
+    )
+    if len(evidence_units) != case.get("required_evidence_unit_count"):
+        failures.append("evidence_unit_count")
+    expected_constraints = case.get("inherited_constraints", {})
+    unit_constraints = context.get("question_interpretation", {}).get(
+        "query_unit_constraints", {}
+    )
+    if expected_constraints and any(
+        not all(
+            set(values).issubset(set(constraints.get(axis, [])))
+            for axis, values in expected_constraints.items()
+        )
+        for constraints in unit_constraints.values()
+    ):
+        failures.append("inherited_constraints")
+    selected_ids = {
+        item.get("video_id") for item in context.get("selected_videos", [])
+    }
+    if selected_ids & set(case.get("forbidden_selected_video_ids", [])):
+        failures.append("forbidden_selected_video")
+    for item in context.get("delivery_contract", {}).get("items", []):
+        marker = f"[{item['delivery_id']}]"
+        mutated = "\n".join(
+            line for line in answer.splitlines() if not line.startswith(marker)
+        )
+        negative = audit_module.audit_answer(case["query"], context, mutated)
+        if negative["passed"] or "missing_delivery_item" not in {
+            violation["code"] for violation in negative["violations"]
+        }:
+            failures.append(
+                f"negative_control_{item['delivery_id']}"
+            )
+    return failures
 
 
 def inspect_generation_snapshot(payload, root=ROOT):
@@ -131,16 +226,8 @@ def inspect_generation_snapshot(payload, root=ROOT):
 
     current_artifact_fingerprint = runtime_fingerprint(root)
     current_answer_fingerprint = answer_runtime_fingerprint(root)
-    registry = {
-        case["case_id"]: case
-        for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
-    }
-    required_ids = {
-        item["case_id"]
-        for item in load_json(root / CRITICAL_PATH.relative_to(ROOT))[
-            "required_cases"
-        ]
-    }
+    registry = release_case_registry(root)
+    required_ids = required_release_case_ids(root)
     cases = payload.get("cases")
     if not isinstance(cases, list):
         raise LiveGenerationValidationError("cases must be a list")
@@ -232,10 +319,7 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
         )
 
     if rerun_runtime:
-        registry = {
-            case["case_id"]: case
-            for case in load_json(root / CASES_PATH.relative_to(ROOT))["cases"]
-        }
+        registry = release_case_registry(root)
         context_module = load_module(
             "live_generation_context", root / CONTEXT_SCRIPT.relative_to(ROOT)
         )
@@ -264,6 +348,16 @@ def validate_results(payload, root=ROOT, rerun_runtime=True):
             )
             if not audit["passed"]:
                 failures.append(f"{item['case_id']}:current_runtime_audit_failed")
+                continue
+            failures.extend(
+                f"{item['case_id']}:{failure}"
+                for failure in delivery_case_failures(
+                    expected,
+                    context,
+                    item["answer_text"],
+                    audit_module,
+                )
+            )
         if failures:
             raise LiveGenerationValidationError(
                 "Live-generation release gate failed: " + ", ".join(failures)

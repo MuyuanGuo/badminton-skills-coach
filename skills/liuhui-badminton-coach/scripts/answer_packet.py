@@ -14,7 +14,7 @@ from token_budget import estimate_json_tokens as estimate_packet_tokens
 from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 3
+ANSWER_PACKET_SCHEMA_VERSION = 4
 ANSWER_PLAN_SCHEMA_VERSION = 1
 FALLBACK_WINDOW_LIMIT = 4
 DISPLAY_VIDEO_LIMIT = 5
@@ -360,7 +360,7 @@ def compact_completeness_contract(contract):
         "items": [
             {
                 key: item[key]
-                for key in ("item_id", "text", "status")
+                for key in ("item_id", "kind", "text", "status")
                 if key in item
             }
             for item in contract.get("items", [])
@@ -841,10 +841,58 @@ def compact_practice_plan(topic_navigation):
         },
         "session_minutes": session_minutes,
         "minute_allocation": allocation,
-        "level_focus": adaptation.get("level_focus"),
-        "setup_adaptation": adaptation.get("setup_adaptation"),
-        "discipline_boundary": adaptation.get("discipline_boundary"),
+        "segment_labels": adaptation.get("segment_labels", {}),
+        "segment_instructions": adaptation.get("segment_instructions", {}),
+        "three_day_progression": adaptation.get(
+            "three_day_progression", []
+        ),
+        "two_week_consolidation": adaptation.get(
+            "two_week_consolidation", []
+        ),
+        "success_criteria": adaptation.get("success_criteria", []),
+        "common_errors": adaptation.get("common_errors", []),
+        "bounded_synthesis_statement": adaptation.get(
+            "bounded_synthesis_statement"
+        ),
         "quality_stop_rules": adaptation.get("quality_stop_rules", []),
+    }
+
+
+def compact_delivery_contract(contract):
+    if not isinstance(contract, dict):
+        return {"schema_version": 1, "items": [], "required_ids": []}
+    return {
+        "schema_version": contract.get("schema_version"),
+        "items": [
+            {
+                **{
+                    key: item[key]
+                    for key in (
+                        "delivery_id",
+                        "kind",
+                        "required",
+                    )
+                    if key in item
+                },
+                **(
+                    {
+                        "parameters": (
+                            {
+                                "session_minutes": item[
+                                    "parameters"
+                                ].get("session_minutes")
+                            }
+                            if item.get("kind") == "practice.session"
+                            else item["parameters"]
+                        )
+                    }
+                    if item.get("parameters")
+                    else {}
+                ),
+            }
+            for item in contract.get("items", [])
+        ],
+        "required_ids": contract.get("required_ids", []),
     }
 
 
@@ -964,6 +1012,9 @@ def build_answer_packet(context, audit_context_reference=None):
         "completeness_contract": compact_completeness_contract(
             context["completeness_contract"]
         ),
+        "delivery_contract": compact_delivery_contract(
+            context.get("delivery_contract")
+        ),
         "answer_plan": compact_plan(plan, window_ids_by_key),
         "answer_guidance": compact_answer_guidance(context["answer_guidance"]),
         "source_handling": compact_source_handling(
@@ -988,6 +1039,28 @@ def validate_answer_packet(packet, context):
         raise ValueError("unsupported answer_packet schema_version")
     if packet.get("packet_type") != "liuhui_badminton_answer_packet":
         raise ValueError("invalid answer_packet type")
+    delivery = packet.get("delivery_contract")
+    if not isinstance(delivery, dict) or delivery.get("schema_version") != 1:
+        raise ValueError("invalid delivery_contract")
+    delivery_ids = [
+        item.get("delivery_id") for item in delivery.get("items", [])
+    ]
+    if (
+        any(not delivery_id for delivery_id in delivery_ids)
+        or len(delivery_ids) != len(set(delivery_ids))
+        or delivery.get("required_ids") != delivery_ids
+    ):
+        raise ValueError("invalid delivery_contract IDs")
+    context_delivery = compact_delivery_contract(
+        context.get("delivery_contract")
+    )
+    if delivery != context_delivery:
+        raise ValueError("delivery_contract does not match audit context")
+    if any(
+        item.get("kind", "").startswith("practice.")
+        for item in delivery.get("items", [])
+    ) and not packet.get("practice_plan"):
+        raise ValueError("practice delivery requires practice_plan")
     covered_cluster_ids = set()
     for video in packet.get("selected_videos", []):
         content_cluster_ids = set(
