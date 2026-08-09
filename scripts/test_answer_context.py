@@ -3475,6 +3475,51 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(payload["answer_display_video_labels"], [])
 
+    def test_compound_diagnosis_inherits_root_context_and_keeps_real_hypotheses(self):
+        payload = self.context_module.prepare_answer_context(
+            (
+                "我是右手持拍的业余中级男双选手，正手后场高远球经常只能到"
+                "对方中场。我怀疑是没有转髋，也可能是击球点太低。请区分这两个"
+                "假设和其他有证据支持的原因，给我现场检查顺序；没有连续动作视频时"
+                "不要把原因说死。"
+            ),
+            local_personalization=False,
+        )
+        interpretation = payload["question_interpretation"]
+        self.assertEqual(len(interpretation["source_query_units"]), 4)
+        self.assertEqual(len(interpretation["query_units"]), 3)
+        expected = {
+            "stroke_side": ["forehand"],
+            "shot_family": ["clear"],
+            "court_zone": ["rearcourt"],
+            "discipline": ["doubles"],
+        }
+        for constraints in interpretation["query_unit_constraints"].values():
+            self.assertEqual(constraints, expected)
+        self.assertEqual(
+            [
+                item["text"]
+                for item in payload["diagnostic_model"]["user_hypotheses"]
+            ],
+            ["没有转髋", "击球点太低"],
+        )
+        self.assertNotIn(
+            "7524557392328461627",
+            {video["video_id"] for video in payload["selected_videos"]},
+        )
+        self.assertEqual(
+            {
+                "diagnosis.hypothesis_comparison",
+                "diagnosis.ordered_checklist",
+                "evidence.sources",
+                "evidence.boundary",
+            },
+            {
+                item["kind"]
+                for item in payload["delivery_contract"]["items"]
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

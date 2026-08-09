@@ -9,9 +9,9 @@
 
 An evidence-backed badminton coaching Skill for Codex. Describe a real technique, footwork, tactics, equipment, or practice problem and it returns a diagnosis, actionable practice, relevant Douyin and Bilibili videos, timestamps, and explicit evidence boundaries.
 
-[Install 2.1.1](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
+[Install 2.1.2](#install) · [Ask better questions](#ask-better-questions) · [Project website](https://muyuanguo.github.io/badminton-skills-coach/en/) · [Report answer feedback](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [中文 README](README.md)
 
-**Version 2.1.1 is the stable release** on `main` and [v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1); ongoing work continues on `develop`. This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
+**Version 2.1.2 is the stable release** on `main` and [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2); ongoing work continues on `develop`. This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
 ## Start in 30 seconds
 
@@ -26,7 +26,7 @@ a 20-minute partner drill.
 
 The Skill reconstructs who did what, the incoming shot, and the requested action before retrieving evidence. Every displayed source has a turn-scoped V label, a stable evidence_id, a canonical link, and a timestamp when available.
 
-## What changed in 2.1.1
+## What changed in 2.1.2
 
 - One answer-ready corpus now combines processed Douyin and Bilibili teaching material across strokes, full-court movement, singles and doubles tactics, net skills, serve/receive, equipment, and practice.
 - Titles and keywords recall candidates but cannot prove a technical claim. Source, transcript, evidence-quality, and duplicate gates decide whether a video may answer.
@@ -38,6 +38,14 @@ The Skill reconstructs who did what, the incoming shot, and the requested action
 - A 51.7 MiB read-only SQLite evidence store lazily reads mappings, sequences, and chunks instead of retaining duplicate full JSON projections at cold start; Linux cold-start RSS has a 128 MiB hard budget.
 - Python 3.10 and 3.12 use the same hash-locked maintenance dependencies, while generated artifacts, logical SQLite content, and canary hashes remain reproducible across environments.
 - Release answers are deterministically rebuilt for every critical case, bound to complete and answer-semantic runtime fingerprints, reproduced byte for byte, and re-audited against full context by the tag workflow.
+
+## Answer-completeness hardening on `develop`
+
+- Compound questions now preserve both source units and evidence units. Delivery instructions such as plans, check orders, and conditional branches are no longer searched as standalone technical questions.
+- Elliptical later units and mixed technical/delivery units inherit side, shot family, court zone, discipline, and other root scenario constraints while preserving explicit branch overrides such as direction; independently scoped questions remain isolated.
+- Answer packet v4 adds a typed `delivery_contract`. Exact minutes, three-day correction, two-week consolidation, success criteria, diagnostic comparisons, ordered checks, and tactical direction branches are independent required items.
+- The renderer produces each item and the auditor validates its internal semantics; a Q/D marker or raw source excerpt alone no longer satisfies a compound request.
+- The live release gate expands from three historical cases to those three plus diagnosis, practice, and tactics delivery cases, with deletion negative controls for every required delivery block.
 
 ## Current evidence and quality baseline
 
@@ -54,7 +62,7 @@ The Skill reconstructs who did what, the incoming shot, and the requested action
 | Query-understanding cases | 143/143 |
 | Metamorphic language variants | 30/30 |
 | Hard-negative selections | 0 of 194 |
-| Current-runtime reproducible release answers | 3/3 |
+| Current-runtime reproducible release answers | 6/6 |
 | Promoted public feedback signals | 0 |
 
 All 7,744 transcript evidence items have timestamps. These figures describe the controlled corpus and evaluation set; they do not claim that every possible natural-language question has already been tested.
@@ -64,15 +72,15 @@ All 7,744 transcript evidence items have timestamps. These figures describe the 
 Daily use requires Python 3.10 or newer. It does not require an OpenAI API key or transcription dependencies.
 
 ~~~bash
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/liuhui-badminton-coach-2.1.1.zip \
-  -o /tmp/liuhui-badminton-coach-2.1.1.zip
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/liuhui-badminton-coach-2.1.2.zip \
+  -o /tmp/liuhui-badminton-coach-2.1.2.zip
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SBOM.cdx.json \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SBOM.cdx.json \
   -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.1.1.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.1.2.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ~~~
 
@@ -87,7 +95,7 @@ Restart Codex after installation. Re-running the installer safely upgrades the i
 Windows PowerShell uses the same release and SHA-256 verification:
 
 ~~~powershell
-$v = "2.1.1"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
+$v = "2.1.2"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
 Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
 Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
 $expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
@@ -161,7 +169,7 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 Runtime boundaries and module-loading constraints are documented in [ARCHITECTURE.md](ARCHITECTURE.md). For maintenance and contributions, see [CONTRIBUTING.en.md](CONTRIBUTING.en.md) ([中文](CONTRIBUTING.md)). Release verification, signed tags, and SBOM guidance live in [RELEASE_SECURITY.md](RELEASE_SECURITY.md). Documentation on every branch must describe that branch's actual code, not an unreleased design.
 
-- Stable release: `main` / `v2.1.1`
-- Installable package: [v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1)
+- Stable release: `main` / `v2.1.2`
+- Installable package: [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)
 
 `main` is the stable release source and `develop` is the integration branch. Both use the same evidence and governance standards, while their README and version metadata must reflect their distinct states.

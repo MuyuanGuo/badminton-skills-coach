@@ -21,7 +21,7 @@ class CiScopeTests(unittest.TestCase):
             classify_paths([".github/workflows/release.yml"]),
             {
                 "static": True,
-                "artifact": True,
+                "artifact": False,
                 "quality": False,
                 "docs_only": False,
             },
@@ -41,13 +41,13 @@ class CiScopeTests(unittest.TestCase):
     def test_test_only_change_skips_expensive_knowledge_evaluations(self):
         scope = classify_paths(["scripts/test_release_workflow_contract.py"])
         self.assertTrue(scope["static"])
-        self.assertTrue(scope["artifact"])
+        self.assertFalse(scope["artifact"])
         self.assertFalse(scope["quality"])
 
     def test_release_orchestration_skips_knowledge_evaluations(self):
         scope = classify_paths(["scripts/require_successful_validation.py"])
         self.assertTrue(scope["static"])
-        self.assertTrue(scope["artifact"])
+        self.assertFalse(scope["artifact"])
         self.assertFalse(scope["quality"])
 
     def test_runtime_or_corpus_change_runs_every_validation_group(self):
@@ -56,7 +56,6 @@ class CiScopeTests(unittest.TestCase):
             "skills/liuhui-badminton-coach/SKILL.md",
             "data/knowledge/retrieval_index.json",
             "scripts/bilibili_wiring_canary.py",
-            "scripts/test_answer_context.py",
             "scripts/validate_live_generation_results.py",
         ):
             with self.subTest(path=path):
@@ -70,10 +69,33 @@ class CiScopeTests(unittest.TestCase):
                     },
                 )
 
+    def test_context_test_change_runs_only_static_and_quality_groups(self):
+        self.assertEqual(
+            classify_paths(["scripts/test_answer_context.py"]),
+            {
+                "static": True,
+                "artifact": False,
+                "quality": True,
+                "docs_only": False,
+            },
+        )
+
+    def test_artifact_test_and_packaging_inputs_run_artifact_validation(self):
+        for path in (
+            "scripts/test_release_package.py",
+            "scripts/release_inventory.py",
+            "requirements-dev.txt",
+        ):
+            with self.subTest(path=path):
+                scope = classify_paths([path])
+                self.assertTrue(scope["static"])
+                self.assertTrue(scope["artifact"])
+                self.assertFalse(scope["quality"])
+
     def test_mixed_docs_and_tooling_is_not_docs_only(self):
         scope = classify_paths(["README.md", ".github/workflows/release.yml"])
         self.assertTrue(scope["static"])
-        self.assertTrue(scope["artifact"])
+        self.assertFalse(scope["artifact"])
         self.assertFalse(scope["quality"])
         self.assertFalse(scope["docs_only"])
 

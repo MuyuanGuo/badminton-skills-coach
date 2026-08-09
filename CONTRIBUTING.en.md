@@ -24,14 +24,29 @@ Run the smallest affected deterministic gates first, then the complete gate for
 shared runtime or generated-artifact changes:
 
 ```bash
-python3 scripts/run_ci_tests.py fast
+python3 scripts/run_ci_tests.py fast --workers 2
+python3 scripts/run_ci_tests.py compatibility --workers 2
 python3 scripts/run_ci_tests.py context --shard-index 0 --shard-count 1
 python3 scripts/run_ci_tests.py artifacts
-python3 scripts/collect_evaluation_results.py --output /tmp/bsc-evaluations.json
+python3 scripts/collect_evaluation_results.py \
+  --workers 2 \
+  --output /tmp/bsc-evaluations.json \
+  --timings-output /tmp/bsc-evaluation-timings.json
 python3 scripts/generate_evaluation_report.py --check --evaluations /tmp/bsc-evaluations.json
 python3 scripts/benchmark_runtime.py
 python3 scripts/validate_project.py
 ```
+
+Every trigger runs the complete fast group on Python 3.12 and the
+architecture-critical compatibility subset on Python 3.10. This avoids
+repeating the complete fast group on both versions after a pull request is
+merged. Core evaluations use two isolated subprocesses and print per-suite
+temporary timings without adding wall-clock data to the deterministic report.
+Artifact validation runs only for packaged inputs and artifact-test changes.
+
+When the repository is stored in iCloud Drive, enable Keep Downloaded for the
+whole checkout. Move the working copy to a non-synced developer directory if
+`dataless` conflict copies or Git lock copies recur.
 
 Install maintenance dependencies only from hash-locked files:
 

@@ -102,6 +102,15 @@ class DoctorAndInstallerTests(unittest.TestCase):
             self.assertFalse((destination / "stale-file.txt").exists())
             self.assertTrue((destination / "scripts" / "doctor.py").exists())
             self.assertEqual(result["doctor"]["failed"], 0)
+            installed = {
+                path.relative_to(destination).as_posix()
+                for path in destination.rglob("*")
+                if path.is_file()
+            }
+            self.assertEqual(
+                installed,
+                set(self.installer.source_artifact_paths(SKILL_ROOT)),
+            )
 
     def test_expected_build_id_mismatch_refuses_install_without_writing(self):
         with tempfile.TemporaryDirectory() as temporary:

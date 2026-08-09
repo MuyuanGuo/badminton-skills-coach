@@ -20,8 +20,9 @@ DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
-CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 3
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 4
 LEGACY_BOUND_PACKET_SCHEMA_VERSION = 2
+LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION = 3
 
 
 def load_json(path):
@@ -199,7 +200,10 @@ def validate_packet_binding(packet, context):
     if schema_version == CURRENT_ANSWER_PACKET_SCHEMA_VERSION:
         answer_packet_runtime.validate_answer_packet(packet, context)
         return
-    if schema_version == LEGACY_BOUND_PACKET_SCHEMA_VERSION:
+    if schema_version in {
+        LEGACY_BOUND_PACKET_SCHEMA_VERSION,
+        LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION,
+    }:
         if packet.get("packet_type") != "liuhui_badminton_answer_packet":
             raise ValueError("invalid answer_packet type")
         if packet.get("audit_context", {}).get("digest") != canonical_json_digest(
@@ -360,6 +364,291 @@ def item_coverage(item, context, units, rules, marker_pattern):
     ]
 
 
+def delivery_units(delivery_id, units, marker_pattern):
+    return [
+        unit
+        for unit in units
+        if any(
+            match.group("delivery_id") == delivery_id
+            for match in marker_pattern.finditer(unit)
+        )
+    ]
+
+
+def audit_delivery_contract(context, units, violations):
+    contract = context.get("delivery_contract", {})
+    items = contract.get("items", []) if isinstance(contract, dict) else []
+    marker_pattern = re.compile(r"\[(?P<delivery_id>D[1-9]\d*)\]")
+    coverage = []
+    practice = (context.get("topic_navigation") or {}).get(
+        "practice_adaptation", {}
+    )
+
+    def fail(item, code, message, unit=None, details=None):
+        add_violation(
+            violations,
+            code,
+            message,
+            claim_id=item.get("delivery_id"),
+            unit=unit,
+            details=details,
+        )
+
+    for item in items:
+        delivery_id = item.get("delivery_id")
+        matched = delivery_units(delivery_id, units, marker_pattern)
+        covered = bool(matched)
+        coverage.append(
+            {
+                "item_id": delivery_id,
+                "status": "must_answer",
+                "kind": item.get("kind"),
+                "covered": covered,
+            }
+        )
+        if not matched:
+            fail(
+                item,
+                "missing_delivery_item",
+                "A required typed delivery item is absent from the answer.",
+                details={"kind": item.get("kind"), "label": item.get("label")},
+            )
+            continue
+        if len(matched) != 1:
+            fail(
+                item,
+                "duplicate_delivery_item",
+                "A typed delivery item must appear exactly once.",
+                unit=matched[0],
+            )
+        unit = matched[0]
+        kind = item.get("kind")
+        parameters = item.get("parameters", {})
+        if kind == "diagnosis.hypothesis_comparison":
+            status_labels = {
+                "supported": "有证据支持",
+                "conditional": "有条件支持",
+                "unverified": "未确认",
+                "unsupported": "没有直接证据",
+            }
+            missing = [
+                {
+                    "text": candidate.get("text"),
+                    "status": status_labels.get(
+                        candidate.get("status"), "未确认"
+                    ),
+                }
+                for candidate in parameters.get("candidates", [])
+                if normalized(candidate.get("text")) not in normalized(unit)
+                or normalized(
+                    status_labels.get(candidate.get("status"), "未确认")
+                ) not in normalized(unit)
+            ]
+            if missing:
+                fail(
+                    item,
+                    "invalid_hypothesis_comparison_delivery",
+                    "The comparison must name every candidate and preserve its status.",
+                    unit=unit,
+                    details={"missing_candidates": missing},
+                )
+        elif kind == "diagnosis.ordered_checklist":
+            steps = parameters.get("steps", [])
+            missing = [
+                step.get("text")
+                for step in steps
+                if normalized(step.get("text")) not in normalized(unit)
+            ]
+            numbered = len(re.findall(r"\d+）", unit))
+            if (steps and (missing or numbered < len(steps))) or (
+                not steps and "证据缺口" not in unit
+            ):
+                fail(
+                    item,
+                    "invalid_ordered_checklist_delivery",
+                    "The diagnostic checklist must preserve every ordered step or state the gap.",
+                    unit=unit,
+                    details={"missing_steps": missing},
+                )
+        elif kind == "practice.session":
+            total = parameters.get("session_minutes")
+            allocation = parameters.get("minute_allocation", {})
+            labels = practice.get("segment_labels", {})
+            found = {
+                label: int(minutes)
+                for label, minutes in re.findall(
+                    r"(热身|单一线索|压力或判断|自测)\s*(\d+)\s*分钟",
+                    unit,
+                )
+            }
+            expected = {
+                labels.get(key, key): value
+                for key, value in allocation.items()
+            }
+            if (
+                not isinstance(total, int)
+                or f"总计{total}分钟" not in normalized(unit)
+                or found != expected
+                or sum(found.values()) != total
+            ):
+                fail(
+                    item,
+                    "invalid_practice_session_delivery",
+                    "The practice session must preserve every segment and exact minute sum.",
+                    unit=unit,
+                    details={"expected": expected, "found": found, "total": total},
+                )
+        elif kind == "practice.three_day":
+            expected = practice.get("three_day_progression", [])
+            missing = [
+                record
+                for record in expected
+                if normalized(record.get("label")) not in normalized(unit)
+                or normalized(record.get("instruction")) not in normalized(unit)
+            ]
+            if len(expected) != 3:
+                missing.append({"expected_count": 3})
+            if missing:
+                fail(
+                    item,
+                    "invalid_three_day_delivery",
+                    "The three-day progression is incomplete.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "practice.two_week":
+            expected = practice.get("two_week_consolidation", [])
+            missing = [
+                record
+                for record in expected
+                if normalized(record.get("label")) not in normalized(unit)
+                or normalized(record.get("instruction")) not in normalized(unit)
+            ]
+            if len(expected) != 2:
+                missing.append({"expected_count": 2})
+            if missing:
+                fail(
+                    item,
+                    "invalid_two_week_delivery",
+                    "The two-week consolidation is incomplete.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "practice.success_criteria":
+            expected = practice.get("success_criteria", [])
+            missing = [
+                criterion
+                for criterion in expected
+                if normalized(criterion) not in normalized(unit)
+            ]
+            if (
+                len(expected) < 2
+                or "成功标准" not in unit
+                or missing
+                or len(re.findall(r"\d+）", unit)) < len(expected)
+            ):
+                fail(
+                    item,
+                    "invalid_success_criteria_delivery",
+                    "The practice answer needs at least two observable success criteria.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "practice.common_errors":
+            expected = practice.get("common_errors", [])
+            missing = [
+                error
+                for error in expected
+                if normalized(error) not in normalized(unit)
+            ]
+            if (
+                len(expected) < 2
+                or "常见错误" not in unit
+                or missing
+                or len(re.findall(r"\d+）", unit)) < len(expected)
+            ):
+                fail(
+                    item,
+                    "invalid_common_errors_delivery",
+                    "The practice answer needs at least two explicit error checks.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "practice.stop_signals":
+            expected = practice.get("quality_stop_rules", [])
+            missing = [
+                signal
+                for signal in expected
+                if normalized(signal) not in normalized(unit)
+            ]
+            if len(expected) < 2 or missing:
+                fail(
+                    item,
+                    "invalid_stop_signals_delivery",
+                    "The practice answer must include quality, balance, pain, and video-review stop signals.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "tactics.direction_branch":
+            branch = parameters.get("branch", {}).get("label")
+            axes = [
+                axis.get("label")
+                for axis in parameters.get("condition_axes", [])
+                if axis.get("label")
+            ]
+            missing = [term for term in [branch, *axes] if term not in unit]
+            has_condition_or_gap = any(
+                term in unit for term in ("如果", "条件", "没有", "不能", "证据缺口")
+            )
+            if missing or not has_condition_or_gap:
+                fail(
+                    item,
+                    "invalid_tactics_branch_delivery",
+                    "Each requested direction needs its own conditioned branch or explicit evidence gap.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "tactics.condition_axes":
+            missing = [
+                axis.get("label")
+                for axis in parameters.get("condition_axes", [])
+                if axis.get("label") not in unit
+            ]
+            if missing:
+                fail(
+                    item,
+                    "invalid_tactics_axes_delivery",
+                    "The tactical decision table omits a requested condition axis.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
+        elif kind == "evidence.sources":
+            if context.get("answer_display_video_labels"):
+                if "核心视频与观看重点" not in "\n".join(units):
+                    fail(
+                        item,
+                        "invalid_evidence_sources_delivery",
+                        "Mapped sources exist but the source section is absent.",
+                        unit=unit,
+                    )
+            elif not any(term in unit for term in ("没有", "证据缺口")):
+                fail(
+                    item,
+                    "invalid_evidence_sources_delivery",
+                    "The answer must display mapped sources or state the source gap.",
+                    unit=unit,
+                )
+        elif kind == "evidence.boundary":
+            if not any(term in unit for term in ("不能确认", "只限", "证据边界")):
+                fail(
+                    item,
+                    "invalid_evidence_boundary_delivery",
+                    "The evidence boundary is missing its scope or uncertainty statement.",
+                    unit=unit,
+                )
+    return coverage
+
+
 def audit_answer(question, context, answer, rules=None):
     rules = rules or load_rules()
     if not isinstance(question, str) or not question.strip():
@@ -452,6 +741,10 @@ def audit_answer(question, context, answer, rules=None):
             )
 
     for unit in technical_units:
+        # Typed delivery blocks have their own kind-specific semantic audit.
+        # Do not reinterpret their explicit status table as a free-form claim.
+        if re.search(r"\[D[1-9]\d*\]", unit):
+            continue
         unit_labels = labels_in(unit, label_pattern)
         unit_claims = matched_claims(unit, claims, rules, marker_pattern)
         for claim in unit_claims:
@@ -549,6 +842,8 @@ def audit_answer(question, context, answer, rules=None):
 
     coverage = []
     for item in context.get("completeness_contract", {}).get("items", []):
+        if item.get("kind"):
+            continue
         covered_units = item_coverage(
             item, context, technical_units, rules, marker_pattern
         )
@@ -595,6 +890,8 @@ def audit_answer(question, context, answer, rules=None):
                     claim_id=claim.get("claim_id"),
                     details={"eligible_labels": sorted(eligible)},
                 )
+
+    coverage.extend(audit_delivery_contract(context, technical_units, violations))
 
     diagnostic = context.get("diagnostic_model", {})
     if diagnostic.get("do_not_claim_unique_cause"):

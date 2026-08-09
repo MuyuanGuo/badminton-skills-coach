@@ -35,13 +35,14 @@ With several pending questions, bind replies to returned `question_id` values th
 
 Compose only from `answer-packet.json`; retain the full context only for audit. Never reuse a prior turn's packet, videos, labels, claims, or mappings. Treat the packet as a closed contract:
 
-1. Preserve `question_interpretation`, actors, exclusions, literal symptoms, requested output, and every query unit.
+1. Preserve `question_interpretation`, actors, exclusions, literal symptoms, requested output, every source query unit, and every evidence query unit. Elliptical and mixed technical/delivery child units inherit missing scenario constraints from the root context unless they explicitly override an axis; independently scoped questions stay isolated.
 2. State `boundary.required_statement` before coaching when present.
 3. Separate symptoms, user hypotheses, supported mechanisms, conditional branches, and facts requiring the user's continuous action video.
 4. In `reviewed_atoms_closed`, verbalize only `selected_evidence_atoms`, preserving conditions, scope, windows, and confidence. In fallback mode, use only claim-scoped evidence.
 5. Treat `claim_evidence_map` as the per-claim citation allowlist and `selected_videos` as the global allowlist. Evidence permission never transfers between claims.
 6. Satisfy every `completeness_contract.must_answer`; keep conditional items conditional and name unresolved gaps.
-7. Follow the returned text/video mode. Reproduce `feedback_prompt` exactly at the end.
+7. Treat every required `delivery_contract` item as an atomic output obligation. A claim marker or citation cannot substitute for an exact-duration session, multi-day progression, diagnostic checklist, tactical branch, success criteria, or evidence boundary.
+8. Follow the returned text/video mode. Reproduce `feedback_prompt` exactly at the end.
 
 Load only the task-specific reference:
 
@@ -62,7 +63,7 @@ For each displayed video, preserve its `V` label; give relevance, observation fo
 
 Keep source confidence and conditions intact. A title, category, tag, topic, retrieval score, or phrase match is a lead, not proof. `selected_videos` alone never proves a claim. Preserve action variant, side, court zone, active/passive state, singles/doubles context, actor order, level, and event sequence. Explain conflicting sources by condition rather than inventing a universal rule.
 
-For diagnostic or multi-claim answers, use the closed renderer. Either let it build the complete default ID-only draft, or provide an ID-only draft following `references/answer-workflow.md`; never add technical prose after rendering:
+For diagnostic, practice, tactics, or multi-claim answers, use the closed renderer. Either let it build the complete default ID-only draft, or provide an ID-only claim draft following `references/answer-workflow.md`; the renderer always adds the packet's typed delivery blocks. Never delete or rewrite those blocks, and never add technical prose after rendering:
 
 ```bash
 python3 scripts/render_answer.py --packet answer-packet.json > answer.md
@@ -91,6 +92,7 @@ When the user evaluates a prior answer, follow `references/feedback-workflow.md`
 - `scripts/prepare_answer_context.py`: sole answer entry point.
 - `scripts/audit_answer.py`: final contract gate.
 - `scripts/render_answer.py`: closed renderer for packet-bound technical prose.
+- `scripts/delivery_contract.py`: typed delivery requirements, query-unit roles, and inherited scenario constraints.
 - `references/runtime-store.sqlite3`: lazy runtime evidence and retrieval store.
 - `references/reviewed-evidence-atoms.json`: reviewed verbalizable claims.
 - `references/build-manifest.json`: corpus, integrity, runtime, and source-build identity.

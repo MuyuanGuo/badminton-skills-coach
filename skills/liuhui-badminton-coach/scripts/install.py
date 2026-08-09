@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 import uuid
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 try:
     import fcntl
@@ -48,6 +48,44 @@ def source_build_id(source):
     return build_id
 
 
+def source_artifact_paths(source):
+    manifest_path = source / "references" / "build-manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError("Skill source has no readable build manifest") from error
+    artifacts = manifest.get("skill_artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        raise ValueError("Skill source build manifest has no artifact inventory")
+    relative_paths = {"references/build-manifest.json"}
+    for artifact in artifacts:
+        value = artifact.get("path") if isinstance(artifact, dict) else None
+        relative = PurePosixPath(value) if isinstance(value, str) else None
+        if (
+            relative is None
+            or relative.is_absolute()
+            or ".." in relative.parts
+            or not relative.parts
+        ):
+            raise ValueError("Skill source build manifest has an unsafe artifact path")
+        relative_paths.add(relative.as_posix())
+    paths = []
+    for relative in sorted(relative_paths):
+        path = source / relative
+        if not path.is_file() or path.is_symlink():
+            raise ValueError(f"Skill source artifact is missing or unsafe: {relative}")
+        paths.append(relative)
+    return paths
+
+
+def copy_release_tree(source, destination, relative_paths):
+    destination.mkdir(parents=True)
+    for relative in relative_paths:
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source / relative, target)
+
+
 class installation_lock:
     def __init__(self, destination):
         self.destination = Path(destination)
@@ -86,6 +124,8 @@ class installation_lock:
 
 
 def run_doctor(skill_root):
+    environment = dict(os.environ)
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     completed = subprocess.run(
         [
             sys.executable,
@@ -96,6 +136,7 @@ def run_doctor(skill_root):
         text=True,
         capture_output=True,
         check=False,
+        env=environment,
     )
     if completed.returncode:
         raise ValueError("Staged Skill failed doctor checks:\n" + completed.stdout + completed.stderr)
@@ -112,6 +153,7 @@ def install_skill(
     destination = Path(destination or default_destination()).expanduser().resolve()
     validate_source(source)
     source_id = source_build_id(source)
+    artifact_paths = source_artifact_paths(source)
     if expected_build_id and source_id != expected_build_id:
         raise ValueError(
             "Skill source build_id changed after validation: "
@@ -144,11 +186,7 @@ def install_skill(
         destination_moved = False
         committed = False
         try:
-            shutil.copytree(
-                source,
-                staged,
-                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", ".DS_Store"),
-            )
+            copy_release_tree(source, staged, artifact_paths)
             doctor = run_doctor(staged)
             if doctor["version"]["build_id"] != source_id:
                 raise ValueError("Staged Skill build_id changed while copying")

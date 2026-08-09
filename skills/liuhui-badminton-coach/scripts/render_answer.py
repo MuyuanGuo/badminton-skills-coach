@@ -10,11 +10,25 @@ from pathlib import Path
 
 
 SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 3
+PACKET_SCHEMA_VERSION = 4
 ALLOWED_BLOCK_FIELDS = {
     "claim_atom": {"type", "claim_id", "atom_id"},
     "claim_window": {"type", "claim_id", "window_id"},
     "claim_gap": {"type", "claim_id"},
+}
+SUPPORTED_DELIVERY_KINDS = {
+    "diagnosis.hypothesis_comparison",
+    "diagnosis.ordered_checklist",
+    "practice.session",
+    "practice.three_day",
+    "practice.two_week",
+    "practice.success_criteria",
+    "practice.common_errors",
+    "practice.stop_signals",
+    "tactics.direction_branch",
+    "tactics.condition_axes",
+    "evidence.sources",
+    "evidence.boundary",
 }
 
 
@@ -159,6 +173,221 @@ def validate_draft(packet, draft):
     return True
 
 
+def validate_delivery_contract(packet):
+    contract = packet.get("delivery_contract")
+    if not isinstance(contract, dict) or contract.get("schema_version") != 1:
+        raise ValueError("missing or unsupported delivery contract")
+    items = contract.get("items")
+    if not isinstance(items, list):
+        raise ValueError("delivery contract items must be a list")
+    ids = [item.get("delivery_id") for item in items]
+    if (
+        any(not delivery_id for delivery_id in ids)
+        or len(ids) != len(set(ids))
+        or contract.get("required_ids") != ids
+        or any(item.get("required") is not True for item in items)
+    ):
+        raise ValueError("delivery contract IDs are invalid")
+    unknown = sorted(
+        {
+            item.get("kind")
+            for item in items
+            if item.get("kind") not in SUPPORTED_DELIVERY_KINDS
+        }
+    )
+    if unknown:
+        raise ValueError(
+            "unsupported delivery kinds: " + ", ".join(map(str, unknown))
+        )
+    if any(item.get("kind", "").startswith("practice.") for item in items):
+        practice = packet.get("practice_plan")
+        if not isinstance(practice, dict):
+            raise ValueError("practice delivery requires a practice plan")
+        total = practice.get("session_minutes")
+        allocation = practice.get("minute_allocation")
+        if (
+            not isinstance(total, int)
+            or not isinstance(allocation, dict)
+            or sum(allocation.values()) != total
+        ):
+            raise ValueError("practice minute allocation is invalid")
+        for item in items:
+            if item.get("kind") != "practice.session":
+                continue
+            parameters = item.get("parameters", {})
+            if parameters.get("session_minutes") != total:
+                raise ValueError(
+                    "practice session delivery does not match practice plan"
+                )
+    return items
+
+
+def status_label(status):
+    return {
+        "supported": "有证据支持",
+        "conditional": "有条件支持",
+        "unverified": "未确认",
+        "unsupported": "没有直接证据",
+    }.get(status, "未确认")
+
+
+def numbered_records(records, text_key="instruction"):
+    return "；".join(
+        f"{item.get('label', f'第{index}项')}：{item.get(text_key, '')}"
+        for index, item in enumerate(records, start=1)
+    )
+
+
+def render_delivery_blocks(packet, videos):
+    items = validate_delivery_contract(packet)
+    if not items:
+        return []
+    practice = packet.get("practice_plan") or {}
+    lines = ["", "## 结构化交付", ""]
+    segment_names = practice.get("segment_labels", {})
+    segment_instructions = practice.get("segment_instructions", {})
+    for item in items:
+        marker = f"[{item['delivery_id']}]"
+        kind = item["kind"]
+        parameters = item.get("parameters", {})
+        if kind == "diagnosis.hypothesis_comparison":
+            candidates = parameters.get("candidates", [])
+            comparison = "；".join(
+                f"“{candidate['text']}”={status_label(candidate.get('status'))}"
+                for candidate in candidates
+            )
+            lines.append(
+                f"{marker}原因比较：{comparison}。各项必须独立核对，"
+                "不能把其中任何一项写成已经确认的唯一原因。"
+            )
+        elif kind == "diagnosis.ordered_checklist":
+            steps = parameters.get("steps", [])
+            if steps:
+                ordered = "；".join(
+                    f"{index}）核对“{step['text']}”"
+                    f"（{status_label(step.get('status'))}）"
+                    for index, step in enumerate(steps, start=1)
+                )
+                lines.append(
+                    f"{marker}现场检查顺序：{ordered}。每一步只观察一项，"
+                    "不能仅凭文字跳到唯一原因。"
+                )
+            else:
+                lines.append(
+                    f"{marker}现场检查顺序：当前证据包没有可安全展开的检查项，"
+                    "因此明确保留证据缺口。"
+                )
+        elif kind == "practice.session":
+            total = practice["session_minutes"]
+            allocation = practice["minute_allocation"]
+            segments = []
+            for key in (
+                "warm_up",
+                "isolated_cue",
+                "pressure_or_decision",
+                "self_check",
+            ):
+                segments.append(
+                    f"{segment_names.get(key, key)} {allocation[key]} 分钟"
+                    f"（{segment_instructions.get(key, '')}）"
+                )
+            lines.append(
+                f"{marker}单次训练总计 {total} 分钟：" + "；".join(segments) + "。"
+            )
+        elif kind == "practice.three_day":
+            progression = practice.get("three_day_progression", [])
+            if len(progression) != 3:
+                raise ValueError("three-day delivery requires exactly three days")
+            lines.append(
+                f"{marker}三天纠正：{numbered_records(progression)}。"
+            )
+        elif kind == "practice.two_week":
+            progression = practice.get("two_week_consolidation", [])
+            if len(progression) != 2:
+                raise ValueError("two-week delivery requires exactly two weeks")
+            lines.append(
+                f"{marker}两周巩固：{numbered_records(progression)}。"
+            )
+        elif kind == "practice.success_criteria":
+            criteria = practice.get("success_criteria", [])
+            if len(criteria) < 2:
+                raise ValueError("practice delivery requires observable success criteria")
+            lines.append(
+                f"{marker}成功标准："
+                + "；".join(
+                    f"{index}）{criterion}"
+                    for index, criterion in enumerate(criteria, start=1)
+                )
+                + "。"
+            )
+        elif kind == "practice.common_errors":
+            errors = practice.get("common_errors", [])
+            if len(errors) < 2:
+                raise ValueError("practice delivery requires common errors")
+            lines.append(
+                f"{marker}常见错误："
+                + "；".join(
+                    f"{index}）{error}"
+                    for index, error in enumerate(errors, start=1)
+                )
+                + "。"
+            )
+        elif kind == "practice.stop_signals":
+            signals = practice.get("quality_stop_rules", [])
+            if len(signals) < 2:
+                raise ValueError("practice delivery requires stop signals")
+            boundary = practice.get("bounded_synthesis_statement")
+            lines.append(
+                f"{marker}停止与复核信号："
+                + "；".join(signals)
+                + (f"。训练边界：{boundary}" if boundary else "。")
+            )
+        elif kind == "tactics.direction_branch":
+            branch = parameters.get("branch", {}).get("label")
+            axes = [
+                axis.get("label")
+                for axis in parameters.get("condition_axes", [])
+                if axis.get("label")
+            ]
+            axis_text = "、".join(axes) or "来球与站位条件"
+            lines.append(
+                f"{marker}{branch}条件分支：当前答案包没有把“{axis_text}”"
+                f"共同绑定到{branch}选择的直接声明，因此不能给固定结论；"
+                "先逐轴记录，再与其他方向比较。"
+            )
+        elif kind == "tactics.condition_axes":
+            axes = parameters.get("condition_axes", [])
+            descriptions = {
+                "incoming_height": "记录触球点相对身体的高、平、低",
+                "balance": "记录身体稳定或已经失衡",
+                "partner_position": "记录搭档的前后、同侧或对侧位置",
+            }
+            lines.append(
+                f"{marker}条件轴："
+                + "；".join(
+                    f"{axis['label']}={descriptions.get(axis['axis'], '记录实际状态')}"
+                    for axis in axes
+                )
+                + "。缺少任一轴时不把线路选择说成通用规则。"
+            )
+        elif kind == "evidence.sources":
+            if packet.get("display_videos"):
+                lines.append(
+                    f"{marker}相关视频：仅使用下方“核心视频与观看重点”中的"
+                    "答案包授权来源；每条保留证据 ID 和规范链接。"
+                )
+            else:
+                lines.append(
+                    f"{marker}相关视频：当前答案包没有可显示来源，明确保留证据缺口。"
+                )
+        elif kind == "evidence.boundary":
+            lines.append(
+                f"{marker}证据边界：所有技术结论只限当前答案包映射的场景；"
+                "仅凭文字或缺少连续动作视频时，不能确认个人动作的唯一原因。"
+            )
+    return lines
+
+
 def render_question_interpretation(packet):
     actor = packet.get("question_interpretation", {}).get(
         "actor_context", {}
@@ -261,7 +490,8 @@ def render_answer(packet, draft=None):
     unresolved_contract = [
         item
         for item in packet.get("completeness_contract", {}).get("items", [])
-        if item.get("item_id") not in claims
+        if not item.get("kind")
+        and item.get("item_id") not in claims
         and not any(
             claim_id.startswith(f"{item.get('item_id')}.")
             for claim_id in claims
@@ -272,6 +502,7 @@ def render_answer(packet, draft=None):
             f"[{item['item_id']}]{item['text']}：现有证据不足以统一处理，"
             "需要按具体场景分别判断。"
         )
+    lines.extend(render_delivery_blocks(packet, videos))
     pending = packet.get("answer_turn", {}).get("pending_clarifications", [])
     if pending:
         lines.extend(["", "## 仍需确认", ""])

@@ -23,6 +23,31 @@
 
 ## 本地验证
 
+开发时先运行受影响的单项测试；共享运行时修改完成后运行两个 worker 的快速组，
+只有 Skill、知识库、构建清单或发布制品发生变化时才运行制品组：
+
+```bash
+python3 scripts/run_ci_tests.py fast --workers 2
+python3 scripts/run_ci_tests.py compatibility --workers 2
+python3 scripts/run_ci_tests.py context --shard-index 0 --shard-count 1
+python3 scripts/run_ci_tests.py artifacts
+python3 scripts/collect_evaluation_results.py \
+  --workers 2 \
+  --output /tmp/bsc-evaluations.json \
+  --timings-output /tmp/bsc-evaluation-timings.json
+python3 scripts/generate_evaluation_report.py \
+  --check \
+  --evaluations /tmp/bsc-evaluations.json
+```
+
+所有触发方式都在 Python 3.12 上运行完整快速组，在 Python 3.10 上运行架构关键的兼容性
+子集，避免 Pull Request 合并后在两个版本上重复运行完整快速组。质量评估逐项记录临时
+耗时并以两个独立子进程执行，耗时不会写入确定性报告。仅测试或发布编排脚本改动不会
+再触发制品组；制品输入及对应制品测试的改动仍会触发。
+
+如果仓库位于 iCloud Drive，必须为仓库启用“始终保留下载”。若仍出现 `dataless`
+冲突副本或 Git 锁文件，优先把工作副本迁移到不受云同步管理的开发目录。
+
 回答质量问题按以下顺序处理：
 
 1. 在单题黄金集固定目标动作、直接证据、硬负例和答案边界。

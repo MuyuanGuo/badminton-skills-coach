@@ -104,8 +104,13 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q scripts skills/liuhui-badminton-coach/scripts
 
+      - name: Run Python 3.10 compatibility smoke tests
+        if: matrix.python == '3.10'
+        run: python scripts/run_ci_tests.py compatibility --workers 2
+
       - name: Run fast tests
-        run: python scripts/run_ci_tests.py fast
+        if: matrix.python == '3.12'
+        run: python scripts/run_ci_tests.py fast --workers 2
 
   core-evaluations:
     name: Core evaluations (${{ matrix.name }})
@@ -167,7 +172,11 @@ jobs:
 
       - name: Collect core evaluations once
         if: matrix.kind == 'evaluations'
-        run: python scripts/collect_evaluation_results.py --output "$RUNNER_TEMP/core-evaluations.json"
+        run: >-
+          python scripts/collect_evaluation_results.py
+          --workers 2
+          --output "$RUNNER_TEMP/core-evaluations.json"
+          --timings-output "$RUNNER_TEMP/core-evaluation-timings.json"
 
       - name: Check deterministic evaluation report
         if: matrix.kind == 'evaluations'

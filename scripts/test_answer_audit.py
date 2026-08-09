@@ -220,6 +220,28 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in missing["violations"]},
         )
 
+    def test_delivery_marker_alone_does_not_satisfy_semantic_completeness(self):
+        context = copy.deepcopy(self.context)
+        context["delivery_contract"] = {
+            "schema_version": 1,
+            "items": [
+                {
+                    "delivery_id": "D1",
+                    "kind": "practice.three_day",
+                    "label": "三天纠正进度",
+                    "required": True,
+                    "parameters": {},
+                }
+            ],
+            "required_ids": ["D1"],
+        }
+        answer = self.cases["answers"]["complete_conditional"] + "\n[D1]三天纠正。"
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertIn(
+            "invalid_three_day_delivery",
+            {item["code"] for item in audit["violations"]},
+        )
+
     def test_cli_returns_nonzero_and_structured_json_for_failed_answer(self):
         with tempfile.TemporaryDirectory() as directory:
             temporary = Path(directory)

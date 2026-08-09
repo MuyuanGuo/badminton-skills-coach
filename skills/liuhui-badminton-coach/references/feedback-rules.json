@@ -1,8 +1,8 @@
 {
   "version": 3,
-  "skill_version": "2.1.1",
+  "skill_version": "2.1.2",
   "channel": "stable",
-  "stable_version": "2.1.1",
+  "stable_version": "2.1.2",
   "queue_statuses": [
     "pending_review",
     "needs_clarification",

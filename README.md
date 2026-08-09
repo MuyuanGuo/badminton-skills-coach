@@ -9,9 +9,9 @@
 
 面向 Codex 的证据型羽毛球教练 Skill。你描述真实的技术、步法、战术、器材或训练问题，它会从已处理的抖音和 B 站教学资料中给出诊断、训练建议、值得观看的视频、时间戳和证据边界。
 
-[安装 2.1.1](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
+[安装 2.1.2](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
 
-**2.1.1 稳定版**通过 GitHub `main` 分支和 [v2.1.1 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1) 提供；后续开发继续在 `develop`。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
+**2.1.2 稳定版**通过 GitHub `main` 分支和 [v2.1.2 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2) 提供；后续开发继续在 `develop`。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
 
 ## 30 秒开始使用
 
@@ -25,7 +25,7 @@ $liuhui-badminton-coach 我是业余中级双打选手。
 
 Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分“来源明确说了什么”和“还需要看你的动作视频才能确认什么”。回答中的视频会带稳定 V 标签、evidence_id、规范链接和可用时间戳。
 
-## 2.1.1 带来了什么
+## 2.1.2 带来了什么
 
 - 同时使用抖音与 B 站知识库，覆盖技术动作、全场步法、单双打战术、网前小技术、发接发、装备与训练。
 - 只让通过来源、转写、证据质量和去重门禁的视频进入回答；标题和关键词只负责召回，不能单独证明技术结论。
@@ -37,6 +37,14 @@ Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分�
 - 51.7 MiB 只读 SQLite 证据存储按需读取映射、序列和 chunk，避免在冷启动时同时常驻多份完整 JSON 投影；Linux 冷启动 RSS 受 128 MiB 硬预算约束。
 - Python 3.10/3.12 使用同一套哈希锁定维护依赖，生成物、SQLite 逻辑内容和 canary 哈希跨环境保持可复现。
 - 发布答案改由受信任 renderer 为关键案例确定性重建，绑定完整/回答语义双运行时指纹，并在 tag 工作流中逐例复现和重跑完整上下文审计。
+
+## develop 中的回答完整性修复
+
+- 复合问题现在保留原始子句与证据子句两套结构；训练计划、检查顺序、条件分支等交付指令不会再作为独立技术查询检索视频。
+- 省略场景的后续子句及“技术问题 + 交付指令”混合子句会继承主问题中的正反手、项目、场区、单双打等约束，同时保留自己明确给出的线路等分支条件；具有自身技术范围的独立问题保持隔离。
+- answer packet v4 新增类型化 `delivery_contract`。精确分钟、三天纠正、两周巩固、成功标准、诊断比较、现场检查顺序和战术方向分支均为独立必答项。
+- renderer 与 auditor 分别负责生成和语义验证这些必答项；仅出现 Q/D 标记或引用一段原文不再等于完成复合要求。
+- 发布实时生成门禁从 3 条历史案例扩展为 3 条历史案例加 3 条跨诊断、训练和战术的交付案例，并对每个交付块运行删除负控。
 
 ## 当前知识与质量基线
 
@@ -53,7 +61,7 @@ Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分�
 | 查询理解 | 143/143 | 结构化意图回归集 |
 | 语言变体稳健性 | 30/30 | 5 类问题、15 个基础案例 |
 | 硬负例误选 | 0 | 当前回归集共 194 个硬负例 |
-| 当前运行时自动生成审计 | 3/3 | renderer 字节级复现，完整上下文逐例通过 |
+| 当前运行时自动生成审计 | 6/6 | renderer 字节级复现，完整上下文逐例通过 |
 | 公共反馈信号 | 0 | 反馈闭环已就绪，但不虚构真实用户数据 |
 
 这些数字描述当前受控语料和评测集，不表示所有自然语言问题都已经验证。具体回答仍以当轮证据和置信边界为准。
@@ -63,15 +71,15 @@ Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分�
 日常使用需要 Python 3.10 或更高版本，不需要 OpenAI API key，也不需要安装转写依赖。
 
 ~~~bash
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/liuhui-badminton-coach-2.1.1.zip \
-  -o /tmp/liuhui-badminton-coach-2.1.1.zip
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SHA256SUMS.txt \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/liuhui-badminton-coach-2.1.2.zip \
+  -o /tmp/liuhui-badminton-coach-2.1.2.zip
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.1/SBOM.cdx.json \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SBOM.cdx.json \
   -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.1.1.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.1.2.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
 ~~~
 
@@ -86,7 +94,7 @@ python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 Windows PowerShell 使用同一发布物和 SHA-256：
 
 ~~~powershell
-$v = "2.1.1"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
+$v = "2.1.2"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
 Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
 Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
 $expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
@@ -172,6 +180,6 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 ## 分支与发布
 
-- 稳定版：`main` / `v2.1.1`
-- 正式安装包：[v2.1.1](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.1)
+- 稳定版：`main` / `v2.1.2`
+- 正式安装包：[v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)
 - `main` 是稳定发布来源；`develop` 是集成分支。两个分支使用同一套可验证事实和治理标准，但 README 与版本元数据必须反映各自状态。

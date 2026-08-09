@@ -58,9 +58,36 @@ class ValidateWorkflowContractTests(unittest.TestCase):
         )
 
     def test_expensive_static_tools_run_once(self):
-        self.assertEqual(self.workflow.count("if: matrix.python == '3.12'"), 2)
+        self.assertEqual(self.workflow.count("matrix.python == '3.12'"), 3)
         self.assertIn("Lint Python sources", self.workflow)
         self.assertIn("Type-check architecture-critical modules", self.workflow)
+
+    def test_every_event_uses_bounded_parallel_fast_and_compatibility_suites(self):
+        self.assertIn(
+            "Run Python 3.10 compatibility smoke tests\n"
+            "        if: matrix.python == '3.10'",
+            self.workflow,
+        )
+        self.assertIn(
+            "Run fast tests\n        if: matrix.python == '3.12'",
+            self.workflow,
+        )
+        self.assertNotIn(
+            "matrix.python == '3.10' && github.event_name == 'pull_request'",
+            self.workflow,
+        )
+        self.assertNotIn(
+            "matrix.python == '3.12' || github.event_name != 'pull_request'",
+            self.workflow,
+        )
+        self.assertIn(
+            "python scripts/run_ci_tests.py compatibility --workers 2",
+            self.workflow,
+        )
+        self.assertIn(
+            "python scripts/run_ci_tests.py fast --workers 2",
+            self.workflow,
+        )
 
 
 if __name__ == "__main__":

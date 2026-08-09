@@ -56,3 +56,5 @@ For diagnostic or multi-claim answers, render from the packet instead of writing
 ```
 
 Every packet claim must appear. Atom and window IDs must belong to that claim's directive. No block accepts a free-text field; unknown fields fail closed. Run `render_answer.py --packet answer-packet.json --draft draft.json > answer.md`, then pass that unmodified file to the auditor.
+
+The claim draft does not control `delivery_contract`. The renderer appends every required `D` block itself. These blocks are atomic: a practice session, three-day progression, two-week progression, success criteria, tactical direction branch, diagnostic comparison, ordered checklist, source requirement, or evidence boundary must each render and pass its kind-specific semantic audit. A visible `[D…]` marker without the required internal structure fails audit.

@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.1",
-  "baseline_version": "v2.1.1",
+  "development_version": "2.1.2",
+  "baseline_version": "v2.1.2",
   "build": {
-    "id": "f76912bc2ffa0f7c",
-    "inputs_sha256": "34a757b070aed523e048ef66e7140405fd1d12281520c99e09169beb49f2ea0a",
-    "runtime_sha256": "d0a8979e20d591e6d981ca2a99a57783134dd4bdec08cd6998ab9100aa053076"
+    "id": "2260c5d3f6895d94",
+    "inputs_sha256": "ed2115ef182dcba2c662b29da962074c46362ccb1bbf5869aeb791151120762b",
+    "runtime_sha256": "dc3510c2a4db1742dd432de3f1f9703001f798b722a9089001801d7c5ebd5fbf"
   },
   "summary": {
     "status": "pass",
@@ -216,33 +216,33 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
+      "runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
-      "current_answer_runtime_fingerprint": "a9742491169fd0de97f23418e6517f04963ae76080637f78802466aaaafc3ad1",
-      "generation_artifact_runtime_fingerprint": "d3d575a37924bb015002ac61fc290ade0cce675868b4e88c563809d719499a98",
-      "current_artifact_runtime_fingerprint": "d3d575a37924bb015002ac61fc290ade0cce675868b4e88c563809d719499a98",
+      "generation_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
+      "current_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
+      "generation_artifact_runtime_fingerprint": "e1bac7f6de55282367fc3b60de1d55aee16ee40907e6a89d4ea01b5c0927cb64",
+      "current_artifact_runtime_fingerprint": "e1bac7f6de55282367fc3b60de1d55aee16ee40907e6a89d4ea01b5c0927cb64",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
       "validator_implementation_match": true,
-      "critical_cases": 3,
-      "generated_answers": 3,
-      "automatically_validated": 3,
+      "critical_cases": 6,
+      "generated_answers": 6,
+      "automatically_validated": 6,
       "automated_audit_pass_rate": 1.0,
       "current_runtime_audits_rerun": true,
       "current_renderer_reproduced": true,
-      "passed": 3,
+      "passed": 6,
       "failed": [],
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "cc6606370de0f5a7147ea7343fda0cf91e2db9862da7a22419720dfa63321326"
+        "implementation_sha256": "1daa6c3088ee3af90e8653f2d16c8c006812604a610983be612157c2add856c6"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "d0ee7457092197716dbebd041a87c8085fc8663ff38346a64daf7c3f57f389e3"
+        "implementation_sha256": "93191e00ba726f19dd6752220fa462b44b0cc61be2d3fa75e7fcc52aa47a7829"
       }
     }
   },
@@ -708,8 +708,8 @@
     },
     {
       "metric": "live_generation.critical_cases",
-      "current": 3,
-      "baseline": 3,
+      "current": 6,
+      "baseline": 6,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
