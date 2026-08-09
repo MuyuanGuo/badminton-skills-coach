@@ -45,6 +45,11 @@ python3 scripts/generate_evaluation_report.py \
 耗时并以两个独立子进程执行，耗时不会写入确定性报告。仅测试或发布编排脚本改动不会
 再触发制品组；制品输入及对应制品测试的改动仍会触发。
 
+普通改动和自动回同步的完整矩阵只在 Pull Request 上运行一次。回同步工作流会批准
+`github-actions[bot]` 创建的原生 `pull_request` 验证，不再为同一 SHA 额外 dispatch；
+受保护的 `develop` 必须先通过该 `validate` 门，因此合并后的 push 不重复运行完整矩阵。
+`main` 的 push 验证仍保留，供发布流程核对精确的合并提交 SHA。
+
 如果仓库位于 iCloud Drive，必须为仓库启用“始终保留下载”。若仍出现 `dataless`
 冲突副本或 Git 锁文件，优先把工作副本迁移到不受云同步管理的开发目录。
 

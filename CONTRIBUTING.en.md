@@ -44,6 +44,13 @@ merged. Core evaluations use two isolated subprocesses and print per-suite
 temporary timings without adding wall-clock data to the deterministic report.
 Artifact validation runs only for packaged inputs and artifact-test changes.
 
+The full matrix runs once on the pull request for normal changes and automated
+back-merges. The synchronization workflow approves the native `pull_request`
+run created by `github-actions[bot]` instead of dispatching a second run for the
+same SHA. Protected `develop` requires that `validate` result, so its merge push
+does not repeat the matrix. `main` keeps push validation because releases bind
+to the exact merged SHA.
+
 When the repository is stored in iCloud Drive, enable Keep Downloaded for the
 whole checkout. Move the working copy to a non-synced developer directory if
 `dataless` conflict copies or Git lock copies recur.
