@@ -64,6 +64,7 @@ class DocumentationContractTests(unittest.TestCase):
             "构建诊断、澄清、完整性、交付与安全边界契约",
             "SHA-256 绑定的紧凑 answer packet",
             "仅按 claim allowlist 与 synthesis evidence 组织技术内容",
+            "选择最多 5 条核心视频（证据不足不补齐）",
             "确定性 renderer 输出结论",
             "完整上下文 auditor 通过？",
             "向用户发送回答 / Send the answer to the user",
@@ -71,6 +72,7 @@ class DocumentationContractTests(unittest.TestCase):
             self.assertIn(marker, self.readme_zh)
         self.assertIn("用户补充澄清 / User clarifies", self.readme_zh)
         self.assertIn("只有 `passed: true` 才发送", self.readme_zh)
+        self.assertNotIn("选择 3–5 条核心视频", self.readme_zh)
 
     def test_versions_and_install_links_match_branch_metadata(self):
         skill_version = self.version_metadata["skill_version"]

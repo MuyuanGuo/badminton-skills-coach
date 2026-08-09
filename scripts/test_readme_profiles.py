@@ -48,6 +48,10 @@ class ReadmeProfileTests(unittest.TestCase):
         )
         self.assertIn("完整上下文 auditor 通过？", rendered)
         self.assertIn("向用户发送回答 / Send the answer to the user", rendered)
+        self.assertIn("选择最多 5 条核心视频（证据不足不补齐）", rendered)
+        self.assertIn("only claim-authorized synthesis evidence", rendered)
+        self.assertNotIn("选择 3–5 条核心视频", rendered)
+        self.assertNotIn("3–5 `core_videos`", rendered)
         self.assertIn("当前开发版本是 **2.1.3-dev.1**", rendered)
         self.assertIn(
             "current development version is **2.1.3-dev.1**",
