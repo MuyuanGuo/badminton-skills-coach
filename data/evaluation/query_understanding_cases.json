@@ -2301,6 +2301,59 @@
         {"actor": "opponent", "role": "response", "term": "推过他身后"},
         {"actor": "player", "role": "target_action", "term": "双打轮转补位"}
       ]
+    },
+    {
+      "case_id": "QUA087",
+      "query": "我是右手持拍的业余中级双打选手，对手杀到反手身体附近时，我挡网经常冒高。请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的训练方案，包含三天纠正、两周巩固和可观察成功标准。",
+      "intent_summary": "把对手杀向球员反手身体位、球员接杀挡网和回球冒高保留为有序来球响应；反手属于球员的接杀侧，不是对手的击球侧",
+      "expected_intent": {
+        "positive_query_contains": ["对手杀到反手身体附近", "我挡网经常冒高", "区分拍面、击球点和到位问题"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": ["冒高"],
+        "scenarios_contains": ["双打", "反手"],
+        "requested_output": "practice"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["net_shot", "smash_block"],
+        "technique_variant": ["net_drop"],
+        "tactical_phase": ["defense"],
+        "discipline": ["doubles"]
+      },
+      "expected_opponent_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_player_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["net_shot", "smash_block"],
+        "technique_variant": ["net_drop"],
+        "tactical_phase": ["defense"],
+        "discipline": ["doubles"]
+      },
+      "expected_target_actor": "player",
+      "expected_target_action_query": "反手身体位 接杀挡网",
+      "expected_target_condition_query": "我是右手持拍的业余中级双打选手，对手杀到反手身体附近时，我挡网经常冒高。请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的训练方案，包含三天纠正、两周巩固和可观察成功标准。",
+      "expected_target_action_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["net_shot", "smash_block"],
+        "technique_variant": ["net_drop"],
+        "tactical_phase": ["defense"]
+      },
+      "expected_target_condition_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_requested_action_scopes": ["smash_block_response"],
+      "expected_incoming_shot_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "expected_event_chain": [
+        {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "杀到反手身体附近"},
+        {"actor": "player", "role": "target_action", "term": "反手身体位 接杀挡网"}
+      ]
     }
   ]
 }

@@ -161,6 +161,12 @@ def validate_registry(registry, answer_registry):
             case["expected_event_chain"], list
         ):
             raise ValueError(f"{case_id} has an invalid event chain contract")
+        if "expected_incoming_shot_constraints" in case and not isinstance(
+            case["expected_incoming_shot_constraints"], dict
+        ):
+            raise ValueError(
+                f"{case_id} has an invalid incoming-shot constraint contract"
+            )
         if "expected_ambiguity_names" in case and not isinstance(
             case["expected_ambiguity_names"], list
         ):
@@ -311,6 +317,11 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
             checks["event_chain"] = (
                 actor_context["event_chain"] == case["expected_event_chain"]
             )
+        if "expected_incoming_shot_constraints" in case:
+            checks["incoming_shot_constraints"] = (
+                actor_context["incoming_shot_constraints"]
+                == case["expected_incoming_shot_constraints"]
+            )
         ambiguity_names = [
             item["name"]
             for item in context_module.query_ambiguities(
@@ -368,6 +379,15 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                         else {}
                     ),
                     **(
+                        {
+                            "incoming_shot_constraints": case[
+                                "expected_incoming_shot_constraints"
+                            ]
+                        }
+                        if "expected_incoming_shot_constraints" in case
+                        else {}
+                    ),
+                    **(
                         {"ambiguities": case["expected_ambiguity_names"]}
                         if "expected_ambiguity_names" in case
                         else {}
@@ -413,6 +433,15 @@ def evaluate(cases_path=CASES_PATH, answer_cases_path=ANSWER_CASES_PATH):
                     **(
                         {"event_chain": actor_context["event_chain"]}
                         if "expected_event_chain" in case
+                        else {}
+                    ),
+                    **(
+                        {
+                            "incoming_shot_constraints": actor_context[
+                                "incoming_shot_constraints"
+                            ]
+                        }
+                        if "expected_incoming_shot_constraints" in case
                         else {}
                     ),
                     **(

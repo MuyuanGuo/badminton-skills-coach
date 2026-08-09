@@ -178,8 +178,22 @@ class RenderAnswerTests(unittest.TestCase):
         )
         packet = self.runtime.build_answer_packet(context)
         answer = self.renderer.render_answer(packet)
+        self.assertEqual(
+            context["selection"]["synthesis_candidate_video_ids"],
+            ["7524557392328461627"],
+        )
+        self.assertNotIn(
+            "7071800926553541922",
+            context["selection"]["synthesis_candidate_video_ids"],
+        )
+        self.assertNotIn(
+            "7205392269791386917",
+            context["selection"]["synthesis_candidate_video_ids"],
+        )
         for required in (
             "总计 20 分钟",
+            "让搭档先固定喂球，再增加一个线路或节奏变量",
+            "自测应包含搭档位置、前后或左右职责以及下一拍衔接",
             "第1天",
             "第2天",
             "第3天",
@@ -222,6 +236,16 @@ class RenderAnswerTests(unittest.TestCase):
         self.assertIn(
             "invalid_success_criteria_delivery",
             {item["code"] for item in semantic_failure["violations"]},
+        )
+        missing_setup = answer.replace(
+            "；陪练方式：让搭档先固定喂球，再增加一个线路或节奏变量"
+            "；双打边界：自测应包含搭档位置、前后或左右职责以及下一拍衔接",
+            "",
+        )
+        setup_failure = self.auditor.audit_answer(query, context, missing_setup)
+        self.assertIn(
+            "invalid_practice_session_delivery",
+            {item["code"] for item in setup_failure["violations"]},
         )
         mismatched_packet = copy.deepcopy(packet)
         session = next(

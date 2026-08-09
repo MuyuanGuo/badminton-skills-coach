@@ -796,16 +796,53 @@ required_reception_implication_fields = {
     "search_terms",
     "reason",
 }
+optional_reception_implication_fields = {
+    "target_action_constraints",
+    "incoming_constraints",
+    "opponent_constraint_suppressions",
+    "semantic_audit",
+}
+empty_allowed_reception_implication_fields = {
+    "implicit_response_incoming_terms",
+    "prior_action_suffixes",
+    "player_action_prefixes_by_incoming_term",
+}
 if not reception_implications:
     raise SystemExit("Reception symptom implications are missing")
 for implication in reception_implications:
-    if set(implication) != required_reception_implication_fields:
+    fields = set(implication)
+    if (
+        not required_reception_implication_fields.issubset(fields)
+        or fields
+        - required_reception_implication_fields
+        - optional_reception_implication_fields
+    ):
         raise SystemExit("Reception symptom implication contract is incomplete")
     if any(
         not implication[field]
         for field in required_reception_implication_fields
+        - empty_allowed_reception_implication_fields
     ):
         raise SystemExit("Reception symptom implication cannot be empty")
+    for field in (
+        "target_action_constraints",
+        "incoming_constraints",
+        "opponent_constraint_suppressions",
+    ):
+        if field in implication and (
+            not isinstance(implication[field], dict)
+            or any(
+                not isinstance(values, list) or not values
+                for values in implication[field].values()
+            )
+        ):
+            raise SystemExit(
+                f"Reception implication {field} must map axes to values"
+            )
+    if "semantic_audit" in implication and not isinstance(
+        implication["semantic_audit"], bool
+    ):
+        raise SystemExit("Reception implication semantic_audit must be boolean")
     if not set(implication["symptom_terms"]).issubset(
         retrieval_intent["literal_symptom_terms"]
     ):
