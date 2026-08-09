@@ -128,16 +128,63 @@ def development_readme_en(text, stable_version, development_version):
     )
 
 
+def validate_existing_development_state(
+    root, original_metadata, stable_version, development_version
+):
+    if original_metadata.get("skill_version") != development_version:
+        raise ValueError(
+            "Existing development metadata does not match the next stable patch"
+        )
+
+    for relative in FEEDBACK_RULES_PATHS:
+        current = json.loads((root / relative).read_text(encoding="utf-8"))
+        if current != original_metadata:
+            raise ValueError(f"Version metadata is out of sync: {relative}")
+
+    required_markers = {
+        Path("README.md"): (
+            f"当前开发版本是 **{development_version}**",
+            f"`main` / `v{stable_version}`",
+        ),
+        Path("README.en.md"): (
+            f"current development version is **{development_version}**",
+            f"`main` / `v{stable_version}`",
+        ),
+    }
+    for relative, markers in required_markers.items():
+        text = (root / relative).read_text(encoding="utf-8")
+        for marker in markers:
+            if marker not in text:
+                raise ValueError(f"Development README is stale: {relative}")
+
+    for relative in ISSUE_TEMPLATE_PATHS:
+        text = (root / relative).read_text(encoding="utf-8")
+        if development_version not in text:
+            raise ValueError(f"Issue template version is stale: {relative}")
+
+
 def prepare_develop_sync(root=ROOT):
     root = Path(root)
     source_path = root / FEEDBACK_RULES_PATHS[0]
     original_metadata = json.loads(source_path.read_text(encoding="utf-8"))
     stable_version = original_metadata.get("stable_version", "")
+    development_version = next_patch_development_version(stable_version)
+    if original_metadata.get("channel") == "development":
+        validate_existing_development_state(
+            root,
+            original_metadata,
+            stable_version,
+            development_version,
+        )
+        return {
+            "channel": "development",
+            "skill_version": development_version,
+            "stable_version": stable_version,
+        }
     if original_metadata.get("channel") != "stable":
         raise ValueError("Develop sync must start from a stable-channel main checkout")
     if original_metadata.get("skill_version") != stable_version:
         raise ValueError("Stable main metadata must use one identical Skill version")
-    development_version = next_patch_development_version(stable_version)
 
     for relative in FEEDBACK_RULES_PATHS:
         path = root / relative
