@@ -34,6 +34,16 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Merge validated main into current develop
+        env:
+          VALIDATED_MAIN_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin develop
+          git switch -C "$SYNC_BRANCH" origin/develop
+          git merge --no-ff --no-edit "$VALIDATED_MAIN_SHA"
+
       - name: Prepare the next development state
         run: |
           python scripts/prepare_develop_sync.py
@@ -50,9 +60,6 @@ jobs:
 
       - name: Push the synchronization branch
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -C "$SYNC_BRANCH"
           git add README.md README.en.md config/feedback_rules.json \
             skills/liuhui-badminton-coach/references/feedback-rules.json \
             .github/ISSUE_TEMPLATE/bug-report.yml \
@@ -63,7 +70,9 @@ jobs:
             data/evaluation/live_generation_results.json \
             data/evaluation/evaluation_report.json \
             docs/evaluation/index.html
-          git commit -m "Sync main into the next development version"
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync main into the next development version"
+          fi
           git push --force-with-lease origin "$SYNC_BRANCH"
 
       - name: Create or update the develop synchronization PR
