@@ -40,8 +40,8 @@ python3 scripts/generate_evaluation_report.py \
   --evaluations /tmp/bsc-evaluations.json
 ```
 
-Pull Request 在 Python 3.12 上运行完整快速组，在 Python 3.10 上运行架构关键的兼容性
-子集；合入 `main` 或 `develop` 后仍在两个版本上运行完整快速组。质量评估逐项记录临时
+所有触发方式都在 Python 3.12 上运行完整快速组，在 Python 3.10 上运行架构关键的兼容性
+子集，避免 Pull Request 合并后在两个版本上重复运行完整快速组。质量评估逐项记录临时
 耗时并以两个独立子进程执行，耗时不会写入确定性报告。仅测试或发布编排脚本改动不会
 再触发制品组；制品输入及对应制品测试的改动仍会触发。
 

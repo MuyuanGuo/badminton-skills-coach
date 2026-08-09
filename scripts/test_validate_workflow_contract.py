@@ -62,13 +62,22 @@ class ValidateWorkflowContractTests(unittest.TestCase):
         self.assertIn("Lint Python sources", self.workflow)
         self.assertIn("Type-check architecture-critical modules", self.workflow)
 
-    def test_pull_requests_use_bounded_parallel_fast_and_compatibility_suites(self):
+    def test_every_event_uses_bounded_parallel_fast_and_compatibility_suites(self):
         self.assertIn(
-            "if: matrix.python == '3.10' && github.event_name == 'pull_request'",
+            "Run Python 3.10 compatibility smoke tests\n"
+            "        if: matrix.python == '3.10'",
             self.workflow,
         )
         self.assertIn(
-            "if: matrix.python == '3.12' || github.event_name != 'pull_request'",
+            "Run fast tests\n        if: matrix.python == '3.12'",
+            self.workflow,
+        )
+        self.assertNotIn(
+            "matrix.python == '3.10' && github.event_name == 'pull_request'",
+            self.workflow,
+        )
+        self.assertNotIn(
+            "matrix.python == '3.12' || github.event_name != 'pull_request'",
             self.workflow,
         )
         self.assertIn(
