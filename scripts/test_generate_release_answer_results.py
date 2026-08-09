@@ -23,8 +23,8 @@ class ReleaseAnswerGenerationTests(unittest.TestCase):
     def setUpClass(cls):
         cls.module = load_module()
 
-    def test_release_registry_covers_all_six_cases(self):
-        self.assertEqual(len(self.module.required_release_case_ids()), 6)
+    def test_release_registry_covers_all_eighteen_cases(self):
+        self.assertEqual(len(self.module.required_release_case_ids()), 18)
 
     def test_generation_runs_each_case_once_and_avoids_a_second_runtime_rerun(self):
         case = {"case_id": "DQ-TEST", "query": "怎么练？"}

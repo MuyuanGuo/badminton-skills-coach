@@ -1220,7 +1220,7 @@
       }
     },
     "v2.1.2": {
-      "description": "Stable release v2.1.2 floor plus current layered answer-evidence completeness contracts",
+      "description": "Stable release v2.1.2 floor plus current layered answer-evidence completeness, suite-health, and runtime-generation contracts",
       "invalidated_metrics": {},
       "metrics": {
         "answer_policy.accuracy": {
@@ -1261,6 +1261,14 @@
         },
         "answer_context.complete_related_video_recall": {
           "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.synthesis_video_recall": {
+          "value": 0.45,
+          "direction": "at_least"
+        },
+        "answer_context.core_video_recall": {
+          "value": 0.2,
           "direction": "at_least"
         },
         "answer_context.primary_selected_rate": {
@@ -1351,6 +1359,42 @@
           "value": 1.0,
           "direction": "at_least"
         },
+        "bilibili_positive_retrieval.passed": {
+          "value": true,
+          "direction": "equal"
+        },
+        "bilibili_positive_retrieval.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.claim_mapping_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.failure_count": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "feedback_lifecycle.status": {
+          "value": "pass",
+          "direction": "equal"
+        },
+        "feedback_lifecycle.contract_accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "feedback_lifecycle.leaked_private_fields": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.signals_missing_reverified_provenance": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.failures": {
+          "value": [],
+          "direction": "equal"
+        },
         "retrieval.candidate_recall": {
           "value": 1.0,
           "direction": "at_least"
@@ -1401,6 +1445,26 @@
           "value": 0,
           "direction": "at_most"
         },
+        "metamorphic_robustness.base_cases": {
+          "value": 15,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.variants": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.passed": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.failed": {
+          "value": [],
+          "direction": "equal"
+        },
         "video_comprehension.ready_videos": {
           "value": 958,
           "direction": "at_least"
@@ -1446,7 +1510,7 @@
           "direction": "equal"
         },
         "live_generation.critical_cases": {
-          "value": 6,
+          "value": 18,
           "direction": "at_least"
         },
         "live_generation.automated_audit_pass_rate": {

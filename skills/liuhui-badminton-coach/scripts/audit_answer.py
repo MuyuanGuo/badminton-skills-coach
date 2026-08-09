@@ -51,6 +51,23 @@ def answer_units(answer):
     ]
 
 
+def pending_clarification_questions(context):
+    turn = context.get("answer_turn_contract")
+    if isinstance(turn, dict):
+        pending = turn.get("pending_clarifications", [])
+        return {
+            normalized(item.get("question", ""))
+            for item in pending
+            if isinstance(item, dict) and item.get("question")
+        }
+    clarification = context.get("clarification_decision", {})
+    return {
+        normalized(question)
+        for question in clarification.get("questions", [])
+        if isinstance(question, str) and question.strip()
+    }
+
+
 def content_ngrams(value, rules, width=2):
     text = normalized(value)
     for phrase in rules.get("coverage_stop_phrases", []):
@@ -681,11 +698,14 @@ def audit_answer(question, context, answer, rules=None):
     # not a new technical assertion. Do not let overlapping words in that line
     # satisfy a claim or exceed its confidence ceiling.
     nontechnical_prefixes = ("你已补充：", "问题解释：", "证据边界：")
+    pending_questions = pending_clarification_questions(context)
     technical_units = [
         unit
         for unit in units
         if not unit.lstrip().startswith(nontechnical_prefixes)
         and not re.match(r"^-\s*V\d+｜", unit.lstrip())
+        and normalized(re.sub(r"^-\s*", "", unit.lstrip()))
+        not in pending_questions
     ]
     claims = context.get("claim_evidence_map", [])
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
