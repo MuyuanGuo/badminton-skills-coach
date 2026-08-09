@@ -35,20 +35,27 @@ class ReadmeProfileTests(unittest.TestCase):
         self.assertNotIn("README.en.md", rendered)
         self.assertNotIn("{{", rendered)
 
-    def test_develop_profile_targets_engineers_and_recruiters(self):
+    def test_develop_profile_explains_engineering_and_answer_flow(self):
         rendered = render_readme(
             "develop",
             stable_version="2.1.2",
             development_version="2.1.3-dev.1",
         )
-        self.assertIn("招聘方快速阅读 / Recruiter snapshot", rendered)
-        self.assertIn("系统怎样工作 / How the system works", rendered)
+        self.assertIn("工程概览 / Engineering overview", rendered)
+        self.assertIn(
+            "从用户提问到最终回答 / From user question to final answer",
+            rendered,
+        )
+        self.assertIn("完整上下文 auditor 通过？", rendered)
+        self.assertIn("向用户发送回答 / Send the answer to the user", rendered)
         self.assertIn("当前开发版本是 **2.1.3-dev.1**", rendered)
         self.assertIn(
             "current development version is **2.1.3-dev.1**",
             rendered,
         )
         self.assertIn("<!-- README_PROFILE: develop -->", rendered)
+        self.assertNotIn("招聘", rendered)
+        self.assertNotIn("recruiter", rendered.lower())
         self.assertNotIn("README.en.md", rendered)
         self.assertNotIn("{{", rendered)
 
