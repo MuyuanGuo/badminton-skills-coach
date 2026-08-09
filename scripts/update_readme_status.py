@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 
 from project_artifacts import atomic_write_bundle, derive_project_status
+from readme_profiles import profile_for_channel, render_readme
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -603,14 +604,12 @@ def main():
     knowledge = load_json(KNOWLEDGE)
     video_index = load_json(VIDEO_INDEX)
     teaching_filter = load_json(TEACHING_FILTER)
-    updated = update_readme_text(
-        readme,
-        video_index,
-        teaching_filter,
-        knowledge,
-        load_json(FEEDBACK_SIGNALS),
-        load_json(ANSWER_CASES),
-        load_json(QUEUE),
+    version_metadata = load_json(ROOT / "config" / "feedback_rules.json")
+    updated = render_readme(
+        profile_for_channel(version_metadata["channel"]),
+        root=ROOT,
+        stable_version=version_metadata["stable_version"],
+        development_version=version_metadata["skill_version"],
     )
     updated_en = update_english_readme_text(
         readme_en, video_index, teaching_filter, knowledge

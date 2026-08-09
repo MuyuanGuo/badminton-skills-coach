@@ -13,6 +13,18 @@ from prepare_develop_sync import (
 
 
 class PrepareDevelopSyncTests(unittest.TestCase):
+    def write_develop_profile(self, root):
+        path = root / ".github" / "readme-profiles" / "develop.md.tmpl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            """<!-- README_PROFILE: develop -->
+当前开发版本是 **{{DEVELOPMENT_VERSION}}**
+current development version is **{{DEVELOPMENT_VERSION}}**
+稳定版：`main` / `v{{STABLE_VERSION}}`
+""",
+            encoding="utf-8",
+        )
+
     def test_next_patch_version_is_derived_from_stable(self):
         self.assertEqual(
             next_patch_development_version("2.1.9"),
@@ -86,6 +98,7 @@ class PrepareDevelopSyncTests(unittest.TestCase):
                 path.write_text(metadata_text, encoding="utf-8")
             (root / "README.md").write_text(readme_zh, encoding="utf-8")
             (root / "README.en.md").write_text(readme_en, encoding="utf-8")
+            self.write_develop_profile(root)
             for relative in (
                 ".github/ISSUE_TEMPLATE/bug-report.yml",
                 ".github/ISSUE_TEMPLATE/question.yml",
@@ -132,6 +145,7 @@ class PrepareDevelopSyncTests(unittest.TestCase):
                 "Stable release: `main` / `v2.1.0`\n",
                 encoding="utf-8",
             )
+            self.write_develop_profile(root)
             for relative in (
                 ".github/ISSUE_TEMPLATE/bug-report.yml",
                 ".github/ISSUE_TEMPLATE/question.yml",

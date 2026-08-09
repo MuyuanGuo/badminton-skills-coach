@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from project_artifacts import atomic_write_text
+from readme_profiles import write_readme_profile
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -144,6 +145,7 @@ def validate_existing_development_state(
     required_markers = {
         Path("README.md"): (
             f"当前开发版本是 **{development_version}**",
+            f"current development version is **{development_version}**",
             f"`main` / `v{stable_version}`",
         ),
         Path("README.en.md"): (
@@ -170,6 +172,16 @@ def prepare_develop_sync(root=ROOT):
     stable_version = original_metadata.get("stable_version", "")
     development_version = next_patch_development_version(stable_version)
     if original_metadata.get("channel") == "development":
+        if original_metadata.get("skill_version") != development_version:
+            raise ValueError(
+                "Existing development metadata does not match the next stable patch"
+            )
+        write_readme_profile(
+            "develop",
+            root=root,
+            stable_version=stable_version,
+            development_version=development_version,
+        )
         validate_existing_development_state(
             root,
             original_metadata,
@@ -206,14 +218,11 @@ def prepare_develop_sync(root=ROOT):
         )
         atomic_write_text(path, updated_text)
 
-    readme_zh = root / "README.md"
-    atomic_write_text(
-        readme_zh,
-        development_readme_zh(
-            readme_zh.read_text(encoding="utf-8"),
-            stable_version,
-            development_version,
-        ),
+    write_readme_profile(
+        "develop",
+        root=root,
+        stable_version=stable_version,
+        development_version=development_version,
     )
     readme_en = root / "README.en.md"
     atomic_write_text(

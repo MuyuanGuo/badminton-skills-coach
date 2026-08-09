@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 README_ZH = ROOT / "README.md"
-README_EN = ROOT / "README.en.md"
+README_EN = README_ZH
 LANDING_PAGE = ROOT / "docs" / "index.html"
 SKILL = ROOT / "skills" / "liuhui-badminton-coach" / "SKILL.md"
 ANSWER_WORKFLOW = (
@@ -38,6 +38,9 @@ class DocumentationContractTests(unittest.TestCase):
         cls.release_channel = cls.version_metadata["channel"]
 
     def test_readme_audience_matches_release_channel(self):
+        self.assertNotIn("README.en.md", self.readme_zh)
+        self.assertRegex(self.readme_zh, r"[\u4e00-\u9fff]")
+        self.assertIn("This ", self.readme_zh)
         if self.release_channel == "development":
             self.assertIn("`develop` 是集成分支", self.readme_zh)
             self.assertIn("`develop` is the integration branch", self.readme_en)
@@ -101,6 +104,9 @@ class DocumentationContractTests(unittest.TestCase):
             self.assertEqual(archive_versions, {stable_version})
 
     def test_bilibili_causal_chain_is_serial_and_bilingual(self):
+        if self.release_channel != "development":
+            self.assertNotIn('C --> D["确定性ASR"]', self.readme_zh)
+            return
         for marker in (
             'C --> D["确定性ASR"]',
             'D --> P["转写配方、ASR质量、来源安全与重复硬门禁"]',
@@ -123,6 +129,9 @@ class DocumentationContractTests(unittest.TestCase):
         self.assertNotIn('B --> D["Deterministic ASR', self.readme_en)
 
     def test_new_text_memory_boundary_is_explicit_and_bilingual(self):
+        if self.release_channel != "development":
+            self.assertNotIn("新增转写不会写入模型权重", self.readme_zh)
+            return
         for marker in (
             "新增转写不会写入模型权重或成为 Codex 的会话记忆",
             "原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答",
@@ -140,6 +149,9 @@ class DocumentationContractTests(unittest.TestCase):
             self.assertIn(marker, self.readme_en)
 
     def test_automatic_isolation_and_rollback_are_distinct(self):
+        if self.release_channel != "development":
+            self.assertNotIn("answer_eligibility: none", self.readme_zh)
+            return
         for marker in (
             "保留审计状态并保持 `answer_eligibility: none`",
             "受限补充证据",
@@ -149,13 +161,14 @@ class DocumentationContractTests(unittest.TestCase):
         for marker in (
             "audit state is retained with `answer_eligibility: none`",
             "bounded supplemental evidence",
-            "still roll back the generated artifacts for that run",
+            "only generation-level consistency failures roll back",
         ):
             self.assertIn(marker, self.readme_en)
 
     def test_recovery_has_one_documented_entry_point(self):
-        self.assertEqual(self.readme_zh.count(RECOVERY_COMMAND), 1)
-        self.assertEqual(self.readme_en.count(RECOVERY_COMMAND), 1)
+        expected = 1 if self.release_channel == "development" else 0
+        self.assertEqual(self.readme_zh.count(RECOVERY_COMMAND), expected)
+        self.assertEqual(self.readme_en.count(RECOVERY_COMMAND), expected)
         self.assertNotIn(RECOVERY_COMMAND, self.skill)
         self.assertNotIn(RECOVERY_COMMAND, self.answer_workflow)
 

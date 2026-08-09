@@ -11,6 +11,17 @@ from prepare_stable_release import (
 
 
 class PrepareStableReleaseTests(unittest.TestCase):
+    def write_main_profile(self, root):
+        path = root / ".github" / "readme-profiles" / "main.md.tmpl"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            """<!-- README_PROFILE: main -->
+**{{STABLE_VERSION}} 稳定版**
+**Version {{STABLE_VERSION}} is the stable release**
+""",
+            encoding="utf-8",
+        )
+
     def test_release_version_is_derived_from_development(self):
         self.assertEqual(
             release_version_from_development("2.1.10-dev.2"),
@@ -88,6 +99,7 @@ This branch collects unreleased data, runtime, and engineering changes on top of
                 )
             (root / "README.md").write_text(readme_zh, encoding="utf-8")
             (root / "README.en.md").write_text(readme_en, encoding="utf-8")
+            self.write_main_profile(root)
             for relative in ("docs/index.html", "docs/en/index.html"):
                 path = root / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -115,6 +127,10 @@ This branch collects unreleased data, runtime, and engineering changes on top of
             self.assertEqual(updated["channel"], "stable")
             self.assertEqual(updated["stable_version"], "2.1.1")
             self.assertIn("**2.1.1 稳定版**", (root / "README.md").read_text())
+            self.assertIn(
+                "**Version 2.1.1 is the stable release**",
+                (root / "README.md").read_text(),
+            )
             self.assertIn(
                 "**Version 2.1.1 is the stable release**",
                 (root / "README.en.md").read_text(),

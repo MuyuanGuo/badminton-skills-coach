@@ -13,9 +13,9 @@
 
 This README is written for engineers, maintainers, and recruiters. It emphasizes system boundaries, the evidence model, quality gates, reproducibility, and engineering trade-offs instead of centering the stable-user installation flow.
 
-你正在查看 `develop` 分支；当前开发版本是 **2.1.3-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)。
+你正在查看 `develop` 分支；当前开发版本是 **{{DEVELOPMENT_VERSION}}**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}})。
 
-You are viewing the `develop` branch; the current development version is **2.1.3-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2).
+You are viewing the `develop` branch; the current development version is **{{DEVELOPMENT_VERSION}}** and its release status is **unreleased**. Stable installs remain on `main` and [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}}).
 
 本项目独立开发，不是刘辉本人，也不代表刘辉或来源发布者的认可。 / This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
@@ -29,7 +29,7 @@ You are viewing the `develop` branch; the current development version is **2.1.3
 | 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
 | 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
 
-当前 build：`5e88ed99c329…`。`develop` is the integration branch；`main` is the stable release source。
+当前 build：`{{BUILD_ID_SHORT}}…`。`develop` is the integration branch；`main` is the stable release source。
 
 ## 系统怎样工作 / How the system works
 
@@ -94,37 +94,37 @@ These values are rendered from the controlled data and evaluation report on this
 
 | 指标 | 当前值 | 说明 |
 | --- | ---: | --- |
-| 已处理公开视频 | 1247 | 完整来源目录，不等于全部可回答内容 |
-| B 站完整来源目录 | 767 | 599 条回答就绪、168 条策略排除或质量隔离、0 条待处理 |
-| 可用于回答的教学视频 | 958 | 只有 ready 内容进入证据池 |
-| 主证据 / 受限补充证据 | 783 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
-| 转写证据 | 765 | 7,744/7,744 条转写证据包含时间戳 |
-| 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
-| 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
-| 回答质量黄金用例 | 57/57 | 覆盖技术、诊断、战术、训练与证据边界 |
-| 查询理解 | 143/143 | 结构化意图回归集 |
-| 语言变体稳健性 | 30/30 | 5 类问题的变形测试 |
-| 硬负例误选 | 0 | 当前黄金用例包含 194 个显式硬负例 |
-| 当前运行时自动生成审计 | 18/18 | renderer 字节级复现，完整上下文逐例审计 |
-| 质量套件 / 强制基线指标 | 14 / 74 | 任一强制指标回归都会阻断发布 |
-| 公共反馈信号 | 0 | 不虚构真实用户数据 |
+| 已处理公开视频 | {{PROCESSED_PUBLIC_VIDEO_COUNT}} | 完整来源目录，不等于全部可回答内容 |
+| B 站完整来源目录 | {{BILIBILI_CATALOG_COUNT}} | {{BILIBILI_READY_COUNT}} 条回答就绪、{{BILIBILI_ISOLATED_COUNT}} 条策略排除或质量隔离、{{BILIBILI_PENDING_COUNT}} 条待处理 |
+| 可用于回答的教学视频 | {{READY_VIDEO_COUNT}} | 只有 ready 内容进入证据池 |
+| 主证据 / 受限补充证据 | {{PRIMARY_VIDEO_COUNT}} / {{SUPPLEMENTAL_VIDEO_COUNT}} | 主证据优先；补充证据只使用命中的时间戳窗口 |
+| 转写证据 | {{TRANSCRIPT_VIDEO_COUNT}} | {{TRANSCRIPT_ITEM_COUNT}}/{{TRANSCRIPT_ITEM_COUNT}} 条转写证据包含时间戳 |
+| 受限时间戳窗口证据 | {{BOUNDED_VIDEO_COUNT}} | {{BOUNDED_ITEM_COUNT}} 条已提交窗口；标题不得作为结论证据 |
+| 视觉复核兜底 | {{VISUAL_VIDEO_COUNT}} | 语音不足时使用已审核视觉摘要 |
+| 回答质量黄金用例 | {{ANSWER_QUALITY_CASE_COUNT}}/{{ANSWER_QUALITY_CASE_COUNT}} | 覆盖技术、诊断、战术、训练与证据边界 |
+| 查询理解 | {{QUERY_UNDERSTANDING_CASE_COUNT}}/{{QUERY_UNDERSTANDING_CASE_COUNT}} | 结构化意图回归集 |
+| 语言变体稳健性 | {{METAMORPHIC_VARIANT_COUNT}}/{{METAMORPHIC_VARIANT_COUNT}} | 5 类问题的变形测试 |
+| 硬负例误选 | 0 | 当前黄金用例包含 {{HARD_NEGATIVE_COUNT}} 个显式硬负例 |
+| 当前运行时自动生成审计 | {{LIVE_GENERATION_CASE_COUNT}}/{{LIVE_GENERATION_CASE_COUNT}} | renderer 字节级复现，完整上下文逐例审计 |
+| 质量套件 / 强制基线指标 | {{EVALUATION_SUITE_COUNT}} / {{BASELINE_METRIC_COUNT}} | 任一强制指标回归都会阻断发布 |
+| 公共反馈信号 | {{PUBLIC_FEEDBACK_SIGNAL_COUNT}} | 不虚构真实用户数据 |
 
 | Metric | Current value |
 | --- | ---: |
-| Processed public videos | 1247 |
-| Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 958 |
-| Primary / bounded supplemental evidence | 783 / 175 |
-| Transcript-backed evidence | 765 |
-| Bounded timestamp-window evidence | 174 |
-| Reviewed visual-summary fallbacks | 19 |
-| Answer-quality gold cases | 57/57 |
-| Query-understanding cases | 143/143 |
-| Metamorphic variants | 30/30 |
-| Current-runtime generated answer audits | 18/18 |
-| Evaluation suites / enforced baseline metrics | 14 / 74 |
+| Processed public videos | {{PROCESSED_PUBLIC_VIDEO_COUNT}} |
+| Bilibili full source catalog | {{BILIBILI_CATALOG_COUNT}}: {{BILIBILI_READY_COUNT}} answer-ready, {{BILIBILI_ISOLATED_COUNT}} policy-excluded or quality-isolated, {{BILIBILI_PENDING_COUNT}} pending |
+| Ready teaching videos | {{READY_VIDEO_COUNT}} |
+| Primary / bounded supplemental evidence | {{PRIMARY_VIDEO_COUNT}} / {{SUPPLEMENTAL_VIDEO_COUNT}} |
+| Transcript-backed evidence | {{TRANSCRIPT_VIDEO_COUNT}} |
+| Bounded timestamp-window evidence | {{BOUNDED_VIDEO_COUNT}} |
+| Reviewed visual-summary fallbacks | {{VISUAL_VIDEO_COUNT}} |
+| Answer-quality gold cases | {{ANSWER_QUALITY_CASE_COUNT}}/{{ANSWER_QUALITY_CASE_COUNT}} |
+| Query-understanding cases | {{QUERY_UNDERSTANDING_CASE_COUNT}}/{{QUERY_UNDERSTANDING_CASE_COUNT}} |
+| Metamorphic variants | {{METAMORPHIC_VARIANT_COUNT}}/{{METAMORPHIC_VARIANT_COUNT}} |
+| Current-runtime generated answer audits | {{LIVE_GENERATION_CASE_COUNT}}/{{LIVE_GENERATION_CASE_COUNT}} |
+| Evaluation suites / enforced baseline metrics | {{EVALUATION_SUITE_COUNT}} / {{BASELINE_METRIC_COUNT}} |
 
-All 7,744 transcript evidence items have timestamps.
+All {{TRANSCRIPT_ITEM_COUNT}} transcript evidence items have timestamps.
 
 ## 回答质量怎样被门禁 / How answer quality is gated
 
@@ -191,13 +191,13 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 ## 稳定版体验 / Try the stable release
 
-开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v2.1.2`：
+开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v{{STABLE_VERSION}}`：
 
-The development branch is not the end-user installation source. To try stable behavior, install `v2.1.2`:
+The development branch is not the end-user installation source. To try stable behavior, install `v{{STABLE_VERSION}}`:
 
 ~~~bash
-base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2"
-curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-2.1.2.zip" -o "/tmp/liuhui-badminton-coach-2.1.2.zip"
+base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v{{STABLE_VERSION}}"
+curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -o "/tmp/liuhui-badminton-coach-{{STABLE_VERSION}}.zip"
 curl --fail --show-error --location --retry 3 "$base/SHA256SUMS.txt" -o /tmp/SHA256SUMS.txt
 curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
@@ -206,14 +206,14 @@ curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM
 ## 分支、贡献与发布 / Branches, contribution, and release
 
 - 当前分支：`develop`
-- 当前开发版本：`2.1.3-dev.1`
+- 当前开发版本：`{{DEVELOPMENT_VERSION}}`
 - 发布状态：`unreleased`
-- 稳定版：`main` / `v2.1.2`
+- 稳定版：`main` / `v{{STABLE_VERSION}}`
 - Current branch: `develop`
-- Current development version: `2.1.3-dev.1`
+- Current development version: `{{DEVELOPMENT_VERSION}}`
 - Release status: `unreleased`
-- Stable release: `main` / `v2.1.2`
-- Installable package: [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)
+- Stable release: `main` / `v{{STABLE_VERSION}}`
+- Installable package: [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}})
 
 `main` 是稳定发布来源，`develop` 是集成分支。`main` is the stable release source and `develop` is the integration branch. 发布候选从 `develop` 通过受保护 PR 进入 `main`；通过 exact-SHA 校验、签名标签、SBOM 和证明后才发布。合并后的 `main` 会自动提出回同步 PR，把稳定版本元数据切换回下一开发版本，同时保持两条分支各自的 README 受众。
 
