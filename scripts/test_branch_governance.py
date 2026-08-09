@@ -43,6 +43,11 @@ class BranchGovernanceTests(unittest.TestCase):
         self.assertIn("docs/evaluation/index.html", self.sync)
         self.assertIn("--base develop", self.sync)
         self.assertIn("automation/sync-main-to-develop", self.sync)
+        self.assertIn('git switch -C "$SYNC_BRANCH" origin/develop', self.sync)
+        self.assertIn(
+            'git merge --no-ff --no-edit "$VALIDATED_MAIN_SHA"', self.sync
+        )
+        self.assertIn("if ! git diff --cached --quiet; then", self.sync)
         self.assertIn("--event pull_request", self.sync)
         self.assertIn('conclusion" = "action_required', self.sync)
         self.assertIn("actions/runs/$run_id/approve", self.sync)
@@ -54,7 +59,8 @@ class BranchGovernanceTests(unittest.TestCase):
         self.assertIn("branches: [main]", self.validate)
         self.assertNotIn("branches: [main, develop]", self.validate)
         self.assertIn("pull_request:", self.validate)
-        self.assertIn("Do not dispatch a second validation", self.repository_settings)
+        self.assertIn("Do not dispatch a second", self.repository_settings)
+        self.assertIn("validation for the same head", self.repository_settings)
         self.assertIn("its merge push must not rerun", self.repository_settings)
 
     def test_repository_contract_requires_policy_and_backmerge(self):

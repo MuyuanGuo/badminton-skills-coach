@@ -47,6 +47,7 @@ python3 scripts/generate_evaluation_report.py \
 
 普通改动和自动回同步的完整矩阵只在 Pull Request 上运行一次。回同步工作流会批准
 `github-actions[bot]` 创建的原生 `pull_request` 验证，不再为同一 SHA 额外 dispatch；
+同步头先基于最新 `develop` 合并已验证的 `main` SHA，避免严格分支保护要求再次更新；
 受保护的 `develop` 必须先通过该 `validate` 门，因此合并后的 push 不重复运行完整矩阵。
 `main` 的 push 验证仍保留，供发布流程核对精确的合并提交 SHA。
 
