@@ -1,162 +1,62 @@
-# Badminton Skills Coach
+<!-- README_PROFILE: develop -->
+# Badminton Skills Coach — Development
 
-[![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
+[![Validate Skill artifacts](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml/badge.svg?branch=develop)](https://github.com/MuyuanGuo/badminton-skills-coach/actions/workflows/validate.yml)
 [![Latest release](https://img.shields.io/github/v/release/MuyuanGuo/badminton-skills-coach)](https://github.com/MuyuanGuo/badminton-skills-coach/releases/latest)
+[![Python 3.10–3.12](https://img.shields.io/badge/python-3.10%E2%80%933.12-3776ab.svg)](requirements-dev.txt)
 [![License: MIT](https://img.shields.io/badge/code%20license-MIT-2f766d.svg)](LICENSE)
-[![数据与来源条款](https://img.shields.io/badge/data%20%26%20sources-separate%20terms-6b5b95.svg)](LICENSE-DATA)
+[![Data & sources: separate terms](https://img.shields.io/badge/data%20%26%20sources-separate%20terms-6b5b95.svg)](LICENSE-DATA)
 
 ![Badminton Skills Coach：证据驱动的羽毛球视频知识库](.github/assets/social-preview.jpg)
 
-面向 Codex 的证据型羽毛球教练 Skill。你描述真实的技术、步法、战术、器材或训练问题，它会从已处理的抖音和 B 站教学资料中给出诊断、训练建议、值得观看的视频、时间戳和证据边界。
+这是面向开发者、维护者和招聘方的项目说明：它重点展示系统边界、证据模型、质量门禁、可复现性与工程取舍，而不是把稳定版安装说明当作主体。
 
-[安装 2.1.2](#安装稳定版) · [怎样提问](#怎样提问效果最好) · [项目网站](https://muyuanguo.github.io/badminton-skills-coach/) · [提交回答反馈](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml) · [English](README.en.md)
+This README is written for engineers, maintainers, and recruiters. It emphasizes system boundaries, the evidence model, quality gates, reproducibility, and engineering trade-offs instead of centering the stable-user installation flow.
 
-你正在查看 `develop` 分支；当前开发版本是 **2.1.3-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)。本项目独立开发，不是刘辉本人，也不代表刘辉或视频发布者的观点与背书。
+你正在查看 `develop` 分支；当前开发版本是 **2.1.3-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)。
 
-## 30 秒开始使用
+You are viewing the `develop` branch; the current development version is **2.1.3-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2).
 
-安装并重启 Codex 后，直接说出你的场景：
+本项目独立开发，不是刘辉本人，也不代表刘辉或来源发布者的认可。 / This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
-~~~text
-$liuhui-badminton-coach 我是业余中级双打选手。
-对手杀到反手身体附近时，我挡网经常冒高。
-请帮我区分拍面、击球点和到位问题，并给一个有陪练、每次 20 分钟的训练方案。
+## 招聘方快速阅读 / Recruiter snapshot
+
+| 关注点 / Signal | 当前实现 / Evidence in this repository |
+| --- | --- |
+| 产品判断 / Product judgment | 把“给几个羽毛球视频”收敛成有来源、范围、置信边界与反馈闭环的诊断产品。 / Turns “show me badminton videos” into a diagnostic product with provenance, scope, confidence boundaries, and a feedback loop. |
+| 数据工程 / Data engineering | 抖音与 B 站异构来源经过准入、媒体校验、确定性 ASR、质量隔离、证据分层和可复现构建。 / Heterogeneous Douyin and Bilibili sources pass admission, media validation, deterministic ASR, quarantine, evidence layering, and reproducible builds. |
+| 检索与回答 / Retrieval & answers | 查询被拆成角色、动作、条件与交付项；所有可回答视频参与组织，只有最有用且不重复的视频进入最终展示。 / Queries are decomposed into actors, actions, conditions, and delivery items; all answerable evidence informs synthesis while only the most useful non-duplicative videos are shown. |
+| 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
+| 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
+
+当前 build：`5e88ed99c329…`。`develop` is the integration branch；`main` is the stable release source。
+
+## 系统怎样工作 / How the system works
+
+用户问题不会直接变成一次关键词搜索。运行时先恢复“谁、在什么场景、做什么动作、想达到什么结果”，再把证据检索、答案合成和最终展示分开处理。
+
+A user question does not become one keyword search. The runtime first recovers who is acting, in which situation, performing what action, toward which result; it then separates evidence retrieval, answer synthesis, and final presentation.
+
+~~~mermaid
+flowchart LR
+    Q["用户问题 / User question"] --> U["查询理解：角色、动作、条件、交付项 / Query understanding"]
+    U --> C["候选召回 / Candidate retrieval"]
+    C --> E["可回答证据全集 / Answerable evidence set"]
+    E --> S["按结论合成 / Claim-level synthesis"]
+    S --> P["紧凑 answer packet"]
+    P --> R["确定性 renderer"]
+    R --> A["完整上下文 auditor"]
+    A --> O["答案与精选 V1…Vn / Answer and selected videos"]
 ~~~
 
-Skill 会先恢复谁在做什么、来球与目标动作是什么，再区分“来源明确说了什么”和“还需要看你的动作视频才能确认什么”。回答中的视频会带稳定 V 标签、evidence_id、规范链接和可用时间戳。
+关键不变量 / Key invariants:
 
-## 当前开发版（2.1.3-dev.1）
+- 标题和关键词只能召回候选，不能证明技术结论。 / Titles and keywords may retrieve candidates but cannot prove a coaching claim.
+- `candidate → semantic_answerable → synthesis → selected/claim_mapped` 是不同集合，不能用最终展示列表代替完整证据集。 / Candidate, semantically answerable, synthesis, and selected/claim-mapped sets are distinct; the visible list cannot substitute for the complete evidence set.
+- 单个结论最多使用 1–3 条最强证据；整篇答案可以因独立子问题而展示更多。 / Each claim uses at most one to three strong sources; a full answer may show more for independent subproblems.
+- answer packet 与完整上下文通过 SHA-256 绑定；模型读取紧凑投影，审计器检查完整范围。 / The answer packet and full context are SHA-256 bound; the model sees the compact projection while the auditor checks the complete scope.
 
-本分支在稳定版 2.1.2 基础上汇总尚未发布的数据、运行时与工程改动；以下内容描述当前开发树，不表示已经存在对应的稳定安装包。
-
-- 同时使用抖音与 B 站知识库，覆盖技术动作、全场步法、单双打战术、网前小技术、发接发、装备与训练。
-- 只让通过来源、转写、证据质量和去重门禁的视频进入回答；标题和关键词只负责召回，不能单独证明技术结论。
-- 783 条主证据优先回答，175 条受限补充证据只在命中实际时间戳窗口时补足概念、条件、训练或器材信息。
-- 多问题回答不再被误解为“整篇最多 3 个视频”：每个结论最多 3 条最强证据，独立子问题或实质场景分支可以展示更多；简单问题不会为了凑数增加重复视频。
-- 本地反馈默认只保存在用户机器，确认前不会影响个性化；公开反馈还需要脱敏、明确授权、来源复核和回归测试。
-- 回答模型只读取紧凑 answer packet，完整上下文用于最终审计，两者由 SHA-256 绑定。
-- 运行时审核先验与 `data/evaluation/answer_quality_cases.json` 分离；评测脚本默认以无先验模式报告检索质量，避免用评测金标准反哺指标。
-- 51.7 MiB 只读 SQLite 证据存储按需读取映射、序列和 chunk，避免在冷启动时同时常驻多份完整 JSON 投影；Linux 冷启动 RSS 受 128 MiB 硬预算约束。
-- Python 3.10/3.12 使用同一套哈希锁定维护依赖，生成物、SQLite 逻辑内容和 canary 哈希跨环境保持可复现。
-- 发布答案改由受信任 renderer 为关键案例确定性重建，绑定完整/回答语义双运行时指纹，并在 tag 工作流中逐例复现和重跑完整上下文审计。
-
-## develop 中的回答完整性修复
-
-- 复合问题现在保留原始子句与证据子句两套结构；训练计划、检查顺序、条件分支等交付指令不会再作为独立技术查询检索视频。
-- 省略场景的后续子句及“技术问题 + 交付指令”混合子句会继承主问题中的正反手、项目、场区、单双打等约束，同时保留自己明确给出的线路等分支条件；具有自身技术范围的独立问题保持隔离。
-- answer packet v4 新增类型化 `delivery_contract`。精确分钟、三天纠正、两周巩固、成功标准、诊断比较、现场检查顺序和战术方向分支均为独立必答项。
-- renderer 与 auditor 分别负责生成和语义验证这些必答项；仅出现 Q/D 标记或引用一段原文不再等于完成复合要求。
-- 发布实时生成门禁从 3 条历史案例扩展为 3 条历史案例加 3 条跨诊断、训练和战术的交付案例，并对每个交付块运行删除负控。
-
-## 当前知识与质量基线
-
-| 指标 | 当前值 | 说明 |
-| --- | ---: | --- |
-| 已处理公开视频 | 1247 | 完整来源目录，不等于全部可回答内容 |
-| B 站完整来源目录 | 767 | 599 条回答就绪、168 条策略排除或质量隔离、0 条待处理 |
-| 可用于回答的教学视频 | 958 | 只有 ready 内容进入证据池 |
-| 主证据 / 受限补充证据 | 783 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
-| 转写证据 | 765 | 7,744/7,744 条转写证据包含时间戳 |
-| 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
-| 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
-| 回答质量黄金用例 | 57/57 | 覆盖文字、边界、视频和禁用结论 |
-| 查询理解 | 143/143 | 结构化意图回归集 |
-| 语言变体稳健性 | 30/30 | 5 类问题、15 个基础案例 |
-| 硬负例误选 | 0 | 当前回归集共 194 个硬负例 |
-| 当前运行时自动生成审计 | 6/6 | renderer 字节级复现，完整上下文逐例通过 |
-| 公共反馈信号 | 0 | 反馈闭环已就绪，但不虚构真实用户数据 |
-
-这些数字描述当前受控语料和评测集，不表示所有自然语言问题都已经验证。具体回答仍以当轮证据和置信边界为准。
-
-## 安装稳定版
-
-日常使用需要 Python 3.10 或更高版本，不需要 OpenAI API key，也不需要安装转写依赖。
-
-~~~bash
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/liuhui-badminton-coach-2.1.2.zip \
-  -o /tmp/liuhui-badminton-coach-2.1.2.zip
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SHA256SUMS.txt \
-  -o /tmp/SHA256SUMS.txt
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SBOM.cdx.json \
-  -o /tmp/SBOM.cdx.json
-(cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
-install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.1.2.zip -d "$install_dir"
-python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"
-~~~
-
-安装后检查：
-
-~~~bash
-python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
-~~~
-
-然后重启 Codex。升级时可以重复安装命令；安装器会验证文件，并以新版本替换 Skill。
-
-Windows PowerShell 使用同一发布物和 SHA-256：
-
-~~~powershell
-$v = "2.1.2"; $base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v$v"
-Invoke-WebRequest "$base/liuhui-badminton-coach-$v.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-$v.zip"
-Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
-$expected = ((Select-String "liuhui-badminton-coach-$v.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
-$actual = (Get-FileHash "$env:TEMP/liuhui-badminton-coach-$v.zip" -Algorithm SHA256).Hash.ToLower()
-if ($actual -ne $expected) { throw "SHA-256 mismatch" }
-$stage = Join-Path $env:TEMP "liuhui-skill-install"; Expand-Archive "$env:TEMP/liuhui-badminton-coach-$v.zip" $stage -Force
-python "$stage/liuhui-badminton-coach/scripts/install.py"
-~~~
-
-## 怎样提问效果最好
-
-推荐提供：
-
-- 你的水平，以及单打还是双打。
-- 来球、场区、正反手、主动或被动状态。
-- 你当前怎样处理，实际出现了什么症状。
-- 想改善的动作、战术或结果。
-- 是否能独练、有陪练或教练、每次可用多久。
-
-例如：
-
-~~~text
-我单打反手后场被动，来不及正常架拍，回球总不到底线。
-请区分判断慢、到位晚和发力问题，并给我能独练的步骤。
-~~~
-
-~~~text
-双打接发时我习惯正手握拍，反手区容易顶不住。
-请说明握拍转换、站位和前三拍选择，并给对应视频。
-~~~
-
-没有你的连续动作视频时，Skill 可以给证据支持的排查顺序，但不会声称已经确认唯一原因。它不用于医学诊断、效果保证、泛化购物推荐，也不会冒充刘辉或宣称得到其认可。
-
-## 视频为什么有时超过 3 条
-
-“1–3 条”是单个结论的证据上限，不是整篇回答的总上限。一个简单问题通常只需要少量视频；复杂问题如果包含不同动作、单双打分支、技术与步法两个独立子问题，或需要主证据与受限补充证据承担不同作用，就可能展示更多。
-
-回答只展示最终 answer packet 中的视频，每条恰好一次，并按用途连续编号为 V1…Vn。内容簇去重、逐结论证据门和整篇 16 条候选硬上限会阻止重复或失控扩张。
-
-## 反馈与隐私
-
-回答末尾会给出适用于当前标签的反馈格式，例如：
-
-~~~text
-V2 最有价值；V4 不相关；第 2 点结论不对；
-回答漏了“被动情况下如何处理”；
-你理解错了，我真正问的是“单打杀上网”。
-~~~
-
-明确反馈会先进入本地待确认队列。只有在你确认解析无误后，它才会影响本地个性化。记录器保留回答当时的精确标签映射；旧回答即使使用 V2、V3、V5 这样的稀疏标签，也不会被偷偷重编号或错绑到其他视频。
-
-若愿意公开分享，请使用 [Skill feedback Issue 模板](https://github.com/MuyuanGuo/badminton-skills-coach/issues/new?template=skill-feedback.yml)。只有经过脱敏、授权、来源复核和回归测试的信号才可能进入公开 Skill；用户反馈不会直接变成羽毛球技术事实。
-
-## 来源与边界
-
-仓库不发布原始媒体、原始转写目录、临时 Cookie、平台凭据、模型缓存或用户本地反馈。安装包只含运行所需的派生索引和可定位证据数据。软件与原创文档使用 [MIT License](LICENSE)；第三方视频、音频、标题、创作者名称、缩略图和转写不属于该授权，详见 [数据与来源材料声明](LICENSE-DATA) 和 [NOTICE](NOTICE)。
-
-维护批处理默认只下载、转写和验证，不会自动 commit 或 push；需要发布时显式使用 `--commit --push`，且只允许提交生成物白名单。
-
-### 新数据怎样进入回答
+## 数据与证据链 / Data and evidence chain
 
 ~~~mermaid
 flowchart LR
@@ -167,24 +67,158 @@ flowchart LR
     E --> A["回答资格分层：primary / supplemental / none"]
     A --> S["只读 SQLite 运行时证据存储"]
     S --> F["45秒 chunk-first + 受限窗口检索"]
-    F --> R["回答 packet 与最终审计"]
+    F --> R["answer packet、renderer 与最终审计"]
+~~~
+
+~~~mermaid
+flowchart LR
+    B["Source admission and media validation"] --> C["Decodable media"]
+    C --> D["Deterministic ASR"]
+    D --> P["Recipe, ASR quality, source-safety, and duplicate hard gates"]
+    P --> E["Structured knowledge, including quarantine audit records"]
+    E --> A["Answer admission layers: primary / supplemental / none"]
+    A --> S["Read-only SQLite runtime evidence store"]
+    S --> F["45-second chunk-first plus bounded-window retrieval"]
+    F --> R["Answer packet, renderer, and final audit"]
 ~~~
 
 新增转写不会写入模型权重或成为 Codex 的会话记忆。原始 `.json`、`.srt` 或 `.txt` 文件单独存在不会改变回答。完整通过的记录成为 `primary`；有直接教学窗口但元数据或适用范围需要收窄的记录成为 `supplemental`。来源、安全、转写质量或重复门禁失败时，系统保留审计状态并保持 `answer_eligibility: none`；只有生成级一致性门禁失败时，才回滚本轮生成产物。
 
+A new transcript does not update model weights or become Codex conversational memory. A raw `.json`, `.srt`, or `.txt` file alone changes no answer. A fully aligned record becomes `primary`; a directly useful teaching window with narrower metadata or scope becomes `supplemental`. When provenance, safety, transcription quality, or duplicate gates fail, the audit state is retained with `answer_eligibility: none`; only generation-level consistency failures roll back the current generated artifact set.
+
+## 当前知识与质量基线 / Current knowledge and quality baseline
+
+以下数字由当前分支的受控数据与评估报告渲染，不代表所有自然语言问题都已得到验证。
+
+These values are rendered from the controlled data and evaluation report on this branch; they do not imply that every natural-language question has been validated.
+
+| 指标 | 当前值 | 说明 |
+| --- | ---: | --- |
+| 已处理公开视频 | 1247 | 完整来源目录，不等于全部可回答内容 |
+| B 站完整来源目录 | 767 | 599 条回答就绪、168 条策略排除或质量隔离、0 条待处理 |
+| 可用于回答的教学视频 | 958 | 只有 ready 内容进入证据池 |
+| 主证据 / 受限补充证据 | 783 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
+| 转写证据 | 765 | 7,744/7,744 条转写证据包含时间戳 |
+| 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
+| 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
+| 回答质量黄金用例 | 57/57 | 覆盖技术、诊断、战术、训练与证据边界 |
+| 查询理解 | 143/143 | 结构化意图回归集 |
+| 语言变体稳健性 | 30/30 | 5 类问题的变形测试 |
+| 硬负例误选 | 0 | 当前黄金用例包含 194 个显式硬负例 |
+| 当前运行时自动生成审计 | 18/18 | renderer 字节级复现，完整上下文逐例审计 |
+| 质量套件 / 强制基线指标 | 14 / 74 | 任一强制指标回归都会阻断发布 |
+| 公共反馈信号 | 0 | 不虚构真实用户数据 |
+
+| Metric | Current value |
+| --- | ---: |
+| Processed public videos | 1247 |
+| Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
+| Ready teaching videos | 958 |
+| Primary / bounded supplemental evidence | 783 / 175 |
+| Transcript-backed evidence | 765 |
+| Bounded timestamp-window evidence | 174 |
+| Reviewed visual-summary fallbacks | 19 |
+| Answer-quality gold cases | 57/57 |
+| Query-understanding cases | 143/143 |
+| Metamorphic variants | 30/30 |
+| Current-runtime generated answer audits | 18/18 |
+| Evaluation suites / enforced baseline metrics | 14 / 74 |
+
+All 7,744 transcript evidence items have timestamps.
+
+## 回答质量怎样被门禁 / How answer quality is gated
+
+质量报告不是单一“准确率”。它检查不同层次的失败模式：
+
+The quality report is not one accuracy number. It checks distinct failure modes:
+
+1. **问题理解 / Query understanding** — 角色、动作、条件、否定、承接关系和交付要求不能串线。
+2. **证据完整性 / Evidence completeness** — 所有可回答视频先进入语义证据集，再分别计算 synthesis、selected、claim-mapped 与 core recall。
+3. **展示选择 / Presentation selection** — 视频按结论用途、来源强度、重复簇和场景范围筛选，不用展示列表反向定义“可回答”。
+4. **答案契约 / Answer contract** — 诊断比较、训练剂量、成功标准、战术分支等 delivery item 必须真实出现在答案中。
+5. **独立审计 / Independent audit** — renderer 输出要逐字复现；auditor 使用完整上下文检查证据、边界、引用与缺失项。
+6. **鲁棒性 / Robustness** — 语言改写、硬负例、B 站正例、机械接线 canary、性能预算和 Python 3.10/3.12 兼容性共同阻断回归。
+
+每条新增硬门禁都有“故意破坏该指标时必须失败”的测试，防止配置存在但不生效。完整结果见 [evaluation report](docs/evaluation/index.html)。
+
+Every promoted hard gate has a regression test proving that deliberately breaking the metric fails the comparison, preventing inert configuration. See the [evaluation report](docs/evaluation/index.html) for current results.
+
+## 代码地图 / Repository map
+
+| 路径 / Path | 职责 / Responsibility |
+| --- | --- |
+| `skills/liuhui-badminton-coach/` | 可安装 Skill、运行时脚本和只读证据资产 / Installable Skill, runtime scripts, and read-only evidence artifacts |
+| `skills/.../scripts/prepare_answer_context.py` | 查询规划、证据分层与上下文构建 / Query planning, evidence layering, and context construction |
+| `skills/.../scripts/search_knowledge.py` | chunk-first 检索与受限证据窗口 / Chunk-first retrieval and bounded evidence windows |
+| `skills/.../scripts/render_answer.py` | 确定性答案 renderer / Deterministic answer renderer |
+| `skills/.../scripts/audit_answer.py` | 完整上下文回答审计 / Full-context answer auditor |
+| `data/evaluation/` | 黄金用例、运行时快照、基线与报告 / Gold cases, runtime snapshots, baselines, and reports |
+| `scripts/run_ci_tests.py` | fast、compatibility、context 与 artifact 测试分组 / Fast, compatibility, context, and artifact test groups |
+| `.github/workflows/validate.yml` | 变更范围分类与并行 CI 质量矩阵 / Change classification and parallel CI quality matrix |
+| `ARCHITECTURE.md` | 运行时、维护平面与模块边界 / Runtime, maintenance plane, and module boundaries |
+
+## 本地开发 / Local development
+
+~~~bash
+git clone https://github.com/MuyuanGuo/badminton-skills-coach.git
+cd badminton-skills-coach
+git switch develop
+python3 -m venv .venv
+.venv/bin/pip install --require-hashes -r requirements-dev.txt
+.venv/bin/ruff check scripts skills/liuhui-badminton-coach/scripts
+.venv/bin/python scripts/run_ci_tests.py fast --workers 2
+.venv/bin/python scripts/run_ci_tests.py compatibility --workers 2
+~~~
+
+完整质量报告比 fast 组更慢，适合作为 PR 或发布门禁：
+
+The full quality report is slower than the fast group and is intended for PR or release gating:
+
+~~~bash
+.venv/bin/python scripts/collect_evaluation_results.py --workers 2 --output /tmp/core-evaluations.json
+.venv/bin/python scripts/generate_evaluation_report.py --check --evaluations /tmp/core-evaluations.json
+.venv/bin/python scripts/benchmark_runtime.py
+.venv/bin/python scripts/evaluate_answer_packet.py
+~~~
+
 维护者恢复未完成的 B 站流水线只使用一个入口：
+
+Maintainers resume an incomplete Bilibili pipeline through one entry point:
 
 ~~~bash
 python3 scripts/run_bilibili_update_pipeline.py --install
 ~~~
 
-运行时边界与模块加载约束见 [ARCHITECTURE.md](ARCHITECTURE.md)。维护和贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)（[English](CONTRIBUTING.en.md)），发布校验、签名标签和 SBOM 说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。所有分支的说明都必须与该分支实际代码一致，不把未发布设计写成现有能力。
+## 稳定版体验 / Try the stable release
 
-## 分支与发布
+开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v2.1.2`：
+
+The development branch is not the end-user installation source. To try stable behavior, install `v2.1.2`:
+
+~~~bash
+base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2"
+curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-2.1.2.zip" -o "/tmp/liuhui-badminton-coach-2.1.2.zip"
+curl --fail --show-error --location --retry 3 "$base/SHA256SUMS.txt" -o /tmp/SHA256SUMS.txt
+curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM.cdx.json
+(cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
+~~~
+
+## 分支、贡献与发布 / Branches, contribution, and release
 
 - 当前分支：`develop`
 - 当前开发版本：`2.1.3-dev.1`
 - 发布状态：`unreleased`
 - 稳定版：`main` / `v2.1.2`
-- 正式安装包：[v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)
-- `main` 是稳定发布来源；`develop` 是集成分支。两个分支使用同一套可验证事实和治理标准，但 README 与版本元数据必须反映各自状态。
+- Current branch: `develop`
+- Current development version: `2.1.3-dev.1`
+- Release status: `unreleased`
+- Stable release: `main` / `v2.1.2`
+- Installable package: [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)
+
+`main` 是稳定发布来源，`develop` 是集成分支。`main` is the stable release source and `develop` is the integration branch. 发布候选从 `develop` 通过受保护 PR 进入 `main`；通过 exact-SHA 校验、签名标签、SBOM 和证明后才发布。合并后的 `main` 会自动提出回同步 PR，把稳定版本元数据切换回下一开发版本，同时保持两条分支各自的 README 受众。
+
+Release candidates move from `develop` to `main` through protected PRs and are published only after exact-SHA validation, a signed tag, an SBOM, and attestations. Validated `main` then proposes an automated back-merge that advances the next development version while preserving the distinct README audience on each branch.
+
+贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 和 [ARCHITECTURE.md](ARCHITECTURE.md)。安全发布与签名说明见 [RELEASE_SECURITY.md](RELEASE_SECURITY.md)。软件与原创文档使用 [MIT License](LICENSE)；第三方来源材料适用 [LICENSE-DATA](LICENSE-DATA) 与 [NOTICE](NOTICE)。
+
+Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md) and [ARCHITECTURE.md](ARCHITECTURE.md). See [RELEASE_SECURITY.md](RELEASE_SECURITY.md) for signing and release security. Software and original documentation use the [MIT License](LICENSE); third-party source material is governed separately by [LICENSE-DATA](LICENSE-DATA) and [NOTICE](NOTICE).
