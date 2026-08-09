@@ -103,6 +103,71 @@ class PrepareDevelopSyncTests(unittest.TestCase):
             self.assertEqual(updated["channel"], "development")
             self.assertIn('[["网前", "后场"]]', updated_text)
 
+    def test_existing_expected_development_state_is_idempotent(self):
+        metadata_text = """{
+  "skill_version": "2.1.1-dev.1",
+  "channel": "development",
+  "stable_version": "2.1.0"
+}
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            metadata_paths = (
+                root / "config" / "feedback_rules.json",
+                root
+                / "skills"
+                / "liuhui-badminton-coach"
+                / "references"
+                / "feedback-rules.json",
+            )
+            for path in metadata_paths:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(metadata_text, encoding="utf-8")
+            (root / "README.md").write_text(
+                "当前开发版本是 **2.1.1-dev.1**\n稳定版：`main` / `v2.1.0`\n",
+                encoding="utf-8",
+            )
+            (root / "README.en.md").write_text(
+                "current development version is **2.1.1-dev.1**\n"
+                "Stable release: `main` / `v2.1.0`\n",
+                encoding="utf-8",
+            )
+            for relative in (
+                ".github/ISSUE_TEMPLATE/bug-report.yml",
+                ".github/ISSUE_TEMPLATE/question.yml",
+                ".github/ISSUE_TEMPLATE/skill-feedback.yml",
+            ):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("version: 2.1.1-dev.1\n", encoding="utf-8")
+
+            before = {
+                path: path.read_text(encoding="utf-8") for path in metadata_paths
+            }
+            result = prepare_develop_sync(root)
+
+            self.assertEqual(result["skill_version"], "2.1.1-dev.1")
+            self.assertEqual(
+                before,
+                {path: path.read_text(encoding="utf-8") for path in metadata_paths},
+            )
+
+    def test_existing_development_state_fails_closed_when_stale(self):
+        metadata_text = """{
+  "skill_version": "2.1.9-dev.1",
+  "channel": "development",
+  "stable_version": "2.1.0"
+}
+"""
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "config" / "feedback_rules.json"
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_text(metadata_text, encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "next stable patch"):
+                prepare_develop_sync(root)
+
 
 if __name__ == "__main__":
     unittest.main()
