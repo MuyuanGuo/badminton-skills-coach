@@ -47,6 +47,9 @@ def evaluate(cases_path=CASES_PATH):
         "bilibili_canary_context",
         SKILL_SCRIPTS / "prepare_answer_context.py",
     )
+    packet_runtime = context_runtime.load_sibling(
+        "bilibili_canary_packet", "answer_packet.py"
+    )
     results = []
     failures = []
     for case in cases:
@@ -72,7 +75,15 @@ def evaluate(cases_path=CASES_PATH):
         packet_video = next(
             (
                 item
-                for item in packet["selected_videos"]
+                for item in packet_runtime.packet_video_records(packet)
+                if item.get("evidence_id") == expected
+            ),
+            None,
+        )
+        detailed_packet_video = next(
+            (
+                item
+                for item in packet.get("selected_videos", [])
                 if item.get("evidence_id") == expected
             ),
             None,
@@ -93,16 +104,20 @@ def evaluate(cases_path=CASES_PATH):
         ) < thresholds["minimum_claim_window_rank"]:
             case_failures.append("claim_window_quality_below_threshold")
         packet_window_ids = (
-            packet_video.get("window_ids", []) if packet_video else []
+            detailed_packet_video.get("window_ids", [])
+            if detailed_packet_video
+            else []
         )
-        if (
+        if packet_video is None:
+            case_failures.append("expected_evidence_missing_from_packet")
+        elif detailed_packet_video is not None and (
             not packet_window_ids
             or any(
                 window_id not in packet.get("evidence_windows", {})
                 for window_id in packet_window_ids
             )
         ):
-            case_failures.append("expected_evidence_missing_from_packet")
+            case_failures.append("expected_synthesis_evidence_missing_windows")
         if packet_bytes > thresholds["maximum_packet_bytes"]:
             case_failures.append("packet_exceeds_absolute_byte_budget")
         result = {
@@ -111,6 +126,14 @@ def evaluate(cases_path=CASES_PATH):
             "expected_evidence_id": expected,
             "retrieval_top_ids": top_ids,
             "claim_mapped": bool(mapped),
+            "packet_included": packet_video is not None,
+            "packet_projection": (
+                "detailed_synthesis"
+                if detailed_packet_video is not None
+                else "complete_related_catalog"
+                if packet_video is not None
+                else "missing"
+            ),
             "packet_window_count": len(packet_window_ids),
             "packet_bytes": packet_bytes,
             "failures": case_failures,

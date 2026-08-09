@@ -55,19 +55,40 @@ def planned_queries(search_module, plan, original_query):
 def prepare_case_context(search_module, case, top_k=12):
     del search_module, top_k
     runtime = load_context_module()
-    payload = runtime.prepare_answer_context(
-        case["query"],
-        local_personalization=False,
-        include_rejected=True,
-    )
+    captured = {}
+    original_merge = runtime.merge_candidates
+
+    def capture_merged_candidates(payloads, queries):
+        merged = original_merge(payloads, queries)
+        captured["candidate_ids"] = set(merged)
+        return merged
+
+    runtime.merge_candidates = capture_merged_candidates
+    try:
+        payload = runtime.prepare_answer_context(
+            case["query"],
+            local_personalization=False,
+        )
+    finally:
+        runtime.merge_candidates = original_merge
     selected_ids = [item["video_id"] for item in payload["selected_videos"]]
-    rejected_ids = [
-        item["video_id"] for item in payload["rejected_candidates"]
-    ]
-    unselected_eligible_ids = [
-        item["video_id"]
-        for item in payload["unselected_eligible_candidates"]
-    ]
+    label_to_video_id = {
+        item["label"]: item["video_id"]
+        for item in payload["selected_videos"]
+    }
+
+    def video_ids_for_labels(labels):
+        return {
+            label_to_video_id[label]
+            for label in labels
+            if label in label_to_video_id
+        }
+
+    claim_labels = {
+        evidence["label"]
+        for claim in payload["claim_evidence_map"]
+        for evidence in claim.get("evidence", [])
+    }
     evidence_ready_ids = {
         item["video_id"]
         for item in payload["selected_videos"]
@@ -88,10 +109,24 @@ def prepare_case_context(search_module, case, top_k=12):
         "retrieval_queries": payload["question_interpretation"][
             "retrieval_queries"
         ],
-        "candidate_ids": (
-            set(selected_ids) | set(rejected_ids) | set(unselected_eligible_ids)
+        "candidate_ids": captured.get("candidate_ids", set()),
+        "semantic_answerable_ids": set(
+            payload["selection"]["semantic_answerable_video_ids"]
+        ),
+        "synthesis_candidate_ids": set(
+            payload["selection"]["synthesis_candidate_video_ids"]
         ),
         "selected_ids": selected_ids,
+        "claim_mapped_ids": video_ids_for_labels(claim_labels),
+        "synthesis_ids": video_ids_for_labels(
+            payload["answer_synthesis_video_labels"]
+        ),
+        "complete_related_ids": video_ids_for_labels(
+            payload["answer_complete_related_video_labels"]
+        ),
+        "core_ids": video_ids_for_labels(
+            payload["answer_core_video_labels"]
+        ),
         "top_ids": selected_ids,
         "evidence_ready_ids": evidence_ready_ids,
     }
@@ -197,11 +232,26 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
     search_module = load_search_module()
     expected_total = 0
     candidate_recalled_total = 0
+    semantic_answerable_recalled_total = 0
     selected_recalled_total = 0
+    claim_mapped_recalled_total = 0
+    synthesis_recalled_total = 0
+    complete_related_recalled_total = 0
+    core_recalled_total = 0
     primary_cases = 0
     primary_selected = 0
     selected_video_total = 0
     selected_video_ready = 0
+    layer_counts = {
+        "candidate": 0,
+        "semantic_answerable": 0,
+        "synthesis_candidate": 0,
+        "selected": 0,
+        "claim_mapped": 0,
+        "synthesis": 0,
+        "complete_related": 0,
+        "core": 0,
+    }
     results = []
     for case in cases:
         context = prepare_case_context(search_module, case, top_k=top_k)
@@ -210,10 +260,31 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         primary = set(gold["primary_video_ids"])
         irrelevant = set(gold["irrelevant_video_ids"])
         missing_candidates = sorted(expected - context["candidate_ids"])
+        missing_semantic_answerable = sorted(
+            expected - context["semantic_answerable_ids"]
+        )
         missing_selected = sorted(expected - set(context["selected_ids"]))
+        missing_claim_mapped = sorted(expected - context["claim_mapped_ids"])
+        missing_synthesis = sorted(expected - context["synthesis_ids"])
+        missing_complete_related = sorted(
+            expected - context["complete_related_ids"]
+        )
+        missing_core = sorted(expected - context["core_ids"])
         expected_total += len(expected)
         candidate_recalled_total += len(expected) - len(missing_candidates)
+        semantic_answerable_recalled_total += len(expected) - len(
+            missing_semantic_answerable
+        )
         selected_recalled_total += len(expected) - len(missing_selected)
+        claim_mapped_recalled_total += len(expected) - len(missing_claim_mapped)
+        synthesis_recalled_total += len(expected) - len(missing_synthesis)
+        complete_related_recalled_total += len(expected) - len(
+            missing_complete_related
+        )
+        core_recalled_total += len(expected) - len(missing_core)
+        for layer in layer_counts:
+            key = "candidate_ids" if layer == "candidate" else f"{layer}_ids"
+            layer_counts[layer] += len(context[key])
         if primary:
             primary_cases += 1
             if primary & set(context["selected_ids"]):
@@ -232,7 +303,14 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
                 "query_units": context["query_units"],
                 "retrieval_queries": context["retrieval_queries"],
                 "missing_candidate_video_ids": missing_candidates,
+                "missing_semantic_answerable_video_ids": (
+                    missing_semantic_answerable
+                ),
                 "missing_selected_video_ids": missing_selected,
+                "missing_claim_mapped_video_ids": missing_claim_mapped,
+                "missing_synthesis_video_ids": missing_synthesis,
+                "missing_complete_related_video_ids": missing_complete_related,
+                "missing_core_video_ids": missing_core,
                 "primary_selected": (
                     not primary or bool(primary & set(context["selected_ids"]))
                 ),
@@ -244,9 +322,21 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
                     - context["evidence_ready_ids"]
                 ),
                 "selected_video_count": len(context["selected_ids"]),
+                "semantic_answerable_video_count": len(
+                    context["semantic_answerable_ids"]
+                ),
+                "claim_mapped_video_count": len(context["claim_mapped_ids"]),
+                "synthesis_video_count": len(context["synthesis_ids"]),
+                "complete_related_video_count": len(
+                    context["complete_related_ids"]
+                ),
+                "core_video_count": len(context["core_ids"]),
                 "selection_truncated": context["payload"]["selection"][
                     "selection_truncated"
                 ],
+                "retrieval_query_budget": context["payload"][
+                    "question_interpretation"
+                ]["retrieval_query_budget"],
             }
         )
 
@@ -254,11 +344,25 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         1, len(results)
     )
     return {
-        "stage": "deterministic_pre_answer_context_and_finalist_selection",
+        "stage": "production_budgeted_layered_answer_evidence_selection",
         "cases": len(results),
         "expected_videos": expected_total,
         "candidate_recall": candidate_recalled_total / max(1, expected_total),
+        "semantic_answerable_video_recall": (
+            semantic_answerable_recalled_total / max(1, expected_total)
+        ),
         "selected_video_recall": selected_recalled_total / max(1, expected_total),
+        "claim_mapped_video_recall": claim_mapped_recalled_total
+        / max(1, expected_total),
+        "synthesis_video_recall": synthesis_recalled_total
+        / max(1, expected_total),
+        "complete_related_video_recall": complete_related_recalled_total
+        / max(1, expected_total),
+        "core_video_recall": core_recalled_total / max(1, expected_total),
+        "mean_video_count_by_layer": {
+            layer: count / max(1, len(results))
+            for layer, count in layer_counts.items()
+        },
         "primary_selected_rate": primary_selected / max(1, primary_cases),
         "answer_mode_accuracy": mode_accuracy,
         "context_evidence_coverage": selected_video_ready
@@ -268,6 +372,13 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         ),
         "selection_truncated_cases": sum(
             item["selection_truncated"] for item in results
+        ),
+        "retrieval_query_budget_truncated_cases": sum(
+            item["retrieval_query_budget"]["truncated"] for item in results
+        ),
+        "retrieval_query_omitted_count": sum(
+            item["retrieval_query_budget"]["omitted_query_count"]
+            for item in results
         ),
         "evaluation_fixture_isolation": evaluation_fixture_isolation(),
         "results": results,
@@ -284,8 +395,17 @@ def main():
     parser.add_argument("--cases", type=Path, default=CASES_PATH)
     parser.add_argument("--top-k", type=int, default=12)
     parser.add_argument("--min-candidate-recall", type=float, default=1.0)
-    parser.add_argument("--min-selected-video-recall", type=float)
-    parser.add_argument("--min-primary-selected-rate", type=float)
+    parser.add_argument(
+        "--min-semantic-answerable-recall", type=float, default=1.0
+    )
+    parser.add_argument("--min-selected-video-recall", type=float, default=1.0)
+    parser.add_argument(
+        "--min-claim-mapped-video-recall", type=float, default=1.0
+    )
+    parser.add_argument(
+        "--min-complete-related-video-recall", type=float, default=1.0
+    )
+    parser.add_argument("--min-primary-selected-rate", type=float, default=0.95)
     parser.add_argument("--min-answer-mode-accuracy", type=float, default=1.0)
     parser.add_argument("--min-context-evidence-coverage", type=float, default=1.0)
     parser.add_argument(
@@ -308,14 +428,38 @@ def main():
         ),
     ]
     failed = [name for name, actual, required in gates if actual < required]
-    if args.min_selected_video_recall is not None and (
-        result["selected_video_recall"] < args.min_selected_video_recall
-    ):
-        failed.append("selected video recall")
-    if args.min_primary_selected_rate is not None and (
-        result["primary_selected_rate"] < args.min_primary_selected_rate
-    ):
-        failed.append("primary selected rate")
+    layered_gates = [
+        (
+            "semantic answerable video recall",
+            result["semantic_answerable_video_recall"],
+            args.min_semantic_answerable_recall,
+        ),
+        (
+            "selected video recall",
+            result["selected_video_recall"],
+            args.min_selected_video_recall,
+        ),
+        (
+            "claim-mapped video recall",
+            result["claim_mapped_video_recall"],
+            args.min_claim_mapped_video_recall,
+        ),
+        (
+            "complete-related video recall",
+            result["complete_related_video_recall"],
+            args.min_complete_related_video_recall,
+        ),
+        (
+            "primary selected rate",
+            result["primary_selected_rate"],
+            args.min_primary_selected_rate,
+        ),
+    ]
+    failed.extend(
+        name
+        for name, actual, required in layered_gates
+        if actual < required
+    )
     if not result["evaluation_fixture_isolation"]:
         failed.append("evaluation fixture isolation")
     if (

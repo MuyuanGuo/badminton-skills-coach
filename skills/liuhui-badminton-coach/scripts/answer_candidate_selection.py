@@ -647,6 +647,7 @@ def selected_sort_key(entry, rules=None):
         "exact_question": 0,
         "exact_query_unit": 1,
         "component_support": 2,
+        "constraint_scoped_support": 3,
         "reviewed_support": 3,
         "expanded_support": 4,
         "none": 5,

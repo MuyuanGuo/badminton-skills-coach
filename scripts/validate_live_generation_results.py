@@ -22,6 +22,9 @@ CRITICAL_PATH = ROOT / "data" / "evaluation" / "critical_answer_snapshots.json"
 DELIVERY_CASES_PATH = (
     ROOT / "data" / "evaluation" / "delivery_release_cases.json"
 )
+SYSTEMATIC_CASES_PATH = (
+    ROOT / "data" / "evaluation" / "runtime_generation_cases.json"
+)
 CONTEXT_SCRIPT = (
     ROOT
     / "skills"
@@ -39,6 +42,19 @@ GENERATOR_TYPE = "deterministic_answer_renderer"
 VALIDATION_METHOD = "current_runtime_full_context_audit"
 DATE_PATTERN = re.compile(r"\d{4}-\d{2}-\d{2}")
 SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
+MINIMUM_SYSTEMATIC_RUNTIME_CASES = 12
+REQUIRED_SYSTEMATIC_CASE_TYPES = {
+    "technical_action",
+    "diagnosis",
+    "tactics",
+    "training_plan",
+    "evidence_boundary",
+}
+REQUIRED_SYSTEMATIC_ANSWER_MODES = {
+    "text_primary",
+    "balanced",
+    "video_primary",
+}
 
 
 class LiveGenerationValidationError(ValueError):
@@ -89,6 +105,119 @@ def release_case_registry(root=ROOT):
     return registry
 
 
+def validate_systematic_case_registry(payload, answer_registry, excluded_ids=()):
+    expected_fields = {
+        "schema_version",
+        "description",
+        "minimum_case_count",
+        "required_case_types",
+        "required_answer_modes",
+        "cases",
+    }
+    if set(payload) != expected_fields or payload.get("schema_version") != 1:
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases have an unsupported schema"
+        )
+    minimum = payload.get("minimum_case_count")
+    cases = payload.get("cases")
+    if (
+        not isinstance(minimum, int)
+        or isinstance(minimum, bool)
+        or minimum < MINIMUM_SYSTEMATIC_RUNTIME_CASES
+        or not isinstance(cases, list)
+        or len(cases) < minimum
+    ):
+        raise LiveGenerationValidationError(
+            "Systematic runtime generation coverage is underpowered"
+        )
+    case_ids = []
+    covered_types = set()
+    covered_modes = set()
+    for item in cases:
+        if not isinstance(item, dict) or set(item) != {
+            "case_id",
+            "coverage_reason",
+        }:
+            raise LiveGenerationValidationError(
+                "Systematic runtime case has an invalid schema"
+            )
+        case_id = item.get("case_id")
+        source_case = (
+            answer_registry.get(case_id)
+            if isinstance(case_id, str)
+            else None
+        )
+        if (
+            not isinstance(case_id, str)
+            or not case_id
+            or source_case is None
+            or not isinstance(item.get("coverage_reason"), str)
+            or not item["coverage_reason"].strip()
+        ):
+            raise LiveGenerationValidationError(
+                "Systematic runtime case is unknown or undocumented"
+            )
+        review = source_case.get("review", {})
+        if (
+            review.get("status") != "maintainer_reviewed"
+            or review.get("maintainer_decision") != "approved"
+        ):
+            raise LiveGenerationValidationError(
+                f"Systematic runtime case {case_id} is not maintainer-approved"
+            )
+        case_ids.append(case_id)
+        covered_types.add(source_case.get("case_type"))
+        covered_modes.add(source_case.get("expected_mode"))
+    if len(case_ids) != len(set(case_ids)):
+        raise LiveGenerationValidationError(
+            "Systematic runtime case IDs must be unique"
+        )
+    overlap = set(case_ids) & set(excluded_ids)
+    if overlap:
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases must expand rather than duplicate the "
+            "critical release set: " + ", ".join(sorted(overlap))
+        )
+    required_type_items = payload.get("required_case_types")
+    required_mode_items = payload.get("required_answer_modes")
+    if (
+        not isinstance(required_type_items, list)
+        or not required_type_items
+        or any(
+            not isinstance(item, str) or not item.strip()
+            for item in required_type_items
+        )
+        or not isinstance(required_mode_items, list)
+        or not required_mode_items
+        or any(
+            not isinstance(item, str) or not item.strip()
+            for item in required_mode_items
+        )
+    ):
+        raise LiveGenerationValidationError(
+            "Systematic runtime coverage dimensions must be non-empty lists"
+        )
+    required_types = set(required_type_items)
+    required_modes = set(required_mode_items)
+    if required_types != REQUIRED_SYSTEMATIC_CASE_TYPES:
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases must require every supported case type"
+        )
+    if required_modes != REQUIRED_SYSTEMATIC_ANSWER_MODES:
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases must require every supported answer mode"
+        )
+    if not required_types.issubset(covered_types):
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases do not cover every required case type"
+        )
+    if not required_modes.issubset(covered_modes):
+        raise LiveGenerationValidationError(
+            "Systematic runtime cases do not cover every required answer mode"
+        )
+    return set(case_ids)
+
+
 def required_release_case_ids(root=ROOT):
     root = Path(root)
     historical = {
@@ -103,7 +232,13 @@ def required_release_case_ids(root=ROOT):
             "cases"
         ]
     }
-    return historical | delivery
+    registry = release_case_registry(root)
+    systematic = validate_systematic_case_registry(
+        load_json(root / SYSTEMATIC_CASES_PATH.relative_to(ROOT)),
+        registry,
+        excluded_ids=historical | delivery,
+    )
+    return historical | delivery | systematic
 
 
 def delivery_case_failures(case, context, answer, audit_module):

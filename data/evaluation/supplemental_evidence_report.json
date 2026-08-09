@@ -13,8 +13,8 @@
     "matched_window_count": 2
   },
   "weak_overlap_rejected": true,
-  "primary_preferred": true,
-  "maximum_supplemental_selected": 1,
-  "answer_packet_bytes": 6384,
+  "primary_preferred_for_synthesis": true,
+  "maximum_supplemental_synthesis_candidates": 1,
+  "answer_packet_bytes": 6617,
   "failures": []
 }

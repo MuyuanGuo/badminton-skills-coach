@@ -1,5 +1,5 @@
 {
-  "version": 47,
+  "version": 50,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -19,11 +19,9 @@
       "evidence_basis": "维护者确认技术分类；7069575740836023587 的 00:04-00:22 直接支持不主动起跳与短暂自然离地，02:35-02:44 直接支持其下压不如跳杀尖、回球更偏平。"
     }
   },
-  "default_max_selected_videos": 16,
+  "default_max_selected_videos": 80,
   "retrieval_query_budget": 8,
   "retrieval_query_hard_limit": 12,
-  "max_exact_videos": 12,
-  "max_supporting_videos": 4,
   "automatic_expansion_selection_limit": 3,
   "supplemental_selection_limit": 2,
   "supplemental_allowed_relevance_tiers": [
@@ -34,10 +32,6 @@
     "practice": ["practice"],
     "diagnosis": ["correction", "mechanism", "safety_boundary"],
     "equipment": ["equipment"]
-  },
-  "supporting_video_limits_by_technique_variant": {
-    "drop_reverse_slice": 0,
-    "smash_heavy": 5
   },
   "default_segment_limit": 4,
   "top_rank_acceptance": 12,
@@ -90,7 +84,7 @@
   "query_actor_partner_object_pronoun_prefixes": ["帮", "替", "保护"],
   "query_actor_object_pronoun_restore_prefixes": ["帮", "替"],
   "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
-  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
+  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决", "怎么练", "如何练", "应该怎么练"],
   "cross_variant_transfer_terms": ["互相代替", "互相替代", "互借", "照搬", "直接套用", "能代替", "可代替", "来证明"],
   "cross_evidence_transfer_axes": ["technique_variant", "stroke_side", "pressure_state", "tactical_phase"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
@@ -352,6 +346,16 @@
       "source_suppressions": ["不让你做杀上网", "不要做杀上网", "不是杀上网", "对手针对杀上网回远网"],
       "source_override_terms": [],
       "answer_boundary_statement": "本题只接受‘杀球—上网’完整序列的直接或分段证据；反手被动高远、动态低架、泛杀球和泛上网都不能单独证明本题。"
+    },
+    {
+      "name": "smash_recovery",
+      "query_terms": ["杀球后回位", "杀后回位", "杀球 回位"],
+      "query_context_terms": ["杀球", "扣杀", "重杀", "突击"],
+      "search_terms": ["杀球后 回位", "杀球 回动 下一拍", "后场杀球 回位保护"],
+      "source_terms": ["杀球后回位", "回位保护", "回动和下一拍衔接", "击球后的落地", "击球落地", "进攻衔接", "回动的节奏感", "低重心步法回动"],
+      "source_suppressions": ["杀上网", "只考虑向前衔接", "远网吊球保持下压并连接下一拍"],
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受杀球落地后的回位、回动节奏或下一拍衔接证据；泛杀球发力和杀上网专项都不能证明本题。"
     },
     {
       "name": "forward_reception_movement",
@@ -644,7 +648,7 @@
     }
   ],
   "required_focus_equivalent_groups": [
-    ["姿势", "动作", "框架", "挥拍"],
+    ["姿势", "动作", "框架", "架拍", "挥拍"],
     ["击球点", "击球位置", "点位"],
     ["落点", "瞄准", "线路"],
     ["站位", "保护位置"],

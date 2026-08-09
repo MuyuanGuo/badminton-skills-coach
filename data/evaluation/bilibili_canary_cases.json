@@ -38,7 +38,7 @@
   "thresholds": {
     "retrieval_top_k": 3,
     "minimum_claim_window_rank": 2,
-    "maximum_packet_bytes": 16384,
+    "maximum_packet_bytes": 32768,
     "minimum_pass_rate": 1.0
   }
 }

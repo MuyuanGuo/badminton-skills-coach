@@ -16,6 +16,11 @@ RUNTIME_STORE_PATH = (
     ROOT / "skills/liuhui-badminton-coach/references/runtime-store.sqlite3"
 )
 RETRIEVAL_INDEX_PATH = ROOT / "data/knowledge/retrieval_index.json"
+ANSWER_PACKET_CASES_PATH = ROOT / "data/evaluation/answer_packet_cases.json"
+BILIBILI_CANARY_CASES_PATH = ROOT / "data/evaluation/bilibili_canary_cases.json"
+ANSWER_PACKET_MODULE = (
+    ROOT / "skills/liuhui-badminton-coach/scripts/answer_packet.py"
+)
 
 
 def load_module(name, path):
@@ -128,6 +133,7 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
                 "text": "练习时应该保持动作连贯。",
             },
         ]
+
         self.video = {
             "video_id": self.evidence_id,
             "evidence_id": self.evidence_id,
@@ -169,6 +175,30 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
                 ]
             }
         }
+
+    def test_packet_byte_budget_matches_canonical_answer_packet_contract(self):
+        packet_cases = json.loads(
+            ANSWER_PACKET_CASES_PATH.read_text(encoding="utf-8")
+        )
+        positive_cases = json.loads(
+            BILIBILI_CANARY_CASES_PATH.read_text(encoding="utf-8")
+        )
+        packet_runtime = load_module(
+            "bilibili_canary_answer_packet_budget", ANSWER_PACKET_MODULE
+        )
+        canonical_limit = packet_cases["maximum_answer_packet_bytes"]
+        self.assertEqual(
+            packet_runtime.ANSWER_PACKET_HARD_MAXIMUM_BYTES,
+            canonical_limit,
+        )
+        self.assertEqual(
+            canary.DEFAULT_THRESHOLDS["maximum_packet_bytes"],
+            canonical_limit,
+        )
+        self.assertEqual(
+            positive_cases["thresholds"]["maximum_packet_bytes"],
+            canonical_limit,
+        )
 
     def generated_registry(self):
         return canary.generate_registry(

@@ -9,7 +9,7 @@ Use this workflow only for answers produced with this Skill and for explicit use
 are never teaching evidence. Every label and feedback record is scoped to that answer turn only.
 
 1. Assign every confirmed worthwhile video exactly one stable, contiguous label: `V1`, `V2`, and so on. Current answer packets order these labels by answer usefulness after removing audit-only finalists.
-2. Keep the same label when a core video appears again in the complete related-video list.
+2. Keep one label per video across synthesis, core, and complete-related layers. The rendered complete-related section lists only the non-core remainder so each URL appears once.
 3. Order labels by answer usefulness, not by raw retrieval rank.
 4. Keep the question and mapping in task context. Do not persist the user's question merely because an answer was generated.
 

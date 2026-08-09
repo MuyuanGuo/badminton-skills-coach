@@ -161,7 +161,10 @@ def claim_scope_directness(video, diagnostic_rules):
     exact_count = sum(value == "exact" for value in matches.values())
     weak = set(diagnostic_rules.get("weak_constraint_matches", []))
     if not exact_count and all(value in weak for value in matches.values()):
-        return "incompatible"
+        # Explicit conflicts have already failed semantic selection. Weak or
+        # incidental scope is therefore generic/component evidence, not an
+        # incompatibility; its claim_scope_policy still forces conditioning.
+        return "generic"
     if all(value == "exact" for value in matches.values()):
         return "exact"
     return "partial"
@@ -293,10 +296,7 @@ def confidence_ceiling(evidence_entries, selected_by_label):
 
 
 def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
-    if not has_requested_action_scope_support(
-        video, query_constraints, diagnostic_rules
-    ):
-        return None
+    del strategy
     scope_directness = claim_scope_directness(video, diagnostic_rules)
     if scope_directness == "incompatible":
         return None
@@ -306,6 +306,33 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
         return None
     window_support = query_window_support(video)
     if window_support["rank"] < 2:
+        return None
+    action_scope_supported = has_requested_action_scope_support(
+        video, query_constraints, diagnostic_rules
+    )
+    component_only_support = bool(
+        video.get("symptom_match") == "not_required"
+        and (
+            video.get("concept_match")
+            in {
+                "component_support",
+                "constraint_scoped_support",
+                "reviewed_support",
+                "expanded_support",
+            }
+            or (
+                concept in {"exact_question", "exact_query_unit"}
+                and (
+                    video.get("focus_match") in {"primary", "structured"}
+                    or window_support["rank"] >= 3
+                )
+            )
+        )
+    )
+    if not action_scope_supported and not component_only_support:
+        # A symptom word or generic mechanism is not enough to support the
+        # whole question when it does not cover any requested action axis.
+        # It may still support a separately mapped hypothesis or mechanism.
         return None
     if (
         scope_directness == "exact"
@@ -363,8 +390,23 @@ def mechanism_evidence(
 ):
     matched = []
     for video in selected_videos:
-        if not has_requested_action_scope_support(
+        action_scope_supported = has_requested_action_scope_support(
             video, query_constraints, diagnostic_rules
+        )
+        if (
+            not action_scope_supported
+            and not (
+                (
+                    video.get("concept_match")
+                    in {"exact_question", "exact_query_unit"}
+                    or (
+                        video.get("concept_match") == "component_support"
+                        and video.get("symptom_match")
+                        in {"direct_primary", "direct_structured"}
+                    )
+                )
+                and video.get("focus_match") in {"primary", "structured"}
+            )
         ):
             continue
         configured_terms = mechanism.get("evidence_terms", [])
@@ -421,6 +463,7 @@ def mechanism_evidence(
         directness = "direct" if scope_directness == "exact" else "scoped"
         if video.get("concept_match") in {
             "component_support",
+            "constraint_scoped_support",
             "reviewed_support",
             "expanded_support",
         }:
@@ -439,7 +482,9 @@ def mechanism_evidence(
         matched.append(evidence)
     rank = {"direct": 0, "scoped": 1, "component": 2}
     matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
-    return matched[: diagnostic_rules.get("max_evidence_per_claim", 3)]
+    return matched[
+        : diagnostic_rules.get("max_related_evidence_per_claim", 8)
+    ]
 
 
 def material_diagnostic_branches(
@@ -566,7 +611,7 @@ def build_diagnostic_contract(
             )
         )
         evidence_entries = evidence_entries[
-            : diagnostic_rules.get("max_evidence_per_claim", 3)
+            : diagnostic_rules.get("max_related_evidence_per_claim", 8)
         ]
         claim_map.append(
             {
@@ -757,7 +802,7 @@ def build_diagnostic_contract(
                     )
                 )
             evidence_entries = evidence_entries[
-                : diagnostic_rules.get("max_evidence_per_claim", 3)
+                : diagnostic_rules.get("max_related_evidence_per_claim", 8)
             ]
             claim_map.append(
                 {
@@ -774,6 +819,19 @@ def build_diagnostic_contract(
                     ),
                 }
             )
+    if boundary.get("type") == "cross_variant_evidence_transfer":
+        for claim in claim_map:
+            claim["status"] = (
+                "unverified"
+                if claim.get("kind") == "user_hypothesis"
+                else "unsupported"
+            )
+            claim["evidence"] = []
+            claim["eligible_video_labels"] = []
+            claim["confidence_ceiling"] = "none"
+        supported_mechanisms = []
+        branches = []
+
     diagnostic_question = bool(
         observed_symptoms
         or user_hypotheses

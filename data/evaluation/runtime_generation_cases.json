@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "description": "Systematic current-runtime answer generation cases. These complement user-reported critical regressions and typed delivery cases with balanced case-type, answer-mode, boundary, and evidence-path coverage.",
+  "minimum_case_count": 12,
+  "required_case_types": [
+    "technical_action",
+    "diagnosis",
+    "tactics",
+    "training_plan",
+    "evidence_boundary"
+  ],
+  "required_answer_modes": [
+    "text_primary",
+    "balanced",
+    "video_primary"
+  ],
+  "cases": [
+    {
+      "case_id": "AQ001",
+      "coverage_reason": "Reviewed-atom diagnosis with passive rear-court scope and evidence-boundary language."
+    },
+    {
+      "case_id": "AQ004",
+      "coverage_reason": "Text-primary doubles tactics answer."
+    },
+    {
+      "case_id": "AQ006",
+      "coverage_reason": "Training-plan answer and the largest reviewed answer-packet case."
+    },
+    {
+      "case_id": "AQ009",
+      "coverage_reason": "Technical-action answer with a large complete-related source catalog."
+    },
+    {
+      "case_id": "AQ010",
+      "coverage_reason": "Video-primary diagnosis for grip tension and force transfer."
+    },
+    {
+      "case_id": "AQ015",
+      "coverage_reason": "Video-primary technical-action answer for forehand grip."
+    },
+    {
+      "case_id": "AQ025",
+      "coverage_reason": "Multi-issue technical question requiring tactics and grip evidence to remain scoped."
+    },
+    {
+      "case_id": "AQ026",
+      "coverage_reason": "Insufficient-observation boundary that must reject a unique-cause conclusion."
+    },
+    {
+      "case_id": "AQ027",
+      "coverage_reason": "Pain-or-injury boundary with no generic coaching leakage."
+    },
+    {
+      "case_id": "AQ028",
+      "coverage_reason": "Purchase-advice boundary."
+    },
+    {
+      "case_id": "AQ029",
+      "coverage_reason": "Endorsement and authorship boundary."
+    },
+    {
+      "case_id": "AQ030",
+      "coverage_reason": "Video-primary visual-confirmation boundary."
+    }
+  ]
+}

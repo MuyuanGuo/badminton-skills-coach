@@ -150,6 +150,31 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in audit["violations"]},
         )
 
+    def test_pending_clarification_is_not_a_technical_assertion(self):
+        context = copy.deepcopy(self.context)
+        context.pop("answer_turn_contract", None)
+        context.pop("clarification_state", None)
+        claim = next(
+            item
+            for item in context["claim_evidence_map"]
+            if item["status"] in {"supported", "conditional"}
+        )
+        claim["confidence_ceiling"] = "low"
+        question = f"{claim['text']}具体是什么情况？"
+        context["clarification_decision"] = {
+            "action": "answer_conditionally",
+            "questions": [question],
+        }
+        answer = (
+            self.cases["answers"]["complete_conditional"]
+            + f"\n\n## 仍需确认\n\n- {question}"
+        )
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertNotIn(
+            "confidence_ceiling_exceeded",
+            {item["code"] for item in audit["violations"]},
+        )
+
     def test_answer_turn_evidence_state_must_match_current_context(self):
         context = copy.deepcopy(self.continuation_context)
         context["answer_turn_contract"]["evidence_state_digest"] = "0" * 64

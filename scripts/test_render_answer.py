@@ -41,7 +41,7 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn(atom["verbalizable_claim"], answer)
         self.assertTrue(answer.rstrip().endswith(self.packet["feedback_prompt"]))
         for video in self.packet["selected_videos"]:
-            if video["label"] not in self.packet["display_videos"]:
+            if video["label"] not in self.packet["complete_related_videos"]:
                 self.assertNotIn(f"{video['label']} 不相关", answer)
 
     def test_every_rendered_citation_has_a_displayed_source(self):
@@ -53,17 +53,32 @@ class RenderAnswerTests(unittest.TestCase):
         answer = self.renderer.render_answer(packet)
         cited = set(re.findall(r"\[(V\d+)\]", answer))
         self.assertTrue(cited)
-        self.assertTrue(cited.issubset(set(packet["display_videos"])))
+        self.assertTrue(cited.issubset(set(packet["synthesis_videos"])))
         draft = self.renderer.default_draft(packet)
         windows = packet["evidence_windows"]
-        window_by_claim = {
-            block["claim_id"]: windows[block["window_id"]]["text"]
-            for block in draft["blocks"]
-            if block["type"] == "claim_window"
+        windows_by_claim = {
+            claim_id: [
+                windows[block["window_id"]]["text"]
+                for block in draft["blocks"]
+                if block["type"] == "claim_window"
+                and block["claim_id"] == claim_id
+            ]
+            for claim_id in {"H1", "H2"}
         }
-        self.assertIn("拍面摊开向上", window_by_claim["H1"])
-        self.assertIn("位置和框架一定要契合", window_by_claim["H2"])
-        self.assertEqual(set(packet["display_videos"]), cited)
+        self.assertTrue(
+            any("拍面摊开向上" in text for text in windows_by_claim["H1"])
+        )
+        self.assertTrue(
+            any(
+                "框架" in text or "击球点" in text
+                for text in windows_by_claim["H2"]
+            )
+        )
+        self.assertGreaterEqual(len(windows_by_claim["H1"]), 2)
+        self.assertGreaterEqual(len(windows_by_claim["H2"]), 2)
+        self.assertEqual(set(packet["synthesis_videos"]), cited)
+        for label in packet["complete_related_videos"]:
+            self.assertIn(label, answer)
 
     def test_diagnostic_gap_render_states_unique_cause_boundary(self):
         context = self.runtime.prepare_answer_context(
@@ -146,7 +161,7 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn("反手被动高远", answer)
             self.assertIn("动态低架", answer)
             self.assertNotIn("visual_review_no_timestamp", answer)
-            self.assertIn("视觉复核片段（无精确时间点）", answer)
+            self.assertIn("V1｜杀上网：只考虑向前衔接时使用交叉步", answer)
             answers[query] = answer
         self.assertNotEqual(answers[short_query], answers[chain_query])
         self.assertIn("对手：挡网", answers[chain_query])

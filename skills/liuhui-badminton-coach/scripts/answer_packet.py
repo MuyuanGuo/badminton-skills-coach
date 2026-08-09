@@ -14,14 +14,22 @@ from token_budget import estimate_json_tokens as estimate_packet_tokens
 from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 4
+ANSWER_PACKET_SCHEMA_VERSION = 6
 ANSWER_PLAN_SCHEMA_VERSION = 1
 FALLBACK_WINDOW_LIMIT = 4
-DISPLAY_VIDEO_LIMIT = 5
-ANSWER_PACKET_TARGET_BYTES = 12 * 1024
-ANSWER_PACKET_HARD_MAXIMUM_BYTES = 16 * 1024
-ANSWER_PACKET_TARGET_TOKENS = 5_000
-ANSWER_PACKET_HARD_MAXIMUM_TOKENS = 6_500
+CORE_VIDEO_LIMIT = 5
+COMPLETE_RELATED_TITLE_LIMIT = 48
+COMPLETE_RELATED_CATALOG_FIELDS = (
+    "label",
+    "evidence_id",
+    "title",
+    "legacy_video_id",
+    "url",
+)
+ANSWER_PACKET_TARGET_BYTES = 24 * 1024
+ANSWER_PACKET_HARD_MAXIMUM_BYTES = 32 * 1024
+ANSWER_PACKET_TARGET_TOKENS = 10_000
+ANSWER_PACKET_HARD_MAXIMUM_TOKENS = 12_000
 
 
 def canonical_json_digest(payload):
@@ -106,14 +114,11 @@ def answer_visible_video_labels(claim_evidence_map):
 
 
 def packet_visible_video_labels(plan, claim_evidence_map):
-    """Return only evidence labels authorized by each claim directive."""
+    """Return evidence labels selected for technical answer synthesis."""
 
     atoms_by_id = {
         atom["atom_id"]: atom
         for atom in plan.get("selected_evidence_atoms", [])
-    }
-    claims_by_id = {
-        claim["claim_id"]: claim for claim in claim_evidence_map
     }
     labels = []
     for directive in plan.get("claim_directives", []):
@@ -124,12 +129,7 @@ def packet_visible_video_labels(plan, claim_evidence_map):
                 if atom_id in atoms_by_id
             ]
         elif directive.get("mode") == "compose_from_claim_scoped_source":
-            candidates = [
-                item.get("label") or item.get("video_label")
-                for item in claims_by_id.get(
-                    directive.get("claim_id"), {}
-                ).get("evidence", [])
-            ]
+            candidates = directive.get("evidence_labels", [])
         else:
             candidates = []
         for label in candidates:
@@ -138,18 +138,33 @@ def packet_visible_video_labels(plan, claim_evidence_map):
     return labels
 
 
-def fallback_video_labels(plan, claim_evidence_map):
-    claims_by_id = {
-        claim["claim_id"]: claim for claim in claim_evidence_map
+def packet_related_video_labels(plan, claim_evidence_map):
+    """Return every claim-authorized video, including non-core sources."""
+
+    active_claim_ids = {
+        directive.get("claim_id")
+        for directive in plan.get("claim_directives", [])
+        if directive.get("mode")
+        in {"compose_from_reviewed_atoms", "compose_from_claim_scoped_source"}
     }
+    labels = []
+    for claim in claim_evidence_map:
+        if claim.get("claim_id") not in active_claim_ids:
+            continue
+        for item in claim.get("evidence", []):
+            label = item.get("label") or item.get("video_label")
+            if label and label not in labels:
+                labels.append(label)
+    return labels
+
+
+def fallback_video_labels(plan, claim_evidence_map):
     return {
-        item.get("label") or item.get("video_label")
+        label
         for directive in plan.get("claim_directives", [])
         if directive.get("mode") == "compose_from_claim_scoped_source"
-        for item in claims_by_id.get(directive.get("claim_id"), {}).get(
-            "evidence", []
-        )
-        if item.get("label") or item.get("video_label")
+        for label in directive.get("evidence_labels", [])
+        if label
     }
 
 
@@ -201,6 +216,9 @@ def build_closed_answer_plan(context, atoms):
     }
     selected_atoms = []
     directives = []
+    source_limit = context.get("evidence_layer_contract", {}).get(
+        "max_synthesis_evidence_per_claim", 3
+    )
     for claim in context.get("claim_evidence_map", []):
         eligible_ids = {item["evidence_id"] for item in claim.get("evidence", [])}
         matches = []
@@ -223,8 +241,18 @@ def build_closed_answer_plan(context, atoms):
             planned_atom = dict(atom)
             planned_atom["video_label"] = selected_by_id[evidence_id]["label"]
             matches.append(planned_atom)
-            selected_atoms.append(planned_atom)
         if matches:
+            selected_evidence_ids = []
+            for item in matches:
+                if item["evidence_id"] not in selected_evidence_ids:
+                    selected_evidence_ids.append(item["evidence_id"])
+            selected_evidence_ids = selected_evidence_ids[:source_limit]
+            matches = [
+                item
+                for item in matches
+                if item["evidence_id"] in selected_evidence_ids
+            ]
+            selected_atoms.extend(matches)
             mode = "compose_from_reviewed_atoms"
         elif claim.get("status") in {"unsupported", "unverified"}:
             mode = "state_evidence_gap"
@@ -236,6 +264,7 @@ def build_closed_answer_plan(context, atoms):
                 "status": claim["status"],
                 "mode": mode,
                 "atom_ids": [item["atom_id"] for item in matches],
+                "evidence_labels": [],
                 "confidence_ceiling": claim["confidence_ceiling"],
             }
         )
@@ -263,6 +292,17 @@ def build_closed_answer_plan(context, atoms):
         for directive, claim in zip(directives, context["claim_evidence_map"]):
             if claim.get("evidence"):
                 directive["mode"] = "compose_from_claim_scoped_source"
+    claims_by_id = {
+        claim["claim_id"]: claim for claim in context["claim_evidence_map"]
+    }
+    for directive in directives:
+        if directive["mode"] != "compose_from_claim_scoped_source":
+            continue
+        directive["evidence_labels"] = [
+            item.get("label") or item.get("video_label")
+            for item in claims_by_id[directive["claim_id"]].get("evidence", [])
+            if item.get("label") or item.get("video_label")
+        ][:source_limit]
     return {
         "schema_version": ANSWER_PLAN_SCHEMA_VERSION,
         "mode": planner_mode,
@@ -271,6 +311,7 @@ def build_closed_answer_plan(context, atoms):
         "composer_contract": {
             "technical_claim_policy": technical_claim_policy,
             "allowed_atom_ids": [item["atom_id"] for item in selected_atoms],
+            "max_synthesis_evidence_per_claim": source_limit,
             "unknown_atom_ids_forbidden": True,
             "uncovered_claim_policy": "state_the_evidence_gap_or_limit_the_answer_to_the_nontechnical_contract",
             "generic_badminton_knowledge_as_source_forbidden": True,
@@ -554,7 +595,7 @@ def compact_video(
 
 
 def normalized_evidence_windows(videos):
-    windows = {}
+    windows: dict[str, dict[str, object]] = {}
     window_ids_by_key = {}
     normalized_videos = []
     for video in videos:
@@ -580,13 +621,13 @@ def normalized_evidence_windows(videos):
 
 
 def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
-    atoms_by_id = {
-        atom["atom_id"]: atom
-        for atom in plan.get("selected_evidence_atoms", [])
-    }
     directives_by_claim = {
         directive["claim_id"]: directive
         for directive in plan.get("claim_directives", [])
+    }
+    atoms_by_id = {
+        atom["atom_id"]: atom
+        for atom in plan.get("selected_evidence_atoms", [])
     }
     compact_claims = []
     for claim in claims:
@@ -602,24 +643,37 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
             if key in claim
         }
         directive = directives_by_claim.get(claim.get("claim_id"), {})
-        if directive.get("mode") == "compose_from_reviewed_atoms":
-            allowed_labels = {
-                atoms_by_id[atom_id].get("video_label")
-                for atom_id in directive.get("atom_ids", [])
-                if atom_id in atoms_by_id
-            }
-        elif directive.get("mode") == "compose_from_claim_scoped_source":
+        if directive.get("mode") in {
+            "compose_from_reviewed_atoms",
+            "compose_from_claim_scoped_source",
+        }:
             allowed_labels = {
                 item.get("label") or item.get("video_label")
                 for item in claim.get("evidence", [])
             }
         else:
             allowed_labels = set()
+        if directive.get("mode") == "compose_from_reviewed_atoms":
+            synthesis_labels = {
+                atoms_by_id[atom_id].get("video_label")
+                for atom_id in directive.get("atom_ids", [])
+                if atom_id in atoms_by_id
+            }
+        else:
+            synthesis_labels = set(directive.get("evidence_labels", []))
         compact_evidence = []
+        related_labels = []
         for item in claim.get("evidence", []):
-            if (
-                item.get("label") or item.get("video_label")
-            ) not in allowed_labels:
+            label = item.get("label") or item.get("video_label")
+            if label not in allowed_labels:
+                continue
+            if label not in synthesis_labels:
+                # Complete-related-only sources retain exact claim membership
+                # without repeating one JSON object per label. Their source
+                # identity lives in complete_related_video_catalog and they
+                # cannot authorize prose.
+                if label not in related_labels:
+                    related_labels.append(label)
                 continue
             projected = {
                 key: item[key]
@@ -652,23 +706,133 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
                     projected["window_ids"] = window_ids
             compact_evidence.append(projected)
         compact["evidence"] = compact_evidence
+        if related_labels:
+            compact["related_labels"] = related_labels
         compact_claims.append(compact)
     return compact_claims
 
 
-def default_claim_windows_by_evidence_id(claims):
-    """Keep only windows required by the deterministic fallback draft."""
+def minimize_complete_list_videos(videos, detail_labels):
+    """Keep full metadata only where prose or core guidance can use it."""
 
-    windows = {}
+    minimal_keys = {"label", "evidence_id", "title", "url", "legacy_video_id"}
+    minimized = []
+    for video in videos:
+        if video["label"] in detail_labels:
+            minimized.append(video)
+            continue
+        compact = {
+                key: value
+                for key, value in video.items()
+                if key in minimal_keys
+        }
+        evidence_id = str(compact.get("evidence_id", ""))
+        derivable_url = (
+            f"https://www.bilibili.com/video/{evidence_id.split(':', 1)[1]}/"
+            if evidence_id.startswith("bilibili:BV")
+            else (
+                f"https://www.douyin.com/video/{evidence_id}"
+                if evidence_id.isdigit()
+                else None
+            )
+        )
+        if compact.get("url") == derivable_url:
+            compact.pop("url")
+        minimized.append(compact)
+    return minimized
+
+
+def encode_complete_related_video_catalog(videos, detail_labels):
+    """Column-encode non-synthesis sources without dropping source identity."""
+
+    rows = []
+    for video in videos:
+        if video["label"] in detail_labels:
+            continue
+        title = str(video.get("title") or "")
+        if len(title) > COMPLETE_RELATED_TITLE_LIMIT:
+            title = title[: COMPLETE_RELATED_TITLE_LIMIT - 1] + "…"
+        catalog_video = {**video, "title": title}
+        rows.append(
+            [
+                catalog_video.get(field)
+                for field in COMPLETE_RELATED_CATALOG_FIELDS
+            ]
+        )
+    return {
+        "fields": list(COMPLETE_RELATED_CATALOG_FIELDS),
+        "rows": rows,
+    }
+
+
+def decode_complete_related_video_catalog(packet):
+    """Decode and validate the compact complete-related source catalog."""
+
+    catalog = packet.get("complete_related_video_catalog")
+    if not isinstance(catalog, dict):
+        raise ValueError("answer_packet is missing complete-related video catalog")
+    if catalog.get("fields") != list(COMPLETE_RELATED_CATALOG_FIELDS):
+        raise ValueError("answer_packet complete-related catalog fields are invalid")
+    rows = catalog.get("rows")
+    if not isinstance(rows, list):
+        raise ValueError("answer_packet complete-related catalog rows are invalid")
+    videos = []
+    for row in rows:
+        if not isinstance(row, list) or len(row) != len(
+            COMPLETE_RELATED_CATALOG_FIELDS
+        ):
+            raise ValueError("answer_packet complete-related catalog row is invalid")
+        video = {
+            field: value
+            for field, value in zip(COMPLETE_RELATED_CATALOG_FIELDS, row)
+            if value is not None
+        }
+        if any(
+            not isinstance(video.get(field), str)
+            or not video[field].strip()
+            for field in ("label", "evidence_id", "title")
+        ):
+            raise ValueError(
+                "answer_packet complete-related catalog source identity is invalid"
+            )
+        videos.append(video)
+    return videos
+
+
+def packet_video_records(packet):
+    """Return detailed and catalog-only videos as one label-addressable set."""
+
+    detailed = packet.get("selected_videos")
+    if not isinstance(detailed, list):
+        raise ValueError("answer_packet selected_videos must be a list")
+    videos = [*detailed, *decode_complete_related_video_catalog(packet)]
+    labels = [video.get("label") for video in videos]
+    if len(labels) != len(set(labels)):
+        raise ValueError("answer_packet video labels must be unique")
+    return sorted(videos, key=lambda video: int(video["label"][1:]))
+
+
+def default_claim_windows_by_evidence_id(claims, plan):
+    """Keep windows for every source selected for fallback synthesis."""
+
+    windows: dict[str, list[dict[str, object]]] = {}
+    labels_by_claim = {
+        directive["claim_id"]: set(directive.get("evidence_labels", []))
+        for directive in plan.get("claim_directives", [])
+        if directive.get("mode") == "compose_from_claim_scoped_source"
+    }
     for claim in claims:
+        allowed_labels = labels_by_claim.get(claim.get("claim_id"), set())
         for evidence in claim.get("evidence", []):
+            label = evidence.get("label") or evidence.get("video_label")
+            if label not in allowed_labels:
+                continue
             claim_windows = evidence.get("claim_windows", [])
             if not claim_windows:
                 continue
             windows.setdefault(evidence["evidence_id"], []).extend(
                 claim_windows
             )
-            break
     return windows
 
 
@@ -694,9 +858,6 @@ def default_render_video_labels(plan, claim_evidence_map, videos):
         atom["atom_id"]: atom
         for atom in plan.get("selected_evidence_atoms", [])
     }
-    claims_by_id = {
-        claim["claim_id"]: claim for claim in claim_evidence_map
-    }
     videos_by_label = {video["label"]: video for video in videos}
     labels = []
     for directive in plan.get("claim_directives", []):
@@ -707,12 +868,7 @@ def default_render_video_labels(plan, claim_evidence_map, videos):
                 if atom_id in atoms_by_id
             ]
         elif directive.get("mode") == "compose_from_claim_scoped_source":
-            candidates = [
-                item.get("label") or item.get("video_label")
-                for item in claims_by_id.get(
-                    directive.get("claim_id"), {}
-                ).get("evidence", [])
-            ]
+            candidates = directive.get("evidence_labels", [])
             candidates = [
                 label
                 for label in candidates
@@ -720,7 +876,7 @@ def default_render_video_labels(plan, claim_evidence_map, videos):
                     "window_ids",
                     videos_by_label.get(label, {}).get("evidence_windows", []),
                 )
-            ][:1]
+            ]
         else:
             candidates = []
         for label in candidates:
@@ -729,13 +885,13 @@ def default_render_video_labels(plan, claim_evidence_map, videos):
     return labels
 
 
-def select_display_videos(
+def select_core_videos(
     videos,
     claim_evidence_map,
-    limit=DISPLAY_VIDEO_LIMIT,
-    required_labels=(),
+    limit=CORE_VIDEO_LIMIT,
+    preferred_labels=(),
 ):
-    """Choose a bounded set covering claims and every rendered citation."""
+    """Choose a bounded core set while preserving the complete related list."""
 
     video_by_label = {video["label"]: video for video in videos}
     uncovered = {
@@ -752,17 +908,11 @@ def select_display_videos(
         }
         for label in video_by_label
     }
-    required = list(dict.fromkeys(required_labels))
-    if len(required) > limit:
-        raise ValueError(
-            "default rendered citations exceed the display video limit"
-        )
-    selected = [label for label in required if label in video_by_label]
-    uncovered -= {
-        claim_id
-        for label in selected
-        for claim_id in coverage[label]
+    preferred_rank = {
+        label: index
+        for index, label in enumerate(dict.fromkeys(preferred_labels))
     }
+    selected: list[str] = []
     remaining = set(video_by_label) - set(selected)
     while remaining and len(selected) < limit:
         if not uncovered:
@@ -771,6 +921,7 @@ def select_display_videos(
             remaining,
             key=lambda candidate: (
                 -len(coverage[candidate] & uncovered),
+                preferred_rank.get(candidate, 10**6),
                 video_by_label[candidate].get("role") != "core",
                 video_by_label[candidate].get("answer_eligibility") != "primary",
                 int(candidate[1:]),
@@ -784,18 +935,18 @@ def select_display_videos(
     return selected
 
 
-def display_video_labels_for_context(context, limit=DISPLAY_VIDEO_LIMIT):
-    """Project the bounded video list shown by the closed renderer."""
+def core_video_labels_for_context(context, limit=CORE_VIDEO_LIMIT):
+    """Project the bounded core list; related sources remain separately visible."""
 
     plan = context["answer_plan"]
-    visible_labels = set(
-        packet_visible_video_labels(plan, context["claim_evidence_map"])
+    related_labels = set(
+        packet_related_video_labels(plan, context["claim_evidence_map"])
     )
     fallback_labels = fallback_video_labels(
         plan, context["claim_evidence_map"]
     )
     claim_windows_by_evidence_id = default_claim_windows_by_evidence_id(
-        context["claim_evidence_map"]
+        context["claim_evidence_map"], plan
     )
     videos = [
         compact_video(
@@ -808,19 +959,18 @@ def display_video_labels_for_context(context, limit=DISPLAY_VIDEO_LIMIT):
             context["selected_videos"],
             key=lambda item: int(item["label"][1:]),
         )
-        if video["label"] in visible_labels
+        if video["label"] in related_labels
     ]
     compact_claims = compact_claim_evidence_map(
         context["claim_evidence_map"], plan
     )
-    required_labels = default_render_video_labels(plan, compact_claims, videos)
-    return select_display_videos(
+    preferred_labels = default_render_video_labels(plan, compact_claims, videos)
+    return select_core_videos(
         videos,
         compact_claims,
         limit=limit,
-        required_labels=required_labels,
+        preferred_labels=preferred_labels,
     )
-
 
 def compact_practice_plan(topic_navigation):
     if not isinstance(topic_navigation, dict):
@@ -924,7 +1074,7 @@ def compact_plan(plan, window_ids_by_key):
     compact["claim_directives"] = [
         {
             key: directive[key]
-            for key in ("claim_id", "mode", "atom_ids")
+            for key in ("claim_id", "mode", "atom_ids", "evidence_labels")
             if key in directive
         }
         for directive in plan.get("claim_directives", [])
@@ -936,6 +1086,7 @@ def compact_plan(plan, window_ids_by_key):
             "allowed_atom_ids",
             "unknown_atom_ids_forbidden",
             "uncovered_claim_policy",
+            "max_synthesis_evidence_per_claim",
         )
         if key in plan.get("composer_contract", {})
     }
@@ -946,14 +1097,33 @@ def build_answer_packet(context, audit_context_reference=None):
     digest = canonical_json_digest(context)
     plan = context["answer_plan"]
     turn = context["answer_turn_contract"]
-    visible_labels = set(
+    synthesis_labels = set(
         packet_visible_video_labels(plan, context["claim_evidence_map"])
     )
+    computed_related_labels = packet_related_video_labels(
+        plan, context["claim_evidence_map"]
+    )
+    declared_related_labels = context.get(
+        "answer_complete_related_video_labels", []
+    )
+    related_label_order = [
+        *[
+            label
+            for label in declared_related_labels
+            if label in set(computed_related_labels)
+        ],
+        *[
+            label
+            for label in computed_related_labels
+            if label not in set(declared_related_labels)
+        ],
+    ]
+    related_labels = set(related_label_order)
     fallback_labels = fallback_video_labels(
         plan, context["claim_evidence_map"]
     )
     claim_windows_by_evidence_id = default_claim_windows_by_evidence_id(
-        context["claim_evidence_map"]
+        context["claim_evidence_map"], plan
     )
     compact_videos = [
         compact_video(
@@ -966,7 +1136,7 @@ def build_answer_packet(context, audit_context_reference=None):
             context["selected_videos"],
             key=lambda item: int(item["label"][1:]),
         )
-        if video["label"] in visible_labels
+        if video["label"] in related_labels
     ]
     windows, window_ids_by_key, compact_videos = normalized_evidence_windows(
         compact_videos
@@ -974,14 +1144,31 @@ def build_answer_packet(context, audit_context_reference=None):
     compact_claims = compact_claim_evidence_map(
         context["claim_evidence_map"], plan, window_ids_by_key
     )
-    required_labels = default_render_video_labels(
+    preferred_labels = default_render_video_labels(
         plan, compact_claims, compact_videos
     )
-    display_videos = select_display_videos(
+    core_videos = select_core_videos(
         compact_videos,
         compact_claims,
-        required_labels=required_labels,
+        preferred_labels=preferred_labels,
     )
+    complete_related_videos = [
+        label
+        for label in related_label_order
+        if label in {video["label"] for video in compact_videos}
+    ]
+    compact_videos = minimize_complete_list_videos(
+        compact_videos,
+        set(core_videos) | set(synthesis_labels),
+    )
+    detail_labels = set(core_videos) | set(synthesis_labels)
+    complete_related_video_catalog = encode_complete_related_video_catalog(
+        compact_videos,
+        detail_labels,
+    )
+    detailed_videos = [
+        video for video in compact_videos if video["label"] in detail_labels
+    ]
     packet = {
         "schema_version": ANSWER_PACKET_SCHEMA_VERSION,
         "packet_type": "liuhui_badminton_answer_packet",
@@ -1022,10 +1209,19 @@ def build_answer_packet(context, audit_context_reference=None):
         ),
         "policy_refs": context["policy_refs"],
         "evidence_windows": windows,
-        "selected_videos": compact_videos,
-        "display_videos": display_videos,
+        "selected_videos": detailed_videos,
+        "complete_related_video_catalog": complete_related_video_catalog,
+        "synthesis_videos": [
+            label
+            for label in packet_visible_video_labels(
+                plan, context["claim_evidence_map"]
+            )
+            if label in synthesis_labels and label in related_labels
+        ],
+        "core_videos": core_videos,
+        "complete_related_videos": complete_related_videos,
         "feedback_prompt": build_feedback_hint(
-            [{"label": label} for label in display_videos]
+            [{"label": label} for label in complete_related_videos]
         ),
     }
     practice_plan = compact_practice_plan(context.get("topic_navigation"))
@@ -1061,7 +1257,7 @@ def validate_answer_packet(packet, context):
         for item in delivery.get("items", [])
     ) and not packet.get("practice_plan"):
         raise ValueError("practice delivery requires practice_plan")
-    covered_cluster_ids = set()
+    covered_cluster_ids: set[str] = set()
     for video in packet.get("selected_videos", []):
         content_cluster_ids = set(
             video.get("content_cluster_ids") or []
@@ -1083,19 +1279,42 @@ def validate_answer_packet(packet, context):
     if packet != expected:
         raise ValueError("answer_packet projection does not match audit context")
     mapped_labels = set(
-        packet_visible_video_labels(
+        packet_related_video_labels(
             context["answer_plan"], context["claim_evidence_map"]
         )
     )
-    packet_labels = {item.get("label") for item in packet.get("selected_videos", [])}
+    packet_labels = {item.get("label") for item in packet_video_records(packet)}
     if packet_labels != mapped_labels:
         raise ValueError("answer_packet videos must exactly match claim evidence labels")
-    display_labels = packet.get("display_videos")
+    synthesis_labels = packet.get("synthesis_videos")
+    expected_synthesis_labels = packet_visible_video_labels(
+        context["answer_plan"], context["claim_evidence_map"]
+    )
+    if synthesis_labels != expected_synthesis_labels:
+        raise ValueError("answer_packet synthesis_videos do not match answer plan")
+    complete_labels = packet.get("complete_related_videos")
     if (
-        not isinstance(display_labels, list)
-        or len(display_labels) > DISPLAY_VIDEO_LIMIT
-        or len(display_labels) != len(set(display_labels))
-        or not set(display_labels).issubset(packet_labels)
+        not isinstance(complete_labels, list)
+        or len(complete_labels) != len(set(complete_labels))
+        or set(complete_labels) != packet_labels
     ):
-        raise ValueError("answer_packet display_videos must be a bounded evidence subset")
+        raise ValueError(
+            "answer_packet complete_related_videos must exactly match related evidence"
+        )
+    core_labels = packet.get("core_videos")
+    detailed_labels = {
+        item.get("label") for item in packet.get("selected_videos", [])
+    }
+    if (
+        not isinstance(core_labels, list)
+        or len(core_labels) > CORE_VIDEO_LIMIT
+        or len(core_labels) != len(set(core_labels))
+        or not set(core_labels).issubset(packet_labels)
+        or not set(core_labels).issubset(detailed_labels)
+    ):
+        raise ValueError("answer_packet core_videos must be a bounded evidence subset")
+    if not set(synthesis_labels).issubset(detailed_labels):
+        raise ValueError(
+            "answer_packet synthesis videos must retain detailed source metadata"
+        )
     return True

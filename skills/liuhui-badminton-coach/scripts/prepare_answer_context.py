@@ -18,7 +18,7 @@ DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 1
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
-ANSWER_PACKET_SCHEMA_VERSION = 4
+ANSWER_PACKET_SCHEMA_VERSION = 6
 ANSWER_PLAN_SCHEMA_VERSION = 1
 _SIBLING_MODULES = {}
 _STATIC_RESOURCE_CACHE = {}
@@ -273,7 +273,7 @@ def apply_supplemental_evidence_policy(
                 {
                     **entry,
                     "selection_reasons": [
-                        "supplemental_evidence_limit_exceeded"
+                        "supplemental_synthesis_limit_exceeded"
                     ],
                 }
             )
@@ -348,7 +348,7 @@ def apply_supplemental_evidence_policy(
                 {
                     **entry,
                     "selection_reasons": [
-                        "supplemental_evidence_not_needed"
+                        "supplemental_not_needed_for_synthesis"
                     ],
                 }
             )
@@ -406,11 +406,12 @@ def _remap_contract_video_labels(value, label_map):
     """Remap only structured video-label fields in a diagnostic contract."""
 
     if isinstance(value, dict):
-        eligible = value.get("eligible_video_labels")
-        if isinstance(eligible, list):
-            value["eligible_video_labels"] = [
-                label_map.get(label, label) for label in eligible
-            ]
+        for labels_key in ("eligible_video_labels", "evidence_labels"):
+            labels = value.get(labels_key)
+            if isinstance(labels, list):
+                value[labels_key] = [
+                    label_map.get(label, label) for label in labels
+                ]
         if value.get("evidence_id") and value.get("label") in label_map:
             value["label"] = label_map[value["label"]]
         if value.get("video_label") in label_map:
@@ -681,6 +682,91 @@ def evaluate_candidate_for_query_unit(
         search_module, plan, entry, video, rules
     )
     symptom_match = symptom_decision(search_module, plan, video, rules)
+    scope_supported_axes = [
+        axis_name
+        for axis_name in requested_constraints
+        if constraint_result[4].get(axis_name)
+        in {"exact", "mixed_support", "incidental_support"}
+    ]
+    best_match_rank = min(
+        (match.get("rank", 10**6) for match in entry.get("matches", [])),
+        default=10**6,
+    )
+    reviewed_scope_support = any(
+        constraint_scope.get(axis_name, {}).get("source")
+        in {
+            "reviewed_context",
+            "reviewed_override",
+            "primary_and_reviewed",
+        }
+        for axis_name in scope_supported_axes
+    )
+    scoped_instructional_rescue = bool(
+        not actor_failures
+        and not derived_failures
+        and not action_failures
+        and not variant_failure
+        and constraint_result[0]
+        and scope_supported_axes
+        and has_instructional_evidence(video)
+        and set(reasons).issubset(
+            {
+                "no_direct_or_supporting_question_evidence",
+                "literal_symptom_or_mechanism_not_supported",
+            }
+        )
+        and (
+            (
+                concept_match != "none"
+                and best_match_rank <= 3
+                and (
+                    reviewed_scope_support
+                    or len(scope_supported_axes) >= 2
+                )
+            )
+            or (
+                concept_match == "none"
+                and reviewed_scope_support
+                and best_match_rank
+                <= rules.get("direct_review_rank_acceptance", 24)
+            )
+        )
+    )
+    if scoped_instructional_rescue:
+        keep = True
+        reasons = ["matched_constraint_scoped_instructional_evidence"]
+        if concept_match == "none":
+            concept_match = "constraint_scoped_support"
+    weak_requested_action_axes = {
+        axis_name
+        for axis_name in {
+            "shot_family",
+            "technique_variant",
+        }
+        if requested_constraints.get(axis_name)
+        and constraint_result[4].get(axis_name)
+        in {"unspecified_support", "incidental_support"}
+    }
+    if (
+        keep
+        and weak_requested_action_axes
+        and set(ranking_scope) & {"shot_family", "technique_variant"}
+        and not any(
+            constraint_result[4].get(axis_name) == "exact"
+            for axis_name in requested_constraints
+        )
+        and concept_match
+        in {
+            "component_support",
+            "constraint_scoped_support",
+            "expanded_support",
+            "reviewed_support",
+        }
+    ):
+        keep = False
+        reasons = [
+            "unrequested_specific_scope_cannot_fill_weak_action_scope"
+        ]
     if (
         symptom_match == "none"
         and entry.get("reviewed_evidence_rank", 2) <= 1
@@ -737,11 +823,10 @@ def prepare_answer_context(
         raise ValueError("clarification_answers requires continue_from")
     user_query = query
     query = canonicalize_retrieval_query(query, rules)
-    explicit_max_videos = max_videos is not None
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
-    if not 1 <= max_videos <= 40:
-        raise ValueError("max_videos must be between 1 and 40")
+    if not 1 <= max_videos <= 120:
+        raise ValueError("max_videos must be between 1 and 120")
     if not 1 <= segment_limit <= 12:
         raise ValueError("segment_limit must be between 1 and 12")
 
@@ -814,25 +899,13 @@ def prepare_answer_context(
     if use_topic_navigation:
         retrieval_queries.extend(navigation["suggested_search_queries"][:3])
         retrieval_queries = list(dict.fromkeys(retrieval_queries))
-    if include_rejected:
-        retrieval_query_budget = {
-            "configured_budget": rules.get("retrieval_query_budget", 24),
-            "hard_limit": rules.get("retrieval_query_hard_limit", 48),
-            "generated_query_count": len(retrieval_queries),
-            "executed_query_count": len(retrieval_queries),
-            "truncated": False,
-            "omitted_query_count": 0,
-            "missing_required_units": [],
-            "diagnostic_override": True,
-        }
-    else:
-        retrieval_queries, retrieval_query_budget = budget_retrieval_queries(
-            search_module,
-            retrieval_queries,
-            retrieval_plan,
-            retrieval_base_query,
-            rules,
-        )
+    retrieval_queries, retrieval_query_budget = budget_retrieval_queries(
+        search_module,
+        retrieval_queries,
+        retrieval_plan,
+        retrieval_base_query,
+        rules,
+    )
 
     payload_iterator = (
         search_module.search(
@@ -975,8 +1048,36 @@ def prepare_answer_context(
         chosen = (kept_evaluations or evaluations)[0]
         evaluation = chosen["evaluation"]
         keep = bool(kept_evaluations)
+        supported_units = [item["unit"] for item in kept_evaluations]
+        failed_focus_units = [
+            item["unit"]
+            for item in evaluations
+            if item["unit"] not in supported_units
+            and (
+                focus_groups := required_focus_groups(
+                    search_module, item["unit"], rules
+                )
+            )
+            and video_supports_required_focus(
+                search_module, video, focus_groups, rules
+            )
+        ]
+        if (
+            keep
+            and failed_focus_units
+            and all(
+                item["evaluation"]["concept_match"]
+                in {"expanded_support", "reviewed_support"}
+                for item in kept_evaluations
+            )
+        ):
+            keep = False
+        else:
+            failed_focus_units = []
         reasons = list(evaluation["reasons"])
-        if not keep and len(evaluations) > 1:
+        if failed_focus_units:
+            reasons = ["cross_unit_focus_evidence_failed_its_own_unit"]
+        elif not keep and len(evaluations) > 1:
             reasons = list(
                 dict.fromkeys(
                     reason
@@ -985,7 +1086,8 @@ def prepare_answer_context(
                 )
             )
         constraint_result = evaluation["constraint_result"]
-        supported_units = [item["unit"] for item in kept_evaluations]
+        if not keep:
+            supported_units = []
         query_unit_constraint_matches = {
             item["unit"]: item["evaluation"]["constraint_result"][4]
             for item in evaluations
@@ -1034,14 +1136,18 @@ def prepare_answer_context(
         (accepted if keep else rejected).append(record)
 
     accepted.sort(key=lambda entry: selected_sort_key(entry, rules))
+    semantic_answerable_entries = list(accepted)
+    deferred = []
     accepted, cluster_duplicates = search_module.cap_content_clusters(
         accepted,
         candidate_getter=lambda entry: entry["candidate"],
     )
-    rejected.extend(
+    deferred.extend(
         {
             **duplicate["item"],
-            "selection_reasons": ["content_cluster_duplicate"],
+            "selection_reasons": [
+                "content_cluster_duplicate_deferred_from_synthesis"
+            ],
             "duplicate_of_video_id": duplicate["representative"]["video_id"],
             "duplicate_content_cluster_id": duplicate["cluster_id"],
         }
@@ -1064,49 +1170,28 @@ def prepare_answer_context(
                 continue
         cohort_kept.append(entry)
     accepted = cohort_kept
-    rejected.extend(
+    deferred.extend(
         {
             **entry,
             "selection_reasons": [
-                "automatic_expansion_selection_limit_exceeded"
+                "automatic_expansion_synthesis_limit_exceeded"
             ],
         }
         for entry in cohort_suppressed
     )
-    accepted, supplemental_rejected = apply_supplemental_evidence_policy(
+    accepted, supplemental_deferred = apply_supplemental_evidence_policy(
         accepted,
         plan,
         boundary,
         rules,
     )
-    rejected.extend(supplemental_rejected)
+    deferred.extend(supplemental_deferred)
     exact_entries = [
         entry
         for entry in accepted
         if entry_is_core(entry)
     ]
     support_entries = [entry for entry in accepted if entry not in exact_entries]
-    support_limit = rules.get("max_supporting_videos", 4)
-    requested_variants = requested_constraints.get("technique_variant", [])
-    if len(requested_variants) == 1:
-        support_limit = rules.get(
-            "supporting_video_limits_by_technique_variant", {}
-        ).get(requested_variants[0], support_limit)
-    support_limit = min(support_limit, max_videos)
-    if explicit_max_videos and not exact_entries:
-        # An explicit evidence budget should remain usable when the corpus has
-        # no exact/core source. Returning only the default supporting cap can
-        # hide a valid response-oriented source even though the caller asked
-        # for a larger bounded set.
-        support_limit = max_videos
-    exact_limit = rules.get("max_exact_videos", max_videos)
-    if explicit_max_videos:
-        exact_limit = (
-            max_videos
-            if max_videos <= support_limit
-            else max_videos - support_limit
-        )
-    selected_exact_entries = exact_entries[:exact_limit]
     if (
         split_multi_issue
         or len(question_concept_anchors(search_module, plan)) > 1
@@ -1114,30 +1199,20 @@ def prepare_answer_context(
         support_entries = diversify_support_entries(
             search_module,
             plan,
-            selected_exact_entries,
+            exact_entries,
             support_entries,
             rules,
         )
-    eligible_entries = [
-        *selected_exact_entries,
-        *support_entries[:support_limit],
-    ]
-    policy_excluded_entries = [
+    synthesis_candidate_entries = [*exact_entries, *support_entries]
+    selected_entries = semantic_answerable_entries[:max_videos]
+    semantic_budget_deferred = [
         {
             **entry,
-            "selection_reasons": ["exact_video_limit_exceeded"],
+            "selection_reasons": ["semantic_answerable_video_limit_exceeded"],
         }
-        for entry in exact_entries[exact_limit:]
+        for entry in semantic_answerable_entries[max_videos:]
     ]
-    policy_excluded_entries.extend(
-        {
-            **entry,
-            "selection_reasons": ["supporting_video_limit_exceeded"],
-        }
-        for entry in support_entries[support_limit:]
-    )
-    rejected.extend(policy_excluded_entries)
-    selected_entries = eligible_entries[:max_videos]
+    deferred.extend(semantic_budget_deferred)
     selected_ids = [item["video_id"] for item in selected_entries]
     lookup = (
         search_module.lookup_videos(
@@ -1352,20 +1427,57 @@ def prepare_answer_context(
         "feedback_guidance": primary_payload["feedback_guidance"],
         "topic_navigation": navigation,
         "delivery_contract": delivery_contract,
+        "evidence_layer_contract": {
+            "semantic_answerable_definition": (
+                "passes_ready_relevance_scope_constraint_concept_and_"
+                "symptom_evidence_checks"
+            ),
+            "synthesis_candidate_definition": (
+                "semantically_answerable_after_content_cluster_automatic_"
+                "expansion_and_supplemental_synthesis_policy"
+            ),
+            "max_synthesis_evidence_per_claim": diagnostic_rules.get(
+                "max_synthesis_evidence_per_claim", 3
+            ),
+            "max_related_evidence_per_claim": diagnostic_rules.get(
+                "max_related_evidence_per_claim", 8
+            ),
+            "core_video_limit": 5,
+        },
         **diagnostic_contract,
         "selection": {
             "high_recall_candidate_count": len(merged),
-            "eligible_video_count": len(eligible_entries),
-            "eligible_exact_video_count": min(len(exact_entries), exact_limit),
-            "eligible_supporting_video_count": min(
-                len(support_entries), support_limit
+            "semantic_answerable_video_count": len(
+                semantic_answerable_entries
+            ),
+            "semantic_answerable_video_ids": [
+                item["video_id"] for item in semantic_answerable_entries
+            ],
+            "synthesis_candidate_video_count": len(
+                synthesis_candidate_entries
+            ),
+            "synthesis_candidate_video_ids": [
+                item["video_id"] for item in synthesis_candidate_entries
+            ],
+            "eligible_video_count": len(semantic_answerable_entries),
+            "eligible_exact_video_count": sum(
+                entry_is_core(item) for item in semantic_answerable_entries
+            ),
+            "eligible_supporting_video_count": sum(
+                not entry_is_core(item)
+                for item in semantic_answerable_entries
             ),
             "selected_video_count": len(selected_videos),
-            "selection_truncated": len(eligible_entries) > len(selected_videos),
+            "selection_truncated": len(semantic_answerable_entries)
+            > len(selected_videos),
             "max_selected_videos": max_videos,
             "selected_video_ids": selected_ids,
+            "deferred_candidate_count": len(deferred),
             "rejected_candidate_count": len(rejected),
-            "claim": "deterministic_finalists_not_proof_of_semantic_completeness",
+            "claim": (
+                "layered_semantic_answerability_and_synthesis_selection_"
+                "not_proof_of_unrestricted_semantic_completeness"
+            ),
         },
         "selected_videos": selected_videos,
         "answer_visible_video_labels": visible_labels,
@@ -1379,7 +1491,7 @@ def prepare_answer_context(
                 "置信边界",
             ],
             "citation_rules": [
-                "只引用 answer_visible_video_labels 对应的视频；selected_videos 中未映射到 claim 的检索 finalist 仅供审计，不得出现在回答中。",
+                "技术结论只引用 answer_synthesis_video_labels；完整相关视频清单使用 answer_complete_related_video_labels；selected_videos 中未映射到 claim 的 finalist 仅供审计。",
                 "每个 V 标签只对应一个 evidence_id，并在答案中只输出一次 canonical URL。当前抖音条目的 evidence_id 等于 video_id；直播切片等新来源使用自己的稳定 evidence_id。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
@@ -1394,7 +1506,7 @@ def prepare_answer_context(
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
                 "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
                 "逐项执行 answer_turn_contract：正文承认每条 resolved_clarifications，不得重复询问 resolved_question_ids_must_not_be_reasked，并逐条提出 pending_clarifications；本轮引用只能来自契约绑定的最新 evidence_state。",
-                "每个重要结论只能使用 claim_evidence_map 为该结论列出的 V 标签，并服从其 confidence_ceiling；answer_visible_video_labels 是回答全局引用白名单。",
+                "每个重要结论只能使用 answer_plan 为该结论选定、且同时位于 claim_evidence_map 的 V 标签，并服从 confidence_ceiling；完整相关视频不得被借用来扩张技术结论。",
                 "answer_eligibility=primary 的证据优先；supplemental 只可补足主证据未覆盖的概念、纠错、训练、装备、条件或反例，不能单独扩张为普遍结论。",
                 "metadata_title_trust=limited 时标题只用于弱召回，不能作为技术结论证据；只能引用 bounded_note_evidence、transcript_evidence 或 teaching_note 中实际命中的时间戳窗口。",
                 "逐项完成 completeness_contract；must_answer、conditional 和 unresolved 项都不得静默省略。",
@@ -1434,23 +1546,39 @@ def prepare_answer_context(
     answer_packet_runtime = load_sibling(
         "liuhui_answer_packet_visibility", "answer_packet.py"
     )
-    planned_visible_labels = answer_packet_runtime.packet_visible_video_labels(
+    planned_synthesis_labels = answer_packet_runtime.packet_visible_video_labels(
         context["answer_plan"], context["claim_evidence_map"]
     )
+    planned_related_labels = answer_packet_runtime.packet_related_video_labels(
+        context["answer_plan"], context["claim_evidence_map"]
+    )
+    final_related_order = [
+        *planned_synthesis_labels,
+        *[
+            label
+            for label in planned_related_labels
+            if label not in set(planned_synthesis_labels)
+        ],
+    ]
     selected_videos, visible_labels, final_label_map = relabel_answer_videos(
         selected_videos,
         diagnostic_contract,
-        visible_labels=planned_visible_labels,
+        visible_labels=final_related_order,
     )
     _remap_contract_video_labels(context["answer_plan"], final_label_map)
+    synthesis_labels = [
+        final_label_map[label] for label in planned_synthesis_labels
+    ]
+    context["answer_synthesis_video_labels"] = synthesis_labels
+    context["answer_complete_related_video_labels"] = visible_labels
     context["answer_visible_video_labels"] = visible_labels
-    display_labels = answer_packet_runtime.display_video_labels_for_context(
+    core_labels = answer_packet_runtime.core_video_labels_for_context(
         context
     )
-    context["answer_display_video_labels"] = display_labels
+    context["answer_core_video_labels"] = core_labels
     context["answer_contract"]["feedback_prompt"] = (
         feedback_module.build_feedback_hint(
-            [{"label": label} for label in display_labels]
+            [{"label": label} for label in visible_labels]
         )
     )
     context["answer_turn_contract"] = build_answer_turn_contract(context)
@@ -1474,14 +1602,42 @@ def prepare_answer_context(
                 ),
             )
         ]
-        context["unselected_eligible_candidates"] = [
+        context["deferred_candidates"] = [
+            {
+                "video_id": item["video_id"],
+                "title": item.get("candidate", {}).get("title"),
+                "reasons": item["selection_reasons"],
+                "best_rank": item.get("best_rank"),
+            }
+            for item in sorted(
+                deferred,
+                key=lambda item: (
+                    item.get("best_rank") or 10**6,
+                    item["video_id"],
+                ),
+            )
+        ]
+        selected_id_set = set(selected_ids)
+        deferred_by_id = {
+            item["video_id"]: item["selection_reasons"]
+            for item in deferred
+        }
+        context["unselected_semantically_answerable_candidates"] = [
             {
                 "video_id": item["video_id"],
                 "title": item["candidate"]["title"],
                 "best_rank": item["best_rank"],
+                "reasons": deferred_by_id.get(
+                    item["video_id"],
+                    ["not_selected_for_synthesis"],
+                ),
             }
-            for item in eligible_entries[max_videos:]
+            for item in semantic_answerable_entries
+            if item["video_id"] not in selected_id_set
         ]
+        context["unselected_eligible_candidates"] = list(
+            context["unselected_semantically_answerable_candidates"]
+        )
     return context
 
 
