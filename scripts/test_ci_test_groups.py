@@ -35,6 +35,18 @@ class CiTestGroupTests(unittest.TestCase):
         self.assertEqual(len(assigned), len(set(assigned)))
         self.assertLessEqual(max(map(len, partitions)) - min(map(len, partitions)), 1)
 
+    def test_compatibility_tests_are_a_fast_group_subset(self):
+        groups = self.module.test_groups()
+        self.assertTrue(self.module.COMPATIBILITY_TEST_FILES)
+        self.assertTrue(
+            self.module.COMPATIBILITY_TEST_FILES.issubset(groups["fast"])
+        )
+
+    def test_parallel_runner_keeps_resource_heavy_tests_serial(self):
+        groups = self.module.test_groups()
+        self.assertTrue(self.module.SERIAL_TEST_FILES)
+        self.assertTrue(self.module.SERIAL_TEST_FILES.issubset(groups["fast"]))
+
 
 if __name__ == "__main__":
     unittest.main()

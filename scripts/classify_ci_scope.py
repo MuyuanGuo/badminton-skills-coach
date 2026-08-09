@@ -17,6 +17,24 @@ TOOLING_EXACT = {
     "scripts/release_inventory.py",
     "scripts/require_successful_validation.py",
 }
+ARTIFACT_TOOLING_EXACT = {
+    ".gitattributes",
+    "requirements-dev.txt",
+    "requirements-transcription.txt",
+    "scripts/generate_release_sbom.py",
+    "scripts/package_skill_release.py",
+    "scripts/release_inventory.py",
+}
+ARTIFACT_TEST_FILES = {
+    "test_build_reproducibility.py",
+    "test_knowledge_graph_html.py",
+    "test_media_assets.py",
+    "test_project_artifacts.py",
+    "test_project_site.py",
+    "test_release_package.py",
+    "test_repository_links.py",
+    "test_skill_portability.py",
+}
 
 
 def normalize_path(path):
@@ -51,6 +69,22 @@ def is_tooling_only(path):
     )
 
 
+def is_artifact_affecting(path):
+    value = normalize_path(path)
+    name = PurePosixPath(value).name
+    if value == VALIDATION_WORKFLOW or value in ARTIFACT_TOOLING_EXACT:
+        return True
+    if value.startswith("scripts/") and name in ARTIFACT_TEST_FILES:
+        return True
+    if is_documentation(value) or is_tooling_only(value):
+        return False
+    # The answer-context regression file is routed to its dedicated quality
+    # shards; changing the test itself does not change a packaged artifact.
+    if value == "scripts/test_answer_context.py":
+        return False
+    return True
+
+
 def classify_paths(paths):
     normalized = [
         normalize_path(path)
@@ -62,7 +96,7 @@ def classify_paths(paths):
     non_docs = [path for path in normalized if not is_documentation(path)]
     return {
         "static": bool(non_docs),
-        "artifact": bool(non_docs),
+        "artifact": any(is_artifact_affecting(path) for path in non_docs),
         "quality": any(not is_tooling_only(path) for path in non_docs),
         "docs_only": not non_docs,
     }
