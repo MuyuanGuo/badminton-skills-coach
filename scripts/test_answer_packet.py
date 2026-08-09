@@ -139,7 +139,7 @@ class AnswerPacketTests(unittest.TestCase):
         self.assertEqual(practice["context"]["setup"], "partner")
         self.assertEqual(practice["session_minutes"], 20)
         self.assertEqual(sum(practice["minute_allocation"].values()), 20)
-        self.assertEqual(packet["schema_version"], 4)
+        self.assertEqual(packet["schema_version"], 5)
         self.assertEqual(len(practice["three_day_progression"]), 3)
         self.assertEqual(len(practice["two_week_consolidation"]), 2)
         self.assertGreaterEqual(len(practice["success_criteria"]), 2)
@@ -320,11 +320,19 @@ class AnswerPacketTests(unittest.TestCase):
         }
         self.assertEqual(packet_labels, mapped_labels)
         self.assertEqual(
-            set(self.context["answer_visible_video_labels"]),
+            set(self.context["answer_complete_related_video_labels"]),
             mapped_labels,
         )
-        self.assertLessEqual(len(self.packet["display_videos"]), 5)
-        self.assertTrue(set(self.packet["display_videos"]).issubset(packet_labels))
+        self.assertEqual(
+            set(self.packet["complete_related_videos"]), mapped_labels
+        )
+        self.assertLessEqual(len(self.packet["core_videos"]), 5)
+        self.assertTrue(
+            set(self.packet["core_videos"]).issubset(packet_labels)
+        )
+        self.assertTrue(
+            set(self.packet["synthesis_videos"]).issubset(packet_labels)
+        )
 
     def test_compact_videos_omit_redundant_douyin_identity_and_nulls(self):
         for video in self.packet["selected_videos"]:

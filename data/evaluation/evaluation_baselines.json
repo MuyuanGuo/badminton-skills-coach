@@ -1220,7 +1220,7 @@
       }
     },
     "v2.1.2": {
-      "description": "Stable release v2.1.2 quality floor",
+      "description": "Stable release v2.1.2 floor plus current layered answer-evidence completeness contracts",
       "invalidated_metrics": {},
       "metrics": {
         "answer_policy.accuracy": {
@@ -1243,16 +1243,28 @@
           "value": 1.0,
           "direction": "at_least"
         },
+        "answer_context.semantic_answerable_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
         "answer_context.cases": {
           "value": 57,
           "direction": "at_least"
         },
         "answer_context.selected_video_recall": {
-          "value": 0.7976878612716763,
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.claim_mapped_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.complete_related_video_recall": {
+          "value": 1.0,
           "direction": "at_least"
         },
         "answer_context.primary_selected_rate": {
-          "value": 0.8518518518518519,
+          "value": 1.0,
           "direction": "at_least"
         },
         "answer_context.answer_mode_accuracy": {
@@ -1264,6 +1276,10 @@
           "direction": "at_least"
         },
         "answer_context.hard_negative_selected_violations": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "answer_context.selection_truncated_cases": {
           "value": 0,
           "direction": "at_most"
         },

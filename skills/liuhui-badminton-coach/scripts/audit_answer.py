@@ -20,9 +20,10 @@ DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
-CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 4
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 5
 LEGACY_BOUND_PACKET_SCHEMA_VERSION = 2
 LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION = 3
+LEGACY_CORE_ONLY_PACKET_SCHEMA_VERSION = 4
 
 
 def load_json(path):
@@ -203,6 +204,7 @@ def validate_packet_binding(packet, context):
     if schema_version in {
         LEGACY_BOUND_PACKET_SCHEMA_VERSION,
         LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION,
+        LEGACY_CORE_ONLY_PACKET_SCHEMA_VERSION,
     }:
         if packet.get("packet_type") != "liuhui_badminton_answer_packet":
             raise ValueError("invalid answer_packet type")
@@ -623,7 +625,7 @@ def audit_delivery_contract(context, units, violations):
                     details={"missing": missing},
                 )
         elif kind == "evidence.sources":
-            if context.get("answer_display_video_labels"):
+            if context.get("answer_complete_related_video_labels"):
                 if "核心视频与观看重点" not in "\n".join(units):
                     fail(
                         item,
@@ -681,6 +683,7 @@ def audit_answer(question, context, answer, rules=None):
         unit
         for unit in units
         if not unit.lstrip().startswith(nontechnical_prefixes)
+        and not re.match(r"^-\s*V\d+｜", unit.lstrip())
     ]
     claims = context.get("claim_evidence_map", [])
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
@@ -1005,6 +1008,18 @@ def audit_answer(question, context, answer, rules=None):
                     "occurrences": auditable_answer.count(canonical_url),
                 },
             )
+
+    expected_related_labels = set(
+        context.get("answer_complete_related_video_labels", [])
+    )
+    missing_related_labels = sorted(expected_related_labels - all_labels)
+    if missing_related_labels:
+        add_violation(
+            violations,
+            "missing_complete_related_videos",
+            "The answer omits claim-authorized videos from the complete related list.",
+            details={"missing_labels": missing_related_labels},
+        )
 
     violations.sort(
         key=lambda item: (

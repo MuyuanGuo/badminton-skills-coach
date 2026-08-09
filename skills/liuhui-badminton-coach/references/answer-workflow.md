@@ -13,11 +13,11 @@ Use this order when applicable:
 1. `直接回答`: one compact decision per unit.
 2. `文字解释`: supported mechanisms, conditions, cues, and observable distinctions.
 3. `适用边界`: material branches, exclusions, and unresolved gaps.
-4. `核心视频与观看重点`: strongest display evidence overall.
-5. `完整相关视频`: remaining packet-authorized display videos, grouped by unit.
+4. `核心视频与观看重点`: the 3–5 strongest labels from `core_videos`, with detailed viewing guidance.
+5. `完整相关视频`: every remaining label from `complete_related_videos`, grouped by unit and never silently capped to the core shortlist.
 6. `置信边界`: distinguish source facts, bounded synthesis, and required user video.
 
-One claim may cite at most three strongest sources. Reuse a video's assigned label and URL; never recycle a label for another video. Keep the answer useful without link access.
+One claim may synthesize at most three strongest, source-distinct labels from `synthesis_videos`. This is a prose-density limit, not a related-video limit: sources present only in `complete_related_videos` must still be listed but cannot be borrowed to add technical claims. Reuse a video's assigned label and URL; never recycle a label for another video. Keep the answer useful without link access.
 
 ## Systematic learning
 

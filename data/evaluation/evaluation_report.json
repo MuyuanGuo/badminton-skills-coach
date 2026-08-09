@@ -4,14 +4,14 @@
   "development_version": "2.1.3-dev.1",
   "baseline_version": "v2.1.2",
   "build": {
-    "id": "e1bc1828d7e7ea3e",
-    "inputs_sha256": "1aa743fafccd2318a98b17623a468cc7417256eab5c0664ac39d3f30881a004d",
-    "runtime_sha256": "f1b96febb288bd551e2aef9f7bb084dc6e315e6a31bb093c4c12d777e199ed72"
+    "id": "6fde88a3ce0a4e79",
+    "inputs_sha256": "09d6130fffbe86e2a533226324e7b25930e6e176d2d05804d703258446be87ab",
+    "runtime_sha256": "e08c5ac80668cf62280bd2ac4802a04f1fa366512619f194bcb55832c56752c0"
   },
   "summary": {
     "status": "pass",
     "suites": 14,
-    "baseline_metrics": 54,
+    "baseline_metrics": 58,
     "regressions": 0,
     "invalidated_baseline_metrics": 0
   },
@@ -28,12 +28,29 @@
       "cases": 57,
       "expected_videos": 173,
       "candidate_recall": 1.0,
-      "selected_video_recall": 0.7976878612716763,
-      "primary_selected_rate": 0.8518518518518519,
+      "semantic_answerable_video_recall": 1.0,
+      "selected_video_recall": 1.0,
+      "claim_mapped_video_recall": 1.0,
+      "synthesis_video_recall": 0.4624277456647399,
+      "complete_related_video_recall": 1.0,
+      "core_video_recall": 0.15606936416184972,
+      "mean_video_count_by_layer": {
+        "candidate": 344.140350877193,
+        "semantic_answerable": 17.19298245614035,
+        "synthesis_candidate": 14.543859649122806,
+        "selected": 17.19298245614035,
+        "claim_mapped": 14.982456140350877,
+        "synthesis": 2.9298245614035086,
+        "complete_related": 14.982456140350877,
+        "core": 1.0350877192982457
+      },
+      "primary_selected_rate": 1.0,
       "answer_mode_accuracy": 1.0,
       "context_evidence_coverage": 1.0,
       "hard_negative_selected_violations": 0,
       "selection_truncated_cases": 0,
+      "retrieval_query_budget_truncated_cases": 30,
+      "retrieval_query_omitted_count": 170,
       "evaluation_fixture_isolation": true
     },
     "answer_quality": {
@@ -84,11 +101,11 @@
       "runtime_use_forbidden": true,
       "source_type": "bilibili_video",
       "case_count": 30,
-      "passed": true,
-      "pass_rate": 1.0,
+      "passed": false,
+      "pass_rate": 0.7,
       "retrieval_hit_rate_at_k": 1.0,
       "claim_mapping_rate": 1.0,
-      "failure_count": 0
+      "failure_count": 10
     },
     "feedback_lifecycle": {
       "status": "pass",
@@ -216,12 +233,12 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
+      "runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
-      "current_answer_runtime_fingerprint": "1ccfe4ddd3b282fccb66473182bbf32154f2eb731dca8259955c213e3f846bec",
-      "generation_artifact_runtime_fingerprint": "a4d2f178986e780a4d071c2d7be76b28572e0a5704899b53c6fe7ba2e8dfe964",
-      "current_artifact_runtime_fingerprint": "a4d2f178986e780a4d071c2d7be76b28572e0a5704899b53c6fe7ba2e8dfe964",
+      "generation_answer_runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
+      "current_answer_runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
+      "generation_artifact_runtime_fingerprint": "25513e86218b5613ab13215fff9ecbd7f9e7346b8b327c9fab7e4110ec53e1fa",
+      "current_artifact_runtime_fingerprint": "25513e86218b5613ab13215fff9ecbd7f9e7346b8b327c9fab7e4110ec53e1fa",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -237,12 +254,12 @@
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "1daa6c3088ee3af90e8653f2d16c8c006812604a610983be612157c2add856c6"
+        "implementation_sha256": "0a0ba5dc9942cbaf5557c082db7c8754b87b233ca5bd35a19cbd70bb40f51fac"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "93191e00ba726f19dd6752220fa462b44b0cc61be2d3fa75e7fcc52aa47a7829"
+        "implementation_sha256": "fe811dad2d6f7dc5b2ff14a29e19cf1d68908af803601effb0c5ba770c04dbb0"
       }
     }
   },
@@ -293,6 +310,15 @@
       "passed": true
     },
     {
+      "metric": "answer_context.semantic_answerable_video_recall",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
       "metric": "answer_context.cases",
       "current": 57,
       "baseline": 57,
@@ -303,8 +329,26 @@
     },
     {
       "metric": "answer_context.selected_video_recall",
-      "current": 0.7976878612716763,
-      "baseline": 0.7976878612716763,
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.claim_mapped_video_recall",
+      "current": 1.0,
+      "baseline": 1.0,
+      "direction": "at_least",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.complete_related_video_recall",
+      "current": 1.0,
+      "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -312,8 +356,8 @@
     },
     {
       "metric": "answer_context.primary_selected_rate",
-      "current": 0.8518518518518519,
-      "baseline": 0.8518518518518519,
+      "current": 1.0,
+      "baseline": 1.0,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -339,6 +383,15 @@
     },
     {
       "metric": "answer_context.hard_negative_selected_violations",
+      "current": 0,
+      "baseline": 0,
+      "direction": "at_most",
+      "tolerance": 0,
+      "contract_source": "stable_baseline",
+      "passed": true
+    },
+    {
+      "metric": "answer_context.selection_truncated_cases",
       "current": 0,
       "baseline": 0,
       "direction": "at_most",

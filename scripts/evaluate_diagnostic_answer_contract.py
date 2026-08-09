@@ -262,7 +262,13 @@ def evaluate(
             clarification_answers=case.get("answers"),
         )
         mismatches = continuation_case_mismatches(context, case)
-        gold_answer = case.get("gold_answer", "")
+        gold_answer = case.get(
+            "gold_answer_v7",
+            case.get(
+                "gold_answer_v6",
+                case.get("gold_answer_v5", case.get("gold_answer", "")),
+            ),
+        )
         answer_audit = None
         if not gold_answer.strip():
             mismatches.append("gold_answer_missing")

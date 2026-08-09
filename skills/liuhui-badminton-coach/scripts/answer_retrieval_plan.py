@@ -249,7 +249,8 @@ def budget_retrieval_queries(search_module, queries, plan, original_query, rules
                 and normalized not in low_information_terms
             ):
                 matched_term_score += 6.0
-            # Prefer a focused atom/composite over broad profile-only shards.
+            # Bare semantic anchors preserve broad recall; the longer
+            # composite wins only when its evidence-term priority is equal.
             return (
                 -matched_term_score,
                 -min(len(normalized), 24),

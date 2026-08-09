@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 4
+PACKET_SCHEMA_VERSION = 5
 ALLOWED_BLOCK_FIELDS = {
     "claim_atom": {"type", "claim_id", "atom_id"},
     "claim_window": {"type", "claim_id", "window_id"},
@@ -65,6 +65,20 @@ def packet_indexes(packet):
     return claims, directives, atoms, videos, windows
 
 
+def canonical_video_url(video):
+    if video.get("url"):
+        return video["url"]
+    evidence_id = str(video.get("evidence_id", ""))
+    if evidence_id.startswith("bilibili:BV"):
+        return (
+            "https://www.bilibili.com/video/"
+            f"{evidence_id.split(':', 1)[1]}/"
+        )
+    if evidence_id.isdigit():
+        return f"https://www.douyin.com/video/{evidence_id}"
+    raise ValueError("complete-related video has no canonical URL")
+
+
 def default_draft(packet):
     claims, directives, _atoms, videos, windows = packet_indexes(packet)
     blocks: list[dict[str, object]] = []
@@ -78,39 +92,41 @@ def default_draft(packet):
             )
             continue
         if directive.get("mode") == "compose_from_claim_scoped_source":
-            allowed_evidence = claim.get("evidence", [])
-            window_id = next(
-                (
-                    candidate
-                    for evidence in allowed_evidence
-                    for candidate in evidence.get("window_ids", [])
-                    if candidate in windows
-                ),
-                None,
-            )
-            if window_id is None:
-                allowed_labels = [
-                    item.get("label") for item in allowed_evidence
-                ]
+            evidence_by_label = {
+                item.get("label"): item for item in claim.get("evidence", [])
+            }
+            fallback_blocks = []
+            for label in directive.get("evidence_labels", []):
+                evidence = evidence_by_label.get(label, {})
                 window_id = next(
                     (
                         candidate
-                        for label in allowed_labels
-                        for candidate in videos.get(label, {}).get(
-                            "window_ids", []
-                        )
+                        for candidate in evidence.get("window_ids", [])
                         if candidate in windows
                     ),
                     None,
                 )
-            if window_id:
-                blocks.append(
-                    {
-                        "type": "claim_window",
-                        "claim_id": claim_id,
-                        "window_id": window_id,
-                    }
-                )
+                if window_id is None:
+                    window_id = next(
+                        (
+                            candidate
+                            for candidate in videos.get(label, {}).get(
+                                "window_ids", []
+                            )
+                            if candidate in windows
+                        ),
+                        None,
+                    )
+                if window_id:
+                    fallback_blocks.append(
+                        {
+                            "type": "claim_window",
+                            "claim_id": claim_id,
+                            "window_id": window_id,
+                        }
+                    )
+            if fallback_blocks:
+                blocks.extend(fallback_blocks)
                 continue
         blocks.append({"type": "claim_gap", "claim_id": claim_id})
     return {"schema_version": SCHEMA_VERSION, "blocks": blocks}
@@ -371,10 +387,10 @@ def render_delivery_blocks(packet, videos):
                 + "。缺少任一轴时不把线路选择说成通用规则。"
             )
         elif kind == "evidence.sources":
-            if packet.get("display_videos"):
+            if packet.get("complete_related_videos"):
                 lines.append(
-                    f"{marker}相关视频：仅使用下方“核心视频与观看重点”中的"
-                    "答案包授权来源；每条保留证据 ID 和规范链接。"
+                    f"{marker}相关视频：技术结论只使用答案计划选定的合成来源；"
+                    "核心列表承担观看优先级，完整列表保留全部 claim 授权来源。"
                 )
             else:
                 lines.append(
@@ -507,10 +523,10 @@ def render_answer(packet, draft=None):
     if pending:
         lines.extend(["", "## 仍需确认", ""])
         lines.extend(f"- {item['question']}" for item in pending)
-    display_labels = packet.get("display_videos", [])
-    if display_labels:
+    core_labels = packet.get("core_videos", [])
+    if core_labels:
         lines.extend(["", "## 核心视频与观看重点", ""])
-        for label in display_labels:
+        for label in core_labels:
             video = videos[label]
             observation = next(
                 (
@@ -528,7 +544,19 @@ def render_answer(packet, draft=None):
                 focus = ""
             lines.append(
                 f"- {label}｜{video['title']}{focus}｜证据ID："
-                f"{video['evidence_id']}｜{video['url']}"
+                f"{video['evidence_id']}｜{canonical_video_url(video)}"
+            )
+    complete_labels = packet.get("complete_related_videos", [])
+    remaining_labels = [
+        label for label in complete_labels if label not in set(core_labels)
+    ]
+    if remaining_labels:
+        lines.extend(["", "## 完整相关视频", ""])
+        for label in remaining_labels:
+            video = videos[label]
+            lines.append(
+                f"- {label}｜{video['title']}｜证据ID："
+                f"{video['evidence_id']}｜{canonical_video_url(video)}"
             )
     prompt = packet.get("feedback_prompt")
     if prompt:
