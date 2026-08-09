@@ -37,12 +37,12 @@ python3 scripts/benchmark_runtime.py
 python3 scripts/validate_project.py
 ```
 
-Pull requests run the complete fast group on Python 3.12 and the
-architecture-critical compatibility subset on Python 3.10. Pushes to `main`
-or `develop` still run the complete fast group on both versions. Core
-evaluations use two isolated subprocesses and print per-suite temporary
-timings without adding wall-clock data to the deterministic report. Artifact
-validation runs only for packaged inputs and artifact-test changes.
+Every trigger runs the complete fast group on Python 3.12 and the
+architecture-critical compatibility subset on Python 3.10. This avoids
+repeating the complete fast group on both versions after a pull request is
+merged. Core evaluations use two isolated subprocesses and print per-suite
+temporary timings without adding wall-clock data to the deterministic report.
+Artifact validation runs only for packaged inputs and artifact-test changes.
 
 When the repository is stored in iCloud Drive, enable Keep Downloaded for the
 whole checkout. Move the working copy to a non-synced developer directory if
