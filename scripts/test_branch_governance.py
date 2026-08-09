@@ -43,9 +43,19 @@ class BranchGovernanceTests(unittest.TestCase):
         self.assertIn("docs/evaluation/index.html", self.sync)
         self.assertIn("--base develop", self.sync)
         self.assertIn("automation/sync-main-to-develop", self.sync)
-        self.assertIn("gh workflow run validate.yml", self.sync)
+        self.assertIn("--event pull_request", self.sync)
+        self.assertIn('conclusion" = "action_required', self.sync)
+        self.assertIn("actions/runs/$run_id/approve", self.sync)
+        self.assertNotIn("gh workflow run validate.yml", self.sync)
         self.assertIn("actions: write", self.sync)
         self.assertIn("pull-requests: write", self.sync)
+
+    def test_develop_validation_runs_once_on_the_protected_pr(self):
+        self.assertIn("branches: [main]", self.validate)
+        self.assertNotIn("branches: [main, develop]", self.validate)
+        self.assertIn("pull_request:", self.validate)
+        self.assertIn("Do not dispatch a second validation", self.repository_settings)
+        self.assertIn("its merge push must not rerun", self.repository_settings)
 
     def test_repository_contract_requires_policy_and_backmerge(self):
         self.assertIn("`branch-policy`", self.repository_settings)
