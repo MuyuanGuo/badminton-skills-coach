@@ -70,8 +70,17 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
             local_personalization=False,
         )
         hypothesis = self.module.hypothesis_by_text(context)["拍面"]
-        self.assertEqual(hypothesis["status"], "unverified")
-        self.assertEqual(hypothesis["eligible_video_labels"], [])
+        self.assertEqual(hypothesis["status"], "conditional")
+        hypothesis_claim = next(
+            claim
+            for claim in context["claim_evidence_map"]
+            if claim["kind"] == "user_hypothesis"
+            and claim["text"] == "拍面"
+        )
+        self.assertEqual(
+            [item["evidence_id"] for item in hypothesis_claim["evidence"]],
+            ["7453420876076240188"],
+        )
         claim_ids = {
             item["evidence_id"]
             for claim in context["claim_evidence_map"]
@@ -86,11 +95,27 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
             local_personalization=False,
         )
         selected = {item["label"] for item in context["selected_videos"]}
+        directives = {
+            item["claim_id"]: item
+            for item in context["answer_plan"]["claim_directives"]
+        }
+        atoms = {
+            item["atom_id"]: item
+            for item in context["answer_plan"]["selected_evidence_atoms"]
+        }
         for claim in context["claim_evidence_map"]:
             labels = {item["label"] for item in claim["evidence"]}
             self.assertLessEqual(labels, selected)
-            self.assertLessEqual(len(labels), 3)
             self.assertEqual(labels, set(claim["eligible_video_labels"]))
+            directive = directives[claim["claim_id"]]
+            synthesis_labels = set(directive.get("evidence_labels", []))
+            synthesis_labels.update(
+                atoms[atom_id]["video_label"]
+                for atom_id in directive.get("atom_ids", [])
+                if atom_id in atoms
+            )
+            self.assertLessEqual(synthesis_labels, labels)
+            self.assertLessEqual(len(synthesis_labels), 3)
 
     def test_nested_symptom_terms_are_not_repeated(self):
         runtime = self.module.load_runtime()

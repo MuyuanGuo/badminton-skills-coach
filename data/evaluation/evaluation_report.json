@@ -4,9 +4,9 @@
   "development_version": "2.1.3-dev.1",
   "baseline_version": "v2.1.2",
   "build": {
-    "id": "6fde88a3ce0a4e79",
-    "inputs_sha256": "09d6130fffbe86e2a533226324e7b25930e6e176d2d05804d703258446be87ab",
-    "runtime_sha256": "e08c5ac80668cf62280bd2ac4802a04f1fa366512619f194bcb55832c56752c0"
+    "id": "2d69a90e24dae323",
+    "inputs_sha256": "53ef3ab5ea92fffe213e933e855f544f5e08470d817480619e0440d999899333",
+    "runtime_sha256": "836b552dee2b85f13164d350196ad99feacfed080e9f8bb9fd2d077305ecc9da"
   },
   "summary": {
     "status": "pass",
@@ -33,7 +33,7 @@
       "claim_mapped_video_recall": 1.0,
       "synthesis_video_recall": 0.4624277456647399,
       "complete_related_video_recall": 1.0,
-      "core_video_recall": 0.15606936416184972,
+      "core_video_recall": 0.2254335260115607,
       "mean_video_count_by_layer": {
         "candidate": 344.140350877193,
         "semantic_answerable": 17.19298245614035,
@@ -42,7 +42,7 @@
         "claim_mapped": 14.982456140350877,
         "synthesis": 2.9298245614035086,
         "complete_related": 14.982456140350877,
-        "core": 1.0350877192982457
+        "core": 1.3157894736842106
       },
       "primary_selected_rate": 1.0,
       "answer_mode_accuracy": 1.0,
@@ -101,11 +101,11 @@
       "runtime_use_forbidden": true,
       "source_type": "bilibili_video",
       "case_count": 30,
-      "passed": false,
-      "pass_rate": 0.7,
+      "passed": true,
+      "pass_rate": 1.0,
       "retrieval_hit_rate_at_k": 1.0,
       "claim_mapping_rate": 1.0,
-      "failure_count": 10
+      "failure_count": 0
     },
     "feedback_lifecycle": {
       "status": "pass",
@@ -233,12 +233,12 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
+      "runtime_fingerprint": "1ed3a587d587426cccb0c60739cfc94d31e2ae284159b3c615f6d13b3c6f7610",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
-      "current_answer_runtime_fingerprint": "cbb7cf27ef2bc4e81684237e2be75a0e251c97c652d9f9c1a7e740cbec49ecba",
-      "generation_artifact_runtime_fingerprint": "25513e86218b5613ab13215fff9ecbd7f9e7346b8b327c9fab7e4110ec53e1fa",
-      "current_artifact_runtime_fingerprint": "25513e86218b5613ab13215fff9ecbd7f9e7346b8b327c9fab7e4110ec53e1fa",
+      "generation_answer_runtime_fingerprint": "1ed3a587d587426cccb0c60739cfc94d31e2ae284159b3c615f6d13b3c6f7610",
+      "current_answer_runtime_fingerprint": "1ed3a587d587426cccb0c60739cfc94d31e2ae284159b3c615f6d13b3c6f7610",
+      "generation_artifact_runtime_fingerprint": "288dde150777b03051d8642532f840916b6a3245c23f7c96b95d76db71074fa1",
+      "current_artifact_runtime_fingerprint": "288dde150777b03051d8642532f840916b6a3245c23f7c96b95d76db71074fa1",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -254,12 +254,12 @@
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "0a0ba5dc9942cbaf5557c082db7c8754b87b233ca5bd35a19cbd70bb40f51fac"
+        "implementation_sha256": "9c440ab6fa23635f1b3c3d2aa4141bda915c707f423df0d05c25befae7373986"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "fe811dad2d6f7dc5b2ff14a29e19cf1d68908af803601effb0c5ba770c04dbb0"
+        "implementation_sha256": "46d1aaba74b3beede05ecebf82f9334e3c2a5d2d07ea8d560e3d48d915ae6c22"
       }
     }
   },

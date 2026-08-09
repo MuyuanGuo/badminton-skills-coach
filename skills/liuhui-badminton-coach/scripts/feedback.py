@@ -437,7 +437,7 @@ def parse_feedback_text(feedback_text, answer, rules):
     ]
     intended_query = extract_intended_query(feedback_text)
     source_issue_refs = []
-    source_issue_ids = []
+    source_issue_ids: list[str] = []
     for assignment in clause_assignments:
         matched_source_types = [
             issue_type

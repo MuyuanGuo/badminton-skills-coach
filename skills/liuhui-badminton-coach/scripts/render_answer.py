@@ -6,11 +6,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import answer_packet as answer_packet_runtime
 
 SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 5
+PACKET_SCHEMA_VERSION = answer_packet_runtime.ANSWER_PACKET_SCHEMA_VERSION
 ALLOWED_BLOCK_FIELDS = {
     "claim_atom": {"type", "claim_id", "atom_id"},
     "claim_window": {"type", "claim_id", "window_id"},
@@ -59,7 +65,8 @@ def packet_indexes(packet):
         )
     }
     videos = {
-        item["label"]: item for item in packet.get("selected_videos", [])
+        item["label"]: item
+        for item in answer_packet_runtime.packet_video_records(packet)
     }
     windows = packet.get("evidence_windows", {})
     return claims, directives, atoms, videos, windows

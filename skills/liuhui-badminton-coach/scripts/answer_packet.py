@@ -14,10 +14,18 @@ from token_budget import estimate_json_tokens as estimate_packet_tokens
 from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 5
+ANSWER_PACKET_SCHEMA_VERSION = 6
 ANSWER_PLAN_SCHEMA_VERSION = 1
 FALLBACK_WINDOW_LIMIT = 4
 CORE_VIDEO_LIMIT = 5
+COMPLETE_RELATED_TITLE_LIMIT = 48
+COMPLETE_RELATED_CATALOG_FIELDS = (
+    "label",
+    "evidence_id",
+    "title",
+    "legacy_video_id",
+    "url",
+)
 ANSWER_PACKET_TARGET_BYTES = 24 * 1024
 ANSWER_PACKET_HARD_MAXIMUM_BYTES = 32 * 1024
 ANSWER_PACKET_TARGET_TOKENS = 10_000
@@ -587,7 +595,7 @@ def compact_video(
 
 
 def normalized_evidence_windows(videos):
-    windows = {}
+    windows: dict[str, dict[str, object]] = {}
     window_ids_by_key = {}
     normalized_videos = []
     for video in videos:
@@ -617,6 +625,10 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
         directive["claim_id"]: directive
         for directive in plan.get("claim_directives", [])
     }
+    atoms_by_id = {
+        atom["atom_id"]: atom
+        for atom in plan.get("selected_evidence_atoms", [])
+    }
     compact_claims = []
     for claim in claims:
         compact = {
@@ -641,29 +653,39 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
             }
         else:
             allowed_labels = set()
-        synthesis_labels = set(directive.get("evidence_labels", []))
+        if directive.get("mode") == "compose_from_reviewed_atoms":
+            synthesis_labels = {
+                atoms_by_id[atom_id].get("video_label")
+                for atom_id in directive.get("atom_ids", [])
+                if atom_id in atoms_by_id
+            }
+        else:
+            synthesis_labels = set(directive.get("evidence_labels", []))
         compact_evidence = []
+        related_labels = []
         for item in claim.get("evidence", []):
             label = item.get("label") or item.get("video_label")
             if label not in allowed_labels:
                 continue
-            if label in synthesis_labels:
-                projected = {
-                    key: item[key]
-                    for key in (
-                        "label",
-                        "directness",
-                        "scope",
-                        "answer_eligibility",
-                        "evidence_roles",
-                    )
-                    if key in item
-                }
-            else:
-                # Complete-related-only sources need stable claim membership,
-                # not repeated synthesis metadata. Their identity lives once
-                # in selected_videos and they cannot authorize prose.
-                projected = {"label": label}
+            if label not in synthesis_labels:
+                # Complete-related-only sources retain exact claim membership
+                # without repeating one JSON object per label. Their source
+                # identity lives in complete_related_video_catalog and they
+                # cannot authorize prose.
+                if label not in related_labels:
+                    related_labels.append(label)
+                continue
+            projected = {
+                key: item[key]
+                for key in (
+                    "label",
+                    "directness",
+                    "scope",
+                    "answer_eligibility",
+                    "evidence_roles",
+                )
+                if key in item
+            }
             if window_ids_by_key:
                 window_ids = [
                     window_ids_by_key[
@@ -684,6 +706,8 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
                     projected["window_ids"] = window_ids
             compact_evidence.append(projected)
         compact["evidence"] = compact_evidence
+        if related_labels:
+            compact["related_labels"] = related_labels
         compact_claims.append(compact)
     return compact_claims
 
@@ -718,10 +742,80 @@ def minimize_complete_list_videos(videos, detail_labels):
     return minimized
 
 
+def encode_complete_related_video_catalog(videos, detail_labels):
+    """Column-encode non-synthesis sources without dropping source identity."""
+
+    rows = []
+    for video in videos:
+        if video["label"] in detail_labels:
+            continue
+        title = str(video.get("title") or "")
+        if len(title) > COMPLETE_RELATED_TITLE_LIMIT:
+            title = title[: COMPLETE_RELATED_TITLE_LIMIT - 1] + "…"
+        catalog_video = {**video, "title": title}
+        rows.append(
+            [
+                catalog_video.get(field)
+                for field in COMPLETE_RELATED_CATALOG_FIELDS
+            ]
+        )
+    return {
+        "fields": list(COMPLETE_RELATED_CATALOG_FIELDS),
+        "rows": rows,
+    }
+
+
+def decode_complete_related_video_catalog(packet):
+    """Decode and validate the compact complete-related source catalog."""
+
+    catalog = packet.get("complete_related_video_catalog")
+    if not isinstance(catalog, dict):
+        raise ValueError("answer_packet is missing complete-related video catalog")
+    if catalog.get("fields") != list(COMPLETE_RELATED_CATALOG_FIELDS):
+        raise ValueError("answer_packet complete-related catalog fields are invalid")
+    rows = catalog.get("rows")
+    if not isinstance(rows, list):
+        raise ValueError("answer_packet complete-related catalog rows are invalid")
+    videos = []
+    for row in rows:
+        if not isinstance(row, list) or len(row) != len(
+            COMPLETE_RELATED_CATALOG_FIELDS
+        ):
+            raise ValueError("answer_packet complete-related catalog row is invalid")
+        video = {
+            field: value
+            for field, value in zip(COMPLETE_RELATED_CATALOG_FIELDS, row)
+            if value is not None
+        }
+        if any(
+            not isinstance(video.get(field), str)
+            or not video[field].strip()
+            for field in ("label", "evidence_id", "title")
+        ):
+            raise ValueError(
+                "answer_packet complete-related catalog source identity is invalid"
+            )
+        videos.append(video)
+    return videos
+
+
+def packet_video_records(packet):
+    """Return detailed and catalog-only videos as one label-addressable set."""
+
+    detailed = packet.get("selected_videos")
+    if not isinstance(detailed, list):
+        raise ValueError("answer_packet selected_videos must be a list")
+    videos = [*detailed, *decode_complete_related_video_catalog(packet)]
+    labels = [video.get("label") for video in videos]
+    if len(labels) != len(set(labels)):
+        raise ValueError("answer_packet video labels must be unique")
+    return sorted(videos, key=lambda video: int(video["label"][1:]))
+
+
 def default_claim_windows_by_evidence_id(claims, plan):
     """Keep windows for every source selected for fallback synthesis."""
 
-    windows = {}
+    windows: dict[str, list[dict[str, object]]] = {}
     labels_by_claim = {
         directive["claim_id"]: set(directive.get("evidence_labels", []))
         for directive in plan.get("claim_directives", [])
@@ -818,7 +912,7 @@ def select_core_videos(
         label: index
         for index, label in enumerate(dict.fromkeys(preferred_labels))
     }
-    selected = []
+    selected: list[str] = []
     remaining = set(video_by_label) - set(selected)
     while remaining and len(selected) < limit:
         if not uncovered:
@@ -1067,6 +1161,14 @@ def build_answer_packet(context, audit_context_reference=None):
         compact_videos,
         set(core_videos) | set(synthesis_labels),
     )
+    detail_labels = set(core_videos) | set(synthesis_labels)
+    complete_related_video_catalog = encode_complete_related_video_catalog(
+        compact_videos,
+        detail_labels,
+    )
+    detailed_videos = [
+        video for video in compact_videos if video["label"] in detail_labels
+    ]
     packet = {
         "schema_version": ANSWER_PACKET_SCHEMA_VERSION,
         "packet_type": "liuhui_badminton_answer_packet",
@@ -1107,7 +1209,8 @@ def build_answer_packet(context, audit_context_reference=None):
         ),
         "policy_refs": context["policy_refs"],
         "evidence_windows": windows,
-        "selected_videos": compact_videos,
+        "selected_videos": detailed_videos,
+        "complete_related_video_catalog": complete_related_video_catalog,
         "synthesis_videos": [
             label
             for label in packet_visible_video_labels(
@@ -1154,7 +1257,7 @@ def validate_answer_packet(packet, context):
         for item in delivery.get("items", [])
     ) and not packet.get("practice_plan"):
         raise ValueError("practice delivery requires practice_plan")
-    covered_cluster_ids = set()
+    covered_cluster_ids: set[str] = set()
     for video in packet.get("selected_videos", []):
         content_cluster_ids = set(
             video.get("content_cluster_ids") or []
@@ -1180,7 +1283,7 @@ def validate_answer_packet(packet, context):
             context["answer_plan"], context["claim_evidence_map"]
         )
     )
-    packet_labels = {item.get("label") for item in packet.get("selected_videos", [])}
+    packet_labels = {item.get("label") for item in packet_video_records(packet)}
     if packet_labels != mapped_labels:
         raise ValueError("answer_packet videos must exactly match claim evidence labels")
     synthesis_labels = packet.get("synthesis_videos")
@@ -1199,11 +1302,19 @@ def validate_answer_packet(packet, context):
             "answer_packet complete_related_videos must exactly match related evidence"
         )
     core_labels = packet.get("core_videos")
+    detailed_labels = {
+        item.get("label") for item in packet.get("selected_videos", [])
+    }
     if (
         not isinstance(core_labels, list)
         or len(core_labels) > CORE_VIDEO_LIMIT
         or len(core_labels) != len(set(core_labels))
         or not set(core_labels).issubset(packet_labels)
+        or not set(core_labels).issubset(detailed_labels)
     ):
         raise ValueError("answer_packet core_videos must be a bounded evidence subset")
+    if not set(synthesis_labels).issubset(detailed_labels):
+        raise ValueError(
+            "answer_packet synthesis videos must retain detailed source metadata"
+        )
     return True

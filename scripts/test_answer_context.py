@@ -288,8 +288,14 @@ class AnswerContextTests(unittest.TestCase):
             [f"V{index}" for index in range(1, len(visible_labels) + 1)],
         )
         packet = self.context_module.build_answer_packet(context)
+        packet_runtime = self.context_module.load_sibling(
+            "answer_context_packet_records", "answer_packet.py"
+        )
         self.assertEqual(
-            [video["label"] for video in packet["selected_videos"]],
+            [
+                video["label"]
+                for video in packet_runtime.packet_video_records(packet)
+            ],
             visible_labels,
         )
         self.assertEqual(
@@ -315,8 +321,12 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         packet = self.context_module.build_answer_packet(context)
+        packet_runtime = self.context_module.load_sibling(
+            "answer_context_packet_records", "answer_packet.py"
+        )
         packet_labels = [
-            video["label"] for video in packet["selected_videos"]
+            video["label"]
+            for video in packet_runtime.packet_video_records(packet)
         ]
         self.assertEqual(
             packet_labels,
