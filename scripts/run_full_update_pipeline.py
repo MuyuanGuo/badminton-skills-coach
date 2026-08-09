@@ -203,6 +203,15 @@ def rebuild_and_validate(*, rebuild_bilibili=True):
                     evaluation_results,
                 ]
             )
+            run(
+                [
+                    sys.executable,
+                    "scripts/readme_profiles.py",
+                    "--profile",
+                    "auto",
+                    "--write",
+                ]
+            )
         impact = write_impact_report(before, impact_snapshot())
         print(json.dumps({"update_impact": impact}, ensure_ascii=False))
     return changed_references

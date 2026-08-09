@@ -20,10 +20,10 @@ from project_artifacts import (
     skill_reference_mismatches,
     validate_evidence_records,
 )
+from readme_profiles import profile_for_channel, render_readme
 from run_ci_tests import test_groups
 from update_readme_status import (
     update_agent_metadata_text,
-    update_readme_text,
     update_skill_status_text,
 )
 
@@ -289,6 +289,7 @@ for runtime_file in [
     ROOT / "requirements-dev.txt",
     ROOT / "scripts" / "doctor.py",
     ROOT / "scripts" / "install_skill.py",
+    ROOT / "scripts" / "readme_profiles.py",
     ROOT / "scripts" / "media_assets.py",
     ROOT / "scripts" / "package_skill_release.py",
     ROOT / "scripts" / "build_manifest.py",
@@ -1526,7 +1527,7 @@ if {
 } != allowed_answer_modes:
     raise SystemExit("Answer modality evaluation does not cover all answer modes")
 readme_text = (ROOT / "README.md").read_text(encoding="utf-8")
-readme_en_text = (ROOT / "README.en.md").read_text(encoding="utf-8")
+readme_en_text = readme_text
 version_contracts = ["releases/latest"]
 if release_channel == "development":
     version_contracts.extend(
@@ -1551,11 +1552,26 @@ else:
     version_contracts.extend(
         [
             f"**{skill_version} 稳定版**",
-            f"- 稳定版：`main` / `v{stable_version}`",
+            f"当前稳定版为 `v{stable_version}`",
             f"releases/tag/v{stable_version}",
         ]
     )
-    english_version_contracts = []
+    english_version_contracts = [
+        f"**Version {skill_version} is the stable release**"
+    ]
+expected_readme_profile = (
+    "develop" if release_channel == "development" else "main"
+)
+if (
+    readme_text.count(
+        f"<!-- README_PROFILE: {expected_readme_profile} -->"
+    )
+    != 1
+    or "README.en.md" in readme_text
+):
+    raise SystemExit(
+        "README must use one direct bilingual branch-audience profile"
+    )
 for version_contract in version_contracts:
     if version_contract not in readme_text:
         raise SystemExit(f"README version metadata is stale: {version_contract}")
@@ -1580,12 +1596,11 @@ for docs_path, docs_status_contract in docs_pages:
                 f"Website install version is stale in {docs_path.relative_to(ROOT)}: "
                 f"{docs_version_contract}"
             )
-expected_readme_text = update_readme_text(
-    readme_text,
-    video_index,
-    teaching_filter,
-    douyin_knowledge,
-    feedback_signals,
+expected_readme_text = render_readme(
+    profile_for_channel(release_channel),
+    root=ROOT,
+    stable_version=stable_version,
+    development_version=skill_version,
 )
 if expected_readme_text != readme_text:
     raise SystemExit(

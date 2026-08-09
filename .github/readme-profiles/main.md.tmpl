@@ -12,9 +12,9 @@
 
 Describe your badminton situation in plain language. The Skill helps you separate technique, footwork, tactics, and training issues, then points you to timestamped video evidence and practical next steps.
 
-**2.1.2 稳定版**来自 `main` 和 [v2.1.2 Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2)。本项目独立开发，不是刘辉本人，也不代表刘辉或任何视频发布者的认可或背书。
+**{{STABLE_VERSION}} 稳定版**来自 `main` 和 [v{{STABLE_VERSION}} Release](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}})。本项目独立开发，不是刘辉本人，也不代表刘辉或任何视频发布者的认可或背书。
 
-**Version 2.1.2 is the stable release** from `main` and [v2.1.2](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.2). This independent project is not authored, operated, endorsed, or approved by Liu Hui or any source publisher.
+**Version {{STABLE_VERSION}} is the stable release** from `main` and [v{{STABLE_VERSION}}](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v{{STABLE_VERSION}}). This independent project is not authored, operated, endorsed, or approved by Liu Hui or any source publisher.
 
 ## 30 秒安装 / Install in 30 seconds
 
@@ -25,13 +25,13 @@ Requires Python 3.10 or newer. No OpenAI API key or transcription tooling is nee
 ### macOS / Linux
 
 ~~~bash
-base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2"
-curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-2.1.2.zip" -o "/tmp/liuhui-badminton-coach-2.1.2.zip"
+base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v{{STABLE_VERSION}}"
+curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -o "/tmp/liuhui-badminton-coach-{{STABLE_VERSION}}.zip"
 curl --fail --show-error --location --retry 3 "$base/SHA256SUMS.txt" -o /tmp/SHA256SUMS.txt
 curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
 stage="$(mktemp -d)"
-unzip -q "/tmp/liuhui-badminton-coach-2.1.2.zip" -d "$stage"
+unzip -q "/tmp/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -d "$stage"
 python3 "$stage/liuhui-badminton-coach/scripts/install.py"
 python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 ~~~
@@ -39,14 +39,14 @@ python3 ~/.codex/skills/liuhui-badminton-coach/scripts/doctor.py
 ### Windows PowerShell
 
 ~~~powershell
-$base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2"
-Invoke-WebRequest "$base/liuhui-badminton-coach-2.1.2.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-2.1.2.zip"
+$base = "https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v{{STABLE_VERSION}}"
+Invoke-WebRequest "$base/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -OutFile "$env:TEMP/liuhui-badminton-coach-{{STABLE_VERSION}}.zip"
 Invoke-WebRequest "$base/SHA256SUMS.txt" -OutFile "$env:TEMP/SHA256SUMS.txt"
 Invoke-WebRequest "$base/SBOM.cdx.json" -OutFile "$env:TEMP/SBOM.cdx.json"
-$expected = ((Select-String "liuhui-badminton-coach-2.1.2.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
-$actual = (Get-FileHash "$env:TEMP/liuhui-badminton-coach-2.1.2.zip" -Algorithm SHA256).Hash.ToLower()
+$expected = ((Select-String "liuhui-badminton-coach-{{STABLE_VERSION}}.zip" "$env:TEMP/SHA256SUMS.txt").Line -split '\s+')[0]
+$actual = (Get-FileHash "$env:TEMP/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" -Algorithm SHA256).Hash.ToLower()
 if ($actual -ne $expected) { throw "SHA-256 mismatch" }
-$stage = Join-Path $env:TEMP "liuhui-skill-install"; Expand-Archive "$env:TEMP/liuhui-badminton-coach-2.1.2.zip" $stage -Force
+$stage = Join-Path $env:TEMP "liuhui-skill-install"; Expand-Archive "$env:TEMP/liuhui-badminton-coach-{{STABLE_VERSION}}.zip" $stage -Force
 python "$stage/liuhui-badminton-coach/scripts/install.py"
 python "$HOME/.codex/skills/liuhui-badminton-coach/scripts/doctor.py"
 ~~~
@@ -111,7 +111,7 @@ The repository does not publish raw media, temporary cookies, platform credentia
 
 ## 分支状态 / Branch status
 
-- `main` 是稳定发布来源；当前稳定版为 `v2.1.2`。
-- `main` is the stable release source; the current stable version is `v2.1.2`.
+- `main` 是稳定发布来源；当前稳定版为 `v{{STABLE_VERSION}}`。
+- `main` is the stable release source; the current stable version is `v{{STABLE_VERSION}}`.
 - 开发与工程说明位于 [`develop`](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop)；贡献规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 - Engineering and development documentation lives on [`develop`](https://github.com/MuyuanGuo/badminton-skills-coach/tree/develop); see [CONTRIBUTING.md](CONTRIBUTING.md) to contribute.

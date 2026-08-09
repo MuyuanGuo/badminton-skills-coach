@@ -42,7 +42,20 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin develop
           git switch -C "$SYNC_BRANCH" origin/develop
+          set +e
           git merge --no-ff --no-edit "$VALIDATED_MAIN_SHA"
+          merge_status=$?
+          set -e
+          if [ "$merge_status" -ne 0 ]; then
+            conflicts="$(git diff --name-only --diff-filter=U)"
+            if [ "$conflicts" != "README.md" ]; then
+              echo "Main-to-develop merge has conflicts beyond README.md: $conflicts" >&2
+              exit "$merge_status"
+            fi
+            git checkout --ours README.md
+            git add README.md
+            git commit --no-edit
+          fi
 
       - name: Prepare the next development state
         run: |
@@ -57,6 +70,7 @@ jobs:
           python scripts/generate_evaluation_report.py \
             --write \
             --evaluations "$RUNNER_TEMP/core-evaluations.json"
+          python scripts/readme_profiles.py --profile develop --write
 
       - name: Push the synchronization branch
         run: |
