@@ -103,6 +103,79 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in audit["violations"]},
         )
 
+    def reception_semantic_context(self):
+        query = (
+            "我是右手持拍的业余中级双打选手，对手杀到反手身体附近时，"
+            "我挡网经常冒高。请区分拍面、击球点和到位问题。"
+        )
+        context = copy.deepcopy(self.context)
+        context["query"] = query
+        context["question_interpretation"] = {
+            "intent_frame": {"literal_symptoms": ["冒高"]},
+            "actor_context": {
+                "opponent_constraints": {
+                    "shot_family": ["smash"],
+                    "tactical_phase": ["attack"],
+                },
+                "target_constraints": {
+                    "stroke_side": ["backhand"],
+                    "shot_family": ["net_shot", "smash_block"],
+                    "technique_variant": ["net_drop"],
+                },
+                "target_action_query": "反手身体位 接杀挡网",
+                "requested_action_scopes": ["smash_block_response"],
+                "incoming_shot_constraints": {
+                    "shot_family": ["smash"],
+                    "tactical_phase": ["attack"],
+                },
+                "inferred_target_action": {
+                    "rule": "smash_to_backhand_body_block_high"
+                },
+                "event_chain": [
+                    {
+                        "actor": "opponent_or_feed",
+                        "role": "incoming_condition",
+                        "term": "杀到反手身体附近",
+                    },
+                    {
+                        "actor": "player",
+                        "role": "target_action",
+                        "term": "反手身体位 接杀挡网",
+                    },
+                ],
+            },
+        }
+        return query, context
+
+    def test_semantic_interpretation_contract_accepts_owned_incoming_context(self):
+        query, context = self.reception_semantic_context()
+        audit = self.auditor.audit_answer(
+            query, context, self.cases["answers"]["complete_conditional"]
+        )
+        semantic_codes = {
+            item["code"]
+            for item in audit["violations"]
+            if item["code"].startswith("semantic_interpretation_")
+        }
+        self.assertEqual(semantic_codes, set())
+
+    def test_semantic_interpretation_contract_fails_closed_when_corrupted(self):
+        query, context = self.reception_semantic_context()
+        interpretation = context["question_interpretation"]
+        interpretation["intent_frame"]["literal_symptoms"] = []
+        actor = interpretation["actor_context"]
+        actor["opponent_constraints"]["stroke_side"] = ["backhand"]
+        actor["incoming_shot_constraints"] = {}
+        actor["event_chain"] = []
+        audit = self.auditor.audit_answer(
+            query, context, self.cases["answers"]["complete_conditional"]
+        )
+        codes = {item["code"] for item in audit["violations"]}
+        self.assertIn("semantic_interpretation_missing_symptom", codes)
+        self.assertIn("semantic_interpretation_wrong_constraint_owner", codes)
+        self.assertIn("semantic_interpretation_missing_incoming_scope", codes)
+        self.assertIn("semantic_interpretation_missing_event_chain", codes)
+
     def test_evidence_id_must_be_displayed_outside_its_url(self):
         answer = self.cases["answers"]["complete_conditional"].replace(
             "V1｜证据 ID：7000000000000000001",

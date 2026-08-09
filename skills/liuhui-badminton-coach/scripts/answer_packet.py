@@ -993,6 +993,8 @@ def compact_practice_plan(topic_navigation):
         "minute_allocation": allocation,
         "segment_labels": adaptation.get("segment_labels", {}),
         "segment_instructions": adaptation.get("segment_instructions", {}),
+        "setup_adaptation": adaptation.get("setup_adaptation"),
+        "discipline_boundary": adaptation.get("discipline_boundary"),
         "three_day_progression": adaptation.get(
             "three_day_progression", []
         ),

@@ -314,8 +314,23 @@ def render_delivery_blocks(packet, videos):
                     f"{segment_names.get(key, key)} {allocation[key]} 分钟"
                     f"（{segment_instructions.get(key, '')}）"
                 )
+            adaptations = []
+            if practice.get("setup_adaptation"):
+                adaptations.append(
+                    f"陪练方式：{practice['setup_adaptation']}"
+                )
+            if practice.get("discipline_boundary"):
+                adaptations.append(
+                    f"双打边界：{practice['discipline_boundary']}"
+                )
+            adaptation_text = (
+                "；" + "；".join(adaptations) if adaptations else ""
+            )
             lines.append(
-                f"{marker}单次训练总计 {total} 分钟：" + "；".join(segments) + "。"
+                f"{marker}单次训练总计 {total} 分钟："
+                + "；".join(segments)
+                + adaptation_text
+                + "。"
             )
         elif kind == "practice.three_day":
             progression = practice.get("three_day_progression", [])

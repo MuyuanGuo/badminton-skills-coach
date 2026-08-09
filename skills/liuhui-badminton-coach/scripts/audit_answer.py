@@ -17,6 +17,12 @@ import answer_packet as answer_packet_runtime
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
+DEFAULT_RETRIEVAL_RULES_PATH = (
+    SKILL_ROOT / "references" / "retrieval-rules.json"
+)
+DEFAULT_SELECTION_RULES_PATH = (
+    SKILL_ROOT / "references" / "answer-selection-rules.json"
+)
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
@@ -166,6 +172,150 @@ def add_violation(violations, code, message, *, claim_id=None, unit=None, detail
         for item in violations
     }:
         violations.append(violation)
+
+
+def constraint_contains(actual, expected):
+    return all(
+        set(expected_values).issubset(set(actual.get(axis_name, [])))
+        for axis_name, expected_values in expected.items()
+    )
+
+
+def matched_reception_semantic_rule(question):
+    selection_rules = load_json(DEFAULT_SELECTION_RULES_PATH)
+    question_text = normalized(question)
+    for rule in selection_rules.get("reception_symptom_implications", []):
+        if not rule.get("semantic_audit"):
+            continue
+        required_term_groups = (
+            rule.get("symptom_terms", []),
+            rule.get("incoming_terms", []),
+            rule.get("response_terms", []),
+        )
+        if all(
+            any(normalized(term) in question_text for term in terms)
+            for terms in required_term_groups
+        ):
+            return rule
+    return None
+
+
+def audit_semantic_interpretation(question, context, violations):
+    interpretation = context.get("question_interpretation")
+    if not isinstance(interpretation, dict):
+        return
+
+    retrieval_rules = load_json(DEFAULT_RETRIEVAL_RULES_PATH)
+    positive_query_text = normalized(
+        interpretation.get("intent_frame", {}).get("positive_query")
+        or question
+    )
+    expected_symptoms = {
+        term
+        for term in retrieval_rules.get("intent", {}).get(
+            "literal_symptom_terms", []
+        )
+        if normalized(term) in positive_query_text
+    }
+    actual_symptoms = set(
+        interpretation.get("intent_frame", {}).get("literal_symptoms", [])
+    )
+    missing_symptoms = expected_symptoms - actual_symptoms
+    if missing_symptoms:
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_symptom",
+            "A symptom stated literally in the question is missing from the interpreted intent.",
+            details={"missing_symptoms": sorted(missing_symptoms)},
+        )
+
+    semantic_rule = matched_reception_semantic_rule(question)
+    if not semantic_rule:
+        return
+
+    actor_context = interpretation.get("actor_context", {})
+    opponent_constraints = actor_context.get("opponent_constraints", {})
+    misplaced = {
+        axis_name: sorted(
+            set(opponent_constraints.get(axis_name, []))
+            & set(suppressed_values)
+        )
+        for axis_name, suppressed_values in semantic_rule.get(
+            "opponent_constraint_suppressions", {}
+        ).items()
+        if set(opponent_constraints.get(axis_name, []))
+        & set(suppressed_values)
+    }
+    if misplaced:
+        add_violation(
+            violations,
+            "semantic_interpretation_wrong_constraint_owner",
+            "A target-player constraint was incorrectly assigned to the opponent.",
+            details={"misplaced_constraints": misplaced},
+        )
+
+    incoming_constraints = actor_context.get("incoming_shot_constraints", {})
+    expected_incoming = semantic_rule.get("incoming_constraints", {})
+    if not constraint_contains(incoming_constraints, expected_incoming):
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_incoming_scope",
+            "The interpreted context does not preserve the required incoming-shot constraints.",
+            details={
+                "expected": expected_incoming,
+                "actual": incoming_constraints,
+            },
+        )
+
+    target_constraints = actor_context.get("target_constraints", {})
+    expected_target = semantic_rule.get("target_action_constraints", {})
+    expected_scopes = set(semantic_rule.get("requested_action_scopes", []))
+    actual_scopes = set(actor_context.get("requested_action_scopes", []))
+    if not constraint_contains(target_constraints, expected_target) or not (
+        expected_scopes <= actual_scopes
+    ):
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_target_scope",
+            "The interpreted context does not preserve the required target action and scope.",
+            details={
+                "expected_constraints": expected_target,
+                "actual_constraints": target_constraints,
+                "expected_scopes": sorted(expected_scopes),
+                "actual_scopes": sorted(actual_scopes),
+            },
+        )
+
+    event_chain = actor_context.get("event_chain", [])
+    incoming_events = [
+        item
+        for item in event_chain
+        if item.get("actor") == "opponent_or_feed"
+        and item.get("role") == "incoming_condition"
+    ]
+    target_events = [
+        item
+        for item in event_chain
+        if item.get("actor") == "player"
+        and item.get("role") == "target_action"
+    ]
+    incoming_terms = semantic_rule.get("incoming_terms", [])
+    target_action = semantic_rule.get("target_action_query", "")
+    has_incoming = any(
+        any(normalized(term) in normalized(item.get("term", "")) for term in incoming_terms)
+        for item in incoming_events
+    )
+    has_target = any(
+        normalized(target_action) in normalized(item.get("term", ""))
+        for item in target_events
+    )
+    if not has_incoming or not has_target:
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_event_chain",
+            "The incoming condition to player response event chain is incomplete.",
+            details={"event_chain": event_chain},
+        )
 
 
 def expected_evidence_state(context):
@@ -495,6 +645,14 @@ def audit_delivery_contract(context, units, violations):
             total = parameters.get("session_minutes")
             allocation = parameters.get("minute_allocation", {})
             labels = practice.get("segment_labels", {})
+            required_adaptations = [
+                adaptation
+                for adaptation in (
+                    practice.get("setup_adaptation"),
+                    practice.get("discipline_boundary"),
+                )
+                if adaptation
+            ]
             found = {
                 label: int(minutes)
                 for label, minutes in re.findall(
@@ -511,13 +669,22 @@ def audit_delivery_contract(context, units, violations):
                 or f"总计{total}分钟" not in normalized(unit)
                 or found != expected
                 or sum(found.values()) != total
+                or any(
+                    normalized(adaptation) not in normalized(unit)
+                    for adaptation in required_adaptations
+                )
             ):
                 fail(
                     item,
                     "invalid_practice_session_delivery",
                     "The practice session must preserve every segment and exact minute sum.",
                     unit=unit,
-                    details={"expected": expected, "found": found, "total": total},
+                    details={
+                        "expected": expected,
+                        "found": found,
+                        "total": total,
+                        "required_adaptations": required_adaptations,
+                    },
                 )
         elif kind == "practice.three_day":
             expected = practice.get("three_day_progression", [])
@@ -744,6 +911,8 @@ def audit_answer(question, context, answer, rules=None):
             "question_context_mismatch",
             "The supplied question does not match the question used to prepare the context.",
         )
+
+    audit_semantic_interpretation(question, context, violations)
 
     all_labels = labels_in(auditable_answer, label_pattern)
     for label in sorted(all_labels):

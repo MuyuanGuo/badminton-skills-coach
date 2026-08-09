@@ -33,14 +33,14 @@
         "practice.common_errors": 1,
         "practice.stop_signals": 1
       },
-      "required_output_terms": ["总计 20 分钟", "第1天", "第2天", "第3天", "第1周", "第2周", "成功标准", "常见错误", "停止与复核信号"],
-      "required_evidence_unit_count": 2,
+      "required_output_terms": ["总计 20 分钟", "让搭档先固定喂球，再增加一个线路或节奏变量", "自测应包含搭档位置、前后或左右职责以及下一拍衔接", "第1天", "第2天", "第3天", "第1周", "第2周", "成功标准", "常见错误", "停止与复核信号"],
+      "required_evidence_unit_count": 1,
       "inherited_constraints": {
         "shot_family": ["net_shot"],
         "technique_variant": ["net_drop"],
         "discipline": ["doubles"]
       },
-      "forbidden_selected_video_ids": []
+      "forbidden_selected_video_ids": ["7205399670959459623", "7071800926553541922", "7073657979328826659"]
     },
     {
       "case_id": "DQ003",

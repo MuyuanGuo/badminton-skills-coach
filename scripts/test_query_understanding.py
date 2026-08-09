@@ -61,6 +61,28 @@ class QueryUnderstandingTests(unittest.TestCase):
             ],
         )
 
+    def test_incoming_smash_target_side_is_owned_by_the_player(self):
+        case = self.adversarial_case("QUA087")
+        plan = self.search.plan_query(case["query"])
+        intent = plan["retrieval_guidance"]["intent_frame"]
+        actor = self.context.query_actor_context(
+            self.search, intent["actor_query"], self.rules
+        )
+        self.assertIn("冒高", intent["literal_symptoms"])
+        self.assertEqual(
+            actor["incoming_shot_constraints"],
+            case["expected_incoming_shot_constraints"],
+        )
+        self.assertEqual(
+            actor["opponent_constraints"],
+            case["expected_opponent_constraints"],
+        )
+        self.assertEqual(
+            actor["player_constraints"],
+            case["expected_player_constraints"],
+        )
+        self.assertEqual(actor["event_chain"], case["expected_event_chain"])
+
     def test_negated_positive_topic_is_checked_separately_from_excluded_topic(self):
         registry = self.module.load_json(self.module.CASES_PATH)
         case = registry["adversarial_cases"][0]

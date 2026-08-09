@@ -122,6 +122,32 @@
       "requested_action_scopes": ["forward_reception_movement"],
       "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
       "reason": "“来不及接/够不到”描述到位症状，网前小球或吊球描述对手来球；目标动作是向前启动和上网步法，不是用户自己打吊球。"
+    },
+    {
+      "name": "smash_to_backhand_body_block_high",
+      "symptom_terms": ["冒高", "浮高"],
+      "incoming_terms": ["杀到反手身体附近", "杀到反手身体位", "杀向反手身体附近", "杀向反手身体位", "压反手身体位"],
+      "response_terms": ["接杀挡网", "接杀", "挡杀", "挡网"],
+      "implicit_response_incoming_terms": [],
+      "prior_action_suffixes": [],
+      "player_action_prefixes_by_incoming_term": {},
+      "target_action_query": "反手身体位 接杀挡网",
+      "target_action_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["net_shot", "smash_block"],
+        "technique_variant": ["net_drop"]
+      },
+      "incoming_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "opponent_constraint_suppressions": {
+        "stroke_side": ["backhand"]
+      },
+      "requested_action_scopes": ["smash_block_response"],
+      "search_terms": ["反手身体位 接杀挡网", "接杀挡网 冒高", "挡网 拍面 击球点 弧线"],
+      "semantic_audit": true,
+      "reason": "“杀到反手身体附近”描述对手来球落到球员反手身体位，“挡网冒高”描述球员的接杀响应与出球症状；反手约束属于目标球员，不是对手的击球侧。"
     }
   ],
   "action_sequence_implications": [
@@ -366,6 +392,16 @@
       "source_suppressions": ["杀上网", "杀球之后", "快速突击", "高质量防守", "冲劲儿过猛"],
       "source_override_terms": [],
       "answer_boundary_statement": "现有直接来源主要覆盖正手前场和不同距离的向前移动；杀上网是另一种特定衔接，反手被动高远也不能证明本题。"
+    },
+    {
+      "name": "smash_block_response",
+      "query_terms": ["反手身体位 接杀挡网", "接杀挡网"],
+      "query_context_terms": [],
+      "search_terms": ["反手身体位 接杀挡网", "接杀挡网 冒高", "挡网 拍面 击球点 弧线"],
+      "source_terms": ["接杀", "挡杀", "防守挡球", "下手挡网", "拿得点高", "拿点较高", "拿得点低", "拿点较低", "拍面对准", "抛物线的最高点"],
+      "source_suppressions": [],
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受接杀挡网，或直接解释下手挡网拍面、击球点和出球弧线的证据；泛双打压抽、网前平搓和其他网前技术不能支撑具体诊断。"
     },
     {
       "name": "positioning",
@@ -781,6 +817,8 @@
     "出界": ["拍面", "击球点", "落点", "线路", "发力"],
     "不到位": ["发力", "击球点", "底线", "挥拍", "力量传导"],
     "不稳定": ["拍面", "握拍", "框架", "节奏", "控制"],
+    "冒高": ["拍面", "击球点", "弧线", "过网", "下手挡网", "接杀", "到位"],
+    "浮高": ["拍面", "击球点", "弧线", "过网", "下手挡网", "接杀", "到位"],
     "来不及": ["架拍", "准备", "挥拍速度", "动作幅度", "节奏", "启动", "回动"],
     "接不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
     "够不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
