@@ -2,7 +2,10 @@ name: Validate knowledge pipeline
 
 on:
   push:
-    branches: [main, develop]
+    # `develop` is protected by required PR validation. Re-running the same
+    # full matrix after that PR is merged only duplicates the validated work.
+    # `main` keeps a push run because releases require an exact-SHA result.
+    branches: [main]
   pull_request:
   workflow_dispatch:
   workflow_call:

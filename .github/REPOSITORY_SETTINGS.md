@@ -15,8 +15,11 @@ enforced from repository files alone:
   may target `main`, and they must originate in this repository.
 - Keep the `Propose main to develop sync` workflow enabled with permission to
   create pull requests. Every successful validation of a `main` push must create
-  or update the `automation/sync-main-to-develop` PR and dispatch full validation
-  for that exact synchronization head.
+  or update the `automation/sync-main-to-develop` PR and approve the native
+  approval-required `pull_request` validation for that exact synchronization
+  head. Do not dispatch a second validation for the same head. Because `develop`
+  requires a validated PR with admin enforcement, its merge push must not rerun
+  the full matrix; `main` keeps exact-SHA push validation for releases.
 - Protect release tags matching `v*`: only maintainers may create them; tags must
   be cryptographically signed. Keep GitHub's registered signing key aligned with
   the public key in `.github/release-signers`; never commit the private key.
