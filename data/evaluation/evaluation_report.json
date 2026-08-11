@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.3-dev.1",
-  "baseline_version": "v2.1.2",
+  "development_version": "2.1.3",
+  "baseline_version": "v2.1.3",
   "build": {
-    "id": "93e894b73438ff6d",
-    "inputs_sha256": "0709e261f460d89ba5c15fa0e03df3cfee53bcbb97655c1478107d103f24d632",
-    "runtime_sha256": "c836a81a05fc96f723f55d2342c056dcacbdfee0b5abc36b63f9547ecf03c80a"
+    "id": "e658f7342cad6c95",
+    "inputs_sha256": "3c7dfbc22313b2a458725bdd3a6b60ef16d194f4aa647506a31d7b21e398a332",
+    "runtime_sha256": "ebdbcd358727b77318b3c693e63eddefab17e728d573bea13cfe1efb2a431a66"
   },
   "summary": {
     "status": "pass",
@@ -239,8 +239,8 @@
       "runtime_fingerprint_scope": "answer_semantics",
       "generation_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
       "current_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
-      "generation_artifact_runtime_fingerprint": "0a33a50dc82a01b8e52321d7d5034ee823e5bcec9657fbdfa1cfd097a54a4450",
-      "current_artifact_runtime_fingerprint": "0a33a50dc82a01b8e52321d7d5034ee823e5bcec9657fbdfa1cfd097a54a4450",
+      "generation_artifact_runtime_fingerprint": "d1e8f5598ee5d3889fb76ec54455781f2c0592f130df31e8763866402658b5ea",
+      "current_artifact_runtime_fingerprint": "d1e8f5598ee5d3889fb76ec54455781f2c0592f130df31e8763866402658b5ea",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -359,7 +359,7 @@
     {
       "metric": "answer_context.synthesis_video_recall",
       "current": 0.4624277456647399,
-      "baseline": 0.45,
+      "baseline": 0.4624277456647399,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -368,7 +368,7 @@
     {
       "metric": "answer_context.core_video_recall",
       "current": 0.2254335260115607,
-      "baseline": 0.2,
+      "baseline": 0.2254335260115607,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -512,7 +512,7 @@
     {
       "metric": "query_understanding.cases",
       "current": 145,
-      "baseline": 143,
+      "baseline": 145,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -809,7 +809,7 @@
     {
       "metric": "video_comprehension.ready_videos",
       "current": 959,
-      "baseline": 958,
+      "baseline": 959,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -827,7 +827,7 @@
     {
       "metric": "video_comprehension.transcript_backed",
       "current": 766,
-      "baseline": 765,
+      "baseline": 766,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -908,7 +908,7 @@
     {
       "metric": "live_generation.critical_cases",
       "current": 20,
-      "baseline": 18,
+      "baseline": 20,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
