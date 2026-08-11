@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import copy
 import importlib.util
 import re
 import unittest
@@ -46,7 +45,7 @@ class RenderAnswerTests(unittest.TestCase):
 
     def test_every_rendered_citation_has_a_displayed_source(self):
         context = self.runtime.prepare_answer_context(
-            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？没有连续动作视频时能确定哪个吗？",
+            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？请先回答有把握的部分。",
             local_personalization=False,
         )
         packet = self.runtime.build_answer_packet(context)
@@ -88,7 +87,8 @@ class RenderAnswerTests(unittest.TestCase):
         answer = self.renderer.render_answer(
             self.runtime.build_answer_packet(context)
         )
-        self.assertIn("不能确认你个人动作的唯一原因", answer)
+        self.assertIn("不能确认", answer)
+        self.assertIn("唯一原因", answer)
 
     def test_free_technical_suffix_field_fails_closed(self):
         draft = self.renderer.default_draft(self.packet)
@@ -167,7 +167,7 @@ class RenderAnswerTests(unittest.TestCase):
         self.assertIn("对手：挡网", answers[chain_query])
         self.assertIn("杀球后被对手挡网", answers[chain_query])
 
-    def test_practice_delivery_is_rendered_and_missing_block_fails_audit(self):
+    def test_training_request_renders_boundary_without_synthetic_plan(self):
         query = (
             "我是业余中级双打选手。对手杀到反手身体附近时，我挡网经常冒高。"
             "请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的"
@@ -191,71 +191,38 @@ class RenderAnswerTests(unittest.TestCase):
             context["selection"]["synthesis_candidate_video_ids"],
         )
         for required in (
-            "总计 20 分钟",
-            "让搭档先固定喂球，再增加一个线路或节奏变量",
-            "自测应包含搭档位置、前后或左右职责以及下一拍衔接",
-            "第1天",
-            "第2天",
-            "第3天",
-            "第1周",
-            "第2周",
-            "成功标准",
-            "常见错误",
-            "停止与复核信号",
+            "训练方案边界",
+            "不足以可靠生成训练时长、组数、频次或多日计划",
+            "不扩写成训练处方",
         ):
             self.assertIn(required, answer)
+        for forbidden in ("第1天", "第1周", "单次训练总计"):
+            self.assertNotIn(forbidden, answer)
         clean = self.auditor.audit_answer(query, context, answer)
         self.assertTrue(clean["passed"], clean["violations"])
         ids_by_kind = {
             item["kind"]: item["delivery_id"]
             for item in context["delivery_contract"]["items"]
         }
-        three_day_id = ids_by_kind["practice.three_day"]
-        missing_three_day = "\n".join(
+        boundary_id = ids_by_kind["evidence.training_boundary"]
+        missing_boundary = "\n".join(
             line
             for line in answer.splitlines()
-            if not line.startswith(f"[{three_day_id}]")
+            if not line.startswith(f"[{boundary_id}]")
         )
-        failed = self.auditor.audit_answer(query, context, missing_three_day)
+        failed = self.auditor.audit_answer(query, context, missing_boundary)
         self.assertIn(
             "missing_delivery_item",
             {item["code"] for item in failed["violations"]},
         )
-        criteria_id = ids_by_kind["practice.success_criteria"]
-        fake_criteria = "\n".join(
-            (
-                f"[{criteria_id}]成功标准：1）随便完成；2）感觉不错；3）继续加量。"
-                if line.startswith(f"[{criteria_id}]")
-                else line
-            )
-            for line in answer.splitlines()
-        )
-        semantic_failure = self.auditor.audit_answer(
-            query, context, fake_criteria
-        )
-        self.assertIn(
-            "invalid_success_criteria_delivery",
-            {item["code"] for item in semantic_failure["violations"]},
-        )
-        missing_setup = answer.replace(
-            "；陪练方式：让搭档先固定喂球，再增加一个线路或节奏变量"
-            "；双打边界：自测应包含搭档位置、前后或左右职责以及下一拍衔接",
-            "",
-        )
-        setup_failure = self.auditor.audit_answer(query, context, missing_setup)
-        self.assertIn(
-            "invalid_practice_session_delivery",
-            {item["code"] for item in setup_failure["violations"]},
-        )
-        mismatched_packet = copy.deepcopy(packet)
-        session = next(
-            item
-            for item in mismatched_packet["delivery_contract"]["items"]
-            if item["kind"] == "practice.session"
-        )
-        session["parameters"]["session_minutes"] = 19
-        with self.assertRaisesRegex(ValueError, "does not match"):
-            self.renderer.render_answer(mismatched_packet)
+
+    def test_every_displayed_video_has_complete_viewing_guidance(self):
+        answer = self.renderer.render_answer(self.packet)
+        for label in self.packet["complete_related_videos"]:
+            block = self.auditor.video_guidance_block(answer, label)
+            self.assertIn("为什么引用：", block)
+            self.assertIn("为什么值得看：", block)
+            self.assertIn("重点看：", block)
 
     def test_tactics_delivery_has_every_direction_and_condition_axis(self):
         query = (
@@ -279,6 +246,20 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn(required, answer)
         audit = self.auditor.audit_answer(query, context, answer)
         self.assertTrue(audit["passed"], audit["violations"])
+
+    def test_audit_rejects_user_video_requests_and_synthetic_prescriptions(self):
+        answer = self.renderer.render_answer(self.packet)
+        feedback = self.packet["feedback_prompt"]
+        poisoned = answer.replace(
+            feedback,
+            "请提供连续动作视频。\n今日 15 分钟，分成 3 组。\n\n" + feedback,
+        )
+        audit = self.auditor.audit_answer(
+            self.context["query"], self.context, poisoned
+        )
+        codes = {item["code"] for item in audit["violations"]}
+        self.assertIn("user_action_video_request_out_of_scope", codes)
+        self.assertIn("synthetic_training_prescription", codes)
 
 
 if __name__ == "__main__":

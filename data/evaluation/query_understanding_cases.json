@@ -229,11 +229,11 @@
     },
     {
       "case_id": "AQ026",
-      "query": "我只描述杀球总下网，不给动作视频，能不能确定唯一原因",
-      "intent_summary": "先说明无动作视频不能确定唯一原因，再按杀球下网症状保留证据边界",
+      "query": "我只描述杀球总下网，能不能确定唯一原因",
+      "intent_summary": "先说明现有信息不能确定唯一原因，再按杀球下网症状回答有把握的部分并保留证据边界",
       "expected_answer_mode": "balanced",
       "expected_strategy": "boundary_first",
-      "expected_query_units": ["我只描述杀球总下网，不给动作视频，能不能确定唯一原因"],
+      "expected_query_units": ["我只描述杀球总下网，能不能确定唯一原因"],
       "expected_must_state_boundary_first": true
     },
     {
@@ -2354,6 +2354,31 @@
         {"actor": "opponent_or_feed", "role": "incoming_condition", "term": "杀到反手身体附近"},
         {"actor": "player", "role": "target_action", "term": "反手身体位 接杀挡网"}
       ]
+    },
+    {
+      "case_id": "QUA088",
+      "query": "反手被动回球最后落在对手中场",
+      "intent_summary": "把对手中场识别为回球落在对方场地中场的结果，不得解析成对手本人位于中场，也不得把该落点结果变成目标动作的硬场区约束",
+      "expected_intent": {
+        "positive_query_contains": ["反手被动回球", "落在对手中场"],
+        "positive_query_excludes": [],
+        "excluded_terms_contains": [],
+        "literal_symptoms_contains": [],
+        "scenarios_contains": ["反手", "被动", "中场"],
+        "requested_output": "coaching_answer"
+      },
+      "expected_constraints": {
+        "stroke_side": ["backhand"],
+        "pressure_state": ["passive"]
+      },
+      "expected_opponent_constraints": {},
+      "expected_partner_constraints": {},
+      "expected_player_constraints": {
+        "stroke_side": ["backhand"],
+        "pressure_state": ["passive"]
+      },
+      "expected_derived_target_constraints": {},
+      "expected_target_actor": "player"
     }
   ]
 }

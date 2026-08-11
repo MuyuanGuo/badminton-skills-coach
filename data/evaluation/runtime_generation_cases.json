@@ -25,7 +25,7 @@
     },
     {
       "case_id": "AQ006",
-      "coverage_reason": "Training-plan answer and the largest reviewed answer-packet case."
+      "coverage_reason": "Training request that must return source-backed technique guidance plus an explicit no-synthetic-plan boundary."
     },
     {
       "case_id": "AQ009",
@@ -45,7 +45,7 @@
     },
     {
       "case_id": "AQ026",
-      "coverage_reason": "Insufficient-observation boundary that must reject a unique-cause conclusion."
+      "coverage_reason": "Insufficient-information boundary that must reject a unique-cause conclusion without requesting user action video."
     },
     {
       "case_id": "AQ027",

@@ -1,91 +1,29 @@
 {
-  "version": 1,
-  "default_session_minutes": 15,
-  "session_minutes_range": [
-    5,
-    120
+  "version": 2,
+  "mode": "source_explicit_only",
+  "training_boundary_statement": "当前知识库主要支持技术、机制、纠错、器材和战术解释；若选中来源没有明确给出练习方法，就只说明纠正目标和证据缺口，不生成训练方案。",
+  "allowed_outputs": [
+    "source_explicit_practice_cue",
+    "training_evidence_boundary"
   ],
-  "context_fields": [
-    "level",
-    "discipline",
-    "practice_setup",
-    "session_minutes",
-    "handedness",
-    "pain_or_injury"
+  "source_explicit_requirements": [
+    "练习提示必须出现在当前选中来源的可引用证据窗口中",
+    "只复述来源实际给出的动作、条件和范围",
+    "不得从技术原则反推出训练处方"
   ],
-  "levels": {
-    "beginner": {
-      "focus": "低速、单一动作线索和稳定触球",
-      "pressure": "先固定来球，再逐步加入移动"
-    },
-    "intermediate": {
-      "focus": "动作选择、移动衔接和落点稳定",
-      "pressure": "在可控多球后加入二选一判断"
-    },
-    "advanced": {
-      "focus": "时间压缩、伪装和对抗中的选择质量",
-      "pressure": "使用随机来球和计分约束检验迁移"
-    },
-    "unknown": {
-      "focus": "从低速可控练习开始，并根据成功率调整",
-      "pressure": "质量稳定后再增加速度或线路变化"
-    }
-  },
-  "practice_setups": {
-    "solo": "使用影子动作、悬挂球或自抛球；不要把需要稳定喂球的练习写成可独自完成",
-    "partner": "让搭档先固定喂球，再增加一个线路或节奏变量",
-    "coach": "由教练控制喂球并在质量下降时即时降级难度",
-    "unknown": "给出独练替代方案，并标明有稳定喂球者时如何升级"
-  },
-  "discipline_boundaries": {
-    "singles": "自测应包含回位、连续覆盖和单人线路选择",
-    "doubles": "自测应包含搭档位置、前后或左右职责以及下一拍衔接",
-    "both": "分别说明单打覆盖与双打协作条件，不把同一站位规则通用化",
-    "unknown": "遇到站位、回位或轮转建议时分别说明单双打边界"
-  },
-  "clarification_priority": [
-    "pain_or_injury",
-    "discipline",
-    "practice_setup",
-    "level",
-    "session_minutes"
+  "synthetic_fields_forbidden": [
+    "duration",
+    "repetitions",
+    "sets",
+    "frequency",
+    "success_rate",
+    "session_allocation",
+    "multi_day_progression"
   ],
-  "segment_labels": {
-    "warm_up": "热身",
-    "isolated_cue": "单一线索",
-    "pressure_or_decision": "压力或判断",
-    "self_check": "自测"
-  },
-  "segment_instructions": {
-    "warm_up": "低速热身，确认无疼痛并保持平衡",
-    "isolated_cue": "固定来球，只练一个主要线索",
-    "pressure_or_decision": "稳定后只增加一个判断变量",
-    "self_check": "录像检查目标、平衡和下一拍"
-  },
-  "three_day_progression": [
-    {"label": "第1天", "instruction": "固定来球、低速重复单一线索"},
-    {"label": "第2天", "instruction": "加入一次移动或下一拍衔接"},
-    {"label": "第3天", "instruction": "加入二选一；不达标就退回第2天"}
-  ],
-  "two_week_consolidation": [
-    {"label": "第1周", "instruction": "固定来球稳定质量，达标后再加速"},
-    {"label": "第2周", "instruction": "加入随机线路或半场对抗"}
-  ],
-  "success_criteria": [
-    "连续8次至少6次达标",
-    "击球后保持平衡并准备下一拍",
-    "增加一个变量后仍能定位失败环节"
-  ],
-  "common_errors": [
-    "同时追多个技术点",
-    "动作变形或失衡后仍加速加量",
-    "只看单次结果，不录像核对下一拍"
-  ],
-  "bounded_synthesis_statement": "时间分配和进度是保守训练结构，不是来源固定处方，也不保证限期改善。",
-  "quality_stop_rules": [
-    "连续动作变形或失去平衡时停止当前组",
-    "出现疼痛时停止相关动作，不用训练量覆盖疼痛",
-    "无法维持当前自测标准时降低速度、移动范围或来球变量",
-    "训练前后录像；看不全准备、触球和下一拍时重新取景"
+  "optional_text_context_fields": [
+    "具体技术或失败表现",
+    "主动或被动状态",
+    "单双打与所在场区",
+    "来球和期望落点"
   ]
 }

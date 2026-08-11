@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "description": "Deterministic rules for separating observed symptoms, user hypotheses, source-supported diagnostic branches, clarification needs, and claim-level evidence.",
+  "version": 11,
+  "description": "Deterministic rules for separating reported symptoms, user hypotheses, source-supported diagnostic branches, optional text clarification, and claim-level evidence.",
   "hypothesis_patterns": [
     {
       "type": "single_cause_question",
@@ -27,7 +27,6 @@
     "^(?:这|那|上述|前述).*(?:假设|原因)$",
     "^其他(?:有证据支持)?(?:的原因)?$"
   ],
-  "video_unavailable_terms": ["没有连续动作视频", "没有动作视频", "没有视频", "暂时没有视频", "无法提供视频", "不能提供视频", "只能按文字排查"],
   "symptom_terms": [
     "来不及",
     "到得太晚",
@@ -66,7 +65,19 @@
       "query_terms": ["击球点", "触球点", "触球高度", "拿点", "点低", "点高", "出界"],
       "evidence_terms": ["击球点", "触球点", "拿点高", "拿得点高", "拿得点低", "点再往自己", "位置和框架一定要契合"],
       "observation_question": "触球时，球是在身前、体侧，还是已经落到身后？和这项动作正常的击球点相比，位置是偏高、差不多，还是偏低？",
-      "answer_cues": ["身前", "体侧", "身后", "偏高", "差不多", "偏低"]
+      "answer_cues": [
+        "身前",
+        "身体前面",
+        "身体前方",
+        "体侧",
+        "身体侧面",
+        "身后",
+        "身体后面",
+        "身体后方",
+        "偏高",
+        "差不多",
+        "偏低"
+      ]
     },
     {
       "id": "footwork_speed",

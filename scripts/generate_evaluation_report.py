@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from numbers import Real
 from pathlib import Path
 
 import evaluate_answer_context
@@ -467,6 +468,7 @@ def collect_evaluations(root=ROOT, workers=1, timings=None):
                 "claim_mapped_video_recall",
                 "synthesis_video_recall",
                 "complete_related_video_recall",
+                "synthesis_display_expected_videos",
                 "core_video_recall",
                 "mean_video_count_by_layer",
                 "primary_selected_rate",
@@ -633,6 +635,10 @@ def metric_value(evaluations, path):
     return value
 
 
+def numeric_metric(value):
+    return isinstance(value, Real) and not isinstance(value, bool)
+
+
 def compare_baseline(evaluations, baseline):
     comparisons = []
     invalidated = set(baseline.get("invalidated_metrics", {}))
@@ -649,25 +655,36 @@ def compare_baseline(evaluations, baseline):
             contract_source = expected_source
         tolerance = contract.get("tolerance", 0)
         direction = contract["direction"]
-        if direction == "at_least":
-            passed = current + tolerance >= expected
-        elif direction == "at_most":
-            passed = current - tolerance <= expected
-        elif direction == "equal":
+        failure_reason = None
+        if direction == "equal":
             passed = current == expected
-        else:
+        elif direction not in {"at_least", "at_most"}:
             raise ValueError(f"Unsupported baseline direction: {direction}")
-        comparisons.append(
-            {
-                "metric": path,
-                "current": current,
-                "baseline": expected,
-                "direction": direction,
-                "tolerance": tolerance,
-                "contract_source": contract_source,
-                "passed": passed,
-            }
-        )
+        elif not numeric_metric(current):
+            passed = False
+            failure_reason = "non_numeric_current"
+        elif not numeric_metric(expected):
+            passed = False
+            failure_reason = "non_numeric_baseline"
+        elif not numeric_metric(tolerance):
+            passed = False
+            failure_reason = "non_numeric_tolerance"
+        elif direction == "at_least":
+            passed = current + tolerance >= expected
+        else:
+            passed = current - tolerance <= expected
+        comparison = {
+            "metric": path,
+            "current": current,
+            "baseline": expected,
+            "direction": direction,
+            "tolerance": tolerance,
+            "contract_source": contract_source,
+            "passed": passed,
+        }
+        if failure_reason is not None:
+            comparison["failure_reason"] = failure_reason
+        comparisons.append(comparison)
     return comparisons
 
 

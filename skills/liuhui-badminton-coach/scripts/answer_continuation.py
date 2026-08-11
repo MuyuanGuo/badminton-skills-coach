@@ -5,7 +5,7 @@ import hashlib
 import json
 
 
-CLARIFICATION_STATE_SCHEMA_VERSION = 1
+CLARIFICATION_STATE_SCHEMA_VERSION = 2
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 
 def canonical_json_digest(payload):
@@ -25,13 +25,20 @@ def clarification_state_digest(state):
     return canonical_json_digest(unsigned)
 
 
+def clarification_semantic_query(original_query, resolved_answers):
+    return original_query + "".join(
+        f'\n用户补充：{item["answer"]}' for item in resolved_answers
+    )
+
+
 def validate_clarification_state(previous_context, diagnostic_rules):
     if not isinstance(previous_context, dict):
         raise ValueError("continue_from must contain a context JSON object")
     state = previous_context.get("clarification_state")
     if not isinstance(state, dict):
         raise ValueError("continue_from does not contain clarification_state")
-    if state.get("schema_version") != CLARIFICATION_STATE_SCHEMA_VERSION:
+    schema_version = state.get("schema_version")
+    if schema_version not in {1, CLARIFICATION_STATE_SCHEMA_VERSION}:
         raise ValueError("unsupported clarification_state schema_version")
     required = {
         "original_query",
@@ -46,6 +53,19 @@ def validate_clarification_state(previous_context, diagnostic_rules):
         raise ValueError("clarification_state is missing required fields")
     if clarification_state_digest(state) != state["state_digest"]:
         raise ValueError("clarification_state digest mismatch")
+    if schema_version == 1:
+        state = {
+            **state,
+            "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
+            "semantic_query": clarification_semantic_query(
+                state["original_query"], state["resolved_answers"]
+            ),
+        }
+        state["state_digest"] = clarification_state_digest(state)
+    if not isinstance(state.get("semantic_query"), str) or not state[
+        "semantic_query"
+    ].strip():
+        raise ValueError("clarification_state semantic_query is invalid")
     if previous_context.get("query") != state["effective_query"]:
         raise ValueError("continue_from query does not match clarification_state")
     requests = previous_context.get("clarification_decision", {}).get(
@@ -127,15 +147,6 @@ def answer_resolves_request(
     }
     if not normalized or normalized in inconclusive:
         return False
-    if request.get("answer_format") == "continuous_user_video":
-        unavailable_terms = (diagnostic_rules or {}).get(
-            "video_unavailable_terms", []
-        )
-        if any(
-            search_module.normalize(term) in normalized
-            for term in unavailable_terms
-        ):
-            return True
     if explicit_binding:
         return True
     cues = request.get("answer_cues", [])
@@ -187,22 +198,33 @@ def resolve_continuation(
             raise ValueError(
                 f'clarification reply does not resolve {item["question_id"]}'
             )
-        resolved.append(
-            {
-                **item,
-                "question": request["question"],
-                "query_label": request["query_label"],
-                "unknown_type": request["unknown_type"],
-                "turn": turn_number,
-            }
-        )
+        resolved_item = {
+            **item,
+            "question": request["question"],
+            "query_label": request["query_label"],
+            "unknown_type": request["unknown_type"],
+            "turn": turn_number,
+        }
+        if request.get("evidence_focus"):
+            resolved_item["evidence_focus"] = dict(
+                request["evidence_focus"]
+            )
+        resolved.append(resolved_item)
     all_resolved = [*state["resolved_answers"], *resolved]
     effective_query = state["original_query"] + "".join(
         f'\n补充说明（{item["query_label"]}）：{item["answer"]}'
         for item in all_resolved
     )
+    # Keep assistant-authored labels in the auditable/display query, but never
+    # feed them into intent, focus, actor, or evidence parsing.  A label such
+    # as “击球点的高度与前后位置” describes why the assistant asked; it is not
+    # a new user-authored requirement that every source must literally cover.
+    semantic_query = clarification_semantic_query(
+        state["original_query"], all_resolved
+    )
     return effective_query, {
         "original_query": state["original_query"],
+        "semantic_query": semantic_query,
         "turns": [
             *state["turns"],
             {
@@ -224,6 +246,7 @@ def build_clarification_state(context, continuation=None):
             "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
             "original_query": context["query"],
             "effective_query": context["query"],
+            "semantic_query": context.get("semantic_query", context["query"]),
             "turns": [
                 {
                     "turn": 1,
@@ -242,6 +265,10 @@ def build_clarification_state(context, continuation=None):
             "schema_version": CLARIFICATION_STATE_SCHEMA_VERSION,
             **continuation,
             "effective_query": context["query"],
+            "semantic_query": context.get(
+                "semantic_query",
+                continuation.get("semantic_query", context["query"]),
+            ),
             "pending_question_ids": [],
             "pending_requests": [],
         }

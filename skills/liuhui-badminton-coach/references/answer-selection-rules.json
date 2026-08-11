@@ -1,5 +1,5 @@
 {
-  "version": 50,
+  "version": 51,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -79,6 +79,27 @@
     "搭档": ["帮搭档", "替搭档", "保护搭档"],
     "队友": ["帮队友", "替队友", "保护队友"]
   },
+  "query_actor_destination_markers": ["对手", "对方", "对面"],
+  "query_actor_destination_prefixes": [
+    "落在",
+    "落到",
+    "打到",
+    "回到",
+    "飞到",
+    "送到",
+    "只到",
+    "只能到"
+  ],
+  "query_actor_destination_zone_terms": [
+    "网前",
+    "前场",
+    "中场",
+    "中前场",
+    "中腰",
+    "后场",
+    "底线",
+    "场地"
+  ],
   "query_actor_pronoun_markers": ["他", "她"],
   "query_actor_object_pronoun_prefixes": ["压", "打", "推", "攻", "针对", "盯", "追"],
   "query_actor_partner_object_pronoun_prefixes": ["帮", "替", "保护"],

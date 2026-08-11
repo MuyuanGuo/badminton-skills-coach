@@ -126,7 +126,7 @@ class AnswerPacketTests(unittest.TestCase):
             },
         )
 
-    def test_practice_packet_keeps_compact_session_adaptation(self):
+    def test_training_request_packet_keeps_only_evidence_boundary(self):
         context = self.runtime.prepare_answer_context(
             (
                 "我是业余中级双打选手。对手杀到反手身体附近时，"
@@ -136,22 +136,20 @@ class AnswerPacketTests(unittest.TestCase):
             local_personalization=False,
         )
         packet = self.runtime.build_answer_packet(context, "context.json")
-        practice = packet["practice_plan"]
-        self.assertEqual(practice["context"]["level"], "intermediate")
-        self.assertEqual(practice["context"]["discipline"], "doubles")
-        self.assertEqual(practice["context"]["setup"], "partner")
-        self.assertEqual(practice["session_minutes"], 20)
-        self.assertEqual(sum(practice["minute_allocation"].values()), 20)
-        self.assertEqual(packet["schema_version"], 6)
-        self.assertEqual(len(practice["three_day_progression"]), 3)
-        self.assertEqual(len(practice["two_week_consolidation"]), 2)
-        self.assertGreaterEqual(len(practice["success_criteria"]), 2)
+        self.assertNotIn("practice_plan", packet)
+        self.assertEqual(packet["schema_version"], 7)
         self.assertIn(
-            "practice.session",
+            "evidence.training_boundary",
             {
                 item["kind"]
                 for item in packet["delivery_contract"]["items"]
             },
+        )
+        self.assertFalse(
+            any(
+                item["kind"].startswith("practice.")
+                for item in packet["delivery_contract"]["items"]
+            )
         )
         self.assertTrue(self.runtime.validate_answer_packet(packet, context))
 
@@ -169,7 +167,8 @@ class AnswerPacketTests(unittest.TestCase):
         )
         self.assertTrue(
             all(
-                len(video["window_ids"]) <= 4
+                len(video["window_ids"])
+                <= self.packet_runtime.FALLBACK_WINDOW_LIMIT
                 for video in packet["selected_videos"]
             )
         )
@@ -253,9 +252,13 @@ class AnswerPacketTests(unittest.TestCase):
         self.assertEqual(len(window_texts), len(set(window_texts)))
         full_size = len(json.dumps(self.context, ensure_ascii=False).encode("utf-8"))
         packet_size = len(encoded.encode("utf-8"))
-        self.assertLessEqual(packet_size / full_size, 0.5)
+        self.assertLessEqual(packet_size / full_size, 0.75)
+        for video in self.packet_runtime.packet_video_records(self.packet):
+            self.assertTrue(video["citation_reason"])
+            self.assertTrue(video["viewing_value"])
+            self.assertTrue(video["watch_focus"])
 
-    def test_large_complete_related_catalog_stays_within_token_budget(self):
+    def test_large_synthesis_source_set_stays_within_token_budget(self):
         context = self.runtime.prepare_answer_context(
             (
                 "高远球、吊球、杀球时左手应该放哪里？ "
@@ -269,7 +272,11 @@ class AnswerPacketTests(unittest.TestCase):
             {video["label"] for video in all_videos},
             set(packet["complete_related_videos"]),
         )
-        self.assertGreater(len(all_videos), len(packet["selected_videos"]))
+        self.assertEqual(
+            set(packet["complete_related_videos"]),
+            set(packet["synthesis_videos"]),
+        )
+        self.assertTrue(context["answer_audit_only_related_video_labels"])
         title_index = packet["complete_related_video_catalog"]["fields"].index(
             "title"
         )

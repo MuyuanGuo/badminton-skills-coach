@@ -121,6 +121,9 @@ def prepare_case_context(search_module, case, top_k=12):
         "synthesis_ids": video_ids_for_labels(
             payload["answer_synthesis_video_labels"]
         ),
+        "audit_only_ids": video_ids_for_labels(
+            payload.get("answer_audit_only_related_video_labels", [])
+        ),
         "complete_related_ids": video_ids_for_labels(
             payload["answer_complete_related_video_labels"]
         ),
@@ -237,6 +240,7 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
     claim_mapped_recalled_total = 0
     synthesis_recalled_total = 0
     complete_related_recalled_total = 0
+    synthesis_display_expected_total = 0
     core_recalled_total = 0
     primary_cases = 0
     primary_selected = 0
@@ -249,6 +253,7 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         "selected": 0,
         "claim_mapped": 0,
         "synthesis": 0,
+        "audit_only": 0,
         "complete_related": 0,
         "core": 0,
     }
@@ -267,7 +272,7 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         missing_claim_mapped = sorted(expected - context["claim_mapped_ids"])
         missing_synthesis = sorted(expected - context["synthesis_ids"])
         missing_complete_related = sorted(
-            expected - context["complete_related_ids"]
+            context["synthesis_ids"] - context["complete_related_ids"]
         )
         missing_core = sorted(expected - context["core_ids"])
         expected_total += len(expected)
@@ -278,7 +283,8 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         selected_recalled_total += len(expected) - len(missing_selected)
         claim_mapped_recalled_total += len(expected) - len(missing_claim_mapped)
         synthesis_recalled_total += len(expected) - len(missing_synthesis)
-        complete_related_recalled_total += len(expected) - len(
+        synthesis_display_expected_total += len(context["synthesis_ids"])
+        complete_related_recalled_total += len(context["synthesis_ids"]) - len(
             missing_complete_related
         )
         core_recalled_total += len(expected) - len(missing_core)
@@ -327,6 +333,7 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
                 ),
                 "claim_mapped_video_count": len(context["claim_mapped_ids"]),
                 "synthesis_video_count": len(context["synthesis_ids"]),
+                "audit_only_video_count": len(context["audit_only_ids"]),
                 "complete_related_video_count": len(
                     context["complete_related_ids"]
                 ),
@@ -357,7 +364,8 @@ def evaluate(cases_path=CASES_PATH, top_k=12):
         "synthesis_video_recall": synthesis_recalled_total
         / max(1, expected_total),
         "complete_related_video_recall": complete_related_recalled_total
-        / max(1, expected_total),
+        / max(1, synthesis_display_expected_total),
+        "synthesis_display_expected_videos": synthesis_display_expected_total,
         "core_video_recall": core_recalled_total / max(1, expected_total),
         "mean_video_count_by_layer": {
             layer: count / max(1, len(results))

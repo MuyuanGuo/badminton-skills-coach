@@ -6,10 +6,15 @@ import hashlib
 import importlib.util
 import json
 import re
+import sys
 from collections import Counter
 from pathlib import Path
 
-from evaluate_forward_test_results import (
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from evaluate_forward_test_results import (  # noqa: E402
     answer_runtime_fingerprint,
     runtime_fingerprint,
 )
@@ -55,6 +60,12 @@ REQUIRED_SYSTEMATIC_ANSWER_MODES = {
     "balanced",
     "video_primary",
 }
+FORBIDDEN_USER_VIDEO_REQUEST = re.compile(
+    r"(?:请|需要|必须|建议).{0,12}(?:提供|上传|发送).{0,12}(?:动作视频|动作录像|连续视频)"
+)
+FORBIDDEN_SYNTHETIC_TRAINING_PRESCRIPTION = re.compile(
+    r"(?:今日|单次)\s*\d+\s*分钟|第[一二三123]\s*天|第[一二12]\s*周|每组\s*\d+|\d+\s*组"
+)
 
 
 class LiveGenerationValidationError(ValueError):
@@ -279,6 +290,26 @@ def delivery_case_failures(case, context, answer, audit_module):
     }
     if selected_ids & set(case.get("forbidden_selected_video_ids", [])):
         failures.append("forbidden_selected_video")
+    allowed_families = set(case.get("allowed_selected_shot_families", []))
+    if allowed_families:
+        for video in context.get("selected_videos", []):
+            families = set(
+                video.get("constraint_scope", {})
+                .get("shot_family", {})
+                .get("values", [])
+            )
+            if not families.intersection(allowed_families):
+                failures.append("selected_video_shot_family")
+                break
+    visible_limit = case.get("required_visible_video_count_max")
+    if isinstance(visible_limit, int) and len(
+        context.get("answer_visible_video_labels", [])
+    ) > visible_limit:
+        failures.append("visible_video_count")
+    if FORBIDDEN_USER_VIDEO_REQUEST.search(answer):
+        failures.append("user_action_video_requested")
+    if FORBIDDEN_SYNTHETIC_TRAINING_PRESCRIPTION.search(answer):
+        failures.append("synthetic_training_prescription")
     for item in context.get("delivery_contract", {}).get("items", []):
         marker = f"[{item['delivery_id']}]"
         mutated = "\n".join(

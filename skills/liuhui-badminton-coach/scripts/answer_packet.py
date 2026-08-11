@@ -14,9 +14,9 @@ from token_budget import estimate_json_tokens as estimate_packet_tokens
 from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 6
+ANSWER_PACKET_SCHEMA_VERSION = 7
 ANSWER_PLAN_SCHEMA_VERSION = 1
-FALLBACK_WINDOW_LIMIT = 4
+FALLBACK_WINDOW_LIMIT = 6
 CORE_VIDEO_LIMIT = 5
 COMPLETE_RELATED_TITLE_LIMIT = 48
 COMPLETE_RELATED_CATALOG_FIELDS = (
@@ -25,11 +25,165 @@ COMPLETE_RELATED_CATALOG_FIELDS = (
     "title",
     "legacy_video_id",
     "url",
+    "citation_reason",
+    "viewing_value",
+    "watch_focus",
 )
 ANSWER_PACKET_TARGET_BYTES = 24 * 1024
 ANSWER_PACKET_HARD_MAXIMUM_BYTES = 32 * 1024
 ANSWER_PACKET_TARGET_TOKENS = 10_000
 ANSWER_PACKET_HARD_MAXIMUM_TOKENS = 12_000
+
+
+def compact_display_text(value, limit=96):
+    text = " ".join(str(value or "").split())
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1].rstrip() + "…"
+
+
+TECHNICAL_FOCUS_TERMS = (
+    "击球",
+    "击球点",
+    "击球位置",
+    "框架",
+    "拍面",
+    "握拍",
+    "架拍",
+    "引拍",
+    "发力",
+    "挥拍",
+    "重心",
+    "步法",
+    "回动",
+    "启动",
+    "身体",
+    "手腕",
+    "手指",
+    "肩",
+    "肘",
+    "线路",
+    "落点",
+    "主动",
+    "被动",
+)
+
+
+def technical_focus_score(item):
+    text = str(item.get("text") or "")
+    return sum(term in text for term in TECHNICAL_FOCUS_TERMS)
+
+
+def video_display_guidance(video, claim_evidence_map):
+    """Explain why every displayed source belongs and what to inspect."""
+
+    matches = []
+    for claim in claim_evidence_map:
+        for evidence in claim.get("evidence", []):
+            label = evidence.get("label") or evidence.get("video_label")
+            if label == video.get("label"):
+                matches.append((claim, evidence))
+    directness_rank = {"direct": 3, "scoped": 2, "component": 1}
+    matches.sort(
+        key=lambda item: (
+            -directness_rank.get(item[1].get("directness"), 0),
+            -int(item[1].get("window_support", {}).get("rank") or 0),
+            -float(item[1].get("window_support", {}).get("score") or 0),
+            item[0].get("claim_id", ""),
+        )
+    )
+    claim, evidence = matches[0] if matches else ({}, {})
+    claim_text = compact_display_text(claim.get("text") or "本题", 54)
+    roles = set(evidence.get("evidence_roles") or video.get("evidence_roles") or [])
+    if {"correction", "mechanism"}.issubset(roles):
+        viewing_value = (
+            f"它同时包含问题表现、原因解释和纠正线索，适合用来区分"
+            f"“{claim_text}”中的不同可能原因。"
+        )
+    elif "correction" in roles:
+        viewing_value = f"可直观看到与“{claim_text}”有关的错误表现和纠正差别。"
+    elif "mechanism" in roles or "principle" in roles:
+        viewing_value = f"用于理解“{claim_text}”背后难以只用文字表达的动作机制。"
+    elif "action" in roles:
+        viewing_value = f"用于观察“{claim_text}”对应的动作顺序、空间位置和连续变化。"
+    elif "tactics" in roles:
+        viewing_value = f"用于观察“{claim_text}”成立时的来球、站位和回球条件。"
+    elif "context" in roles:
+        viewing_value = f"仅补充“{claim_text}”的场景和动作外观，不单独证明机制。"
+    else:
+        viewing_value = f"用于核对来源中的具体示范是否真正对应“{claim_text}”。"
+
+    candidate_windows = [
+        *video.get("evidence_windows", []),
+        *video.get("transcript_evidence", []),
+        *video.get("bounded_note_evidence", []),
+    ]
+    candidate_windows.sort(
+        key=lambda item: (
+            -technical_focus_score(item),
+            -int(bool(item.get("exact_query_match"))),
+            -float(item.get("query_ngram_coverage") or 0),
+            -len(item.get("matched_terms") or []),
+            -float(item.get("score") or 0),
+            item.get("timestamp", ""),
+        )
+    )
+    if not candidate_windows:
+        candidate_windows = [
+            item
+            for item in video.get("teaching_note", {}).get("evidence", [])
+            if item.get("timestamp") and item.get("text")
+        ]
+        candidate_windows.sort(
+            key=lambda item: (
+                -technical_focus_score(item),
+                -len(str(item.get("text") or "")),
+                item.get("timestamp", ""),
+            )
+        )
+    focus = candidate_windows[0] if candidate_windows else None
+    focus_summary = compact_display_text(
+        focus.get("text") if focus else video.get("title"), 72
+    )
+    directness = evidence.get("directness")
+    if directness == "direct":
+        citation_reason = (
+            f"直接支持“{claim_text}”中的主要结论；关键依据是“{focus_summary}”。"
+        )
+    elif directness == "scoped":
+        citation_reason = (
+            f"在该视频的具体场景下支持“{claim_text}”；关键依据是"
+            f"“{focus_summary}”，不能脱离场景泛化。"
+        )
+    else:
+        citation_reason = (
+            f"补充“{claim_text}”中的局部动作或机制；重点依据是“{focus_summary}”。"
+        )
+    if focus is not None:
+        if focus.get("timestamp") == "visual_review_no_timestamp":
+            watch_focus = (
+                "全片（无精确时间点）："
+                f"{compact_display_text(focus.get('text'), 88)}"
+            )
+        else:
+            watch_focus = (
+                f"{focus.get('timestamp')}："
+                f"{compact_display_text(focus.get('text'), 88)}"
+            )
+    elif video.get("runtime_evidence_mode") == "visual_reviewed":
+        watch_focus = (
+            "全片（无精确时间点）：只观察动作连续性、击球位置和出球结果，"
+            "不从画面额外推导未说明的机制。"
+        )
+    else:
+        watch_focus = (
+            "全片：围绕标题所示主题核对动作或解释；当前来源没有可靠的精确时间点。"
+        )
+    return {
+        "citation_reason": citation_reason,
+        "viewing_value": viewing_value,
+        "watch_focus": watch_focus,
+    }
 
 
 def canonical_json_digest(payload):
@@ -461,9 +615,9 @@ def compact_diagnostic_model(model):
             "do_not_claim_unique_cause",
             True,
         ),
-        "unique_cause_confirmation_requires_user_video": model.get(
-            "unique_cause_confirmation_requires_user_video",
-            True,
+        "additional_information_can_improve_answer": model.get(
+            "additional_information_can_improve_answer",
+            False,
         ),
     }
 
@@ -484,11 +638,12 @@ def compact_video(
             if key not in seen:
                 windows.append(dict(window))
                 seen.add(key)
-    for window in claim_windows:
-        key = (window["timestamp"], window["text"])
-        if key not in seen:
-            windows.append(dict(window))
-            seen.add(key)
+    if not include_fallback_windows:
+        for window in claim_windows:
+            key = (window["timestamp"], window["text"])
+            if key not in seen:
+                windows.append(dict(window))
+                seen.add(key)
     if include_fallback_windows:
         transcript_windows = [
             *video.get("transcript_evidence", []),
@@ -503,12 +658,6 @@ def compact_video(
                 item.get("timestamp", ""),
             )
         )
-        focus_terms = {
-            str(term)
-            for item in transcript_windows
-            for term in item.get("matched_terms", [])
-            if str(term)
-        }
         note_windows = []
         role_priority = {
             "principles": 0,
@@ -519,12 +668,11 @@ def compact_video(
         }
         for item in video.get("teaching_note", {}).get("evidence", []):
             text = str(item.get("text") or "")
-            matched_focus_terms = sum(term in text for term in focus_terms)
-            if focus_terms and matched_focus_terms < min(2, len(focus_terms)):
-                continue
-            note_windows.append(item)
+            if item.get("timestamp") and text:
+                note_windows.append(item)
         note_windows.sort(
             key=lambda item: (
+                -technical_focus_score(item),
                 min(
                     (
                         role_priority.get(role, 9)
@@ -535,8 +683,25 @@ def compact_video(
                 item.get("timestamp", ""),
             )
         )
-        source_windows = transcript_windows + note_windows
-        for source_window in source_windows:
+        for source_window in note_windows[:2]:
+            if len(windows) >= FALLBACK_WINDOW_LIMIT:
+                break
+            timestamp = source_window.get("timestamp")
+            text = source_window.get("text")
+            key = (timestamp, text)
+            if timestamp and text and key not in seen:
+                windows.append({"timestamp": timestamp, "text": text})
+                seen.add(key)
+        for source_window in claim_windows:
+            if len(windows) >= FALLBACK_WINDOW_LIMIT:
+                break
+            timestamp = source_window.get("timestamp")
+            text = source_window.get("text")
+            key = (timestamp, text)
+            if timestamp and text and key not in seen:
+                windows.append({"timestamp": timestamp, "text": text})
+                seen.add(key)
+        for source_window in transcript_windows:
             if len(windows) >= FALLBACK_WINDOW_LIMIT:
                 break
             timestamp = source_window.get("timestamp")
@@ -715,7 +880,16 @@ def compact_claim_evidence_map(claims, plan, window_ids_by_key=None):
 def minimize_complete_list_videos(videos, detail_labels):
     """Keep full metadata only where prose or core guidance can use it."""
 
-    minimal_keys = {"label", "evidence_id", "title", "url", "legacy_video_id"}
+    minimal_keys = {
+        "label",
+        "evidence_id",
+        "title",
+        "url",
+        "legacy_video_id",
+        "citation_reason",
+        "viewing_value",
+        "watch_focus",
+    }
     minimized = []
     for video in videos:
         if video["label"] in detail_labels:
@@ -790,7 +964,14 @@ def decode_complete_related_video_catalog(packet):
         if any(
             not isinstance(video.get(field), str)
             or not video[field].strip()
-            for field in ("label", "evidence_id", "title")
+            for field in (
+                "label",
+                "evidence_id",
+                "title",
+                "citation_reason",
+                "viewing_value",
+                "watch_focus",
+            )
         ):
             raise ValueError(
                 "answer_packet complete-related catalog source identity is invalid"
@@ -936,11 +1117,11 @@ def select_core_videos(
 
 
 def core_video_labels_for_context(context, limit=CORE_VIDEO_LIMIT):
-    """Project the bounded core list; related sources remain separately visible."""
+    """Project the bounded core list from sources used in synthesis."""
 
     plan = context["answer_plan"]
     related_labels = set(
-        packet_related_video_labels(plan, context["claim_evidence_map"])
+        packet_visible_video_labels(plan, context["claim_evidence_map"])
     )
     fallback_labels = fallback_video_labels(
         plan, context["claim_evidence_map"]
@@ -972,43 +1153,6 @@ def core_video_labels_for_context(context, limit=CORE_VIDEO_LIMIT):
         preferred_labels=preferred_labels,
     )
 
-def compact_practice_plan(topic_navigation):
-    if not isinstance(topic_navigation, dict):
-        return None
-    adaptation = topic_navigation.get("practice_adaptation")
-    context = topic_navigation.get("user_context")
-    if not isinstance(adaptation, dict) or not isinstance(context, dict):
-        return None
-    session_minutes = adaptation.get("session_minutes")
-    allocation = adaptation.get("minute_allocation")
-    if not isinstance(session_minutes, int) or not isinstance(allocation, dict):
-        return None
-    return {
-        "context": {
-            "level": context.get("level", "unknown"),
-            "discipline": context.get("discipline", "unknown"),
-            "setup": context.get("practice_setup", "unknown"),
-        },
-        "session_minutes": session_minutes,
-        "minute_allocation": allocation,
-        "segment_labels": adaptation.get("segment_labels", {}),
-        "segment_instructions": adaptation.get("segment_instructions", {}),
-        "setup_adaptation": adaptation.get("setup_adaptation"),
-        "discipline_boundary": adaptation.get("discipline_boundary"),
-        "three_day_progression": adaptation.get(
-            "three_day_progression", []
-        ),
-        "two_week_consolidation": adaptation.get(
-            "two_week_consolidation", []
-        ),
-        "success_criteria": adaptation.get("success_criteria", []),
-        "common_errors": adaptation.get("common_errors", []),
-        "bounded_synthesis_statement": adaptation.get(
-            "bounded_synthesis_statement"
-        ),
-        "quality_stop_rules": adaptation.get("quality_stop_rules", []),
-    }
-
 
 def compact_delivery_contract(contract):
     if not isinstance(contract, dict):
@@ -1027,17 +1171,7 @@ def compact_delivery_contract(contract):
                     if key in item
                 },
                 **(
-                    {
-                        "parameters": (
-                            {
-                                "session_minutes": item[
-                                    "parameters"
-                                ].get("session_minutes")
-                            }
-                            if item.get("kind") == "practice.session"
-                            else item["parameters"]
-                        )
-                    }
+                    {"parameters": item["parameters"]}
                     if item.get("parameters")
                     else {}
                 ),
@@ -1102,7 +1236,7 @@ def build_answer_packet(context, audit_context_reference=None):
     synthesis_labels = set(
         packet_visible_video_labels(plan, context["claim_evidence_map"])
     )
-    computed_related_labels = packet_related_video_labels(
+    computed_related_labels = packet_visible_video_labels(
         plan, context["claim_evidence_map"]
     )
     declared_related_labels = context.get(
@@ -1127,19 +1261,26 @@ def build_answer_packet(context, audit_context_reference=None):
     claim_windows_by_evidence_id = default_claim_windows_by_evidence_id(
         context["claim_evidence_map"], plan
     )
-    compact_videos = [
-        compact_video(
-            video,
-            plan["selected_evidence_atoms"],
-            video["label"] in fallback_labels,
-            claim_windows_by_evidence_id.get(video["evidence_id"], []),
+    compact_videos = []
+    for video in sorted(
+        context["selected_videos"],
+        key=lambda item: int(item["label"][1:]),
+    ):
+        if video["label"] not in related_labels:
+            continue
+        compact = compact_video(
+                video,
+                plan["selected_evidence_atoms"],
+                video["label"] in fallback_labels,
+                claim_windows_by_evidence_id.get(video["evidence_id"], []),
         )
-        for video in sorted(
-            context["selected_videos"],
-            key=lambda item: int(item["label"][1:]),
+        compact_videos.append(
+            compact
+            | video_display_guidance(
+                {**video, "evidence_windows": compact["evidence_windows"]},
+                context["claim_evidence_map"],
+            )
         )
-        if video["label"] in related_labels
-    ]
     windows, window_ids_by_key, compact_videos = normalized_evidence_windows(
         compact_videos
     )
@@ -1226,9 +1367,6 @@ def build_answer_packet(context, audit_context_reference=None):
             [{"label": label} for label in complete_related_videos]
         ),
     }
-    practice_plan = compact_practice_plan(context.get("topic_navigation"))
-    if practice_plan is not None:
-        packet["practice_plan"] = practice_plan
     return enforce_answer_packet_budget(packet)
 
 
@@ -1257,8 +1395,8 @@ def validate_answer_packet(packet, context):
     if any(
         item.get("kind", "").startswith("practice.")
         for item in delivery.get("items", [])
-    ) and not packet.get("practice_plan"):
-        raise ValueError("practice delivery requires practice_plan")
+    ):
+        raise ValueError("synthetic practice delivery kinds are unsupported")
     covered_cluster_ids: set[str] = set()
     for video in packet.get("selected_videos", []):
         content_cluster_ids = set(
@@ -1281,13 +1419,23 @@ def validate_answer_packet(packet, context):
     if packet != expected:
         raise ValueError("answer_packet projection does not match audit context")
     mapped_labels = set(
-        packet_related_video_labels(
+        packet_visible_video_labels(
             context["answer_plan"], context["claim_evidence_map"]
         )
     )
     packet_labels = {item.get("label") for item in packet_video_records(packet)}
+    for video in packet_video_records(packet):
+        if any(
+            not isinstance(video.get(field), str) or not video[field].strip()
+            for field in ("citation_reason", "viewing_value", "watch_focus")
+        ):
+            raise ValueError(
+                "answer_packet videos require complete viewing guidance"
+            )
     if packet_labels != mapped_labels:
-        raise ValueError("answer_packet videos must exactly match claim evidence labels")
+        raise ValueError(
+            "answer_packet videos must exactly match synthesis evidence labels"
+        )
     synthesis_labels = packet.get("synthesis_videos")
     expected_synthesis_labels = packet_visible_video_labels(
         context["answer_plan"], context["claim_evidence_map"]
@@ -1301,7 +1449,7 @@ def validate_answer_packet(packet, context):
         or set(complete_labels) != packet_labels
     ):
         raise ValueError(
-            "answer_packet complete_related_videos must exactly match related evidence"
+            "answer_packet complete_related_videos must exactly match synthesis evidence"
         )
     core_labels = packet.get("core_videos")
     detailed_labels = {

@@ -84,33 +84,20 @@ class DeliveryContractTests(unittest.TestCase):
             )
         )
 
-    def test_contract_atomizes_practice_and_tactics_deliveries(self):
+    def test_contract_bounds_training_and_atomizes_tactics_deliveries(self):
         interpretation = {
             "intent_frame": {"requested_output": "practice"},
             "source_query_units": ["给20分钟计划并说明直线和斜线条件"],
-        }
-        navigation = {
-            "practice_adaptation": {
-                "session_minutes": 20,
-                "minute_allocation": {
-                    "warm_up": 4,
-                    "isolated_cue": 7,
-                    "pressure_or_decision": 6,
-                    "self_check": 3,
-                },
-            }
         }
         contract = self.module.build_delivery_contract(
             "给20分钟计划，包含三天、两周和成功标准；什么时候打直线或斜线？",
             interpretation,
             {"user_hypotheses": [], "supported_mechanisms": []},
-            navigation,
+            None,
         )
         kinds = [item["kind"] for item in contract["items"]]
-        self.assertIn("practice.session", kinds)
-        self.assertIn("practice.three_day", kinds)
-        self.assertIn("practice.two_week", kinds)
-        self.assertIn("practice.success_criteria", kinds)
+        self.assertEqual(kinds.count("evidence.training_boundary"), 1)
+        self.assertFalse(any(kind.startswith("practice.") for kind in kinds))
         self.assertEqual(kinds.count("tactics.direction_branch"), 2)
 
 

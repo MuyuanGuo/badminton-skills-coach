@@ -135,8 +135,17 @@ def required_focus_groups(search_module, query, rules):
     ]
 
 
+def plan_required_focus_query(plan, fallback_query):
+    guidance = plan["retrieval_guidance"]
+    return guidance.get("required_focus_query") or guidance.get(
+        "intent_frame", {}
+    ).get("positive_query", fallback_query)
+
+
 def text_supports_focus_group(search_module, text, group, rules):
-    normalized = search_module.normalize(text)
+    # Function words should not split a configured technical phrase. For
+    # example, “击球的位置” and “击球位置” carry the same evidence focus.
+    normalized = search_module.normalize(text).replace("的", "")
     for focus_term, phrases in rules.get(
         "focus_term_source_suppressions", {}
     ).items():
@@ -146,9 +155,11 @@ def text_supports_focus_group(search_module, text, group, rules):
         ):
             continue
         for phrase in phrases:
-            normalized = normalized.replace(search_module.normalize(phrase), "")
+            normalized = normalized.replace(
+                search_module.normalize(phrase).replace("的", ""), ""
+            )
     return any(
-        search_module.normalize(term) in normalized
+        search_module.normalize(term).replace("的", "") in normalized
         for term in group
     )
 
@@ -177,10 +188,10 @@ def primary_reviewed_focus_text(search_module, video):
 
 def entry_focus_requirements(search_module, plan, entry, rules):
     if plan["retrieval_guidance"].get("strategy") != "split_multi_issue":
-        positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-            "positive_query", plan.get("query", "")
+        focus_query = plan_required_focus_query(
+            plan, plan.get("query", "")
         )
-        groups = required_focus_groups(search_module, positive_query, rules)
+        groups = required_focus_groups(search_module, focus_query, rules)
         return [[group] for group in groups]
     return [
         groups
@@ -497,7 +508,8 @@ def selection_decision(
     positive_query = plan["retrieval_guidance"]["intent_frame"].get(
         "positive_query", query
     )
-    query_normalized = search_module.normalize(positive_query)
+    focus_query = plan_required_focus_query(plan, positive_query)
+    query_normalized = search_module.normalize(focus_query)
     symptom_match = symptom_decision(search_module, plan, video, rules)
     reviewed_symptom_support = bool(
         symptom_match == "none"
@@ -511,7 +523,7 @@ def selection_decision(
     )
     if (
         plan["retrieval_guidance"].get("strategy") != "split_multi_issue"
-        and required_focus_groups(search_module, positive_query, rules)
+        and required_focus_groups(search_module, focus_query, rules)
         and focus_match == "none"
     ):
         return False, ["required_focus_not_supported"]
@@ -526,8 +538,8 @@ def selection_decision(
     ):
         return False, ["comparison_missing_passive_scenario"]
     if (
-        "姿势" in positive_query
-        and "被动" not in positive_query
+        "姿势" in focus_query
+        and "被动" not in focus_query
         and search_module.normalize("被动") in title_normalized
     ):
         return False, ["basic_form_query_conflicts_with_passive_variant"]
@@ -781,10 +793,10 @@ def entry_claim_scope_policy(entry):
 
 
 def question_concept_anchors(search_module, plan):
-    positive_query = plan["retrieval_guidance"]["intent_frame"].get(
-        "positive_query", plan.get("query", "")
+    focus_query = plan_required_focus_query(
+        plan, plan.get("query", "")
     )
-    normalized_query = search_module.normalize(positive_query)
+    normalized_query = search_module.normalize(focus_query)
     anchors = []
     for group in plan.get("query_expansion", {}).get(
         "matched_synonym_groups", []
