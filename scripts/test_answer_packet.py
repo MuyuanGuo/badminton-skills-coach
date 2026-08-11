@@ -484,6 +484,37 @@ class AnswerPacketTests(unittest.TestCase):
             self.assertNotIn("clip_start_seconds", video)
             self.assertNotIn("clip_end_seconds", video)
 
+    def test_source_type_fallback_parses_an_exact_allowed_hostname(self):
+        base = {
+            "label": "V1",
+            "role": "supporting",
+            "video_id": "legacy-source",
+            "evidence_id": "legacy-source",
+            "title": "测试来源",
+        }
+        allowed = {
+            "https://www.bilibili.com/video/BV1test": "bilibili_video",
+            "https://v.douyin.com/example": "douyin_video",
+        }
+        for url, expected in allowed.items():
+            with self.subTest(url=url):
+                compact = self.packet_runtime.compact_video(
+                    {**base, "url": url}, [], False
+                )
+                self.assertEqual(compact.get("source_type"), expected)
+
+        deceptive_urls = (
+            "https://www.bilibili.com.evil.example/video/BV1test",
+            "https://douyin.com.attacker.invalid/video/123",
+            "javascript:https://www.douyin.com/video/123",
+        )
+        for url in deceptive_urls:
+            with self.subTest(url=url):
+                compact = self.packet_runtime.compact_video(
+                    {**base, "url": url}, [], False
+                )
+                self.assertNotIn("source_type", compact)
+
     def test_video_guidance_uses_a_claim_authorized_window(self):
         allowed_by_label = {}
         for claim in self.context["claim_evidence_map"]:

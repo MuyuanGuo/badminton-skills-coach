@@ -680,18 +680,17 @@ def query_unit_evidence(
             )
         )
     )
+    component_fallback_requires_anchor = False
     if (
         window_support["rank"] < 2
         and component_candidate
         and component_context_supported
     ):
-        # A source may safely support a bounded component without naming the
-        # user's entire action in the same window.  The candidate has already
-        # passed production relevance/constraint checks; retry only the claim
-        # window without the named-action gate and keep the resulting evidence
-        # explicitly component-scoped.  This does not authorize a user
-        # hypothesis or an unrestricted full-question conclusion.
-        window_support = query_window_support(
+        # A source may safely supplement a bounded component without naming
+        # the user's entire action in the same window.  An expansion-only
+        # fallback is marked as requiring an independently supported anchor;
+        # it cannot make the whole question answerable by itself.
+        component_window_support = query_window_support(
             search_module,
             video,
             (),
@@ -699,6 +698,13 @@ def query_unit_evidence(
             required_claim_terms,
             required_claim_term_groups,
         )
+        if component_window_support["rank"] >= 2:
+            component_fallback_requires_anchor = not (
+                component_window_support.get("exact_query_match")
+                or component_window_support.get("query_ngram_coverage", 0) > 0
+                or component_window_support.get("matched_term_count", 0) >= 2
+            )
+            window_support = component_window_support
     if window_support["rank"] < 2:
         return None
     component_only_support = bool(
@@ -747,6 +753,8 @@ def query_unit_evidence(
         directness = "scoped"
     else:
         directness = "component"
+    if component_fallback_requires_anchor:
+        directness = "component"
     if video.get("inferred_target_action_match") and directness != "direct":
         # Matching the canonical name of an inferred multi-actor decision is
         # not enough to answer the user's concrete responsibility chain.  A
@@ -774,6 +782,10 @@ def query_unit_evidence(
         "primary_query_score": float(video.get("primary_query_score") or 0),
         "best_retrieval_rank": video.get("best_retrieval_rank"),
     }
+    if component_fallback_requires_anchor:
+        evidence["window_support"][
+            "component_fallback_requires_anchor"
+        ] = True
     return evidence
 
 
@@ -1211,6 +1223,24 @@ def build_diagnostic_contract(
         ]
         if boundary.get("type") == "cross_variant_evidence_transfer":
             evidence_entries = []
+        if not any(
+            not item["window_support"].get(
+                "component_fallback_requires_anchor", False
+            )
+            for item in evidence_entries
+        ):
+            # A generic component source can corroborate a claim that already
+            # has an independently supported window, but it cannot be the sole
+            # proof of a named action.  This keeps tactical soft-pressure
+            # context for 点杀 while refusing to invent a 远网吊球 technique
+            # answer from the same generic passage.
+            evidence_entries = [
+                item
+                for item in evidence_entries
+                if not item["window_support"].get(
+                    "component_fallback_requires_anchor", False
+                )
+            ]
         if (
             intent_frame.get("requested_output") == "practice"
             and re.search(

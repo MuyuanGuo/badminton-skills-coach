@@ -6,6 +6,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
@@ -805,9 +806,30 @@ def compact_video(
     if "source_type" not in compact:
         evidence_id = str(video.get("evidence_id") or "")
         url = str(video.get("url") or "")
-        if evidence_id.startswith("bilibili:") or "bilibili.com" in url:
+        try:
+            parsed_url = urlsplit(url)
+            hostname = (
+                (parsed_url.hostname or "").lower().rstrip(".")
+                if parsed_url.scheme.lower() in {"http", "https"}
+                else ""
+            )
+        except ValueError:
+            hostname = ""
+        bilibili_hosts = {
+            "bilibili.com",
+            "www.bilibili.com",
+            "m.bilibili.com",
+            "b23.tv",
+            "www.b23.tv",
+        }
+        douyin_hosts = {
+            "douyin.com",
+            "www.douyin.com",
+            "v.douyin.com",
+        }
+        if evidence_id.startswith("bilibili:") or hostname in bilibili_hosts:
             compact["source_type"] = "bilibili_video"
-        elif evidence_id.isdigit() or "douyin.com" in url:
+        elif evidence_id.isdigit() or hostname in douyin_hosts:
             compact["source_type"] = "douyin_video"
     matched_cluster_ids = list(
         dict.fromkeys(

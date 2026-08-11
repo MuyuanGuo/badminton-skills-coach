@@ -1019,7 +1019,21 @@ def prepare_answer_context(
         for item in planned_query_unit_records
         if item["evidence_query"]
     ] or [query]
+    nonclaim_source_units = [
+        search_module.normalize(item["source_unit"])
+        for item in query_unit_records
+        if item["role"] in {"user_observation", "delivery_instruction"}
+        and search_module.normalize(item["source_unit"])
+    ]
     claim_query_units = [
+        item["evidence_query"]
+        for item in planned_query_unit_records
+        if item["evidence_query"]
+        and not any(
+            search_module.normalize(item["evidence_query"]) in source_unit
+            for source_unit in nonclaim_source_units
+        )
+    ] or [
         item["evidence_query"]
         for item in query_unit_records
         if item["evidence_query"]

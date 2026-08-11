@@ -2423,6 +2423,19 @@ class AnswerContextTests(unittest.TestCase):
             }.issubset(selected_order)
         )
         selected = set(selected_order)
+        self.assertIn("7093706918492917033", selected)
+        mapped_by_id = {
+            evidence["evidence_id"]: evidence
+            for claim in payload["claim_evidence_map"]
+            for evidence in claim["evidence"]
+        }
+        supplemental = mapped_by_id["7093706918492917033"]
+        self.assertEqual(supplemental["directness"], "component")
+        self.assertTrue(
+            supplemental["window_support"][
+                "component_fallback_requires_anchor"
+            ]
+        )
         hard_negatives = {
             "7611635851789771721",
             "7659348110628345210",
