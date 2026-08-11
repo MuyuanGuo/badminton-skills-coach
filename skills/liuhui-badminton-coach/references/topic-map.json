@@ -12,15 +12,15 @@
     "schema_version": 2,
     "counts": {
       "video_nodes": 959,
-      "concept_nodes": 326,
+      "concept_nodes": 329,
       "topic_nodes": 58,
       "role_nodes": 9,
       "primary_videos": 784,
       "supplemental_videos": 175,
-      "video_concept_edges": 11869,
+      "video_concept_edges": 11944,
       "video_topic_edges": 1660,
       "video_role_edges": 4203,
-      "total_edges": 17732
+      "total_edges": 17807
     }
   },
   "categories": [

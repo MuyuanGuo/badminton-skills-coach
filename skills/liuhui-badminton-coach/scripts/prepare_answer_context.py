@@ -910,11 +910,28 @@ def prepare_answer_context(
         if item["evidence_query"]
     ] or [query]
     claim_query_units = [
-        item["evidence_query"]
-        for item in planned_query_unit_records
+        (
+            item["source_unit"]
+            if item["role"] == "evidence_question"
+            else item["evidence_query"]
+        )
+        for item in query_unit_records
         if item["evidence_query"]
         and item["role"] not in {"user_observation", "delivery_instruction"}
     ]
+    original_user_query = (continuation or {}).get(
+        "original_query", semantic_user_query
+    )
+    if (
+        len(claim_query_units) == 1
+        and search_module.normalize(claim_query_units[0])
+        == search_module.normalize(original_user_query)
+    ):
+        # Claim identity is part of the continuation contract. Retrieval may
+        # normalize punctuation, but the auditable question claim must retain
+        # the user's exact original wording and must never absorb assistant
+        # clarification labels.
+        claim_query_units = [original_user_query]
     normalized_diagnostic_query = search_module.normalize(positive_query)
     planning_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     planning_symptoms = diagnostic_observed_symptoms(
@@ -1011,12 +1028,17 @@ def prepare_answer_context(
         and actor_context.get("event_chain")
         and "同时" not in retrieval_base_query
     )
-    diagnostic_query_units = (
-        [actor_context["target_action_query"]]
-        if coherent_actor_sequence
-        else query_units
+    canonical_actor_sequence_claim = bool(
+        coherent_actor_sequence
+        and (
+            not claim_query_units
+            or any(
+                event.get("actor") != "player"
+                for event in actor_context.get("event_chain", [])
+            )
+        )
     )
-    if coherent_actor_sequence and not claim_query_units:
+    if canonical_actor_sequence_claim and not claim_query_units:
         # A standalone reported symptom such as “对手吊网前我总是接不到”
         # is correctly retained as a user observation, but the inferred
         # response action is still the technical question that sources must
@@ -1063,7 +1085,7 @@ def prepare_answer_context(
             {
                 "unit": (
                     retrieval_base_query
-                    if coherent_actor_sequence
+                    if canonical_actor_sequence_claim
                     else query_units[0]
                 ),
                 "plan": plan,
@@ -1518,7 +1540,7 @@ def prepare_answer_context(
         # answer to either sentence fragment.
         "query_units": (
             [actor_context["target_action_query"]]
-            if coherent_actor_sequence
+            if canonical_actor_sequence_claim
             else claim_query_units
         ),
         "source_query_units": source_query_units,

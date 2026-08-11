@@ -9,15 +9,15 @@
   "source_updated_at": "2026-08-11T09:19:47.612085+00:00",
   "counts": {
     "video_nodes": 959,
-    "concept_nodes": 326,
+    "concept_nodes": 329,
     "topic_nodes": 58,
     "role_nodes": 9,
     "primary_videos": 784,
     "supplemental_videos": 175,
-    "video_concept_edges": 11869,
+    "video_concept_edges": 11944,
     "video_topic_edges": 1660,
     "video_role_edges": 4203,
-    "total_edges": 17732
+    "total_edges": 17807
   },
   "video_profiles": {
     "7052148706681883907": {
@@ -529,6 +529,7 @@
       "concepts": [
         "勾球",
         "发力",
+        "太高",
         "手指发力",
         "拍面",
         "隐蔽"
@@ -1677,6 +1678,7 @@
         "球拍",
         "直线",
         "移动",
+        "被压",
         "角度",
         "轮转",
         "进攻",
@@ -3925,6 +3927,7 @@
         "变拍",
         "后场",
         "太快",
+        "太高",
         "引拍",
         "手腕",
         "接杀",
@@ -6311,6 +6314,7 @@
         "不到位",
         "后场",
         "四方球",
+        "太高",
         "底线",
         "挑球",
         "推球",
@@ -6384,7 +6388,9 @@
         "压住",
         "斜线",
         "直线",
-        "被动"
+        "被动",
+        "被压",
+        "被压住"
       ],
       "topic_ids": [
         "发力与身体运用/小臂旋转与手腕"
@@ -6669,6 +6675,7 @@
         "压不住",
         "双打",
         "反手",
+        "太高",
         "拍面",
         "挑球",
         "来不及",
@@ -6795,6 +6802,7 @@
         "发球",
         "后场",
         "大臂",
+        "太高",
         "手腕",
         "放松",
         "球拍",
@@ -7146,6 +7154,7 @@
       "metadata_title_trust": "not_applicable",
       "source_type": "douyin_video",
       "concepts": [
+        "太高",
         "展搓",
         "手腕",
         "抢网",
@@ -7706,6 +7715,7 @@
         "回位",
         "回动",
         "太慢",
+        "太高",
         "并步",
         "底线",
         "往前跑",
@@ -8244,6 +8254,7 @@
         "力量",
         "发力",
         "大臂",
+        "太高",
         "快杀",
         "手腕",
         "挥拍",
@@ -8285,6 +8296,7 @@
         "放松",
         "杀球",
         "腰腹",
+        "被压",
         "跳杀",
         "进阶",
         "高远",
@@ -8344,7 +8356,9 @@
         "封网",
         "拍面",
         "接杀",
-        "斜线"
+        "斜线",
+        "被压",
+        "被压住"
       ],
       "topic_ids": [
         "中前场与抽挡/接杀与防反",
@@ -9373,6 +9387,7 @@
       "source_type": "bilibili_video",
       "concepts": [
         "双打",
+        "太高",
         "接杀",
         "斜线",
         "杀球",
@@ -9705,7 +9720,9 @@
         "发球",
         "后场",
         "挥拍",
-        "挥速"
+        "挥速",
+        "被压",
+        "被压住"
       ],
       "topic_ids": [
         "发力与身体运用/发力综合待细分"
@@ -10465,6 +10482,7 @@
         "从后向前",
         "单打",
         "发球",
+        "太高",
         "手腕",
         "拍面",
         "推球",
@@ -10599,6 +10617,7 @@
         "发球",
         "发高远",
         "大臂",
+        "太高",
         "底线",
         "手腕",
         "拍面",
@@ -10899,6 +10918,7 @@
         "移动",
         "腰腹",
         "被动",
+        "被压",
         "转体",
         "高点",
         "高远",
@@ -11426,6 +11446,7 @@
         "发力",
         "后场",
         "大臂",
+        "太高",
         "手腕",
         "挑球",
         "接不到",
@@ -11489,6 +11510,7 @@
         "外旋",
         "大臂",
         "太慢",
+        "太高",
         "平高",
         "手腕",
         "拍面",
@@ -11970,6 +11992,7 @@
         "发力",
         "发球",
         "大臂",
+        "太高",
         "定杀",
         "小臂旋转",
         "底线",
@@ -11985,6 +12008,8 @@
         "球拍",
         "直线",
         "落点",
+        "被压",
+        "被压住",
         "角度",
         "顶肘",
         "高点",
@@ -12154,6 +12179,8 @@
         "杀上网",
         "网前",
         "被动",
+        "被压",
+        "被压住",
         "防反"
       ],
       "topic_ids": [
@@ -13198,6 +13225,7 @@
         "后场",
         "大臂",
         "太慢",
+        "太高",
         "手腕",
         "拍面",
         "放松",
@@ -13626,6 +13654,7 @@
         "双打防守",
         "反手",
         "后场",
+        "太高",
         "拍面",
         "挑球",
         "挡网",
@@ -14443,6 +14472,7 @@
         "发球",
         "后场",
         "启动",
+        "太高",
         "平高",
         "平高球",
         "手腕",
@@ -15257,6 +15287,7 @@
         "力量",
         "半侧身",
         "发力",
+        "太高",
         "新手",
         "杀球",
         "爆发",
@@ -16718,6 +16749,7 @@
         "发力",
         "发小球",
         "发球",
+        "太高",
         "最高点",
         "高点"
       ],
@@ -17666,6 +17698,8 @@
         "步法",
         "球拍",
         "直线",
+        "被压",
+        "被压住",
         "转体",
         "转跳",
         "高点"
@@ -17758,6 +17792,7 @@
         "变拍",
         "吊球",
         "大臂",
+        "太高",
         "手腕",
         "批调",
         "披掉",
@@ -18184,6 +18219,7 @@
         "反手过渡",
         "外旋",
         "大臂",
+        "太高",
         "手腕",
         "挥拍",
         "新手",
@@ -18253,6 +18289,7 @@
         "发力",
         "大臂",
         "太快",
+        "太高",
         "手腕",
         "抽球",
         "接不到",
@@ -18522,6 +18559,7 @@
         "步法",
         "爆发",
         "节奏",
+        "被压",
         "跟不上"
       ],
       "topic_ids": [
@@ -18635,6 +18673,7 @@
         "吊球",
         "后场",
         "四方球",
+        "太高",
         "往前跑",
         "手腕",
         "挑球",
@@ -18776,6 +18815,7 @@
         "发力",
         "回不去",
         "大臂",
+        "太高",
         "手腕",
         "拍面",
         "掌心",
@@ -19585,6 +19625,7 @@
         "着急",
         "突击",
         "被动",
+        "被压",
         "角度",
         "重杀",
         "随摆",
@@ -19867,6 +19908,7 @@
         "发力",
         "发球",
         "太慢",
+        "太高",
         "手腕",
         "拍面",
         "推球",
@@ -19999,6 +20041,7 @@
         "发高远",
         "外旋",
         "大臂",
+        "太高",
         "底线",
         "手腕",
         "批调",
@@ -20141,6 +20184,7 @@
         "后场",
         "大臂",
         "太快",
+        "太高",
         "引拍",
         "手腕",
         "抽球",
@@ -20525,6 +20569,7 @@
         "外旋",
         "大臂",
         "太慢",
+        "太高",
         "定杀",
         "手腕",
         "抽球",
@@ -20629,6 +20674,7 @@
         "直线",
         "落点",
         "被动",
+        "被压",
         "进攻",
         "防反"
       ],
@@ -20694,6 +20740,7 @@
         "压球",
         "发力",
         "大臂",
+        "太高",
         "手腕",
         "挑球",
         "挥拍",
@@ -21359,6 +21406,7 @@
         "回动",
         "太快",
         "太慢",
+        "太高",
         "快起",
         "挑球",
         "接不到",
@@ -21597,6 +21645,7 @@
         "球拍",
         "紧张",
         "虎口",
+        "被压",
         "转体",
         "随摆",
         "顶肘"
@@ -21800,6 +21849,7 @@
         "反手过渡",
         "反手高远",
         "发力",
+        "太高",
         "拍面",
         "放松",
         "斜线",
@@ -22182,6 +22232,7 @@
         "发力",
         "发球",
         "后场",
+        "太高",
         "手腕",
         "接发",
         "接发球",
@@ -22222,6 +22273,7 @@
         "发球",
         "后场",
         "大臂",
+        "太高",
         "并步",
         "底线",
         "手腕",
@@ -22808,6 +22860,7 @@
         "大臂",
         "手指发力",
         "挥速",
+        "被压",
         "跟不上",
         "高远"
       ],
@@ -23039,6 +23092,7 @@
         "大臂",
         "太快",
         "太慢",
+        "太高",
         "平高",
         "底线",
         "拍面",
@@ -23579,7 +23633,8 @@
         "摆脱",
         "放网",
         "球线",
-        "被动"
+        "被动",
+        "被压"
       ],
       "topic_ids": [
         "后场技术/被动后场与高远"
@@ -24512,6 +24567,7 @@
         "不到位",
         "出界",
         "发力",
+        "太高",
         "底线",
         "引拍",
         "放松",
@@ -25290,6 +25346,7 @@
         "外旋",
         "大臂",
         "太快",
+        "太高",
         "手腕",
         "抽球",
         "拍面",
@@ -25905,6 +25962,7 @@
         "发力",
         "后场",
         "大臂",
+        "太高",
         "引拍",
         "手腕",
         "抽球",
@@ -26007,6 +26065,7 @@
         "反手发球",
         "发小球",
         "发球",
+        "太高",
         "拍面",
         "角度",
         "高点"
@@ -26330,6 +26389,7 @@
         "后场",
         "外旋",
         "大臂",
+        "太高",
         "封网",
         "平高",
         "并步",
@@ -26424,6 +26484,7 @@
         "后场",
         "大臂",
         "太慢",
+        "太高",
         "小臂旋转",
         "底线",
         "手腕",
@@ -26604,6 +26665,7 @@
         "反手",
         "发球",
         "后场",
+        "太高",
         "平高",
         "手腕",
         "护边",
@@ -27072,6 +27134,7 @@
         "直线",
         "突击",
         "被动",
+        "被压",
         "过度球",
         "过渡球",
         "高远",
@@ -27144,6 +27207,7 @@
         "右脚落地",
         "后场",
         "后场步法",
+        "太高",
         "框架",
         "步法",
         "跳杀"
@@ -27606,6 +27670,7 @@
         "压住",
         "发力",
         "回位",
+        "太高",
         "往前跑",
         "快速框架",
         "推球",
@@ -27861,6 +27926,7 @@
         "发力",
         "后三指",
         "大臂",
+        "太高",
         "引拍",
         "手指发力",
         "手腕",
@@ -28143,6 +28209,7 @@
         "下网",
         "反手",
         "反手过渡",
+        "太高",
         "握拍",
         "架拍",
         "进阶"
@@ -28311,6 +28378,7 @@
         "发力",
         "发球",
         "启动",
+        "太高",
         "手腕",
         "拍面",
         "持拍",
@@ -28439,6 +28507,7 @@
         "发力",
         "发球",
         "大臂",
+        "太高",
         "框架",
         "正手",
         "步法",
@@ -28551,6 +28620,7 @@
         "后场",
         "外旋",
         "太慢",
+        "太高",
         "封网",
         "引拍",
         "手腕",
@@ -28617,6 +28687,7 @@
         "压住",
         "发力",
         "发球",
+        "太高",
         "引拍",
         "扑球",
         "抽球",
@@ -28726,6 +28797,7 @@
         "反手",
         "发力",
         "后场",
+        "太高",
         "底线",
         "推底线",
         "推球",
@@ -28939,6 +29011,7 @@
         "变速",
         "启动",
         "回位",
+        "太高",
         "并步",
         "放松",
         "正手",
@@ -28981,6 +29054,7 @@
         "外旋",
         "大臂",
         "太快",
+        "太高",
         "拍面",
         "挑球",
         "挥速",
@@ -29150,6 +29224,7 @@
         "发球",
         "大臂",
         "太慢",
+        "太高",
         "引拍",
         "手腕",
         "抬拍",
@@ -34347,6 +34422,65 @@
       ],
       "supplemental": [
         "bilibili:BV1Em4y1g7D7"
+      ]
+    },
+    "太高": {
+      "primary": [
+        "7059927286186822946",
+        "7215787369381858599",
+        "7488280037955816762",
+        "7504391919716273468",
+        "7508222669708463420",
+        "7526124617461173562",
+        "7567860375287303035",
+        "7606412946096327978",
+        "bilibili:BV111421t7s3",
+        "bilibili:BV14f1eYhES4",
+        "bilibili:BV14m7SzLEMb",
+        "bilibili:BV17TJhzmEoQ",
+        "bilibili:BV17om1YEEw1",
+        "bilibili:BV198CdBHEPF",
+        "bilibili:BV1Bi4y1q7eh",
+        "bilibili:BV1DSNFz2ETs",
+        "bilibili:BV1FQwLe3EYV",
+        "bilibili:BV1JT421k7gY",
+        "bilibili:BV1Nr4y1R7Rq",
+        "bilibili:BV1S1vkBsEab",
+        "bilibili:BV1TPfHYoEAt",
+        "bilibili:BV1TdHZz2EG3",
+        "bilibili:BV1UcPRevEje",
+        "bilibili:BV1VH4y1o7ad",
+        "bilibili:BV1Xh4y1r7gc",
+        "bilibili:BV1Xoe9zkEVT",
+        "bilibili:BV1YR5EzbEv9",
+        "bilibili:BV1ZHhRzyE16",
+        "bilibili:BV1ZiK6zrE3x",
+        "bilibili:BV1amcTztES5",
+        "bilibili:BV1ba4y1C7E5",
+        "bilibili:BV1cgnnzfEz3",
+        "bilibili:BV1g6421u77h",
+        "bilibili:BV1kxBeYiEBJ",
+        "bilibili:BV1objpzSESJ",
+        "bilibili:BV1r94y1z7js",
+        "bilibili:BV1rc41147r3",
+        "bilibili:BV1sKRjBREQj",
+        "bilibili:BV1sc42zpExC",
+        "bilibili:BV1t94y1a7La",
+        "bilibili:BV1uBvfBNEV4",
+        "bilibili:BV1v6ZaBtEKt",
+        "bilibili:BV1w1421t7r5",
+        "bilibili:BV1xZU6B1Eoh",
+        "bilibili:BV1xj411W7Yz",
+        "bilibili:BV1xy4beSEqm",
+        "bilibili:BV1xz4y1M7Lx",
+        "bilibili:BV1yb4y1P7d1",
+        "bilibili:BV1zFi1B2Enj",
+        "bilibili:BV1zLStYgE6i",
+        "bilibili:BV1zbwezEELW"
+      ],
+      "supplemental": [
+        "bilibili:BV1cYsfeXEab",
+        "bilibili:BV1wn32z1Ezk"
       ]
     },
     "定杀": {
@@ -40741,6 +40875,40 @@
         "7280727710740139264"
       ],
       "supplemental": []
+    },
+    "被压": {
+      "primary": [
+        "7087759120761228578",
+        "7491780200468843833",
+        "7606560547489149691",
+        "7609429014616637050",
+        "bilibili:BV15j421U7Xq",
+        "bilibili:BV198CdBHEPF",
+        "bilibili:BV19S421Q7Mf",
+        "bilibili:BV1Rx421m7rQ",
+        "bilibili:BV1U88kzoE71",
+        "bilibili:BV1X9qbBbETX",
+        "bilibili:BV1Zh4y1H7pn",
+        "bilibili:BV1bF6SYtEGz",
+        "bilibili:BV1tw411U7PV"
+      ],
+      "supplemental": [
+        "bilibili:BV129XXYwELX",
+        "bilibili:BV1f38gzSEyL",
+        "bilibili:BV1iX2wBmEex"
+      ]
+    },
+    "被压住": {
+      "primary": [
+        "7491780200468843833",
+        "7609429014616637050",
+        "bilibili:BV198CdBHEPF",
+        "bilibili:BV19S421Q7Mf",
+        "bilibili:BV1Rx421m7rQ"
+      ],
+      "supplemental": [
+        "bilibili:BV129XXYwELX"
+      ]
     },
     "角度": {
       "primary": [
@@ -73613,6 +73781,295 @@
         "supplemental": []
       }
     },
+    "太高": {
+      "action": {
+        "primary": [
+          "7059927286186822946",
+          "7215787369381858599",
+          "7488280037955816762",
+          "7504391919716273468",
+          "7508222669708463420",
+          "7526124617461173562",
+          "7567860375287303035",
+          "7606412946096327978",
+          "bilibili:BV111421t7s3",
+          "bilibili:BV14f1eYhES4",
+          "bilibili:BV14m7SzLEMb",
+          "bilibili:BV17TJhzmEoQ",
+          "bilibili:BV17om1YEEw1",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV1Bi4y1q7eh",
+          "bilibili:BV1DSNFz2ETs",
+          "bilibili:BV1FQwLe3EYV",
+          "bilibili:BV1JT421k7gY",
+          "bilibili:BV1Nr4y1R7Rq",
+          "bilibili:BV1S1vkBsEab",
+          "bilibili:BV1TPfHYoEAt",
+          "bilibili:BV1TdHZz2EG3",
+          "bilibili:BV1UcPRevEje",
+          "bilibili:BV1VH4y1o7ad",
+          "bilibili:BV1Xh4y1r7gc",
+          "bilibili:BV1Xoe9zkEVT",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1ZHhRzyE16",
+          "bilibili:BV1ZiK6zrE3x",
+          "bilibili:BV1amcTztES5",
+          "bilibili:BV1ba4y1C7E5",
+          "bilibili:BV1cgnnzfEz3",
+          "bilibili:BV1g6421u77h",
+          "bilibili:BV1kxBeYiEBJ",
+          "bilibili:BV1objpzSESJ",
+          "bilibili:BV1r94y1z7js",
+          "bilibili:BV1rc41147r3",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1sc42zpExC",
+          "bilibili:BV1t94y1a7La",
+          "bilibili:BV1uBvfBNEV4",
+          "bilibili:BV1v6ZaBtEKt",
+          "bilibili:BV1w1421t7r5",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xj411W7Yz",
+          "bilibili:BV1xy4beSEqm",
+          "bilibili:BV1xz4y1M7Lx",
+          "bilibili:BV1yb4y1P7d1",
+          "bilibili:BV1zFi1B2Enj",
+          "bilibili:BV1zLStYgE6i",
+          "bilibili:BV1zbwezEELW"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab",
+          "bilibili:BV1wn32z1Ezk"
+        ]
+      },
+      "correction": {
+        "primary": [
+          "7215787369381858599",
+          "7488280037955816762",
+          "7504391919716273468",
+          "7567860375287303035",
+          "7606412946096327978",
+          "bilibili:BV111421t7s3",
+          "bilibili:BV14f1eYhES4",
+          "bilibili:BV14m7SzLEMb",
+          "bilibili:BV17TJhzmEoQ",
+          "bilibili:BV17om1YEEw1",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV1Bi4y1q7eh",
+          "bilibili:BV1DSNFz2ETs",
+          "bilibili:BV1FQwLe3EYV",
+          "bilibili:BV1JT421k7gY",
+          "bilibili:BV1S1vkBsEab",
+          "bilibili:BV1TPfHYoEAt",
+          "bilibili:BV1TdHZz2EG3",
+          "bilibili:BV1UcPRevEje",
+          "bilibili:BV1VH4y1o7ad",
+          "bilibili:BV1Xh4y1r7gc",
+          "bilibili:BV1Xoe9zkEVT",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1ZHhRzyE16",
+          "bilibili:BV1ZiK6zrE3x",
+          "bilibili:BV1amcTztES5",
+          "bilibili:BV1ba4y1C7E5",
+          "bilibili:BV1cgnnzfEz3",
+          "bilibili:BV1g6421u77h",
+          "bilibili:BV1objpzSESJ",
+          "bilibili:BV1r94y1z7js",
+          "bilibili:BV1rc41147r3",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1sc42zpExC",
+          "bilibili:BV1t94y1a7La",
+          "bilibili:BV1uBvfBNEV4",
+          "bilibili:BV1v6ZaBtEKt",
+          "bilibili:BV1w1421t7r5",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xj411W7Yz",
+          "bilibili:BV1xy4beSEqm",
+          "bilibili:BV1xz4y1M7Lx",
+          "bilibili:BV1yb4y1P7d1",
+          "bilibili:BV1zFi1B2Enj",
+          "bilibili:BV1zLStYgE6i",
+          "bilibili:BV1zbwezEELW"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab",
+          "bilibili:BV1wn32z1Ezk"
+        ]
+      },
+      "equipment": {
+        "primary": [
+          "7215787369381858599",
+          "7508222669708463420",
+          "bilibili:BV111421t7s3",
+          "bilibili:BV14m7SzLEMb",
+          "bilibili:BV17TJhzmEoQ",
+          "bilibili:BV1JT421k7gY",
+          "bilibili:BV1TPfHYoEAt",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1kxBeYiEBJ",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xj411W7Yz"
+        ],
+        "supplemental": []
+      },
+      "mechanism": {
+        "primary": [
+          "7059927286186822946",
+          "7215787369381858599",
+          "7488280037955816762",
+          "7508222669708463420",
+          "7526124617461173562",
+          "7567860375287303035",
+          "7606412946096327978",
+          "bilibili:BV14f1eYhES4",
+          "bilibili:BV14m7SzLEMb",
+          "bilibili:BV17om1YEEw1",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV1Bi4y1q7eh",
+          "bilibili:BV1JT421k7gY",
+          "bilibili:BV1Nr4y1R7Rq",
+          "bilibili:BV1S1vkBsEab",
+          "bilibili:BV1TPfHYoEAt",
+          "bilibili:BV1TdHZz2EG3",
+          "bilibili:BV1UcPRevEje",
+          "bilibili:BV1VH4y1o7ad",
+          "bilibili:BV1Xh4y1r7gc",
+          "bilibili:BV1Xoe9zkEVT",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1ZHhRzyE16",
+          "bilibili:BV1ZiK6zrE3x",
+          "bilibili:BV1ba4y1C7E5",
+          "bilibili:BV1cgnnzfEz3",
+          "bilibili:BV1g6421u77h",
+          "bilibili:BV1kxBeYiEBJ",
+          "bilibili:BV1objpzSESJ",
+          "bilibili:BV1r94y1z7js",
+          "bilibili:BV1rc41147r3",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1sc42zpExC",
+          "bilibili:BV1w1421t7r5",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xj411W7Yz",
+          "bilibili:BV1xy4beSEqm",
+          "bilibili:BV1xz4y1M7Lx",
+          "bilibili:BV1yb4y1P7d1",
+          "bilibili:BV1zLStYgE6i",
+          "bilibili:BV1zbwezEELW"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab",
+          "bilibili:BV1wn32z1Ezk"
+        ]
+      },
+      "practice": {
+        "primary": [
+          "7059927286186822946",
+          "7215787369381858599",
+          "7606412946096327978",
+          "bilibili:BV1TdHZz2EG3",
+          "bilibili:BV1Xh4y1r7gc",
+          "bilibili:BV1Xoe9zkEVT",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1rc41147r3",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1t94y1a7La"
+        ],
+        "supplemental": []
+      },
+      "principle": {
+        "primary": [
+          "7059927286186822946",
+          "7215787369381858599",
+          "7488280037955816762",
+          "7504391919716273468",
+          "7508222669708463420",
+          "7526124617461173562",
+          "7567860375287303035",
+          "7606412946096327978",
+          "bilibili:BV111421t7s3",
+          "bilibili:BV14f1eYhES4",
+          "bilibili:BV14m7SzLEMb",
+          "bilibili:BV17TJhzmEoQ",
+          "bilibili:BV17om1YEEw1",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV1Bi4y1q7eh",
+          "bilibili:BV1DSNFz2ETs",
+          "bilibili:BV1FQwLe3EYV",
+          "bilibili:BV1JT421k7gY",
+          "bilibili:BV1Nr4y1R7Rq",
+          "bilibili:BV1S1vkBsEab",
+          "bilibili:BV1TPfHYoEAt",
+          "bilibili:BV1TdHZz2EG3",
+          "bilibili:BV1UcPRevEje",
+          "bilibili:BV1VH4y1o7ad",
+          "bilibili:BV1Xh4y1r7gc",
+          "bilibili:BV1Xoe9zkEVT",
+          "bilibili:BV1YR5EzbEv9",
+          "bilibili:BV1ZHhRzyE16",
+          "bilibili:BV1ZiK6zrE3x",
+          "bilibili:BV1amcTztES5",
+          "bilibili:BV1ba4y1C7E5",
+          "bilibili:BV1cgnnzfEz3",
+          "bilibili:BV1g6421u77h",
+          "bilibili:BV1kxBeYiEBJ",
+          "bilibili:BV1objpzSESJ",
+          "bilibili:BV1r94y1z7js",
+          "bilibili:BV1rc41147r3",
+          "bilibili:BV1sKRjBREQj",
+          "bilibili:BV1sc42zpExC",
+          "bilibili:BV1t94y1a7La",
+          "bilibili:BV1uBvfBNEV4",
+          "bilibili:BV1v6ZaBtEKt",
+          "bilibili:BV1w1421t7r5",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xj411W7Yz",
+          "bilibili:BV1xy4beSEqm",
+          "bilibili:BV1xz4y1M7Lx",
+          "bilibili:BV1yb4y1P7d1",
+          "bilibili:BV1zFi1B2Enj",
+          "bilibili:BV1zLStYgE6i",
+          "bilibili:BV1zbwezEELW"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab",
+          "bilibili:BV1wn32z1Ezk"
+        ]
+      },
+      "safety_boundary": {
+        "primary": [
+          "7488280037955816762",
+          "bilibili:BV1Nr4y1R7Rq"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab",
+          "bilibili:BV1wn32z1Ezk"
+        ]
+      },
+      "tactics": {
+        "primary": [
+          "7488280037955816762",
+          "bilibili:BV111421t7s3",
+          "bilibili:BV14f1eYhES4",
+          "bilibili:BV17TJhzmEoQ",
+          "bilibili:BV17om1YEEw1",
+          "bilibili:BV1DSNFz2ETs",
+          "bilibili:BV1FQwLe3EYV",
+          "bilibili:BV1S1vkBsEab",
+          "bilibili:BV1UcPRevEje",
+          "bilibili:BV1ZHhRzyE16",
+          "bilibili:BV1ba4y1C7E5",
+          "bilibili:BV1objpzSESJ",
+          "bilibili:BV1v6ZaBtEKt",
+          "bilibili:BV1w1421t7r5",
+          "bilibili:BV1xZU6B1Eoh",
+          "bilibili:BV1xz4y1M7Lx",
+          "bilibili:BV1yb4y1P7d1"
+        ],
+        "supplemental": [
+          "bilibili:BV1cYsfeXEab"
+        ]
+      }
+    },
     "定杀": {
       "action": {
         "primary": [
@@ -104334,6 +104791,205 @@
       "safety_boundary": {
         "primary": [
           "7085169366005714217"
+        ],
+        "supplemental": []
+      }
+    },
+    "被压": {
+      "action": {
+        "primary": [
+          "7087759120761228578",
+          "7491780200468843833",
+          "7606560547489149691",
+          "7609429014616637050",
+          "bilibili:BV15j421U7Xq",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ",
+          "bilibili:BV1U88kzoE71",
+          "bilibili:BV1X9qbBbETX",
+          "bilibili:BV1Zh4y1H7pn",
+          "bilibili:BV1bF6SYtEGz",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX",
+          "bilibili:BV1f38gzSEyL",
+          "bilibili:BV1iX2wBmEex"
+        ]
+      },
+      "correction": {
+        "primary": [
+          "7087759120761228578",
+          "7491780200468843833",
+          "7606560547489149691",
+          "bilibili:BV15j421U7Xq",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ",
+          "bilibili:BV1X9qbBbETX",
+          "bilibili:BV1Zh4y1H7pn",
+          "bilibili:BV1bF6SYtEGz",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX",
+          "bilibili:BV1f38gzSEyL",
+          "bilibili:BV1iX2wBmEex"
+        ]
+      },
+      "equipment": {
+        "primary": [
+          "bilibili:BV1Rx421m7rQ",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": []
+      },
+      "mechanism": {
+        "primary": [
+          "7087759120761228578",
+          "7491780200468843833",
+          "7609429014616637050",
+          "bilibili:BV15j421U7Xq",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ",
+          "bilibili:BV1U88kzoE71",
+          "bilibili:BV1X9qbBbETX",
+          "bilibili:BV1Zh4y1H7pn",
+          "bilibili:BV1bF6SYtEGz",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX",
+          "bilibili:BV1f38gzSEyL"
+        ]
+      },
+      "practice": {
+        "primary": [
+          "7606560547489149691",
+          "7609429014616637050",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": []
+      },
+      "principle": {
+        "primary": [
+          "7087759120761228578",
+          "7491780200468843833",
+          "7606560547489149691",
+          "7609429014616637050",
+          "bilibili:BV15j421U7Xq",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ",
+          "bilibili:BV1U88kzoE71",
+          "bilibili:BV1X9qbBbETX",
+          "bilibili:BV1Zh4y1H7pn",
+          "bilibili:BV1bF6SYtEGz",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX",
+          "bilibili:BV1f38gzSEyL",
+          "bilibili:BV1iX2wBmEex"
+        ]
+      },
+      "safety_boundary": {
+        "primary": [
+          "7087759120761228578",
+          "bilibili:BV1Zh4y1H7pn"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX",
+          "bilibili:BV1f38gzSEyL",
+          "bilibili:BV1iX2wBmEex"
+        ]
+      },
+      "tactics": {
+        "primary": [
+          "7087759120761228578",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1U88kzoE71",
+          "bilibili:BV1Zh4y1H7pn",
+          "bilibili:BV1tw411U7PV"
+        ],
+        "supplemental": [
+          "bilibili:BV1iX2wBmEex"
+        ]
+      }
+    },
+    "被压住": {
+      "action": {
+        "primary": [
+          "7491780200468843833",
+          "7609429014616637050",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX"
+        ]
+      },
+      "correction": {
+        "primary": [
+          "7491780200468843833",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX"
+        ]
+      },
+      "equipment": {
+        "primary": [
+          "bilibili:BV1Rx421m7rQ"
+        ],
+        "supplemental": []
+      },
+      "mechanism": {
+        "primary": [
+          "7491780200468843833",
+          "7609429014616637050",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX"
+        ]
+      },
+      "practice": {
+        "primary": [
+          "7609429014616637050",
+          "bilibili:BV19S421Q7Mf"
+        ],
+        "supplemental": []
+      },
+      "principle": {
+        "primary": [
+          "7491780200468843833",
+          "7609429014616637050",
+          "bilibili:BV198CdBHEPF",
+          "bilibili:BV19S421Q7Mf",
+          "bilibili:BV1Rx421m7rQ"
+        ],
+        "supplemental": [
+          "bilibili:BV129XXYwELX"
+        ]
+      },
+      "safety_boundary": {
+        "primary": [],
+        "supplemental": [
+          "bilibili:BV129XXYwELX"
+        ]
+      },
+      "tactics": {
+        "primary": [
+          "bilibili:BV19S421Q7Mf"
         ],
         "supplemental": []
       }

@@ -104,6 +104,24 @@ class SkillPortabilityTests(unittest.TestCase):
             clarification_context_path.write_text(
                 clarification_context.stdout, encoding="utf-8"
             )
+            clarification_answers_path = external_workdir / "answers.json"
+            clarification_answers_path.write_text(
+                json.dumps(
+                    {
+                        "clarify.mechanism.trajectory_control": (
+                            "球的最高点在对方场区"
+                        ),
+                        "clarify.mechanism.racket_face_control": (
+                            "拍面接近竖直，球离拍后比较平地向前"
+                        ),
+                        "clarify.mechanism.contact_point": (
+                            "触球点在体侧，高度和正常位置差不多"
+                        ),
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
             continued = subprocess.run(
                 [
                     sys.executable,
@@ -115,6 +133,8 @@ class SkillPortabilityTests(unittest.TestCase):
                     "球的最高点在对方场区",
                     "--continue-from",
                     str(clarification_context_path),
+                    "--clarification-answers",
+                    str(clarification_answers_path),
                     "--max-videos",
                     "2",
                     "--no-local-personalization",

@@ -1572,6 +1572,7 @@ def build_diagnostic_contract(
                     item["mechanism_id"]
                     for item in user_hypotheses
                     if item.get("mechanism_id")
+                    and not resolved_question_ids
                 ],
             ]
         )
