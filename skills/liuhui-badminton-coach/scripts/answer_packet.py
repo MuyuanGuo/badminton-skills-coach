@@ -159,7 +159,7 @@ def video_display_guidance(video, claim_evidence_map):
         citation_reason = (
             f"补充“{claim_text}”中的局部动作或机制；重点依据是“{focus_summary}”。"
         )
-    if candidate_windows:
+    if focus is not None:
         if focus.get("timestamp") == "visual_review_no_timestamp":
             watch_focus = (
                 "全片（无精确时间点）："
