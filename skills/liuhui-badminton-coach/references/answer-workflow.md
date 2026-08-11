@@ -13,36 +13,43 @@ Use this order when applicable:
 1. `直接回答`: one compact decision per unit.
 2. `文字解释`: supported mechanisms, conditions, cues, and observable distinctions.
 3. `适用边界`: material branches, exclusions, and unresolved gaps.
-4. `核心视频与观看重点`: the 3–5 strongest labels from `core_videos`, with detailed viewing guidance.
-5. `完整相关视频`: every remaining label from `complete_related_videos`, grouped by unit and never silently capped to the core shortlist.
-6. `置信边界`: distinguish source facts, bounded synthesis, and required user video.
+4. `核心视频与观看重点`: the strongest labels from `core_videos`, with the packet's reason, viewing value, and focus.
+5. `完整相关视频`: every remaining label from `complete_related_videos`, each with the same three-part viewing guidance; never output a bare title or link.
+6. `置信边界`: distinguish source facts and bounded synthesis.
+7. `为了让答案更完整，你还可以补充`: optional text context from pending clarifications, after the supported answer.
 
-One claim may synthesize at most three strongest, source-distinct labels from `synthesis_videos`. This is a prose-density limit, not a related-video limit: sources present only in `complete_related_videos` must still be listed but cannot be borrowed to add technical claims. Reuse a video's assigned label and URL; never recycle a label for another video. Keep the answer useful without link access.
+One claim may synthesize at most three strongest, source-distinct labels from `synthesis_videos`. This is an evidence-breadth limit, not a prose-length limit. Explain the supported conclusion, mechanism, observable distinction, and condition in coherent prose. Every source in `complete_related_videos` participated in synthesis and must be annotated; other semantically answerable candidates stay audit-only and must not be displayed merely to prove they were found. Reuse a video's assigned label and URL; never recycle a label for another video. Keep the answer useful without link access.
 
 ## Systematic learning
 
 Use `topic_navigation` as navigation, not evidence. Provide:
 
 1. the nearest category/subtopic;
-2. three to five stages from positioning to pressured use;
-3. one observable goal per stage;
+2. the concepts, mechanisms, errors, and conditions that need separate evidence checks;
+3. one source-supported distinction per branch;
 4. selected evidence where useful;
-5. two or three focused next questions;
+5. two or three optional text questions at the end;
 6. the boundary between topic mapping and selected evidence.
 
-Avoid an encyclopedia. Start from the nearest branch and a compact progression.
+Avoid an encyclopedia. Start from the nearest branch and a compact evidence map.
+Do not turn that map into session timing, repetitions, sets, frequency, success
+rates, or a multi-day progression. If a selected source explicitly states a
+practice cue, preserve its exact scope; otherwise return the training-evidence
+boundary instead of inventing a learning plan.
 
 ## Text/video allocation
 
-- `text_primary`: explain decisions, conditions, exceptions, and training implications; use videos as original examples.
-- `balanced`: explain timing, force/movement logic, errors, cues, and practice; use video for rhythm and space.
-- `video_primary`: still give purpose, observation points, errors, and self-checks; let video carry visual shape and continuity.
+- `text_primary`: explain decisions, conditions, exceptions, and correction implications; use videos as original examples.
+- `balanced`: explain timing, force/movement logic, errors, and source-supported cues; use video for rhythm and space.
+- `video_primary`: still give purpose, observation points, errors, and source-supported checks; let video carry visual shape and continuity.
 
 Run `audit_answer.py` with the exact original question, unmodified context, packet, and final draft. Fix every violation without weakening the context.
 
-## Closed structured draft
+## Detailed packet-bound draft
 
-For diagnostic or multi-claim answers, render from the packet instead of writing free technical prose. The default renderer covers every claim. If selecting among authorized evidence, supply a JSON draft containing only:
+For diagnostic or multi-claim answers, write detailed prose from the packet's authorized atoms and windows. Do not import generic badminton knowledge or use complete-list-only sources for claims. Preserve each claim's marker in the final draft so the auditor can verify coverage.
+
+The deterministic renderer is useful as a completeness baseline. If selecting among authorized evidence for that baseline, supply a JSON draft containing only:
 
 ```json
 {
@@ -55,6 +62,6 @@ For diagnostic or multi-claim answers, render from the packet instead of writing
 }
 ```
 
-Every packet claim must appear. Atom and window IDs must belong to that claim's directive. No block accepts a free-text field; unknown fields fail closed. Run `render_answer.py --packet answer-packet.json --draft draft.json > answer.md`, then pass that unmodified file to the auditor.
+Every packet claim must appear. Atom and window IDs must belong to that claim's directive. No block accepts a free-text field; unknown fields fail closed. Render to `baseline-answer.md`, compare its coverage with the detailed draft, and audit the detailed draft.
 
-The claim draft does not control `delivery_contract`. The renderer appends every required `D` block itself. These blocks are atomic: a practice session, three-day progression, two-week progression, success criteria, tactical direction branch, diagnostic comparison, ordered checklist, source requirement, or evidence boundary must each render and pass its kind-specific semantic audit. A visible `[D…]` marker without the required internal structure fails audit.
+The claim draft does not control `delivery_contract`. Required `D` blocks remain atomic: a tactical direction branch, diagnostic comparison, ordered checklist, source requirement, training-evidence boundary, or general evidence boundary must each appear and pass its kind-specific semantic audit. A visible `[D…]` marker without the required internal structure fails audit.

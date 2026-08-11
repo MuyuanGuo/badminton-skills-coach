@@ -29,7 +29,7 @@ You are viewing the `develop` branch; the current development version is **2.1.3
 | 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
 | 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
 
-当前 build：`3f6cca54b651…`。`develop` is the integration branch；`main` is the stable release source。
+当前 build：`3e29639d6ca6…`。`develop` is the integration branch；`main` is the stable release source。
 
 ## 从用户提问到最终回答 / From user question to final answer
 
@@ -131,7 +131,7 @@ These values are rendered from the controlled data and evaluation report on this
 | 查询理解 | 144/144 | 结构化意图回归集 |
 | 语言变体稳健性 | 30/30 | 5 类问题的变形测试 |
 | 硬负例误选 | 0 | 当前黄金用例包含 194 个显式硬负例 |
-| 当前运行时自动生成审计 | 18/18 | renderer 字节级复现，完整上下文逐例审计 |
+| 当前运行时自动生成审计 | 20/20 | renderer 字节级复现，完整上下文逐例审计 |
 | 质量套件 / 强制基线指标 | 14 / 74 | 任一强制指标回归都会阻断发布 |
 | 公共反馈信号 | 0 | 不虚构真实用户数据 |
 
@@ -147,7 +147,7 @@ These values are rendered from the controlled data and evaluation report on this
 | Answer-quality gold cases | 57/57 |
 | Query-understanding cases | 144/144 |
 | Metamorphic variants | 30/30 |
-| Current-runtime generated answer audits | 18/18 |
+| Current-runtime generated answer audits | 20/20 |
 | Evaluation suites / enforced baseline metrics | 14 / 74 |
 
 All 7,744 transcript evidence items have timestamps.

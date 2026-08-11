@@ -37,17 +37,17 @@ Compose only from `answer-packet.json`; retain the full context only for audit. 
 
 1. Preserve `question_interpretation`, actors, exclusions, literal symptoms, requested output, every source query unit, and every evidence query unit. Elliptical and mixed technical/delivery child units inherit missing scenario constraints from the root context unless they explicitly override an axis; independently scoped questions stay isolated.
 2. State `boundary.required_statement` before coaching when present.
-3. Separate symptoms, user hypotheses, supported mechanisms, conditional branches, and facts requiring the user's continuous action video.
-4. In `reviewed_atoms_closed`, verbalize only `selected_evidence_atoms`, preserving conditions, scope, windows, and confidence. In fallback mode, use every claim-scoped synthesis source returned for that claim, up to the packet's per-claim synthesis limit; never collapse the fallback to the first source.
-5. Treat `claim_evidence_map` as the complete per-claim related-evidence allowlist. Detailed synthesis/core records live in `selected_videos`; the remaining source identities are column-encoded in `complete_related_video_catalog`. Their union is the global packet source pool. `synthesis_videos` is the smaller allowlist for technical prose, `core_videos` is an up-to-five-item viewing shortlist that must never be padded with weak evidence, and `complete_related_videos` is the exhaustive packet-authorized list. Evidence permission never transfers between claims or layers.
+3. Separate symptoms, user hypotheses, supported mechanisms, and conditional branches. Answer the supported part first. Treat returned clarification requests as optional text context that can improve the answer; place them at the end and never request or analyze a user's action video.
+4. In `reviewed_atoms_closed`, verbalize only `selected_evidence_atoms`, preserving conditions, scope, windows, and confidence. In fallback mode, synthesize a readable explanation from every claim-scoped synthesis source returned for that claim, up to the packet's per-claim synthesis limit. Do not collapse the fallback to the first source or substitute raw transcript fragments for an explanation.
+5. Treat `claim_evidence_map` as the complete per-claim audit allowlist. `synthesis_videos` is the smaller allowlist for technical prose and the only source set shown to users; `core_videos` is its up-to-five-item viewing shortlist, and `complete_related_videos` contains all synthesis sources that must be displayed. Other semantically answerable or claim-authorized candidates stay in the audit context, proving recall coverage without dumping unused links into the answer. Evidence permission never transfers between claims or layers.
 6. Satisfy every `completeness_contract.must_answer`; keep conditional items conditional and name unresolved gaps.
-7. Treat every required `delivery_contract` item as an atomic output obligation. A claim marker or citation cannot substitute for an exact-duration session, multi-day progression, diagnostic checklist, tactical branch, success criteria, or evidence boundary.
+7. Treat every required `delivery_contract` item as an atomic output obligation. Do not invent training duration, repetitions, frequency, or multi-day progression. When training is requested, state the returned training-evidence boundary and include only source-explicit correction or practice cues.
 8. Follow the returned text/video mode. Reproduce `feedback_prompt` exactly at the end.
 
 Load only the task-specific reference:
 
 - diagnosis or competing causes: `references/diagnosis.md`
-- practice plan or progression: `references/practice.md`
+- training or practice request: `references/practice.md`
 - clarification reply: `references/continuation.md`
 - systematic path or complex multi-issue answer: `references/answer-workflow.md`
 - explicit feedback on a prior answer: `references/feedback-workflow.md`
@@ -57,21 +57,21 @@ Load only the task-specific reference:
 
 Start with the actual decision or failure. Explicitly mark a proposed cause as supported under conditions, still unverified, or unsupported. Do not convert `是不是` or `A 还是 B` into a confirmed cause.
 
-Use only applicable sections: `直接回答`, `文字解释`, `适用边界`, `核心视频与观看重点`, `完整相关视频`, `置信边界`. Give supported text, not a link-only answer. Use videos for visual continuity, rhythm, shape, trajectory, and pressured variation.
+Use only applicable sections: `直接回答`, `文字解释`, `适用边界`, `核心视频与观看重点`, `完整相关视频`, `置信边界`, `为了让答案更完整，你还可以补充`. Give supported text, not a link-only answer. Put optional clarification last, after answering everything currently supported. Use videos for visual continuity, rhythm, shape, trajectory, and pressured variation.
 
-Build technical prose from `synthesis_videos` only. Each claim may synthesize at most three strongest, source-distinct videos; the limit controls prose density, not whether another verified video is considered answerable or shown in the complete list.
+Build detailed technical prose from `synthesis_videos` only. Each claim may synthesize at most three strongest, source-distinct videos; the limit controls evidence breadth, not answer length or explanatory detail. Explain the supported conclusion, why it matters, observable distinctions, and conditions in the sources. Keep the answer useful without opening a link.
 
-In `核心视频与观看重点`, resolve `core_videos` against the detailed `selected_videos` and give each video's relevance, observation focus, timestamp/clip range when available, stable `evidence_id`, and canonical URL once. In `完整相关视频`, resolve every remaining label from the union of `selected_videos` and `complete_related_video_catalog`, preserving its stable identity and canonical URL once. Prefer the closed renderer, which decodes the catalog automatically. Never silently replace the complete list with the core shortlist, and never use a complete-list-only source to expand technical prose. If no related source is authorized, state the supported boundary or evidence gap.
+For every item in both video sections, use its packet-provided `citation_reason`, `viewing_value`, and `watch_focus` to write a query-specific explanation, plus its stable `evidence_id` and canonical URL once. State what conclusion this source supports, what the user gains by watching it, and exactly which passage or visual detail matters. Do not mechanically repeat generic packet boilerplate when the authorized evidence supports a more concrete explanation. A bare title or link is forbidden. If a source has no claim-specific reason and honest viewing focus, it must not be displayed. Never silently replace the complete list with the core shortlist. If no related source is authorized, state the supported boundary or evidence gap.
 
 Keep source confidence and conditions intact. A title, category, tag, topic, retrieval score, or phrase match is a lead, not proof. `selected_videos` alone never proves a claim. Preserve action variant, side, court zone, active/passive state, singles/doubles context, actor order, level, and event sequence. Explain conflicting sources by condition rather than inventing a universal rule.
 
-For diagnostic, practice, tactics, or multi-claim answers, use the closed renderer. Either let it build the complete default ID-only draft, or provide an ID-only claim draft following `references/answer-workflow.md`; the renderer always adds the packet's typed delivery blocks. Never delete or rewrite those blocks, and never add technical prose after rendering:
+For diagnostic, tactics, or multi-claim answers, compose the user-facing explanation directly from the packet following `references/answer-workflow.md`. The deterministic renderer is a regression baseline and completeness aid, not the default user-facing writer; its transcript excerpts do not replace a coherent explanation. Preserve packet claim IDs and delivery IDs so the auditor can verify coverage. You may render a baseline for comparison:
 
 ```bash
-python3 scripts/render_answer.py --packet answer-packet.json > answer.md
+python3 scripts/render_answer.py --packet answer-packet.json > baseline-answer.md
 ```
 
-Then run:
+Save the detailed final draft as `answer.md`, then run:
 
 ```bash
 python3 scripts/audit_answer.py "用户的完整原问题" --context context.json --packet answer-packet.json --answer answer.md
@@ -83,6 +83,8 @@ Revise until it exits successfully. Treat the audit as a deterministic contract 
 
 - Do not diagnose injury. Stop painful movement and recommend qualified clinical or physiotherapy assessment before resuming.
 - Do not guarantee improvement, prescribe aggressive volume, or give personalized purchase endorsements beyond selected equipment evidence.
+- Do not request, accept, or analyze a user's action video as part of this Skill. Ask only for optional text details already returned by the packet.
+- Do not synthesize training plans, durations, repetitions, frequency, or progressions unless a selected source explicitly states the exact item; even then, present it only as that source's bounded cue, not a personalized prescription.
 - Do not let feedback override teaching evidence or silently upload local feedback.
 
 ## Feedback
@@ -93,7 +95,7 @@ When the user evaluates a prior answer, follow `references/feedback-workflow.md`
 
 - `scripts/prepare_answer_context.py`: sole answer entry point.
 - `scripts/audit_answer.py`: final contract gate.
-- `scripts/render_answer.py`: closed renderer for packet-bound technical prose.
+- `scripts/render_answer.py`: deterministic regression baseline and packet-completeness renderer.
 - `scripts/delivery_contract.py`: typed delivery requirements, query-unit roles, and inherited scenario constraints.
 - `references/runtime-store.sqlite3`: lazy runtime evidence and retrieval store.
 - `references/reviewed-evidence-atoms.json`: reviewed verbalizable claims.

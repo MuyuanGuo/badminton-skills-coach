@@ -467,6 +467,7 @@ def collect_evaluations(root=ROOT, workers=1, timings=None):
                 "claim_mapped_video_recall",
                 "synthesis_video_recall",
                 "complete_related_video_recall",
+                "synthesis_display_expected_videos",
                 "core_video_recall",
                 "mean_video_count_by_layer",
                 "primary_selected_rate",

@@ -13,7 +13,7 @@
         "supported_mechanism_ids_contains": ["movement_transition", "shot_choice_and_recovery_time"],
         "branch_axes_contains": ["discipline"],
         "clarification_action": "answer_conditionally",
-        "unknown_types_contains": ["branch_axis:discipline", "user_movement_observation"],
+        "unknown_types_contains": ["branch_axis:discipline"],
         "unresolved_texts_contains": ["步法太慢"],
         "do_not_claim_unique_cause": true
       }
@@ -75,7 +75,7 @@
           {"text": "核心太弱", "status": "unverified", "evidence_ids": []}
         ],
         "clarification_action": "answer_conditionally",
-        "unknown_types_contains": ["user_movement_observation"],
+        "unknown_types_contains": [],
         "unresolved_texts_contains": ["核心太弱"],
         "do_not_claim_unique_cause": true
       }

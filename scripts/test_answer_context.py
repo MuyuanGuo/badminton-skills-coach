@@ -2060,7 +2060,7 @@ class AnswerContextTests(unittest.TestCase):
             drop_rejected["7054395778814561575"],
         )
 
-    def test_focused_practice_request_returns_personalized_adaptation(self):
+    def test_focused_practice_request_returns_only_evidence_boundary(self):
         context = self.context_module.prepare_answer_context(
             "双打新手一个人每天十五分钟怎么练接发",
             max_videos=1,
@@ -2071,19 +2071,22 @@ class AnswerContextTests(unittest.TestCase):
             interpretation["intent_frame"]["requested_output"], "practice"
         )
         self.assertEqual(interpretation["strategy"], "focused_evidence")
-        navigation = context["topic_navigation"]
-        self.assertIsNotNone(navigation)
-        self.assertEqual(navigation["user_context"]["level"], "beginner")
-        self.assertEqual(navigation["user_context"]["discipline"], "doubles")
-        self.assertEqual(navigation["user_context"]["practice_setup"], "solo")
-        self.assertEqual(navigation["user_context"]["session_minutes"], 15)
+        self.assertIsNone(context["topic_navigation"])
         self.assertEqual(
-            sum(navigation["practice_adaptation"]["minute_allocation"].values()),
-            15,
+            [item["kind"] for item in context["delivery_contract"]["items"]],
+            ["evidence.training_boundary"],
         )
-        self.assertIn(
-            "不要把需要稳定喂球的练习写成可独自完成",
-            navigation["practice_adaptation"]["setup_adaptation"],
+        self.assertTrue(
+            context["answer_contract"][
+                "synthetic_training_prescriptions_forbidden"
+            ]
+        )
+        self.assertEqual(
+            context["clarification_decision"]["questions"],
+            [
+                "若想让答案更具体，可以补充最想解决的来球或动作场景、"
+                "当前失败表现，以及期望的出球或落点。"
+            ],
         )
 
     def test_readme_example_closes_intent_diagnosis_and_practice_contracts(self):
@@ -3479,9 +3482,9 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(payload["answer_core_video_labels"], [])
 
-    def test_unseen_no_video_diagnostic_preserves_all_hypotheses(self):
+    def test_unseen_diagnostic_preserves_hypotheses_without_requesting_video(self):
         payload = self.context_module.prepare_answer_context(
-            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？没有连续动作视频时能确定哪个吗？",
+            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？能确定哪个吗？",
             local_personalization=False,
         )
         self.assertEqual(
@@ -3498,8 +3501,32 @@ class AnswerContextTests(unittest.TestCase):
             ],
             ["只到中场"],
         )
-        self.assertTrue(payload["diagnostic_model"]["user_video_unavailable"])
-        self.assertEqual(payload["clarification_decision"]["questions"], [])
+        self.assertNotIn(
+            "user_video_unavailable", payload["diagnostic_model"]
+        )
+        questions = payload["clarification_decision"]["questions"]
+        self.assertTrue(questions)
+        self.assertTrue(all("视频" not in item for item in questions))
+
+    def test_broad_backhand_rearcourt_symptom_stays_in_clear_family(self):
+        payload = self.context_module.prepare_answer_context(
+            "我反手后场总是打不到位是因为啥",
+            local_personalization=False,
+        )
+        self.assertTrue(payload["selected_videos"])
+        for video in payload["selected_videos"]:
+            families = set(
+                video.get("constraint_scope", {})
+                .get("shot_family", {})
+                .get("values", [])
+            )
+            self.assertTrue(
+                families & {"clear", "flat_clear"},
+                (video["video_id"], families),
+            )
+        questions = payload["clarification_decision"]["questions"]
+        self.assertTrue(questions)
+        self.assertTrue(all("视频" not in item for item in questions))
 
     def test_unseen_cross_variant_transfer_fails_closed(self):
         payload = self.context_module.prepare_answer_context(

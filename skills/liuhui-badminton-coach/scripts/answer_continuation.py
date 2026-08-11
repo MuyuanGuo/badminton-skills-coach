@@ -127,15 +127,6 @@ def answer_resolves_request(
     }
     if not normalized or normalized in inconclusive:
         return False
-    if request.get("answer_format") == "continuous_user_video":
-        unavailable_terms = (diagnostic_rules or {}).get(
-            "video_unavailable_terms", []
-        )
-        if any(
-            search_module.normalize(term) in normalized
-            for term in unavailable_terms
-        ):
-            return True
     if explicit_binding:
         return True
     cues = request.get("answer_cues", [])

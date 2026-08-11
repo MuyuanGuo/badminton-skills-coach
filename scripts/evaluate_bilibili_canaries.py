@@ -72,6 +72,22 @@ def evaluate(cases_path=CASES_PATH):
             if evidence.get("evidence_id") == expected
         ]
         packet = context_runtime.build_answer_packet(context)
+        expected_context_video = next(
+            (
+                item
+                for item in context.get("selected_videos", [])
+                if item.get("evidence_id") == expected
+            ),
+            None,
+        )
+        expected_label = (
+            expected_context_video.get("label")
+            if expected_context_video is not None
+            else None
+        )
+        audit_only = expected_label in set(
+            context.get("answer_audit_only_related_video_labels", [])
+        )
         packet_video = next(
             (
                 item
@@ -108,7 +124,7 @@ def evaluate(cases_path=CASES_PATH):
             if detailed_packet_video
             else []
         )
-        if packet_video is None:
+        if packet_video is None and not audit_only:
             case_failures.append("expected_evidence_missing_from_packet")
         elif detailed_packet_video is not None and (
             not packet_window_ids
@@ -127,11 +143,14 @@ def evaluate(cases_path=CASES_PATH):
             "retrieval_top_ids": top_ids,
             "claim_mapped": bool(mapped),
             "packet_included": packet_video is not None,
+            "audit_only_retained": audit_only,
             "packet_projection": (
                 "detailed_synthesis"
                 if detailed_packet_video is not None
                 else "complete_related_catalog"
                 if packet_video is not None
+                else "audit_only_related"
+                if audit_only
                 else "missing"
             ),
             "packet_window_count": len(packet_window_ids),

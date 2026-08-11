@@ -1,6 +1,6 @@
 {
-  "version": 10,
-  "description": "Deterministic rules for separating observed symptoms, user hypotheses, source-supported diagnostic branches, clarification needs, and claim-level evidence.",
+  "version": 11,
+  "description": "Deterministic rules for separating reported symptoms, user hypotheses, source-supported diagnostic branches, optional text clarification, and claim-level evidence.",
   "hypothesis_patterns": [
     {
       "type": "single_cause_question",
@@ -27,7 +27,6 @@
     "^(?:这|那|上述|前述).*(?:假设|原因)$",
     "^其他(?:有证据支持)?(?:的原因)?$"
   ],
-  "video_unavailable_terms": ["没有连续动作视频", "没有动作视频", "没有视频", "暂时没有视频", "无法提供视频", "不能提供视频", "只能按文字排查"],
   "symptom_terms": [
     "来不及",
     "到得太晚",

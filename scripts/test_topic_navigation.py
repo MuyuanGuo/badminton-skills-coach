@@ -141,13 +141,12 @@ class TopicNavigationTests(unittest.TestCase):
         }
         self.assertEqual(assigned_topics, {"后场技术/架拍与后场框架"})
 
-    def test_context_is_inferred_and_changes_learning_path(self):
+    def test_context_is_inferred_without_creating_a_timed_learning_plan(self):
         query = "零基础双打接发系统学习，每次30分钟，有搭档"
         context = self.navigator.build_user_context(query, self.practice_rules)
         self.assertEqual(context["level"], "beginner")
         self.assertEqual(context["discipline"], "doubles")
         self.assertEqual(context["practice_setup"], "partner")
-        self.assertEqual(context["session_minutes"], 30)
         self.assertEqual(self.navigator.clarification_questions(context), [])
         graph = json.loads(
             (
@@ -163,25 +162,25 @@ class TopicNavigationTests(unittest.TestCase):
             matches, context, self.practice_rules
         )
         goals = " ".join(stage["goal"] for stage in path)
-        self.assertIn("30 分钟", goals)
-        self.assertIn("搭档", goals)
-        self.assertIn("下一拍衔接", goals)
+        self.assertNotIn("分钟", goals)
+        self.assertNotIn("组", goals)
+        self.assertIn("双打", goals)
+        self.assertIn("直接覆盖", goals)
 
-    def test_practice_context_handles_natural_solo_and_chinese_duration(self):
+    def test_context_keeps_setup_but_discards_duration_prescriptions(self):
         context = self.navigator.build_user_context(
             "新手一个人每天练十五分钟杀球", self.practice_rules
         )
         self.assertEqual(context["level"], "beginner")
         self.assertEqual(context["practice_setup"], "solo")
-        self.assertEqual(context["session_minutes"], 15)
         self.assertEqual(context["sources"]["practice_setup"], "query")
-        self.assertEqual(context["sources"]["session_minutes"], "query")
+        self.assertNotIn("session_minutes", context)
 
         partner = self.navigator.build_user_context(
             "有一个人给我喂球，每次二十分钟", self.practice_rules
         )
         self.assertEqual(partner["practice_setup"], "partner")
-        self.assertEqual(partner["session_minutes"], 20)
+        self.assertNotIn("session_minutes", partner)
 
         no_partner = self.navigator.build_user_context(
             "没有陪练，只能自己练二十分钟", self.practice_rules
@@ -193,22 +192,24 @@ class TopicNavigationTests(unittest.TestCase):
         )
         self.assertEqual(partner_without_coach["practice_setup"], "partner")
 
-    def test_minute_allocation_is_exact_and_keeps_every_segment(self):
-        for total in [5, 15, 30, 120]:
-            with self.subTest(total=total):
-                allocation = self.navigator.allocate_minutes(total)
-                self.assertEqual(sum(allocation.values()), total)
-                self.assertTrue(all(value >= 1 for value in allocation.values()))
+    def test_training_boundary_rules_forbid_synthetic_schedule_fields(self):
+        self.assertEqual(self.practice_rules["mode"], "source_explicit_only")
+        self.assertTrue(
+            {
+                "duration",
+                "repetitions",
+                "sets",
+                "frequency",
+                "session_allocation",
+                "multi_day_progression",
+            }.issubset(self.practice_rules["synthetic_fields_forbidden"])
+        )
 
-    def test_pain_signal_precedes_training_personalization(self):
+    def test_pain_signal_precedes_optional_context_questions(self):
         context = self.navigator.build_user_context(
             "杀球时肩膀疼，想每天练30分钟", self.practice_rules
         )
-        adaptation = self.navigator.practice_adaptation(
-            context, self.practice_rules
-        )
         self.assertTrue(context["pain_or_injury"])
-        self.assertIn("停止相关动作", adaptation["pain_boundary"])
         self.assertIn("医疗专业人士", self.navigator.clarification_questions(context)[0])
 
     def test_solo_practice_does_not_imply_singles(self):

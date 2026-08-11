@@ -1,16 +1,13 @@
-# Practice Plan Workflow
+# Training Request Boundary
 
-Use the packet's practice adaptation and `practice-plan-rules.json`. Preserve level, singles/doubles context, solo/partner/coach setup, handedness when relevant, duration, and pain boundary. Ask at most one question only when safety or feasibility changes; otherwise state assumptions and give a solo fallback plus fed-drill upgrade.
+The current corpus is primarily evidence for technique, mechanisms, corrections, equipment, and tactics. It does not establish a general library of validated training protocols.
 
-Scale segments to the user's exact duration; default to 15 minutes only when absent. Include warm-up, one isolated cue, pressured/decision practice, and self-check, with minutes summing exactly to the total.
+When the user requests a drill or plan:
 
-Then provide:
+- answer the supported technique or correction first;
+- state the packet's `evidence.training_boundary` delivery item;
+- include a practice cue only when a selected source explicitly states it;
+- preserve that source's exact scope and do not invent duration, repetitions, sets, frequency, progression, success rates, or a multi-day schedule;
+- do not convert a technical principle into a personalized training prescription.
 
-- a three-day correction progression;
-- a two-week consolidation progression;
-- two to four observable success criteria;
-- two or three selected-evidence errors;
-- quality-stop, balance-loss, pain, and video-review signals;
-- one to three mapped source videos.
-
-Use one main correction cue unless the user requests a broader program. Keep amateur volume conservative, include rest for high intensity, separate beginner fixed feeds from advanced random pressure, and distinguish singles recovery from doubles partner responsibility. Never promise improvement by a fixed date. If a plan element is a bounded synthesis from a principle rather than a directly stated drill, label it as such.
+If no selected source states a practice method, say that the current evidence supports the correction target but not a reliable training plan.

@@ -682,6 +682,25 @@ def evaluate_candidate_for_query_unit(
         search_module, plan, entry, video, rules
     )
     symptom_match = symptom_decision(search_module, plan, video, rules)
+    normalized_query = search_module.normalize(query)
+    depth_outcome_query = any(
+        search_module.normalize(term) in normalized_query
+        for term in (
+            "打不到位",
+            "打不深",
+            "打不远",
+            "只到中场",
+            "只能到中场",
+            "不到底线",
+        )
+    )
+    if keep and depth_outcome_query:
+        shot_families = set(
+            constraint_scope.get("shot_family", {}).get("values", [])
+        )
+        if not shot_families.intersection({"clear", "flat_clear"}):
+            keep = False
+            reasons = ["shot_depth_outcome_not_supported_by_source_evidence"]
     scope_supported_axes = [
         axis_name
         for axis_name in requested_constraints
@@ -767,6 +786,17 @@ def evaluate_candidate_for_query_unit(
         reasons = [
             "unrequested_specific_scope_cannot_fill_weak_action_scope"
         ]
+    # Keep this semantic guard after every rescue path. Otherwise a candidate
+    # rejected above can be re-admitted by the generic scoped-instructional
+    # rescue, which previously let smash, transition, and smash-block videos
+    # leak into broad "打不到位" rear-court answers.
+    if keep and depth_outcome_query:
+        shot_families = set(
+            constraint_scope.get("shot_family", {}).get("values", [])
+        )
+        if not shot_families.intersection({"clear", "flat_clear"}):
+            keep = False
+            reasons = ["shot_depth_outcome_not_supported_by_source_evidence"]
     if (
         symptom_match == "none"
         and entry.get("reviewed_evidence_rank", 2) <= 1
@@ -884,16 +914,10 @@ def prepare_answer_context(
     use_topic_navigation = plan["retrieval_guidance"].get(
         "use_topic_navigation"
     )
-    needs_practice_context = (
-        plan["retrieval_guidance"]["intent_frame"].get("requested_output")
-        == "practice"
-        and boundary["type"]
-        not in {
-            "pain_or_injury",
-            "endorsement_or_authorship",
-            "purchase_advice",
-        }
-    )
+    # The corpus supports technique explanations and source-bounded correction
+    # cues, but it does not support synthetic session durations or multi-day
+    # training prescriptions.
+    needs_practice_context = False
     if use_topic_navigation or needs_practice_context:
         navigation = topic_navigation(navigation_module, retrieval_base_query)
     if use_topic_navigation:
@@ -1482,6 +1506,9 @@ def prepare_answer_context(
         "selected_videos": selected_videos,
         "answer_visible_video_labels": visible_labels,
         "answer_contract": {
+            "video_display_guidance_required": True,
+            "user_action_video_requests_forbidden": True,
+            "synthetic_training_prescriptions_forbidden": True,
             "section_order": [
                 "直接回答",
                 "文字解释",
@@ -1489,11 +1516,15 @@ def prepare_answer_context(
                 "核心视频与观看重点",
                 "完整相关视频",
                 "置信边界",
+                "为了让答案更完整，你还可以补充",
             ],
             "citation_rules": [
                 "技术结论只引用 answer_synthesis_video_labels；完整相关视频清单使用 answer_complete_related_video_labels；selected_videos 中未映射到 claim 的 finalist 仅供审计。",
                 "每个 V 标签只对应一个 evidence_id，并在答案中只输出一次 canonical URL。当前抖音条目的 evidence_id 等于 video_id；直播切片等新来源使用自己的稳定 evidence_id。",
+                "每条展示视频都必须说明为什么引用、为什么值得看以及重点观看的时间点或诚实的全片范围；裸标题或裸链接不算完成。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
+                "先回答当前证据支持的部分；信息不足时把可选文字补充项放在答案末尾，不请求或分析用户动作视频。",
+                "不得把技术原则扩写成训练时长、组数、频次或多日计划；只有来源明确给出的练习提示可以按原范围复述。",
                 "所有结论必须保持 question_interpretation.constraints 与 constraint_scope 的正反手、场区、单双打、发接发、主动被动、攻防和线路边界。",
                 "question_interpretation.ambiguities 非空时，先逐条说明 required_statement；不得把有多种场区含义的术语静默收窄成一种技术。",
                 "question_interpretation.terminology_corrections 非空时，先说明 required_statement，并在回答正文、视频标题改写和观看重点中只使用 canonical_term；错误输入词只可在纠正句中出现一次。",
@@ -1504,7 +1535,7 @@ def prepare_answer_context(
                 "exact_query_unit_scope_only 只支持对应子问题；component_or_generic_support_only_not_full_question_proof 只能支持局部机制或通用原则。",
                 "文字承担可可靠表达的完整结论；视频承担动作形态、节奏和空间关系。",
                 "无可靠证据时明确说知识库未覆盖，不用常识补成刘辉的观点。",
-                "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；除非用户动作已被观察，否则不得声称找到唯一原因。",
+                "先执行 diagnostic_model 与 clarification_decision：用户提出的原因不是事实；信息不足时保留条件分支，不得声称找到唯一原因。",
                 "逐项执行 answer_turn_contract：正文承认每条 resolved_clarifications，不得重复询问 resolved_question_ids_must_not_be_reasked，并逐条提出 pending_clarifications；本轮引用只能来自契约绑定的最新 evidence_state。",
                 "每个重要结论只能使用 answer_plan 为该结论选定、且同时位于 claim_evidence_map 的 V 标签，并服从 confidence_ceiling；完整相关视频不得被借用来扩张技术结论。",
                 "answer_eligibility=primary 的证据优先；supplemental 只可补足主证据未覆盖的概念、纠错、训练、装备、条件或反例，不能单独扩张为普遍结论。",
@@ -1552,14 +1583,10 @@ def prepare_answer_context(
     planned_related_labels = answer_packet_runtime.packet_related_video_labels(
         context["answer_plan"], context["claim_evidence_map"]
     )
-    final_related_order = [
-        *planned_synthesis_labels,
-        *[
-            label
-            for label in planned_related_labels
-            if label not in set(planned_synthesis_labels)
-        ],
-    ]
+    # Preserve every claim-authorized source in the audit context, but show
+    # only sources that actually participate in answer synthesis. This keeps
+    # recall completeness auditable without dumping unused links on users.
+    final_related_order = list(planned_synthesis_labels)
     selected_videos, visible_labels, final_label_map = relabel_answer_videos(
         selected_videos,
         diagnostic_contract,
@@ -1572,6 +1599,11 @@ def prepare_answer_context(
     context["answer_synthesis_video_labels"] = synthesis_labels
     context["answer_complete_related_video_labels"] = visible_labels
     context["answer_visible_video_labels"] = visible_labels
+    context["answer_audit_only_related_video_labels"] = [
+        final_label_map[label]
+        for label in planned_related_labels
+        if label not in set(planned_synthesis_labels)
+    ]
     core_labels = answer_packet_runtime.core_video_labels_for_context(
         context
     )

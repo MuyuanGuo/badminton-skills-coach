@@ -4,9 +4,9 @@
   "development_version": "2.1.3-dev.1",
   "baseline_version": "v2.1.2",
   "build": {
-    "id": "ba02858fdbb63470",
-    "inputs_sha256": "184bb5414a66e98bc1ae9c0f608e9299565c6d69b8ab6063b8bd70e87b47a514",
-    "runtime_sha256": "f04a13ad7cf319605c357398b1dcf87565c324e063875f6eae7d4c1c1dab6ffb"
+    "id": "698eaafb1f24da64",
+    "inputs_sha256": "e045327d74f3257a5de09ffd67407a005ca0ee75c44a134a400da42dbce68296",
+    "runtime_sha256": "6ff586a4a47e919ef263c075cede463a57874c7eb20cd83876c499554a8e75b8"
   },
   "summary": {
     "status": "pass",
@@ -33,6 +33,7 @@
       "claim_mapped_video_recall": 1.0,
       "synthesis_video_recall": 0.4624277456647399,
       "complete_related_video_recall": 1.0,
+      "synthesis_display_expected_videos": 167,
       "core_video_recall": 0.2254335260115607,
       "mean_video_count_by_layer": {
         "candidate": 344.140350877193,
@@ -41,7 +42,8 @@
         "selected": 17.19298245614035,
         "claim_mapped": 14.982456140350877,
         "synthesis": 2.9298245614035086,
-        "complete_related": 14.982456140350877,
+        "audit_only": 12.052631578947368,
+        "complete_related": 2.9298245614035086,
         "core": 1.3157894736842106
       },
       "primary_selected_rate": 1.0,
@@ -233,33 +235,33 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "69d44eb408d916e5ce4b0555d9a97aa77310286929db716fad9652b26cae2bfd",
+      "runtime_fingerprint": "ed0801ba99f4749137cfcb2d82c449b40ef95c17bb1b22469483359bdb981a4a",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "69d44eb408d916e5ce4b0555d9a97aa77310286929db716fad9652b26cae2bfd",
-      "current_answer_runtime_fingerprint": "69d44eb408d916e5ce4b0555d9a97aa77310286929db716fad9652b26cae2bfd",
-      "generation_artifact_runtime_fingerprint": "0cfa37fbf5f9b921ea7dbe6cb76c860aa88270c6c1533ca4ef16cffd7015feba",
-      "current_artifact_runtime_fingerprint": "0cfa37fbf5f9b921ea7dbe6cb76c860aa88270c6c1533ca4ef16cffd7015feba",
+      "generation_answer_runtime_fingerprint": "ed0801ba99f4749137cfcb2d82c449b40ef95c17bb1b22469483359bdb981a4a",
+      "current_answer_runtime_fingerprint": "ed0801ba99f4749137cfcb2d82c449b40ef95c17bb1b22469483359bdb981a4a",
+      "generation_artifact_runtime_fingerprint": "22914635a544c47df712ff6c3f0edbca1bdcbf40f384ea5bad374264ede40799",
+      "current_artifact_runtime_fingerprint": "22914635a544c47df712ff6c3f0edbca1bdcbf40f384ea5bad374264ede40799",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
       "validator_implementation_match": true,
-      "critical_cases": 18,
-      "generated_answers": 18,
-      "automatically_validated": 18,
+      "critical_cases": 20,
+      "generated_answers": 20,
+      "automatically_validated": 20,
       "automated_audit_pass_rate": 1.0,
       "current_runtime_audits_rerun": true,
       "current_renderer_reproduced": true,
-      "passed": 18,
+      "passed": 20,
       "failed": [],
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "5edf34cbfafb085be91334ba644cd0c3984ae763cbba5294fda1688a031ba22a"
+        "implementation_sha256": "05b29d8c8e591dcad93b754cf1c3224fa6f9369cad1e997210fa4b6db5e0ed0d"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "f48408fe6e0f73f3c80a15de1d9283e8b4c7be209fe31e2f6e2db1aefb9d0d34"
+        "implementation_sha256": "45055ee8d8d340737239f7870f187e04e7752ff4f159b4ef18faf7cdc0069c3f"
       }
     }
   },
@@ -905,7 +907,7 @@
     },
     {
       "metric": "live_generation.critical_cases",
-      "current": 18,
+      "current": 20,
       "baseline": 18,
       "direction": "at_least",
       "tolerance": 0,

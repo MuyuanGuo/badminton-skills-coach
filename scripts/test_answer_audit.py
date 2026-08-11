@@ -318,7 +318,7 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in missing["violations"]},
         )
 
-    def test_delivery_marker_alone_does_not_satisfy_semantic_completeness(self):
+    def test_legacy_synthetic_practice_delivery_is_rejected(self):
         context = copy.deepcopy(self.context)
         context["delivery_contract"] = {
             "schema_version": 1,
@@ -336,7 +336,7 @@ class AnswerAuditTests(unittest.TestCase):
         answer = self.cases["answers"]["complete_conditional"] + "\n[D1]三天纠正。"
         audit = self.auditor.audit_answer(context["query"], context, answer)
         self.assertIn(
-            "invalid_three_day_delivery",
+            "unsupported_synthetic_practice_delivery",
             {item["code"] for item in audit["violations"]},
         )
 

@@ -67,9 +67,9 @@ class LiveGenerationResultTests(unittest.TestCase):
         ):
             result = self.module.validate_results(payload, rerun_runtime=False)
         self.assertEqual(result["status"], "pass")
-        self.assertEqual(result["critical_cases"], 18)
+        self.assertEqual(result["critical_cases"], 20)
         self.assertTrue(result["release_eligible"])
-        self.assertEqual(result["automatically_validated"], 18)
+        self.assertEqual(result["automatically_validated"], 20)
         self.assertFalse(result["current_runtime_audits_rerun"])
 
     def test_systematic_runtime_registry_is_balanced_and_nonduplicative(self):

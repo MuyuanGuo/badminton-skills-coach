@@ -3,14 +3,6 @@
 
 import re
 
-
-def user_video_is_unavailable(query, diagnostic_rules):
-    normalized = re.sub(r"\s+", "", str(query).lower())
-    return any(
-        re.sub(r"\s+", "", term.lower()) in normalized
-        for term in diagnostic_rules.get("video_unavailable_terms", [])
-    )
-
 def extract_user_hypotheses(query, diagnostic_rules):
     """Return causes proposed by the user without treating them as facts."""
     hypotheses = []
@@ -833,9 +825,13 @@ def build_diagnostic_contract(
         branches = []
 
     diagnostic_question = bool(
-        observed_symptoms
-        or user_hypotheses
-        or question_interpretation["strategy"] == "literal_symptom_first"
+        boundary.get("type")
+        not in {"pain_or_injury", "endorsement_or_authorship", "purchase_advice"}
+        and (
+            observed_symptoms
+            or user_hypotheses
+            or question_interpretation["strategy"] == "literal_symptom_first"
+        )
     )
     material_unknowns = []
     for ambiguity in question_interpretation.get("ambiguities", []):
@@ -859,16 +855,6 @@ def build_diagnostic_contract(
                 "required_for_unique_diagnosis": True,
             }
         )
-    if diagnostic_question:
-        material_unknowns.append(
-            {
-                "id": "unknown.user_movement_observation",
-                "type": "user_movement_observation",
-                "description": "the user's actual contact, racket, body, and movement sequence has not been observed",
-                "required_for_unique_diagnosis": True,
-            }
-        )
-
     clarification_requests = []
     for branch in branches:
         question_id = f'clarify.branch.{branch["axis"]}'
@@ -903,35 +889,79 @@ def build_diagnostic_contract(
             clarification_requests.append(
                 {
                     "question_id": question_id,
-                    "unknown_type": "user_movement_observation",
+                    "unknown_type": "user_reported_observation",
                     "question": question,
                     "query_label": mechanism["label"],
                     "purpose": mechanism.get(
                         "observation_purpose",
-                        "用于缩小证据支持的排查范围；不能单凭文字观察确认唯一原因。",
+                        "用于缩小证据支持的排查范围，并让当前的条件性答案更具体。",
                     ),
                     "materially_affects": ["diagnosis", "evidence_selection"],
                     "answer_format": "focused_free_text_observation",
                     "answer_cues": mechanism.get("answer_cues", []),
                 }
             )
-    video_unavailable = user_video_is_unavailable(query, diagnostic_rules)
     if (
         diagnostic_question
         and not clarification_requests
         and not resolved_question_ids
-        and not video_unavailable
     ):
         clarification_requests.append(
             {
-                "question_id": "clarify.user_movement_video",
-                "unknown_type": "user_movement_observation",
-                "question": "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。",
-                "query_label": "用户连续动作视频观察",
-                "purpose": "用于观察完整动作链并确认用户自己的实际动作；没有连续视频时只能给出条件性排查。",
-                "materially_affects": ["unique_cause_confirmation"],
-                "answer_format": "continuous_user_video",
-                "answer_cues": [],
+                "question_id": "clarify.symptom_context",
+                "unknown_type": "user_reported_context",
+                "question": (
+                    "若想让答案更完整，可以补充问题发生时的主动或被动状态、"
+                    "球最后落到哪个区域，以及触球点大致在身前、体侧还是身后。"
+                ),
+                "query_label": "问题发生时的具体场景",
+                "purpose": "用于缩小证据支持的排查范围；不影响先回答当前有把握的部分。",
+                "materially_affects": ["diagnosis_detail", "evidence_selection"],
+                "answer_format": "focused_free_text_observation",
+                "answer_cues": [
+                    "主动",
+                    "被动",
+                    "前场",
+                    "中场",
+                    "后场",
+                    "身前",
+                    "体侧",
+                    "身后",
+                ],
+            }
+        )
+    if (
+        question_interpretation.get("intent_frame", {}).get(
+            "requested_output"
+        )
+        == "practice"
+        and not clarification_requests
+        and not resolved_question_ids
+    ):
+        clarification_requests.append(
+            {
+                "question_id": "clarify.practice_context",
+                "unknown_type": "user_reported_context",
+                "question": (
+                    "若想让答案更具体，可以补充最想解决的来球或动作场景、"
+                    "当前失败表现，以及期望的出球或落点。"
+                ),
+                "query_label": "希望解决的具体技术场景",
+                "purpose": (
+                    "用于缩小技术解释和来源范围；不会据此生成无来源支持的"
+                    "训练时长、组数或周期安排。"
+                ),
+                "materially_affects": [
+                    "technical_detail",
+                    "evidence_selection",
+                ],
+                "answer_format": "focused_free_text_observation",
+                "answer_cues": [
+                    "来球",
+                    "动作",
+                    "失败表现",
+                    "期望落点",
+                ],
             }
         )
     clarification_requests = clarification_requests[
@@ -951,7 +981,7 @@ def build_diagnostic_contract(
         if ask_first
         else (
             "answer_conditionally"
-            if material_unknowns or branches
+            if material_unknowns or branches or clarification_requests
             else "answer_now"
         )
     )
@@ -999,17 +1029,17 @@ def build_diagnostic_contract(
                     "question": item["question"],
                     "text": item["answer"],
                     "source": "user_clarification_text",
-                    "verification_status": "reported_not_video_verified",
+                    "verification_status": "user_reported_not_independently_verified",
                 }
                 for item in resolved_answers
-                if item["unknown_type"] == "user_movement_observation"
+                if item["unknown_type"]
+                in {"user_reported_observation", "user_reported_context"}
             ],
             "user_hypotheses": user_hypotheses,
             "supported_mechanisms": supported_mechanisms,
             "material_branches": branches,
             "do_not_claim_unique_cause": diagnostic_question,
-            "unique_cause_confirmation_requires_user_video": diagnostic_question,
-            "user_video_unavailable": video_unavailable,
+            "additional_information_can_improve_answer": diagnostic_question,
         },
         "clarification_decision": {
             "action": clarification_action,

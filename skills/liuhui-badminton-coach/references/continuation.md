@@ -6,4 +6,4 @@ Reject empty replies, unknown/duplicate IDs, modified state, or a free-text repl
 
 Use `answer_turn_contract.original_query` for final audit. Treat `effective_query` only as retrieval input. Acknowledge resolved answers, never re-ask resolved IDs, and retain every pending question with its purpose.
 
-Treat clarification observations as user-reported. They may prioritize a source-backed branch but cannot confirm a unique physical cause without continuous user video.
+Treat clarification observations as user-reported. They may prioritize a source-backed branch but do not independently prove a unique physical cause.

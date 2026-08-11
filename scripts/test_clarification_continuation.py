@@ -387,8 +387,9 @@ class ClarificationIntegrationTests(unittest.TestCase):
     def test_continuation_keeps_unique_cause_boundary(self):
         diagnostic = self.continued_context["diagnostic_model"]
         self.assertTrue(diagnostic["do_not_claim_unique_cause"])
-        self.assertTrue(
-            diagnostic["unique_cause_confirmation_requires_user_video"]
+        self.assertTrue(diagnostic["additional_information_can_improve_answer"])
+        self.assertNotIn(
+            "unique_cause_confirmation_requires_user_video", diagnostic
         )
 
 
