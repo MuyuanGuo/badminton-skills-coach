@@ -249,7 +249,8 @@ def budget_retrieval_queries(search_module, queries, plan, original_query, rules
                 and normalized not in low_information_terms
             ):
                 matched_term_score += 6.0
-            # Prefer a focused atom/composite over broad profile-only shards.
+            # Bare semantic anchors preserve broad recall; the longer
+            # composite wins only when its evidence-term priority is equal.
             return (
                 -matched_term_score,
                 -min(len(normalized), 24),
@@ -284,19 +285,31 @@ def continuation_query_plan(search_module, effective_query, continuation):
 
     original_query = continuation["original_query"]
     plan = search_module.plan_query(original_query)
+    original_intent = plan["retrieval_guidance"]["intent_frame"]
     effective_intent = effective_plan["retrieval_guidance"]["intent_frame"]
+    # A clarification reply answers a pending observation question; it does
+    # not silently change the kind of output the user originally requested.
+    effective_intent["requested_output"] = original_intent[
+        "requested_output"
+    ]
     plan["answer_guidance"] = effective_plan["answer_guidance"]
     plan["retrieval_guidance"]["intent_frame"] = effective_intent
+    # Clarification replies refine scenario applicability. They must not turn
+    # assistant-authored question labels or user observations into a new hard
+    # evidence focus. Only the original user request defines that focus.
+    plan["retrieval_guidance"]["required_focus_query"] = (
+        original_intent.get("positive_query", original_query)
+    )
     plan["query_expansion"]["intent_frame"] = effective_intent
     return plan, original_query
 
 
 def topic_navigation(navigation_module, query, limit=5):
     graph = json.loads(navigation_module.TOPIC_MAP.read_text(encoding="utf-8"))
-    practice_rules = json.loads(
+    boundary_rules = json.loads(
         navigation_module.PRACTICE_RULES.read_text(encoding="utf-8")
     )
-    context = navigation_module.build_user_context(query, practice_rules)
+    context = navigation_module.build_user_context(query, boundary_rules)
     matches = navigation_module.match_topics(graph, query, limit)
     return {
         "intent": navigation_module.detect_intent(query),
@@ -314,11 +327,15 @@ def topic_navigation(navigation_module, query, limit=5):
             query, matches
         ),
         "learning_path": navigation_module.learning_path(
-            matches, context, practice_rules
+            matches, context, boundary_rules
         ),
-        "practice_adaptation": navigation_module.practice_adaptation(
-            context, practice_rules
-        ),
+        "training_boundary": {
+            "mode": boundary_rules["mode"],
+            "statement": boundary_rules["training_boundary_statement"],
+            "synthetic_fields_forbidden": boundary_rules[
+                "synthetic_fields_forbidden"
+            ],
+        },
     }
 
 

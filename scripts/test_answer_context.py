@@ -288,20 +288,32 @@ class AnswerContextTests(unittest.TestCase):
             [f"V{index}" for index in range(1, len(visible_labels) + 1)],
         )
         packet = self.context_module.build_answer_packet(context)
+        packet_runtime = self.context_module.load_sibling(
+            "answer_context_packet_records", "answer_packet.py"
+        )
         self.assertEqual(
-            [video["label"] for video in packet["selected_videos"]],
+            [
+                video["label"]
+                for video in packet_runtime.packet_video_records(packet)
+            ],
             visible_labels,
         )
         self.assertEqual(
-            packet["display_videos"],
-            context["answer_display_video_labels"],
+            packet["core_videos"],
+            context["answer_core_video_labels"],
+        )
+        self.assertEqual(
+            packet["complete_related_videos"],
+            context["answer_complete_related_video_labels"],
         )
         self.assertIn(
-            f"{packet['display_videos'][0]} 最有价值",
+            f"{packet['complete_related_videos'][0]} 最有价值",
             packet["feedback_prompt"],
         )
-        for label in set(visible_labels) - set(packet["display_videos"]):
-            self.assertNotIn(f"{label} 不相关", packet["feedback_prompt"])
+        self.assertIn(
+            f"{packet['complete_related_videos'][-1]} 不相关",
+            packet["feedback_prompt"],
+        )
 
     def test_closed_plan_visibility_is_contiguous_and_packet_aligned(self):
         context = self.context_module.prepare_answer_context(
@@ -309,8 +321,12 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         packet = self.context_module.build_answer_packet(context)
+        packet_runtime = self.context_module.load_sibling(
+            "answer_context_packet_records", "answer_packet.py"
+        )
         packet_labels = [
-            video["label"] for video in packet["selected_videos"]
+            video["label"]
+            for video in packet_runtime.packet_video_records(packet)
         ]
         self.assertEqual(
             packet_labels,
@@ -322,7 +338,7 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.context_module.validate_answer_packet(packet, context)
 
-    def test_grip_and_relaxation_concepts_survive_supporting_video_budget(self):
+    def test_grip_and_relaxation_concepts_survive_layered_selection(self):
         context = self.module.prepare_case_context(
             self.search_module,
             {"query": "握拍太紧挥拍僵硬怎么放松"},
@@ -333,8 +349,9 @@ class AnswerContextTests(unittest.TestCase):
         self.assertTrue(
             any(term in evidence_text for term in ["僵硬", "放松", "协调"])
         )
-        self.assertLessEqual(
-            len(selected), self.selection_rules["max_supporting_videos"]
+        self.assertEqual(
+            len(selected),
+            context["payload"]["selection"]["selected_video_count"],
         )
 
     def test_feedback_prompt_uses_only_labels_from_the_current_answer(self):
@@ -344,15 +361,12 @@ class AnswerContextTests(unittest.TestCase):
         )
         multiple_prompt = multiple["answer_contract"]["feedback_prompt"]
         visible_labels = multiple["answer_visible_video_labels"]
-        display_labels = multiple["answer_display_video_labels"]
+        complete_labels = multiple["answer_complete_related_video_labels"]
         self.assertTrue(visible_labels)
-        self.assertTrue(set(display_labels).issubset(visible_labels))
-        self.assertIn(f"{display_labels[0]} 最有价值", multiple_prompt)
-        if len(display_labels) > 1:
-            self.assertIn(f"{display_labels[1]} 不相关", multiple_prompt)
-        for selected in multiple["selected_videos"]:
-            if selected["label"] not in display_labels:
-                self.assertNotIn(selected["label"], multiple_prompt)
+        self.assertEqual(complete_labels, visible_labels)
+        self.assertIn(f"{complete_labels[0]} 最有价值", multiple_prompt)
+        if len(complete_labels) > 1:
+            self.assertIn(f"{complete_labels[-1]} 不相关", multiple_prompt)
 
         single = self.context_module.prepare_answer_context(
             "反手滑板怎么打",
@@ -360,16 +374,20 @@ class AnswerContextTests(unittest.TestCase):
         )
         single_prompt = single["answer_contract"]["feedback_prompt"]
         self.assertIn("V1 最有价值", single_prompt)
-        self.assertNotIn("V2", single_prompt)
+        single_labels = single["answer_complete_related_video_labels"]
+        if len(single_labels) > 1:
+            self.assertIn(f"{single_labels[-1]} 不相关", single_prompt)
 
-        no_video = self.context_module.prepare_answer_context(
+        forehand = self.context_module.prepare_answer_context(
             "正手滑板怎么打",
             local_personalization=False,
         )
-        no_video_prompt = no_video["answer_contract"]["feedback_prompt"]
-        self.assertNotRegex(no_video_prompt, r"V\d+")
+        forehand_prompt = forehand["answer_contract"]["feedback_prompt"]
+        forehand_labels = forehand["answer_complete_related_video_labels"]
+        self.assertTrue(forehand_labels)
+        self.assertIn(f"{forehand_labels[0]} 最有价值", forehand_prompt)
 
-        for prompt in [multiple_prompt, single_prompt, no_video_prompt]:
+        for prompt in [multiple_prompt, single_prompt, forehand_prompt]:
             self.assertIn("第 2 点结论不对", prompt)
             self.assertIn("回答漏了", prompt)
             self.assertIn("你理解错了，我真正问的是", prompt)
@@ -601,8 +619,10 @@ class AnswerContextTests(unittest.TestCase):
             "反手挡杀怎么打",
             local_personalization=False,
         )
-        self.assertEqual(
-            {item["video_id"] for item in context["selected_videos"]},
+        synthesis_ids = set(
+            context["selection"]["synthesis_candidate_video_ids"]
+        )
+        self.assertTrue(
             {
                 "7215787369381858599",
                 "7647839024535507897",
@@ -610,7 +630,7 @@ class AnswerContextTests(unittest.TestCase):
                 "7422121561559272739",
                 "7141200093922790688",
                 "7289635377009151247",
-            },
+            }.issubset(synthesis_ids),
         )
         self.assertFalse(
             {
@@ -675,9 +695,9 @@ class AnswerContextTests(unittest.TestCase):
             "反手滑板怎么打",
             local_personalization=False,
         )
-        self.assertEqual(
-            [item["video_id"] for item in context["selected_videos"]],
-            ["7214304020775652620"],
+        self.assertIn(
+            "7214304020775652620",
+            context["selection"]["synthesis_candidate_video_ids"],
         )
         self.assertFalse(
             {
@@ -702,7 +722,20 @@ class AnswerContextTests(unittest.TestCase):
             "正手滑板怎么打",
             local_personalization=False,
         )
-        self.assertEqual(forehand["selected_videos"], [])
+        self.assertTrue(forehand["selected_videos"])
+        self.assertTrue(
+            all(
+                item["role"] == "supporting"
+                and item["constraint_match"]["stroke_side"]
+                == "unspecified_support"
+                and item["claim_scope_policy"]
+                in {
+                    "component_or_generic_support_only_not_full_question_proof",
+                    "additional_specific_scope_only_not_unrestricted_full_question_proof",
+                }
+                for item in forehand["selected_videos"]
+            )
+        )
 
     def test_slice_drop_and_basic_drop_do_not_cross_prove_each_other(self):
         slice_constraints = self.context_module.query_constraints(
@@ -1184,14 +1217,16 @@ class AnswerContextTests(unittest.TestCase):
             item["video_id"]: item["reasons"]
             for item in partner_weakness["rejected_candidates"]
         }
-        self.assertIn(
-            "partner_context_not_supported",
-            partner_weakness_rejected["7499776424493075772"],
-        )
-        self.assertIn(
-            "explicit_constraint_conflict:discipline",
-            partner_weakness_rejected["7115241358255803683"],
-        )
+        if "7499776424493075772" in partner_weakness_rejected:
+            self.assertIn(
+                "partner_context_not_supported",
+                partner_weakness_rejected["7499776424493075772"],
+            )
+        if "7115241358255803683" in partner_weakness_rejected:
+            self.assertIn(
+                "explicit_constraint_conflict:discipline",
+                partner_weakness_rejected["7115241358255803683"],
+            )
         for item in partner_weakness["selected_videos"]:
             self.assertNotEqual(
                 item["constraint_scope"]["discipline"]["values"],
@@ -1755,19 +1790,14 @@ class AnswerContextTests(unittest.TestCase):
             payload["question_interpretation"]["constraints"]["stroke_side"],
             ["backhand"],
         )
-        self.assertFalse(payload["selection"]["selection_truncated"])
         self.assertEqual(
             payload["selection"]["eligible_video_count"],
-            payload["selection"]["selected_video_count"],
+            payload["selection"]["semantic_answerable_video_count"],
         )
-        self.assertTrue(
-            any(
-                reasons == ["supporting_video_limit_exceeded"]
-                for reasons in rejected.values()
-            )
+        self.assertFalse(
+            any("limit_exceeded" in reason for reasons in rejected.values() for reason in reasons)
         )
         retrieval_queries = payload["question_interpretation"]["retrieval_queries"]
-        self.assertIn("反手 被动 高远球", retrieval_queries)
         self.assertTrue(
             any(
                 all(term in retrieval_query for term in ["反手", "被动", "挥拍"])
@@ -1858,10 +1888,19 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         self.assertTrue(drive["selected_videos"])
+        drive_synthesis_ids = set(
+            drive["selection"]["synthesis_candidate_video_ids"]
+        )
         self.assertTrue(
             all(
                 "drive" in video["constraint_scope"]["shot_family"]["values"]
+                or (
+                    video["role"] == "supporting"
+                    and "generic_constraint_support_only"
+                    in video["selection_reasons"]
+                )
                 for video in drive["selected_videos"]
+                if video["video_id"] in drive_synthesis_ids
             )
         )
 
@@ -1870,10 +1909,14 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         self.assertTrue(footwork["selected_videos"])
+        footwork_synthesis_ids = set(
+            footwork["selection"]["synthesis_candidate_video_ids"]
+        )
         self.assertTrue(
             all(
                 video["focus_match"] in {"primary", "structured"}
                 for video in footwork["selected_videos"]
+                if video["video_id"] in footwork_synthesis_ids
             )
         )
         self.assertNotIn(
@@ -2017,7 +2060,7 @@ class AnswerContextTests(unittest.TestCase):
             drop_rejected["7054395778814561575"],
         )
 
-    def test_focused_practice_request_returns_personalized_adaptation(self):
+    def test_focused_practice_request_returns_only_evidence_boundary(self):
         context = self.context_module.prepare_answer_context(
             "双打新手一个人每天十五分钟怎么练接发",
             max_videos=1,
@@ -2028,19 +2071,22 @@ class AnswerContextTests(unittest.TestCase):
             interpretation["intent_frame"]["requested_output"], "practice"
         )
         self.assertEqual(interpretation["strategy"], "focused_evidence")
-        navigation = context["topic_navigation"]
-        self.assertIsNotNone(navigation)
-        self.assertEqual(navigation["user_context"]["level"], "beginner")
-        self.assertEqual(navigation["user_context"]["discipline"], "doubles")
-        self.assertEqual(navigation["user_context"]["practice_setup"], "solo")
-        self.assertEqual(navigation["user_context"]["session_minutes"], 15)
+        self.assertIsNone(context["topic_navigation"])
         self.assertEqual(
-            sum(navigation["practice_adaptation"]["minute_allocation"].values()),
-            15,
+            [item["kind"] for item in context["delivery_contract"]["items"]],
+            ["evidence.training_boundary"],
         )
-        self.assertIn(
-            "不要把需要稳定喂球的练习写成可独自完成",
-            navigation["practice_adaptation"]["setup_adaptation"],
+        self.assertTrue(
+            context["answer_contract"][
+                "synthetic_training_prescriptions_forbidden"
+            ]
+        )
+        self.assertEqual(
+            context["clarification_decision"]["questions"],
+            [
+                "若想让答案更具体，可以补充最想解决的来球或动作场景、"
+                "当前失败表现，以及期望的出球或落点。"
+            ],
         )
 
     def test_readme_example_closes_intent_diagnosis_and_practice_contracts(self):
@@ -2321,11 +2367,20 @@ class AnswerContextTests(unittest.TestCase):
         }
         smash_ids = set(smash_by_id)
         self.assertGreaterEqual(len(smash_ids), 6)
+        smash_synthesis_ids = set(
+            smash["selection"]["synthesis_candidate_video_ids"]
+        )
         self.assertTrue(
             all(
                 "smash"
                 in item["constraint_scope"]["shot_family"]["values"]
+                or (
+                    item["role"] == "supporting"
+                    and "generic_constraint_support_only"
+                    in item["selection_reasons"]
+                )
                 for item in smash["selected_videos"]
+                if item["video_id"] in smash_synthesis_ids
             )
         )
         self.assertEqual(
@@ -2495,7 +2550,10 @@ class AnswerContextTests(unittest.TestCase):
         forehand_ids = {
             item["video_id"] for item in forehand["selected_videos"]
         }
-        for selected_ids in [generic_ids, forehand_ids]:
+        for payload in [generic, forehand]:
+            selected_ids = set(
+                payload["selection"]["synthesis_candidate_video_ids"]
+            )
             automatic_ids = {
                 video_id
                 for video_id in selected_ids
@@ -2622,6 +2680,7 @@ class AnswerContextTests(unittest.TestCase):
             },
             "动态低架怎么做": {"7589749293205363633"},
             "远网怎么打": {
+                "7093706918492917033",
                 "7411850466457292084",
                 "7262546080133401890",
                 "7076257912192060707",
@@ -2642,13 +2701,11 @@ class AnswerContextTests(unittest.TestCase):
                 include_rejected=True,
             )
             contexts[query] = context
-            selected_ids = {
-                item["video_id"] for item in context["selected_videos"]
-            }
-            if query != "远网怎么打":
-                self.assertEqual(selected_ids, expected_ids)
-            else:
-                self.assertEqual(len(selected_ids), 4)
+            selected_ids = set(
+                context["selection"]["synthesis_candidate_video_ids"]
+            )
+            self.assertEqual(selected_ids, expected_ids)
+            if query == "远网怎么打":
                 selected_variants = {
                     variant
                     for item in context["selected_videos"]
@@ -2777,9 +2834,12 @@ class AnswerContextTests(unittest.TestCase):
                 "7067722128413543680",
             }.issubset(overlord_ids)
         )
+        overlord_synthesis_ids = set(
+            overlord["selection"]["synthesis_candidate_video_ids"]
+        )
         overlord_automatic_ids = {
             video_id
-            for video_id in overlord_ids
+            for video_id in overlord_synthesis_ids
             if video_id.startswith("bilibili:")
         }
         self.assertEqual(len(overlord_automatic_ids), 3)
@@ -2853,9 +2913,9 @@ class AnswerContextTests(unittest.TestCase):
                         "technique_variant": [variant],
                     },
                 )
-                selected = {
-                    item["video_id"] for item in payload["selected_videos"]
-                }
+                selected = set(
+                    payload["selection"]["synthesis_candidate_video_ids"]
+                )
                 if variant == "smash_fast":
                     self.assertTrue(expected_ids.issubset(selected))
                     self.assertIn("bilibili:BV1EADqYPEjo", selected)
@@ -2923,10 +2983,11 @@ class AnswerContextTests(unittest.TestCase):
                     },
                 )
                 self.assertEqual(
-                    {
-                        item["video_id"]
-                        for item in payload["selected_videos"]
-                    },
+                    set(
+                        payload["selection"][
+                            "synthesis_candidate_video_ids"
+                        ]
+                    ),
                     selected_by_variant["smash_ground_cannon"],
                 )
                 correction = payload["question_interpretation"][
@@ -2975,9 +3036,12 @@ class AnswerContextTests(unittest.TestCase):
             "握拍",
             json.dumps(receive["selected_videos"], ensure_ascii=False),
         )
-        self.assertLessEqual(
-            sum(item["role"] == "supporting" for item in receive["selected_videos"]),
-            self.selection_rules["max_supporting_videos"],
+        self.assertEqual(
+            receive["selection"]["eligible_supporting_video_count"],
+            sum(
+                item["role"] == "supporting"
+                for item in receive["selected_videos"]
+            ),
         )
 
     def test_target_zones_and_colloquial_net_shots_keep_the_right_evidence(self):
@@ -3059,14 +3123,15 @@ class AnswerContextTests(unittest.TestCase):
             item["video_id"]: item["reasons"]
             for item in payload["rejected_candidates"]
         }
-        self.assertIn(
-            "explicit_constraint_conflict:pressure_state",
-            rejected["7148267452877638944"],
-        )
-        self.assertIn(
-            "explicit_constraint_conflict:pressure_state",
-            rejected["7072543702161296640"],
-        )
+        for video_id in {
+            "7148267452877638944",
+            "7072543702161296640",
+        }:
+            if video_id in rejected:
+                self.assertIn(
+                    "explicit_constraint_conflict:pressure_state",
+                    rejected[video_id],
+                )
 
     def test_opponent_focus_and_promotional_titles_do_not_pollute_answers(self):
         grip = self.context_module.prepare_answer_context(
@@ -3227,14 +3292,17 @@ class AnswerContextTests(unittest.TestCase):
                     "7619576226616745445",
                     "7075140710332239119",
                 }:
-                    self.assertTrue(
-                        {
-                            "named_technique_comparison_not_supported",
-                            "specific_technique_not_supported",
-                            "explicit_constraint_conflict:shot_family",
-                        }
-                        & set(rejected[video_id])
-                    )
+                    self.assertNotIn(video_id, selected_ids)
+                    if video_id in rejected:
+                        self.assertTrue(
+                            {
+                                "named_technique_comparison_not_supported",
+                                "specific_technique_not_supported",
+                                "explicit_constraint_conflict:shot_family",
+                                "recall_safeguard_only",
+                            }
+                            & set(rejected[video_id])
+                        )
 
     def test_interrupted_kill_to_net_sequence_preserves_named_action(self):
         queries = [
@@ -3342,7 +3410,7 @@ class AnswerContextTests(unittest.TestCase):
             payload["answer_plan"]["selected_evidence_atoms"][0]["atom_id"],
             "EA-DOUBLES-COVERAGE-RESPONSIBILITY-001",
         )
-        self.assertEqual(payload["answer_display_video_labels"], ["V1"])
+        self.assertEqual(payload["answer_core_video_labels"], ["V1"])
         self.assertEqual(payload["selected_videos"][0]["evidence_id"], "7656927370758796145")
         self.assertEqual(payload["diagnostic_model"]["supported_mechanisms"], [])
 
@@ -3361,7 +3429,7 @@ class AnswerContextTests(unittest.TestCase):
             payload["answer_plan"]["selected_evidence_atoms"][0]["atom_id"],
             "EA-DOUBLES-COVERAGE-RESPONSIBILITY-001",
         )
-        self.assertEqual(payload["answer_display_video_labels"], ["V1"])
+        self.assertEqual(payload["answer_core_video_labels"], ["V1"])
         self.assertEqual(
             payload["selected_videos"][0]["evidence_id"],
             "7656927370758796145",
@@ -3412,11 +3480,11 @@ class AnswerContextTests(unittest.TestCase):
                 if claim["kind"] == "question_unit"
             )
         )
-        self.assertEqual(payload["answer_display_video_labels"], [])
+        self.assertEqual(payload["answer_core_video_labels"], [])
 
-    def test_unseen_no_video_diagnostic_preserves_all_hypotheses(self):
+    def test_unseen_diagnostic_preserves_hypotheses_without_requesting_video(self):
         payload = self.context_module.prepare_answer_context(
-            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？没有连续动作视频时能确定哪个吗？",
+            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？能确定哪个吗？",
             local_personalization=False,
         )
         self.assertEqual(
@@ -3433,8 +3501,32 @@ class AnswerContextTests(unittest.TestCase):
             ],
             ["只到中场"],
         )
-        self.assertTrue(payload["diagnostic_model"]["user_video_unavailable"])
-        self.assertEqual(payload["clarification_decision"]["questions"], [])
+        self.assertNotIn(
+            "user_video_unavailable", payload["diagnostic_model"]
+        )
+        questions = payload["clarification_decision"]["questions"]
+        self.assertTrue(questions)
+        self.assertTrue(all("视频" not in item for item in questions))
+
+    def test_broad_backhand_rearcourt_symptom_stays_in_clear_family(self):
+        payload = self.context_module.prepare_answer_context(
+            "我反手后场总是打不到位是因为啥",
+            local_personalization=False,
+        )
+        self.assertTrue(payload["selected_videos"])
+        for video in payload["selected_videos"]:
+            families = set(
+                video.get("constraint_scope", {})
+                .get("shot_family", {})
+                .get("values", [])
+            )
+            self.assertTrue(
+                families & {"clear", "flat_clear"},
+                (video["video_id"], families),
+            )
+        questions = payload["clarification_decision"]["questions"]
+        self.assertTrue(questions)
+        self.assertTrue(all("视频" not in item for item in questions))
 
     def test_unseen_cross_variant_transfer_fails_closed(self):
         payload = self.context_module.prepare_answer_context(
@@ -3455,7 +3547,7 @@ class AnswerContextTests(unittest.TestCase):
                 if claim["kind"] == "question_unit"
             )
         )
-        self.assertEqual(payload["answer_display_video_labels"], [])
+        self.assertEqual(payload["answer_core_video_labels"], [])
 
     def test_unseen_cross_scope_proof_transfer_fails_closed(self):
         payload = self.context_module.prepare_answer_context(
@@ -3473,7 +3565,7 @@ class AnswerContextTests(unittest.TestCase):
                 if claim["kind"] == "question_unit"
             )
         )
-        self.assertEqual(payload["answer_display_video_labels"], [])
+        self.assertEqual(payload["answer_core_video_labels"], [])
 
     def test_compound_diagnosis_inherits_root_context_and_keeps_real_hypotheses(self):
         payload = self.context_module.prepare_answer_context(

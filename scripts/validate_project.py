@@ -86,9 +86,12 @@ json_paths = [
     "data/evaluation/evaluation_report.json",
     "data/evaluation/supplemental_evidence_report.json",
     "data/evaluation/critical_answer_snapshots.json",
+    "data/evaluation/delivery_release_cases.json",
     "data/evaluation/diagnostic_answer_cases.json",
     "data/evaluation/diagnostic_answer_continuation_cases.json",
     "data/evaluation/forward_test_results.json",
+    "data/evaluation/live_generation_results.json",
+    "data/evaluation/runtime_generation_cases.json",
     "data/evaluation/answer_quality_cases.json",
     "data/evaluation/feedback_parser_cases.json",
     "data/evaluation/feedback_relevance_cases.json",
@@ -719,6 +722,17 @@ for marker, suppressions in answer_selection_rules.get(
         raise SystemExit("Query actor marker suppression references an unknown marker")
     if any(marker not in phrase for phrase in suppressions):
         raise SystemExit("Query actor marker suppression must contain its marker")
+destination_markers = set(
+    answer_selection_rules.get("query_actor_destination_markers", [])
+)
+if not destination_markers or not destination_markers.issubset(
+    set(actor_markers["opponent"])
+):
+    raise SystemExit("Query actor destination markers must be opponent markers")
+if not answer_selection_rules.get("query_actor_destination_prefixes"):
+    raise SystemExit("Query actor destination prefixes cannot be empty")
+if not answer_selection_rules.get("query_actor_destination_zone_terms"):
+    raise SystemExit("Query actor destination zone terms cannot be empty")
 if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
 if not answer_selection_rules.get("query_target_actor_terms"):
@@ -793,16 +807,53 @@ required_reception_implication_fields = {
     "search_terms",
     "reason",
 }
+optional_reception_implication_fields = {
+    "target_action_constraints",
+    "incoming_constraints",
+    "opponent_constraint_suppressions",
+    "semantic_audit",
+}
+empty_allowed_reception_implication_fields = {
+    "implicit_response_incoming_terms",
+    "prior_action_suffixes",
+    "player_action_prefixes_by_incoming_term",
+}
 if not reception_implications:
     raise SystemExit("Reception symptom implications are missing")
 for implication in reception_implications:
-    if set(implication) != required_reception_implication_fields:
+    fields = set(implication)
+    if (
+        not required_reception_implication_fields.issubset(fields)
+        or fields
+        - required_reception_implication_fields
+        - optional_reception_implication_fields
+    ):
         raise SystemExit("Reception symptom implication contract is incomplete")
     if any(
         not implication[field]
         for field in required_reception_implication_fields
+        - empty_allowed_reception_implication_fields
     ):
         raise SystemExit("Reception symptom implication cannot be empty")
+    for field in (
+        "target_action_constraints",
+        "incoming_constraints",
+        "opponent_constraint_suppressions",
+    ):
+        if field in implication and (
+            not isinstance(implication[field], dict)
+            or any(
+                not isinstance(values, list) or not values
+                for values in implication[field].values()
+            )
+        ):
+            raise SystemExit(
+                f"Reception implication {field} must map axes to values"
+            )
+    if "semantic_audit" in implication and not isinstance(
+        implication["semantic_audit"], bool
+    ):
+        raise SystemExit("Reception implication semantic_audit must be boolean")
     if not set(implication["symptom_terms"]).issubset(
         retrieval_intent["literal_symptom_terms"]
     ):
@@ -1011,34 +1062,26 @@ if set(
 practice_plan_rules = json.loads(
     (ROOT / "config" / "practice_plan_rules.json").read_text(encoding="utf-8")
 )
-if set(practice_plan_rules.get("levels", {})) != {
-    "beginner",
-    "intermediate",
-    "advanced",
-    "unknown",
+if practice_plan_rules.get("mode") != "source_explicit_only":
+    raise SystemExit("Training boundary rules must require source-explicit cues")
+if set(practice_plan_rules.get("allowed_outputs", [])) != {
+    "source_explicit_practice_cue",
+    "training_evidence_boundary",
 }:
-    raise SystemExit("Practice plan rules have incomplete level adaptations")
-if set(practice_plan_rules.get("practice_setups", {})) != {
-    "solo",
-    "partner",
-    "coach",
-    "unknown",
-}:
-    raise SystemExit("Practice plan rules have incomplete setup adaptations")
-if set(practice_plan_rules.get("discipline_boundaries", {})) != {
-    "singles",
-    "doubles",
-    "both",
-    "unknown",
-}:
-    raise SystemExit("Practice plan rules have incomplete discipline boundaries")
-minimum_minutes, maximum_minutes = practice_plan_rules.get(
-    "session_minutes_range", [0, 0]
-)
-if not 1 <= minimum_minutes <= practice_plan_rules.get(
-    "default_session_minutes", 0
-) <= maximum_minutes:
-    raise SystemExit("Practice plan duration defaults are invalid")
+    raise SystemExit("Training boundary rules expose unsupported output types")
+required_forbidden_training_fields = {
+    "duration",
+    "repetitions",
+    "sets",
+    "frequency",
+    "success_rate",
+    "session_allocation",
+    "multi_day_progression",
+}
+if not required_forbidden_training_fields.issubset(
+    practice_plan_rules.get("synthetic_fields_forbidden", [])
+):
+    raise SystemExit("Training boundary rules do not forbid every synthetic field")
 
 feedback_rules = json.loads(
     (ROOT / "config" / "feedback_rules.json").read_text(encoding="utf-8")
@@ -1860,12 +1903,11 @@ if not practice_reference.exists():
     raise SystemExit("Skill practice reference is missing")
 practice_template_text = practice_reference.read_text(encoding="utf-8")
 for required_heading in [
-    "default to 15 minutes only when absent",
-    "three-day correction progression",
-    "two-week consolidation progression",
-    "mapped source videos",
-    "bounded synthesis",
-    "solo fallback",
+    "answer the supported technique or correction first",
+    "evidence.training_boundary",
+    "only when a selected source explicitly states it",
+    "do not invent duration, repetitions, sets, frequency, progression",
+    "do not convert a technical principle into a personalized training prescription",
 ]:
     if required_heading not in practice_template_text:
         raise SystemExit(f"Practice-plan template is missing {required_heading}")

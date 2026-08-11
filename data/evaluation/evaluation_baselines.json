@@ -1220,7 +1220,7 @@
       }
     },
     "v2.1.2": {
-      "description": "Stable release v2.1.2 quality floor",
+      "description": "Stable release v2.1.2 floor plus current layered answer-evidence completeness, suite-health, and runtime-generation contracts",
       "invalidated_metrics": {},
       "metrics": {
         "answer_policy.accuracy": {
@@ -1243,16 +1243,36 @@
           "value": 1.0,
           "direction": "at_least"
         },
+        "answer_context.semantic_answerable_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
         "answer_context.cases": {
           "value": 57,
           "direction": "at_least"
         },
         "answer_context.selected_video_recall": {
-          "value": 0.7976878612716763,
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.claim_mapped_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.complete_related_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.synthesis_video_recall": {
+          "value": 0.45,
+          "direction": "at_least"
+        },
+        "answer_context.core_video_recall": {
+          "value": 0.2,
           "direction": "at_least"
         },
         "answer_context.primary_selected_rate": {
-          "value": 0.8518518518518519,
+          "value": 1.0,
           "direction": "at_least"
         },
         "answer_context.answer_mode_accuracy": {
@@ -1264,6 +1284,10 @@
           "direction": "at_least"
         },
         "answer_context.hard_negative_selected_violations": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "answer_context.selection_truncated_cases": {
           "value": 0,
           "direction": "at_most"
         },
@@ -1335,6 +1359,42 @@
           "value": 1.0,
           "direction": "at_least"
         },
+        "bilibili_positive_retrieval.passed": {
+          "value": true,
+          "direction": "equal"
+        },
+        "bilibili_positive_retrieval.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.claim_mapping_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.failure_count": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "feedback_lifecycle.status": {
+          "value": "pass",
+          "direction": "equal"
+        },
+        "feedback_lifecycle.contract_accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "feedback_lifecycle.leaked_private_fields": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.signals_missing_reverified_provenance": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.failures": {
+          "value": [],
+          "direction": "equal"
+        },
         "retrieval.candidate_recall": {
           "value": 1.0,
           "direction": "at_least"
@@ -1385,6 +1445,26 @@
           "value": 0,
           "direction": "at_most"
         },
+        "metamorphic_robustness.base_cases": {
+          "value": 15,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.variants": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.passed": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.failed": {
+          "value": [],
+          "direction": "equal"
+        },
         "video_comprehension.ready_videos": {
           "value": 958,
           "direction": "at_least"
@@ -1430,7 +1510,311 @@
           "direction": "equal"
         },
         "live_generation.critical_cases": {
+          "value": 18,
+          "direction": "at_least"
+        },
+        "live_generation.automated_audit_pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "live_generation.failed": {
+          "value": [],
+          "direction": "equal"
+        }
+      }
+    },
+    "v2.1.3": {
+      "description": "Stable release v2.1.3 quality floor",
+      "invalidated_metrics": {},
+      "metrics": {
+        "answer_policy.accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_policy.cases": {
+          "value": 21,
+          "direction": "at_least"
+        },
+        "answer_policy.mode_contracts_complete": {
+          "value": true,
+          "direction": "equal"
+        },
+        "answer_policy.global_contract_complete": {
+          "value": true,
+          "direction": "equal"
+        },
+        "answer_context.candidate_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.semantic_answerable_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.cases": {
+          "value": 57,
+          "direction": "at_least"
+        },
+        "answer_context.selected_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.claim_mapped_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.complete_related_video_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.synthesis_video_recall": {
+          "value": 0.4624277456647399,
+          "direction": "at_least"
+        },
+        "answer_context.core_video_recall": {
+          "value": 0.2254335260115607,
+          "direction": "at_least"
+        },
+        "answer_context.primary_selected_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.answer_mode_accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.context_evidence_coverage": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_context.hard_negative_selected_violations": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "answer_context.selection_truncated_cases": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "answer_context.evaluation_fixture_isolation": {
+          "value": true,
+          "direction": "equal"
+        },
+        "answer_quality.regression_ready": {
+          "value": 57,
+          "direction": "at_least"
+        },
+        "answer_quality.snapshot_coverage": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_quality.automatic_pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_quality.passed": {
+          "value": 57,
+          "direction": "at_least"
+        },
+        "answer_quality.missing_critical_case_ids": {
+          "value": [],
+          "direction": "equal"
+        },
+        "query_equivalence.failed_families": {
+          "value": [],
+          "direction": "equal"
+        },
+        "query_equivalence.families": {
+          "value": 2,
+          "direction": "at_least"
+        },
+        "query_equivalence.passed_families": {
+          "value": 2,
+          "direction": "at_least"
+        },
+        "query_understanding.accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "query_understanding.cases": {
+          "value": 145,
+          "direction": "at_least"
+        },
+        "diagnostic_answer_contract.accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "diagnostic_answer_contract.cases": {
+          "value": 14,
+          "direction": "at_least"
+        },
+        "answer_audit.accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_audit.violation_detection_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "answer_audit.cases": {
+          "value": 13,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.retrieval_hit_rate_at_k": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.passed": {
+          "value": true,
+          "direction": "equal"
+        },
+        "bilibili_positive_retrieval.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.claim_mapping_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "bilibili_positive_retrieval.failure_count": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "feedback_lifecycle.status": {
+          "value": "pass",
+          "direction": "equal"
+        },
+        "feedback_lifecycle.contract_accuracy": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "feedback_lifecycle.leaked_private_fields": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.signals_missing_reverified_provenance": {
+          "value": [],
+          "direction": "equal"
+        },
+        "feedback_lifecycle.failures": {
+          "value": [],
+          "direction": "equal"
+        },
+        "retrieval.candidate_recall": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "retrieval.cases": {
+          "value": 57,
+          "direction": "at_least"
+        },
+        "retrieval.stable_regression.primary_top_k": {
+          "value": 0.9629629629629629,
+          "direction": "at_least"
+        },
+        "retrieval.stable_regression.mean_reciprocal_rank": {
+          "value": 0.7492504409171076,
+          "direction": "at_least"
+        },
+        "retrieval.stable_regression.mean_ndcg_at_k": {
+          "value": 0.8639416260380391,
+          "direction": "at_least",
+          "tolerance": 0.002
+        },
+        "retrieval.stable_regression.average_review_candidate_count": {
+          "value": 12.456140350877194,
+          "direction": "at_most",
+          "tolerance": 0.25
+        },
+        "retrieval.unjudged_new_source_exposure.top_k_rate": {
+          "value_source": "retrieval.unjudged_new_source_exposure.limits.max_top_k_rate",
+          "direction": "at_most"
+        },
+        "retrieval.unjudged_new_source_exposure.max_top_k_per_case": {
+          "value_source": "retrieval.unjudged_new_source_exposure.limits.max_top_k_per_case",
+          "direction": "at_most"
+        },
+        "retrieval.unjudged_new_source_exposure.review_rate": {
+          "value_source": "retrieval.unjudged_new_source_exposure.limits.max_review_rate",
+          "direction": "at_most"
+        },
+        "retrieval.unjudged_new_source_exposure.max_review_per_case": {
+          "value_source": "retrieval.unjudged_new_source_exposure.limits.max_review_per_case",
+          "direction": "at_most"
+        },
+        "retrieval.hard_negative_top_k_violations": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "retrieval.hard_negative_review_violations": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "metamorphic_robustness.base_cases": {
+          "value": 15,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.variants": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.passed": {
+          "value": 30,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.pass_rate": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "metamorphic_robustness.failed": {
+          "value": [],
+          "direction": "equal"
+        },
+        "video_comprehension.ready_videos": {
+          "value": 959,
+          "direction": "at_least"
+        },
+        "video_comprehension.understanding_coverage": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "video_comprehension.transcript_backed": {
+          "value": 766,
+          "direction": "at_least"
+        },
+        "video_comprehension.runtime_lookup_coverage": {
+          "value": 1.0,
+          "direction": "at_least"
+        },
+        "video_comprehension.failure_count": {
+          "value": 0,
+          "direction": "at_most"
+        },
+        "forward_tests.blind_passes": {
+          "value": 3,
+          "direction": "at_least"
+        },
+        "forward_tests.unseen_rounds": {
           "value": 6,
+          "direction": "at_least"
+        },
+        "forward_tests.unseen_cases": {
+          "value": 24,
+          "direction": "at_least"
+        },
+        "forward_tests.consecutive_passes": {
+          "value": 6,
+          "direction": "at_least"
+        },
+        "forward_tests.failed": {
+          "value": [],
+          "direction": "equal"
+        },
+        "live_generation.current_runtime_match": {
+          "value": true,
+          "direction": "equal"
+        },
+        "live_generation.critical_cases": {
+          "value": 20,
           "direction": "at_least"
         },
         "live_generation.automated_audit_pass_rate": {

@@ -173,6 +173,31 @@ def _query_actor_marker_suppressed(query, match, rules):
     return False
 
 
+def _query_actor_marker_is_destination_scope(query, match, rules):
+    """Treat “落在对手中场” as a shuttle outcome, not opponent location."""
+
+    token = match.group(0)
+    if token not in set(rules.get("query_actor_destination_markers", [])):
+        return False
+    prefixes = [
+        re.sub(r"\s+", "", str(item))
+        for item in rules.get("query_actor_destination_prefixes", [])
+        if str(item).strip()
+    ]
+    zones = [
+        re.sub(r"\s+", "", str(item))
+        for item in rules.get("query_actor_destination_zone_terms", [])
+        if str(item).strip()
+    ]
+    if not prefixes or not zones:
+        return False
+    compact_prefix = re.sub(r"\s+", "", query[: match.start()])
+    compact_suffix = re.sub(r"\s+", "", query[match.end() :])
+    return any(compact_prefix.endswith(item) for item in prefixes) and any(
+        compact_suffix.startswith(item) for item in zones
+    )
+
+
 def _query_actor_parser_parts(query, rules):
     markers = {
         marker: actor
@@ -218,6 +243,12 @@ def _query_actor_segments(query, rules):
         append_text(query[cursor : match.start()])
         if _query_actor_marker_suppressed(query, match, rules):
             append_text(token)
+            cursor = match.end()
+            continue
+        if _query_actor_marker_is_destination_scope(query, match, rules):
+            # Drop the possessive destination marker from the actor-scoped
+            # text. This keeps “落在中场” contiguous so court-zone target
+            # suppression can correctly recognize it as an outcome.
             cursor = match.end()
             continue
         if token in separators:
@@ -702,17 +733,33 @@ def _query_target_action_context(
     )
     if reception_implication and target_actor == "player":
         action_query = reception_implication["target_action_query"]
+        action_constraints = _query_constraints_from_text(
+            search_module, action_query, rules
+        )
+        for axis_name, values in reception_implication.get(
+            "target_action_constraints", {}
+        ).items():
+            action_constraints[axis_name] = sorted(
+                set(action_constraints.get(axis_name, [])) | set(values)
+            )
+        if "incoming_constraints" in reception_implication:
+            incoming_constraints = {
+                axis_name: sorted(set(values))
+                for axis_name, values in reception_implication[
+                    "incoming_constraints"
+                ].items()
+            }
+        else:
+            incoming_constraints = _query_constraints_from_text(
+                search_module, query, rules
+            )
         return {
             "target_action_query": action_query,
             "target_condition_query": query,
             "target_action_scope_query": action_query,
             "target_action_backreferences_condition": True,
-            "target_action_constraints": _query_constraints_from_text(
-                search_module, action_query, rules
-            ),
-            "target_condition_constraints": _query_constraints_from_text(
-                search_module, query, rules
-            ),
+            "target_action_constraints": action_constraints,
+            "target_condition_constraints": incoming_constraints,
             "requested_action_scopes": list(
                 reception_implication["requested_action_scopes"]
             ),
@@ -738,6 +785,12 @@ def _query_target_action_context(
                 },
             ],
             "condition_constraints_are_incoming": True,
+            "opponent_constraint_suppressions": {
+                axis_name: sorted(set(values))
+                for axis_name, values in reception_implication.get(
+                    "opponent_constraint_suppressions", {}
+                ).items()
+            },
         }
 
     target_segments = [
@@ -862,6 +915,17 @@ def query_actor_context(search_module, query, rules):
         actor_constraints.get(target_actor, {}),
         rules,
     )
+    for axis_name, suppressed_values in target_action_context.get(
+        "opponent_constraint_suppressions", {}
+    ).items():
+        retained = set(opponent_constraints.get(axis_name, [])) - set(
+            suppressed_values
+        )
+        if retained:
+            opponent_constraints[axis_name] = sorted(retained)
+        else:
+            opponent_constraints.pop(axis_name, None)
+    actor_constraints["opponent"] = opponent_constraints
     scope_by_name = {
         item["name"]: item
         for item in rules.get("target_action_scopes", [])

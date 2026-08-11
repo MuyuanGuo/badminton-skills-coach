@@ -1,5 +1,5 @@
 {
-  "version": 47,
+  "version": 51,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
@@ -19,11 +19,9 @@
       "evidence_basis": "维护者确认技术分类；7069575740836023587 的 00:04-00:22 直接支持不主动起跳与短暂自然离地，02:35-02:44 直接支持其下压不如跳杀尖、回球更偏平。"
     }
   },
-  "default_max_selected_videos": 16,
+  "default_max_selected_videos": 80,
   "retrieval_query_budget": 8,
   "retrieval_query_hard_limit": 12,
-  "max_exact_videos": 12,
-  "max_supporting_videos": 4,
   "automatic_expansion_selection_limit": 3,
   "supplemental_selection_limit": 2,
   "supplemental_allowed_relevance_tiers": [
@@ -34,10 +32,6 @@
     "practice": ["practice"],
     "diagnosis": ["correction", "mechanism", "safety_boundary"],
     "equipment": ["equipment"]
-  },
-  "supporting_video_limits_by_technique_variant": {
-    "drop_reverse_slice": 0,
-    "smash_heavy": 5
   },
   "default_segment_limit": 4,
   "top_rank_acceptance": 12,
@@ -85,12 +79,33 @@
     "搭档": ["帮搭档", "替搭档", "保护搭档"],
     "队友": ["帮队友", "替队友", "保护队友"]
   },
+  "query_actor_destination_markers": ["对手", "对方", "对面"],
+  "query_actor_destination_prefixes": [
+    "落在",
+    "落到",
+    "打到",
+    "回到",
+    "飞到",
+    "送到",
+    "只到",
+    "只能到"
+  ],
+  "query_actor_destination_zone_terms": [
+    "网前",
+    "前场",
+    "中场",
+    "中前场",
+    "中腰",
+    "后场",
+    "底线",
+    "场地"
+  ],
   "query_actor_pronoun_markers": ["他", "她"],
   "query_actor_object_pronoun_prefixes": ["压", "打", "推", "攻", "针对", "盯", "追"],
   "query_actor_partner_object_pronoun_prefixes": ["帮", "替", "保护"],
   "query_actor_object_pronoun_restore_prefixes": ["帮", "替"],
   "query_target_actor_terms": ["怎么", "如何", "应该", "应当", "该不该", "要不要", "能不能"],
-  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决"],
+  "target_action_backreference_terms": ["怎么改", "如何改", "怎么办", "怎么调整", "如何调整", "怎么解决", "如何解决", "怎么练", "如何练", "应该怎么练"],
   "cross_variant_transfer_terms": ["互相代替", "互相替代", "互借", "照搬", "直接套用", "能代替", "可代替", "来证明"],
   "cross_evidence_transfer_axes": ["technique_variant", "stroke_side", "pressure_state", "tactical_phase"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
@@ -128,6 +143,32 @@
       "requested_action_scopes": ["forward_reception_movement"],
       "search_terms": ["上网怎么才能更快", "正手往前高速步法", "向前启动 上网步法"],
       "reason": "“来不及接/够不到”描述到位症状，网前小球或吊球描述对手来球；目标动作是向前启动和上网步法，不是用户自己打吊球。"
+    },
+    {
+      "name": "smash_to_backhand_body_block_high",
+      "symptom_terms": ["冒高", "浮高"],
+      "incoming_terms": ["杀到反手身体附近", "杀到反手身体位", "杀向反手身体附近", "杀向反手身体位", "压反手身体位"],
+      "response_terms": ["接杀挡网", "接杀", "挡杀", "挡网"],
+      "implicit_response_incoming_terms": [],
+      "prior_action_suffixes": [],
+      "player_action_prefixes_by_incoming_term": {},
+      "target_action_query": "反手身体位 接杀挡网",
+      "target_action_constraints": {
+        "stroke_side": ["backhand"],
+        "shot_family": ["net_shot", "smash_block"],
+        "technique_variant": ["net_drop"]
+      },
+      "incoming_constraints": {
+        "shot_family": ["smash"],
+        "tactical_phase": ["attack"]
+      },
+      "opponent_constraint_suppressions": {
+        "stroke_side": ["backhand"]
+      },
+      "requested_action_scopes": ["smash_block_response"],
+      "search_terms": ["反手身体位 接杀挡网", "接杀挡网 冒高", "挡网 拍面 击球点 弧线"],
+      "semantic_audit": true,
+      "reason": "“杀到反手身体附近”描述对手来球落到球员反手身体位，“挡网冒高”描述球员的接杀响应与出球症状；反手约束属于目标球员，不是对手的击球侧。"
     }
   ],
   "action_sequence_implications": [
@@ -354,6 +395,16 @@
       "answer_boundary_statement": "本题只接受‘杀球—上网’完整序列的直接或分段证据；反手被动高远、动态低架、泛杀球和泛上网都不能单独证明本题。"
     },
     {
+      "name": "smash_recovery",
+      "query_terms": ["杀球后回位", "杀后回位", "杀球 回位"],
+      "query_context_terms": ["杀球", "扣杀", "重杀", "突击"],
+      "search_terms": ["杀球后 回位", "杀球 回动 下一拍", "后场杀球 回位保护"],
+      "source_terms": ["杀球后回位", "回位保护", "回动和下一拍衔接", "击球后的落地", "击球落地", "进攻衔接", "回动的节奏感", "低重心步法回动"],
+      "source_suppressions": ["杀上网", "只考虑向前衔接", "远网吊球保持下压并连接下一拍"],
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受杀球落地后的回位、回动节奏或下一拍衔接证据；泛杀球发力和杀上网专项都不能证明本题。"
+    },
+    {
       "name": "forward_reception_movement",
       "query_terms": ["向前启动", "上网步法", "上网", "上去", "上前", "上得快", "冲上前场", "跟上前场"],
       "query_context_terms": [],
@@ -362,6 +413,16 @@
       "source_suppressions": ["杀上网", "杀球之后", "快速突击", "高质量防守", "冲劲儿过猛"],
       "source_override_terms": [],
       "answer_boundary_statement": "现有直接来源主要覆盖正手前场和不同距离的向前移动；杀上网是另一种特定衔接，反手被动高远也不能证明本题。"
+    },
+    {
+      "name": "smash_block_response",
+      "query_terms": ["反手身体位 接杀挡网", "接杀挡网"],
+      "query_context_terms": [],
+      "search_terms": ["反手身体位 接杀挡网", "接杀挡网 冒高", "挡网 拍面 击球点 弧线"],
+      "source_terms": ["接杀", "挡杀", "防守挡球", "下手挡网", "拿得点高", "拿点较高", "拿得点低", "拿点较低", "拍面对准", "抛物线的最高点"],
+      "source_suppressions": [],
+      "source_override_terms": [],
+      "answer_boundary_statement": "本题只接受接杀挡网，或直接解释下手挡网拍面、击球点和出球弧线的证据；泛双打压抽、网前平搓和其他网前技术不能支撑具体诊断。"
     },
     {
       "name": "positioning",
@@ -644,7 +705,7 @@
     }
   ],
   "required_focus_equivalent_groups": [
-    ["姿势", "动作", "框架", "挥拍"],
+    ["姿势", "动作", "框架", "架拍", "挥拍"],
     ["击球点", "击球位置", "点位"],
     ["落点", "瞄准", "线路"],
     ["站位", "保护位置"],
@@ -777,6 +838,8 @@
     "出界": ["拍面", "击球点", "落点", "线路", "发力"],
     "不到位": ["发力", "击球点", "底线", "挥拍", "力量传导"],
     "不稳定": ["拍面", "握拍", "框架", "节奏", "控制"],
+    "冒高": ["拍面", "击球点", "弧线", "过网", "下手挡网", "接杀", "到位"],
+    "浮高": ["拍面", "击球点", "弧线", "过网", "下手挡网", "接杀", "到位"],
     "来不及": ["架拍", "准备", "挥拍速度", "动作幅度", "节奏", "启动", "回动"],
     "接不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],
     "够不到": ["启动", "上网", "向前", "步法", "节奏", "回动"],

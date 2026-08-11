@@ -4,11 +4,10 @@
   "cases": [
     {
       "case_id": "DQ001",
-      "query": "我是右手持拍的业余中级男双选手，正手后场高远球经常只能到对方中场。我怀疑是没有转髋，也可能是击球点太低。请区分这两个假设和其他有证据支持的原因，给我现场检查顺序；没有连续动作视频时不要把原因说死。",
+      "query": "我是右手持拍的业余中级男双选手，正手后场高远球经常只能到对方中场。我怀疑是没有转髋，也可能是击球点太低。请区分这两个假设和其他有证据支持的原因，给我现场检查顺序；当前信息不足时不要把原因说死。",
       "required_delivery_kind_counts": {
         "diagnosis.hypothesis_comparison": 1,
         "diagnosis.ordered_checklist": 1,
-        "evidence.sources": 1,
         "evidence.boundary": 1
       },
       "required_output_terms": ["没有转髋", "击球点太低", "现场检查顺序", "证据边界"],
@@ -26,21 +25,16 @@
       "query": "我是右手持拍的业余中级双打选手，对手杀到反手身体附近时，我挡网经常冒高。请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的训练方案，包含三天纠正、两周巩固和可观察成功标准。",
       "required_delivery_kind_counts": {
         "diagnosis.hypothesis_comparison": 1,
-        "practice.session": 1,
-        "practice.three_day": 1,
-        "practice.two_week": 1,
-        "practice.success_criteria": 1,
-        "practice.common_errors": 1,
-        "practice.stop_signals": 1
+        "evidence.training_boundary": 1
       },
-      "required_output_terms": ["总计 20 分钟", "第1天", "第2天", "第3天", "第1周", "第2周", "成功标准", "常见错误", "停止与复核信号"],
-      "required_evidence_unit_count": 2,
+      "required_output_terms": ["拍面", "击球点", "到位", "训练方案边界", "不足以可靠生成训练时长、组数、频次或多日计划"],
+      "required_evidence_unit_count": 1,
       "inherited_constraints": {
         "shot_family": ["net_shot"],
         "technique_variant": ["net_drop"],
         "discipline": ["doubles"]
       },
-      "forbidden_selected_video_ids": []
+      "forbidden_selected_video_ids": ["7205399670959459623", "7071800926553541922", "7073657979328826659"]
     },
     {
       "case_id": "DQ003",
@@ -59,6 +53,43 @@
         "discipline": ["doubles"]
       },
       "forbidden_selected_video_ids": ["7087759120761228578"]
+    },
+    {
+      "case_id": "DQ004",
+      "query": "我反手后场总是打不到位是因为啥",
+      "required_delivery_kind_counts": {},
+      "required_output_terms": ["文字解释", "为什么引用", "为什么值得看", "重点看", "为了让答案更完整"],
+      "required_evidence_unit_count": 1,
+      "inherited_constraints": {
+        "stroke_side": ["backhand"],
+        "court_zone": ["rearcourt"]
+      },
+      "allowed_selected_shot_families": ["clear", "flat_clear"],
+      "required_visible_video_count_max": 3,
+      "forbidden_selected_video_ids": ["7098897570482670888", "7202800263588105510", "7215787369381858599"]
+    },
+    {
+      "case_id": "DQ005",
+      "query": "我是双打新手，一个人每天只有十五分钟，怎么练接发？",
+      "required_delivery_kind_counts": {
+        "evidence.training_boundary": 1
+      },
+      "required_output_terms": [
+        "训练方案边界",
+        "不足以可靠生成训练时长、组数、频次或多日计划",
+        "为什么引用",
+        "为什么值得看",
+        "重点看",
+        "为了让答案更完整",
+        "来球或动作场景"
+      ],
+      "required_evidence_unit_count": 1,
+      "inherited_constraints": {
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      },
+      "required_visible_video_count_max": 3,
+      "forbidden_selected_video_ids": []
     }
   ]
 }

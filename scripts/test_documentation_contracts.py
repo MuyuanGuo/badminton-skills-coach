@@ -44,9 +44,35 @@ class DocumentationContractTests(unittest.TestCase):
         if self.release_channel == "development":
             self.assertIn("`develop` 是集成分支", self.readme_zh)
             self.assertIn("`develop` is the integration branch", self.readme_en)
+            self.assertNotIn("招聘", self.readme_zh)
+            self.assertNotIn("recruiter", self.readme_en.lower())
         else:
             self.assertIn("`main` 是稳定发布来源", self.readme_zh)
             self.assertIn("`main` is the stable release source", self.readme_en)
+
+    def test_develop_documents_the_complete_answer_runtime_flow(self):
+        if self.release_channel != "development":
+            self.assertNotIn("从用户提问到最终回答", self.readme_zh)
+            return
+        for marker in (
+            "用户提交完整问题 / User submits the full question",
+            "新问题还是澄清回复？ / New question or clarification reply?",
+            "规范术语；解析意图、主体、事件链、条件、子问题与交付要求",
+            "只读 SQLite 混合高召回检索",
+            "逐子问题语义准入",
+            "保留可回答全集；再做去重与合成层限流",
+            "构建诊断、澄清、完整性、交付与安全边界契约",
+            "SHA-256 绑定的紧凑 answer packet",
+            "仅按 claim allowlist 与 synthesis evidence 组织技术内容",
+            "选择最多 5 条核心视频（证据不足不补齐）",
+            "确定性 renderer 输出结论",
+            "完整上下文 auditor 通过？",
+            "向用户发送回答 / Send the answer to the user",
+        ):
+            self.assertIn(marker, self.readme_zh)
+        self.assertIn("用户补充澄清 / User clarifies", self.readme_zh)
+        self.assertIn("只有 `passed: true` 才发送", self.readme_zh)
+        self.assertNotIn("选择 3–5 条核心视频", self.readme_zh)
 
     def test_versions_and_install_links_match_branch_metadata(self):
         skill_version = self.version_metadata["skill_version"]

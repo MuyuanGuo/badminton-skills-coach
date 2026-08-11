@@ -136,6 +136,41 @@ class SkillPortabilityTests(unittest.TestCase):
                 [],
             )
 
+            feedback_answer_path = external_workdir / "feedback-answer.md"
+            feedback_answer_path.write_text(
+                "这是一条带有稳定视频映射的测试回答。", encoding="utf-8"
+            )
+            feedback_queue = external_workdir / "feedback-queue"
+            feedback = subprocess.run(
+                [
+                    sys.executable,
+                    str(installed_skill / "scripts" / "feedback.py"),
+                    "record",
+                    "--question",
+                    "反手被动球怎么处理？",
+                    "--answer-file",
+                    str(feedback_answer_path),
+                    "--video",
+                    "V1=bilibili:BV1TT411r7Ft",
+                    "--core-video",
+                    "V1",
+                    "--feedback",
+                    "V1 最有价值",
+                    "--queue-dir",
+                    str(feedback_queue),
+                ],
+                cwd=external_workdir,
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            feedback_payload = json.loads(feedback.stdout)
+            self.assertEqual(feedback_payload["status"], "pending_review")
+            self.assertEqual(
+                feedback_payload["signals"]["helpful_video_ids"],
+                ["bilibili:BV1TT411r7Ft"],
+            )
+
             audit_context_path = external_workdir / "audit-context.json"
             audit_packet_path = external_workdir / "answer-packet.json"
             audit_answer_path = external_workdir / "audit-answer.md"

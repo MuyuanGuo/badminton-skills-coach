@@ -6,11 +6,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import answer_packet as answer_packet_runtime
 
 SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 4
+PACKET_SCHEMA_VERSION = answer_packet_runtime.ANSWER_PACKET_SCHEMA_VERSION
 ALLOWED_BLOCK_FIELDS = {
     "claim_atom": {"type", "claim_id", "atom_id"},
     "claim_window": {"type", "claim_id", "window_id"},
@@ -19,17 +25,13 @@ ALLOWED_BLOCK_FIELDS = {
 SUPPORTED_DELIVERY_KINDS = {
     "diagnosis.hypothesis_comparison",
     "diagnosis.ordered_checklist",
-    "practice.session",
-    "practice.three_day",
-    "practice.two_week",
-    "practice.success_criteria",
-    "practice.common_errors",
-    "practice.stop_signals",
     "tactics.direction_branch",
     "tactics.condition_axes",
     "evidence.sources",
     "evidence.boundary",
+    "evidence.training_boundary",
 }
+FALLBACK_WINDOWS_PER_SOURCE = 2
 
 
 def load_json(path):
@@ -59,10 +61,40 @@ def packet_indexes(packet):
         )
     }
     videos = {
-        item["label"]: item for item in packet.get("selected_videos", [])
+        item["label"]: item
+        for item in answer_packet_runtime.packet_video_records(packet)
     }
     windows = packet.get("evidence_windows", {})
     return claims, directives, atoms, videos, windows
+
+
+def canonical_video_url(video):
+    if video.get("url"):
+        return video["url"]
+    evidence_id = str(video.get("evidence_id", ""))
+    if evidence_id.startswith("bilibili:BV"):
+        return (
+            "https://www.bilibili.com/video/"
+            f"{evidence_id.split(':', 1)[1]}/"
+        )
+    if evidence_id.isdigit():
+        return f"https://www.douyin.com/video/{evidence_id}"
+    raise ValueError("complete-related video has no canonical URL")
+
+
+def render_video_item(video):
+    required = ("citation_reason", "viewing_value", "watch_focus")
+    if any(not str(video.get(field) or "").strip() for field in required):
+        raise ValueError(
+            f"video {video.get('label', '<unknown>')} has incomplete viewing guidance"
+        )
+    return [
+        f"- {video['label']}｜{video['title']}｜证据ID：{video['evidence_id']}｜"
+        f"{canonical_video_url(video)}",
+        f"  - 为什么引用：{video['citation_reason']}",
+        f"  - 为什么值得看：{video['viewing_value']}",
+        f"  - 重点看：{video['watch_focus']}",
+    ]
 
 
 def default_draft(packet):
@@ -78,39 +110,35 @@ def default_draft(packet):
             )
             continue
         if directive.get("mode") == "compose_from_claim_scoped_source":
-            allowed_evidence = claim.get("evidence", [])
-            window_id = next(
-                (
+            evidence_by_label = {
+                item.get("label"): item for item in claim.get("evidence", [])
+            }
+            fallback_blocks = []
+            for label in directive.get("evidence_labels", []):
+                evidence = evidence_by_label.get(label, {})
+                window_ids = [
                     candidate
-                    for evidence in allowed_evidence
                     for candidate in evidence.get("window_ids", [])
                     if candidate in windows
-                ),
-                None,
-            )
-            if window_id is None:
-                allowed_labels = [
-                    item.get("label") for item in allowed_evidence
                 ]
-                window_id = next(
-                    (
+                if not window_ids:
+                    window_ids = [
                         candidate
-                        for label in allowed_labels
                         for candidate in videos.get(label, {}).get(
                             "window_ids", []
                         )
                         if candidate in windows
-                    ),
-                    None,
-                )
-            if window_id:
-                blocks.append(
-                    {
-                        "type": "claim_window",
-                        "claim_id": claim_id,
-                        "window_id": window_id,
-                    }
-                )
+                    ]
+                for window_id in window_ids[:FALLBACK_WINDOWS_PER_SOURCE]:
+                    fallback_blocks.append(
+                        {
+                            "type": "claim_window",
+                            "claim_id": claim_id,
+                            "window_id": window_id,
+                        }
+                    )
+            if fallback_blocks:
+                blocks.extend(fallback_blocks)
                 continue
         blocks.append({"type": "claim_gap", "claim_id": claim_id})
     return {"schema_version": SCHEMA_VERSION, "blocks": blocks}
@@ -199,26 +227,6 @@ def validate_delivery_contract(packet):
         raise ValueError(
             "unsupported delivery kinds: " + ", ".join(map(str, unknown))
         )
-    if any(item.get("kind", "").startswith("practice.") for item in items):
-        practice = packet.get("practice_plan")
-        if not isinstance(practice, dict):
-            raise ValueError("practice delivery requires a practice plan")
-        total = practice.get("session_minutes")
-        allocation = practice.get("minute_allocation")
-        if (
-            not isinstance(total, int)
-            or not isinstance(allocation, dict)
-            or sum(allocation.values()) != total
-        ):
-            raise ValueError("practice minute allocation is invalid")
-        for item in items:
-            if item.get("kind") != "practice.session":
-                continue
-            parameters = item.get("parameters", {})
-            if parameters.get("session_minutes") != total:
-                raise ValueError(
-                    "practice session delivery does not match practice plan"
-                )
     return items
 
 
@@ -231,21 +239,11 @@ def status_label(status):
     }.get(status, "未确认")
 
 
-def numbered_records(records, text_key="instruction"):
-    return "；".join(
-        f"{item.get('label', f'第{index}项')}：{item.get(text_key, '')}"
-        for index, item in enumerate(records, start=1)
-    )
-
-
 def render_delivery_blocks(packet, videos):
     items = validate_delivery_contract(packet)
     if not items:
         return []
-    practice = packet.get("practice_plan") or {}
     lines = ["", "## 结构化交付", ""]
-    segment_names = practice.get("segment_labels", {})
-    segment_instructions = practice.get("segment_instructions", {})
     for item in items:
         marker = f"[{item['delivery_id']}]"
         kind = item["kind"]
@@ -277,71 +275,6 @@ def render_delivery_blocks(packet, videos):
                     f"{marker}现场检查顺序：当前证据包没有可安全展开的检查项，"
                     "因此明确保留证据缺口。"
                 )
-        elif kind == "practice.session":
-            total = practice["session_minutes"]
-            allocation = practice["minute_allocation"]
-            segments = []
-            for key in (
-                "warm_up",
-                "isolated_cue",
-                "pressure_or_decision",
-                "self_check",
-            ):
-                segments.append(
-                    f"{segment_names.get(key, key)} {allocation[key]} 分钟"
-                    f"（{segment_instructions.get(key, '')}）"
-                )
-            lines.append(
-                f"{marker}单次训练总计 {total} 分钟：" + "；".join(segments) + "。"
-            )
-        elif kind == "practice.three_day":
-            progression = practice.get("three_day_progression", [])
-            if len(progression) != 3:
-                raise ValueError("three-day delivery requires exactly three days")
-            lines.append(
-                f"{marker}三天纠正：{numbered_records(progression)}。"
-            )
-        elif kind == "practice.two_week":
-            progression = practice.get("two_week_consolidation", [])
-            if len(progression) != 2:
-                raise ValueError("two-week delivery requires exactly two weeks")
-            lines.append(
-                f"{marker}两周巩固：{numbered_records(progression)}。"
-            )
-        elif kind == "practice.success_criteria":
-            criteria = practice.get("success_criteria", [])
-            if len(criteria) < 2:
-                raise ValueError("practice delivery requires observable success criteria")
-            lines.append(
-                f"{marker}成功标准："
-                + "；".join(
-                    f"{index}）{criterion}"
-                    for index, criterion in enumerate(criteria, start=1)
-                )
-                + "。"
-            )
-        elif kind == "practice.common_errors":
-            errors = practice.get("common_errors", [])
-            if len(errors) < 2:
-                raise ValueError("practice delivery requires common errors")
-            lines.append(
-                f"{marker}常见错误："
-                + "；".join(
-                    f"{index}）{error}"
-                    for index, error in enumerate(errors, start=1)
-                )
-                + "。"
-            )
-        elif kind == "practice.stop_signals":
-            signals = practice.get("quality_stop_rules", [])
-            if len(signals) < 2:
-                raise ValueError("practice delivery requires stop signals")
-            boundary = practice.get("bounded_synthesis_statement")
-            lines.append(
-                f"{marker}停止与复核信号："
-                + "；".join(signals)
-                + (f"。训练边界：{boundary}" if boundary else "。")
-            )
         elif kind == "tactics.direction_branch":
             branch = parameters.get("branch", {}).get("label")
             axes = [
@@ -371,10 +304,10 @@ def render_delivery_blocks(packet, videos):
                 + "。缺少任一轴时不把线路选择说成通用规则。"
             )
         elif kind == "evidence.sources":
-            if packet.get("display_videos"):
+            if packet.get("complete_related_videos"):
                 lines.append(
-                    f"{marker}相关视频：仅使用下方“核心视频与观看重点”中的"
-                    "答案包授权来源；每条保留证据 ID 和规范链接。"
+                    f"{marker}相关视频：技术结论只使用答案计划选定的合成来源；"
+                    "核心列表承担观看优先级，完整列表保留全部 claim 授权来源。"
                 )
             else:
                 lines.append(
@@ -383,7 +316,13 @@ def render_delivery_blocks(packet, videos):
         elif kind == "evidence.boundary":
             lines.append(
                 f"{marker}证据边界：所有技术结论只限当前答案包映射的场景；"
-                "仅凭文字或缺少连续动作视频时，不能确认个人动作的唯一原因。"
+                "当前信息不足时先给出有证据支持的部分，不把条件性原因写成唯一结论。"
+            )
+        elif kind == "evidence.training_boundary":
+            lines.append(
+                f"{marker}训练方案边界：当前知识库主要支持动作、机制、纠错提示和"
+                "战术解释，不足以可靠生成训练时长、组数、频次或多日计划。若来源"
+                "明确给出练习提示，只复述该提示，不扩写成训练处方。"
             )
     return lines
 
@@ -437,7 +376,14 @@ def render_answer(packet, draft=None):
     ).get("scope_boundary_statements", []):
         lines.extend([f"证据边界：{statement}", ""])
     if packet.get("diagnostic_model", {}).get("do_not_claim_unique_cause"):
-        lines.extend(["仅凭现有文字与证据，不能确认你个人动作的唯一原因。", ""])
+        lines.extend(
+            [
+                "下面先回答当前证据能够支持的部分，并把仍取决于具体场景的内容"
+                "保留为条件分支；仅凭当前描述不能确认某一个因素就是你个人动作的"
+                "唯一原因。",
+                "",
+            ]
+        )
     resolved = packet.get("answer_turn", {}).get(
         "resolved_clarifications", []
     )
@@ -446,6 +392,7 @@ def render_answer(packet, draft=None):
             f"{item['query_label']}：{item['answer']}" for item in resolved
         )
         lines.extend([f"你已补充：{resolved_text}。", ""])
+    lines.extend(["## 文字解释", ""])
     rendered_claim_ids = set()
     for block in draft["blocks"]:
         claim = claims[block["claim_id"]]
@@ -477,10 +424,16 @@ def render_answer(packet, draft=None):
             )
         elif block["type"] == "claim_window":
             window = windows[block["window_id"]]
+            if claim.get("status") == "conditional":
+                uncertainty = "这条依据只支持可能成立的条件性分支，仍需结合具体场景判断。"
+            elif claim.get("confidence_ceiling") in {"none", "low"}:
+                uncertainty = "这仍只是可能相关的排查方向。"
+            else:
+                uncertainty = ""
             lines.append(
-                f"{marker}{claim['text']}：当前来源直接给出的片段是“"
-                f"{window['text']}”（{window['timestamp']}） [{window['label']}]。"
-                "这段材料只支持按原片段核对，不能确认你个人动作的唯一原因。"
+                f"{marker}{claim_lead}{window['label']} 在 {window['timestamp']} 的"
+                f"相关依据是“{window['text']}”。这条依据用于支持当前排查方向，"
+                f"适用范围以该来源场景为准。{uncertainty} [{window['label']}]"
             )
         else:
             lines.append(
@@ -502,34 +455,37 @@ def render_answer(packet, draft=None):
             f"[{item['item_id']}]{item['text']}：现有证据不足以统一处理，"
             "需要按具体场景分别判断。"
         )
+    if packet.get("diagnostic_model", {}).get("do_not_claim_unique_cause"):
+        lines.extend(
+            [
+                "",
+                "## 适用边界",
+                "",
+                "以上内容是依据当前问题描述和来源证据给出的排查范围。信息不足时，"
+                "保留多个可能分支；新增场景信息可以改变优先级，但不会否定已经有"
+                "直接证据支持的部分。",
+            ]
+        )
     lines.extend(render_delivery_blocks(packet, videos))
+    core_labels = packet.get("core_videos", [])
+    if core_labels:
+        lines.extend(["", "## 核心视频与观看重点", ""])
+        for label in core_labels:
+            video = videos[label]
+            lines.extend(render_video_item(video))
+    complete_labels = packet.get("complete_related_videos", [])
+    remaining_labels = [
+        label for label in complete_labels if label not in set(core_labels)
+    ]
+    if remaining_labels:
+        lines.extend(["", "## 完整相关视频", ""])
+        for label in remaining_labels:
+            video = videos[label]
+            lines.extend(render_video_item(video))
     pending = packet.get("answer_turn", {}).get("pending_clarifications", [])
     if pending:
-        lines.extend(["", "## 仍需确认", ""])
+        lines.extend(["", "## 为了让答案更完整，你还可以补充", ""])
         lines.extend(f"- {item['question']}" for item in pending)
-    display_labels = packet.get("display_videos", [])
-    if display_labels:
-        lines.extend(["", "## 核心视频与观看重点", ""])
-        for label in display_labels:
-            video = videos[label]
-            observation = next(
-                (
-                    windows[window_id]
-                    for window_id in video.get("window_ids", [])
-                    if window_id in windows
-                ),
-                None,
-            )
-            if observation and observation["timestamp"] == "visual_review_no_timestamp":
-                focus = "；先看视觉复核片段（无精确时间点）"
-            elif observation:
-                focus = f"；先看 {observation['timestamp']} 的绑定片段"
-            else:
-                focus = ""
-            lines.append(
-                f"- {label}｜{video['title']}{focus}｜证据ID："
-                f"{video['evidence_id']}｜{video['url']}"
-            )
     prompt = packet.get("feedback_prompt")
     if prompt:
         lines.extend(["", prompt])

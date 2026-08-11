@@ -51,7 +51,6 @@ def evaluate():
     positive_selected = selected_by_id(positive)
     positive_item = positive_selected.get(POSITIVE_ID)
     weak_ids = set(selected_by_id(weak))
-    primary_covered_ids = set(selected_by_id(primary_covered))
     packet = runtime.build_answer_packet(positive)
     packet_bytes = len(
         json.dumps(packet, ensure_ascii=False, separators=(",", ":")).encode(
@@ -59,9 +58,11 @@ def evaluate():
         )
     )
     contexts = [positive, weak, primary_covered]
-    maximum_supplemental_selected = max(
+    maximum_supplemental_synthesis_candidates = max(
         sum(
             item.get("answer_eligibility") == "supplemental"
+            and item["video_id"]
+            in set(context["selection"]["synthesis_candidate_video_ids"])
             for item in context["selected_videos"]
         )
         for context in contexts
@@ -78,11 +79,15 @@ def evaluate():
             failures.append("positive_source_not_mapped_to_claim")
     if WEAK_OVERLAP_ID in weak_ids:
         failures.append("weak_note_overlap_selected")
-    if PRIMARY_COVERED_ID in primary_covered_ids:
-        failures.append("supplemental_selected_despite_sufficient_primary_evidence")
-    if maximum_supplemental_selected > 2:
-        failures.append("supplemental_selection_limit_exceeded")
-    if packet_bytes > 16 * 1024:
+    if PRIMARY_COVERED_ID in set(
+        primary_covered["selection"]["synthesis_candidate_video_ids"]
+    ):
+        failures.append(
+            "supplemental_synthesis_candidate_despite_sufficient_primary_evidence"
+        )
+    if maximum_supplemental_synthesis_candidates > 2:
+        failures.append("supplemental_synthesis_limit_exceeded")
+    if packet_bytes > 32 * 1024:
         failures.append("answer_packet_byte_budget_exceeded")
 
     graph = json.loads(GRAPH_PATH.read_text(encoding="utf-8"))
@@ -121,8 +126,13 @@ def evaluate():
             ),
         },
         "weak_overlap_rejected": WEAK_OVERLAP_ID not in weak_ids,
-        "primary_preferred": PRIMARY_COVERED_ID not in primary_covered_ids,
-        "maximum_supplemental_selected": maximum_supplemental_selected,
+        "primary_preferred_for_synthesis": PRIMARY_COVERED_ID
+        not in set(
+            primary_covered["selection"]["synthesis_candidate_video_ids"]
+        ),
+        "maximum_supplemental_synthesis_candidates": (
+            maximum_supplemental_synthesis_candidates
+        ),
         "answer_packet_bytes": packet_bytes,
         "failures": failures,
     }

@@ -4,10 +4,10 @@
   "taxonomy_source": "config/topic_taxonomy.json",
   "source": "data/knowledge/douyin_knowledge_base.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-08T06:46:52.411336+00:00",
-  "video_count": 1016,
-  "indexable_video_count": 958,
-  "assigned_video_count": 958,
+  "source_updated_at": "2026-08-11T09:19:47.612085+00:00",
+  "video_count": 1017,
+  "indexable_video_count": 959,
+  "assigned_video_count": 959,
   "unassigned_video_ids": [],
   "fallback_assigned_video_count": 180,
   "multi_topic_video_count": 455,
@@ -1517,7 +1517,7 @@
       "name": "网前技术",
       "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 95,
+      "video_count": 96,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -1528,10 +1528,11 @@
           ],
           "context_any": [],
           "is_fallback": false,
-          "video_count": 16,
-          "ready_count": 16,
+          "video_count": 17,
+          "ready_count": 17,
           "needs_visual_review_count": 0,
           "video_ids": [
+            "7672254579832899185",
             "7509355373729762619",
             "7411850466457292084",
             "bilibili:BV1ia4uziEAQ",
@@ -1550,6 +1551,29 @@
             "bilibili:BV19Q4y1w7oH"
           ],
           "representative_videos": [
+            {
+              "video_id": "7672254579832899185",
+              "title": "4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球",
+              "url": "https://www.douyin.com/video/7672254579832899185",
+              "category": "网前技术",
+              "confidence": "medium",
+              "processing_status": "ready",
+              "answer_eligibility": "primary",
+              "evidence_roles": [
+                "action",
+                "correction",
+                "mechanism",
+                "principle"
+              ],
+              "topic": "4082 单打搓球进阶 视频中讲了两种常见收搓",
+              "score": 27,
+              "match_basis": {
+                "title": 3,
+                "focus": 1,
+                "evidence": 6
+              },
+              "assignment_method": "rule_match"
+            },
             {
               "video_id": "7509355373729762619",
               "title": "滚网搓球 双打网前有人看守时有奇效",
@@ -1638,26 +1662,6 @@
                 "title": 2,
                 "focus": 1,
                 "evidence": 0
-              },
-              "assignment_method": "rule_match"
-            },
-            {
-              "video_id": "7071800926553541922",
-              "title": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
-              "url": "https://www.douyin.com/video/7071800926553541922",
-              "category": "网前技术",
-              "confidence": "visual_reviewed",
-              "processing_status": "ready",
-              "answer_eligibility": "primary",
-              "evidence_roles": [
-                "context"
-              ],
-              "topic": "用的双打平搓技术，这不是花活了吧？谁说我双打放网教学里是蒙的来着？😂",
-              "score": 11,
-              "match_basis": {
-                "title": 1,
-                "focus": 1,
-                "evidence": 2
               },
               "assignment_method": "rule_match"
             }

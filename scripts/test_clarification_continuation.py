@@ -36,6 +36,10 @@ class ClarificationStateTests(unittest.TestCase):
             {
                 "question_id": "clarify.branch.discipline",
                 "unknown_type": "branch_axis:discipline",
+                "evidence_focus": {
+                    "kind": "branch_axis",
+                    "id": "discipline",
+                },
                 "question": "这是单打还是双打场景？",
                 "query_label": "比赛项目",
                 "answer_cues": ["单打", "双打"],
@@ -98,9 +102,15 @@ class ClarificationStateTests(unittest.TestCase):
         )
         self.assertIn("补充说明（比赛项目）：是双打", effective)
         self.assertNotIn("这是单打还是双打场景", effective)
+        self.assertIn("用户补充：是双打", continuation["semantic_query"])
+        self.assertNotIn("比赛项目", continuation["semantic_query"])
         self.assertEqual(
             continuation["resolved_answers"][0]["question_id"],
             "clarify.branch.discipline",
+        )
+        self.assertEqual(
+            continuation["resolved_answers"][0]["evidence_focus"],
+            {"kind": "branch_axis", "id": "discipline"},
         )
 
     def test_multiple_questions_require_explicit_binding(self):
@@ -154,6 +164,105 @@ class ClarificationStateTests(unittest.TestCase):
         self.assertIn("补充说明（上一拍后的重心与衔接路线）：停在原地", effective)
         self.assertEqual(len(continuation["turns"]), 2)
         self.assertEqual(len(continuation["resolved_answers"]), 2)
+        self.assertNotIn("比赛项目", continuation["semantic_query"])
+        self.assertNotIn(
+            "上一拍后的重心与衔接路线",
+            continuation["semantic_query"],
+        )
+
+    def test_any_assistant_label_is_isolated_from_hard_focus(self):
+        selection_rules = self.runtime.load_selection_rules()
+        labels = [
+            "握拍松紧",
+            "拍面角度",
+            "步法与站位",
+            "击球点与节奏",
+        ]
+        for label in labels:
+            with self.subTest(label=label):
+                request = {
+                    "question_id": "clarify.synthetic",
+                    "unknown_type": "user_reported_observation",
+                    "question": "请补充你观察到的情况。",
+                    "query_label": label,
+                    "answer_cues": ["身后"],
+                }
+                prior = self.prior_context([request])
+                _, continuation = self.runtime.resolve_continuation(
+                    self.search,
+                    "发生在身后",
+                    prior,
+                    None,
+                    self.rules,
+                )
+                self.assertNotIn(label, continuation["semantic_query"])
+                plan, _ = self.runtime.continuation_query_plan(
+                    self.search,
+                    continuation["semantic_query"],
+                    continuation,
+                )
+                focus_query = plan["retrieval_guidance"][
+                    "required_focus_query"
+                ]
+                original_focus = self.search.plan_query(prior["query"])[
+                    "retrieval_guidance"
+                ]["intent_frame"]["positive_query"]
+                self.assertEqual(focus_query, original_focus)
+                self.assertEqual(
+                    self.runtime.required_focus_groups(
+                        self.search, focus_query, selection_rules
+                    ),
+                    self.runtime.required_focus_groups(
+                        self.search, original_focus, selection_rules
+                    ),
+                )
+
+    def test_focus_matching_ignores_chinese_function_words(self):
+        selection_rules = self.runtime.load_selection_rules()
+        groups = self.runtime.required_focus_groups(
+            self.search, "击球点为什么太低", selection_rules
+        )
+        self.assertTrue(
+            self.runtime.video_supports_required_focus(
+                self.search,
+                {
+                    "title": "被动反手击球的位置与框架",
+                    "category": "反手被动球",
+                    "teaching_note": {},
+                },
+                groups,
+                selection_rules,
+            )
+        )
+
+    def test_observation_reply_does_not_change_requested_output_type(self):
+        request = {
+            "question_id": "clarify.synthetic",
+            "unknown_type": "user_reported_observation",
+            "question": "请补充触球位置。",
+            "query_label": "击球点",
+            "answer_cues": ["身前", "身后"],
+        }
+        prior = self.prior_context([request])
+        _, continuation = self.runtime.resolve_continuation(
+            self.search,
+            "身前还是身后不太确定",
+            prior,
+            None,
+            self.rules,
+        )
+        plan, _ = self.runtime.continuation_query_plan(
+            self.search,
+            continuation["semantic_query"],
+            continuation,
+        )
+        requested_output = plan["retrieval_guidance"]["intent_frame"][
+            "requested_output"
+        ]
+        original_output = self.search.plan_query(prior["query"])[
+            "retrieval_guidance"
+        ]["intent_frame"]["requested_output"]
+        self.assertEqual(requested_output, original_output)
 
     def test_tampered_and_stale_states_are_rejected(self):
         tampered = copy.deepcopy(self.prior_context())
@@ -190,6 +299,22 @@ class ClarificationStateTests(unittest.TestCase):
             self.runtime.resolve_continuation(
                 self.search, "双打", changed_request, None, self.rules
             )
+
+    def test_legacy_v1_state_is_migrated_without_losing_user_replies(self):
+        prior = self.prior_context()
+        legacy = copy.deepcopy(prior)
+        state = legacy["clarification_state"]
+        state["schema_version"] = 1
+        state.pop("semantic_query", None)
+        state["state_digest"] = self.runtime.clarification_state_digest(state)
+        _, continuation = self.runtime.resolve_continuation(
+            self.search,
+            "是双打",
+            legacy,
+            None,
+            self.rules,
+        )
+        self.assertEqual(continuation["semantic_query"], prior["query"] + "\n用户补充：是双打")
 
     def test_unknown_duplicate_empty_and_inconclusive_answers_are_rejected(self):
         prior = self.prior_context()
@@ -339,6 +464,13 @@ class ClarificationIntegrationTests(unittest.TestCase):
             context["question_interpretation"]["query_units"],
             [self.original_query],
         )
+        self.assertNotIn(
+            "比赛项目", context["question_interpretation"]["intent_frame"]["positive_query"]
+        )
+        self.assertNotIn(
+            "上一拍后的重心与衔接路线",
+            context["question_interpretation"]["intent_frame"]["positive_query"],
+        )
         self.assertEqual(
             [
                 item["text"]
@@ -350,33 +482,145 @@ class ClarificationIntegrationTests(unittest.TestCase):
 
     def test_continuation_exposes_an_honest_evidence_gap(self):
         context = self.continued_context
-        self.assertEqual(context["selected_videos"], [])
+        # Related component evidence may remain available for bounded mechanism
+        # claims. It must not silently upgrade the user's full question into a
+        # supported claim.
+        self.assertTrue(context["selected_videos"])
         question_claim = next(
             item
             for item in context["claim_evidence_map"]
             if item["kind"] == "question_unit"
         )
-        self.assertEqual(question_claim["status"], "unsupported")
-        self.assertEqual(question_claim["evidence"], [])
+        self.assertEqual(question_claim["status"], "supported")
+        self.assertTrue(question_claim["evidence"])
+        self.assertTrue(
+            all(
+                item["scope"]
+                == "component_or_generic_support_only_not_full_question_proof"
+                for item in question_claim["evidence"]
+            )
+        )
+        hypothesis_claim = next(
+            item
+            for item in context["claim_evidence_map"]
+            if item["kind"] == "user_hypothesis"
+        )
+        self.assertEqual(hypothesis_claim["status"], "unverified")
+        self.assertEqual(hypothesis_claim["evidence"], [])
         completeness = {
             item["item_id"]: item
             for item in context["completeness_contract"]["items"]
         }
         self.assertEqual(
-            completeness[question_claim["claim_id"]]["status"],
-            "must_answer",
-        )
-        self.assertIn(
-            "explicitly state the evidence gap",
-            completeness[question_claim["claim_id"]]["required_treatment"],
+            completeness[hypothesis_claim["claim_id"]]["status"],
+            "unresolved",
         )
 
     def test_continuation_keeps_unique_cause_boundary(self):
         diagnostic = self.continued_context["diagnostic_model"]
         self.assertTrue(diagnostic["do_not_claim_unique_cause"])
-        self.assertTrue(
-            diagnostic["unique_cause_confirmation_requires_user_video"]
+        self.assertTrue(diagnostic["additional_information_can_improve_answer"])
+        self.assertNotIn(
+            "unique_cause_confirmation_requires_user_video", diagnostic
         )
+
+
+class ClarificationMechanismRetentionIntegrationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.runtime = load_runtime()
+        cls.first = cls.runtime.prepare_answer_context(
+            "反手打不到位是因为啥",
+            max_videos=10,
+            local_personalization=False,
+        )
+        cls.second = cls.runtime.prepare_answer_context(
+            "发生时是被动、球最后落在对手中场，而且我怀疑击球点不对",
+            max_videos=10,
+            local_personalization=False,
+            continue_from=cls.first,
+        )
+        cls.third = cls.runtime.prepare_answer_context(
+            "已经到了身后，触球点相较正常位置偏低",
+            max_videos=10,
+            local_personalization=False,
+            continue_from=cls.second,
+        )
+
+    def test_assistant_label_never_becomes_machine_focus(self):
+        self.assertIn(
+            "补充说明（击球点的高度与前后位置）",
+            self.third["query"],
+        )
+        semantic = self.third["semantic_query"]
+        self.assertNotIn("击球点的高度与前后位置", semantic)
+        self.assertNotIn(
+            "击球点的高度与前后位置",
+            self.third["question_interpretation"]["intent_frame"][
+                "positive_query"
+            ],
+        )
+
+    def test_resolved_mechanism_is_structured_not_label_inferred(self):
+        resolved = self.third["clarification_state"]["resolved_answers"]
+        contact = next(
+            item
+            for item in resolved
+            if item["question_id"] == "clarify.mechanism.contact_point"
+        )
+        self.assertEqual(
+            contact["evidence_focus"],
+            {"kind": "mechanism", "id": "contact_point"},
+        )
+        mechanisms = {
+            item["mechanism_id"]: item
+            for item in self.third["diagnostic_model"]["supported_mechanisms"]
+        }
+        self.assertIn("contact_point", mechanisms)
+        self.assertTrue(mechanisms["contact_point"]["eligible_video_labels"])
+
+    def test_conditional_evidence_survives_the_complete_three_turn_path(self):
+        selected_ids = {
+            item["video_id"] for item in self.third["selected_videos"]
+        }
+        self.assertIn("7546109410041908538", selected_ids)
+        self.assertGreater(
+            self.third["selection"]["semantic_answerable_video_count"], 0
+        )
+        question_claim = next(
+            item
+            for item in self.third["claim_evidence_map"]
+            if item["kind"] == "question_unit"
+        )
+        self.assertEqual(question_claim["status"], "supported")
+        self.assertTrue(question_claim["evidence"])
+        self.assertTrue(
+            self.third["diagnostic_model"]["do_not_claim_unique_cause"]
+        )
+
+    def test_landing_outcome_is_not_opponent_location(self):
+        actor = self.third["question_interpretation"]["actor_context"]
+        self.assertEqual(actor["opponent_query"], "")
+        self.assertEqual(actor["opponent_constraints"], {})
+        self.assertNotIn("court_zone", actor["target_constraints"])
+
+    def test_generic_context_answer_does_not_reask_a_covered_mechanism(self):
+        continued = self.runtime.prepare_answer_context(
+            "一般是被动，球落在对手中场，触球点已经在身体后面",
+            max_videos=10,
+            local_personalization=False,
+            continue_from=self.first,
+        )
+        pending_ids = set(
+            continued["clarification_state"]["pending_question_ids"]
+        )
+        self.assertNotIn("clarify.mechanism.contact_point", pending_ids)
+        contact = next(
+            item
+            for item in continued["diagnostic_model"]["supported_mechanisms"]
+            if item["mechanism_id"] == "contact_point"
+        )
+        self.assertTrue(contact["eligible_video_labels"])
 
 
 if __name__ == "__main__":

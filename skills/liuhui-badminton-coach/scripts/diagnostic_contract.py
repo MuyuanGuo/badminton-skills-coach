@@ -3,14 +3,6 @@
 
 import re
 
-
-def user_video_is_unavailable(query, diagnostic_rules):
-    normalized = re.sub(r"\s+", "", str(query).lower())
-    return any(
-        re.sub(r"\s+", "", term.lower()) in normalized
-        for term in diagnostic_rules.get("video_unavailable_terms", [])
-    )
-
 def extract_user_hypotheses(query, diagnostic_rules):
     """Return causes proposed by the user without treating them as facts."""
     hypotheses = []
@@ -161,7 +153,10 @@ def claim_scope_directness(video, diagnostic_rules):
     exact_count = sum(value == "exact" for value in matches.values())
     weak = set(diagnostic_rules.get("weak_constraint_matches", []))
     if not exact_count and all(value in weak for value in matches.values()):
-        return "incompatible"
+        # Explicit conflicts have already failed semantic selection. Weak or
+        # incidental scope is therefore generic/component evidence, not an
+        # incompatibility; its claim_scope_policy still forces conditioning.
+        return "generic"
     if all(value == "exact" for value in matches.values()):
         return "exact"
     return "partial"
@@ -293,10 +288,7 @@ def confidence_ceiling(evidence_entries, selected_by_label):
 
 
 def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
-    if not has_requested_action_scope_support(
-        video, query_constraints, diagnostic_rules
-    ):
-        return None
+    del strategy
     scope_directness = claim_scope_directness(video, diagnostic_rules)
     if scope_directness == "incompatible":
         return None
@@ -306,6 +298,33 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
         return None
     window_support = query_window_support(video)
     if window_support["rank"] < 2:
+        return None
+    action_scope_supported = has_requested_action_scope_support(
+        video, query_constraints, diagnostic_rules
+    )
+    component_only_support = bool(
+        video.get("symptom_match") == "not_required"
+        and (
+            video.get("concept_match")
+            in {
+                "component_support",
+                "constraint_scoped_support",
+                "reviewed_support",
+                "expanded_support",
+            }
+            or (
+                concept in {"exact_question", "exact_query_unit"}
+                and (
+                    video.get("focus_match") in {"primary", "structured"}
+                    or window_support["rank"] >= 3
+                )
+            )
+        )
+    )
+    if not action_scope_supported and not component_only_support:
+        # A symptom word or generic mechanism is not enough to support the
+        # whole question when it does not cover any requested action axis.
+        # It may still support a separately mapped hypothesis or mechanism.
         return None
     if (
         scope_directness == "exact"
@@ -363,8 +382,23 @@ def mechanism_evidence(
 ):
     matched = []
     for video in selected_videos:
-        if not has_requested_action_scope_support(
+        action_scope_supported = has_requested_action_scope_support(
             video, query_constraints, diagnostic_rules
+        )
+        if (
+            not action_scope_supported
+            and not (
+                (
+                    video.get("concept_match")
+                    in {"exact_question", "exact_query_unit"}
+                    or (
+                        video.get("concept_match") == "component_support"
+                        and video.get("symptom_match")
+                        in {"direct_primary", "direct_structured"}
+                    )
+                )
+                and video.get("focus_match") in {"primary", "structured"}
+            )
         ):
             continue
         configured_terms = mechanism.get("evidence_terms", [])
@@ -421,6 +455,7 @@ def mechanism_evidence(
         directness = "direct" if scope_directness == "exact" else "scoped"
         if video.get("concept_match") in {
             "component_support",
+            "constraint_scoped_support",
             "reviewed_support",
             "expanded_support",
         }:
@@ -439,7 +474,9 @@ def mechanism_evidence(
         matched.append(evidence)
     rank = {"direct": 0, "scoped": 1, "component": 2}
     matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
-    return matched[: diagnostic_rules.get("max_evidence_per_claim", 3)]
+    return matched[
+        : diagnostic_rules.get("max_related_evidence_per_claim", 8)
+    ]
 
 
 def material_diagnostic_branches(
@@ -511,6 +548,26 @@ def build_diagnostic_contract(
 ):
     resolved_question_ids = set(resolved_question_ids or [])
     resolved_answers = list(resolved_answers or [])
+    resolved_mechanism_ids = {
+        focus["id"]
+        for item in resolved_answers
+        for focus in [item.get("evidence_focus") or {}]
+        if focus.get("kind") == "mechanism" and focus.get("id")
+    }
+
+    def resolved_answers_cover_cues(answer_cues):
+        normalized_cues = [
+            search_module.normalize(cue)
+            for cue in answer_cues
+            if search_module.normalize(cue)
+        ]
+        if not normalized_cues:
+            return False
+        return any(
+            cue in search_module.normalize(item.get("answer", ""))
+            for item in resolved_answers
+            for cue in normalized_cues
+        )
     intent_frame = question_interpretation["intent_frame"]
     user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     observed_symptoms = diagnostic_observed_symptoms(
@@ -566,7 +623,7 @@ def build_diagnostic_contract(
             )
         )
         evidence_entries = evidence_entries[
-            : diagnostic_rules.get("max_evidence_per_claim", 3)
+            : diagnostic_rules.get("max_related_evidence_per_claim", 8)
         ]
         claim_map.append(
             {
@@ -667,9 +724,12 @@ def build_diagnostic_contract(
     for mechanism in diagnostic_rules.get("mechanisms", []):
         if mechanism["id"] in hypothesis_mechanism_ids:
             continue
-        if not any(
-            search_module.normalize(term) in normalized_query
-            for term in mechanism.get("query_terms", [])
+        if (
+            mechanism["id"] not in resolved_mechanism_ids
+            and not any(
+                search_module.normalize(term) in normalized_query
+                for term in mechanism.get("query_terms", [])
+            )
         ):
             continue
         mechanism_unit = next(
@@ -757,7 +817,7 @@ def build_diagnostic_contract(
                     )
                 )
             evidence_entries = evidence_entries[
-                : diagnostic_rules.get("max_evidence_per_claim", 3)
+                : diagnostic_rules.get("max_related_evidence_per_claim", 8)
             ]
             claim_map.append(
                 {
@@ -774,10 +834,27 @@ def build_diagnostic_contract(
                     ),
                 }
             )
+    if boundary.get("type") == "cross_variant_evidence_transfer":
+        for claim in claim_map:
+            claim["status"] = (
+                "unverified"
+                if claim.get("kind") == "user_hypothesis"
+                else "unsupported"
+            )
+            claim["evidence"] = []
+            claim["eligible_video_labels"] = []
+            claim["confidence_ceiling"] = "none"
+        supported_mechanisms = []
+        branches = []
+
     diagnostic_question = bool(
-        observed_symptoms
-        or user_hypotheses
-        or question_interpretation["strategy"] == "literal_symptom_first"
+        boundary.get("type")
+        not in {"pain_or_injury", "endorsement_or_authorship", "purchase_advice"}
+        and (
+            observed_symptoms
+            or user_hypotheses
+            or question_interpretation["strategy"] == "literal_symptom_first"
+        )
     )
     material_unknowns = []
     for ambiguity in question_interpretation.get("ambiguities", []):
@@ -801,34 +878,31 @@ def build_diagnostic_contract(
                 "required_for_unique_diagnosis": True,
             }
         )
-    if diagnostic_question:
-        material_unknowns.append(
-            {
-                "id": "unknown.user_movement_observation",
-                "type": "user_movement_observation",
-                "description": "the user's actual contact, racket, body, and movement sequence has not been observed",
-                "required_for_unique_diagnosis": True,
-            }
-        )
-
     clarification_requests = []
     for branch in branches:
         question_id = f'clarify.branch.{branch["axis"]}'
-        if question_id in resolved_question_ids:
+        answer_cues = [
+            item["label"].removesuffix("分支")
+            for item in branch["branches"]
+        ]
+        if question_id in resolved_question_ids or resolved_answers_cover_cues(
+            answer_cues
+        ):
             continue
         clarification_requests.append(
             {
                 "question_id": question_id,
                 "unknown_type": f'branch_axis:{branch["axis"]}',
+                "evidence_focus": {
+                    "kind": "branch_axis",
+                    "id": branch["axis"],
+                },
                 "question": branch["question"],
                 "query_label": branch["query_label"],
                 "purpose": f'{branch["label"]}会改变适用的诊断分支和视频证据。',
                 "materially_affects": ["diagnosis", "evidence_selection"],
                 "answer_format": "free_text_with_one_branch_value",
-                "answer_cues": [
-                    item["label"].removesuffix("分支")
-                    for item in branch["branches"]
-                ],
+                "answer_cues": answer_cues,
             }
         )
     for mechanism_record in supported_mechanisms:
@@ -838,6 +912,9 @@ def build_diagnostic_contract(
         if (
             question
             and question_id not in resolved_question_ids
+            and not resolved_answers_cover_cues(
+                mechanism.get("answer_cues", [])
+            )
             and question not in {
                 item["question"] for item in clarification_requests
             }
@@ -845,35 +922,88 @@ def build_diagnostic_contract(
             clarification_requests.append(
                 {
                     "question_id": question_id,
-                    "unknown_type": "user_movement_observation",
+                    "unknown_type": "user_reported_observation",
+                    "evidence_focus": {
+                        "kind": "mechanism",
+                        "id": mechanism["id"],
+                    },
                     "question": question,
                     "query_label": mechanism["label"],
                     "purpose": mechanism.get(
                         "observation_purpose",
-                        "用于缩小证据支持的排查范围；不能单凭文字观察确认唯一原因。",
+                        "用于缩小证据支持的排查范围，并让当前的条件性答案更具体。",
                     ),
                     "materially_affects": ["diagnosis", "evidence_selection"],
                     "answer_format": "focused_free_text_observation",
                     "answer_cues": mechanism.get("answer_cues", []),
                 }
             )
-    video_unavailable = user_video_is_unavailable(query, diagnostic_rules)
     if (
         diagnostic_question
         and not clarification_requests
         and not resolved_question_ids
-        and not video_unavailable
     ):
         clarification_requests.append(
             {
-                "question_id": "clarify.user_movement_video",
-                "unknown_type": "user_movement_observation",
-                "question": "若要确认具体原因，请提供包含准备、击球和下一步回动的连续动作视频；仅凭文字症状只能给排查分支。",
-                "query_label": "用户连续动作视频观察",
-                "purpose": "用于观察完整动作链并确认用户自己的实际动作；没有连续视频时只能给出条件性排查。",
-                "materially_affects": ["unique_cause_confirmation"],
-                "answer_format": "continuous_user_video",
-                "answer_cues": [],
+                "question_id": "clarify.symptom_context",
+                "unknown_type": "user_reported_context",
+                "question": (
+                    "若想让答案更完整，可以补充问题发生时的主动或被动状态、"
+                    "球最后落到哪个区域，以及触球点大致在身前、体侧还是身后。"
+                ),
+                "query_label": "问题发生时的具体场景",
+                "purpose": "用于缩小证据支持的排查范围；不影响先回答当前有把握的部分。",
+                "materially_affects": ["diagnosis_detail", "evidence_selection"],
+                "answer_format": "focused_free_text_observation",
+                "answer_cues": [
+                    "主动",
+                    "被动",
+                    "前场",
+                    "中场",
+                    "后场",
+                    "身前",
+                    "身体前面",
+                    "身体前方",
+                    "体侧",
+                    "身体侧面",
+                    "身后",
+                    "身体后面",
+                    "身体后方",
+                ],
+            }
+        )
+    if (
+        question_interpretation.get("intent_frame", {}).get(
+            "requested_output"
+        )
+        == "practice"
+        and not clarification_requests
+        and not resolved_question_ids
+    ):
+        clarification_requests.append(
+            {
+                "question_id": "clarify.practice_context",
+                "unknown_type": "user_reported_context",
+                "question": (
+                    "若想让答案更具体，可以补充最想解决的来球或动作场景、"
+                    "当前失败表现，以及期望的出球或落点。"
+                ),
+                "query_label": "希望解决的具体技术场景",
+                "purpose": (
+                    "用于缩小技术解释和来源范围；不会据此生成无来源支持的"
+                    "训练时长、组数或周期安排。"
+                ),
+                "materially_affects": [
+                    "technical_detail",
+                    "evidence_selection",
+                ],
+                "answer_format": "focused_free_text_observation",
+                "answer_cues": [
+                    "来球",
+                    "动作",
+                    "失败表现",
+                    "期望落点",
+                ],
             }
         )
     clarification_requests = clarification_requests[
@@ -893,7 +1023,7 @@ def build_diagnostic_contract(
         if ask_first
         else (
             "answer_conditionally"
-            if material_unknowns or branches
+            if material_unknowns or branches or clarification_requests
             else "answer_now"
         )
     )
@@ -941,17 +1071,17 @@ def build_diagnostic_contract(
                     "question": item["question"],
                     "text": item["answer"],
                     "source": "user_clarification_text",
-                    "verification_status": "reported_not_video_verified",
+                    "verification_status": "user_reported_not_independently_verified",
                 }
                 for item in resolved_answers
-                if item["unknown_type"] == "user_movement_observation"
+                if item["unknown_type"]
+                in {"user_reported_observation", "user_reported_context"}
             ],
             "user_hypotheses": user_hypotheses,
             "supported_mechanisms": supported_mechanisms,
             "material_branches": branches,
             "do_not_claim_unique_cause": diagnostic_question,
-            "unique_cause_confirmation_requires_user_video": diagnostic_question,
-            "user_video_unavailable": video_unavailable,
+            "additional_information_can_improve_answer": diagnostic_question,
         },
         "clarification_decision": {
             "action": clarification_action,

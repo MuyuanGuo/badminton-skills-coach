@@ -67,10 +67,61 @@ class LiveGenerationResultTests(unittest.TestCase):
         ):
             result = self.module.validate_results(payload, rerun_runtime=False)
         self.assertEqual(result["status"], "pass")
-        self.assertEqual(result["critical_cases"], 6)
+        self.assertEqual(result["critical_cases"], 20)
         self.assertTrue(result["release_eligible"])
-        self.assertEqual(result["automatically_validated"], 6)
+        self.assertEqual(result["automatically_validated"], 20)
         self.assertFalse(result["current_runtime_audits_rerun"])
+
+    def test_systematic_runtime_registry_is_balanced_and_nonduplicative(self):
+        answer_registry = self.module.release_case_registry()
+        payload = self.module.load_json(self.module.SYSTEMATIC_CASES_PATH)
+        historical_and_delivery = (
+            self.module.required_release_case_ids()
+            - {item["case_id"] for item in payload["cases"]}
+        )
+        case_ids = self.module.validate_systematic_case_registry(
+            payload,
+            answer_registry,
+            excluded_ids=historical_and_delivery,
+        )
+        self.assertEqual(len(case_ids), 12)
+        self.assertTrue(case_ids.isdisjoint(historical_and_delivery))
+
+        underpowered = {**payload, "cases": payload["cases"][:-1]}
+        with self.assertRaisesRegex(
+            self.module.LiveGenerationValidationError,
+            "underpowered",
+        ):
+            self.module.validate_systematic_case_registry(
+                underpowered,
+                answer_registry,
+            )
+
+        malformed_dimensions = {
+            **payload,
+            "required_case_types": "technical_action",
+        }
+        with self.assertRaisesRegex(
+            self.module.LiveGenerationValidationError,
+            "coverage dimensions",
+        ):
+            self.module.validate_systematic_case_registry(
+                malformed_dimensions,
+                answer_registry,
+            )
+
+        incomplete_dimensions = {
+            **payload,
+            "required_answer_modes": payload["required_answer_modes"][:-1],
+        }
+        with self.assertRaisesRegex(
+            self.module.LiveGenerationValidationError,
+            "every supported answer mode",
+        ):
+            self.module.validate_systematic_case_registry(
+                incomplete_dimensions,
+                answer_registry,
+            )
 
     def test_stale_answer_runtime_is_rejected(self):
         payload = self.fixture()

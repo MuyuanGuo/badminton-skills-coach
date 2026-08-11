@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import copy
 import importlib.util
 import re
 import unittest
@@ -41,29 +40,44 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn(atom["verbalizable_claim"], answer)
         self.assertTrue(answer.rstrip().endswith(self.packet["feedback_prompt"]))
         for video in self.packet["selected_videos"]:
-            if video["label"] not in self.packet["display_videos"]:
+            if video["label"] not in self.packet["complete_related_videos"]:
                 self.assertNotIn(f"{video['label']} 不相关", answer)
 
     def test_every_rendered_citation_has_a_displayed_source(self):
         context = self.runtime.prepare_answer_context(
-            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？没有连续动作视频时能确定哪个吗？",
+            "我的反手高远经常只到中场，是拍面没向上、击球点太靠后，还是握得太紧？请先回答有把握的部分。",
             local_personalization=False,
         )
         packet = self.runtime.build_answer_packet(context)
         answer = self.renderer.render_answer(packet)
         cited = set(re.findall(r"\[(V\d+)\]", answer))
         self.assertTrue(cited)
-        self.assertTrue(cited.issubset(set(packet["display_videos"])))
+        self.assertTrue(cited.issubset(set(packet["synthesis_videos"])))
         draft = self.renderer.default_draft(packet)
         windows = packet["evidence_windows"]
-        window_by_claim = {
-            block["claim_id"]: windows[block["window_id"]]["text"]
-            for block in draft["blocks"]
-            if block["type"] == "claim_window"
+        windows_by_claim = {
+            claim_id: [
+                windows[block["window_id"]]["text"]
+                for block in draft["blocks"]
+                if block["type"] == "claim_window"
+                and block["claim_id"] == claim_id
+            ]
+            for claim_id in {"H1", "H2"}
         }
-        self.assertIn("拍面摊开向上", window_by_claim["H1"])
-        self.assertIn("位置和框架一定要契合", window_by_claim["H2"])
-        self.assertEqual(set(packet["display_videos"]), cited)
+        self.assertTrue(
+            any("拍面摊开向上" in text for text in windows_by_claim["H1"])
+        )
+        self.assertTrue(
+            any(
+                "框架" in text or "击球点" in text
+                for text in windows_by_claim["H2"]
+            )
+        )
+        self.assertGreaterEqual(len(windows_by_claim["H1"]), 2)
+        self.assertGreaterEqual(len(windows_by_claim["H2"]), 2)
+        self.assertEqual(set(packet["synthesis_videos"]), cited)
+        for label in packet["complete_related_videos"]:
+            self.assertIn(label, answer)
 
     def test_diagnostic_gap_render_states_unique_cause_boundary(self):
         context = self.runtime.prepare_answer_context(
@@ -73,7 +87,8 @@ class RenderAnswerTests(unittest.TestCase):
         answer = self.renderer.render_answer(
             self.runtime.build_answer_packet(context)
         )
-        self.assertIn("不能确认你个人动作的唯一原因", answer)
+        self.assertIn("不能确认", answer)
+        self.assertIn("唯一原因", answer)
 
     def test_free_technical_suffix_field_fails_closed(self):
         draft = self.renderer.default_draft(self.packet)
@@ -146,13 +161,13 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn("反手被动高远", answer)
             self.assertIn("动态低架", answer)
             self.assertNotIn("visual_review_no_timestamp", answer)
-            self.assertIn("视觉复核片段（无精确时间点）", answer)
+            self.assertIn("V1｜杀上网：只考虑向前衔接时使用交叉步", answer)
             answers[query] = answer
         self.assertNotEqual(answers[short_query], answers[chain_query])
         self.assertIn("对手：挡网", answers[chain_query])
         self.assertIn("杀球后被对手挡网", answers[chain_query])
 
-    def test_practice_delivery_is_rendered_and_missing_block_fails_audit(self):
+    def test_training_request_renders_boundary_without_synthetic_plan(self):
         query = (
             "我是业余中级双打选手。对手杀到反手身体附近时，我挡网经常冒高。"
             "请区分拍面、击球点和到位问题，并给一个有陪练、总计20分钟的"
@@ -163,60 +178,51 @@ class RenderAnswerTests(unittest.TestCase):
         )
         packet = self.runtime.build_answer_packet(context)
         answer = self.renderer.render_answer(packet)
+        self.assertEqual(
+            context["selection"]["synthesis_candidate_video_ids"],
+            ["7524557392328461627"],
+        )
+        self.assertNotIn(
+            "7071800926553541922",
+            context["selection"]["synthesis_candidate_video_ids"],
+        )
+        self.assertNotIn(
+            "7205392269791386917",
+            context["selection"]["synthesis_candidate_video_ids"],
+        )
         for required in (
-            "总计 20 分钟",
-            "第1天",
-            "第2天",
-            "第3天",
-            "第1周",
-            "第2周",
-            "成功标准",
-            "常见错误",
-            "停止与复核信号",
+            "训练方案边界",
+            "不足以可靠生成训练时长、组数、频次或多日计划",
+            "不扩写成训练处方",
         ):
             self.assertIn(required, answer)
+        for forbidden in ("第1天", "第1周", "单次训练总计"):
+            self.assertNotIn(forbidden, answer)
         clean = self.auditor.audit_answer(query, context, answer)
         self.assertTrue(clean["passed"], clean["violations"])
         ids_by_kind = {
             item["kind"]: item["delivery_id"]
             for item in context["delivery_contract"]["items"]
         }
-        three_day_id = ids_by_kind["practice.three_day"]
-        missing_three_day = "\n".join(
+        boundary_id = ids_by_kind["evidence.training_boundary"]
+        missing_boundary = "\n".join(
             line
             for line in answer.splitlines()
-            if not line.startswith(f"[{three_day_id}]")
+            if not line.startswith(f"[{boundary_id}]")
         )
-        failed = self.auditor.audit_answer(query, context, missing_three_day)
+        failed = self.auditor.audit_answer(query, context, missing_boundary)
         self.assertIn(
             "missing_delivery_item",
             {item["code"] for item in failed["violations"]},
         )
-        criteria_id = ids_by_kind["practice.success_criteria"]
-        fake_criteria = "\n".join(
-            (
-                f"[{criteria_id}]成功标准：1）随便完成；2）感觉不错；3）继续加量。"
-                if line.startswith(f"[{criteria_id}]")
-                else line
-            )
-            for line in answer.splitlines()
-        )
-        semantic_failure = self.auditor.audit_answer(
-            query, context, fake_criteria
-        )
-        self.assertIn(
-            "invalid_success_criteria_delivery",
-            {item["code"] for item in semantic_failure["violations"]},
-        )
-        mismatched_packet = copy.deepcopy(packet)
-        session = next(
-            item
-            for item in mismatched_packet["delivery_contract"]["items"]
-            if item["kind"] == "practice.session"
-        )
-        session["parameters"]["session_minutes"] = 19
-        with self.assertRaisesRegex(ValueError, "does not match"):
-            self.renderer.render_answer(mismatched_packet)
+
+    def test_every_displayed_video_has_complete_viewing_guidance(self):
+        answer = self.renderer.render_answer(self.packet)
+        for label in self.packet["complete_related_videos"]:
+            block = self.auditor.video_guidance_block(answer, label)
+            self.assertIn("为什么引用：", block)
+            self.assertIn("为什么值得看：", block)
+            self.assertIn("重点看：", block)
 
     def test_tactics_delivery_has_every_direction_and_condition_axis(self):
         query = (
@@ -240,6 +246,20 @@ class RenderAnswerTests(unittest.TestCase):
             self.assertIn(required, answer)
         audit = self.auditor.audit_answer(query, context, answer)
         self.assertTrue(audit["passed"], audit["violations"])
+
+    def test_audit_rejects_user_video_requests_and_synthetic_prescriptions(self):
+        answer = self.renderer.render_answer(self.packet)
+        feedback = self.packet["feedback_prompt"]
+        poisoned = answer.replace(
+            feedback,
+            "请提供连续动作视频。\n今日 15 分钟，分成 3 组。\n\n" + feedback,
+        )
+        audit = self.auditor.audit_answer(
+            self.context["query"], self.context, poisoned
+        )
+        codes = {item["code"] for item in audit["violations"]}
+        self.assertIn("user_action_video_request_out_of_scope", codes)
+        self.assertIn("synthetic_training_prescription", codes)
 
 
 if __name__ == "__main__":

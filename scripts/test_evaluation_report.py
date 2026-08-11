@@ -117,6 +117,33 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_reports_non_numeric_range_metrics(self):
+        evaluations = {
+            "suite": {
+                "stale_score": None,
+                "score": 0.8,
+                "limits": {"minimum_score": None},
+            }
+        }
+        baseline = {
+            "metrics": {
+                "suite.stale_score": {
+                    "value": 1.0,
+                    "direction": "at_least",
+                },
+                "suite.score": {
+                    "value_source": "suite.limits.minimum_score",
+                    "direction": "at_least",
+                },
+            }
+        }
+        comparisons = self.module.compare_baseline(evaluations, baseline)
+        self.assertEqual(
+            [item["failure_reason"] for item in comparisons],
+            ["non_numeric_current", "non_numeric_baseline"],
+        )
+        self.assertTrue(all(not item["passed"] for item in comparisons))
+
     def test_baseline_comparison_skips_explicitly_invalidated_metrics(self):
         evaluations = {"suite": {"contaminated": 0.1, "valid": 1.0}}
         baseline = {
@@ -163,6 +190,69 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(
             self.module.compare_baseline(evaluations, baseline)[0]["passed"]
         )
+
+    def test_current_baseline_cannot_drop_quality_hard_gates(self):
+        versions = self.module.load_json(
+            ROOT / "config" / "feedback_rules.json"
+        )
+        baselines = self.module.load_json(self.module.BASELINE_PATH)
+        baseline = baselines["baselines"][
+            f"v{versions['stable_version']}"
+        ]
+        self.module.validate_quality_hard_gate_contract(baseline)
+
+        missing = {
+            **baseline,
+            "metrics": dict(baseline["metrics"]),
+        }
+        removed = next(
+            iter(self.module.REQUIRED_QUALITY_HARD_GATE_METRICS)
+        )
+        missing["metrics"].pop(removed)
+        with self.assertRaisesRegex(ValueError, "incomplete"):
+            self.module.validate_quality_hard_gate_contract(missing)
+
+    def test_each_quality_hard_gate_detects_a_regression(self):
+        report = self.module.load_json(self.module.REPORT_PATH)
+        versions = self.module.load_json(
+            ROOT / "config" / "feedback_rules.json"
+        )
+        baseline = self.module.load_json(self.module.BASELINE_PATH)["baselines"][
+            f"v{versions['stable_version']}"
+        ]
+
+        for metric in self.module.REQUIRED_QUALITY_HARD_GATE_METRICS:
+            with self.subTest(metric=metric):
+                evaluations = json.loads(json.dumps(report["evaluations"]))
+                contract = baseline["metrics"][metric]
+                expected = contract["value"]
+                direction = contract["direction"]
+                if direction == "at_least":
+                    regressed = expected - 1
+                elif direction == "at_most":
+                    regressed = expected + 1
+                elif isinstance(expected, bool):
+                    regressed = not expected
+                elif isinstance(expected, list):
+                    regressed = ["forced_regression"]
+                elif isinstance(expected, str):
+                    regressed = "forced_regression"
+                else:
+                    regressed = expected + 1
+
+                target = evaluations
+                parts = metric.split(".")
+                for part in parts[:-1]:
+                    target = target[part]
+                target[parts[-1]] = regressed
+                comparisons = {
+                    item["metric"]: item
+                    for item in self.module.compare_baseline(
+                        evaluations,
+                        baseline,
+                    )
+                }
+                self.assertFalse(comparisons[metric]["passed"])
 
     def test_precomputed_evaluations_require_current_fingerprints(self):
         committed = self.module.load_json(self.module.REPORT_PATH)["evaluations"]

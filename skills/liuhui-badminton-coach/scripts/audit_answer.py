@@ -17,12 +17,21 @@ import answer_packet as answer_packet_runtime
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES_PATH = SKILL_ROOT / "references" / "answer-audit-rules.json"
+DEFAULT_RETRIEVAL_RULES_PATH = (
+    SKILL_ROOT / "references" / "retrieval-rules.json"
+)
+DEFAULT_SELECTION_RULES_PATH = (
+    SKILL_ROOT / "references" / "answer-selection-rules.json"
+)
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
-CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 4
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 7
 LEGACY_BOUND_PACKET_SCHEMA_VERSION = 2
 LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION = 3
+LEGACY_CORE_ONLY_PACKET_SCHEMA_VERSION = 4
+LEGACY_COMPLETE_RELATED_PACKET_SCHEMA_VERSION = 5
+LEGACY_ANNOTATIONLESS_PACKET_SCHEMA_VERSION = 6
 
 
 def load_json(path):
@@ -47,6 +56,54 @@ def answer_units(answer):
         for unit in re.split(r"\n+", answer)
         if unit.strip()
     ]
+
+
+def video_guidance_block(answer, label):
+    pattern = re.compile(
+        rf"(?ms)^-\s*(?:\*\*|__)?{re.escape(label)}(?:\*\*|__)?\s*｜.*?"
+        rf"(?=^-\s*(?:\*\*|__)?V[1-9]\d*(?:\*\*|__)?\s*｜|^##\s|\Z)"
+    )
+    match = pattern.search(answer)
+    return match.group(0) if match else ""
+
+
+def contains_forbidden_user_action_video_request(answer, rules):
+    """Distinguish affirmative video requests from explicit scope boundaries."""
+
+    request_pattern = compile_any(
+        rules["forbidden_user_action_video_request_patterns"]
+    )
+    negated_prefix = re.compile(r"(?:不|未)\s*(?:应当|应该)?\s*$")
+    negated_request = re.compile(
+        r"^(?:请|需要|必须|建议).{0,12}"
+        r"(?:不要|不得|别|无需|不用|不必|不).{0,8}"
+        r"(?:提供|上传|发送)"
+    )
+    for match in request_pattern.finditer(answer):
+        prefix = answer[max(0, match.start() - 6) : match.start()]
+        if negated_prefix.search(prefix):
+            continue
+        if negated_request.search(match.group(0)):
+            continue
+        return True
+    return False
+
+
+def pending_clarification_questions(context):
+    turn = context.get("answer_turn_contract")
+    if isinstance(turn, dict):
+        pending = turn.get("pending_clarifications", [])
+        return {
+            normalized(item.get("question", ""))
+            for item in pending
+            if isinstance(item, dict) and item.get("question")
+        }
+    clarification = context.get("clarification_decision", {})
+    return {
+        normalized(question)
+        for question in clarification.get("questions", [])
+        if isinstance(question, str) and question.strip()
+    }
 
 
 def content_ngrams(value, rules, width=2):
@@ -149,6 +206,150 @@ def add_violation(violations, code, message, *, claim_id=None, unit=None, detail
         violations.append(violation)
 
 
+def constraint_contains(actual, expected):
+    return all(
+        set(expected_values).issubset(set(actual.get(axis_name, [])))
+        for axis_name, expected_values in expected.items()
+    )
+
+
+def matched_reception_semantic_rule(question):
+    selection_rules = load_json(DEFAULT_SELECTION_RULES_PATH)
+    question_text = normalized(question)
+    for rule in selection_rules.get("reception_symptom_implications", []):
+        if not rule.get("semantic_audit"):
+            continue
+        required_term_groups = (
+            rule.get("symptom_terms", []),
+            rule.get("incoming_terms", []),
+            rule.get("response_terms", []),
+        )
+        if all(
+            any(normalized(term) in question_text for term in terms)
+            for terms in required_term_groups
+        ):
+            return rule
+    return None
+
+
+def audit_semantic_interpretation(question, context, violations):
+    interpretation = context.get("question_interpretation")
+    if not isinstance(interpretation, dict):
+        return
+
+    retrieval_rules = load_json(DEFAULT_RETRIEVAL_RULES_PATH)
+    positive_query_text = normalized(
+        interpretation.get("intent_frame", {}).get("positive_query")
+        or question
+    )
+    expected_symptoms = {
+        term
+        for term in retrieval_rules.get("intent", {}).get(
+            "literal_symptom_terms", []
+        )
+        if normalized(term) in positive_query_text
+    }
+    actual_symptoms = set(
+        interpretation.get("intent_frame", {}).get("literal_symptoms", [])
+    )
+    missing_symptoms = expected_symptoms - actual_symptoms
+    if missing_symptoms:
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_symptom",
+            "A symptom stated literally in the question is missing from the interpreted intent.",
+            details={"missing_symptoms": sorted(missing_symptoms)},
+        )
+
+    semantic_rule = matched_reception_semantic_rule(question)
+    if not semantic_rule:
+        return
+
+    actor_context = interpretation.get("actor_context", {})
+    opponent_constraints = actor_context.get("opponent_constraints", {})
+    misplaced = {
+        axis_name: sorted(
+            set(opponent_constraints.get(axis_name, []))
+            & set(suppressed_values)
+        )
+        for axis_name, suppressed_values in semantic_rule.get(
+            "opponent_constraint_suppressions", {}
+        ).items()
+        if set(opponent_constraints.get(axis_name, []))
+        & set(suppressed_values)
+    }
+    if misplaced:
+        add_violation(
+            violations,
+            "semantic_interpretation_wrong_constraint_owner",
+            "A target-player constraint was incorrectly assigned to the opponent.",
+            details={"misplaced_constraints": misplaced},
+        )
+
+    incoming_constraints = actor_context.get("incoming_shot_constraints", {})
+    expected_incoming = semantic_rule.get("incoming_constraints", {})
+    if not constraint_contains(incoming_constraints, expected_incoming):
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_incoming_scope",
+            "The interpreted context does not preserve the required incoming-shot constraints.",
+            details={
+                "expected": expected_incoming,
+                "actual": incoming_constraints,
+            },
+        )
+
+    target_constraints = actor_context.get("target_constraints", {})
+    expected_target = semantic_rule.get("target_action_constraints", {})
+    expected_scopes = set(semantic_rule.get("requested_action_scopes", []))
+    actual_scopes = set(actor_context.get("requested_action_scopes", []))
+    if not constraint_contains(target_constraints, expected_target) or not (
+        expected_scopes <= actual_scopes
+    ):
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_target_scope",
+            "The interpreted context does not preserve the required target action and scope.",
+            details={
+                "expected_constraints": expected_target,
+                "actual_constraints": target_constraints,
+                "expected_scopes": sorted(expected_scopes),
+                "actual_scopes": sorted(actual_scopes),
+            },
+        )
+
+    event_chain = actor_context.get("event_chain", [])
+    incoming_events = [
+        item
+        for item in event_chain
+        if item.get("actor") == "opponent_or_feed"
+        and item.get("role") == "incoming_condition"
+    ]
+    target_events = [
+        item
+        for item in event_chain
+        if item.get("actor") == "player"
+        and item.get("role") == "target_action"
+    ]
+    incoming_terms = semantic_rule.get("incoming_terms", [])
+    target_action = semantic_rule.get("target_action_query", "")
+    has_incoming = any(
+        any(normalized(term) in normalized(item.get("term", "")) for term in incoming_terms)
+        for item in incoming_events
+    )
+    has_target = any(
+        normalized(target_action) in normalized(item.get("term", ""))
+        for item in target_events
+    )
+    if not has_incoming or not has_target:
+        add_violation(
+            violations,
+            "semantic_interpretation_missing_event_chain",
+            "The incoming condition to player response event chain is incomplete.",
+            details={"event_chain": event_chain},
+        )
+
+
 def expected_evidence_state(context):
     return {
         "selected_videos": [
@@ -203,6 +404,9 @@ def validate_packet_binding(packet, context):
     if schema_version in {
         LEGACY_BOUND_PACKET_SCHEMA_VERSION,
         LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION,
+        LEGACY_CORE_ONLY_PACKET_SCHEMA_VERSION,
+        LEGACY_COMPLETE_RELATED_PACKET_SCHEMA_VERSION,
+        LEGACY_ANNOTATIONLESS_PACKET_SCHEMA_VERSION,
     }:
         if packet.get("packet_type") != "liuhui_badminton_answer_packet":
             raise ValueError("invalid answer_packet type")
@@ -380,9 +584,6 @@ def audit_delivery_contract(context, units, violations):
     items = contract.get("items", []) if isinstance(contract, dict) else []
     marker_pattern = re.compile(r"\[(?P<delivery_id>D[1-9]\d*)\]")
     coverage = []
-    practice = (context.get("topic_navigation") or {}).get(
-        "practice_adaptation", {}
-    )
 
     def fail(item, code, message, unit=None, details=None):
         add_violation(
@@ -406,6 +607,14 @@ def audit_delivery_contract(context, units, violations):
                 "covered": covered,
             }
         )
+        if str(item.get("kind", "")).startswith("practice."):
+            fail(
+                item,
+                "unsupported_synthetic_practice_delivery",
+                "Synthetic practice-plan delivery kinds are no longer supported.",
+                unit=matched[0] if matched else None,
+            )
+            continue
         if not matched:
             fail(
                 item,
@@ -470,125 +679,6 @@ def audit_delivery_contract(context, units, violations):
                     unit=unit,
                     details={"missing_steps": missing},
                 )
-        elif kind == "practice.session":
-            total = parameters.get("session_minutes")
-            allocation = parameters.get("minute_allocation", {})
-            labels = practice.get("segment_labels", {})
-            found = {
-                label: int(minutes)
-                for label, minutes in re.findall(
-                    r"(热身|单一线索|压力或判断|自测)\s*(\d+)\s*分钟",
-                    unit,
-                )
-            }
-            expected = {
-                labels.get(key, key): value
-                for key, value in allocation.items()
-            }
-            if (
-                not isinstance(total, int)
-                or f"总计{total}分钟" not in normalized(unit)
-                or found != expected
-                or sum(found.values()) != total
-            ):
-                fail(
-                    item,
-                    "invalid_practice_session_delivery",
-                    "The practice session must preserve every segment and exact minute sum.",
-                    unit=unit,
-                    details={"expected": expected, "found": found, "total": total},
-                )
-        elif kind == "practice.three_day":
-            expected = practice.get("three_day_progression", [])
-            missing = [
-                record
-                for record in expected
-                if normalized(record.get("label")) not in normalized(unit)
-                or normalized(record.get("instruction")) not in normalized(unit)
-            ]
-            if len(expected) != 3:
-                missing.append({"expected_count": 3})
-            if missing:
-                fail(
-                    item,
-                    "invalid_three_day_delivery",
-                    "The three-day progression is incomplete.",
-                    unit=unit,
-                    details={"missing": missing},
-                )
-        elif kind == "practice.two_week":
-            expected = practice.get("two_week_consolidation", [])
-            missing = [
-                record
-                for record in expected
-                if normalized(record.get("label")) not in normalized(unit)
-                or normalized(record.get("instruction")) not in normalized(unit)
-            ]
-            if len(expected) != 2:
-                missing.append({"expected_count": 2})
-            if missing:
-                fail(
-                    item,
-                    "invalid_two_week_delivery",
-                    "The two-week consolidation is incomplete.",
-                    unit=unit,
-                    details={"missing": missing},
-                )
-        elif kind == "practice.success_criteria":
-            expected = practice.get("success_criteria", [])
-            missing = [
-                criterion
-                for criterion in expected
-                if normalized(criterion) not in normalized(unit)
-            ]
-            if (
-                len(expected) < 2
-                or "成功标准" not in unit
-                or missing
-                or len(re.findall(r"\d+）", unit)) < len(expected)
-            ):
-                fail(
-                    item,
-                    "invalid_success_criteria_delivery",
-                    "The practice answer needs at least two observable success criteria.",
-                    unit=unit,
-                    details={"missing": missing},
-                )
-        elif kind == "practice.common_errors":
-            expected = practice.get("common_errors", [])
-            missing = [
-                error
-                for error in expected
-                if normalized(error) not in normalized(unit)
-            ]
-            if (
-                len(expected) < 2
-                or "常见错误" not in unit
-                or missing
-                or len(re.findall(r"\d+）", unit)) < len(expected)
-            ):
-                fail(
-                    item,
-                    "invalid_common_errors_delivery",
-                    "The practice answer needs at least two explicit error checks.",
-                    unit=unit,
-                    details={"missing": missing},
-                )
-        elif kind == "practice.stop_signals":
-            expected = practice.get("quality_stop_rules", [])
-            missing = [
-                signal
-                for signal in expected
-                if normalized(signal) not in normalized(unit)
-            ]
-            if len(expected) < 2 or missing:
-                fail(
-                    item,
-                    "invalid_stop_signals_delivery",
-                    "The practice answer must include quality, balance, pain, and video-review stop signals.",
-                    unit=unit,
-                    details={"missing": missing},
-                )
         elif kind == "tactics.direction_branch":
             branch = parameters.get("branch", {}).get("label")
             axes = [
@@ -623,7 +713,7 @@ def audit_delivery_contract(context, units, violations):
                     details={"missing": missing},
                 )
         elif kind == "evidence.sources":
-            if context.get("answer_display_video_labels"):
+            if context.get("answer_complete_related_video_labels"):
                 if "核心视频与观看重点" not in "\n".join(units):
                     fail(
                         item,
@@ -644,6 +734,20 @@ def audit_delivery_contract(context, units, violations):
                     item,
                     "invalid_evidence_boundary_delivery",
                     "The evidence boundary is missing its scope or uncertainty statement.",
+                    unit=unit,
+                )
+        elif kind == "evidence.training_boundary":
+            required_groups = (
+                ("知识库", "当前证据", "来源"),
+                ("训练", "练习"),
+                ("时长", "组数", "频次", "多日", "计划"),
+                ("不", "不足", "不能", "只"),
+            )
+            if any(not any(term in unit for term in group) for group in required_groups):
+                fail(
+                    item,
+                    "invalid_training_boundary_delivery",
+                    "The answer invents or omits the corpus training-plan boundary.",
                     unit=unit,
                 )
     return coverage
@@ -676,12 +780,46 @@ def audit_answer(question, context, answer, rules=None):
     # A resolved clarification is a faithful acknowledgement of user input,
     # not a new technical assertion. Do not let overlapping words in that line
     # satisfy a claim or exceed its confidence ceiling.
-    nontechnical_prefixes = ("你已补充：", "问题解释：", "证据边界：")
+    nontechnical_prefixes = (
+        "你已补充：",
+        "问题解释：",
+        "证据边界：",
+        "- 为什么引用：",
+        "- 为什么值得看：",
+        "- 重点看：",
+    )
+    pending_questions = pending_clarification_questions(context)
     technical_units = [
         unit
         for unit in units
         if not unit.lstrip().startswith(nontechnical_prefixes)
+        and not re.match(
+            r"^-\s*(?:\*\*|__)?V\d+(?:\*\*|__)?\s*｜",
+            unit.lstrip(),
+        )
+        and normalized(re.sub(r"^-\s*", "", unit.lstrip()))
+        not in pending_questions
     ]
+    answer_contract = context.get("answer_contract", {})
+    if answer_contract.get("user_action_video_requests_forbidden"):
+        if contains_forbidden_user_action_video_request(
+            auditable_answer, rules
+        ):
+            add_violation(
+                violations,
+                "user_action_video_request_out_of_scope",
+                "The answer requests a user action video outside this Skill's scope.",
+            )
+    if answer_contract.get("synthetic_training_prescriptions_forbidden"):
+        pattern = compile_any(
+            rules["forbidden_synthetic_training_prescription_patterns"]
+        )
+        if pattern.search(auditable_answer):
+            add_violation(
+                violations,
+                "synthetic_training_prescription",
+                "The answer invents a time, set, frequency, or multi-day prescription.",
+            )
     claims = context.get("claim_evidence_map", [])
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
     selected_by_label, selected_by_evidence_id = selected_video_maps(context)
@@ -720,6 +858,8 @@ def audit_answer(question, context, answer, rules=None):
             "The supplied question does not match the question used to prepare the context.",
         )
 
+    audit_semantic_interpretation(question, context, violations)
+
     all_labels = labels_in(auditable_answer, label_pattern)
     for label in sorted(all_labels):
         if label not in selected_by_label:
@@ -745,6 +885,10 @@ def audit_answer(question, context, answer, rules=None):
         # Do not reinterpret their explicit status table as a free-form claim.
         if re.search(r"\[D[1-9]\d*\]", unit):
             continue
+        # Transcript windows are quoted source material, not the assistant's
+        # own certainty or universality claim. Audit the surrounding synthesis
+        # language while retaining the original unit for citation validation.
+        semantic_unit = re.sub(r"“[^”]*”", "“来源片段”", unit)
         unit_labels = labels_in(unit, label_pattern)
         unit_claims = matched_claims(unit, claims, rules, marker_pattern)
         for claim in unit_claims:
@@ -767,7 +911,7 @@ def audit_answer(question, context, answer, rules=None):
                 "unverified",
                 "conditional",
             }:
-                if certainty_pattern.search(unit) and not uncertainty_pattern.search(unit):
+                if certainty_pattern.search(semantic_unit) and not uncertainty_pattern.search(semantic_unit):
                     add_violation(
                         violations,
                         "unsupported_causal_certainty",
@@ -780,13 +924,13 @@ def audit_answer(question, context, answer, rules=None):
             if claim.get("status") not in {"supported", "conditional"}:
                 continue
             ceiling = claim.get("confidence_ceiling", "none")
-            if uncertainty_pattern.search(unit):
+            if uncertainty_pattern.search(semantic_unit):
                 # Negated certainty such as “不能确认唯一原因” is an
                 # uncertainty boundary, not a hard-certainty assertion.
                 assertion_rank = 1
-            elif certainty_pattern.search(unit):
+            elif certainty_pattern.search(semantic_unit):
                 assertion_rank = 3
-            elif conditional_pattern.search(unit):
+            elif conditional_pattern.search(semantic_unit):
                 assertion_rank = 1
             else:
                 assertion_rank = 2
@@ -813,7 +957,7 @@ def audit_answer(question, context, answer, rules=None):
                 or evidence.get("directness") == "component"
                 for evidence in cited_entries
             )
-            if limited and universal_pattern.search(unit):
+            if limited and universal_pattern.search(semantic_unit):
                 add_violation(
                     violations,
                     "evidence_scope_overreach",
@@ -1005,6 +1149,45 @@ def audit_answer(question, context, answer, rules=None):
                     "occurrences": auditable_answer.count(canonical_url),
                 },
             )
+        if context.get("answer_contract", {}).get(
+            "video_display_guidance_required"
+        ):
+            guidance = video_guidance_block(auditable_answer, label)
+            missing_guidance = [
+                heading
+                for heading in ("为什么引用：", "为什么值得看：", "重点看：")
+                if heading not in guidance
+            ]
+            if missing_guidance:
+                add_violation(
+                    violations,
+                    "incomplete_video_viewing_guidance",
+                    f"{label} is displayed without complete viewing guidance.",
+                    details={"label": label, "missing": missing_guidance},
+                )
+            elif not re.search(
+                r"重点看：.*(?:\d{1,2}:\d{2}|全片|无精确时间点)",
+                guidance,
+                re.S,
+            ):
+                add_violation(
+                    violations,
+                    "missing_video_focus_location",
+                    f"{label} has no timestamp, clip range, or honest full-video focus.",
+                    details={"label": label},
+                )
+
+    expected_related_labels = set(
+        context.get("answer_complete_related_video_labels", [])
+    )
+    missing_related_labels = sorted(expected_related_labels - all_labels)
+    if missing_related_labels:
+        add_violation(
+            violations,
+            "missing_complete_related_videos",
+            "The answer omits claim-authorized videos from the complete related list.",
+            details={"missing_labels": missing_related_labels},
+        )
 
     violations.sort(
         key=lambda item: (

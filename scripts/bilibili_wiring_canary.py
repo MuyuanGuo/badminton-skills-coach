@@ -16,7 +16,9 @@ SCHEMA_VERSION = 2
 MEASUREMENT_TYPE = "mechanical_wiring_canary_not_semantic_gold"
 DEFAULT_THRESHOLDS = {
     "retrieval_top_k": 5,
-    "maximum_packet_bytes": 16384,
+    # Keep this aligned with the canonical answer-packet hard cap. Mechanical
+    # wiring canaries must not impose a second, stale packet contract.
+    "maximum_packet_bytes": 32768,
     "maximum_top_k_results_per_cluster": 1,
     "maximum_packet_videos_per_cluster": 1,
 }
@@ -598,9 +600,27 @@ def packet_bytes(packet):
     )
 
 
+def packet_video_records(packet):
+    """Expand detailed and column-encoded packet video records."""
+
+    videos = list(packet.get("selected_videos", []))
+    catalog = packet.get("complete_related_video_catalog", {})
+    fields = catalog.get("fields", [])
+    for row in catalog.get("rows", []):
+        if len(row) == len(fields):
+            videos.append(
+                {
+                    field: value
+                    for field, value in zip(fields, row)
+                    if value is not None
+                }
+            )
+    return videos
+
+
 def packet_cluster_violations(packet, cluster_ids_by_video, maximum):
     counts = Counter()
-    for video in packet.get("selected_videos", []):
+    for video in packet_video_records(packet):
         evidence_id = str(video.get("evidence_id") or video.get("video_id") or "")
         for cluster_id in cluster_ids_by_video.get(evidence_id, []):
             counts[cluster_id] += 1
@@ -726,7 +746,7 @@ def evaluate_registry(
         packet_video = next(
             (
                 item
-                for item in packet.get("selected_videos", [])
+                for item in packet_video_records(packet)
                 if item.get("evidence_id") == expected
             ),
             None,

@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from numbers import Real
 from pathlib import Path
 
 import evaluate_answer_context
@@ -105,8 +106,31 @@ EVALUATION_INPUTS = (
     "data/evaluation/live_generation_results.json",
     "data/evaluation/query_equivalence_cases.json",
     "data/evaluation/query_understanding_cases.json",
+    "data/evaluation/runtime_generation_cases.json",
     "data/knowledge/douyin_knowledge_base.json",
     "data/knowledge/retrieval_index.json",
+)
+
+REQUIRED_QUALITY_HARD_GATE_METRICS = frozenset(
+    {
+        "answer_context.synthesis_video_recall",
+        "answer_context.core_video_recall",
+        "bilibili_positive_retrieval.passed",
+        "bilibili_positive_retrieval.pass_rate",
+        "bilibili_positive_retrieval.claim_mapping_rate",
+        "bilibili_positive_retrieval.failure_count",
+        "feedback_lifecycle.status",
+        "feedback_lifecycle.contract_accuracy",
+        "feedback_lifecycle.leaked_private_fields",
+        "feedback_lifecycle.signals_missing_reverified_provenance",
+        "feedback_lifecycle.failures",
+        "metamorphic_robustness.base_cases",
+        "metamorphic_robustness.variants",
+        "metamorphic_robustness.passed",
+        "metamorphic_robustness.pass_rate",
+        "metamorphic_robustness.failed",
+        "live_generation.critical_cases",
+    }
 )
 
 
@@ -439,12 +463,21 @@ def collect_evaluations(root=ROOT, workers=1, timings=None):
                 "cases",
                 "expected_videos",
                 "candidate_recall",
+                "semantic_answerable_video_recall",
                 "selected_video_recall",
+                "claim_mapped_video_recall",
+                "synthesis_video_recall",
+                "complete_related_video_recall",
+                "synthesis_display_expected_videos",
+                "core_video_recall",
+                "mean_video_count_by_layer",
                 "primary_selected_rate",
                 "answer_mode_accuracy",
                 "context_evidence_coverage",
                 "hard_negative_selected_violations",
                 "selection_truncated_cases",
+                "retrieval_query_budget_truncated_cases",
+                "retrieval_query_omitted_count",
                 "evaluation_fixture_isolation",
             )
         },
@@ -602,6 +635,10 @@ def metric_value(evaluations, path):
     return value
 
 
+def numeric_metric(value):
+    return isinstance(value, Real) and not isinstance(value, bool)
+
+
 def compare_baseline(evaluations, baseline):
     comparisons = []
     invalidated = set(baseline.get("invalidated_metrics", {}))
@@ -618,26 +655,54 @@ def compare_baseline(evaluations, baseline):
             contract_source = expected_source
         tolerance = contract.get("tolerance", 0)
         direction = contract["direction"]
-        if direction == "at_least":
-            passed = current + tolerance >= expected
-        elif direction == "at_most":
-            passed = current - tolerance <= expected
-        elif direction == "equal":
+        failure_reason = None
+        if direction == "equal":
             passed = current == expected
-        else:
+        elif direction not in {"at_least", "at_most"}:
             raise ValueError(f"Unsupported baseline direction: {direction}")
-        comparisons.append(
-            {
-                "metric": path,
-                "current": current,
-                "baseline": expected,
-                "direction": direction,
-                "tolerance": tolerance,
-                "contract_source": contract_source,
-                "passed": passed,
-            }
-        )
+        elif not numeric_metric(current):
+            passed = False
+            failure_reason = "non_numeric_current"
+        elif not numeric_metric(expected):
+            passed = False
+            failure_reason = "non_numeric_baseline"
+        elif not numeric_metric(tolerance):
+            passed = False
+            failure_reason = "non_numeric_tolerance"
+        elif direction == "at_least":
+            passed = current + tolerance >= expected
+        else:
+            passed = current - tolerance <= expected
+        comparison = {
+            "metric": path,
+            "current": current,
+            "baseline": expected,
+            "direction": direction,
+            "tolerance": tolerance,
+            "contract_source": contract_source,
+            "passed": passed,
+        }
+        if failure_reason is not None:
+            comparison["failure_reason"] = failure_reason
+        comparisons.append(comparison)
     return comparisons
+
+
+def validate_quality_hard_gate_contract(baseline):
+    metrics = set(baseline.get("metrics", {}))
+    invalidated = set(baseline.get("invalidated_metrics", {}))
+    missing = sorted(REQUIRED_QUALITY_HARD_GATE_METRICS - metrics)
+    disabled = sorted(REQUIRED_QUALITY_HARD_GATE_METRICS & invalidated)
+    if missing or disabled:
+        details = []
+        if missing:
+            details.append("missing=" + ",".join(missing))
+        if disabled:
+            details.append("invalidated=" + ",".join(disabled))
+        raise ValueError(
+            "quality hard-gate baseline contract is incomplete: "
+            + "; ".join(details)
+        )
 
 
 def load_evaluation_results(path, root=ROOT):
@@ -660,6 +725,7 @@ def build_report(root=ROOT, evaluations=None):
     stable_version = versions["stable_version"]
     baseline_key = f"v{stable_version}"
     baseline = baselines["baselines"][baseline_key]
+    validate_quality_hard_gate_contract(baseline)
     evaluations = evaluations if evaluations is not None else collect_evaluations(root)
     comparisons = compare_baseline(evaluations, baseline)
     regressions = [item for item in comparisons if not item["passed"]]

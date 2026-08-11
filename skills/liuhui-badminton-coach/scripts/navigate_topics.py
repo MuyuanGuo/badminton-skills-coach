@@ -200,63 +200,13 @@ def infer_practice_setup(query):
     return "unknown"
 
 
-def chinese_number(text):
-    digits = {
-        "零": 0,
-        "〇": 0,
-        "一": 1,
-        "二": 2,
-        "两": 2,
-        "三": 3,
-        "四": 4,
-        "五": 5,
-        "六": 6,
-        "七": 7,
-        "八": 8,
-        "九": 9,
-    }
-    units = {"十": 10, "百": 100}
-    if not any(char in units for char in text):
-        return int("".join(str(digits[char]) for char in text))
-    total = 0
-    current = 0
-    for char in text:
-        if char in digits:
-            current = digits[char]
-        else:
-            total += (current or 1) * units[char]
-            current = 0
-    return total + current
-
-
-def infer_session_minutes(query, default):
-    text = normalize(query)
-    match = re.search(r"(\d{1,3})分钟", text)
-    if match:
-        return int(match.group(1)), "query"
-    chinese_match = re.search(
-        r"([零〇一二两三四五六七八九十百]{1,5})分钟", text
-    )
-    if chinese_match:
-        return chinese_number(chinese_match.group(1)), "query"
-    if "半小时" in text:
-        return 30, "query"
-    if "一小时" in text or "1小时" in text:
-        return 60, "query"
-    return default, "default"
-
-
 def build_user_context(
     query,
-    rules,
+    rules=None,
     level="auto",
     discipline="auto",
     setup="auto",
-    session_minutes=None,
 ):
-    inferred_minutes, minutes_source = infer_session_minutes(
-        query, rules["default_session_minutes"]
-    )
     inferred_level = infer_signal(query, LEVEL_SIGNALS)
     inferred_discipline = infer_signal(query, DISCIPLINE_SIGNALS)
     inferred_setup = infer_practice_setup(query)
@@ -267,9 +217,6 @@ def build_user_context(
         ),
         "practice_setup": (
             inferred_setup if setup == "auto" else setup
-        ),
-        "session_minutes": (
-            inferred_minutes if session_minutes is None else session_minutes
         ),
         "handedness": (
             "left" if any(term in normalize(query) for term in ["左手", "左拍"]) else
@@ -301,55 +248,9 @@ def build_user_context(
                 if inferred_setup != "unknown"
                 else "default"
             ),
-            "session_minutes": minutes_source if session_minutes is None else "argument",
         },
     }
-    minimum, maximum = rules["session_minutes_range"]
-    if not minimum <= context["session_minutes"] <= maximum:
-        raise ValueError(
-            f"session minutes must be between {minimum} and {maximum}"
-        )
     return context
-
-
-def allocate_minutes(total):
-    labels = ["warm_up", "isolated_cue", "pressure_or_decision", "self_check"]
-    weights = [0.2, 0.4, 0.3, 0.1]
-    minutes = [1, 1, 1, 1]
-    remaining = total - sum(minutes)
-    raw = [remaining * weight for weight in weights]
-    additions = [int(value) for value in raw]
-    minutes = [base + addition for base, addition in zip(minutes, additions)]
-    for index in sorted(
-        range(len(raw)),
-        key=lambda item: raw[item] - additions[item],
-        reverse=True,
-    )[: total - sum(minutes)]:
-        minutes[index] += 1
-    return dict(zip(labels, minutes))
-
-
-def practice_adaptation(context, rules):
-    return {
-        "session_minutes": context["session_minutes"],
-        "minute_allocation": allocate_minutes(context["session_minutes"]),
-        "level_focus": rules["levels"][context["level"]],
-        "setup_adaptation": rules["practice_setups"][context["practice_setup"]],
-        "discipline_boundary": rules["discipline_boundaries"][context["discipline"]],
-        "segment_labels": rules["segment_labels"],
-        "segment_instructions": rules["segment_instructions"],
-        "three_day_progression": rules["three_day_progression"],
-        "two_week_consolidation": rules["two_week_consolidation"],
-        "success_criteria": rules["success_criteria"],
-        "common_errors": rules["common_errors"],
-        "bounded_synthesis_statement": rules["bounded_synthesis_statement"],
-        "quality_stop_rules": rules["quality_stop_rules"],
-        "pain_boundary": (
-            "问题包含疼痛或受伤信号：停止相关动作，先由合格医疗专业人士评估；本路径不作诊断。"
-            if context["pain_or_injury"]
-            else None
-        ),
-    }
 
 
 def clarification_questions(context):
@@ -365,33 +266,39 @@ def clarification_questions(context):
     return questions[:2]
 
 
-def learning_path(matches, context, rules):
+def learning_path(matches, context, rules=None):
+    """Return evidence-navigation stages, never a synthetic training plan."""
+
     if not matches:
         return []
     primary = matches[0]
     reps = primary["representative_videos"]
-    level_rule = rules["levels"][context["level"]]
-    setup_rule = rules["practice_setups"][context["practice_setup"]]
-    discipline_rule = rules["discipline_boundaries"][context["discipline"]]
+    discipline = context.get("discipline", "unknown")
+    discipline_boundary = {
+        "singles": "只在单打约束内核对站位、回位和线路结论",
+        "doubles": "只在双打约束内核对搭档职责、站位和线路结论",
+        "both": "分别核对单双打证据，不能把一方规则直接迁移到另一方",
+        "unknown": "需要站位或战术结论时，先区分单打与双打证据",
+    }[discipline]
     return [
         {
-            "stage": "基础定位",
-            "goal": f"先确认问题属于「{primary['category']} / {primary['subtopic']}」的哪个场景。",
+            "stage": "主题定位",
+            "goal": f"把问题定位到「{primary['category']} / {primary['subtopic']}」，并保留用户原始场景。",
             "evidence_leads": reps[:1],
         },
         {
-            "stage": "动作原则",
-            "goal": f"用最强的一到两个证据视频提炼动作原则；当前水平重点：{level_rule['focus']}。",
+            "stage": "证据拆分",
+            "goal": "分别检索动作机制、可观察错误和适用条件；每个结论只使用直接覆盖它的来源。",
             "evidence_leads": reps[:2],
         },
         {
-            "stage": "单点练习",
-            "goal": f"把原则拆成一个可观察 cue，按 {context['session_minutes']} 分钟单次练习分配执行。训练条件：{setup_rule}。",
+            "stage": "场景边界",
+            "goal": discipline_boundary + "。",
             "evidence_leads": reps[:2],
         },
         {
-            "stage": "对抗迁移",
-            "goal": f"按“{level_rule['pressure']}”增加压力，只保留一个自测标准。项目边界：{discipline_rule}。",
+            "stage": "答案取舍",
+            "goal": "只展示实际参与最终回答的视频，并逐条说明引用原因、观看价值和观看重点。",
             "evidence_leads": reps[:3],
         },
     ]
@@ -416,7 +323,6 @@ def main():
         choices=["auto", "solo", "partner", "coach", "unknown"],
         default="auto",
     )
-    parser.add_argument("--session-minutes", type=int)
     args = parser.parse_args()
 
     if not args.query.strip():
@@ -433,7 +339,6 @@ def main():
             level=args.level,
             discipline=args.discipline,
             setup=args.practice_setup,
-            session_minutes=args.session_minutes,
         )
     except ValueError as error:
         raise SystemExit(str(error)) from error
@@ -452,7 +357,13 @@ def main():
         "matches": matches,
         "suggested_search_queries": suggested_queries(args.query, matches),
         "learning_path": learning_path(matches, context, practice_rules),
-        "practice_adaptation": practice_adaptation(context, practice_rules),
+        "training_boundary": {
+            "mode": practice_rules["mode"],
+            "statement": practice_rules["training_boundary_statement"],
+            "synthetic_fields_forbidden": practice_rules[
+                "synthetic_fields_forbidden"
+            ],
+        },
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 

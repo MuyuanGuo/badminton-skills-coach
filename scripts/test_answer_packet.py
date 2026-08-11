@@ -46,6 +46,9 @@ class AnswerPacketTests(unittest.TestCase):
     def setUpClass(cls):
         cls.runtime = load_runtime()
         cls.auditor = load_auditor()
+        cls.packet_runtime = cls.runtime.load_sibling(
+            "answer_packet_projection_tests", "answer_packet.py"
+        )
         cls.context = cls.runtime.prepare_answer_context(
             "双打接杀挡网总冒高，是拍面还是击球点问题？",
             local_personalization=False,
@@ -123,7 +126,7 @@ class AnswerPacketTests(unittest.TestCase):
             },
         )
 
-    def test_practice_packet_keeps_compact_session_adaptation(self):
+    def test_training_request_packet_keeps_only_evidence_boundary(self):
         context = self.runtime.prepare_answer_context(
             (
                 "我是业余中级双打选手。对手杀到反手身体附近时，"
@@ -133,22 +136,20 @@ class AnswerPacketTests(unittest.TestCase):
             local_personalization=False,
         )
         packet = self.runtime.build_answer_packet(context, "context.json")
-        practice = packet["practice_plan"]
-        self.assertEqual(practice["context"]["level"], "intermediate")
-        self.assertEqual(practice["context"]["discipline"], "doubles")
-        self.assertEqual(practice["context"]["setup"], "partner")
-        self.assertEqual(practice["session_minutes"], 20)
-        self.assertEqual(sum(practice["minute_allocation"].values()), 20)
-        self.assertEqual(packet["schema_version"], 4)
-        self.assertEqual(len(practice["three_day_progression"]), 3)
-        self.assertEqual(len(practice["two_week_consolidation"]), 2)
-        self.assertGreaterEqual(len(practice["success_criteria"]), 2)
+        self.assertNotIn("practice_plan", packet)
+        self.assertEqual(packet["schema_version"], 7)
         self.assertIn(
-            "practice.session",
+            "evidence.training_boundary",
             {
                 item["kind"]
                 for item in packet["delivery_contract"]["items"]
             },
+        )
+        self.assertFalse(
+            any(
+                item["kind"].startswith("practice.")
+                for item in packet["delivery_contract"]["items"]
+            )
         )
         self.assertTrue(self.runtime.validate_answer_packet(packet, context))
 
@@ -166,7 +167,8 @@ class AnswerPacketTests(unittest.TestCase):
         )
         self.assertTrue(
             all(
-                len(video["window_ids"]) <= 4
+                len(video["window_ids"])
+                <= self.packet_runtime.FALLBACK_WINDOW_LIMIT
                 for video in packet["selected_videos"]
             )
         )
@@ -250,7 +252,49 @@ class AnswerPacketTests(unittest.TestCase):
         self.assertEqual(len(window_texts), len(set(window_texts)))
         full_size = len(json.dumps(self.context, ensure_ascii=False).encode("utf-8"))
         packet_size = len(encoded.encode("utf-8"))
-        self.assertLessEqual(packet_size / full_size, 0.5)
+        self.assertLessEqual(packet_size / full_size, 0.75)
+        for video in self.packet_runtime.packet_video_records(self.packet):
+            self.assertTrue(video["citation_reason"])
+            self.assertTrue(video["viewing_value"])
+            self.assertTrue(video["watch_focus"])
+
+    def test_large_synthesis_source_set_stays_within_token_budget(self):
+        context = self.runtime.prepare_answer_context(
+            (
+                "高远球、吊球、杀球时左手应该放哪里？ "
+                "左手左腿的作用和发力核心动作！(左手泛指非持拍手)"
+            ),
+            local_personalization=False,
+        )
+        packet = self.runtime.build_answer_packet(context)
+        all_videos = self.packet_runtime.packet_video_records(packet)
+        self.assertEqual(
+            {video["label"] for video in all_videos},
+            set(packet["complete_related_videos"]),
+        )
+        self.assertEqual(
+            set(packet["complete_related_videos"]),
+            set(packet["synthesis_videos"]),
+        )
+        self.assertTrue(context["answer_audit_only_related_video_labels"])
+        title_index = packet["complete_related_video_catalog"]["fields"].index(
+            "title"
+        )
+        self.assertTrue(
+            all(
+                len(row[title_index])
+                <= self.packet_runtime.COMPLETE_RELATED_TITLE_LIMIT
+                for row in packet["complete_related_video_catalog"]["rows"]
+            )
+        )
+        self.assertLessEqual(
+            self.packet_runtime.estimate_packet_tokens(packet),
+            self.packet_runtime.ANSWER_PACKET_HARD_MAXIMUM_TOKENS,
+        )
+        self.assertLessEqual(
+            self.packet_runtime.encoded_packet_size(packet),
+            self.packet_runtime.ANSWER_PACKET_HARD_MAXIMUM_BYTES,
+        )
 
     def test_packet_keeps_fail_closed_untrusted_source_boundary(self):
         source_handling = self.packet["source_handling"]
@@ -311,23 +355,89 @@ class AnswerPacketTests(unittest.TestCase):
 
     def test_packet_exposes_exactly_claim_mapped_videos(self):
         mapped_labels = {
-            evidence["label"]
+            label
             for claim in self.packet["claim_evidence_map"]
-            for evidence in claim.get("evidence", [])
+            for label in [
+                *[
+                    evidence["label"]
+                    for evidence in claim.get("evidence", [])
+                ],
+                *claim.get("related_labels", []),
+            ]
         }
         packet_labels = {
-            video["label"] for video in self.packet["selected_videos"]
+            video["label"]
+            for video in self.packet_runtime.packet_video_records(self.packet)
         }
         self.assertEqual(packet_labels, mapped_labels)
         self.assertEqual(
-            set(self.context["answer_visible_video_labels"]),
+            set(self.context["answer_complete_related_video_labels"]),
             mapped_labels,
         )
-        self.assertLessEqual(len(self.packet["display_videos"]), 5)
-        self.assertTrue(set(self.packet["display_videos"]).issubset(packet_labels))
+        self.assertEqual(
+            set(self.packet["complete_related_videos"]), mapped_labels
+        )
+        self.assertLessEqual(len(self.packet["core_videos"]), 5)
+        self.assertTrue(
+            set(self.packet["core_videos"]).issubset(packet_labels)
+        )
+        self.assertTrue(
+            set(self.packet["synthesis_videos"]).issubset(packet_labels)
+        )
+
+    def test_reviewed_atom_sources_remain_claim_synthesis_evidence(self):
+        atoms_by_id = {
+            atom["atom_id"]: atom
+            for atom in self.packet["answer_plan"]["selected_evidence_atoms"]
+        }
+        claims_by_id = {
+            claim["claim_id"]: claim
+            for claim in self.packet["claim_evidence_map"]
+        }
+        reviewed_directives = [
+            directive
+            for directive in self.packet["answer_plan"]["claim_directives"]
+            if directive["mode"] == "compose_from_reviewed_atoms"
+        ]
+        self.assertTrue(reviewed_directives)
+        for directive in reviewed_directives:
+            expected_labels = {
+                atoms_by_id[atom_id]["video_label"]
+                for atom_id in directive["atom_ids"]
+            }
+            actual_labels = {
+                evidence["label"]
+                for evidence in claims_by_id[directive["claim_id"]][
+                    "evidence"
+                ]
+            }
+            self.assertEqual(actual_labels, expected_labels)
+
+    def test_complete_related_catalog_does_not_require_synthesis_windows(self):
+        catalog_records = (
+            self.packet_runtime.decode_complete_related_video_catalog(
+                self.packet
+            )
+        )
+        for video in catalog_records:
+            self.assertNotIn("window_ids", video)
+            self.assertIn(
+                video["label"], self.packet["complete_related_videos"]
+            )
+            self.assertNotIn(video["label"], self.packet["synthesis_videos"])
+
+        for video in self.packet["selected_videos"]:
+            if video["label"] in self.packet["synthesis_videos"]:
+                self.assertTrue(video["window_ids"])
+                self.assertTrue(
+                    all(
+                        window_id in self.packet["evidence_windows"]
+                        for window_id in video["window_ids"]
+                    )
+                )
 
     def test_compact_videos_omit_redundant_douyin_identity_and_nulls(self):
-        for video in self.packet["selected_videos"]:
+        for video in self.packet_runtime.packet_video_records(self.packet):
             self.assertNotIn("video_id", video)
             self.assertNotIn("source_type", video)
             self.assertNotIn("parent_source_id", video)

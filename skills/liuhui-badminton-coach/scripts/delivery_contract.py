@@ -22,6 +22,7 @@ _PLAN_TERMS = (
 )
 _BOUNDARY_ONLY_PATTERNS = (
     re.compile(r"^(?:没有|无|暂时没有).*(?:视频|录像).*(?:不要|不能).*(?:说死|确认唯一原因)$"),
+    re.compile(r"^(?:当前)?信息不足时.*(?:不要|不能).*(?:说死|确认唯一原因)$"),
     re.compile(r"^(?:请)?(?:说明|保留|给出)?(?:证据|适用|置信)边界$"),
 )
 _DELIVERY_TAIL_STARTS = (
@@ -245,23 +246,13 @@ def build_delivery_contract(
     requested_output = (
         question_interpretation.get("intent_frame", {}).get("requested_output")
     )
-    practice = (topic_navigation or {}).get("practice_adaptation") or {}
-    if requested_output == "practice" and practice:
+    if requested_output == "practice":
         _append(
             items,
-            "practice.session",
-            "精确时长的单次训练",
-            {
-                "session_minutes": practice.get("session_minutes"),
-                "minute_allocation": practice.get("minute_allocation", {}),
-            },
-            source_units,
+            "evidence.training_boundary",
+            "训练方案证据边界",
+            source_units=source_units,
         )
-        _append(items, "practice.three_day", "三天纠正进度", source_units=source_units)
-        _append(items, "practice.two_week", "两周巩固进度", source_units=source_units)
-        _append(items, "practice.success_criteria", "可观察成功标准", source_units=source_units)
-        _append(items, "practice.common_errors", "常见错误", source_units=source_units)
-        _append(items, "practice.stop_signals", "停止与复核信号", source_units=source_units)
 
     directions = _direction_branches(query)
     decision_requested = directions and any(
