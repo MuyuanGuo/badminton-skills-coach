@@ -1,10 +1,39 @@
 {
-  "updated_at": "2026-08-08T06:19:06.973134+00:00",
+  "updated_at": "2026-08-11T09:19:35.101718+00:00",
   "source": "data/douyin_teaching_filtered.json",
   "counts": {
-    "transcribed": 414
+    "transcribed": 415
   },
   "items": [
+    {
+      "video_id": "7672254579832899185",
+      "url": "https://www.douyin.com/video/7672254579832899185",
+      "title": "4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "category": "网前技术",
+      "tags": "网前技术；发力与身体运用；单打战术",
+      "status": "transcribed",
+      "classification_decision": "保留：教学",
+      "classification_reason": "包含明确技术、训练、纠错或战术信号",
+      "classification_rules_version": 4,
+      "classification_rules_hash": "1e395efd8f6bb2adfbda9ae0ae9774c9049e536f8726a37efd7123969fbe0480",
+      "classified_at": "2026-08-11T08:31:07.671958+00:00",
+      "retrieval_cohort": "automatic_expansion",
+      "media_path": null,
+      "duration_seconds": 258.37,
+      "attempts": 2,
+      "error": null,
+      "download_attempts": 2,
+      "error_stage": null,
+      "last_attempt_at": "2026-08-11T08:33:56.559819+00:00",
+      "transcript_model": "small",
+      "transcript_language": "zh",
+      "transcript_source_sha256": "d5f038747ce9a8cc27a156bb44c47b13425fec2209b96c93b382e2fcee127df1",
+      "transcript_source_bytes": 18192519,
+      "transcript_text_characters": 1117,
+      "transcription_retry_attempts": 0,
+      "transcription_retryable": false,
+      "transcription_isolated_at": null
+    },
     {
       "video_id": "7670988159002607355",
       "url": "https://www.douyin.com/video/7670988159002607355",

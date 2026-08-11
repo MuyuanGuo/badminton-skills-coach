@@ -29,7 +29,7 @@ You are viewing the `develop` branch; the current development version is **2.1.3
 | 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
 | 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
 
-当前 build：`6239b7a644fc…`。`develop` is the integration branch；`main` is the stable release source。
+当前 build：`34c052597ca6…`。`develop` is the integration branch；`main` is the stable release source。
 
 ## 从用户提问到最终回答 / From user question to final answer
 
@@ -120,11 +120,11 @@ These values are rendered from the controlled data and evaluation report on this
 
 | 指标 | 当前值 | 说明 |
 | --- | ---: | --- |
-| 已处理公开视频 | 1247 | 完整来源目录，不等于全部可回答内容 |
+| 已处理公开视频 | 1248 | 完整来源目录，不等于全部可回答内容 |
 | B 站完整来源目录 | 767 | 599 条回答就绪、168 条策略排除或质量隔离、0 条待处理 |
-| 可用于回答的教学视频 | 958 | 只有 ready 内容进入证据池 |
-| 主证据 / 受限补充证据 | 783 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
-| 转写证据 | 765 | 7,744/7,744 条转写证据包含时间戳 |
+| 可用于回答的教学视频 | 959 | 只有 ready 内容进入证据池 |
+| 主证据 / 受限补充证据 | 784 / 175 | 主证据优先；补充证据只使用命中的时间戳窗口 |
+| 转写证据 | 766 | 7,754/7,754 条转写证据包含时间戳 |
 | 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
 | 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
 | 回答质量黄金用例 | 57/57 | 覆盖技术、诊断、战术、训练与证据边界 |
@@ -137,11 +137,11 @@ These values are rendered from the controlled data and evaluation report on this
 
 | Metric | Current value |
 | --- | ---: |
-| Processed public videos | 1247 |
+| Processed public videos | 1248 |
 | Bilibili full source catalog | 767: 599 answer-ready, 168 policy-excluded or quality-isolated, 0 pending |
-| Ready teaching videos | 958 |
-| Primary / bounded supplemental evidence | 783 / 175 |
-| Transcript-backed evidence | 765 |
+| Ready teaching videos | 959 |
+| Primary / bounded supplemental evidence | 784 / 175 |
+| Transcript-backed evidence | 766 |
 | Bounded timestamp-window evidence | 174 |
 | Reviewed visual-summary fallbacks | 19 |
 | Answer-quality gold cases | 57/57 |
@@ -150,7 +150,7 @@ These values are rendered from the controlled data and evaluation report on this
 | Current-runtime generated answer audits | 20/20 |
 | Evaluation suites / enforced baseline metrics | 14 / 74 |
 
-All 7,744 transcript evidence items have timestamps.
+All 7,754 transcript evidence items have timestamps.
 
 ## 回答质量怎样被门禁 / How answer quality is gated
 
