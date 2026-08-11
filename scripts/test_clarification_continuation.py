@@ -535,7 +535,7 @@ class ClarificationMechanismRetentionIntegrationTests(unittest.TestCase):
             local_personalization=False,
         )
         cls.second = cls.runtime.prepare_answer_context(
-            "发生时是被动、球最后落在对手中场，以及触球点在体侧或身后",
+            "发生时是被动、球最后落在对手中场，而且我怀疑击球点不对",
             max_videos=10,
             local_personalization=False,
             continue_from=cls.first,
@@ -603,6 +603,24 @@ class ClarificationMechanismRetentionIntegrationTests(unittest.TestCase):
         self.assertEqual(actor["opponent_query"], "")
         self.assertEqual(actor["opponent_constraints"], {})
         self.assertNotIn("court_zone", actor["target_constraints"])
+
+    def test_generic_context_answer_does_not_reask_a_covered_mechanism(self):
+        continued = self.runtime.prepare_answer_context(
+            "一般是被动，球落在对手中场，触球点已经在身体后面",
+            max_videos=10,
+            local_personalization=False,
+            continue_from=self.first,
+        )
+        pending_ids = set(
+            continued["clarification_state"]["pending_question_ids"]
+        )
+        self.assertNotIn("clarify.mechanism.contact_point", pending_ids)
+        contact = next(
+            item
+            for item in continued["diagnostic_model"]["supported_mechanisms"]
+            if item["mechanism_id"] == "contact_point"
+        )
+        self.assertTrue(contact["eligible_video_labels"])
 
 
 if __name__ == "__main__":

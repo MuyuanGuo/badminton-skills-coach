@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "runtime_fingerprint": "289665aa62291dafd784fe9fadbd8dccf99909c411607c1f3354f7c18bf5c767",
-  "answer_runtime_fingerprint": "0e62ba83e18b093736c15401e54216a7f39ca5df0fe327e7f222c3462c534181",
+  "runtime_fingerprint": "5d913bddb79d779060ee2f83082eaa65fd5653654c7ba064bc4a94c94ba9158c",
+  "answer_runtime_fingerprint": "2d598b3fd8423e5160e6c4eff9e6fc203ab7b098d649dcf3241242526473a15c",
   "generated_at": "2026-08-11",
   "generator": {
     "type": "deterministic_answer_renderer",
@@ -11,7 +11,7 @@
   "validation": {
     "method": "current_runtime_full_context_audit",
     "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-    "implementation_sha256": "45055ee8d8d340737239f7870f187e04e7752ff4f159b4ef18faf7cdc0069c3f"
+    "implementation_sha256": "2889aaff59fc2a40fb08c596d1f90e9ce667ac3f735328115da6e24a55970b42"
   },
   "cases": [
     {

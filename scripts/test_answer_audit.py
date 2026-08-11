@@ -81,6 +81,62 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in audit["violations"]},
         )
 
+    def test_cannot_lock_unique_cause_is_not_hard_certainty(self):
+        context = copy.deepcopy(self.context)
+        context["claim_evidence_map"][0]["confidence_ceiling"] = "low"
+        answer = self.cases["answers"]["complete_conditional"].replace(
+            "杀球后经常来不及上网，可以先按两个分支排查；"
+            "仅凭文字不能确认唯一原因，需要连续动作视频确认。[V1]",
+            "杀球后经常来不及上网，当前还不能锁定唯一原因。[Q1][V1]",
+        )
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertNotIn(
+            "confidence_ceiling_exceeded",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_negated_user_video_request_is_a_valid_scope_boundary(self):
+        context = copy.deepcopy(self.context)
+        context.setdefault("answer_contract", {})[
+            "user_action_video_requests_forbidden"
+        ] = True
+        answer = self.cases["answers"]["complete_conditional"].replace(
+            "需要连续动作视频确认",
+            "不需要也不会要求你提供动作视频",
+        )
+        audit = self.auditor.audit_answer(context["query"], context, answer)
+        self.assertNotIn(
+            "user_action_video_request_out_of_scope",
+            {item["code"] for item in audit["violations"]},
+        )
+
+        unsafe = answer.replace(
+            "不需要也不会要求你提供动作视频",
+            "请提供连续动作视频",
+        )
+        unsafe_audit = self.auditor.audit_answer(
+            context["query"], context, unsafe
+        )
+        self.assertIn(
+            "user_action_video_request_out_of_scope",
+            {item["code"] for item in unsafe_audit["violations"]},
+        )
+
+    def test_video_guidance_block_accepts_markdown_emphasis(self):
+        answer = (
+            "- **V1｜反手被动高远**（证据 ID：7546109410041908538）\n"
+            "  **为什么引用：**支持被动反手的条件分支。\n"
+            "  **为什么值得看：**可以比较架拍位置。\n"
+            "  **重点看：**01:02-01:10。\n"
+            "- **V2**｜后场步法（证据 ID：7248074193118547240）\n"
+            "  **为什么引用：**支持脚下衔接分支。"
+        )
+        block = self.auditor.RUNTIME.video_guidance_block(answer, "V1")
+        self.assertIn("为什么引用：", block)
+        self.assertIn("为什么值得看：", block)
+        self.assertIn("重点看：", block)
+        self.assertNotIn("V2", block)
+
     def test_claim_level_allowlist_rejects_globally_selected_wrong_video(self):
         audit = self.audit_named_answer("citation_mismatch")
         violations = [

@@ -60,10 +60,33 @@ def answer_units(answer):
 
 def video_guidance_block(answer, label):
     pattern = re.compile(
-        rf"(?ms)^-\s*{re.escape(label)}｜.*?(?=^-\s*V[1-9]\d*｜|^##\s|\Z)"
+        rf"(?ms)^-\s*(?:\*\*|__)?{re.escape(label)}(?:\*\*|__)?\s*｜.*?"
+        rf"(?=^-\s*(?:\*\*|__)?V[1-9]\d*(?:\*\*|__)?\s*｜|^##\s|\Z)"
     )
     match = pattern.search(answer)
     return match.group(0) if match else ""
+
+
+def contains_forbidden_user_action_video_request(answer, rules):
+    """Distinguish affirmative video requests from explicit scope boundaries."""
+
+    request_pattern = compile_any(
+        rules["forbidden_user_action_video_request_patterns"]
+    )
+    negated_prefix = re.compile(r"(?:不|未)\s*(?:应当|应该)?\s*$")
+    negated_request = re.compile(
+        r"^(?:请|需要|必须|建议).{0,12}"
+        r"(?:不要|不得|别|无需|不用|不必|不).{0,8}"
+        r"(?:提供|上传|发送)"
+    )
+    for match in request_pattern.finditer(answer):
+        prefix = answer[max(0, match.start() - 6) : match.start()]
+        if negated_prefix.search(prefix):
+            continue
+        if negated_request.search(match.group(0)):
+            continue
+        return True
+    return False
 
 
 def pending_clarification_questions(context):
@@ -770,16 +793,18 @@ def audit_answer(question, context, answer, rules=None):
         unit
         for unit in units
         if not unit.lstrip().startswith(nontechnical_prefixes)
-        and not re.match(r"^-\s*V\d+｜", unit.lstrip())
+        and not re.match(
+            r"^-\s*(?:\*\*|__)?V\d+(?:\*\*|__)?\s*｜",
+            unit.lstrip(),
+        )
         and normalized(re.sub(r"^-\s*", "", unit.lstrip()))
         not in pending_questions
     ]
     answer_contract = context.get("answer_contract", {})
     if answer_contract.get("user_action_video_requests_forbidden"):
-        pattern = compile_any(
-            rules["forbidden_user_action_video_request_patterns"]
-        )
-        if pattern.search(auditable_answer):
+        if contains_forbidden_user_action_video_request(
+            auditable_answer, rules
+        ):
             add_violation(
                 violations,
                 "user_action_video_request_out_of_scope",

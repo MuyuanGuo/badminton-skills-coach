@@ -554,6 +554,20 @@ def build_diagnostic_contract(
         for focus in [item.get("evidence_focus") or {}]
         if focus.get("kind") == "mechanism" and focus.get("id")
     }
+
+    def resolved_answers_cover_cues(answer_cues):
+        normalized_cues = [
+            search_module.normalize(cue)
+            for cue in answer_cues
+            if search_module.normalize(cue)
+        ]
+        if not normalized_cues:
+            return False
+        return any(
+            cue in search_module.normalize(item.get("answer", ""))
+            for item in resolved_answers
+            for cue in normalized_cues
+        )
     intent_frame = question_interpretation["intent_frame"]
     user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     observed_symptoms = diagnostic_observed_symptoms(
@@ -867,7 +881,13 @@ def build_diagnostic_contract(
     clarification_requests = []
     for branch in branches:
         question_id = f'clarify.branch.{branch["axis"]}'
-        if question_id in resolved_question_ids:
+        answer_cues = [
+            item["label"].removesuffix("分支")
+            for item in branch["branches"]
+        ]
+        if question_id in resolved_question_ids or resolved_answers_cover_cues(
+            answer_cues
+        ):
             continue
         clarification_requests.append(
             {
@@ -882,10 +902,7 @@ def build_diagnostic_contract(
                 "purpose": f'{branch["label"]}会改变适用的诊断分支和视频证据。',
                 "materially_affects": ["diagnosis", "evidence_selection"],
                 "answer_format": "free_text_with_one_branch_value",
-                "answer_cues": [
-                    item["label"].removesuffix("分支")
-                    for item in branch["branches"]
-                ],
+                "answer_cues": answer_cues,
             }
         )
     for mechanism_record in supported_mechanisms:
@@ -895,6 +912,9 @@ def build_diagnostic_contract(
         if (
             question
             and question_id not in resolved_question_ids
+            and not resolved_answers_cover_cues(
+                mechanism.get("answer_cues", [])
+            )
             and question not in {
                 item["question"] for item in clarification_requests
             }
@@ -942,8 +962,13 @@ def build_diagnostic_contract(
                     "中场",
                     "后场",
                     "身前",
+                    "身体前面",
+                    "身体前方",
                     "体侧",
+                    "身体侧面",
                     "身后",
+                    "身体后面",
+                    "身体后方",
                 ],
             }
         )
