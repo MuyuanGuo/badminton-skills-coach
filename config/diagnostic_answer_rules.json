@@ -1,6 +1,9 @@
 {
-  "version": 11,
+  "version": 23,
   "description": "Deterministic rules for separating reported symptoms, user hypotheses, source-supported diagnostic branches, optional text clarification, and claim-level evidence.",
+  "hypothesis_evidence_negation_patterns": [
+    "(?:不是|并非|不在于|不靠|不是说靠).{0,10}(?:拍面|握拍|站位|动作|引拍|转体|跨步|启动).{0,4}(?:问题|原因)?"
+  ],
   "hypothesis_patterns": [
     {
       "type": "single_cause_question",
@@ -8,11 +11,15 @@
     },
     {
       "type": "alternative_cause_question",
-      "pattern": "是(?P<left>[^。？?！!]+?)(?:，|,)?还是(?P<right>[^，,。？?！!]+?)(?:问题|的原因|导致的)?(?:[？?！!]|$)"
+      "pattern": "是(?P<left>[^。？?！!]+?)(?:，|,)?还是(?P<right>[^，,。？?！!]+?)(?:问题|的原因|导致的)?(?:[。？?！!]|$)"
+    },
+    {
+      "type": "alternative_cause_question",
+      "pattern": "(?:主要|优先)?(?:看|查|检查|排查)(?P<left>[^。？?！!]+?)(?:，|,)?还是(?P<right>[^，,。？?！!]+?)(?:[？?！!]|$)"
     },
     {
       "type": "alternative_cause_statement",
-      "pattern": "(?:我)?(?:怀疑|猜测|觉得|认为)(?:是)?(?P<left>[^，,。；;？?！!]+?)(?:，|,)?(?:也)?(?:可能|或许)(?:是)?(?P<right>[^，,。；;？?！!]+)"
+      "pattern": "(?:我)?(?:怀疑|猜测|猜|觉得|认为)(?:是)?(?P<left>[^，,。；;？?！!]+?)(?:，|,)?(?:也)?(?:可能|或许)(?:是)?(?P<right>[^，,。；;？?！!]+)"
     },
     {
       "type": "possible_alternative_statement",
@@ -25,8 +32,32 @@
   ],
   "invalid_hypothesis_patterns": [
     "^(?:这|那|上述|前述).*(?:假设|原因)$",
-    "^其他(?:有证据支持)?(?:的原因)?$"
+    "^其他(?:有证据支持)?(?:的原因)?$",
+    "^(?:两|2|二|三|3|几)(?:种|个)$"
   ],
+  "comparison_signals": ["还是", "一样", "相同", "不同", "区别", "对比", "分别"],
+  "comparison_axis_groups": [
+    {
+      "name": "contact_body_location",
+      "values": [
+        ["髋部", "胯部", "腰部"],
+        ["肩部", "肩膀"],
+        ["体侧", "身体侧面"],
+        ["身前", "身体前方"],
+        ["身后", "身体后方"]
+      ]
+    },
+    {
+      "name": "racket_preparation_height",
+      "values": [
+        ["高架拍", "高架"],
+        ["低架拍", "低架"]
+      ]
+    }
+  ],
+  "non_resolving_answer_cues": ["触球"],
+  "mechanism_scope_window_max_gap_seconds": 20,
+  "diagnostic_request_terms": ["为什么", "原因", "排查", "检查", "判断", "怎么回事"],
   "symptom_terms": [
     "来不及",
     "到得太晚",
@@ -48,13 +79,29 @@
     "没球速",
     "回不去",
     "站不住"
+    ,"变紧"
+    ,"越来越紧"
+    ,"速度掉下来"
+    ,"被压住"
+    ,"压住"
+    ,"落到发球线"
+    ,"只到发球线"
+    ,"双打发球线"
+    ,"回到对方半场"
+    ,"被压"
   ],
   "mechanisms": [
     {
       "id": "racket_face_control",
       "label": "拍面方向与控制",
       "query_terms": ["拍面"],
-      "evidence_terms": ["拍面对准", "拍面向上", "拍面摊开向上", "拍面", "转一点"],
+      "evidence_terms": ["拍面对准", "拍面向上", "拍面摊开向上", "拍面朝上", "拍面向下", "拍面朝下", "拍面向外", "拍面往外翻", "拍面是不是朝", "转一点"],
+      "hypothesis_evidence_term_groups": [
+        {
+          "query_terms": ["拍面太向上", "拍面向上", "拍面朝上"],
+          "evidence_terms": ["拍面向上", "拍面朝上", "拍面摊开向上", "拍面向下", "拍面朝下"]
+        }
+      ],
       "observation_question": "请回看触球瞬间：拍面是明显朝上，还是接近竖直？球刚离开拍面时，是陡着向上，还是比较平地向前？",
       "observation_purpose": "用于判断球是否在离拍时就带有过大的向上角度，从而决定是否优先检查拍面角度；不能单凭这项观察确认唯一原因。",
       "answer_cues": ["明显朝上", "接近竖直", "陡着向上", "平地向前", "比较平"]
@@ -62,8 +109,8 @@
     {
       "id": "contact_point",
       "label": "击球点的高度与前后位置",
-      "query_terms": ["击球点", "触球点", "触球高度", "拿点", "点低", "点高", "出界"],
-      "evidence_terms": ["击球点", "触球点", "拿点高", "拿得点高", "拿得点低", "点再往自己", "位置和框架一定要契合"],
+      "query_terms": ["击球点", "触球点", "触球高度", "髋部", "肩部", "体侧", "拿点", "点低", "点高", "出界"],
+      "evidence_terms": ["击球点偏高", "击球点偏低", "击球点在身前", "击球点在身后", "触球点偏高", "触球点偏低", "触球点已经落到", "拿点高", "拿得点高", "拿得点低", "点再往自己", "位置和框架一定要契合"],
       "observation_question": "触球时，球是在身前、体侧，还是已经落到身后？和这项动作正常的击球点相比，位置是偏高、差不多，还是偏低？",
       "answer_cues": [
         "身前",
@@ -77,20 +124,34 @@
         "偏高",
         "差不多",
         "偏低"
+      ],
+      "known_observation_followups": [
+        {
+          "when_cues": ["身前", "身体前面", "身体前方", "体侧", "身体侧面", "髋部", "肩部", "身后", "身体后面", "身体后方"],
+          "question": "已知触球的大致身体位置后，还请补充：和这项动作正常的击球点相比，触球高度是偏高、差不多，还是偏低？",
+          "answer_cues": ["偏高", "差不多", "偏低"]
+        }
       ]
     },
     {
       "id": "footwork_speed",
       "label": "移动与到位",
-      "query_terms": ["步法太慢", "脚下太慢", "移动太慢", "跑得慢", "到位"],
+      "query_terms": ["步法太慢", "脚下太慢", "移动太慢", "跑得慢", "到位", "启动晚"],
       "evidence_terms": ["步法太慢", "脚下太慢", "移动速度慢", "跑得慢"],
       "observation_question": "你是第一步没启动，还是已经启动但最后一步仍到不了位？",
       "answer_cues": ["第一步", "没启动", "最后一步", "到不了位"]
+      ,"known_observation_followups": [
+        {
+          "when_cues": ["最后一步", "到不了位"],
+          "question": "既然问题集中在最后一步，请再补充：从准备位置到触球点通常需要几步，第一步是否及时，最后一步落地后身体是稳住还是继续向前冲？",
+          "answer_cues": ["两步", "三步", "第一步", "及时", "稳住", "向前冲"]
+        }
+      ]
     },
     {
       "id": "preparation_timing",
       "label": "判断、启动与架拍时机",
-      "query_terms": ["来不及", "架拍", "架拍晚", "准备", "慢", "太晚"],
+      "query_terms": ["来不及", "架拍", "架拍晚", "准备", "太晚"],
       "evidence_terms": ["没时间架拍", "没有架拍", "架拍就得放下来", "偷出来时间", "更早击球", "节约出挥拍的时间", "快速的组织框架", "准备动作不能占用全部时间", "给挥拍留出时间"],
       "observation_question": "你意识到来球时，球拍还在身体前方、已经到身后，还是已经开始向前挥？",
       "answer_cues": ["身体前方", "身后", "开始向前挥", "已经挥拍"]
@@ -106,10 +167,10 @@
     {
       "id": "forward_movement_distance",
       "label": "向前距离与步法组合",
-      "query_terms": ["网前", "前场", "上网", "赶不到", "够不到", "到得太晚"],
+      "query_terms": ["网前", "前场", "上网", "赶不到", "够不到", "到得太晚", "最后一步", "跨步太大"],
       "evidence_terms": ["快速并步", "并步", "垫步", "蹬跨步", "根据距离", "距离比较远", "最后一步"],
       "observation_question": "从准备位置到击球点大约需要几步，问题发生在启动、途中调整还是最后落步？",
-      "answer_cues": ["一步", "两步", "三步", "启动", "途中", "最后落步"]
+      "answer_cues": ["两步", "三步", "启动", "途中", "最后落步"]
     },
     {
       "id": "shot_choice_and_recovery_time",
@@ -136,8 +197,8 @@
     {
       "id": "trajectory_control",
       "label": "出球弧线与过网最高点",
-      "query_terms": ["冒高", "贴网", "弧线", "落点"],
-      "evidence_terms": ["抛物线的最高点在网袋上", "最高点在网", "落点固定好", "贴网"],
+      "query_terms": ["冒高", "过高", "下网", "贴网", "弧线", "落点"],
+      "evidence_terms": ["抛物线的最高点在网袋上", "最高点在网", "落点固定好"],
       "observation_question": "请看整段飞行弧线：球的最高点是在本方场区、球网上方，还是对方场区？",
       "observation_purpose": "用于判断弧线最高点是否过晚、过网余量是否过大，从而决定是否优先检查出球弧线；不能单凭这项观察确认唯一原因。",
       "answer_cues": ["本方场区", "球网上方", "对方场区", "最高点"]
@@ -145,11 +206,23 @@
     {
       "id": "grip_tension",
       "label": "握拍松紧与发力传递",
-      "query_terms": ["握得太紧", "握拍太紧", "抓得太紧", "太紧"],
-      "evidence_terms": ["握拍太紧", "握得太紧", "抓得太紧", "放松握拍", "放松发力", "手指发力"],
+      "allow_cross_action_component": true,
+      "query_terms": ["握得太紧", "握拍太紧", "抓得太紧", "太紧", "手指越来越紧", "越来越紧", "手指紧", "发紧"],
+      "evidence_terms": ["握拍太紧", "握得太紧", "抓得太紧", "放松握拍", "放松发力", "手指的松紧", "短暂收紧", "持续攥紧"],
       "observation_question": "准备时手指是否持续攥紧拍柄，还是只在触球前后短暂收紧？",
       "observation_purpose": "用于区分持续紧握与触球瞬间收紧；不能单凭文字确认它是唯一原因。",
       "answer_cues": ["持续攥紧", "短暂收紧", "放松", "触球"]
+    },
+    {
+      "id": "serve_receive_next_shot_pressure",
+      "label": "接发落点与对手下一拍的衔接压力",
+      "allow_cross_action_component": true,
+      "query_terms": ["接发时总被对手下一拍压住", "下一拍压住", "接的是短发球", "接短发球"],
+      "retrieval_query": "双打接发 拍子伸到球的右边 最快的1号位",
+      "evidence_terms": ["拍子伸到球的右边的时候", "在球的左边的时候", "最快的1号位你怎么办", "右手准备的意味着", "正手握拍准备", "换拍的时间"],
+      "observation_question": "你接短发球后实际回的是推、放、搓还是挑，落点在直线、中路还是斜线；对手又是用哪一种下一拍把你压住？",
+      "observation_purpose": "用于区分问题来自接发选择、落点还是接发后的准备衔接；当前描述不足以把其中一项确认成唯一原因。",
+      "answer_cues": ["推", "放", "搓", "挑", "直线", "中路", "斜线"]
     }
   ],
   "material_branch_axes": {
@@ -186,7 +259,7 @@
     "partial_support"
   ],
   "max_related_evidence_per_claim": 120,
-  "max_synthesis_evidence_per_claim": 3,
+  "max_synthesis_evidence_per_claim": 2,
   "max_clarification_questions": 3,
   "max_clarification_turns": 8
 }

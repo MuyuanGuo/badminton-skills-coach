@@ -3,6 +3,7 @@
 
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -14,7 +15,7 @@ from token_budget import estimate_json_tokens as estimate_packet_tokens
 from feedback import build_feedback_hint
 
 
-ANSWER_PACKET_SCHEMA_VERSION = 7
+ANSWER_PACKET_SCHEMA_VERSION = 8
 ANSWER_PLAN_SCHEMA_VERSION = 1
 FALLBACK_WINDOW_LIMIT = 6
 CORE_VIDEO_LIMIT = 5
@@ -22,6 +23,7 @@ COMPLETE_RELATED_TITLE_LIMIT = 48
 COMPLETE_RELATED_CATALOG_FIELDS = (
     "label",
     "evidence_id",
+    "source_type",
     "title",
     "legacy_video_id",
     "url",
@@ -93,8 +95,20 @@ def video_display_guidance(video, claim_evidence_map):
         )
     )
     claim, evidence = matches[0] if matches else ({}, {})
-    claim_text = compact_display_text(claim.get("text") or "本题", 54)
-    roles = set(evidence.get("evidence_roles") or video.get("evidence_roles") or [])
+    claim_texts = []
+    for matched_claim, _matched_evidence in matches:
+        text = matched_claim.get("text")
+        if text and text not in claim_texts:
+            claim_texts.append(text)
+    claim_text = compact_display_text(
+        "；".join(claim_texts[:3]) or claim.get("text") or "本题",
+        72,
+    )
+    roles = {
+        role
+        for _matched_claim, matched_evidence in matches
+        for role in matched_evidence.get("evidence_roles", [])
+    } or set(video.get("evidence_roles") or [])
     if {"correction", "mechanism"}.issubset(roles):
         viewing_value = (
             f"它同时包含问题表现、原因解释和纠正线索，适合用来区分"
@@ -113,11 +127,19 @@ def video_display_guidance(video, claim_evidence_map):
     else:
         viewing_value = f"用于核对来源中的具体示范是否真正对应“{claim_text}”。"
 
-    candidate_windows = [
-        *video.get("evidence_windows", []),
-        *video.get("transcript_evidence", []),
-        *video.get("bounded_note_evidence", []),
-    ]
+    # Viewing guidance must point to the same claim-authorized window used by
+    # answer prose.  Choosing an unrelated “technically dense” fallback window
+    # can otherwise make the citation reason, body text, and watch focus
+    # contradict one another.
+    candidate_windows = []
+    seen_windows = set()
+    for _matched_claim, matched_evidence in matches:
+        for window in matched_evidence.get("claim_windows", []):
+            key = (window.get("timestamp"), window.get("text"))
+            if key in seen_windows:
+                continue
+            seen_windows.add(key)
+            candidate_windows.append(window)
     candidate_windows.sort(
         key=lambda item: (
             -technical_focus_score(item),
@@ -129,18 +151,7 @@ def video_display_guidance(video, claim_evidence_map):
         )
     )
     if not candidate_windows:
-        candidate_windows = [
-            item
-            for item in video.get("teaching_note", {}).get("evidence", [])
-            if item.get("timestamp") and item.get("text")
-        ]
-        candidate_windows.sort(
-            key=lambda item: (
-                -technical_focus_score(item),
-                -len(str(item.get("text") or "")),
-                item.get("timestamp", ""),
-            )
-        )
+        candidate_windows = list(video.get("evidence_windows", []))
     focus = candidate_windows[0] if candidate_windows else None
     focus_summary = compact_display_text(
         focus.get("text") if focus else video.get("title"), 72
@@ -159,17 +170,17 @@ def video_display_guidance(video, claim_evidence_map):
         citation_reason = (
             f"补充“{claim_text}”中的局部动作或机制；重点依据是“{focus_summary}”。"
         )
-    if focus is not None:
-        if focus.get("timestamp") == "visual_review_no_timestamp":
-            watch_focus = (
-                "全片（无精确时间点）："
-                f"{compact_display_text(focus.get('text'), 88)}"
+    if candidate_windows:
+        focus_items = []
+        for item in candidate_windows:
+            if item.get("timestamp") == "visual_review_no_timestamp":
+                location = "全片（无精确时间点）"
+            else:
+                location = item.get("timestamp") or "全片"
+            focus_items.append(
+                f"{location}：{compact_display_text(item.get('text'), 76)}"
             )
-        else:
-            watch_focus = (
-                f"{focus.get('timestamp')}："
-                f"{compact_display_text(focus.get('text'), 88)}"
-            )
+        watch_focus = "；".join(focus_items)
     elif video.get("runtime_evidence_mode") == "visual_reviewed":
         watch_focus = (
             "全片（无精确时间点）：只观察动作连续性、击球位置和出球结果，"
@@ -330,13 +341,28 @@ def atom_scope_matches(atom, constraints):
 
 
 def atom_claim_matches(atom, claim, inferred_target_claim=None):
+    def normalized_claim_text(value):
+        return re.sub(r"[\s，。！？、；：,.!?;:]", "", str(value or ""))
+
     accepted_claims = {
         atom.get("canonical_claim"),
         *atom.get("claim_aliases", []),
     }
-    return claim.get("text") in accepted_claims or (
+    normalized_accepted = {
+        normalized_claim_text(item) for item in accepted_claims if item
+    }
+    inferred_candidates = (
+        inferred_target_claim
+        if isinstance(inferred_target_claim, (list, tuple, set))
+        else [inferred_target_claim]
+    )
+    return normalized_claim_text(claim.get("text")) in normalized_accepted or (
         claim.get("kind") == "question_unit"
-        and inferred_target_claim in accepted_claims
+        and any(
+            normalized_claim_text(candidate) in normalized_accepted
+            for candidate in inferred_candidates
+            if candidate
+        )
     )
 
 
@@ -361,7 +387,11 @@ def build_closed_answer_plan(context, atoms):
         "actor_context", {}
     )
     inferred_target_claim = (
-        actor_context.get("target_action_query")
+        [
+            actor_context.get("target_action_query"),
+            context.get("semantic_query"),
+            context.get("query"),
+        ]
         if actor_context.get("inferred_target_action")
         else None
     )
@@ -396,6 +426,13 @@ def build_closed_answer_plan(context, atoms):
             planned_atom["video_label"] = selected_by_id[evidence_id]["label"]
             matches.append(planned_atom)
         if matches:
+            if (
+                claim.get("kind") == "question_unit"
+                and claim.get("status") == "unsupported"
+            ):
+                # A reviewed atom can safely close an inferred multi-actor
+                # claim that generic scoped sources alone could not answer.
+                claim["status"] = "conditional"
             selected_evidence_ids = []
             for item in matches:
                 if item["evidence_id"] not in selected_evidence_ids:
@@ -408,10 +445,27 @@ def build_closed_answer_plan(context, atoms):
             ]
             selected_atoms.extend(matches)
             mode = "compose_from_reviewed_atoms"
-        elif claim.get("status") in {"unsupported", "unverified"}:
+        elif claim.get("status") in {"unsupported", "unverified"} or (
+            claim.get("kind") == "question_unit"
+            and claim.get("evidence")
+            and all(
+                item.get("directness") == "component"
+                for item in claim.get("evidence", [])
+            )
+        ):
             mode = "state_evidence_gap"
         else:
             mode = "contract_only_no_new_technical_detail"
+        if mode == "state_evidence_gap" and claim.get("status") in {
+            "supported",
+            "conditional",
+        }:
+            # A claim that cannot be composed from a reviewed atom or an
+            # authorized synthesis source is not closed merely because a
+            # candidate was retrieved. Fail closed in both the plan and the
+            # claim map so renderer and auditor see one consistent state.
+            claim["status"] = "unsupported"
+            claim["confidence_ceiling"] = "none"
         directives.append(
             {
                 "claim_id": claim["claim_id"],
@@ -429,6 +483,13 @@ def build_closed_answer_plan(context, atoms):
         if not directive["atom_ids"]
         and claim.get("evidence")
         and claim.get("status") not in {"unsupported", "unverified"}
+        and not (
+            claim.get("kind") == "question_unit"
+            and all(
+                item.get("directness") == "component"
+                for item in claim.get("evidence", [])
+            )
+        )
     ]
     for directive in fallback_directives:
         directive["mode"] = "compose_from_claim_scoped_source"
@@ -444,7 +505,13 @@ def build_closed_answer_plan(context, atoms):
         technical_claim_policy = "claim_scoped_source_evidence_only"
         planner_mode = "claim_evidence_fallback"
         for directive, claim in zip(directives, context["claim_evidence_map"]):
-            if claim.get("evidence"):
+            if claim.get("evidence") and not (
+                claim.get("kind") == "question_unit"
+                and all(
+                    item.get("directness") == "component"
+                    for item in claim.get("evidence", [])
+                )
+            ):
                 directive["mode"] = "compose_from_claim_scoped_source"
     claims_by_id = {
         claim["claim_id"]: claim for claim in context["claim_evidence_map"]
@@ -735,8 +802,13 @@ def compact_video(
     }
     if video.get("video_id") != video.get("evidence_id"):
         compact["legacy_video_id"] = video.get("video_id")
-    if compact.get("source_type") == "douyin_video":
-        compact.pop("source_type")
+    if "source_type" not in compact:
+        evidence_id = str(video.get("evidence_id") or "")
+        url = str(video.get("url") or "")
+        if evidence_id.startswith("bilibili:") or "bilibili.com" in url:
+            compact["source_type"] = "bilibili_video"
+        elif evidence_id.isdigit() or "douyin.com" in url:
+            compact["source_type"] = "douyin_video"
     matched_cluster_ids = list(
         dict.fromkeys(
             str(cluster_id)
@@ -883,6 +955,7 @@ def minimize_complete_list_videos(videos, detail_labels):
     minimal_keys = {
         "label",
         "evidence_id",
+        "source_type",
         "title",
         "url",
         "legacy_video_id",
@@ -967,6 +1040,7 @@ def decode_complete_related_video_catalog(packet):
             for field in (
                 "label",
                 "evidence_id",
+                "source_type",
                 "title",
                 "citation_reason",
                 "viewing_value",

@@ -175,9 +175,29 @@ def has_requested_action_scope_support(video, query_constraints, diagnostic_rule
             "claim_action_scope_support_matches", ["exact", "partial_support"]
         )
     )
+    core_action_axes = {
+        "shot_family",
+        "technique_variant",
+        "stroke_intent",
+        "serve_role",
+        "serve_trajectory",
+    }
+    core_requested_axes = [
+        axis for axis in requested_axes if axis in core_action_axes
+    ]
+    axes_to_check = core_requested_axes or requested_axes
     return any(
         video.get("constraint_match", {}).get(axis) in supported_matches
-        for axis in requested_axes
+        or (
+            axis == "stroke_intent"
+            and video.get("constraint_match", {}).get(axis)
+            == "incidental_support"
+            and video.get("concept_match")
+            in {"exact_question", "exact_query_unit"}
+            and video.get("focus_match")
+            in {"primary", "structured", "not_required"}
+        )
+        for axis in axes_to_check
     )
 
 
@@ -195,7 +215,224 @@ def claim_evidence_entry(video, directness, reason):
     }
 
 
-def query_window_support(video):
+def requested_scope_window_groups(actor_context, selection_rules):
+    requested = set((actor_context or {}).get("requested_action_scopes", []))
+    return [
+        {
+            "name": scope["name"],
+            "terms": scope.get("source_terms", []),
+            "suppressions": scope.get("source_suppressions", []),
+            "overrides": scope.get("source_override_terms", []),
+        }
+        for scope in (selection_rules or {}).get("target_action_scopes", [])
+        if scope.get("name") in requested
+    ]
+
+
+def requested_action_window_groups(actor_context, selection_rules):
+    """Bind a named stroke to the evidence window that teaches it."""
+
+    actor_context = actor_context or {}
+    constraints = actor_context.get("target_action_constraints") or actor_context.get(
+        "target_constraints", {}
+    )
+    axes = {
+        axis.get("name"): axis
+        for axis in (selection_rules or {}).get("constraint_axes", [])
+    }
+    axis_names = (
+        ["technique_variant"]
+        if constraints.get("technique_variant")
+        else ["shot_family"]
+    )
+    if any(len(constraints.get(axis_name, [])) != 1 for axis_name in axis_names):
+        return []
+    groups = []
+    for axis_name in axis_names:
+        axis = axes.get(axis_name, {})
+        for value in constraints.get(axis_name, []):
+            terms = axis.get("values", {}).get(value, [])
+            if terms:
+                groups.append(
+                    {
+                        "name": f"named_action:{axis_name}:{value}",
+                        "terms": list(dict.fromkeys(terms)),
+                        "suppressions": [],
+                        "overrides": [],
+                    }
+                )
+    return groups
+
+
+def effective_scope_window_groups(video, requested_scope_groups):
+    """Apply named-action windows only to genuinely multi-action sources."""
+
+    effective = []
+    constraint_scope = video.get("constraint_scope", {})
+    for group in requested_scope_groups:
+        name = str(group.get("name", ""))
+        if not name.startswith("named_action:"):
+            effective.append(group)
+            continue
+        parts = name.split(":", 2)
+        axis_name = parts[1] if len(parts) >= 3 else ""
+        requested_value = parts[2] if len(parts) >= 3 else ""
+        values = constraint_scope.get(axis_name, {}).get("values", [])
+        compatible_parent_values = {
+            "fake_lift_real_net": {"net_drop"},
+            "far_net_umbrella": {
+                "far_net_flat_slice",
+                "far_net_middle_split",
+                "far_net_defense_to_push",
+                "far_net_drop",
+            },
+            "far_net_flat_slice": {"far_net_umbrella"},
+            "far_net_middle_split": {"far_net_umbrella"},
+            "far_net_defense_to_push": {"far_net_umbrella"},
+            "far_net_drop": {"far_net_umbrella"},
+        }.get(requested_value, set())
+        competing_values = set(values) - {
+            requested_value,
+            *compatible_parent_values,
+        }
+        if competing_values:
+            effective.append(group)
+    return effective
+
+
+def requested_focus_window_groups(search_module, unit, selection_rules):
+    normalized_unit = search_module.normalize(unit)
+    return [
+        group
+        for group in (selection_rules or {}).get(
+            "required_focus_equivalent_groups", []
+        )
+        if any(
+            search_module.normalize(term) in normalized_unit
+            for term in group
+        )
+    ]
+
+
+def incoming_focus_window_groups(actor_context, selection_rules):
+    """Require the incoming shot when no player action family was resolved."""
+
+    actor_context = actor_context or {}
+    target_constraints = actor_context.get("target_constraints", {})
+    if any(
+        target_constraints.get(axis)
+        for axis in ("shot_family", "technique_variant", "stroke_intent")
+    ):
+        return []
+    incoming = actor_context.get("incoming_shot_constraints", {})
+    preferred_axes = (
+        ["technique_variant"]
+        if incoming.get("technique_variant")
+        else ["shot_family"]
+    )
+    groups = []
+    axes_by_name = {
+        axis["name"]: axis
+        for axis in (selection_rules or {}).get("constraint_axes", [])
+    }
+    for axis_name in preferred_axes:
+        axis = axes_by_name.get(axis_name, {})
+        for value in incoming.get(axis_name, []):
+            terms = [
+                *axis.get("values", {}).get(value, []),
+                *axis.get("opponent_query_value_additions", {}).get(value, []),
+            ]
+            if terms:
+                groups.append(list(dict.fromkeys(terms)))
+    return groups
+
+
+def comparison_axis_window_groups(search_module, text, diagnostic_rules):
+    """Require direct evidence on every side of an explicit comparison axis."""
+
+    normalized = search_module.normalize(text)
+    if not any(
+        search_module.normalize(signal) in normalized
+        for signal in diagnostic_rules.get("comparison_signals", [])
+    ):
+        return []
+    required = []
+    for axis in diagnostic_rules.get("comparison_axis_groups", []):
+        matched_values = [
+            value_terms
+            for value_terms in axis.get("values", [])
+            if any(
+                search_module.normalize(term) in normalized
+                for term in value_terms
+            )
+        ]
+        if len(matched_values) >= 2:
+            required.extend(matched_values)
+    return required
+
+
+def window_matches_groups(
+    search_module,
+    normalized_text,
+    requested_scope_groups=(),
+    requested_focus_groups=(),
+):
+    for group in requested_scope_groups:
+        has_term = any(
+            search_module.normalize(term) in normalized_text
+            for term in group.get("terms", [])
+        )
+        suppressed = any(
+            search_module.normalize(term) in normalized_text
+            for term in group.get("suppressions", [])
+        )
+        overridden = any(
+            search_module.normalize(term) in normalized_text
+            for term in group.get("overrides", [])
+        )
+        if not has_term or (suppressed and not overridden):
+            return False
+    normalized_without_particles = normalized_text.replace("的", "")
+    return all(
+        any(
+            search_module.normalize(term).replace("的", "")
+            in normalized_without_particles
+            for term in group
+        )
+        for group in requested_focus_groups
+    )
+
+
+def timestamp_bounds(value):
+    match = re.fullmatch(r"(\d+):(\d{2})-(\d+):(\d{2})", str(value or ""))
+    if not match:
+        return None
+    start = int(match.group(1)) * 60 + int(match.group(2))
+    end = int(match.group(3)) * 60 + int(match.group(4))
+    return start, end
+
+
+def windows_are_near(left, right, maximum_gap_seconds):
+    left_bounds = timestamp_bounds(left.get("timestamp"))
+    right_bounds = timestamp_bounds(right.get("timestamp"))
+    if not left_bounds or not right_bounds:
+        return left is right
+    gap = max(
+        0,
+        right_bounds[0] - left_bounds[1],
+        left_bounds[0] - right_bounds[1],
+    )
+    return gap <= maximum_gap_seconds
+
+
+def query_window_support(
+    search_module,
+    video,
+    requested_scope_groups=(),
+    requested_focus_groups=(),
+    required_claim_terms=(),
+    required_claim_term_groups=(),
+):
     """Return claim-level support from query-ranked source windows."""
 
     best = {
@@ -208,8 +445,33 @@ def query_window_support(video):
     source_windows = [
         *video.get("transcript_evidence", []),
         *video.get("bounded_note_evidence", []),
+        *video.get("teaching_note", {}).get("evidence", []),
     ]
+    eligible_windows = []
     for window in source_windows:
+        normalized_text = search_module.normalize(window.get("text", ""))
+        if required_claim_terms and not any(
+            search_module.normalize(term) in normalized_text
+            for term in required_claim_terms
+        ):
+            continue
+        if required_claim_term_groups and not all(
+            any(
+                search_module.normalize(term) in normalized_text
+                for term in group
+            )
+            for group in required_claim_term_groups
+        ):
+            continue
+        if not window_matches_groups(
+            search_module,
+            normalized_text,
+            requested_scope_groups,
+            requested_focus_groups,
+        ):
+            continue
+        if window.get("text"):
+            eligible_windows.append(window)
         matched_count = len(window.get("matched_terms") or [])
         coverage = float(window.get("query_ngram_coverage") or 0)
         exact = bool(window.get("exact_query_match"))
@@ -224,12 +486,29 @@ def query_window_support(video):
             if matched_count >= 1 and coverage >= 0.15
             else 0
         )
+        if rank < 2 and any(
+            str(group.get("name", "")).startswith("named_action:")
+            for group in requested_scope_groups
+        ):
+            # The window has already passed the named-action lexical gate.
+            # Reviewed/bounded windows do not always carry runtime query-match
+            # metadata, so the explicit action occurrence itself is enough
+            # for scoped claim authorization.
+            rank = 2
         candidate = {
             "rank": rank,
             "score": float(window.get("score") or 0),
             "matched_term_count": matched_count,
             "query_ngram_coverage": coverage,
             "exact_query_match": exact,
+            "claim_window": (
+                {
+                    "timestamp": window.get("timestamp", "visual_review_no_timestamp"),
+                    "text": window.get("text", ""),
+                }
+                if window.get("text")
+                else None
+            ),
         }
         if (
             candidate["rank"],
@@ -250,22 +529,43 @@ def query_window_support(video):
         return best
     if (
         best["rank"] < 2
-        and video.get("reviewed_evidence_rank", 2) <= 1
+        and (
+            video.get("reviewed_evidence_rank", 2) <= 1
+            or video.get("confidence") == "reviewed_transcript"
+        )
+        and eligible_windows
     ):
         best = {
             **best,
             "rank": 2,
             "reviewed_evidence_fallback": True,
+            "claim_window": {
+                "timestamp": eligible_windows[0].get(
+                    "timestamp", "visual_review_no_timestamp"
+                ),
+                "text": eligible_windows[0].get("text", ""),
+            },
         }
     if (
         best["rank"] < 2
         and video.get("source_type") != "bilibili_video"
         and video.get("teaching_note", {}).get("evidence")
+        and eligible_windows
+        and (
+            video.get("concept_match") != "none"
+            or video.get("focus_match") == "primary"
+        )
     ):
         best = {
             **best,
             "rank": 2,
             "legacy_source_fallback": True,
+            "claim_window": {
+                "timestamp": eligible_windows[0].get(
+                    "timestamp", "visual_review_no_timestamp"
+                ),
+                "text": eligible_windows[0].get("text", ""),
+            },
         }
     return best
 
@@ -287,21 +587,67 @@ def confidence_ceiling(evidence_entries, selected_by_label):
     return "low"
 
 
-def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
+def query_unit_evidence(
+    search_module,
+    video,
+    strategy,
+    query_constraints,
+    diagnostic_rules,
+    requested_scope_groups=(),
+    requested_focus_groups=(),
+    required_claim_terms=(),
+    required_claim_term_groups=(),
+):
     del strategy
+    requested_scope_groups = effective_scope_window_groups(
+        video, requested_scope_groups
+    )
     scope_directness = claim_scope_directness(video, diagnostic_rules)
     if scope_directness == "incompatible":
         return None
     concept = video.get("concept_match")
     symptom = video.get("symptom_match")
-    if concept == "none" and symptom in {"none", "not_required"}:
-        return None
-    window_support = query_window_support(video)
-    if window_support["rank"] < 2:
+    if (
+        concept == "none"
+        and symptom in {"none", "not_required"}
+        and not (
+            requested_scope_groups
+            and video.get("focus_match") in {"primary", "structured"}
+        )
+    ):
         return None
     action_scope_supported = has_requested_action_scope_support(
         video, query_constraints, diagnostic_rules
     )
+    window_support = query_window_support(
+        search_module,
+        video,
+        requested_scope_groups,
+        requested_focus_groups,
+        required_claim_terms,
+        required_claim_term_groups,
+    )
+    if (
+        window_support["rank"] < 2
+        and requested_focus_groups
+        and concept in {"exact_question", "exact_query_unit"}
+        and action_scope_supported
+    ):
+        # A claim window can express the requested action without repeating
+        # the generic focus noun used in the question.  For example, a
+        # forecourt pressure passage may say 压球 throughout without repeating
+        # 封网.  Exact concept + structured action scope is sufficient to
+        # retry the same source windows without that lexical-only focus gate.
+        window_support = query_window_support(
+            search_module,
+            video,
+            requested_scope_groups,
+            (),
+            required_claim_terms,
+            required_claim_term_groups,
+        )
+    if window_support["rank"] < 2:
+        return None
     component_only_support = bool(
         video.get("symptom_match") == "not_required"
         and (
@@ -321,6 +667,18 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
             )
         )
     )
+    core_action_request = any(
+        query_constraints.get(axis)
+        for axis in (
+            "shot_family",
+            "technique_variant",
+            "stroke_intent",
+            "serve_role",
+            "serve_trajectory",
+        )
+    )
+    if core_action_request and not action_scope_supported:
+        return None
     if not action_scope_supported and not component_only_support:
         # A symptom word or generic mechanism is not enough to support the
         # whole question when it does not cover any requested action axis.
@@ -340,6 +698,12 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
         directness = "scoped"
     else:
         directness = "component"
+    if video.get("inferred_target_action_match") and directness != "direct":
+        # Matching the canonical name of an inferred multi-actor decision is
+        # not enough to answer the user's concrete responsibility chain.  A
+        # scoped source remains component evidence unless a reviewed atom
+        # later binds the actual actors, response and coverage conditions.
+        directness = "component"
     reason = (
         "directly covers the requested question scope"
         if directness == "direct"
@@ -350,6 +714,9 @@ def query_unit_evidence(video, strategy, query_constraints, diagnostic_rules):
         )
     )
     evidence = claim_evidence_entry(video, directness, reason)
+    claim_window = window_support.pop("claim_window", None)
+    if claim_window:
+        evidence["claim_windows"] = [claim_window]
     evidence["window_support"] = {
         **window_support,
         "reviewed_evidence_source": (
@@ -379,14 +746,36 @@ def mechanism_evidence(
     query_constraints,
     diagnostic_rules,
     claim_text=None,
+    requested_scope_groups=(),
+    requested_focus_groups=(),
 ):
     matched = []
     for video in selected_videos:
+        video_scope_groups = effective_scope_window_groups(
+            video, requested_scope_groups
+        )
         action_scope_supported = has_requested_action_scope_support(
             video, query_constraints, diagnostic_rules
         )
+        core_action_request = any(
+            query_constraints.get(axis)
+            for axis in (
+                "shot_family",
+                "technique_variant",
+                "stroke_intent",
+                "serve_role",
+                "serve_trajectory",
+            )
+        )
+        if (
+            core_action_request
+            and not action_scope_supported
+            and not mechanism.get("allow_cross_action_component", False)
+        ):
+            continue
         if (
             not action_scope_supported
+            and not video_scope_groups
             and not (
                 (
                     video.get("concept_match")
@@ -397,6 +786,10 @@ def mechanism_evidence(
                         in {"direct_primary", "direct_structured"}
                     )
                 )
+                and video.get("focus_match") in {"primary", "structured"}
+            )
+            and not (
+                mechanism.get("allow_cross_action_component", False)
                 and video.get("focus_match") in {"primary", "structured"}
             )
         ):
@@ -430,6 +823,41 @@ def mechanism_evidence(
         matched_windows = []
         for source_index, window in enumerate(source_windows):
             normalized_text = search_module.normalize(window.get("text", ""))
+            if claim_text and any(
+                re.search(pattern, window.get("text", ""))
+                for pattern in diagnostic_rules.get(
+                    "hypothesis_evidence_negation_patterns", []
+                )
+            ):
+                # The current model records support and uncertainty, not a
+                # polarity-aware contradiction claim.  A passage saying that
+                # the proposed factor is *not* the cause must therefore not
+                # be counted as support for that hypothesis.
+                continue
+            if not window_matches_groups(
+                search_module,
+                normalized_text,
+                (),
+                requested_focus_groups,
+            ):
+                continue
+            if video_scope_groups and not any(
+                windows_are_near(
+                    window,
+                    scope_window,
+                    diagnostic_rules.get(
+                        "mechanism_scope_window_max_gap_seconds", 20
+                    ),
+                )
+                and window_matches_groups(
+                    search_module,
+                    search_module.normalize(scope_window.get("text", "")),
+                    video_scope_groups,
+                    (),
+                )
+                for scope_window in source_windows
+            ):
+                continue
             terms = [
                 term
                 for term in configured_terms
@@ -471,16 +899,29 @@ def mechanism_evidence(
                 "text": matched_windows[0][3]["text"],
             }
         ]
+        evidence["mechanism_match_specificity"] = max(
+            len(search_module.normalize(term)) for term in terms
+        )
         matched.append(evidence)
     rank = {"direct": 0, "scoped": 1, "component": 2}
-    matched.sort(key=lambda item: (rank[item["directness"]], item["label"]))
+    matched.sort(
+        key=lambda item: (
+            rank[item["directness"]],
+            -item.get("mechanism_match_specificity", 0),
+            item["label"],
+        )
+    )
     return matched[
         : diagnostic_rules.get("max_related_evidence_per_claim", 8)
     ]
 
 
 def material_diagnostic_branches(
-    query, query_constraints, selected_videos, diagnostic_rules
+    query,
+    query_constraints,
+    selected_videos,
+    diagnostic_rules,
+    eligible_labels=None,
 ):
     requested_variants = query_constraints.get("technique_variant", [])
     required_axes = {
@@ -502,6 +943,8 @@ def material_diagnostic_branches(
             continue
         labels_by_value = {}
         for video in selected_videos:
+            if eligible_labels is not None and video["label"] not in eligible_labels:
+                continue
             if claim_scope_directness(video, diagnostic_rules) == "incompatible":
                 continue
             values = video.get("constraint_scope", {}).get(axis_name, {}).get(
@@ -543,6 +986,7 @@ def build_diagnostic_contract(
     boundary,
     selected_videos,
     diagnostic_rules,
+    selection_rules=None,
     resolved_question_ids=None,
     resolved_answers=None,
 ):
@@ -554,8 +998,20 @@ def build_diagnostic_contract(
         for focus in [item.get("evidence_focus") or {}]
         if focus.get("kind") == "mechanism" and focus.get("id")
     }
+    known_observation_records = [
+        item
+        for item in question_interpretation.get("query_unit_records", [])
+        if item.get("role") == "user_observation"
+    ]
+    normalized_known_observations = search_module.normalize(
+        " ".join(item.get("source_unit", "") for item in known_observation_records)
+    )
+    non_resolving_cues = {
+        search_module.normalize(cue)
+        for cue in diagnostic_rules.get("non_resolving_answer_cues", [])
+    }
 
-    def resolved_answers_cover_cues(answer_cues):
+    def explicit_answers_cover_cues(answer_cues):
         normalized_cues = [
             search_module.normalize(cue)
             for cue in answer_cues
@@ -568,6 +1024,23 @@ def build_diagnostic_contract(
             for item in resolved_answers
             for cue in normalized_cues
         )
+
+    def known_observations_cover_cues(answer_cues):
+        normalized_cues = [
+            search_module.normalize(cue)
+            for cue in answer_cues
+            if search_module.normalize(cue)
+        ]
+        return any(
+            cue not in non_resolving_cues
+            and cue in normalized_known_observations
+            for cue in normalized_cues
+        )
+
+    def resolved_answers_cover_cues(answer_cues):
+        return explicit_answers_cover_cues(
+            answer_cues
+        ) or known_observations_cover_cues(answer_cues)
     intent_frame = question_interpretation["intent_frame"]
     user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     observed_symptoms = diagnostic_observed_symptoms(
@@ -579,32 +1052,114 @@ def build_diagnostic_contract(
     )
     selected_by_label = {video["label"]: video for video in selected_videos}
     claim_map = []
-    query_units = question_interpretation.get("query_units") or [query]
+    query_units = (
+        question_interpretation.get("query_units", [query])
+        if "query_units" in question_interpretation
+        else [query]
+    )
     query_unit_constraints = question_interpretation.get(
         "query_unit_constraints", {}
     )
     for unit in query_units:
+        alternative_hypotheses = [
+            item
+            for item in user_hypotheses
+            if item.get("framing") == "alternative_cause_question"
+            and search_module.normalize(item["text"])
+            in search_module.normalize(unit)
+        ]
+        if len(alternative_hypotheses) >= 2 and "还是" in unit:
+            # H1/H2 claims and the typed comparison delivery item already
+            # preserve this question.  A duplicate Q claim would incorrectly
+            # let evidence for only one alternative mark the comparison as
+            # fully supported.
+            continue
         unit_constraints = (
             query_unit_constraints.get(unit)
             or question_interpretation["constraints"]
+        )
+        unit_actor_context = question_interpretation.get(
+            "query_unit_actor_contexts", {}
+        ).get(unit, question_interpretation.get("actor_context", {}))
+        scope_window_groups = [
+            *requested_scope_window_groups(
+                unit_actor_context, selection_rules
+            ),
+            *requested_action_window_groups(
+                unit_actor_context, selection_rules
+            ),
+        ]
+        focus_window_groups = requested_focus_window_groups(
+            search_module, unit, selection_rules
+        )
+        if scope_window_groups:
+            focus_window_groups = []
+        diagnostic_anchor_required = (
+            (
+                intent_frame.get("requested_output")
+                in {"diagnosis", "comparison"}
+                or any(
+                    search_module.normalize(term)
+                    in search_module.normalize(query)
+                    for term in diagnostic_rules.get(
+                        "diagnostic_request_terms", []
+                    )
+                )
+            )
+            and not unit_actor_context.get("inferred_target_action")
+            and not unit_actor_context.get("requested_action_scopes")
+        )
+        unit_symptom_terms = [
+            item["text"]
+            for item in observed_symptoms
+            if boundary.get("type") == "none"
+            if diagnostic_anchor_required
+            if search_module.normalize(item["text"])
+            in search_module.normalize(unit)
+        ]
+        comparison_window_groups = comparison_axis_window_groups(
+            search_module,
+            query if any(signal in unit for signal in ("一样", "相同", "不同")) else unit,
+            diagnostic_rules,
         )
         evidence_entries = [
             evidence
             for video in selected_videos
             if (
                 evidence := query_unit_evidence(
+                    search_module,
                     scoped_video_for_query_unit(video, unit),
                     question_interpretation["strategy"],
                     unit_constraints,
                     diagnostic_rules,
+                    scope_window_groups,
+                    focus_window_groups,
+                    unit_symptom_terms,
+                    comparison_window_groups,
                 )
             )
             and (
-                unit in video.get("matched_query_units", [])
-                or len(query_units) == 1
+                any(
+                    search_module.normalize(unit)
+                    == search_module.normalize(matched_unit)
+                    for matched_unit in video.get("matched_query_units", [])
+                )
+                or (
+                    unit_actor_context.get("inferred_target_action")
+                    and unit
+                    == unit_actor_context.get("target_action_query")
+                )
             )
         ]
         if boundary.get("type") == "cross_variant_evidence_transfer":
+            evidence_entries = []
+        if (
+            intent_frame.get("requested_output") == "practice"
+            and re.search(
+                r"(?:\\d+\\s*分钟|连续.{0,4}(?:天|周)|组数|次数|频率|进阶标准)",
+                unit,
+            )
+        ):
             evidence_entries = []
         directness_rank = {"direct": 0, "scoped": 1, "component": 2}
         evidence_entries.sort(
@@ -625,12 +1180,32 @@ def build_diagnostic_contract(
         evidence_entries = evidence_entries[
             : diagnostic_rules.get("max_related_evidence_per_claim", 8)
         ]
+        if unit_actor_context.get("explicit_subquestion"):
+            # The actor is correctly isolated, but root scenario constraints
+            # were intentionally not inherited.  Until a source explicitly
+            # binds this named subquestion, keep retrieved material as a
+            # component and let the closed answer plan state the gap.
+            for item in evidence_entries:
+                item["directness"] = "component"
+                item["reason"] = (
+                    "supports only the isolated actor/action component; "
+                    "the root scenario is not directly bound"
+                )
         claim_map.append(
             {
                 "claim_id": f"Q{len(claim_map) + 1}",
                 "kind": "question_unit",
                 "text": unit,
-                "status": "supported" if evidence_entries else "unsupported",
+                "status": (
+                    "supported"
+                    if any(
+                        item["directness"] == "direct"
+                        for item in evidence_entries
+                    )
+                    else "conditional"
+                    if evidence_entries
+                    else "unsupported"
+                ),
                 "evidence": evidence_entries,
                 "eligible_video_labels": [
                     item["label"] for item in evidence_entries
@@ -676,6 +1251,42 @@ def build_diagnostic_contract(
                 hypothesis_constraints,
                 diagnostic_rules,
                 claim_text=hypothesis["text"],
+                requested_scope_groups=[
+                    *requested_scope_window_groups(
+                        question_interpretation.get(
+                            "query_unit_actor_contexts", {}
+                        ).get(
+                            hypothesis_unit,
+                            question_interpretation.get("actor_context", {}),
+                        ),
+                        selection_rules,
+                    ),
+                    *requested_action_window_groups(
+                        question_interpretation.get(
+                            "query_unit_actor_contexts", {}
+                        ).get(
+                            hypothesis_unit,
+                            question_interpretation.get("actor_context", {}),
+                        ),
+                        selection_rules,
+                    ),
+                ],
+                requested_focus_groups=[
+                    *requested_focus_window_groups(
+                        search_module,
+                        hypothesis["text"],
+                        selection_rules,
+                    ),
+                    *incoming_focus_window_groups(
+                        question_interpretation.get(
+                            "query_unit_actor_contexts", {}
+                        ).get(
+                            hypothesis_unit,
+                            question_interpretation.get("actor_context", {}),
+                        ),
+                        selection_rules,
+                    ),
+                ],
             )
             if mechanism
             else []
@@ -760,6 +1371,27 @@ def build_diagnostic_contract(
             mechanism_videos,
             mechanism_constraints,
             diagnostic_rules,
+            requested_scope_groups=[
+                *requested_scope_window_groups(
+                    actor_context, selection_rules
+                ),
+                *requested_action_window_groups(
+                    actor_context, selection_rules
+                ),
+            ],
+            # Mechanism evidence already has a dedicated, maintainer-curated
+            # evidence-term list.  Re-deriving generic focus groups from the
+            # mechanism label (for example requiring the literal word 落点)
+            # can wrongly reject a direct passage that expresses the same
+            # mechanism as “对手出球最快的位置”.
+            requested_focus_groups=[
+                *incoming_focus_window_groups(
+                    actor_context, selection_rules
+                ),
+                *comparison_axis_window_groups(
+                    search_module, query, diagnostic_rules
+                ),
+            ],
         )
         if not evidence_entries:
             continue
@@ -790,12 +1422,27 @@ def build_diagnostic_contract(
             }
         )
 
+    previously_authorized_labels = {
+        evidence["label"]
+        for claim in claim_map
+        for evidence in claim.get("evidence", [])
+    }
+    branch_query = (
+        question_interpretation.get("actor_context", {}).get("target_query")
+        or query
+    )
     branches = material_diagnostic_branches(
-        query,
+        branch_query,
         question_interpretation["constraints"],
         selected_videos,
         diagnostic_rules,
+        eligible_labels=previously_authorized_labels,
     )
+    previous_evidence_by_label = {
+        evidence["label"]: evidence
+        for claim in claim_map
+        for evidence in claim.get("evidence", [])
+    }
     for branch in branches:
         for branch_value in branch["branches"]:
             evidence_entries = []
@@ -806,16 +1453,20 @@ def build_diagnostic_contract(
                 directness = claim_scope_directness(video, diagnostic_rules)
                 if directness == "incompatible":
                     continue
-                evidence_entries.append(
-                    claim_evidence_entry(
-                        video,
-                        "direct" if directness == "exact" else "scoped",
-                        (
-                            f'directly supports the {branch["label"]} '
-                            f'{branch_value["label"]} branch'
-                        ),
-                    )
+                branch_evidence = claim_evidence_entry(
+                    video,
+                    "direct" if directness == "exact" else "scoped",
+                    (
+                        f'directly supports the {branch["label"]} '
+                        f'{branch_value["label"]} branch'
+                    ),
                 )
+                prior_evidence = previous_evidence_by_label.get(label, {})
+                if prior_evidence.get("claim_windows"):
+                    branch_evidence["claim_windows"] = list(
+                        prior_evidence["claim_windows"]
+                    )
+                evidence_entries.append(branch_evidence)
             evidence_entries = evidence_entries[
                 : diagnostic_rules.get("max_related_evidence_per_claim", 8)
             ]
@@ -849,11 +1500,17 @@ def build_diagnostic_contract(
 
     diagnostic_question = bool(
         boundary.get("type")
-        not in {"pain_or_injury", "endorsement_or_authorship", "purchase_advice"}
+        not in {
+            "pain_or_injury",
+            "endorsement_or_authorship",
+            "source_evidence_policy",
+            "purchase_advice",
+        }
         and (
             observed_symptoms
             or user_hypotheses
             or question_interpretation["strategy"] == "literal_symptom_first"
+            or intent_frame.get("requested_output") == "diagnosis"
         )
     )
     material_unknowns = []
@@ -905,19 +1562,64 @@ def build_diagnostic_contract(
                 "answer_cues": answer_cues,
             }
         )
-    for mechanism_record in supported_mechanisms:
-        mechanism = mechanism_by_id[mechanism_record["mechanism_id"]]
+    clarification_mechanism_ids = list(
+        dict.fromkeys(
+            [
+                *[
+                    item["mechanism_id"] for item in supported_mechanisms
+                ],
+                *[
+                    item["mechanism_id"]
+                    for item in user_hypotheses
+                    if item.get("mechanism_id")
+                ],
+            ]
+        )
+    )
+    for mechanism_id in clarification_mechanism_ids:
+        mechanism = mechanism_by_id[mechanism_id]
         question = mechanism.get("observation_question")
+        answer_cues = mechanism.get("answer_cues", [])
+        followup = next(
+            (
+                item
+                for item in mechanism.get(
+                    "known_observation_followups", []
+                )
+                if known_observations_cover_cues(
+                    item.get("when_cues", [])
+                )
+            ),
+            None,
+        )
+        if followup:
+            question = followup.get("question", question)
+            answer_cues = followup.get("answer_cues", answer_cues)
+        elif known_observations_cover_cues(answer_cues):
+            question = None
         question_id = f'clarify.mechanism.{mechanism["id"]}'
         if (
             question
             and question_id not in resolved_question_ids
-            and not resolved_answers_cover_cues(
-                mechanism.get("answer_cues", [])
-            )
+            and not explicit_answers_cover_cues(answer_cues)
+            and not known_observations_cover_cues(answer_cues)
             and question not in {
                 item["question"] for item in clarification_requests
             }
+            and not any(
+                len(
+                    {
+                        search_module.normalize(cue)
+                        for cue in answer_cues
+                    }
+                    & {
+                        search_module.normalize(cue)
+                        for cue in item.get("answer_cues", [])
+                    }
+                )
+                >= 2
+                for item in clarification_requests
+            )
         ):
             clarification_requests.append(
                 {
@@ -935,7 +1637,7 @@ def build_diagnostic_contract(
                     ),
                     "materially_affects": ["diagnosis", "evidence_selection"],
                     "answer_format": "focused_free_text_observation",
-                    "answer_cues": mechanism.get("answer_cues", []),
+                    "answer_cues": answer_cues,
                 }
             )
     if (
@@ -943,35 +1645,55 @@ def build_diagnostic_contract(
         and not clarification_requests
         and not resolved_question_ids
     ):
-        clarification_requests.append(
-            {
-                "question_id": "clarify.symptom_context",
-                "unknown_type": "user_reported_context",
-                "question": (
-                    "若想让答案更完整，可以补充问题发生时的主动或被动状态、"
-                    "球最后落到哪个区域，以及触球点大致在身前、体侧还是身后。"
-                ),
-                "query_label": "问题发生时的具体场景",
-                "purpose": "用于缩小证据支持的排查范围；不影响先回答当前有把握的部分。",
-                "materially_affects": ["diagnosis_detail", "evidence_selection"],
-                "answer_format": "focused_free_text_observation",
-                "answer_cues": [
-                    "主动",
-                    "被动",
-                    "前场",
-                    "中场",
-                    "后场",
+        fallback_axes = [
+            (
+                "问题发生时是主动还是被动",
+                ["主动", "被动"],
+            ),
+            (
+                "球最后落在前场、中场还是后场",
+                ["前场", "中场", "后场"],
+            ),
+            (
+                "触球点大致在身前、体侧还是身后",
+                [
                     "身前",
                     "身体前面",
                     "身体前方",
                     "体侧",
                     "身体侧面",
+                    "髋部",
+                    "肩部",
                     "身后",
                     "身体后面",
                     "身体后方",
                 ],
-            }
-        )
+            ),
+        ]
+        missing_axes = [
+            (label, cues)
+            for label, cues in fallback_axes
+            if not resolved_answers_cover_cues(cues)
+        ]
+        if missing_axes:
+            clarification_requests.append(
+                {
+                    "question_id": "clarify.symptom_context",
+                    "unknown_type": "user_reported_context",
+                    "question": (
+                        "若想让答案更完整，可以补充："
+                        + "；".join(label for label, _ in missing_axes)
+                        + "。"
+                    ),
+                    "query_label": "问题发生时的具体场景",
+                    "purpose": "用于缩小证据支持的排查范围；不影响先回答当前有把握的部分。",
+                    "materially_affects": ["diagnosis_detail", "evidence_selection"],
+                    "answer_format": "focused_free_text_observation",
+                    "answer_cues": [
+                        cue for _, cues in missing_axes for cue in cues
+                    ],
+                }
+            )
     if (
         question_interpretation.get("intent_frame", {}).get(
             "requested_output"
@@ -1066,16 +1788,28 @@ def build_diagnostic_contract(
         "diagnostic_model": {
             "observed_symptoms": observed_symptoms,
             "clarification_observations": [
-                {
-                    "question_id": item["question_id"],
-                    "question": item["question"],
-                    "text": item["answer"],
-                    "source": "user_clarification_text",
-                    "verification_status": "user_reported_not_independently_verified",
-                }
-                for item in resolved_answers
-                if item["unknown_type"]
-                in {"user_reported_observation", "user_reported_context"}
+                *[
+                    {
+                        "question_id": None,
+                        "question": None,
+                        "text": item["source_unit"],
+                        "source": "user_initial_question",
+                        "verification_status": "user_reported_not_independently_verified",
+                    }
+                    for item in known_observation_records
+                ],
+                *[
+                    {
+                        "question_id": item["question_id"],
+                        "question": item["question"],
+                        "text": item["answer"],
+                        "source": "user_clarification_text",
+                        "verification_status": "user_reported_not_independently_verified",
+                    }
+                    for item in resolved_answers
+                    if item["unknown_type"]
+                    in {"user_reported_observation", "user_reported_context"}
+                ],
             ],
             "user_hypotheses": user_hypotheses,
             "supported_mechanisms": supported_mechanisms,

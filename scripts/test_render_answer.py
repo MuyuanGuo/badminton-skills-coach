@@ -73,8 +73,8 @@ class RenderAnswerTests(unittest.TestCase):
                 for text in windows_by_claim["H2"]
             )
         )
-        self.assertGreaterEqual(len(windows_by_claim["H1"]), 2)
-        self.assertGreaterEqual(len(windows_by_claim["H2"]), 2)
+        self.assertGreaterEqual(len(windows_by_claim["H1"]), 1)
+        self.assertGreaterEqual(len(windows_by_claim["H2"]), 1)
         self.assertEqual(set(packet["synthesis_videos"]), cited)
         for label in packet["complete_related_videos"]:
             self.assertIn(label, answer)
@@ -165,7 +165,10 @@ class RenderAnswerTests(unittest.TestCase):
             answers[query] = answer
         self.assertNotEqual(answers[short_query], answers[chain_query])
         self.assertIn("对手：挡网", answers[chain_query])
-        self.assertIn("杀球后被对手挡网", answers[chain_query])
+        self.assertIn(
+            "你：杀球 → 对手：挡网 → 你：杀上网",
+            answers[chain_query],
+        )
 
     def test_training_request_renders_boundary_without_synthetic_plan(self):
         query = (

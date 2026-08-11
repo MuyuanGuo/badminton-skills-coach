@@ -94,6 +94,15 @@ def axis_values(search_module, text, axis):
 def query_axis_values(search_module, query, axis):
     values = axis_values(search_module, query, axis)
     normalized = search_module.normalize(query)
+    suppressed = {
+        value
+        for value, phrases in axis.get("query_value_suppressions", {}).items()
+        if any(
+            search_module.normalize(phrase) in normalized
+            for phrase in phrases
+        )
+    }
+    values -= suppressed
     if any(
         search_module.normalize(phrase) in normalized
         for phrase in axis.get("mixed_value_sets", {})
@@ -212,6 +221,112 @@ def _query_actor_parser_parts(query, rules):
     if tokens:
         pattern = re.compile("|".join(re.escape(token) for token in tokens))
     return markers, separators, pattern
+
+
+def _generic_incoming_context(search_module, query, actor_text, rules):
+    """Recover incoming-shot ownership from destination grammar.
+
+    Actor markers alone cannot parse phrases such as “对手推到反手后场”:
+    the destination describes the player's receiving side, not the opponent's
+    stroke side.  This pass records the incoming event and projects only its
+    destination axes back onto the target player.
+    """
+
+    opponent_text = actor_text.get("opponent", "")
+    if not opponent_text and not any(
+        marker in query for marker in rules.get("incoming_source_markers", [])
+    ):
+        return {}
+    destinations = {}
+    window_size = int(rules.get("incoming_destination_window_chars", 16))
+    for prefix in sorted(
+        rules.get("incoming_destination_prefixes", []), key=len, reverse=True
+    ):
+        start = 0
+        while True:
+            index = query.find(prefix, start)
+            if index < 0:
+                break
+            fragment = query[index + len(prefix) : index + len(prefix) + window_size]
+            fragment = re.split(r"[，,。；;！？!?]", fragment, maxsplit=1)[0]
+            for axis in rules.get("constraint_axes", []):
+                if axis.get("name") not in {"stroke_side", "court_zone"}:
+                    continue
+                values = axis_values(search_module, fragment, axis)
+                if values:
+                    destinations.setdefault(axis["name"], set()).update(values)
+            start = index + len(prefix)
+    destinations = {
+        axis_name: sorted(values)
+        for axis_name, values in destinations.items()
+        if values
+    }
+    normalized_query = search_module.normalize(query)
+    target_response_constraints = {}
+    for implication in rules.get(
+        "generic_incoming_response_implications", []
+    ):
+        if not all(
+            search_module.normalize(term) in normalized_query
+            for term in implication.get("incoming_terms", [])
+        ):
+            continue
+        if not any(
+            search_module.normalize(term) in normalized_query
+            for term in implication.get("response_terms", [])
+        ):
+            continue
+        for axis_name, values in implication.get(
+            "target_action_constraints", {}
+        ).items():
+            target_response_constraints.setdefault(axis_name, set()).update(
+                values
+            )
+    target_response_constraints = {
+        axis_name: sorted(values)
+        for axis_name, values in target_response_constraints.items()
+    }
+
+    event_chain = []
+    partner_text = actor_text.get("partner", "").strip()
+    if partner_text:
+        event_chain.append(
+            {
+                "actor": "partner",
+                "role": "prior_condition",
+                "term": partner_text,
+            }
+        )
+    if opponent_text:
+        incoming_term = opponent_text.strip()
+        marker_indexes = [
+            incoming_term.find(marker)
+            for marker in rules.get("incoming_player_symptom_markers", [])
+            if incoming_term.find(marker) > 0
+        ]
+        if marker_indexes:
+            incoming_term = incoming_term[: min(marker_indexes)].strip()
+        event_chain.append(
+            {
+                "actor": "opponent_or_feed",
+                "role": "incoming_condition",
+                "term": incoming_term,
+            }
+        )
+    player_text = actor_text.get("player", "").strip()
+    if player_text and event_chain:
+        event_chain.append(
+            {
+                "actor": "player",
+                "role": "target_action",
+                "term": player_text,
+            }
+        )
+    return {
+        "destination_constraints": destinations,
+        "target_response_constraints": target_response_constraints,
+        "event_chain": event_chain,
+    }
 
 
 def _query_actor_segments(query, rules):
@@ -915,6 +1030,55 @@ def query_actor_context(search_module, query, rules):
         actor_constraints.get(target_actor, {}),
         rules,
     )
+    generic_incoming = _generic_incoming_context(
+        search_module, query, actor_text, rules
+    )
+    destination_constraints = generic_incoming.get(
+        "destination_constraints", {}
+    )
+    for axis_name, values in destination_constraints.items():
+        player_constraints[axis_name] = sorted(
+            set(player_constraints.get(axis_name, [])) | set(values)
+        )
+        actor_constraints["player"] = player_constraints
+        retained = set(opponent_constraints.get(axis_name, [])) - set(values)
+        if retained:
+            opponent_constraints[axis_name] = sorted(retained)
+        else:
+            opponent_constraints.pop(axis_name, None)
+    # If the multi-actor/event parser already inferred the target action, keep
+    # generic incoming-shot constraints on the incoming event.  Merging them
+    # into the player's response would turn e.g. “opponent blocks my smash”
+    # into “the player performs a smash-block response” and erase rotation or
+    # forward-movement intent.
+    if not target_action_context.get("inferred_target_action"):
+        for axis_name, values in generic_incoming.get(
+            "target_response_constraints", {}
+        ).items():
+            player_constraints[axis_name] = sorted(
+                set(player_constraints.get(axis_name, [])) | set(values)
+            )
+            actor_constraints["player"] = player_constraints
+            target_action_context.setdefault("target_action_constraints", {})[
+                axis_name
+            ] = sorted(
+                set(
+                    target_action_context.get("target_action_constraints", {}).get(
+                        axis_name, []
+                    )
+                )
+                | set(values)
+            )
+    if (
+        not target_action_context.get("event_chain")
+        and generic_incoming.get("event_chain")
+    ):
+        target_action_context["event_chain"] = generic_incoming["event_chain"]
+        target_action_context["target_condition_query"] = " ".join(
+            item["term"]
+            for item in generic_incoming["event_chain"]
+            if item["role"] != "target_action"
+        )
     for axis_name, suppressed_values in target_action_context.get(
         "opponent_constraint_suppressions", {}
     ).items():
@@ -976,6 +1140,11 @@ def query_actor_context(search_module, query, rules):
         actor_constraints["player"] = player_constraints
     else:
         incoming_constraints = {}
+    if generic_incoming:
+        incoming_constraints = {
+            axis_name: sorted(set(values))
+            for axis_name, values in opponent_constraints.items()
+        }
     normalized_query = search_module.normalize(query)
     derived_player_constraints = {}
     derived_target_constraints = {}
@@ -1053,6 +1222,7 @@ def query_actor_context(search_module, query, rules):
         "derived_target_constraints": derived_target_constraints,
         "derived_search_terms": list(dict.fromkeys(derived_search_terms)),
         "incoming_shot_constraints": incoming_constraints,
+        "incoming_destination_constraints": destination_constraints,
     }
 
 
@@ -1228,7 +1398,26 @@ def video_constraint_scope(search_module, video, rules):
     for implication in rules.get("source_constraint_implications", []):
         source_scope = scope.get(implication["source_axis"], {})
         target_scope = scope.get(implication["target_axis"], {})
-        if target_scope.get("values"):
+        target_values = set(target_scope.get("values", []))
+        implied_values = set(implication["target_values"])
+        # Weak transcript/OCR evidence must not overrule a stronger action
+        # classification from primary metadata or reviewed scope. A fast-
+        # smash lesson, for example, may contain a mistranscribed “接杀” in
+        # one evidence line while its primary smash classification still
+        # implies attack.
+        replace_weak_structured_conflict = bool(
+            target_values
+            and target_values.isdisjoint(implied_values)
+            and target_scope.get("source") == "structured_evidence"
+            and source_scope.get("source")
+            in {
+                "primary_metadata",
+                "primary_and_reviewed",
+                "reviewed_context",
+                "reviewed_override",
+            }
+        )
+        if target_values and not replace_weak_structured_conflict:
             continue
         if any(
             search_module.normalize(term) in structured_text
@@ -1240,13 +1429,17 @@ def video_constraint_scope(search_module, video, rules):
         ):
             continue
         scope[implication["target_axis"]] = {
-            "values": sorted(set(implication["target_values"])),
+            "values": sorted(implied_values),
             "source": "derived_constraint",
             "suppressed_values": target_scope.get(
                 "suppressed_values", []
             ),
             "basis": implication.get("basis", ""),
         }
+        if replace_weak_structured_conflict:
+            scope[implication["target_axis"]]["overridden_values"] = sorted(
+                target_values
+            )
     return scope
 
 

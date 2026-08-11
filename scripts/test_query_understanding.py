@@ -115,6 +115,83 @@ class QueryUnderstandingTests(unittest.TestCase):
             ["双打接发战术和接发握拍应该怎么调整"],
         )
 
+    def test_confirmed_condition_is_preserved_but_not_retrieved_as_a_question(self):
+        plan = self.search.plan_query(
+            (
+                "我右手双打前场反手勾对角经常球路太高，被对手直接扑死；"
+                "触球时我已经到位。是拍面变化太早，还是手臂动作太大？"
+            )
+        )["retrieval_guidance"]
+        self.assertIn("触球时我已经到位", plan["source_query_units"])
+        self.assertNotIn("触球时我已经到位", plan["query_units"])
+
+    def test_incoming_destination_belongs_to_player_not_opponent(self):
+        query = (
+            "我只有在被对手快速推到反手后场、触球点已经落到体侧时，"
+            "回高远才只到半场；这是引拍太深还是被动架拍位置不对？"
+        )
+        plan = self.search.plan_query(query)
+        intent = plan["retrieval_guidance"]["intent_frame"]
+        actor = self.context.query_actor_context(
+            self.search, intent["actor_query"], self.rules
+        )
+        self.assertEqual(actor["player_constraints"]["stroke_side"], ["backhand"])
+        self.assertEqual(actor["player_constraints"]["court_zone"], ["rearcourt"])
+        self.assertNotIn("stroke_side", actor["opponent_constraints"])
+        self.assertNotIn("court_zone", actor["opponent_constraints"])
+        self.assertEqual(
+            [item["actor"] for item in actor["event_chain"]],
+            ["opponent_or_feed", "player"],
+        )
+
+    def test_negative_scope_keeps_shared_side_but_hard_excludes_shot(self):
+        query = (
+            "不要讨论反手接杀，也不要检索接杀视频；"
+            "我只问反手网前挑直线怎样控制拍面。"
+        )
+        intent = self.search.plan_query(query)["retrieval_guidance"]["intent_frame"]
+        self.assertNotIn("反手", intent["hard_excluded_terms"])
+        self.assertIn("接杀", intent["hard_excluded_terms"])
+        self.assertIn("挡杀", intent["hard_excluded_terms"])
+
+    def test_compound_negative_scope_keeps_conjunction_semantics(self):
+        intent = self.search.plan_query(
+            "对手吊网前我赶不到，不想练后场被动球，先改什么"
+        )["retrieval_guidance"]["intent_frame"]
+        self.assertEqual(
+            intent["hard_excluded_scope_groups"],
+            [["后场", "被动"]],
+        )
+        self.assertNotIn(["来不及"], intent["hard_excluded_scope_groups"])
+
+    def test_named_excluded_hypotheses_remain_separate_exact_scopes(self):
+        intent = self.search.plan_query(
+            "我怀疑是转髋还是握拍；别把“击球点低”和“抡大臂”当支持原因"
+        )["retrieval_guidance"]["intent_frame"]
+        self.assertEqual(
+            intent["hard_excluded_scope_groups"],
+            [["击球点低"], ["抡大臂"]],
+        )
+
+    def test_named_frame_comparison_is_not_split_at_and(self):
+        guidance = self.search.plan_query(
+            "反手被动高远时，高架拍和低架拍分别适合什么击球位置"
+        )["retrieval_guidance"]
+        self.assertEqual(len(guidance["source_query_units"]), 1)
+        self.assertIn("高架拍和低架拍", guidance["source_query_units"][0])
+
+    def test_elliptical_lift_direction_is_still_an_action_constraint(self):
+        query = "不要讨论反手接杀；我只问反手网前挑直线怎样控制拍面。"
+        plan = self.search.plan_query(query)
+        intent = plan["retrieval_guidance"]["intent_frame"]
+        constraints = self.context.query_constraints(
+            self.search,
+            intent["actor_query"],
+            self.rules,
+        )
+        self.assertEqual(constraints["shot_family"], ["lift"])
+        self.assertEqual(constraints["shot_direction"], ["straight"])
+
     def test_registry_must_cover_every_answer_quality_case(self):
         registry = self.module.load_json(self.module.CASES_PATH)
         registry["cases"] = registry["cases"][:-1]

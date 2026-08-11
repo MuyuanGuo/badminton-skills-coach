@@ -173,7 +173,7 @@ class AnswerContextTests(unittest.TestCase):
             for claim in combined["claim_evidence_map"]
             if claim["kind"] == "question_unit"
         }
-        self.assertEqual(claims[first_query]["status"], "supported")
+        self.assertEqual(claims[first_query]["status"], "conditional")
         self.assertEqual(claims[second_query]["status"], "supported")
         self.assertTrue(claims[first_query]["eligible_video_labels"])
         self.assertTrue(claims[second_query]["eligible_video_labels"])
@@ -212,6 +212,7 @@ class AnswerContextTests(unittest.TestCase):
             "这个Skill是刘辉本人授权的吗": "endorsement_or_authorship",
             "刘辉同意这个训练计划吗": "endorsement_or_authorship",
             "哪款球拍适合我": "purchase_advice",
+            "战戟9000S 3U和神速100X 4U二选一，请直接选型号并保证适合我": "purchase_advice",
             "我的反手握拍完全正确吗": "visual_confirmation",
             "只描述杀球下网，唯一原因是什么": "insufficient_observation",
         }
@@ -276,13 +277,13 @@ class AnswerContextTests(unittest.TestCase):
             len(context["selected_videos"]),
         )
 
-    def test_answer_visible_labels_are_contiguous_and_can_exceed_three(self):
+    def test_answer_visible_labels_are_contiguous_and_compact(self):
         context = self.context_module.prepare_answer_context(
             "杀球下网而且不重，架拍、击球点、握拍、步法和发力分别怎么检查？",
             local_personalization=False,
         )
         visible_labels = context["answer_visible_video_labels"]
-        self.assertGreater(len(visible_labels), 3)
+        self.assertEqual(len(visible_labels), 3)
         self.assertEqual(
             visible_labels,
             [f"V{index}" for index in range(1, len(visible_labels) + 1)],
@@ -1546,10 +1547,18 @@ class AnswerContextTests(unittest.TestCase):
         defense_ids = {
             item["video_id"] for item in defense["selected_videos"]
         }
-        self.assertIn("7656927370758796145", defense_ids)
+        self.assertNotIn("7656927370758796145", defense_ids)
         self.assertIn("7220984919747497255", defense_ids)
         self.assertNotIn("7246960976459730191", defense_ids)
         self.assertNotIn("7498830855188942137", defense_ids)
+        defense_rejected = {
+            item["video_id"]: item["reasons"]
+            for item in defense["rejected_candidates"]
+        }
+        self.assertIn(
+            "claim_evidence_not_authorized",
+            defense_rejected["7656927370758796145"],
+        )
 
         generic = self.context_module.prepare_answer_context(
             "双打站位怎么调整",
@@ -1558,7 +1567,7 @@ class AnswerContextTests(unittest.TestCase):
         generic_ids = {
             item["video_id"] for item in generic["selected_videos"]
         }
-        self.assertIn("7246960976459730191", generic_ids)
+        self.assertNotIn("7246960976459730191", generic_ids)
         self.assertIn("7498830855188942137", generic_ids)
 
     def test_mixed_source_is_supporting_for_single_scope_and_exact_for_comparison(self):
@@ -2182,10 +2191,7 @@ class AnswerContextTests(unittest.TestCase):
             footwork_by_id["7214304020775652620"]["claim_scope_policy"],
             "additional_specific_scope_only_not_unrestricted_full_question_proof",
         )
-        self.assertEqual(
-            footwork_by_id["7656927370758796145"]["claim_scope_policy"],
-            "additional_specific_scope_only_not_unrestricted_full_question_proof",
-        )
+        self.assertNotIn("7656927370758796145", footwork_by_id)
 
         jump_smash = self.context_module.prepare_answer_context(
             "反手跳杀怎么练？",
@@ -2408,7 +2414,6 @@ class AnswerContextTests(unittest.TestCase):
         self.assertTrue(
             {
                 "7272944156618542336",
-                "7093706918492917033",
                 "7125615679402724623",
                 "bilibili:BV1pmARzSEpc",
             }.issubset(selected_order)
@@ -2484,7 +2489,11 @@ class AnswerContextTests(unittest.TestCase):
         )
         self.assertEqual(
             [item["video_id"] for item in sliced["selected_videos"]],
-            ["7059589039694957864", "bilibili:BV14m4y1x7dH"],
+            [
+                "7059589039694957864",
+                "bilibili:BV1MekeBjENe",
+                "bilibili:BV14m4y1x7dH",
+            ],
         )
         self.assertFalse(
             {
@@ -2530,7 +2539,7 @@ class AnswerContextTests(unittest.TestCase):
             {
                 "bilibili:BV1y4421F7KV",
                 "bilibili:BV1LkGR6jEC4",
-                "bilibili:BV1EjsizyEEz",
+                "bilibili:BV1ayeozEEWJ",
             }.issubset(generic_ids)
         )
 
@@ -2680,7 +2689,6 @@ class AnswerContextTests(unittest.TestCase):
             },
             "动态低架怎么做": {"7589749293205363633"},
             "远网怎么打": {
-                "7093706918492917033",
                 "7411850466457292084",
                 "7262546080133401890",
                 "7076257912192060707",
@@ -2718,7 +2726,6 @@ class AnswerContextTests(unittest.TestCase):
                         "far_net_flat_slice",
                         "far_net_middle_split",
                         "far_net_defense_to_push",
-                        "far_net_drop",
                     }.issubset(selected_variants)
                 )
 
@@ -2772,7 +2779,10 @@ class AnswerContextTests(unittest.TestCase):
                 "7076257912192060707",
             },
             "防远网转推怎么练": {"7258462271670586658"},
-            "远网吊球怎么打": {"7093706918492917033"},
+            # The only titled candidate mentions 远网吊球 in metadata, but its
+            # transcript teaches soft pressure / kill-to-net instead.  Keep the
+            # named action unsupported until a content-backed window exists.
+            "远网吊球怎么打": set(),
         }
         for query, expected_ids in cases.items():
             context = self.context_module.prepare_answer_context(
@@ -3207,7 +3217,11 @@ class AnswerContextTests(unittest.TestCase):
                     )
                 )
                 self.assertTrue(
-                    all(item["role"] == "core" for item in selected.values())
+                    all(
+                        item["role"] in {"core", "supporting"}
+                        and item["answer_eligibility"] == "primary"
+                        for item in selected.values()
+                    )
                 )
                 self.assertNotIn("7109288333884329231", selected)
                 rejected = {
@@ -3405,7 +3419,7 @@ class AnswerContextTests(unittest.TestCase):
                 ("player", "target_action"),
             ],
         )
-        self.assertEqual(payload["claim_evidence_map"][0]["status"], "supported")
+        self.assertEqual(payload["claim_evidence_map"][0]["status"], "conditional")
         self.assertEqual(
             payload["answer_plan"]["selected_evidence_atoms"][0]["atom_id"],
             "EA-DOUBLES-COVERAGE-RESPONSIBILITY-001",
@@ -3528,6 +3542,27 @@ class AnswerContextTests(unittest.TestCase):
         self.assertTrue(questions)
         self.assertTrue(all("视频" not in item for item in questions))
 
+    def test_named_lift_claim_uses_a_lift_window_not_another_video_section(self):
+        payload = self.context_module.prepare_answer_context(
+            "我刚看了一个长视频，反手挑球拍面怎么控制？",
+            local_personalization=False,
+        )
+        evidence = [
+            item
+            for claim in payload["claim_evidence_map"]
+            if claim["kind"] == "question_unit"
+            for item in claim["evidence"]
+            if item["evidence_id"] == "7511934047901846841"
+        ]
+        self.assertTrue(evidence)
+        text = " ".join(
+            window["text"]
+            for item in evidence
+            for window in item.get("claim_windows", [])
+        )
+        self.assertIn("反手的挑球", text)
+        self.assertNotIn("反手的过渡球", text)
+
     def test_unseen_cross_variant_transfer_fails_closed(self):
         payload = self.context_module.prepare_answer_context(
             "我会普通反手杀球，想直接照搬正手跳杀的起跳和落地来学反手跳杀，这两种动作的证据能互相代替吗？",
@@ -3579,7 +3614,10 @@ class AnswerContextTests(unittest.TestCase):
         )
         interpretation = payload["question_interpretation"]
         self.assertEqual(len(interpretation["source_query_units"]), 4)
-        self.assertEqual(len(interpretation["query_units"]), 3)
+        self.assertEqual(
+            interpretation["query_units"],
+            ["请区分这两个假设和其他有证据支持的原因"],
+        )
         expected = {
             "stroke_side": ["forehand"],
             "shot_family": ["clear"],
@@ -3611,6 +3649,260 @@ class AnswerContextTests(unittest.TestCase):
                 for item in payload["delivery_contract"]["items"]
             },
         )
+
+    def test_partner_conditions_do_not_create_player_stroke_side_branches(self):
+        payload = self.context_module.prepare_answer_context(
+            (
+                "混双里搭档在后场被压反手，我守前场；对手第二拍继续推她"
+                "反手时，她选择直线过渡，而我没有后退。请分开回答她的出球"
+                "是否合理、我的补位该往哪里，以及这两个结论的证据能不能共用。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            payload["question_interpretation"]["query_units"],
+            ["搭档的出球是否合理", "我的补位该往哪里"],
+        )
+        self.assertEqual(payload["diagnostic_model"]["material_branches"], [])
+        self.assertEqual(payload["answer_visible_video_labels"], [])
+        self.assertTrue(
+            all(
+                claim["status"] == "unsupported"
+                for claim in payload["claim_evidence_map"]
+            )
+        )
+
+    def test_unseen_answer_audit_prompts_preserve_modality_and_evidence_scope(self):
+        practice = self.context_module.prepare_answer_context(
+            (
+                "我一个人在家只有墙和球拍，想用每天10分钟、连续两周把"
+                "平抽挡速度练起来。请给具体组数、次数和进阶标准。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            practice["question_interpretation"]["intent_frame"][
+                "requested_output"
+            ],
+            "practice",
+        )
+        self.assertEqual(practice["selected_videos"], [])
+        self.assertIn(
+            "evidence.training_boundary",
+            {item["kind"] for item in practice["delivery_contract"]["items"]},
+        )
+
+        purchase = self.context_module.prepare_answer_context(
+            (
+                "我手腕力量一般，后场球老不到位，换更轻的拍子能解决吗？"
+                "你能直接推荐一支最适合我的具体型号吗？"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(purchase["boundary"]["type"], "purchase_advice")
+        self.assertIn("个性化购买背书", purchase["boundary"]["required_statement"])
+
+        source_policy = self.context_module.prepare_answer_context(
+            (
+                "你引用的B站视频和刘辉抖音内容冲突时，会默认采用抖音说法吗？"
+                "如果B站讲得更详细，能不能当成同等证据？"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            source_policy["boundary"]["type"], "source_evidence_policy"
+        )
+        self.assertEqual(source_policy["selected_videos"], [])
+        self.assertIn(
+            "平台本身不决定证据权重",
+            source_policy["boundary"]["required_statement"],
+        )
+
+        excluded = self.context_module.prepare_answer_context(
+            (
+                "我只想知道双打发小球后，发球人该站哪里防对方推直线和"
+                "推中路；不要讲接发，也不要讲单打。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            excluded["question_interpretation"]["query_units"],
+            ["我只想知道双打发小球后 发球人该站哪里防对方推直线和推中路"],
+        )
+        self.assertTrue(
+            all(
+                "不要讲" not in unit
+                for unit in excluded["question_interpretation"]["query_units"]
+            )
+        )
+        self.assertEqual(excluded["selected_videos"], [])
+
+    def test_unseen_diagnosis_prompts_keep_hypotheses_rotation_and_clarifications(self):
+        comparison = self.context_module.prepare_answer_context(
+            (
+                "我右手单打，正手后场高远球在主动到位时也常落到对方双打"
+                "发球线附近，但杀球反而能打得比较深。我猜是转体不够，也可能"
+                "是拍面太向上。先告诉我目前能确定什么、该按什么顺序排查，"
+                "不要让我发动作视频。"
+            ),
+            local_personalization=False,
+        )
+        hypotheses = comparison["diagnostic_model"]["user_hypotheses"]
+        self.assertEqual(
+            [(item["text"], item["status"]) for item in hypotheses],
+            [("转体不够", "unverified"), ("拍面太向上", "unverified")],
+        )
+        self.assertIn(
+            "diagnosis.ordered_checklist",
+            {item["kind"] for item in comparison["delivery_contract"]["items"]},
+        )
+
+        rotation = self.context_module.prepare_answer_context(
+            (
+                "混双里我在后场直线重杀后，女搭档守前场，对手把球挡到斜线"
+                "网前。我该自己跟进还是让搭档跨过去？她已经封住直线和她被"
+                "带向中路时，判断会不同吗？"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            rotation["question_interpretation"]["query_units"],
+            ["双打轮转补位责任"],
+        )
+        responsibility = next(
+            item
+            for item in rotation["delivery_contract"]["items"]
+            if item["kind"] == "tactics.coverage_responsibility"
+        )
+        self.assertEqual(responsibility["parameters"]["actors"], ["自己", "搭档"])
+        self.assertIn(
+            "搭档被带向中路", responsibility["parameters"]["conditions"]
+        )
+        self.assertEqual(
+            rotation["answer_plan"]["claim_directives"][0]["mode"],
+            "state_evidence_gap",
+        )
+        self.assertEqual(rotation["answer_visible_video_labels"], [])
+
+        receive = self.context_module.prepare_answer_context(
+            (
+                "我双打接发时总被对手下一拍压住，怎么回事？我现在只能确定"
+                "自己接的是短发球。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            receive["question_interpretation"]["constraints"]["serve_role"],
+            ["receive"],
+        )
+        self.assertEqual(
+            [
+                item["mechanism_id"]
+                for item in receive["diagnostic_model"]["supported_mechanisms"]
+            ],
+            ["serve_receive_next_shot_pressure"],
+        )
+        self.assertEqual(
+            receive["clarification_decision"]["questions"],
+            [
+                "你接短发球后实际回的是推、放、搓还是挑，落点在直线、中路"
+                "还是斜线；对手又是用哪一种下一拍把你压住？"
+            ],
+        )
+
+        grip = self.context_module.prepare_answer_context(
+            (
+                "我握拍时虎口位置没问题，但平抽挡连续三拍后手指越来越紧，"
+                "拍头速度也掉下来。现有信息能支持哪些原因，哪些还不能确定？"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            [
+                item["mechanism_id"]
+                for item in grip["diagnostic_model"]["supported_mechanisms"]
+            ],
+            ["grip_tension"],
+        )
+        self.assertIn(
+            "持续攥紧",
+            grip["clarification_decision"]["questions"][0],
+        )
+
+    def test_black_box_root_mechanisms_hold_for_observations_exclusions_and_source_policy(self):
+        observed = self.context_module.prepare_answer_context(
+            (
+                "我反手挡杀总下网；已知来球贴着持拍侧髋部，而且触球时身体"
+                "已经失衡。现在能先排查什么，还缺哪些文字信息？"
+            ),
+            local_personalization=False,
+        )
+        records = observed["question_interpretation"]["query_unit_records"]
+        self.assertEqual(
+            [item["role"] for item in records[:3]],
+            ["user_observation", "user_observation", "user_observation"],
+        )
+        self.assertEqual(
+            len(observed["diagnostic_model"]["clarification_observations"]),
+            3,
+        )
+        self.assertTrue(
+            all(
+                "髋部" not in question and "是否失衡" not in question
+                for question in observed["clarification_decision"]["questions"]
+            )
+        )
+
+        excluded = self.context_module.prepare_answer_context(
+            (
+                "不要讨论反手接杀，也不要检索接杀视频；"
+                "我只问反手网前挑直线怎样控制拍面。"
+            ),
+            local_personalization=False,
+        )
+        self.assertTrue(
+            all(
+                "接杀" not in query
+                for query in excluded["question_interpretation"]["retrieval_queries"]
+            )
+        )
+        self.assertNotIn(
+            "反手",
+            excluded["question_interpretation"]["intent_frame"][
+                "hard_excluded_terms"
+            ],
+        )
+        self.assertEqual(
+            excluded["question_interpretation"]["constraints"]["shot_family"],
+            ["lift"],
+        )
+        self.assertNotIn(
+            "7634998306204492794",
+            {video["video_id"] for video in excluded["selected_videos"]},
+        )
+        self.assertTrue(
+            all(
+                "接杀" not in json.dumps(
+                    {
+                        "title": video.get("title"),
+                        "category": video.get("category"),
+                        "teaching_note": video.get("teaching_note"),
+                    },
+                    ensure_ascii=False,
+                )
+                for video in excluded["selected_videos"]
+            )
+        )
+
+        source_policy = self.context_module.prepare_answer_context(
+            (
+                "同一个反手高远架拍，抖音短视频和B站长视频都讲过。"
+                "请默认B站因为更长就更可靠，再告诉我怎么练。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(source_policy["boundary"]["type"], "source_evidence_policy")
+        self.assertEqual(source_policy["selected_videos"], [])
 
 
 if __name__ == "__main__":

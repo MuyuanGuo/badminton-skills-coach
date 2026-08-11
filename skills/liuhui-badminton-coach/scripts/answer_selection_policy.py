@@ -54,6 +54,18 @@ def classify_boundary(query, rules, requested_constraints=None):
         boundary: [term for term in terms if term in normalized]
         for boundary, terms in rules["boundary_terms"].items()
     }
+    source_policy_comparison = (
+        any(
+            term.replace(" ", "").lower() in normalized
+            for term in rules.get("source_policy_platform_terms", [])
+        )
+        and any(
+            term.replace(" ", "").lower() in normalized
+            for term in rules.get("source_policy_comparison_terms", [])
+        )
+    )
+    if source_policy_comparison and not matched["source_evidence_policy"]:
+        matched["source_evidence_policy"] = ["platform_reliability_comparison"]
     cross_variant_terms = [
         term
         for term in rules.get("cross_variant_transfer_terms", [])
@@ -77,6 +89,14 @@ def classify_boundary(query, rules, requested_constraints=None):
         boundary_type = "endorsement_or_authorship"
         citation_policy = "no_video_needed_for_identity_or_endorsement_boundary"
         required_statement = "Skill 的综合回答不代表刘辉本人审阅、认可或背书。"
+    elif matched["source_evidence_policy"]:
+        boundary_type = "source_evidence_policy"
+        citation_policy = "no_teaching_video_needed_for_source_policy_boundary"
+        required_statement = (
+            "平台本身不决定证据权重：抖音不会因平台身份自动优先，B站也不会因内容更长自动等权。"
+            "应按来源身份、主证据或补充证据资格、对当前问题的直接性、适用范围和置信上限逐项判断；"
+            "出现冲突时按适用条件解释，无法消解就明确保留冲突。"
+        )
     elif matched["purchase_advice"]:
         boundary_type = "purchase_advice"
         citation_policy = "equipment_evidence_only"
