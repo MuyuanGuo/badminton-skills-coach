@@ -173,6 +173,31 @@ def _query_actor_marker_suppressed(query, match, rules):
     return False
 
 
+def _query_actor_marker_is_destination_scope(query, match, rules):
+    """Treat “落在对手中场” as a shuttle outcome, not opponent location."""
+
+    token = match.group(0)
+    if token not in set(rules.get("query_actor_destination_markers", [])):
+        return False
+    prefixes = [
+        re.sub(r"\s+", "", str(item))
+        for item in rules.get("query_actor_destination_prefixes", [])
+        if str(item).strip()
+    ]
+    zones = [
+        re.sub(r"\s+", "", str(item))
+        for item in rules.get("query_actor_destination_zone_terms", [])
+        if str(item).strip()
+    ]
+    if not prefixes or not zones:
+        return False
+    compact_prefix = re.sub(r"\s+", "", query[: match.start()])
+    compact_suffix = re.sub(r"\s+", "", query[match.end() :])
+    return any(compact_prefix.endswith(item) for item in prefixes) and any(
+        compact_suffix.startswith(item) for item in zones
+    )
+
+
 def _query_actor_parser_parts(query, rules):
     markers = {
         marker: actor
@@ -218,6 +243,12 @@ def _query_actor_segments(query, rules):
         append_text(query[cursor : match.start()])
         if _query_actor_marker_suppressed(query, match, rules):
             append_text(token)
+            cursor = match.end()
+            continue
+        if _query_actor_marker_is_destination_scope(query, match, rules):
+            # Drop the possessive destination marker from the actor-scoped
+            # text. This keeps “落在中场” contiguous so court-zone target
+            # suppression can correctly recognize it as an outcome.
             cursor = match.end()
             continue
         if token in separators:

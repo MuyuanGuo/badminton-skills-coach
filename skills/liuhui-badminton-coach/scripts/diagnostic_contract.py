@@ -548,6 +548,12 @@ def build_diagnostic_contract(
 ):
     resolved_question_ids = set(resolved_question_ids or [])
     resolved_answers = list(resolved_answers or [])
+    resolved_mechanism_ids = {
+        focus["id"]
+        for item in resolved_answers
+        for focus in [item.get("evidence_focus") or {}]
+        if focus.get("kind") == "mechanism" and focus.get("id")
+    }
     intent_frame = question_interpretation["intent_frame"]
     user_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
     observed_symptoms = diagnostic_observed_symptoms(
@@ -704,9 +710,12 @@ def build_diagnostic_contract(
     for mechanism in diagnostic_rules.get("mechanisms", []):
         if mechanism["id"] in hypothesis_mechanism_ids:
             continue
-        if not any(
-            search_module.normalize(term) in normalized_query
-            for term in mechanism.get("query_terms", [])
+        if (
+            mechanism["id"] not in resolved_mechanism_ids
+            and not any(
+                search_module.normalize(term) in normalized_query
+                for term in mechanism.get("query_terms", [])
+            )
         ):
             continue
         mechanism_unit = next(
@@ -864,6 +873,10 @@ def build_diagnostic_contract(
             {
                 "question_id": question_id,
                 "unknown_type": f'branch_axis:{branch["axis"]}',
+                "evidence_focus": {
+                    "kind": "branch_axis",
+                    "id": branch["axis"],
+                },
                 "question": branch["question"],
                 "query_label": branch["query_label"],
                 "purpose": f'{branch["label"]}会改变适用的诊断分支和视频证据。',
@@ -890,6 +903,10 @@ def build_diagnostic_contract(
                 {
                     "question_id": question_id,
                     "unknown_type": "user_reported_observation",
+                    "evidence_focus": {
+                        "kind": "mechanism",
+                        "id": mechanism["id"],
+                    },
                     "question": question,
                     "query_label": mechanism["label"],
                     "purpose": mechanism.get(

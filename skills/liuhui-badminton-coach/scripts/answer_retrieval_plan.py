@@ -285,9 +285,21 @@ def continuation_query_plan(search_module, effective_query, continuation):
 
     original_query = continuation["original_query"]
     plan = search_module.plan_query(original_query)
+    original_intent = plan["retrieval_guidance"]["intent_frame"]
     effective_intent = effective_plan["retrieval_guidance"]["intent_frame"]
+    # A clarification reply answers a pending observation question; it does
+    # not silently change the kind of output the user originally requested.
+    effective_intent["requested_output"] = original_intent[
+        "requested_output"
+    ]
     plan["answer_guidance"] = effective_plan["answer_guidance"]
     plan["retrieval_guidance"]["intent_frame"] = effective_intent
+    # Clarification replies refine scenario applicability. They must not turn
+    # assistant-authored question labels or user observations into a new hard
+    # evidence focus. Only the original user request defines that focus.
+    plan["retrieval_guidance"]["required_focus_query"] = (
+        original_intent.get("positive_query", original_query)
+    )
     plan["query_expansion"]["intent_frame"] = effective_intent
     return plan, original_query
 

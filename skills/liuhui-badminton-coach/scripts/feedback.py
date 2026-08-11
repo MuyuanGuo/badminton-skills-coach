@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -15,8 +16,10 @@ from pathlib import Path
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT_DIR = SKILL_ROOT / "scripts"
 REFERENCES = SKILL_ROOT / "references"
 KNOWLEDGE_PATH = REFERENCES / "knowledge-base.json"
+RUNTIME_STORE_PATH = REFERENCES / "runtime-store.sqlite3"
 RULES_PATH = REFERENCES / "feedback-rules.json"
 VIDEO_REF_PATTERN = re.compile(r"(?:[Vv]\s*0*(\d+)|视频\s*0*(\d+))")
 VIDEO_ID_PATTERN = re.compile(
@@ -40,6 +43,8 @@ SOURCE_ISSUE_TYPES = {
     "video_misinterpreted",
     "citation_mismatch",
 }
+_RUNTIME_STORE = None
+_COMPONENT_MODULES = {}
 
 
 def utc_now():
@@ -59,8 +64,27 @@ def load_json(path):
         return json.load(file)
 
 
+def load_component(name, filename):
+    if filename in _COMPONENT_MODULES:
+        return _COMPONENT_MODULES[filename]
+    spec = importlib.util.spec_from_file_location(name, SCRIPT_DIR / filename)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    _COMPONENT_MODULES[filename] = module
+    return module
+
+
 def load_resources():
-    return load_json(KNOWLEDGE_PATH), load_json(RULES_PATH)
+    global _RUNTIME_STORE
+    rules = load_json(RULES_PATH)
+    if RUNTIME_STORE_PATH.exists():
+        if _RUNTIME_STORE is None:
+            runtime_store = load_component(
+                "liuhui_feedback_runtime_store", "runtime_store.py"
+            )
+            _RUNTIME_STORE = runtime_store.RuntimeStore(RUNTIME_STORE_PATH)
+        return _RUNTIME_STORE.knowledge, rules
+    return load_json(KNOWLEDGE_PATH), rules
 
 
 def atomic_write_json(path, payload):
@@ -183,9 +207,17 @@ def validate_video_mappings(video_specs, core_refs, knowledge):
     # sparse mappings from older answers as well: renumbering V2/V3/V5 while
     # recording feedback would silently bind the user's words to other videos.
 
+    videos = knowledge["videos"]
+    if hasattr(videos, "get_many"):
+        requested_videos = videos.get_many(video_ids, full=False)
+    else:
+        requested_ids = set(video_ids)
+        requested_videos = [
+            video for video in videos if video["video_id"] in requested_ids
+        ]
     ready_videos = {
         video["video_id"]: video
-        for video in knowledge["videos"]
+        for video in requested_videos
         if video["processing_status"] == "ready"
     }
     missing_ids = [video_id for video_id in video_ids if video_id not in ready_videos]

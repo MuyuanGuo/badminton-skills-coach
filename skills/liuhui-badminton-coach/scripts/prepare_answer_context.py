@@ -16,7 +16,7 @@ RETRIEVAL_RULES_PATH = ROOT / "references" / "retrieval-rules.json"
 REVIEWED_EVIDENCE_PATH = ROOT / "references" / "reviewed-evidence-signals.json"
 DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
-CLARIFICATION_STATE_SCHEMA_VERSION = 1
+CLARIFICATION_STATE_SCHEMA_VERSION = 2
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 ANSWER_PACKET_SCHEMA_VERSION = 6
 ANSWER_PLAN_SCHEMA_VERSION = 1
@@ -841,6 +841,7 @@ def prepare_answer_context(
     rules = load_selection_rules()
     diagnostic_rules = load_diagnostic_rules()
     continuation = None
+    semantic_user_query = query
     if continue_from is not None:
         query, continuation = resolve_continuation(
             search_module,
@@ -849,10 +850,11 @@ def prepare_answer_context(
             clarification_answers,
             diagnostic_rules,
         )
+        semantic_user_query = continuation["semantic_query"]
     elif clarification_answers is not None:
         raise ValueError("clarification_answers requires continue_from")
     user_query = query
-    query = canonicalize_retrieval_query(query, rules)
+    query = canonicalize_retrieval_query(semantic_user_query, rules)
     max_videos = max_videos or rules["default_max_selected_videos"]
     segment_limit = segment_limit or rules["default_segment_limit"]
     if not 1 <= max_videos <= 120:
@@ -1376,7 +1378,7 @@ def prepare_answer_context(
         ),
         "terminology_corrections": query_terminology_corrections(
             search_module,
-            user_query,
+            semantic_user_query,
             rules,
         ),
         "technique_definitions": requested_technique_definitions(
@@ -1412,7 +1414,7 @@ def prepare_answer_context(
         resolved_answers=(continuation or {}).get("resolved_answers", []),
     )
     delivery_contract = build_delivery_contract(
-        user_query,
+        (continuation or {}).get("original_query", semantic_user_query),
         question_interpretation,
         diagnostic_contract["diagnostic_model"],
         navigation,
@@ -1445,6 +1447,7 @@ def prepare_answer_context(
     answer_visible_videos.sort(key=lambda video: int(video["label"][1:]))
     context = {
         "query": user_query,
+        "semantic_query": semantic_user_query,
         "question_interpretation": question_interpretation,
         "boundary": boundary,
         "answer_guidance": plan["answer_guidance"],

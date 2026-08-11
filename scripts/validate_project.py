@@ -722,6 +722,17 @@ for marker, suppressions in answer_selection_rules.get(
         raise SystemExit("Query actor marker suppression references an unknown marker")
     if any(marker not in phrase for phrase in suppressions):
         raise SystemExit("Query actor marker suppression must contain its marker")
+destination_markers = set(
+    answer_selection_rules.get("query_actor_destination_markers", [])
+)
+if not destination_markers or not destination_markers.issubset(
+    set(actor_markers["opponent"])
+):
+    raise SystemExit("Query actor destination markers must be opponent markers")
+if not answer_selection_rules.get("query_actor_destination_prefixes"):
+    raise SystemExit("Query actor destination prefixes cannot be empty")
+if not answer_selection_rules.get("query_actor_destination_zone_terms"):
+    raise SystemExit("Query actor destination zone terms cannot be empty")
 if not answer_selection_rules.get("query_actor_clause_separators"):
     raise SystemExit("Query actor clause separators are missing")
 if not answer_selection_rules.get("query_target_actor_terms"):
