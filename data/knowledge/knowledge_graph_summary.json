@@ -2,25 +2,25 @@
   "version": "knowledge-graph-v2",
   "source": "data/knowledge/topic_index.json",
   "scope": "刘辉羽毛球多来源教学视频（抖音与经核验B站切片）",
-  "source_updated_at": "2026-08-08T06:46:52.411336+00:00",
-  "video_count": 1016,
-  "indexable_video_count": 958,
-  "assigned_video_count": 958,
+  "source_updated_at": "2026-08-11T09:19:47.612085+00:00",
+  "video_count": 1017,
+  "indexable_video_count": 959,
+  "assigned_video_count": 959,
   "multi_topic_video_count": 455,
   "evidence_graph": {
     "source": "data/knowledge/evidence_graph.json",
     "schema_version": 2,
     "counts": {
-      "video_nodes": 958,
+      "video_nodes": 959,
       "concept_nodes": 326,
       "topic_nodes": 58,
       "role_nodes": 9,
-      "primary_videos": 783,
+      "primary_videos": 784,
       "supplemental_videos": 175,
-      "video_concept_edges": 11857,
-      "video_topic_edges": 1659,
-      "video_role_edges": 4199,
-      "total_edges": 17715
+      "video_concept_edges": 11869,
+      "video_topic_edges": 1660,
+      "video_role_edges": 4203,
+      "total_edges": 17732
     }
   },
   "categories": [
@@ -327,7 +327,7 @@
       "name": "网前技术",
       "description": "搓、勾、推、扑、挑、放网及网前持拍框架。",
       "discipline": "general",
-      "video_count": 95,
+      "video_count": 96,
       "subtopics": [
         {
           "name": "搓球与滚网",
@@ -336,10 +336,19 @@
             "滚网",
             "平搓"
           ],
-          "video_count": 16,
-          "ready_count": 16,
+          "video_count": 17,
+          "ready_count": 17,
           "is_fallback": false,
           "representative_videos": [
+            {
+              "video_id": "7672254579832899185",
+              "title": "4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球",
+              "url": "https://www.douyin.com/video/7672254579832899185",
+              "confidence": "medium",
+              "category": "网前技术",
+              "duration_seconds": 258.4,
+              "score": 27
+            },
             {
               "video_id": "7509355373729762619",
               "title": "滚网搓球 双打网前有人看守时有奇效",
@@ -357,15 +366,6 @@
               "category": "训练与纠错",
               "duration_seconds": 90.7,
               "score": 22
-            },
-            {
-              "video_id": "bilibili:BV1ia4uziEAQ",
-              "title": "羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓",
-              "url": "https://www.bilibili.com/video/BV1ia4uziEAQ/",
-              "confidence": "medium",
-              "category": "网前技术",
-              "duration_seconds": 159.3,
-              "score": 19
             }
           ]
         },

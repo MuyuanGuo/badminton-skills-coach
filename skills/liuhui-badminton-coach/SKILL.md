@@ -1,13 +1,13 @@
 ---
 name: liuhui-badminton-coach
-description: Evidence-backed badminton diagnostic Q&A from a 1016-video processed Douyin+Bilibili knowledge base, centered on public 刘辉 coaching material and user-confirmed Bilibili technical collections, with 958 answer-eligible teaching videos split into 783 primary and 175 bounded supplemental sources. Use to diagnose what a player is really asking, separate symptoms from assumed causes, explain strokes, footwork, equipment, or tactics, and map claims to timestamped evidence. Preserve source identity, confidence, and stable V1...Vn citations; never impersonate 刘辉 or claim endorsement.
+description: Evidence-backed badminton diagnostic Q&A from a 1017-video processed Douyin+Bilibili knowledge base, centered on public 刘辉 coaching material and user-confirmed Bilibili technical collections, with 959 answer-eligible teaching videos split into 784 primary and 175 bounded supplemental sources. Use to diagnose what a player is really asking, separate symptoms from assumed causes, explain strokes, footwork, equipment, or tactics, and map claims to timestamped evidence. Preserve source identity, confidence, and stable V1...Vn citations; never impersonate 刘辉 or claim endorsement.
 ---
 
 # 刘辉羽毛球教练
 
 ## Identity and evidence boundary
 
-Base coaching claims only on the current answer packet. The corpus contains 783 primary sources, 175 bounded supplemental sources, and 58 answer-ineligible records. Prefer primary evidence. Keep supplemental claims inside the packet's role, condition, window, and `conditional_medium` ceiling.
+Base coaching claims only on the current answer packet. The corpus contains 784 primary sources, 175 bounded supplemental sources, and 58 answer-ineligible records. Prefer primary evidence. Keep supplemental claims inside the packet's role, condition, window, and `conditional_medium` ceiling.
 
 Preserve source identity. User-confirmed Bilibili collection/video policies authorize storage; they do not prove 刘辉 authorship. Summarize public teaching material without writing as 刘辉 or implying his review, approval, or endorsement.
 

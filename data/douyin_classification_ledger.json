@@ -1,17 +1,45 @@
 {
   "version": 1,
-  "generated_at": "2026-08-08T06:12:41.091667+00:00",
+  "generated_at": "2026-08-11T08:31:07.671958+00:00",
   "source": "data/douyin_video_index.json",
   "classification_rules": {
     "version": 4,
     "sha256": "1e395efd8f6bb2adfbda9ae0ae9774c9049e536f8726a37efd7123969fbe0480"
   },
   "counts": {
-    "保留：教学": 359,
+    "保留：教学": 360,
     "排除：广告/器材推广": 17,
     "排除：非教学": 104
   },
   "videos": [
+    {
+      "video_id": "7672254579832899185",
+      "url": "https://www.douyin.com/video/7672254579832899185",
+      "title": "4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "teaching_candidate": "unknown",
+      "raw_text": "4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球#羽毛球 #刘辉羽毛球 #羽毛球教学 #羽毛球训练",
+      "author_status": "主页最新作品区发现",
+      "decision": "保留：教学",
+      "decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "primary_category": "网前技术",
+      "tags": "网前技术；发力与身体运用；单打战术",
+      "classification_rules_version": 4,
+      "classification_rules_hash": "1e395efd8f6bb2adfbda9ae0ae9774c9049e536f8726a37efd7123969fbe0480",
+      "classification_signals": {
+        "ad_strong_content": false,
+        "ad_strong_hashtag_only": false,
+        "equipment": false,
+        "commerce": false,
+        "teaching": true,
+        "teaching_hashtag": true,
+        "explicit_non_teaching": false
+      },
+      "automatic_decision": "保留：教学",
+      "automatic_decision_reason": "包含明确技术、训练、纠错或战术信号",
+      "previous_decision": "new_discovery",
+      "migration_action": "accept_current_rules",
+      "classified_at": "2026-08-11T08:31:07.671958+00:00"
+    },
     {
       "video_id": "7670988159002607355",
       "url": "https://www.douyin.com/video/7670988159002607355",

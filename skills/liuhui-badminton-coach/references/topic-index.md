@@ -3,8 +3,8 @@
 Use this index to orient retrieval and answer structure. It is a topic map, not a substitute for timestamped evidence from `knowledge-base.json`.
 
 - Source: `data/knowledge/douyin_knowledge_base.json`
-- Videos: `1016`
-- Assigned videos: `958`
+- Videos: `1017`
+- Assigned videos: `959`
 - Multi-topic videos: `455`
 
 ## How To Use
@@ -69,14 +69,14 @@ Use this index to orient retrieval and answer structure. It is a topic map, not 
 
 搓、勾、推、扑、挑、放网及网前持拍框架。
 
-- Matched videos: `95`
+- Matched videos: `96`
 
-- **搓球与滚网**: `16` videos, `16` ready, `0` needs visual review.
+- **搓球与滚网**: `17` videos, `17` ready, `0` needs visual review.
   Keywords: 搓球, 滚网, 平搓
   Representative videos:
+  - 4082 单打搓球进阶 视频中讲了两种常见收搓，主动发力搓球，借力发力搓球 [ready/primary] https://www.douyin.com/video/7672254579832899185
   - 滚网搓球 双打网前有人看守时有奇效 [ready/primary] https://www.douyin.com/video/7509355373729762619
   - 平搓远网 平搓可以根据情况加力减力，手臂也可以适当的介入辅助 [ready/primary] https://www.douyin.com/video/7411850466457292084
-  - 羽毛球黄金技术搓球教学！超实用搓球训练方法！羽毛球正反手展搓收搓 [ready/primary] https://www.bilibili.com/video/BV1ia4uziEAQ/
 - **勾球与变线**: `19` videos, `19` ready, `0` needs visual review.
   Keywords: 勾球, 勾对角, 网前变线
   Representative videos:

@@ -17,6 +17,7 @@ from report_pipeline_status import next_action
 from run_full_update_pipeline import (
     build_commands,
     rebuild_and_validate,
+    release_metadata_commands,
     validation_commands,
 )
 
@@ -234,6 +235,7 @@ class DouyinClassificationRulesTest(unittest.TestCase):
 
     def test_full_maintenance_gate_covers_answer_and_video_quality(self):
         commands = [" ".join(map(str, command)) for command in validation_commands()]
+        rebuild_source = inspect.getsource(rebuild_and_validate)
         for required in [
             "evaluate_video_comprehension.py --require-raw-transcripts",
             "build_manifest.py --check",
@@ -246,7 +248,32 @@ class DouyinClassificationRulesTest(unittest.TestCase):
             )
         self.assertIn(
             "scripts/collect_evaluation_results.py",
-            inspect.getsource(rebuild_and_validate),
+            rebuild_source,
+        )
+        self.assertIn(
+            "scripts/generate_release_answer_results.py",
+            rebuild_source,
+        )
+        self.assertLess(
+            rebuild_source.index("scripts/generate_release_answer_results.py"),
+            rebuild_source.index("scripts/evaluate_bilibili_wiring_canaries.py"),
+        )
+
+    def test_release_metadata_refreshes_readme_after_manifest(self):
+        commands = [
+            " ".join(map(str, command))
+            for command in release_metadata_commands()
+        ]
+        self.assertEqual(
+            [
+                command.split("scripts/", 1)[1]
+                for command in commands
+            ],
+            [
+                "update_readme_status.py",
+                "build_manifest.py",
+                "readme_profiles.py --profile auto --write",
+            ],
         )
 
     def test_applied_update_report_advances_to_media_extraction(self):

@@ -40,6 +40,7 @@ UPDATE_ARTIFACT_PATHS = (
     ROOT / "data/knowledge/evidence_graph.json",
     ROOT / "data/knowledge/knowledge_graph_summary.json",
     ROOT / "data/knowledge/build_manifest.json",
+    ROOT / "data/evaluation/live_generation_results.json",
     ROOT / "data/evaluation/evaluation_report.json",
     ROOT / "data/evaluation/supplemental_evidence_report.json",
     ROOT / "data/review/visual_review_queue.json",
@@ -119,6 +120,28 @@ def validation_commands(*, raw_transcript_sources=None):
     ]
 
 
+def release_metadata_commands():
+    """Refresh metadata in dependency order before running validation.
+
+    Skill status text is part of the manifest hash, while README profiles
+    display that manifest's build ID.  Re-render the active README only after
+    the manifest is current so a semantic corpus update cannot leave README.md
+    pointing at the previous build.
+    """
+
+    return [
+        [sys.executable, "scripts/update_readme_status.py"],
+        [sys.executable, "scripts/build_manifest.py"],
+        [
+            sys.executable,
+            "scripts/readme_profiles.py",
+            "--profile",
+            "auto",
+            "--write",
+        ],
+    ]
+
+
 def rebuild_and_validate(*, rebuild_bilibili=True):
     if not rebuild_bilibili:
         # A Douyin-only update may reuse the committed Bilibili knowledge
@@ -136,8 +159,8 @@ def rebuild_and_validate(*, rebuild_bilibili=True):
                 ensure_ascii=False,
             )
         )
-        run([sys.executable, "scripts/update_readme_status.py"])
-        run([sys.executable, "scripts/build_manifest.py"])
+        for command in release_metadata_commands():
+            run(command)
 
         test_environment = dict(os.environ)
         existing_pythonpath = test_environment.get("PYTHONPATH")
@@ -169,6 +192,17 @@ def rebuild_and_validate(*, rebuild_bilibili=True):
         with tempfile.TemporaryDirectory(
             prefix="badminton-evaluations-"
         ) as directory:
+            # A semantic corpus change invalidates the versioned release-answer
+            # fingerprint even when every retrieval and audit gate still
+            # passes. Regenerate the trusted deterministic answers before the
+            # expensive cross-source canaries and report collection so the
+            # pipeline fails early if current-runtime answer generation breaks.
+            run(
+                [
+                    sys.executable,
+                    "scripts/generate_release_answer_results.py",
+                ]
+            )
             wiring_canaries = Path(directory) / "bilibili-wiring-canaries.json"
             run(
                 [

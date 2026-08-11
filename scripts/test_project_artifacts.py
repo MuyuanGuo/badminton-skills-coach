@@ -494,6 +494,10 @@ class ProjectArtifactsTests(unittest.TestCase):
             ROOT / "output/video-link-health.json",
             self.update_pipeline.UPDATE_ARTIFACT_PATHS,
         )
+        self.assertIn(
+            ROOT / "data/evaluation/live_generation_results.json",
+            self.update_pipeline.UPDATE_ARTIFACT_PATHS,
+        )
 
     def test_full_update_pipeline_writes_exact_build_receipt(self):
         with tempfile.TemporaryDirectory() as directory:

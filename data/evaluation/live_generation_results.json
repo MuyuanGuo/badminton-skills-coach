@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
-  "runtime_fingerprint": "5d913bddb79d779060ee2f83082eaa65fd5653654c7ba064bc4a94c94ba9158c",
-  "answer_runtime_fingerprint": "2d598b3fd8423e5160e6c4eff9e6fc203ab7b098d649dcf3241242526473a15c",
+  "runtime_fingerprint": "0a33a50dc82a01b8e52321d7d5034ee823e5bcec9657fbdfa1cfd097a54a4450",
+  "answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
   "generated_at": "2026-08-11",
   "generator": {
     "type": "deterministic_answer_renderer",
