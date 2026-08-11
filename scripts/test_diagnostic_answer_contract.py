@@ -63,7 +63,7 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
         self.assertEqual(hypotheses["击球点"]["status"], "conditional")
         self.assertIn(hypotheses["到位"]["status"], {"conditional", "unverified"})
 
-    def test_mechanism_claim_requires_same_window_requested_action_scope(self):
+    def test_component_evidence_does_not_prove_the_user_hypothesis(self):
         runtime = self.module.load_runtime()
         context = runtime.prepare_answer_context(
             "我正手高远总出界但反手正常，是不是拍面问题？",
@@ -78,12 +78,23 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
             and claim["text"] == "拍面"
         )
         self.assertEqual(hypothesis_claim["evidence"], [])
+        question_claim = next(
+            claim
+            for claim in context["claim_evidence_map"]
+            if claim["kind"] == "question_unit"
+        )
+        question_evidence = {
+            item["evidence_id"]: item for item in question_claim["evidence"]
+        }
+        self.assertEqual(
+            question_evidence["7453420876076240188"]["directness"],
+            "component",
+        )
         claim_ids = {
             item["evidence_id"]
             for claim in context["claim_evidence_map"]
             for item in claim["evidence"]
         }
-        self.assertNotIn("7453420876076240188", claim_ids)
         self.assertNotIn("7112628690395106560", claim_ids)
 
     def test_claim_maps_are_subsets_of_the_selected_allowlist(self):

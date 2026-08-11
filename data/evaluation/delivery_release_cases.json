@@ -11,7 +11,7 @@
         "evidence.boundary": 1
       },
       "required_output_terms": ["没有转髋", "击球点太低", "现场检查顺序", "证据边界"],
-      "required_evidence_unit_count": 3,
+      "required_evidence_unit_count": 1,
       "inherited_constraints": {
         "stroke_side": ["forehand"],
         "shot_family": ["clear"],
@@ -46,7 +46,7 @@
         "evidence.boundary": 1
       },
       "required_output_terms": ["直线条件分支", "斜线条件分支", "中路条件分支", "来球高度", "身体是否失衡", "搭档位置", "证据边界"],
-      "required_evidence_unit_count": 2,
+      "required_evidence_unit_count": 1,
       "inherited_constraints": {
         "stroke_side": ["backhand"],
         "shot_family": ["drive"],

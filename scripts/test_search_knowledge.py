@@ -441,6 +441,29 @@ class SearchKnowledgeTests(unittest.TestCase):
         self.assertEqual(guidance["strategy"], "focused_evidence")
         self.assertEqual(guidance["query_units"], ["吊球和杀球怎么配合"])
 
+    def test_query_plan_keeps_paired_variants_in_one_comparison_unit(self):
+        queries = [
+            "正手后场中国跳步法基础版和高阶版怎么做？",
+            "杀球总下网怎么办，平杀和尖杀怎么控制？",
+        ]
+        for query in queries:
+            with self.subTest(query=query):
+                guidance = self.search_module.plan_query(query)[
+                    "retrieval_guidance"
+                ]
+                self.assertNotEqual(guidance["strategy"], "split_multi_issue")
+                self.assertEqual(len(guidance["query_units"]), 1)
+                self.assertTrue(
+                    all(
+                        term in guidance["query_units"][0]
+                        for term in (
+                            ("基础版", "高阶版")
+                            if "基础版" in query
+                            else ("平杀", "尖杀")
+                        )
+                    )
+                )
+
     def test_query_plan_puts_safety_boundary_before_retrieval(self):
         plan = self.search_module.plan_query("练杀球以后肩膀疼，还能不能继续练")
         guidance = plan["retrieval_guidance"]

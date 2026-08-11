@@ -903,6 +903,12 @@
     "受伤": []
   },
   "video_constraint_overrides": {
+    "7112628690395106560": {
+      "shot_family": ["short_serve"],
+      "serve_role": ["serve"],
+      "serve_trajectory": ["short_serve"],
+      "basis": "00:00-01:40 全段主体是正手发网前短球的站位、握拍、拍面和击球点；只能作为发球专项证据，不能证明后场正手击球或通用握拍。"
+    },
     "7558912953539071292": {
       "stroke_side": ["forehand"],
       "basis": "用户测试指出画面为正手被动高远；文本只支持通用被动原则，不得作为反手专项示范。"

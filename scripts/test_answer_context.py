@@ -283,7 +283,11 @@ class AnswerContextTests(unittest.TestCase):
             local_personalization=False,
         )
         visible_labels = context["answer_visible_video_labels"]
-        self.assertEqual(len(visible_labels), 3)
+        self.assertEqual(
+            visible_labels,
+            context["answer_synthesis_video_labels"],
+        )
+        self.assertTrue(visible_labels)
         self.assertEqual(
             visible_labels,
             [f"V{index}" for index in range(1, len(visible_labels) + 1)],
@@ -3827,6 +3831,29 @@ class AnswerContextTests(unittest.TestCase):
         self.assertIn(
             "持续攥紧",
             grip["clarification_decision"]["questions"][0],
+        )
+
+    def test_delivery_instructions_do_not_become_question_claims(self):
+        payload = self.context_module.prepare_answer_context(
+            (
+                "我是右手持拍的业余中级男双选手，正手后场高远球经常只能到"
+                "对方中场。我怀疑是没有转髋，也可能是击球点太低。请区分这"
+                "两个假设和其他有证据支持的原因，给我现场检查顺序；当前信息"
+                "不足时不要把原因说死。"
+            ),
+            local_personalization=False,
+        )
+        self.assertEqual(
+            payload["question_interpretation"]["query_units"],
+            ["请区分这两个假设和其他有证据支持的原因"],
+        )
+        self.assertNotIn(
+            "当前信息不足时",
+            {
+                claim["text"]
+                for claim in payload["claim_evidence_map"]
+                if claim["kind"] == "question_unit"
+            },
         )
 
     def test_black_box_root_mechanisms_hold_for_observations_exclusions_and_source_policy(self):

@@ -29,7 +29,7 @@ You are viewing the `develop` branch; the current development version is **2.1.4
 | 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
 | 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
 
-当前 build：`da9caa8a47aa…`。`develop` is the integration branch；`main` is the stable release source。
+当前 build：`44214a769b8b…`。`develop` is the integration branch；`main` is the stable release source。
 
 ## 从用户提问到最终回答 / From user question to final answer
 

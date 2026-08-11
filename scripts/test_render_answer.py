@@ -139,7 +139,7 @@ class RenderAnswerTests(unittest.TestCase):
         self.assertIn("不是用户自己打吊球", answer)
         self.assertIn("杀上网是另一种特定衔接", answer)
         self.assertIn("反手被动高远也不能证明本题", answer)
-        self.assertIn("途中要让跑动节奏匹配来球速度", answer)
+        self.assertIn("向前距离较长时不要全程用小碎步", answer)
         self.assertNotIn("杀球落地后重心", answer)
         self.assertTrue(self.auditor.audit_answer(query, context, answer)["passed"])
 

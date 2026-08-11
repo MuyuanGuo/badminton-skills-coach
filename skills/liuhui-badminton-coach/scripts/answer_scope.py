@@ -1137,6 +1137,23 @@ def query_actor_context(search_module, query, rules):
                 player_constraints[axis_name] = sorted(retained)
             else:
                 player_constraints.pop(axis_name, None)
+        # Destination grammar belongs to the incoming shuttle unless the
+        # inferred response explicitly adopts the same axis. Without this,
+        # “对手吊到网前，我赶不到” turns the shuttle's landing zone into a
+        # hard player-action constraint. A response such as “反手身体位接杀”
+        # still keeps its reviewed backhand axis through action constraints.
+        target_action_constraints = target_action_context.get(
+            "target_action_constraints", {}
+        )
+        for axis_name, destination_values in destination_constraints.items():
+            removable = set(destination_values) - set(
+                target_action_constraints.get(axis_name, [])
+            )
+            retained = set(player_constraints.get(axis_name, [])) - removable
+            if retained:
+                player_constraints[axis_name] = sorted(retained)
+            else:
+                player_constraints.pop(axis_name, None)
         actor_constraints["player"] = player_constraints
     else:
         incoming_constraints = {}

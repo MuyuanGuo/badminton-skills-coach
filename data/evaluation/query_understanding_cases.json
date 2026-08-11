@@ -233,7 +233,7 @@
       "intent_summary": "先说明现有信息不能确定唯一原因，再按杀球下网症状回答有把握的部分并保留证据边界",
       "expected_answer_mode": "balanced",
       "expected_strategy": "boundary_first",
-      "expected_query_units": ["我只描述杀球总下网，能不能确定唯一原因"],
+      "expected_query_units": ["我只描述杀球总下网 能不能确定唯一原因"],
       "expected_must_state_boundary_first": true
     },
     {
@@ -242,7 +242,7 @@
       "intent_summary": "先说明伤痛与训练安全边界，再提供有限证据",
       "expected_answer_mode": "text_primary",
       "expected_strategy": "boundary_first",
-      "expected_query_units": ["练杀球以后肩膀疼，还能不能继续练"],
+      "expected_query_units": ["练杀球以后肩膀疼 还能不能继续练"],
       "expected_must_state_boundary_first": true
     },
     {
@@ -269,7 +269,7 @@
       "intent_summary": "先说明仅靠文字不能确认握拍形态，再给文字基础与视频证据",
       "expected_answer_mode": "video_primary",
       "expected_strategy": "boundary_first",
-      "expected_query_units": ["只看文字说明，能不能确认我的正手握拍完全正确"],
+      "expected_query_units": ["只看文字说明 能不能确认我的正手握拍完全正确"],
       "expected_must_state_boundary_first": true
     },
     {
@@ -512,7 +512,7 @@
       "intent_summary": "把球员杀球、对手挡网和球员来不及上去保留为跨主体杀上网事件链",
       "expected_answer_mode": "balanced",
       "expected_strategy": "literal_symptom_first",
-      "expected_query_units": ["杀球后被对手挡网，我总是来不及上去怎么办"],
+      "expected_query_units": ["杀球后被对手挡网 我总是来不及上去怎么办"],
       "expected_must_state_boundary_first": false
     }
   ],
@@ -2049,7 +2049,7 @@
       "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "player",
       "expected_target_action_query": "我应该怎么补位",
-      "expected_target_condition_query": "我",
+      "expected_target_condition_query": "搭档反手比较弱他反手时 对方连续压",
       "expected_target_action_constraints": {},
       "expected_target_condition_constraints": {},
       "expected_requested_action_scopes": ["team_coverage_rotation"]
@@ -2175,7 +2175,7 @@
       "expected_intent": {
         "positive_query_contains": ["对面追着打她反手", "我该补哪边"],
         "positive_query_excludes": ["队友怎么反手"],
-        "excluded_terms_contains": ["队友", "反手"],
+        "excluded_terms_contains": ["队友"],
         "literal_symptoms_contains": [],
         "scenarios_contains": ["反手"],
         "requested_output": "coaching_answer"
@@ -2186,7 +2186,7 @@
       "expected_derived_target_constraints": {"discipline": ["doubles"]},
       "expected_target_actor": "player",
       "expected_target_action_query": "我想知道我该补哪边",
-      "expected_target_condition_query": "",
+      "expected_target_condition_query": "队友 她反手时 对面追着打",
       "expected_target_action_constraints": {},
       "expected_target_condition_constraints": {},
       "expected_requested_action_scopes": ["team_coverage_rotation"]
@@ -2260,7 +2260,7 @@
         "excluded_terms_contains": [],
         "literal_symptoms_contains": [],
         "scenarios_contains": [],
-        "requested_output": "coaching_answer"
+        "requested_output": "practice"
       },
       "expected_constraints": {
         "shot_family": ["drop", "smash", "smash_block"],
@@ -2285,7 +2285,10 @@
         "requested_output": "coaching_answer"
       },
       "expected_constraints": {"discipline": ["doubles"]},
-      "expected_opponent_constraints": {},
+      "expected_opponent_constraints": {
+        "shot_family": ["net_shot"],
+        "technique_variant": ["net_push"]
+      },
       "expected_partner_constraints": {"court_zone": ["forecourt"]},
       "expected_player_constraints": {"discipline": ["doubles"]},
       "expected_derived_target_constraints": {},

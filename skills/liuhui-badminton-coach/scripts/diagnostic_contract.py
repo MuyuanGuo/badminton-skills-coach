@@ -646,24 +646,69 @@ def query_unit_evidence(
             required_claim_terms,
             required_claim_term_groups,
         )
+    component_candidate = bool(
+        concept
+        in {
+            "component_support",
+            "constraint_scoped_support",
+            "reviewed_support",
+            "expanded_support",
+        }
+        or video.get("claim_scope_policy")
+        == "component_or_generic_support_only_not_full_question_proof"
+    )
+    component_context_axes = (
+        "court_zone",
+        "pressure_state",
+        "tactical_phase",
+        "discipline",
+        "serve_role",
+        "serve_trajectory",
+        "shot_direction",
+    )
+    requested_component_context_axes = [
+        axis for axis in component_context_axes if query_constraints.get(axis)
+    ]
+    component_context_supported = bool(
+        action_scope_supported
+        or (
+            requested_component_context_axes
+            and all(
+                video.get("constraint_match", {}).get(axis)
+                in {"exact", "mixed_support", "incidental_support"}
+                for axis in requested_component_context_axes
+            )
+        )
+    )
+    if (
+        window_support["rank"] < 2
+        and component_candidate
+        and component_context_supported
+    ):
+        # A source may safely support a bounded component without naming the
+        # user's entire action in the same window.  The candidate has already
+        # passed production relevance/constraint checks; retry only the claim
+        # window without the named-action gate and keep the resulting evidence
+        # explicitly component-scoped.  This does not authorize a user
+        # hypothesis or an unrestricted full-question conclusion.
+        window_support = query_window_support(
+            search_module,
+            video,
+            (),
+            requested_focus_groups,
+            required_claim_terms,
+            required_claim_term_groups,
+        )
     if window_support["rank"] < 2:
         return None
     component_only_support = bool(
-        video.get("symptom_match") == "not_required"
-        and (
-            video.get("concept_match")
-            in {
-                "component_support",
-                "constraint_scoped_support",
-                "reviewed_support",
-                "expanded_support",
-            }
-            or (
-                concept in {"exact_question", "exact_query_unit"}
-                and (
-                    video.get("focus_match") in {"primary", "structured"}
-                    or window_support["rank"] >= 3
-                )
+        (component_candidate and component_context_supported)
+        or (
+            concept in {"exact_question", "exact_query_unit"}
+            and video.get("symptom_match") == "not_required"
+            and (
+                video.get("focus_match") in {"primary", "structured"}
+                or window_support["rank"] >= 3
             )
         )
     )
@@ -677,7 +722,11 @@ def query_unit_evidence(
             "serve_trajectory",
         )
     )
-    if core_action_request and not action_scope_supported:
+    if (
+        core_action_request
+        and not action_scope_supported
+        and not component_only_support
+    ):
         return None
     if not action_scope_supported and not component_only_support:
         # A symptom word or generic mechanism is not enough to support the
@@ -1134,7 +1183,16 @@ def build_diagnostic_contract(
                     diagnostic_rules,
                     scope_window_groups,
                     focus_window_groups,
-                    unit_symptom_terms,
+                    (
+                        ()
+                        if video.get("symptom_match")
+                        in {
+                            "mechanism_primary",
+                            "mechanism_structured",
+                            "reviewed_mechanism",
+                        }
+                        else unit_symptom_terms
+                    ),
                     comparison_window_groups,
                 )
             )
@@ -1564,17 +1622,7 @@ def build_diagnostic_contract(
         )
     clarification_mechanism_ids = list(
         dict.fromkeys(
-            [
-                *[
-                    item["mechanism_id"] for item in supported_mechanisms
-                ],
-                *[
-                    item["mechanism_id"]
-                    for item in user_hypotheses
-                    if item.get("mechanism_id")
-                    and not resolved_question_ids
-                ],
-            ]
+            item["mechanism_id"] for item in supported_mechanisms
         )
     )
     for mechanism_id in clarification_mechanism_ids:

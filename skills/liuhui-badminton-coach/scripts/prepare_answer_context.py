@@ -62,6 +62,22 @@ def canonicalize_retrieval_query(query, rules):
                 canonical,
                 flags=re.IGNORECASE,
             )
+    # Courtesy wrappers carry no badminton meaning and must not perturb
+    # retrieval ranks, evidence windows, or claim identity.  Keep the user's
+    # original wording in ``query``/continuation state; only the retrieval
+    # representation is stripped.
+    unwrapped = re.sub(
+        r"^\s*(?:请问|请教一下|想问一下)[\s，,：:]*",
+        "",
+        canonical,
+    )
+    unwrapped = re.sub(
+        r"[\s，,。！？!?]*(?:谢谢(?:你)?|感谢(?:你)?)[\s。！？!?]*$",
+        "",
+        unwrapped,
+    )
+    if unwrapped.strip():
+        canonical = unwrapped.strip()
     return canonical
 
 
@@ -403,6 +419,99 @@ def answer_visible_video_labels(claim_evidence_map):
                 labels.append(label)
                 seen.add(label)
     return labels
+
+
+def authorize_reviewed_atom_evidence(
+    diagnostic_contract,
+    selected_videos,
+    atoms,
+    question_interpretation,
+    semantic_query,
+    original_query,
+):
+    """Bind reviewed atoms before claim-authorized sources are pruned.
+
+    Reviewed atoms are already the strongest maintained claim-to-window
+    contract.  Requiring the generic query-window matcher to authorize the
+    same source first creates a circular gate and silently drops valid,
+    reviewed evidence.  This bridge admits only exact atom/claim matches whose
+    source and reviewed windows are present in the current selected set.
+    """
+
+    packet_runtime = load_sibling(
+        "liuhui_answer_packet_atom_authorization", "answer_packet.py"
+    )
+    selected_by_id = {
+        video["evidence_id"]: video for video in selected_videos
+    }
+    selected_order = {
+        video["label"]: index for index, video in enumerate(selected_videos)
+    }
+    actor_context = question_interpretation.get("actor_context", {})
+    inferred_target_claim = (
+        [
+            actor_context.get("target_action_query"),
+            semantic_query,
+            original_query,
+        ]
+        if actor_context.get("inferred_target_action")
+        else None
+    )
+    constraints = question_interpretation.get("constraints", {})
+    for claim in diagnostic_contract.get("claim_evidence_map", []):
+        evidence_by_id = {
+            evidence["evidence_id"]: evidence
+            for evidence in claim.get("evidence", [])
+        }
+        for atom in atoms:
+            evidence_id = atom.get("evidence_id")
+            video = selected_by_id.get(evidence_id)
+            if (
+                not video
+                or evidence_id in evidence_by_id
+                or atom.get("claim_kind") != claim.get("kind")
+                or not packet_runtime.atom_claim_matches(
+                    atom, claim, inferred_target_claim
+                )
+                or not packet_runtime.atom_scope_matches(atom, constraints)
+                or not packet_runtime.atom_window_is_reviewed(atom, video)
+            ):
+                continue
+            evidence = claim_evidence_entry(
+                video,
+                "scoped",
+                "maintainer-reviewed atom binds this source to the claim",
+            )
+            evidence["claim_windows"] = list(atom["evidence_windows"])
+            evidence["window_support"] = {
+                "rank": 4,
+                "score": 0.0,
+                "matched_term_count": 0,
+                "query_ngram_coverage": 0.0,
+                "exact_query_match": False,
+                "reviewed_evidence_source": True,
+                "reviewed_evidence_atom": True,
+                "primary_query_score": float(
+                    video.get("primary_query_score") or 0
+                ),
+                "best_retrieval_rank": video.get("best_retrieval_rank"),
+            }
+            claim.setdefault("evidence", []).append(evidence)
+            evidence_by_id[evidence_id] = evidence
+        claim["evidence"].sort(
+            key=lambda evidence: selected_order.get(
+                evidence.get("label"), len(selected_order)
+            )
+        )
+        claim["eligible_video_labels"] = [
+            evidence["label"] for evidence in claim["evidence"]
+        ]
+        if claim["evidence"] and claim.get("status") == "unsupported":
+            claim["status"] = "conditional"
+        claim["confidence_ceiling"] = confidence_ceiling(
+            claim["evidence"],
+            {video["label"]: video for video in selected_videos},
+        )
 
 
 def _remap_contract_video_labels(value, label_map):
@@ -882,8 +991,9 @@ def prepare_answer_context(
         rules,
         load_reviewed_evidence_signals(),
     )
+    reviewed_atoms = load_reviewed_evidence_atoms()
     normalized_positive_query = search_module.normalize(positive_query)
-    for atom in load_reviewed_evidence_atoms():
+    for atom in reviewed_atoms:
         aliases = {
             atom.get("canonical_claim", ""),
             *atom.get("claim_aliases", []),
@@ -911,11 +1021,7 @@ def prepare_answer_context(
     ] or [query]
     claim_query_units = [
         item["evidence_query"]
-        for item in (
-            query_unit_records
-            if continuation is not None
-            else planned_query_unit_records
-        )
+        for item in query_unit_records
         if item["evidence_query"]
         and item["role"] not in {"user_observation", "delivery_instruction"}
     ]
@@ -1566,6 +1672,14 @@ def prepare_answer_context(
         },
         resolved_answers=(continuation or {}).get("resolved_answers", []),
     )
+    authorize_reviewed_atom_evidence(
+        diagnostic_contract,
+        selected_videos,
+        reviewed_atoms,
+        question_interpretation,
+        semantic_user_query,
+        user_query,
+    )
     delivery_contract = build_delivery_contract(
         (continuation or {}).get("original_query", semantic_user_query),
         question_interpretation,
@@ -1682,8 +1796,7 @@ def prepare_answer_context(
                 video["role"] == "supporting" for video in selected_videos
             ),
             "selected_video_count": len(selected_videos),
-            "selection_truncated": len(semantic_answerable_entries)
-            > len(selected_videos),
+            "selection_truncated": bool(semantic_budget_deferred),
             "max_selected_videos": max_videos,
             "selected_video_ids": selected_ids,
             "deferred_candidate_count": len(deferred),
@@ -1762,7 +1875,7 @@ def prepare_answer_context(
     )
     context["answer_turn_contract"] = build_answer_turn_contract(context)
     context["answer_plan"] = build_closed_answer_plan(
-        context, load_reviewed_evidence_atoms()
+        context, reviewed_atoms
     )
     answer_packet_runtime = load_sibling(
         "liuhui_answer_packet_visibility", "answer_packet.py"

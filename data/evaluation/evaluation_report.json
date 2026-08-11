@@ -4,9 +4,9 @@
   "development_version": "2.1.4-dev.1",
   "baseline_version": "v2.1.3",
   "build": {
-    "id": "b2dbbb9dcd8d7347",
-    "inputs_sha256": "fad5b0ff524acac2a337225124f5c0f8b2f74bb9c11095a9cbdca5e4930ff011",
-    "runtime_sha256": "f08c3fdc923450841950d93cf23e1f700723210680d4909fdf2e5c307b925272"
+    "id": "13bb0fccc867541e",
+    "inputs_sha256": "595564bb7aeb90b7343994bfdcf5512a2984988a759f4c5c6be3651df14aa8c5",
+    "runtime_sha256": "16fcaf52ab140b02460485a3834f9dc7fa994397c96f607b9ba4c57a3a32c707"
   },
   "summary": {
     "status": "pass",
@@ -31,20 +31,20 @@
       "semantic_answerable_video_recall": 1.0,
       "selected_video_recall": 1.0,
       "claim_mapped_video_recall": 1.0,
-      "synthesis_video_recall": 0.4624277456647399,
+      "synthesis_video_recall": 0.49710982658959535,
       "complete_related_video_recall": 1.0,
-      "synthesis_display_expected_videos": 167,
-      "core_video_recall": 0.2254335260115607,
+      "synthesis_display_expected_videos": 108,
+      "core_video_recall": 0.34104046242774566,
       "mean_video_count_by_layer": {
-        "candidate": 344.43859649122805,
-        "semantic_answerable": 17.228070175438596,
-        "synthesis_candidate": 14.56140350877193,
-        "selected": 17.228070175438596,
-        "claim_mapped": 15.017543859649123,
-        "synthesis": 2.9298245614035086,
-        "audit_only": 12.087719298245615,
-        "complete_related": 2.9298245614035086,
-        "core": 1.3157894736842106
+        "candidate": 345.0,
+        "semantic_answerable": 11.24561403508772,
+        "synthesis_candidate": 11.24561403508772,
+        "selected": 11.24561403508772,
+        "claim_mapped": 11.24561403508772,
+        "synthesis": 1.894736842105263,
+        "audit_only": 6.754385964912281,
+        "complete_related": 1.894736842105263,
+        "core": 1.1929824561403508
       },
       "primary_selected_rate": 1.0,
       "answer_mode_accuracy": 1.0,
@@ -52,7 +52,7 @@
       "hard_negative_selected_violations": 0,
       "selection_truncated_cases": 0,
       "retrieval_query_budget_truncated_cases": 30,
-      "retrieval_query_omitted_count": 170,
+      "retrieval_query_omitted_count": 184,
       "evaluation_fixture_isolation": true
     },
     "answer_quality": {
@@ -129,18 +129,18 @@
       "primary_top_k": 0.9444444444444444,
       "mean_reciprocal_rank": 0.6915871508464101,
       "mean_ndcg_at_k": 0.8189941183349295,
-      "mean_known_precision_at_k": 0.429908103592314,
-      "average_review_candidate_count": 14.385964912280702,
+      "mean_known_precision_at_k": 0.42771512113617366,
+      "average_review_candidate_count": 14.403508771929825,
       "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
         "candidate_videos": 595,
-        "top_k_count": 81,
-        "top_k_rate": 0.11842105263157894,
+        "top_k_count": 82,
+        "top_k_rate": 0.11988304093567251,
         "max_top_k_per_case": 3,
-        "review_count": 116,
-        "review_rate": 0.14146341463414633,
+        "review_count": 117,
+        "review_rate": 0.1425091352009744,
         "max_review_per_case": 3,
         "limits": {
           "max_top_k_rate": 0.12,
@@ -235,12 +235,12 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
+      "runtime_fingerprint": "d25335e0b24c62f4ebe0860e3df4d45b4c8aeaca424079d68b7ba453cac37523",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
-      "current_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
-      "generation_artifact_runtime_fingerprint": "77426c726dc77c3416324bf9fd13c050823ebe8ea13f6ad488ff65d164e5a068",
-      "current_artifact_runtime_fingerprint": "77426c726dc77c3416324bf9fd13c050823ebe8ea13f6ad488ff65d164e5a068",
+      "generation_answer_runtime_fingerprint": "d25335e0b24c62f4ebe0860e3df4d45b4c8aeaca424079d68b7ba453cac37523",
+      "current_answer_runtime_fingerprint": "d25335e0b24c62f4ebe0860e3df4d45b4c8aeaca424079d68b7ba453cac37523",
+      "generation_artifact_runtime_fingerprint": "a25f68c85b9fbd5d84c24b3839acbf4ea2bd1e1cd9171dea91d04fa7d74ccf62",
+      "current_artifact_runtime_fingerprint": "a25f68c85b9fbd5d84c24b3839acbf4ea2bd1e1cd9171dea91d04fa7d74ccf62",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -256,12 +256,12 @@
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "05b29d8c8e591dcad93b754cf1c3224fa6f9369cad1e997210fa4b6db5e0ed0d"
+        "implementation_sha256": "7ac7590c4804652b00a5653ae17454208ae9a973a5c6ffe28247c15ca98003d9"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "2889aaff59fc2a40fb08c596d1f90e9ce667ac3f735328115da6e24a55970b42"
+        "implementation_sha256": "98291d534573dec7c73b56d1fe5519978db7f57fe79a79a6007725a2f4c86ffd"
       }
     }
   },
@@ -358,7 +358,7 @@
     },
     {
       "metric": "answer_context.synthesis_video_recall",
-      "current": 0.4624277456647399,
+      "current": 0.49710982658959535,
       "baseline": 0.4624277456647399,
       "direction": "at_least",
       "tolerance": 0,
@@ -367,7 +367,7 @@
     },
     {
       "metric": "answer_context.core_video_recall",
-      "current": 0.2254335260115607,
+      "current": 0.34104046242774566,
       "baseline": 0.2254335260115607,
       "direction": "at_least",
       "tolerance": 0,
@@ -709,7 +709,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
-      "current": 0.11842105263157894,
+      "current": 0.11988304093567251,
       "baseline": 0.12,
       "direction": "at_most",
       "tolerance": 0,
@@ -727,7 +727,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.review_rate",
-      "current": 0.14146341463414633,
+      "current": 0.1425091352009744,
       "baseline": 0.15,
       "direction": "at_most",
       "tolerance": 0,
