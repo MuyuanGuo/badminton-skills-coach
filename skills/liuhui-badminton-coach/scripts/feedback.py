@@ -13,6 +13,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+from types import ModuleType
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -44,7 +45,7 @@ SOURCE_ISSUE_TYPES = {
     "citation_mismatch",
 }
 _RUNTIME_STORE = None
-_COMPONENT_MODULES = {}
+_COMPONENT_MODULES: dict[str, ModuleType] = {}
 
 
 def utc_now():
@@ -68,6 +69,8 @@ def load_component(name, filename):
     if filename in _COMPONENT_MODULES:
         return _COMPONENT_MODULES[filename]
     spec = importlib.util.spec_from_file_location(name, SCRIPT_DIR / filename)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load Skill component: {filename}")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     _COMPONENT_MODULES[filename] = module
