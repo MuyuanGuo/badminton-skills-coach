@@ -38,10 +38,10 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div class="hero-copy">
-          <p class="release-line"><span>稳定版 v2.1.2</span><span>公开可安装</span></p>
+          <p class="release-line"><span>稳定版 v2.1.3</span><span>公开可安装</span></p>
           <h1><span>羽毛球</span><span>技能教练</span></h1>
           <p class="hero-thesis">每个具体建议，都应该经得起回看。</p>
-          <p class="lede">面向 Codex 的中文羽毛球教练 Skill。它从 956 条教学视频中寻找答案，把动作建议连回原视频、准确时间码和适用场景。</p>
+          <p class="lede">面向 Codex 的中文羽毛球教练 Skill。它从 959 条教学视频中寻找答案，把动作建议连回原视频、准确时间码和适用场景。</p>
           <div class="hero-actions">
             <a class="button primary" href="#install">安装稳定版</a>
             <a class="text-link" href="./evaluation/">查看评估结果 <span aria-hidden="true">→</span></a>
@@ -87,8 +87,8 @@
 
     <section class="metrics" aria-label="项目质量基线">
       <div class="shell metric-row">
-        <p><strong>956</strong><span>条可用教学视频</span></p>
-        <p><strong>763</strong><span>条转写证据</span></p>
+        <p><strong>959</strong><span>条可用教学视频</span></p>
+        <p><strong>766</strong><span>条转写证据</span></p>
         <p><strong>57 / 57</strong><span>维护者审核回答</span></p>
         <p><strong>0</strong><span>当前硬负例误选</span></p>
       </div>
@@ -113,7 +113,7 @@
     <section class="section install-section" id="install">
       <div class="shell install-grid">
         <div class="install-copy">
-          <p class="eyebrow">安装 v2.1.2</p>
+          <p class="eyebrow">安装 v2.1.3</p>
           <h2>把证据教练装进 Codex。</h2>
           <p>安装器会先运行 doctor，再原子替换旧版本。完成后重新启动 Codex。</p>
           <dl class="requirements">
@@ -124,15 +124,15 @@
         </div>
         <div class="code-panel">
           <div class="code-toolbar"><span>Terminal</span><button type="button" data-copy-target="install-code">复制命令</button></div>
-          <pre id="install-code"><code>curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/liuhui-badminton-coach-2.1.2.zip \
-  -o /tmp/liuhui-badminton-coach-2.1.2.zip
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SHA256SUMS.txt \
+          <pre id="install-code"><code>curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.3/liuhui-badminton-coach-2.1.3.zip \
+  -o /tmp/liuhui-badminton-coach-2.1.3.zip
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.3/SHA256SUMS.txt \
   -o /tmp/SHA256SUMS.txt
-curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.2/SBOM.cdx.json \
+curl --fail --show-error --location --retry 3 https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.3/SBOM.cdx.json \
   -o /tmp/SBOM.cdx.json
 (cd /tmp &amp;&amp; shasum -a 256 -c SHA256SUMS.txt)
 install_dir="$(mktemp -d)"
-unzip -q /tmp/liuhui-badminton-coach-2.1.2.zip -d "$install_dir"
+unzip -q /tmp/liuhui-badminton-coach-2.1.3.zip -d "$install_dir"
 python3 "$install_dir/liuhui-badminton-coach/scripts/install.py"</code></pre>
           <div class="code-footer"><span>SHA-256 已发布</span><span>完成后重启 Codex</span></div>
         </div>
