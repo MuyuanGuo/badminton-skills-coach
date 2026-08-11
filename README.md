@@ -128,7 +128,7 @@ These values are rendered from the controlled data and evaluation report on this
 | 受限时间戳窗口证据 | 174 | 1,816 条已提交窗口；标题不得作为结论证据 |
 | 视觉复核兜底 | 19 | 语音不足时使用已审核视觉摘要 |
 | 回答质量黄金用例 | 57/57 | 覆盖技术、诊断、战术、训练与证据边界 |
-| 查询理解 | 144/144 | 结构化意图回归集 |
+| 查询理解 | 145/145 | 结构化意图回归集 |
 | 语言变体稳健性 | 30/30 | 5 类问题的变形测试 |
 | 硬负例误选 | 0 | 当前黄金用例包含 194 个显式硬负例 |
 | 当前运行时自动生成审计 | 20/20 | renderer 字节级复现，完整上下文逐例审计 |
@@ -145,7 +145,7 @@ These values are rendered from the controlled data and evaluation report on this
 | Bounded timestamp-window evidence | 174 |
 | Reviewed visual-summary fallbacks | 19 |
 | Answer-quality gold cases | 57/57 |
-| Query-understanding cases | 144/144 |
+| Query-understanding cases | 145/145 |
 | Metamorphic variants | 30/30 |
 | Current-runtime generated answer audits | 20/20 |
 | Evaluation suites / enforced baseline metrics | 14 / 74 |

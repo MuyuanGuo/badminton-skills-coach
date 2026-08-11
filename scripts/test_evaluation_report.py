@@ -117,6 +117,33 @@ class EvaluationReportTests(unittest.TestCase):
         self.assertFalse(comparison["passed"])
         self.assertEqual(comparison["metric"], "suite.score")
 
+    def test_baseline_comparison_reports_non_numeric_range_metrics(self):
+        evaluations = {
+            "suite": {
+                "stale_score": None,
+                "score": 0.8,
+                "limits": {"minimum_score": None},
+            }
+        }
+        baseline = {
+            "metrics": {
+                "suite.stale_score": {
+                    "value": 1.0,
+                    "direction": "at_least",
+                },
+                "suite.score": {
+                    "value_source": "suite.limits.minimum_score",
+                    "direction": "at_least",
+                },
+            }
+        }
+        comparisons = self.module.compare_baseline(evaluations, baseline)
+        self.assertEqual(
+            [item["failure_reason"] for item in comparisons],
+            ["non_numeric_current", "non_numeric_baseline"],
+        )
+        self.assertTrue(all(not item["passed"] for item in comparisons))
+
     def test_baseline_comparison_skips_explicitly_invalidated_metrics(self):
         evaluations = {"suite": {"contaminated": 0.1, "valid": 1.0}}
         baseline = {
