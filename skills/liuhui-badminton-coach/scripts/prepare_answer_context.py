@@ -910,12 +910,12 @@ def prepare_answer_context(
         if item["evidence_query"]
     ] or [query]
     claim_query_units = [
-        (
-            item["source_unit"]
-            if item["role"] == "evidence_question"
-            else item["evidence_query"]
+        item["evidence_query"]
+        for item in (
+            query_unit_records
+            if continuation is not None
+            else planned_query_unit_records
         )
-        for item in query_unit_records
         if item["evidence_query"]
         and item["role"] not in {"user_observation", "delivery_instruction"}
     ]
