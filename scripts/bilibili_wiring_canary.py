@@ -736,12 +736,57 @@ def evaluate_registry(
             query,
             local_personalization=False,
         )
+        expected_context_video = next(
+            (
+                item
+                for item in context.get("selected_videos", [])
+                if item.get("evidence_id") == expected
+            ),
+            None,
+        )
+        expected_label = (
+            expected_context_video.get("label")
+            if expected_context_video is not None
+            else None
+        )
+        synthesis_selected = expected_label in set(
+            context.get("answer_synthesis_video_labels", [])
+        )
+        answer_visible = expected_label in set(
+            context.get("answer_complete_related_video_labels", [])
+        )
+        audit_only = expected_label in set(
+            context.get("answer_audit_only_related_video_labels", [])
+        )
+        mapped_claims = [
+            claim
+            for claim in context.get("claim_evidence_map", [])
+            if any(
+                evidence.get("evidence_id") == expected
+                for evidence in claim.get("evidence", [])
+            )
+        ]
         mapped = [
             evidence
-            for claim in context.get("claim_evidence_map", [])
+            for claim in mapped_claims
             for evidence in claim.get("evidence", [])
             if evidence.get("evidence_id") == expected
         ]
+        active_claim_ids = {
+            directive.get("claim_id")
+            for directive in context.get("answer_plan", {}).get(
+                "claim_directives", []
+            )
+            if directive.get("mode")
+            in {
+                "compose_from_reviewed_atoms",
+                "compose_from_claim_scoped_source",
+            }
+        }
+        active_claim_mapped = any(
+            claim.get("claim_id") in active_claim_ids
+            for claim in mapped_claims
+        )
         packet = context_runtime.build_answer_packet(context)
         packet_video = next(
             (
@@ -751,8 +796,18 @@ def evaluate_registry(
             ),
             None,
         )
+        detailed_packet_video = next(
+            (
+                item
+                for item in packet.get("selected_videos", [])
+                if item.get("evidence_id") == expected
+            ),
+            None,
+        )
         packet_window_ids = (
-            packet_video.get("window_ids", []) if packet_video else []
+            detailed_packet_video.get("window_ids", [])
+            if detailed_packet_video
+            else []
         )
         target_retrieval = (
             (target or manifest_target or {}).get("transcript_retrieval") or {}
@@ -896,15 +951,27 @@ def evaluate_registry(
                 if evidence_mode == "full_transcript"
                 else "bounded_note_probe_lookup_failed"
             )
-        if evidence_mode == "bounded_note_windows" and bool(mapped) != bool(
-            packet_window_ids
+        if active_claim_mapped and not (answer_visible or audit_only):
+            case_failures.append("claim_mapping_missing_answer_disposition")
+        if audit_only and packet_video is not None:
+            case_failures.append("audit_only_evidence_leaked_into_answer_packet")
+        if answer_visible and packet_video is None:
+            case_failures.append("answer_visible_evidence_missing_from_packet")
+        if packet_video is not None and not mapped:
+            case_failures.append("packet_evidence_missing_claim_mapping")
+        if synthesis_selected and (
+            detailed_packet_video is None
+            or not packet_window_ids
+            or any(
+                window_id not in packet.get("evidence_windows", {})
+                for window_id in packet_window_ids
+            )
         ):
-            # Supplemental evidence is intentionally not forced into every
-            # answer: primary evidence may already cover the question.  But
-            # claim mapping and packet projection must agree whenever policy
-            # does select it.  A separate positive policy canary proves that
-            # bounded notes can enter answers when they add useful coverage.
-            case_failures.append("bounded_note_mapping_packet_mismatch")
+            # Synthesis evidence must carry its exact authorized windows.
+            # Audit-only evidence is deliberately retained outside the user
+            # packet, while non-synthesis related evidence may live in the
+            # compact catalog without authorizing answer prose.
+            case_failures.append("synthesis_evidence_missing_packet_windows")
         size = packet_bytes(packet)
         if size > int(thresholds["maximum_packet_bytes"]):
             case_failures.append("packet_exceeds_absolute_byte_budget")
@@ -946,6 +1013,19 @@ def evaluate_registry(
             "matched_chunk_ids": sorted(matched_chunks),
             "matched_cluster_ids": sorted(matched_clusters),
             "claim_mapped": bool(mapped),
+            "active_claim_mapped": active_claim_mapped,
+            "answer_visible": answer_visible,
+            "audit_only_retained": audit_only,
+            "packet_included": packet_video is not None,
+            "packet_projection": (
+                "detailed_synthesis"
+                if detailed_packet_video is not None
+                else "complete_related_catalog"
+                if packet_video is not None
+                else "audit_only_related"
+                if audit_only
+                else "not_selected"
+            ),
             "packet_window_count": len(packet_window_ids),
             "packet_bytes": size,
             "top_k_cluster_violations": top_cluster_violations,
