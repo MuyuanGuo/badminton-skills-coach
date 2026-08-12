@@ -27,9 +27,11 @@ SUPPORTED_DELIVERY_KINDS = {
     "diagnosis.ordered_checklist",
     "tactics.direction_branch",
     "tactics.condition_axes",
+    "tactics.coverage_responsibility",
     "evidence.sources",
     "evidence.boundary",
     "evidence.training_boundary",
+    "evidence.claim_separation",
 }
 FALLBACK_WINDOWS_PER_SOURCE = 2
 
@@ -303,6 +305,15 @@ def render_delivery_blocks(packet, videos):
                 )
                 + "。缺少任一轴时不把线路选择说成通用规则。"
             )
+        elif kind == "tactics.coverage_responsibility":
+            actors = "、".join(parameters.get("actors", [])) or "本方两人"
+            conditions = parameters.get("conditions", [])
+            condition_text = "、".join(conditions) or "双方实际覆盖位置"
+            lines.append(
+                f"{marker}轮转责任：必须分别说明{actors}在“{condition_text}”"
+                "各条件下的补位责任；现有来源没有把具体来球与责任直接绑定时，"
+                "应明确保留证据缺口，不能只用杀球动作或线路名称代替轮转结论。"
+            )
         elif kind == "evidence.sources":
             if packet.get("complete_related_videos"):
                 lines.append(
@@ -323,6 +334,10 @@ def render_delivery_blocks(packet, videos):
                 f"{marker}训练方案边界：当前知识库主要支持动作、机制、纠错提示和"
                 "战术解释，不足以可靠生成训练时长、组数、频次或多日计划。若来源"
                 "明确给出练习提示，只复述该提示，不扩写成训练处方。"
+            )
+        elif kind == "evidence.claim_separation":
+            lines.append(
+                f"{marker}证据不能自动共用：{parameters.get('statement', '')}"
             )
     return lines
 

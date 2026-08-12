@@ -97,6 +97,8 @@ CHINESE_VARIANTS = str.maketrans(
         "員": "员",
         "對": "对",
         "還": "还",
+        "殺": "杀",
+        "針": "针",
         "從": "从",
         "種": "种",
         "進": "进",
@@ -535,6 +537,7 @@ _query_planning = load_component(
 )
 _query_planning.normalize = normalize
 _query_planning.load_answer_rules = load_answer_rules
+_query_planning.load_selection_policy = load_selection_policy
 build_lexicon = _query_planning.build_lexicon
 fallback_shards = _query_planning.fallback_shards
 longest_non_overlapping_terms = _query_planning.longest_non_overlapping_terms

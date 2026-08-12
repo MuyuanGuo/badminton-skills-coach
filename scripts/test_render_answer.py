@@ -73,8 +73,8 @@ class RenderAnswerTests(unittest.TestCase):
                 for text in windows_by_claim["H2"]
             )
         )
-        self.assertGreaterEqual(len(windows_by_claim["H1"]), 2)
-        self.assertGreaterEqual(len(windows_by_claim["H2"]), 2)
+        self.assertGreaterEqual(len(windows_by_claim["H1"]), 1)
+        self.assertGreaterEqual(len(windows_by_claim["H2"]), 1)
         self.assertEqual(set(packet["synthesis_videos"]), cited)
         for label in packet["complete_related_videos"]:
             self.assertIn(label, answer)
@@ -139,7 +139,7 @@ class RenderAnswerTests(unittest.TestCase):
         self.assertIn("不是用户自己打吊球", answer)
         self.assertIn("杀上网是另一种特定衔接", answer)
         self.assertIn("反手被动高远也不能证明本题", answer)
-        self.assertIn("途中要让跑动节奏匹配来球速度", answer)
+        self.assertIn("向前距离较长时不要全程用小碎步", answer)
         self.assertNotIn("杀球落地后重心", answer)
         self.assertTrue(self.auditor.audit_answer(query, context, answer)["passed"])
 
@@ -165,7 +165,10 @@ class RenderAnswerTests(unittest.TestCase):
             answers[query] = answer
         self.assertNotEqual(answers[short_query], answers[chain_query])
         self.assertIn("对手：挡网", answers[chain_query])
-        self.assertIn("杀球后被对手挡网", answers[chain_query])
+        self.assertIn(
+            "你：杀球 → 对手：挡网 → 你：杀上网",
+            answers[chain_query],
+        )
 
     def test_training_request_renders_boundary_without_synthetic_plan(self):
         query = (

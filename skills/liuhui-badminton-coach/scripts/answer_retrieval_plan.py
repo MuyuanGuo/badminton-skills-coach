@@ -90,11 +90,31 @@ def reviewed_evidence_priorities(
 
 
 def planned_queries(search_module, plan, original_query, rules=None):
-    """Expand a question into focused retrieval units without losing the original."""
+    """Expand a question into focused retrieval units without leaking exclusions."""
 
     guidance = plan["retrieval_guidance"]
     units = guidance.get("query_units") or []
-    queries = [original_query]
+    root_intent = guidance.get("intent_frame", {})
+    # The verbatim question may contain “不要检索 X”.  Sending that string to
+    # retrieval makes X a positive lexical signal even though parsing already
+    # recognized it as negative scope.  Preserve the composite positive query
+    # instead; the original text remains in the audit context.
+    initial_query = (
+        root_intent.get("positive_query", original_query)
+        if root_intent.get("negative_scopes")
+        else original_query
+    )
+    queries = [initial_query]
+    if rules:
+        original_plan = search_module.plan_query(original_query)
+        original_intent = original_plan["retrieval_guidance"]["intent_frame"]
+        original_actor_query = original_intent.get(
+            "actor_query", original_intent.get("positive_query", original_query)
+        )
+        original_actor_context = query_actor_context(
+            search_module, original_actor_query, rules
+        )
+        queries.extend(original_actor_context["derived_search_terms"])
     for unit in units or [original_query]:
         unit_plan = search_module.plan_query(unit)
         expansion = unit_plan["query_expansion"]
@@ -164,7 +184,58 @@ def budget_retrieval_queries(search_module, queries, plan, original_query, rules
     soft_budget = rules.get("retrieval_query_budget", 24)
     hard_limit = rules.get("retrieval_query_hard_limit", 48)
     units = plan["retrieval_guidance"].get("query_units") or []
-    protected_texts = [original_query, *units]
+    root_intent = plan["retrieval_guidance"].get("intent_frame", {})
+    protected_original = (
+        root_intent.get("positive_query", original_query)
+        if root_intent.get("negative_scopes")
+        else original_query
+    )
+    protected_texts = [protected_original, *units]
+    # Preserve one high-value composite per unit.  Bare related terms are
+    # useful for recall, but they must not crowd out the query that keeps the
+    # user's explicit side/shot/pressure constraints attached to the most
+    # relevant mechanism term (for example, 反手 + 被动 + 挥拍).
+    if rules.get("query_actor_markers"):
+        for unit in units or [original_query]:
+            unit_plan = search_module.plan_query(unit)
+            expansion = unit_plan["query_expansion"]
+            intent = expansion.get("intent_frame", {})
+            positive_query = intent.get("positive_query", unit)
+            constraints = explicit_constraint_terms(
+                search_module, positive_query, rules
+            )
+            normalized_constraints = [
+                search_module.normalize(term) for term in constraints
+            ]
+            if len(set(normalized_constraints)) < 2:
+                continue
+            related_terms = sorted(
+                expansion.get("related_terms", []),
+                key=lambda item: (
+                    -float(item.get("weight", 0)),
+                    -len(search_module.normalize(item.get("term", ""))),
+                ),
+            )
+            for related in related_terms:
+                normalized_related = search_module.normalize(
+                    related.get("term", "")
+                )
+                composite = next(
+                    (
+                        query
+                        for query in queries
+                        if normalized_related
+                        and normalized_related in search_module.normalize(query)
+                        and all(
+                            constraint in search_module.normalize(query)
+                            for constraint in normalized_constraints
+                        )
+                    ),
+                    None,
+                )
+                if composite:
+                    protected_texts.append(composite)
+                    break
     # Actor/action parsing can deliberately reinterpret a symptom query.  Keep
     # those compact semantic anchors inside the budget; otherwise verbose
     # lexical composites can crowd them out and undo the reinterpretation.
@@ -348,8 +419,20 @@ def merge_transcript_retrieval(
     sources = [preferred, *(item or {} for item in matches)]
     hints = []
     seen_chunk_ids = set()
-    for source in sources:
-        for hint in source.get("chunk_hints", []):
+    # Round-robin the retrieval paths instead of draining the first path.
+    # The first path is usually the broad original question and can otherwise
+    # consume the whole window budget before a focused subquestion or
+    # diagnostic-mechanism query contributes its direct evidence.
+    max_source_hints = max(
+        (len(source.get("chunk_hints", [])) for source in sources),
+        default=0,
+    )
+    for hint_index in range(max_source_hints):
+        for source in sources:
+            source_hints = source.get("chunk_hints", [])
+            if hint_index >= len(source_hints):
+                continue
+            hint = source_hints[hint_index]
             chunk_id = str(hint.get("chunk_id") or "")
             marker = chunk_id or (
                 int(hint.get("start_segment", 0)),

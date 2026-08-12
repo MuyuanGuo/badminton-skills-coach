@@ -4,6 +4,169 @@
   "description": "Maintainer-reviewed claim atoms that the answer composer may verbalize without inventing new technical detail.",
   "atoms": [
     {
+      "atom_id": "EA-REAR-LATE-FRAME-CHOICE-001",
+      "canonical_claim": "后场来不及架拍",
+      "claim_aliases": [
+        "后场被动来不及架拍怎么把球打到底线",
+        "被动后场来不及架拍如何调整"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "rear_dynamic_low_frame",
+      "scope": {
+        "court_zone": ["rearcourt"]
+      },
+      "conditions": [
+        "后场快速来球导致准备时间不足",
+        "只用于选择更短的快速框架或动态低架，不单独证明回球深度"
+      ],
+      "verbalizable_claim": "后场来球使完整架拍来不及时，应先给真正的挥拍留出时间：爆发力较好者可快速把球拍送到框架位置；发力基础较弱者可让球拍先从下方向后绕，再向前击球。两种选择都不能单独保证回球深度。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7589749293205363633",
+      "evidence_windows": [
+        {
+          "timestamp": "00:10-00:33",
+          "text": "快速来球时，准备动作不能占用全部时间，要给挥拍留出时间。"
+        },
+        {
+          "timestamp": "00:38-00:49",
+          "text": "发力基础较弱者应把动作做饱满，可让球拍先从下方向后绕，再向前击球。"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-DOUBLES-RECEIVE-COVER-001",
+      "canonical_claim": "双打接发战术",
+      "claim_aliases": [
+        "双打接发后的直线保护与轮转"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "doubles_receive_followup_coverage",
+      "scope": {
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      },
+      "conditions": [
+        "接发后进入抓直线回头与搭档轮转场景",
+        "站位和握拍随左右场区及对手回球变化"
+      ],
+      "verbalizable_claim": "接发者向边线出球后应及时抬拍保护更薄弱的直线回头，由中场搭档覆盖中路和对角；进入另一侧场区时，后置站位、握拍和出脚方向也要随之调整。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7656927370758796145",
+      "evidence_windows": [
+        {
+          "timestamp": "02:03-02:17",
+          "text": "因为我是右手持拍我要把整个正手这个边线给让出来一定要把重心向后采因为这个球对手会非常凶猛所以在接发球的选择上"
+        },
+        {
+          "timestamp": "01:22-01:39",
+          "text": "一旦这个球把我顶住或者对手发力我都没有办法把球压下去是不可能能风到这种球的所以我们应该采用的是一个后置站位整个的握拍也要变成高点的握拍"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-DRIVE-CONTINUITY-FACING-001",
+      "canonical_claim": "平抽挡连续速度",
+      "claim_aliases": [
+        "平抽挡怎么提高连续速度",
+        "平抽挡怎样连续发力"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "drive_continuity",
+      "scope": {
+        "shot_family": ["drive"]
+      },
+      "conditions": [
+        "高速平球或平抽挡对抗",
+        "来球弧度不允许充分侧身"
+      ],
+      "verbalizable_claim": "高速平球或平抽挡对抗中，来球弧度和时间通常不允许充分侧身；应让身体更多保持朝前，用更短的移动和回动处理连续来球。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7652440366436945017",
+      "evidence_windows": [
+        {
+          "timestamp": "00:57-01:02",
+          "text": "然后就是头顶不需要遇到平球我们有一个这么充分的转身"
+        },
+        {
+          "timestamp": "01:02-01:05",
+          "text": "你上半身我看到扭的影都很扭曲了宽就不需要动太平了"
+        },
+        {
+          "timestamp": "03:17-03:20",
+          "text": "这种感觉人始终朝着前的就是你做起步法连着这种感觉"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-FOREHAND-CLEAR-SWING-PATH-001",
+      "canonical_claim": "正手高远球击球姿势",
+      "claim_aliases": [
+        "正手高远球的击球姿势是什么样"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "forehand_clear_swing_path",
+      "scope": {
+        "stroke_side": ["forehand"],
+        "shot_family": ["clear"]
+      },
+      "conditions": [
+        "正常正手后场挥拍",
+        "只证明由后向前的挥拍路径，不单独证明整套高远球动作"
+      ],
+      "verbalizable_claim": "正常正手后场挥拍要由腰腹带动向后引拍，再让球拍由后向前穿过击球区域；先向上再横向拉回，会损失向前的发力路径。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7102635326803332393",
+      "evidence_windows": [
+        {
+          "timestamp": "00:18-00:27",
+          "text": "那当有这种情况出现说明我们的击球已经是从这个位置打到上面再拉回左面"
+        },
+        {
+          "timestamp": "00:31-00:49",
+          "text": "那么正确的是什么样呢架拍通过腰腹的带动引拍是向后引"
+        }
+      ]
+    },
+    {
+      "atom_id": "EA-RECEIVE-GRIP-ADJUSTMENT-001",
+      "canonical_claim": "接发握拍应该怎么调整",
+      "claim_aliases": [
+        "双打接发握拍调整"
+      ],
+      "claim_kind": "question_unit",
+      "actor": "player",
+      "action": "serve_receive_grip_adjustment",
+      "scope": {
+        "discipline": ["doubles"],
+        "serve_role": ["receive"]
+      },
+      "conditions": [
+        "握拍调整取决于触球位置和出球方向",
+        "不能把一种固定握法写成所有接发场景的唯一答案"
+      ],
+      "verbalizable_claim": "接发握拍应从便于快速转换的准备握拍出发，再按触球位置和想打的直线、斜线小幅调整拍面；不能把某一种固定握法套用于所有接发位置。",
+      "confidence_ceiling": "moderate",
+      "evidence_id": "7053654124042194215",
+      "evidence_windows": [
+        {
+          "timestamp": "00:16-00:25",
+          "text": "那么反手伸前位的时候大拇指顶在拍子正宽面 直线 斜线如果在测身位的时候需要让点"
+        },
+        {
+          "timestamp": "00:27-00:34",
+          "text": "切一点 拿到斜轮上直线 斜线如果说球在我们的身后位"
+        },
+        {
+          "timestamp": "00:38-00:44",
+          "text": "拇指十指 捏在两侧直线 斜线"
+        }
+      ]
+    },
+    {
       "atom_id": "EA-DOUBLES-COVERAGE-RESPONSIBILITY-001",
       "canonical_claim": "双打前封后攻的轮转责任",
       "claim_aliases": [
@@ -38,7 +201,10 @@
     {
       "atom_id": "EA-FORWARD-START-001",
       "canonical_claim": "前场来球来不及到位",
-      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_aliases": [
+        "来不及接网前小球或者网前吊球怎么办",
+        "向前启动 上网步法"
+      ],
       "claim_kind": "question_unit",
       "actor": "player",
       "action": "forehand_forecourt_start",
@@ -65,7 +231,10 @@
     {
       "atom_id": "EA-FORWARD-LONG-PAD-001",
       "canonical_claim": "前场来球来不及到位",
-      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_aliases": [
+        "来不及接网前小球或者网前吊球怎么办",
+        "向前启动 上网步法"
+      ],
       "claim_kind": "question_unit",
       "actor": "player",
       "action": "long_distance_forecourt_movement",
@@ -88,7 +257,10 @@
     {
       "atom_id": "EA-FORWARD-RHYTHM-001",
       "canonical_claim": "前场来球来不及到位",
-      "claim_aliases": ["来不及接网前小球或者网前吊球怎么办"],
+      "claim_aliases": [
+        "来不及接网前小球或者网前吊球怎么办",
+        "向前启动 上网步法"
+      ],
       "claim_kind": "question_unit",
       "actor": "player",
       "action": "forecourt_running_rhythm",

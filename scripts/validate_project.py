@@ -983,6 +983,7 @@ expected_boundary_groups = {
     "pain_or_injury",
     "endorsement_or_authorship",
     "purchase_advice",
+    "source_evidence_policy",
     "visual_confirmation",
     "insufficient_observation",
 }

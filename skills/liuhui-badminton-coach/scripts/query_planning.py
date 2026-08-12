@@ -167,6 +167,10 @@ def extract_negative_scopes(query, rules):
 def requested_output(query, rules):
     normalized_query = normalize(query)
     intent_rules = rules.get("intent", {})
+    practice_request_patterns = any(
+        re.search(pattern, normalized_query)
+        for pattern in intent_rules.get("practice_request_patterns", [])
+    )
     direct_practice_request = any(
         normalize(term) in normalized_query
         for term in intent_rules.get("practice_request_terms", [])
@@ -195,6 +199,7 @@ def requested_output(query, rules):
         direct_practice_request
         or scheduled_practice_request
         or explicit_practice_plan_request
+        or practice_request_patterns
     ):
         return "practice"
     for label, key in [
@@ -233,19 +238,86 @@ def build_intent_frame(
     positive_normalized = normalize(positive_query)
     intent_rules = rules.get("intent", {})
     excluded_seed_terms = set()
+    hard_excluded_seed_terms = set()
+    hard_excluded_scope_groups = []
     for scope in negative_scopes:
         scope_normalized = normalize(scope["text"])
-        excluded_seed_terms.update(
+        lexical_matches = {
             term for term in lexicon if normalize(term) in scope_normalized
-        )
+        }
+        excluded_seed_terms.update(lexical_matches)
+        hard_excluded_seed_terms.update(lexical_matches)
         excluded_seed_terms.update(fallback_shards(scope["text"], rules))
+
+        # Preserve exclusion structure instead of flattening every modifier.
+        # “后场被动球” is one compound scope and should not separately ban
+        # every source mentioning “被动/来不及”.  Conversely, “别把 A 和 B
+        # 当支持原因” explicitly excludes A and B as separate alternatives.
+        scope_text = re.sub(
+            r"当(?:作|做|成)?(?:支持|主要|唯一)?(?:的)?(?:问题|原因|依据|证据)?.*$",
+            "",
+            scope["text"],
+        )
+        if scope.get("marker") == "别把":
+            parts = re.split(r"[、，,]|(?:以及|或者|和|与|或)", scope_text)
+        else:
+            parts = [scope_text]
+        for part in parts:
+            raw_part = part.strip(" “”\"'，,。；;？?！!")
+            group = (
+                [raw_part]
+                if scope.get("marker") == "别把" and len(normalize(raw_part)) >= 2
+                else longest_non_overlapping_terms(part, lexicon)
+            )
+            group = [
+                term
+                for term in group
+                if normalize(term)
+                and normalize(term) not in {"技术", "动作", "视频", "方案", "原因", "问题"}
+                and not (
+                    scope.get("marker") != "别把"
+                    and normalize(term) in positive_normalized
+                )
+            ]
+            if group and group not in hard_excluded_scope_groups:
+                hard_excluded_scope_groups.append(group)
+    # A shared modifier is not an exclusion.  For example, in “不要接杀，
+    # 只问反手网前挑球”, 反手 remains a required positive constraint while
+    # 接杀 is the excluded concept.
+    positive_terms = {
+        normalize(term)
+        for term in lexicon
+        if normalize(term) in positive_normalized
+    }
+    hard_excluded_seed_terms = {
+        term
+        for term in hard_excluded_seed_terms
+        if normalize(term) not in positive_terms
+    }
+    excluded_seed_terms = {
+        term
+        for term in excluded_seed_terms
+        if normalize(term) not in positive_normalized
+    }
     excluded_terms = set(excluded_seed_terms)
+    hard_excluded_terms = set(hard_excluded_seed_terms)
     for group in rules.get("equivalent_groups", []):
         if any(
             normalize(term) in {normalize(seed) for seed in excluded_seed_terms}
             for term in group
         ):
             excluded_terms.update(group)
+        if any(
+            normalize(term)
+            in {normalize(seed) for seed in hard_excluded_seed_terms}
+            for term in group
+        ):
+            hard_excluded_terms.update(group)
+    hard_excluded_terms = {
+        term
+        for term in hard_excluded_terms
+        if normalize(term) not in positive_normalized
+    }
     literal_symptoms = [
         term
         for term in intent_rules.get("literal_symptom_terms", [])
@@ -265,6 +337,8 @@ def build_intent_frame(
         "negative_scopes": negative_scopes,
         "excluded_seed_terms": sorted(excluded_seed_terms),
         "excluded_terms": sorted(excluded_terms),
+        "hard_excluded_terms": sorted(hard_excluded_terms),
+        "hard_excluded_scope_groups": hard_excluded_scope_groups,
         "literal_symptoms": literal_symptoms,
         "scenarios": scenarios,
         "levels": levels,
@@ -475,17 +549,41 @@ def split_query_units(query, workflow_rules):
             ]
             if len(connector_units) >= 2:
                 units = connector_units
-    content_units = [
-        unit
-        for unit in units
-        if not any(
-            re.fullmatch(pattern, unit)
-            for pattern in workflow_rules.get("context_only_unit_patterns", [])
-        )
-    ]
-    if content_units:
-        units = content_units
     return units or [query.strip()]
+
+
+def evidence_query_units(source_units, intent_frame, workflow_rules=None):
+    """Remove negative-only clauses without losing their audit representation."""
+
+    scopes = intent_frame.get("negative_scopes", [])
+    context_only_patterns = (workflow_rules or {}).get(
+        "context_only_unit_patterns", []
+    )
+    units = []
+    for source_unit in source_units:
+        if any(
+            re.fullmatch(pattern, source_unit)
+            for pattern in context_only_patterns
+        ):
+            continue
+        cleaned = source_unit
+        for scope in scopes:
+            marker = str(scope.get("marker", ""))
+            text = str(scope.get("text", ""))
+            if not marker or not text:
+                continue
+            cleaned = re.sub(
+                re.escape(marker) + r"\s*" + re.escape(text),
+                " ",
+                cleaned,
+            )
+        cleaned = re.sub(r"^(?:也|并且|以及|和|与)+", "", cleaned.strip())
+        cleaned = re.sub(r"(?:，|,|。|；|;|！|!|？|\?)+", " ", cleaned)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        if cleaned and normalize(cleaned) not in {"也", "并且", "以及", "和", "与"}:
+            units.append(cleaned)
+    positive_query = intent_frame.get("positive_query", "").strip()
+    return units or ([positive_query] if positive_query else [])
 
 def build_query_plan(query, expansion, answer_rules=None):
     answer_rules = answer_rules or load_answer_rules()
@@ -506,7 +604,19 @@ def build_query_plan(query, expansion, answer_rules=None):
         for signal in workflow_rules["boundary_signals"]
         if normalize(signal) in normalized_query
     ]
-    units = split_query_units(query, workflow_rules)
+    selection_policy_loader = globals().get("load_selection_policy")
+    if selection_policy_loader is not None:
+        selection_module, selection_rules = selection_policy_loader()
+        boundary = selection_module.classify_boundary(query, selection_rules)
+        if boundary.get("type") != "none" and not boundary_signals:
+            boundary_signals = [f"selection_boundary:{boundary['type']}"]
+    source_units = split_query_units(query, workflow_rules)
+    units = evidence_query_units(
+        source_units, expansion["intent_frame"], workflow_rules
+    )
+    focused_query = "。".join(units) or expansion["intent_frame"].get(
+        "positive_query", query
+    )
     concept_count = len(expansion["matched_synonym_groups"])
     multi_issue = (
         len(units) >= 2
@@ -516,7 +626,7 @@ def build_query_plan(query, expansion, answer_rules=None):
     if boundary_signals:
         strategy = "boundary_first"
         use_topic_navigation = False
-        query_units = units if multi_issue else [query]
+        query_units = units if multi_issue else [focused_query]
         require_exhaustive = concept_count > 0
         clarification_policy = (
             "state the applicable safety, purchase, attribution, or evidence boundary before coaching evidence; ask for professional help when risk is material"
@@ -540,7 +650,7 @@ def build_query_plan(query, expansion, answer_rules=None):
     elif diagnostic_signals:
         strategy = "literal_symptom_first"
         use_topic_navigation = False
-        query_units = [query]
+        query_units = [focused_query]
         require_exhaustive = True
         clarification_policy = (
             "start with the user's exact failure wording; ask one scenario question only if competing causes would change the answer"
@@ -548,7 +658,7 @@ def build_query_plan(query, expansion, answer_rules=None):
     elif concept_count:
         strategy = "focused_evidence"
         use_topic_navigation = False
-        query_units = [query]
+        query_units = [focused_query]
         require_exhaustive = True
         clarification_policy = (
             "retrieve the focused concept directly and clarify only when the playing situation changes the recommendation"
@@ -560,7 +670,7 @@ def build_query_plan(query, expansion, answer_rules=None):
     ):
         strategy = "scenario_focused_evidence"
         use_topic_navigation = False
-        query_units = [query]
+        query_units = [focused_query]
         require_exhaustive = True
         clarification_policy = (
             "treat the stated side, court area, discipline, or tactical phase as a valid evidence scope; retrieve it exhaustively and clarify only which specific technique would materially change the answer"
@@ -568,7 +678,7 @@ def build_query_plan(query, expansion, answer_rules=None):
     else:
         strategy = "evidence_check"
         use_topic_navigation = False
-        query_units = [query]
+        query_units = [focused_query]
         require_exhaustive = False
         clarification_policy = (
             "run a bounded evidence check and say clearly when the Skill has no grounded answer; do not fill gaps with generic coaching"
@@ -579,6 +689,7 @@ def build_query_plan(query, expansion, answer_rules=None):
         "strategy": strategy,
         "use_topic_navigation": use_topic_navigation,
         "query_units": query_units,
+        "source_query_units": source_units,
         "first_recall_mode": "exhaustive" if require_exhaustive else "balanced",
         "require_exhaustive_completion": require_exhaustive,
         "must_state_boundary_first": bool(boundary_signals),

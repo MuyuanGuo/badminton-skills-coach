@@ -18,7 +18,7 @@ DIAGNOSTIC_RULES_PATH = ROOT / "references" / "diagnostic-answer-rules.json"
 EVIDENCE_ATOMS_PATH = ROOT / "references" / "reviewed-evidence-atoms.json"
 CLARIFICATION_STATE_SCHEMA_VERSION = 2
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
-ANSWER_PACKET_SCHEMA_VERSION = 6
+ANSWER_PACKET_SCHEMA_VERSION = 8
 ANSWER_PLAN_SCHEMA_VERSION = 1
 _SIBLING_MODULES = {}
 _STATIC_RESOURCE_CACHE = {}
@@ -62,11 +62,30 @@ def canonicalize_retrieval_query(query, rules):
                 canonical,
                 flags=re.IGNORECASE,
             )
+    # Courtesy wrappers carry no badminton meaning and must not perturb
+    # retrieval ranks, evidence windows, or claim identity.  Keep the user's
+    # original wording in ``query``/continuation state; only the retrieval
+    # representation is stripped.
+    unwrapped = re.sub(
+        r"^\s*(?:请问|请教一下|想问一下)[\s，,：:]*",
+        "",
+        canonical,
+    )
+    unwrapped = re.sub(
+        r"[\s，,。！？!?]*(?:谢谢(?:你)?|感谢(?:你)?)[\s。！？!?]*$",
+        "",
+        unwrapped,
+    )
+    if unwrapped.strip():
+        canonical = unwrapped.strip()
     return canonical
 
 
 _selection_policy = load_sibling(
     "liuhui_answer_selection_policy", "answer_selection_policy.py"
+)
+_exclusion_policy = load_sibling(
+    "liuhui_answer_exclusion_policy", "exclusion_policy.py"
 )
 load_selection_rules = _selection_policy.load_selection_rules
 classify_boundary = _selection_policy.classify_boundary
@@ -400,6 +419,99 @@ def answer_visible_video_labels(claim_evidence_map):
                 labels.append(label)
                 seen.add(label)
     return labels
+
+
+def authorize_reviewed_atom_evidence(
+    diagnostic_contract,
+    selected_videos,
+    atoms,
+    question_interpretation,
+    semantic_query,
+    original_query,
+):
+    """Bind reviewed atoms before claim-authorized sources are pruned.
+
+    Reviewed atoms are already the strongest maintained claim-to-window
+    contract.  Requiring the generic query-window matcher to authorize the
+    same source first creates a circular gate and silently drops valid,
+    reviewed evidence.  This bridge admits only exact atom/claim matches whose
+    source and reviewed windows are present in the current selected set.
+    """
+
+    packet_runtime = load_sibling(
+        "liuhui_answer_packet_atom_authorization", "answer_packet.py"
+    )
+    selected_by_id = {
+        video["evidence_id"]: video for video in selected_videos
+    }
+    selected_order = {
+        video["label"]: index for index, video in enumerate(selected_videos)
+    }
+    actor_context = question_interpretation.get("actor_context", {})
+    inferred_target_claim = (
+        [
+            actor_context.get("target_action_query"),
+            semantic_query,
+            original_query,
+        ]
+        if actor_context.get("inferred_target_action")
+        else None
+    )
+    constraints = question_interpretation.get("constraints", {})
+    for claim in diagnostic_contract.get("claim_evidence_map", []):
+        evidence_by_id = {
+            evidence["evidence_id"]: evidence
+            for evidence in claim.get("evidence", [])
+        }
+        for atom in atoms:
+            evidence_id = atom.get("evidence_id")
+            video = selected_by_id.get(evidence_id)
+            if (
+                not video
+                or evidence_id in evidence_by_id
+                or atom.get("claim_kind") != claim.get("kind")
+                or not packet_runtime.atom_claim_matches(
+                    atom, claim, inferred_target_claim
+                )
+                or not packet_runtime.atom_scope_matches(atom, constraints)
+                or not packet_runtime.atom_window_is_reviewed(atom, video)
+            ):
+                continue
+            evidence = claim_evidence_entry(
+                video,
+                "scoped",
+                "maintainer-reviewed atom binds this source to the claim",
+            )
+            evidence["claim_windows"] = list(atom["evidence_windows"])
+            evidence["window_support"] = {
+                "rank": 4,
+                "score": 0.0,
+                "matched_term_count": 0,
+                "query_ngram_coverage": 0.0,
+                "exact_query_match": False,
+                "reviewed_evidence_source": True,
+                "reviewed_evidence_atom": True,
+                "primary_query_score": float(
+                    video.get("primary_query_score") or 0
+                ),
+                "best_retrieval_rank": video.get("best_retrieval_rank"),
+            }
+            claim.setdefault("evidence", []).append(evidence)
+            evidence_by_id[evidence_id] = evidence
+        claim["evidence"].sort(
+            key=lambda evidence: selected_order.get(
+                evidence.get("label"), len(selected_order)
+            )
+        )
+        claim["eligible_video_labels"] = [
+            evidence["label"] for evidence in claim["evidence"]
+        ]
+        if claim["evidence"] and claim.get("status") == "unsupported":
+            claim["status"] = "conditional"
+        claim["confidence_ceiling"] = confidence_ceiling(
+            claim["evidence"],
+            {video["label"]: video for video in selected_videos},
+        )
 
 
 def _remap_contract_video_labels(value, label_map):
@@ -879,8 +991,9 @@ def prepare_answer_context(
         rules,
         load_reviewed_evidence_signals(),
     )
+    reviewed_atoms = load_reviewed_evidence_atoms()
     normalized_positive_query = search_module.normalize(positive_query)
-    for atom in load_reviewed_evidence_atoms():
+    for atom in reviewed_atoms:
         aliases = {
             atom.get("canonical_claim", ""),
             *atom.get("claim_aliases", []),
@@ -895,19 +1008,91 @@ def prepare_answer_context(
                 reviewed_priorities[evidence_id] = 0
     navigation = None
     source_query_units = plan["retrieval_guidance"].get(
-        "query_units"
-    ) or [query]
+        "source_query_units"
+    ) or plan["retrieval_guidance"].get("query_units") or [query]
     query_unit_records = analyze_query_units(source_query_units)
-    evidence_query_units = [
+    planned_query_unit_records = analyze_query_units(
+        plan["retrieval_guidance"].get("query_units") or []
+    )
+    retrieval_query_units = [
+        item["evidence_query"]
+        for item in planned_query_unit_records
+        if item["evidence_query"]
+    ] or [query]
+    nonclaim_source_units = [
+        search_module.normalize(item["source_unit"])
+        for item in query_unit_records
+        if item["role"] in {"user_observation", "delivery_instruction"}
+        and search_module.normalize(item["source_unit"])
+    ]
+    claim_query_units = [
+        item["evidence_query"]
+        for item in planned_query_unit_records
+        if item["evidence_query"]
+        and not any(
+            search_module.normalize(item["evidence_query"]) in source_unit
+            for source_unit in nonclaim_source_units
+        )
+    ] or [
         item["evidence_query"]
         for item in query_unit_records
         if item["evidence_query"]
-    ] or [query]
+        and item["role"] not in {"user_observation", "delivery_instruction"}
+    ]
+    original_user_query = (continuation or {}).get(
+        "original_query", semantic_user_query
+    )
+    if (
+        len(claim_query_units) == 1
+        and search_module.normalize(claim_query_units[0])
+        == search_module.normalize(original_user_query)
+    ):
+        # Claim identity is part of the continuation contract. Retrieval may
+        # normalize punctuation, but the auditable question claim must retain
+        # the user's exact original wording and must never absorb assistant
+        # clarification labels.
+        claim_query_units = [original_user_query]
+    normalized_diagnostic_query = search_module.normalize(positive_query)
+    planning_hypotheses = extract_user_hypotheses(query, diagnostic_rules)
+    planning_symptoms = diagnostic_observed_symptoms(
+        search_module,
+        query,
+        intent_frame,
+        planning_hypotheses,
+        diagnostic_rules,
+    )
+    normalized_diagnostic_inputs = search_module.normalize(
+        " ".join(
+            item["text"]
+            for item in [*planning_hypotheses, *planning_symptoms]
+        )
+    )
+    mechanism_planning_allowed = boundary.get("type") == "none"
+    mechanism_query_units = [
+        mechanism.get("retrieval_query", mechanism["label"])
+        for mechanism in diagnostic_rules.get("mechanisms", [])
+        if mechanism_planning_allowed
+        and any(
+            (
+                search_module.normalize(term) in normalized_diagnostic_inputs
+                or (
+                    intent_frame.get("requested_output") == "diagnosis"
+                    and len(search_module.normalize(term)) >= 5
+                    and search_module.normalize(term)
+                    in normalized_diagnostic_query
+                )
+            )
+            for term in mechanism.get("query_terms", [])
+        )
+    ]
+    selection_query_units = list(
+        dict.fromkeys([*retrieval_query_units, *mechanism_query_units])
+    )
     retrieval_plan = {
         **plan,
         "retrieval_guidance": {
             **plan["retrieval_guidance"],
-            "query_units": evidence_query_units,
+            "query_units": selection_query_units,
         },
     }
     retrieval_queries = planned_queries(
@@ -957,23 +1142,41 @@ def prepare_answer_context(
         rules,
         requested_constraints=requested_constraints,
     )
-    query_units = evidence_query_units
+    query_units = retrieval_query_units
     coherent_actor_sequence = bool(
         actor_context.get("inferred_target_action")
         and actor_context.get("event_chain")
         and "同时" not in retrieval_base_query
     )
-    diagnostic_query_units = (
-        [actor_context["target_action_query"]]
-        if coherent_actor_sequence and len(query_units) > 1
-        else query_units
+    canonical_actor_sequence_claim = bool(
+        coherent_actor_sequence
+        and (
+            not claim_query_units
+            or any(
+                event.get("actor") != "player"
+                for event in actor_context.get("event_chain", [])
+            )
+        )
     )
+    if canonical_actor_sequence_claim and not claim_query_units:
+        # A standalone reported symptom such as “对手吊网前我总是接不到”
+        # is correctly retained as a user observation, but the inferred
+        # response action is still the technical question that sources must
+        # answer.  Do not turn the observation itself into a source-proved
+        # claim.
+        claim_query_units = [actor_context["target_action_query"]]
     split_multi_issue = (
         plan["retrieval_guidance"].get("strategy") == "split_multi_issue"
         and len(query_units) > 1
         and not coherent_actor_sequence
     )
     unit_evaluation_specs = []
+    global_boundary_types = {
+        "pain_or_injury",
+        "endorsement_or_authorship",
+        "source_evidence_policy",
+        "purchase_advice",
+    }
     if split_multi_issue:
         for unit in query_units:
             unit_plan = search_module.plan_query(unit)
@@ -990,7 +1193,11 @@ def prepare_answer_context(
                     "actor_context": query_actor_context(
                         search_module, unit_actor_query, rules
                     ),
-                    "boundary": classify_boundary(unit, rules),
+                    "boundary": (
+                        boundary
+                        if boundary.get("type") in global_boundary_types
+                        else classify_boundary(unit, rules)
+                    ),
                 }
             )
     else:
@@ -998,7 +1205,7 @@ def prepare_answer_context(
             {
                 "unit": (
                     retrieval_base_query
-                    if coherent_actor_sequence
+                    if canonical_actor_sequence_claim
                     else query_units[0]
                 ),
                 "plan": plan,
@@ -1006,23 +1213,45 @@ def prepare_answer_context(
                 "boundary": boundary,
             }
         ]
+    for mechanism_unit in mechanism_query_units:
+        if any(spec["unit"] == mechanism_unit for spec in unit_evaluation_specs):
+            continue
+        mechanism_plan = search_module.plan_query(mechanism_unit)
+        mechanism_plan["retrieval_guidance"]["strategy"] = "focused_evidence"
+        mechanism_plan["retrieval_guidance"]["query_units"] = [mechanism_unit]
+        mechanism_actor_query = mechanism_plan["retrieval_guidance"][
+            "intent_frame"
+        ].get("actor_query", mechanism_unit)
+        unit_evaluation_specs.append(
+            {
+                "unit": mechanism_unit,
+                "plan": mechanism_plan,
+                "actor_context": query_actor_context(
+                    search_module, mechanism_actor_query, rules
+                ),
+                "boundary": classify_boundary(mechanism_unit, rules),
+            }
+        )
     local_unit_actor_contexts = {
         spec["unit"]: spec["actor_context"] for spec in unit_evaluation_specs
     }
-    root_actor_context = next(
-        (
-            spec["actor_context"]
-            for spec in unit_evaluation_specs
-            if spec["actor_context"].get("target_constraints")
-        ),
-        actor_context,
-    )
+    # The complete positive question is the root context.  A declarative
+    # observation often carries the side, incoming shot, or court location,
+    # while the following elliptical question carries no local constraints.
+    root_actor_context = actor_context
     unit_roles = {
-        item["evidence_query"]: item["role"]
+        search_module.normalize(item["evidence_query"]): item["role"]
         for item in query_unit_records
         if item["evidence_query"]
     }
     for spec in unit_evaluation_specs:
+        unit_role = unit_roles.get(
+            search_module.normalize(spec["unit"]),
+            "evidence_question",
+        )
+        spec["actor_context"]["explicit_subquestion"] = (
+            unit_role == "explicit_subquestion"
+        )
         local_constraints = spec["actor_context"].get(
             "target_constraints", {}
         )
@@ -1030,7 +1259,7 @@ def prepare_answer_context(
             root_actor_context
             if should_inherit_root_context(
                 local_constraints,
-                unit_roles.get(spec["unit"], "evidence_question"),
+                unit_role,
             )
             else {}
         )
@@ -1040,6 +1269,10 @@ def prepare_answer_context(
         )
     accepted = []
     rejected = []
+    hard_excluded_terms = intent_frame.get("hard_excluded_terms", [])
+    hard_excluded_scope_groups = intent_frame.get(
+        "hard_excluded_scope_groups", []
+    )
     for video_id, entry in merged.items():
         entry["reviewed_evidence_rank"] = reviewed_priorities.get(video_id, 2)
         video = videos.get(video_id)
@@ -1048,6 +1281,30 @@ def prepare_answer_context(
                 {"video_id": video_id, "reasons": ["video_missing_from_knowledge"]}
             )
             continue
+        if hard_excluded_terms or hard_excluded_scope_groups:
+            matched_hard_exclusions = _exclusion_policy.matched_hard_exclusions(
+                {
+                    "title": video.get("title", ""),
+                    "category": video.get("category", ""),
+                    "teaching_note": video.get("teaching_note", {}),
+                    "transcript_evidence": video.get("transcript_evidence", []),
+                    "bounded_note_evidence": video.get(
+                        "bounded_note_evidence", []
+                    ),
+                },
+                hard_excluded_terms,
+                rules,
+                hard_excluded_scope_groups,
+            )
+            if matched_hard_exclusions:
+                rejected.append(
+                    {
+                        "video_id": video_id,
+                        "selection_reasons": ["matched_user_excluded_scope"],
+                        "matched_excluded_terms": matched_hard_exclusions,
+                    }
+                )
+                continue
         constraint_scope = search_module._VIDEO_CONSTRAINT_SCOPE_CACHE.get(video_id)
         if constraint_scope is None:
             constraint_scope = video_constraint_scope(search_module, video, rules)
@@ -1230,7 +1487,11 @@ def prepare_answer_context(
             rules,
         )
     synthesis_candidate_entries = [*exact_entries, *support_entries]
-    selected_entries = semantic_answerable_entries[:max_videos]
+    # Retrieval keeps the full semantic-answerable set auditable, while only
+    # the policy-capped synthesis set may enter claim construction and answer
+    # display.  Using the raw semantic set here bypasses duplicate,
+    # automatic-expansion, and supplemental-source limits.
+    selected_entries = synthesis_candidate_entries[:max_videos]
     semantic_budget_deferred = [
         {
             **entry,
@@ -1240,10 +1501,17 @@ def prepare_answer_context(
     ]
     deferred.extend(semantic_budget_deferred)
     selected_ids = [item["video_id"] for item in selected_entries]
+    evidence_lookup_query = " ".join(
+        dict.fromkeys([query, *selection_query_units])
+    )
     lookup = (
         search_module.lookup_videos(
             selected_ids,
-            query=query,
+            # Use the same positive subquestion/mechanism units that admitted
+            # the candidate.  Looking windows up with only the broad original
+            # question can retrieve the right video but return the wrong
+            # passage, starving claim-level evidence validation.
+            query=evidence_lookup_query,
             local_personalization=local_personalization,
             feedback_dir=feedback_dir,
             segment_limit=segment_limit,
@@ -1390,7 +1658,11 @@ def prepare_answer_context(
         # the inferred target action as the diagnostic claim so evidence for
         # the complete sequence is not incorrectly rejected as a partial
         # answer to either sentence fragment.
-        "query_units": diagnostic_query_units,
+        "query_units": (
+            [actor_context["target_action_query"]]
+            if canonical_actor_sequence_claim
+            else claim_query_units
+        ),
         "source_query_units": source_query_units,
         "query_unit_records": query_unit_records,
         "retrieval_queries": retrieval_queries,
@@ -1407,11 +1679,20 @@ def prepare_answer_context(
         boundary,
         selected_videos,
         diagnostic_rules,
+        selection_rules=rules,
         resolved_question_ids={
             item["question_id"]
             for item in (continuation or {}).get("resolved_answers", [])
         },
         resolved_answers=(continuation or {}).get("resolved_answers", []),
+    )
+    authorize_reviewed_atom_evidence(
+        diagnostic_contract,
+        selected_videos,
+        reviewed_atoms,
+        question_interpretation,
+        semantic_user_query,
+        user_query,
     )
     delivery_contract = build_delivery_contract(
         (continuation or {}).get("original_query", semantic_user_query),
@@ -1422,6 +1703,37 @@ def prepare_answer_context(
     diagnostic_contract["completeness_contract"]["items"].extend(
         delivery_completeness_items(delivery_contract)
     )
+    authorized_labels = set(
+        answer_visible_video_labels(diagnostic_contract["claim_evidence_map"])
+    )
+    pruned_videos = [
+        video
+        for video in selected_videos
+        if video["label"] not in authorized_labels
+    ]
+    selected_entry_by_id = {
+        entry["video_id"]: entry for entry in selected_entries
+    }
+    rejected_ids = {entry["video_id"] for entry in rejected}
+    for video in pruned_videos:
+        if video["video_id"] in rejected_ids:
+            continue
+        scope_failures = requested_action_scope_failures(
+            search_module, actor_context, video, rules
+        )
+        rejected.append(
+            {
+                **selected_entry_by_id[video["video_id"]],
+                "selection_reasons": scope_failures
+                or ["claim_evidence_not_authorized"],
+            }
+        )
+        rejected_ids.add(video["video_id"])
+    selected_videos = [
+        video
+        for video in selected_videos
+        if video["label"] in authorized_labels
+    ]
     selected_videos, visible_labels, _ = relabel_answer_videos(
         selected_videos, diagnostic_contract
     )
@@ -1474,29 +1786,31 @@ def prepare_answer_context(
         **diagnostic_contract,
         "selection": {
             "high_recall_candidate_count": len(merged),
-            "semantic_answerable_video_count": len(
+            "preclaim_semantic_candidate_count": len(
                 semantic_answerable_entries
             ),
-            "semantic_answerable_video_ids": [
+            "preclaim_semantic_candidate_video_ids": [
                 item["video_id"] for item in semantic_answerable_entries
             ],
-            "synthesis_candidate_video_count": len(
+            "semantic_answerable_video_count": len(selected_videos),
+            "semantic_answerable_video_ids": selected_ids,
+            "preclaim_synthesis_candidate_video_count": len(
                 synthesis_candidate_entries
             ),
-            "synthesis_candidate_video_ids": [
+            "preclaim_synthesis_candidate_video_ids": [
                 item["video_id"] for item in synthesis_candidate_entries
             ],
-            "eligible_video_count": len(semantic_answerable_entries),
+            "synthesis_candidate_video_count": len(selected_ids),
+            "synthesis_candidate_video_ids": selected_ids,
+            "eligible_video_count": len(selected_videos),
             "eligible_exact_video_count": sum(
-                entry_is_core(item) for item in semantic_answerable_entries
+                video["role"] == "core" for video in selected_videos
             ),
             "eligible_supporting_video_count": sum(
-                not entry_is_core(item)
-                for item in semantic_answerable_entries
+                video["role"] == "supporting" for video in selected_videos
             ),
             "selected_video_count": len(selected_videos),
-            "selection_truncated": len(semantic_answerable_entries)
-            > len(selected_videos),
+            "selection_truncated": bool(semantic_budget_deferred),
             "max_selected_videos": max_videos,
             "selected_video_ids": selected_ids,
             "deferred_candidate_count": len(deferred),
@@ -1522,7 +1836,7 @@ def prepare_answer_context(
                 "为了让答案更完整，你还可以补充",
             ],
             "citation_rules": [
-                "技术结论只引用 answer_synthesis_video_labels；完整相关视频清单使用 answer_complete_related_video_labels；selected_videos 中未映射到 claim 的 finalist 仅供审计。",
+                "技术结论只引用 answer_synthesis_video_labels；完整相关视频清单使用 answer_complete_related_video_labels；未映射到任何 claim 的候选不得进入 selected_videos。",
                 "每个 V 标签只对应一个 evidence_id，并在答案中只输出一次 canonical URL。当前抖音条目的 evidence_id 等于 video_id；直播切片等新来源使用自己的稳定 evidence_id。",
                 "每条展示视频都必须说明为什么引用、为什么值得看以及重点观看的时间点或诚实的全片范围；裸标题或裸链接不算完成。",
                 "结论必须由 teaching_note 或 transcript_evidence 直接支持。",
@@ -1575,7 +1889,7 @@ def prepare_answer_context(
     )
     context["answer_turn_contract"] = build_answer_turn_contract(context)
     context["answer_plan"] = build_closed_answer_plan(
-        context, load_reviewed_evidence_atoms()
+        context, reviewed_atoms
     )
     answer_packet_runtime = load_sibling(
         "liuhui_answer_packet_visibility", "answer_packet.py"
@@ -1657,7 +1971,7 @@ def prepare_answer_context(
             item["video_id"]: item["selection_reasons"]
             for item in deferred
         }
-        context["unselected_semantically_answerable_candidates"] = [
+        context["unselected_preclaim_semantic_candidates"] = [
             {
                 "video_id": item["video_id"],
                 "title": item["candidate"]["title"],
@@ -1670,8 +1984,12 @@ def prepare_answer_context(
             for item in semantic_answerable_entries
             if item["video_id"] not in selected_id_set
         ]
+        # Claim-level evidence authorization is the final semantic standard.
+        # Candidates rejected before that point remain auditable as preclaim
+        # candidates, but must not be described as known answerable sources.
+        context["unselected_semantically_answerable_candidates"] = []
         context["unselected_eligible_candidates"] = list(
-            context["unselected_semantically_answerable_candidates"]
+            context["unselected_preclaim_semantic_candidates"]
         )
     return context
 

@@ -13,6 +13,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import answer_packet as answer_packet_runtime
+import exclusion_policy
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
@@ -26,7 +27,7 @@ DEFAULT_SELECTION_RULES_PATH = (
 CONFIDENCE_RANK = {"none": 0, "low": 1, "moderate": 2, "high": 3}
 ANSWER_TURN_CONTRACT_SCHEMA_VERSION = 1
 LEGACY_ANSWER_PACKET_SCHEMA_VERSION = 1
-CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 7
+CURRENT_ANSWER_PACKET_SCHEMA_VERSION = 8
 LEGACY_BOUND_PACKET_SCHEMA_VERSION = 2
 LEGACY_DELIVERYLESS_PACKET_SCHEMA_VERSION = 3
 LEGACY_CORE_ONLY_PACKET_SCHEMA_VERSION = 4
@@ -712,6 +713,24 @@ def audit_delivery_contract(context, units, violations):
                     unit=unit,
                     details={"missing": missing},
                 )
+        elif kind == "tactics.coverage_responsibility":
+            required = [
+                *parameters.get("actors", []),
+                *parameters.get("conditions", []),
+            ]
+            missing = [term for term in required if term not in unit]
+            has_responsibility_or_gap = any(
+                term in unit
+                for term in ("补位", "轮转", "责任", "证据缺口", "不能")
+            )
+            if missing or not has_responsibility_or_gap:
+                fail(
+                    item,
+                    "invalid_coverage_responsibility_delivery",
+                    "The rotation answer must preserve both actors and every requested condition, or state the evidence gap.",
+                    unit=unit,
+                    details={"missing": missing},
+                )
         elif kind == "evidence.sources":
             if context.get("answer_complete_related_video_labels"):
                 if "核心视频与观看重点" not in "\n".join(units):
@@ -748,6 +767,22 @@ def audit_delivery_contract(context, units, violations):
                     item,
                     "invalid_training_boundary_delivery",
                     "The answer invents or omits the corpus training-plan boundary.",
+                    unit=unit,
+                )
+        elif kind == "evidence.claim_separation":
+            required_groups = (
+                ("证据",),
+                ("不能", "不自动", "分别"),
+                ("主体", "动作", "来球", "结论"),
+            )
+            if any(
+                not any(term in unit for term in group)
+                for group in required_groups
+            ):
+                fail(
+                    item,
+                    "invalid_claim_separation_delivery",
+                    "Separate actor/action claims must preserve their evidence boundary.",
                     unit=unit,
                 )
     return coverage
@@ -814,13 +849,41 @@ def audit_answer(question, context, answer, rules=None):
         pattern = compile_any(
             rules["forbidden_synthetic_training_prescription_patterns"]
         )
-        if pattern.search(auditable_answer):
+        prescription_text = auditable_answer.replace(question, " ")
+        for claim in context.get("claim_evidence_map", []):
+            claim_text = claim.get("text")
+            if claim_text:
+                prescription_text = prescription_text.replace(claim_text, " ")
+        if pattern.search(prescription_text):
             add_violation(
                 violations,
                 "synthetic_training_prescription",
                 "The answer invents a time, set, frequency, or multi-day prescription.",
             )
     claims = context.get("claim_evidence_map", [])
+    fallback_directives = {
+        item.get("claim_id"): set(item.get("evidence_labels", []))
+        for item in context.get("answer_plan", {}).get("claim_directives", [])
+        if item.get("mode") == "compose_from_claim_scoped_source"
+    }
+    for claim in claims:
+        required_labels = fallback_directives.get(claim.get("claim_id"), set())
+        if not required_labels:
+            continue
+        missing_windows = [
+            evidence.get("label")
+            for evidence in claim.get("evidence", [])
+            if evidence.get("label") in required_labels
+            and not evidence.get("claim_windows")
+        ]
+        if missing_windows:
+            add_violation(
+                violations,
+                "claim_evidence_window_missing",
+                "Fallback synthesis evidence lacks a claim-specific reviewed window.",
+                claim_id=claim.get("claim_id"),
+                details={"labels": sorted(missing_windows)},
+            )
     claim_by_id = {claim.get("claim_id"): claim for claim in claims}
     selected_by_label, selected_by_evidence_id = selected_video_maps(context)
     label_pattern = re.compile(rules["video_label_pattern"])
@@ -859,6 +922,40 @@ def audit_answer(question, context, answer, rules=None):
         )
 
     audit_semantic_interpretation(question, context, violations)
+
+    hard_excluded_terms = context.get("question_interpretation", {}).get(
+        "intent_frame", {}
+    ).get("hard_excluded_terms", [])
+    hard_excluded_scope_groups = context.get("question_interpretation", {}).get(
+        "intent_frame", {}
+    ).get("hard_excluded_scope_groups", [])
+    selection_rules = load_json(DEFAULT_SELECTION_RULES_PATH)
+    for video in context.get("selected_videos", []):
+        matched_exclusions = exclusion_policy.matched_hard_exclusions(
+            {
+                "title": video.get("title", ""),
+                "category": video.get("category", ""),
+                "teaching_note": video.get("teaching_note", {}),
+                "transcript_evidence": video.get("transcript_evidence", []),
+                "bounded_note_evidence": video.get("bounded_note_evidence", []),
+                "watch_focus": video.get("watch_focus", ""),
+                "evidence_windows": video.get("evidence_windows", []),
+            },
+            hard_excluded_terms,
+            selection_rules,
+            hard_excluded_scope_groups,
+        )
+        if matched_exclusions:
+            add_violation(
+                violations,
+                "excluded_scope_video_selected",
+                "A selected source belongs to a scope the user explicitly excluded.",
+                details={
+                    "label": video.get("label"),
+                    "evidence_id": video.get("evidence_id"),
+                    "matched_terms": matched_exclusions,
+                },
+            )
 
     all_labels = labels_in(auditable_answer, label_pattern)
     for label in sorted(all_labels):
@@ -1176,6 +1273,41 @@ def audit_answer(question, context, answer, rules=None):
                     f"{label} has no timestamp, clip range, or honest full-video focus.",
                     details={"label": label},
                 )
+            else:
+                claim_timestamps = {
+                    window.get("timestamp")
+                    for claim in claims
+                    for evidence in claim.get("evidence", [])
+                    if (evidence.get("label") or evidence.get("video_label"))
+                    == label
+                    for window in evidence.get("claim_windows", [])
+                    if window.get("timestamp")
+                }
+                missing_timestamps = sorted(
+                    timestamp
+                    for timestamp in claim_timestamps
+                    if not (
+                        timestamp in guidance
+                        or (
+                            timestamp == "visual_review_no_timestamp"
+                            and (
+                                "全片" in guidance
+                                or "无精确时间点" in guidance
+                            )
+                        )
+                    )
+                )
+                if missing_timestamps:
+                    add_violation(
+                        violations,
+                        "video_focus_window_mismatch",
+                        f"{label}'s watch focus does not use a claim-authorized evidence window.",
+                        details={
+                            "label": label,
+                            "allowed_timestamps": sorted(claim_timestamps),
+                            "missing_timestamps": missing_timestamps,
+                        },
+                    )
 
     expected_related_labels = set(
         context.get("answer_complete_related_video_labels", [])
