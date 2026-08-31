@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.4",
+  "development_version": "2.1.5-dev.1",
   "baseline_version": "v2.1.4",
   "build": {
-    "id": "56114a3d57d53649",
-    "inputs_sha256": "8e48ae10a077f3919882625f626271e9fb3f6ef61b3286cca73c4f776aba1891",
-    "runtime_sha256": "90eb0c2020bec48cfee16464798924b59efe395c1e468f52928117df00ee924a"
+    "id": "931019bb6223b5fe",
+    "inputs_sha256": "79a892bcd0ec0f9ac1b95c52e6c7bc364b05049ea35343c2060a568a70529a18",
+    "runtime_sha256": "6a99f4c69cf655db700198acb4d1f15d132e65409a3505699ea2b6bcd5e2e277"
   },
   "summary": {
     "status": "pass",
@@ -239,8 +239,8 @@
       "runtime_fingerprint_scope": "answer_semantics",
       "generation_answer_runtime_fingerprint": "91c70d389da51d8998ca4c7893d0e0fa6141a6629b0d1809197298f0f5a5d603",
       "current_answer_runtime_fingerprint": "91c70d389da51d8998ca4c7893d0e0fa6141a6629b0d1809197298f0f5a5d603",
-      "generation_artifact_runtime_fingerprint": "02246dfea11f04850bcaf3c80a765c0a35b47fcdbd3973d7c43025bbd966963c",
-      "current_artifact_runtime_fingerprint": "02246dfea11f04850bcaf3c80a765c0a35b47fcdbd3973d7c43025bbd966963c",
+      "generation_artifact_runtime_fingerprint": "7bb8f8b1988da19db414aeaf935bf49a8aa8c314d49086bc244b2d0a02e61bd6",
+      "current_artifact_runtime_fingerprint": "7bb8f8b1988da19db414aeaf935bf49a8aa8c314d49086bc244b2d0a02e61bd6",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
