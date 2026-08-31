@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/v3/source-inventory.schema.json",
+  "title": "Badminton Skills Coach v3 sanitized source inventory",
+  "type": "object",
+  "required": ["schema_version", "kind", "authority", "summary", "sources", "inventory_fingerprint"],
+  "properties": {
+    "schema_version": {"const": "3.0.0-m1"},
+    "kind": {"const": "v3-sanitized-source-inventory"},
+    "authority": {"const": "private_input_snapshot_candidate_only"},
+    "inventory_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id", "legacy_evidence_id", "platform", "native_video_id",
+          "canonical_url", "answer_eligibility", "candidate_transcript_status",
+          "candidate_transcript_fingerprint", "candidate_media_status",
+          "mirror_resolution_status", "v3_formal_status"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false
+}

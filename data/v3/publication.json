@@ -1,0 +1,24 @@
+{
+  "kind": "v3-shadow-publication",
+  "privacy_contract": {
+    "full_transcripts_included": false,
+    "raw_asr_included": false,
+    "reviewer_identities_included": false,
+    "sealed_evaluations_included": false
+  },
+  "publication_fingerprint": "f1b584ecd74ca784667d3ba2b4dd319d07d06f7d44d7e4d46540e3db9346fbfb",
+  "publication_id": "publication_f1b584ecd74ca784667d3ba2",
+  "review_provenance": {
+    "approved_entity_event_ids": [],
+    "chain_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "ledger_schema_version": "3.0.0-m1"
+  },
+  "schema_version": "3.0.0-m1",
+  "scope": {
+    "mode": "shadow",
+    "topics": []
+  },
+  "semantic_claims": [],
+  "sources": [],
+  "teaching_events": []
+}

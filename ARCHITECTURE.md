@@ -60,3 +60,23 @@ inventory is an explicit allowlist guarded by hashes, a reproducible manifest,
 an SBOM, signed tags, and CI timeouts. Repository-side branch protection,
 environment approvals, About metadata, and topics are specified by the
 auditable `.github/REPOSITORY_SETTINGS.md` contract.
+
+## v3 影子证据平面 / v3 shadow evidence plane
+
+v3 在通过六类原子切换门禁前与上述稳定运行时隔离。完整媒体、raw ASR、正式转写、
+审核身份和草稿只存在于 Git 忽略的 `.local/v3/` 私有平面。正式决定写入 append-only
+SQLite 账本，current heads 与依赖关系是可重建投影；上游内容指纹改变会使下游对象
+递归变为 `stale`。公开 runtime 的唯一输入是净化、指纹化的
+`data/v3/publication.json`，其中只允许 published claim、最小证据窗口和公共来源身份。
+
+Before all six pilot gates pass atomically, v3 remains isolated from the stable
+runtime above. Complete media, raw ASR, formal transcripts, reviewer identities,
+and drafts live only in the Git-ignored `.local/v3/` private plane. Formal
+decisions append to a SQLite ledger; current heads and dependencies are
+rebuildable projections, and upstream fingerprint changes recursively mark
+dependents stale. The sole public runtime input is the sanitized, fingerprinted
+`data/v3/publication.json`, limited to published claims, minimal evidence
+windows, and public source identity.
+
+Implementation commands and current M1/M2 status are documented in
+`docs/v3-implementation.zh-CN.md`.

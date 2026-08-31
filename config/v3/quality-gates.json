@@ -1,0 +1,35 @@
+{
+  "version": "v3-quality-gates-m1",
+  "runtime_mode": "shadow",
+  "pilot_topics": [
+    {"id": "forehand_rearcourt", "name_zh": "正手后场"},
+    {"id": "backhand_rearcourt", "name_zh": "反手后场"},
+    {"id": "frontcourt", "name_zh": "网前"},
+    {"id": "serve_receive", "name_zh": "发接发"},
+    {"id": "footwork", "name_zh": "步法"},
+    {"id": "doubles", "name_zh": "双打"}
+  ],
+  "evaluation": {
+    "development_cases_minimum": 70,
+    "sealed_holdout_cases_minimum": 30,
+    "real_or_historical_user_expressions_minimum": 40,
+    "required_claim_recall_minimum": 0.9,
+    "semantic_frame_key_accuracy_minimum": 0.95,
+    "critical_errors_maximum": 0,
+    "citation_mapping_rate_minimum": 1.0,
+    "video_viewing_rationale_rate_minimum": 1.0,
+    "report_sample_counts": true,
+    "report_95_percent_confidence_intervals": true
+  },
+  "switch_policy": {
+    "evaluate_topics_independently": true,
+    "require_every_pilot_topic_to_pass": true,
+    "switch_pilot_topics_atomically": true,
+    "uncovered_topics_runtime": "v2",
+    "mixed_evidence_within_one_claim_allowed": false
+  },
+  "m1_m2": {
+    "stable_v2_behavior_must_remain_unchanged": true,
+    "switch_eligible": false
+  }
+}

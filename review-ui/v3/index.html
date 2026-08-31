@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>证据脊柱 · v3 审核台</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#review-main">跳到审核内容</a>
+  <header class="topbar">
+    <div class="brand-block" aria-label="Badminton Skills Coach v3">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <p class="eyebrow">Badminton Skills Coach / private plane</p>
+        <h1>证据脊柱</h1>
+      </div>
+    </div>
+    <div class="source-heading">
+      <p id="source-kicker" class="eyebrow">正在读取候选来源</p>
+      <h2 id="source-title">本地审核会话</h2>
+    </div>
+    <div class="identity-block">
+      <label for="reviewer-id">审核者身份</label>
+      <input id="reviewer-id" autocomplete="name" placeholder="输入你的名字或稳定 ID">
+      <span class="privacy-badge">仅保存在本机账本</span>
+    </div>
+  </header>
+
+  <main id="review-main" class="review-grid">
+    <aside class="media-panel" aria-labelledby="media-title">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Original media</p>
+          <h2 id="media-title">原视频</h2>
+        </div>
+        <span id="media-hash" class="hash-chip">校验中</span>
+      </div>
+      <div class="video-shell">
+        <video id="source-video" controls preload="metadata" playsinline></video>
+        <div class="playback-meter" aria-label="完整播放覆盖率">
+          <div id="playback-fill" class="playback-fill"></div>
+        </div>
+      </div>
+      <div class="playback-readout">
+        <strong id="coverage-percent">0%</strong>
+        <span>已自然播放覆盖</span>
+        <span id="playback-time" class="utility-text">00:00 / 00:00</span>
+      </div>
+      <p class="microcopy">拖动不会计入完整播放。空格播放/暂停，← → 前后跳 2 秒。</p>
+
+      <dl class="source-facts">
+        <div><dt>证据状态</dt><dd id="source-status">candidate only</dd></div>
+        <div><dt>来源身份</dt><dd id="source-id">—</dd></div>
+        <div><dt>时长</dt><dd id="source-duration">—</dd></div>
+      </dl>
+      <a id="source-link" class="source-link" href="#" target="_blank" rel="noreferrer">打开来源页面 ↗</a>
+      <div class="boundary-note">
+        <strong>这块屏幕负责来源核对。</strong>
+        <p>标题、旧教学笔记和机器建议都不能替代你看到、听到的原视频。</p>
+      </div>
+    </aside>
+
+    <section class="work-panel" aria-label="审核工作区">
+      <nav class="view-tabs" aria-label="审核视图">
+        <button class="view-tab is-active" data-view="transcript" type="button">校正转写</button>
+        <button class="view-tab" data-view="event" type="button">教学事件</button>
+        <button class="view-tab" data-view="claim" type="button">领域主张</button>
+        <button class="view-tab" data-view="history" type="button">修订历史</button>
+      </nav>
+
+      <section id="view-transcript" class="view is-active" aria-labelledby="transcript-title">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">Candidate → human response</p>
+            <h2 id="transcript-title">逐段校正</h2>
+          </div>
+          <div class="heading-actions">
+            <button id="begin-review" class="button button-secondary" type="button">开始人工审核</button>
+            <button id="preview-transcript" class="button button-quiet" type="button">检查正式投影</button>
+          </div>
+        </div>
+        <div class="risk-strip" role="note">
+          <span class="risk-symbol" aria-hidden="true">!</span>
+          <p><strong>机器栏只是一种建议。</strong> 正反、先后、否定、术语和时间边界必须以原视频为准。</p>
+        </div>
+        <div class="segment-legend" aria-hidden="true">
+          <span>时间</span><span>原始 ASR</span><span>机器建议</span><span>你的决定</span>
+        </div>
+        <div id="segment-list" class="segment-list" aria-live="polite"></div>
+
+        <section class="insertions" aria-labelledby="insertions-title">
+          <div class="subheading-row">
+            <div>
+              <p class="eyebrow">Missing speech</p>
+              <h3 id="insertions-title">补录漏句</h3>
+            </div>
+            <button id="add-insertion" class="button button-quiet" type="button">+ 添加漏句</button>
+          </div>
+          <div id="insertion-list"></div>
+        </section>
+
+        <section class="completeness-lock" aria-labelledby="completeness-title">
+          <div>
+            <p class="eyebrow">Independent gate</p>
+            <h3 id="completeness-title">完整性确认</h3>
+            <p>逐段都处理完仍不等于没有漏句。必须完整播放媒体，再单独确认。</p>
+          </div>
+          <div class="check-stack">
+            <label><input id="segments-complete" type="checkbox"> 所有原始片段均已逐段决定</label>
+            <label><input id="missing-resolved" type="checkbox"> 已检查并补录所有可用口播</label>
+            <label><input id="false-positive-resolved" type="checkbox"> 已处理误识别或非口播</label>
+            <label><input id="timing-resolved" type="checkbox"> 已核对时间边界和顺序</label>
+          </div>
+          <button id="verify-transcript" class="button button-primary" type="button">确认正式转写</button>
+          <p id="projection-result" class="projection-result">尚未生成正式投影。</p>
+        </section>
+      </section>
+
+      <section id="view-event" class="view" aria-labelledby="event-title" hidden>
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">What the source actually says or shows</p>
+            <h2 id="event-title">教学事件</h2>
+          </div>
+          <span id="event-state" class="state-chip">locked</span>
+        </div>
+        <p class="view-intro">先选择正式转写片段，再说明这段证据明确支持什么、没有支持什么。视觉判断必须单独写出画面观察。</p>
+        <form id="event-form" class="review-form">
+          <input id="event-id" type="hidden">
+          <div class="form-row two-up">
+            <label>开始（毫秒）<input id="event-start" inputmode="numeric" required></label>
+            <label>结束（毫秒）<input id="event-end" inputmode="numeric" required></label>
+          </div>
+          <label>证据模式
+            <select id="event-modality">
+              <option value="language">语言</option>
+              <option value="visual">视觉</option>
+              <option value="multimodal">多模态</option>
+            </select>
+          </label>
+          <fieldset class="segment-picker">
+            <legend>正式转写窗口</legend>
+            <div id="event-segments" class="event-segments">正式转写通过后开放。</div>
+          </fieldset>
+          <label>证据边界<textarea id="event-boundary" rows="3" placeholder="这段只支持……；不能据此证明……"></textarea></label>
+          <label>画面观察<textarea id="event-visual" rows="3" placeholder="仅在视觉或多模态时填写实际看到的动作"></textarea></label>
+          <label>为什么值得看<input id="event-value" placeholder="原视频能帮助用户确认什么"></label>
+          <label>观看重点<input id="event-focus" placeholder="提醒用户重点看/听什么"></label>
+          <div class="form-actions">
+            <button id="save-event-draft" class="button button-secondary" type="button">保存事件候选</button>
+            <button id="verify-event" class="button button-primary" type="button">确认来源事实</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="view-claim" class="view" aria-labelledby="claim-title" hidden>
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">Source fact → bounded badminton judgment</p>
+            <h2 id="claim-title">领域主张</h2>
+          </div>
+          <span id="claim-state" class="state-chip">locked</span>
+        </div>
+        <p class="view-intro">来源核对和领域判断是两件事。先写完整边界，再分别执行来源确认、领域批准和发布批准。</p>
+        <form id="claim-form" class="review-form">
+          <input id="claim-id" type="hidden">
+          <label>主题 ID<input id="claim-topic" placeholder="例如 forehand_rearcourt"></label>
+          <label>稳定语义键<input id="claim-key" placeholder="同一主张修订时保持稳定"></label>
+          <label>用户症状（每行一条）<textarea id="claim-symptoms" rows="3"></textarea></label>
+          <label>适用条件（每行一条）<textarea id="claim-applicability" rows="3"></textarea></label>
+          <label>机制<textarea id="claim-mechanism" rows="3"></textarea></label>
+          <label>纠正方向<textarea id="claim-correction" rows="3"></textarea></label>
+          <label>排除边界（每行一条）<textarea id="claim-exclusions" rows="3"></textarea></label>
+          <div class="form-row two-up">
+            <label>置信上限
+              <select id="claim-confidence">
+                <option value="low">低</option><option value="medium">中</option><option value="high">高</option>
+              </select>
+            </label>
+            <label>别名（每行一条）<textarea id="claim-aliases" rows="2"></textarea></label>
+          </div>
+          <label>训练方法（可留空）<textarea id="claim-training" rows="3"></textarea></label>
+          <fieldset>
+            <legend>支持事件</legend>
+            <div id="claim-supports" class="support-list">来源事实通过后开放。</div>
+          </fieldset>
+          <div class="approval-lane">
+            <button id="save-claim-draft" class="button button-secondary" type="button">保存主张候选</button>
+            <button id="source-verify-claim" class="button button-primary" type="button">确认来源支持</button>
+            <button id="domain-approve-claim" class="button button-warning" type="button">批准领域判断</button>
+            <button id="publish-claim" class="button button-danger" type="button">批准进入 publication</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="view-history" class="view" aria-labelledby="history-title" hidden>
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">Append-only ledger</p>
+            <h2 id="history-title">修订历史</h2>
+          </div>
+          <button id="refresh-session" class="button button-quiet" type="button">刷新</button>
+        </div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </section>
+
+    <aside class="spine-panel" aria-labelledby="spine-title">
+      <p class="eyebrow">Evidence authority</p>
+      <h2 id="spine-title">证据状态</h2>
+      <ol id="evidence-spine" class="evidence-spine">
+        <li data-stage="candidate"><span></span><div><strong>候选已绑定</strong><small>媒体 + raw ASR + 规则</small></div></li>
+        <li data-stage="corrected"><span></span><div><strong>逐段已校正</strong><small>机器建议 ≠ 人工决定</small></div></li>
+        <li data-stage="complete"><span></span><div><strong>完整播放确认</strong><small>漏句、误识别、时间</small></div></li>
+        <li data-stage="event"><span></span><div><strong>来源事实已确认</strong><small>语言 / 视觉 / 多模态</small></div></li>
+        <li data-stage="claim"><span></span><div><strong>领域主张已批准</strong><small>条件、机制、排除</small></div></li>
+        <li data-stage="published"><span></span><div><strong>可进入 shadow</strong><small>最小公开投影</small></div></li>
+      </ol>
+      <div class="spine-rule">
+        <strong>状态只能前进一格。</strong>
+        <p>输入改变会让依赖旧指纹的下游对象自动变为 stale。</p>
+      </div>
+      <button id="preview-publication" class="button button-quiet full-width" type="button">预览净化 publication</button>
+      <pre id="publication-preview" class="publication-preview" hidden></pre>
+    </aside>
+  </main>
+
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <form method="dialog">
+      <p class="eyebrow">Formal review action</p>
+      <h2 id="confirm-title">确认正式操作</h2>
+      <p id="confirm-copy"></p>
+      <div id="confirm-impact" class="confirm-impact"></div>
+      <label class="confirm-check"><input id="confirm-human" type="checkbox"> 我本人已对照原视频核对，并理解此操作批准什么、不批准什么。</label>
+      <div class="dialog-actions">
+        <button class="button button-quiet" value="cancel">返回检查</button>
+        <button id="confirm-submit" class="button button-danger" value="default" type="button" disabled>确认并写入账本</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
