@@ -13,9 +13,9 @@
 
 This is the engineering guide for the `develop` branch. It explains the system boundaries, evidence model, quality gates, reproducibility, and engineering trade-offs; installation and usage guidance for regular users lives on `main`.
 
-你正在查看 `develop` 分支；当前开发版本是 **2.1.4-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.3](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.3)。
+你正在查看 `develop` 分支；当前开发版本是 **2.1.5-dev.1**，发布状态为 **unreleased**。稳定安装仍来自 `main` 与 [v2.1.4](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.4)。
 
-You are viewing the `develop` branch; the current development version is **2.1.4-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.3](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.3).
+You are viewing the `develop` branch; the current development version is **2.1.5-dev.1** and its release status is **unreleased**. Stable installs remain on `main` and [v2.1.4](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.4).
 
 本项目独立开发，不是刘辉本人，也不代表刘辉或来源发布者的认可。 / This independent project is not authored, operated, endorsed, or approved by Liu Hui or the source publishers.
 
@@ -29,7 +29,7 @@ You are viewing the `develop` branch; the current development version is **2.1.4
 | 质量工程 / Quality engineering | 14 套评估、跨 Python 版本测试、运行时预算、机械接线 canary、答案复现与全文审计共同构成发布门禁。 / Fourteen evaluation suites, cross-version tests, runtime budgets, wiring canaries, answer reproduction, and full-context audits form the release gate. |
 | 安全与治理 / Safety & governance | 本地反馈默认私有；公开晋升需要脱敏、授权、来源复核与回归测试；发布物带哈希、SBOM 与签名验证。 / Local feedback is private by default; public promotion requires redaction, consent, source re-verification, and regression tests; releases carry hashes, an SBOM, and signature checks. |
 
-当前 build：`f22bc76f44a3…`。`develop` is the integration branch；`main` is the stable release source。
+当前 build：`8c0c2ad5baf6…`。`develop` is the integration branch；`main` is the stable release source。
 
 ## 从用户提问到最终回答 / From user question to final answer
 
@@ -217,13 +217,13 @@ python3 scripts/run_bilibili_update_pipeline.py --install
 
 ## 稳定版体验 / Try the stable release
 
-开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v2.1.3`：
+开发分支不作为普通用户的安装来源。需要体验稳定行为时，安装 `v2.1.4`：
 
-The development branch is not the end-user installation source. To try stable behavior, install `v2.1.3`:
+The development branch is not the end-user installation source. To try stable behavior, install `v2.1.4`:
 
 ~~~bash
-base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.3"
-curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-2.1.3.zip" -o "/tmp/liuhui-badminton-coach-2.1.3.zip"
+base="https://github.com/MuyuanGuo/badminton-skills-coach/releases/download/v2.1.4"
+curl --fail --show-error --location --retry 3 "$base/liuhui-badminton-coach-2.1.4.zip" -o "/tmp/liuhui-badminton-coach-2.1.4.zip"
 curl --fail --show-error --location --retry 3 "$base/SHA256SUMS.txt" -o /tmp/SHA256SUMS.txt
 curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM.cdx.json
 (cd /tmp && shasum -a 256 -c SHA256SUMS.txt)
@@ -232,14 +232,14 @@ curl --fail --show-error --location --retry 3 "$base/SBOM.cdx.json" -o /tmp/SBOM
 ## 分支、贡献与发布 / Branches, contribution, and release
 
 - 当前分支：`develop`
-- 当前开发版本：`2.1.4-dev.1`
+- 当前开发版本：`2.1.5-dev.1`
 - 发布状态：`unreleased`
-- 稳定版：`main` / `v2.1.3`
+- 稳定版：`main` / `v2.1.4`
 - Current branch: `develop`
-- Current development version: `2.1.4-dev.1`
+- Current development version: `2.1.5-dev.1`
 - Release status: `unreleased`
-- Stable release: `main` / `v2.1.3`
-- Installable package: [v2.1.3](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.3)
+- Stable release: `main` / `v2.1.4`
+- Installable package: [v2.1.4](https://github.com/MuyuanGuo/badminton-skills-coach/releases/tag/v2.1.4)
 
 `main` 是稳定发布来源，`develop` 是集成分支。`main` is the stable release source and `develop` is the integration branch. 发布候选从 `develop` 通过受保护 PR 进入 `main`；通过 exact-SHA 校验、签名标签、SBOM 和证明后才发布。合并后的 `main` 会自动提出回同步 PR，把稳定版本元数据切换回下一开发版本，同时保持两条分支各自的 README 受众。
 
