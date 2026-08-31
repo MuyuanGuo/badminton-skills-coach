@@ -491,7 +491,7 @@ class ClarificationIntegrationTests(unittest.TestCase):
             for item in context["claim_evidence_map"]
             if item["kind"] == "question_unit"
         )
-        self.assertEqual(question_claim["status"], "supported")
+        self.assertEqual(question_claim["status"], "unsupported")
         self.assertTrue(question_claim["evidence"])
         self.assertTrue(
             all(
@@ -592,7 +592,7 @@ class ClarificationMechanismRetentionIntegrationTests(unittest.TestCase):
             for item in self.third["claim_evidence_map"]
             if item["kind"] == "question_unit"
         )
-        self.assertEqual(question_claim["status"], "supported")
+        self.assertEqual(question_claim["status"], "conditional")
         self.assertTrue(question_claim["evidence"])
         self.assertTrue(
             self.third["diagnostic_model"]["do_not_claim_unique_cause"]

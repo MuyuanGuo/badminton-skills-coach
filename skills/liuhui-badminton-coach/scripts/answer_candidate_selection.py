@@ -438,6 +438,8 @@ def selection_decision(
         return False, ["medical_boundary_has_no_direct_safety_evidence"]
     if boundary["type"] == "endorsement_or_authorship":
         return False, ["identity_boundary_does_not_need_teaching_video"]
+    if boundary["type"] == "source_evidence_policy":
+        return False, ["source_policy_boundary_does_not_need_teaching_video"]
     if (
         boundary["type"] == "insufficient_observation"
         and "唯一原因" in boundary.get("matched_terms", [])

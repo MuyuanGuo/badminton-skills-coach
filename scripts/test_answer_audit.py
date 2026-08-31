@@ -122,6 +122,43 @@ class AnswerAuditTests(unittest.TestCase):
             {item["code"] for item in unsafe_audit["violations"]},
         )
 
+    def test_selected_video_from_hard_excluded_scope_is_rejected(self):
+        context = copy.deepcopy(self.context)
+        context.setdefault("question_interpretation", {}).setdefault(
+            "intent_frame", {}
+        )["hard_excluded_terms"] = ["接杀"]
+        context["selected_videos"][0]["title"] = "反手接杀示范"
+        audit = self.auditor.audit_answer(
+            context["query"],
+            context,
+            self.cases["answers"]["complete_conditional"],
+        )
+        self.assertIn(
+            "excluded_scope_video_selected",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_semantic_hard_exclusion_is_rejected_from_evidence_text(self):
+        context = copy.deepcopy(self.context)
+        context.setdefault("question_interpretation", {}).setdefault(
+            "intent_frame", {}
+        )["hard_excluded_terms"] = ["接杀"]
+        context["selected_videos"][0]["title"] = "双打被动处理"
+        context["selected_videos"][0]["teaching_note"] = {
+            "evidence": [
+                {"text": "拍面迎接着对手的杀球，再把球挡到直线"}
+            ]
+        }
+        audit = self.auditor.audit_answer(
+            context["query"],
+            context,
+            self.cases["answers"]["complete_conditional"],
+        )
+        self.assertIn(
+            "excluded_scope_video_selected",
+            {item["code"] for item in audit["violations"]},
+        )
+
     def test_video_guidance_block_accepts_markdown_emphasis(self):
         answer = (
             "- **V1｜反手被动高远**（证据 ID：7546109410041908538）\n"
@@ -393,6 +430,43 @@ class AnswerAuditTests(unittest.TestCase):
         audit = self.auditor.audit_answer(context["query"], context, answer)
         self.assertIn(
             "unsupported_synthetic_practice_delivery",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_second_day_symptom_report_is_not_a_training_prescription(self):
+        context = copy.deepcopy(self.context)
+        question = "连续练反手高远后手肘外侧疼，第二天挥拍也疼，但还能打。"
+        context["query"] = question
+        answer = (
+            "你报告的是练后疼痛，而且第二天挥拍仍疼；这不是训练周期建议。"
+            "先停止诱发疼痛的动作，若疼痛加重或持续，请寻求专业医疗评估。"
+        )
+        audit = self.auditor.audit_answer(question, context, answer)
+        self.assertNotIn(
+            "synthetic_training_prescription",
+            {item["code"] for item in audit["violations"]},
+        )
+
+    def test_fallback_claim_evidence_requires_a_claim_specific_window(self):
+        context = copy.deepcopy(self.context)
+        claim = context["claim_evidence_map"][0]
+        claim["evidence"][0].pop("claim_windows", None)
+        context["answer_plan"] = {
+            "claim_directives": [
+                {
+                    "claim_id": claim["claim_id"],
+                    "mode": "compose_from_claim_scoped_source",
+                    "evidence_labels": [claim["evidence"][0]["label"]],
+                }
+            ]
+        }
+        audit = self.auditor.audit_answer(
+            context["query"],
+            context,
+            self.cases["answers"]["complete_conditional"],
+        )
+        self.assertIn(
+            "claim_evidence_window_missing",
             {item["code"] for item in audit["violations"]},
         )
 

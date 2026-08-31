@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "project": "badminton-skills-coach",
-  "development_version": "2.1.3",
-  "baseline_version": "v2.1.3",
+  "development_version": "2.1.4",
+  "baseline_version": "v2.1.4",
   "build": {
-    "id": "e658f7342cad6c95",
-    "inputs_sha256": "3c7dfbc22313b2a458725bdd3a6b60ef16d194f4aa647506a31d7b21e398a332",
-    "runtime_sha256": "ebdbcd358727b77318b3c693e63eddefab17e728d573bea13cfe1efb2a431a66"
+    "id": "56114a3d57d53649",
+    "inputs_sha256": "8e48ae10a077f3919882625f626271e9fb3f6ef61b3286cca73c4f776aba1891",
+    "runtime_sha256": "90eb0c2020bec48cfee16464798924b59efe395c1e468f52928117df00ee924a"
   },
   "summary": {
     "status": "pass",
@@ -31,20 +31,20 @@
       "semantic_answerable_video_recall": 1.0,
       "selected_video_recall": 1.0,
       "claim_mapped_video_recall": 1.0,
-      "synthesis_video_recall": 0.4624277456647399,
+      "synthesis_video_recall": 0.49710982658959535,
       "complete_related_video_recall": 1.0,
-      "synthesis_display_expected_videos": 167,
-      "core_video_recall": 0.2254335260115607,
+      "synthesis_display_expected_videos": 108,
+      "core_video_recall": 0.34104046242774566,
       "mean_video_count_by_layer": {
-        "candidate": 344.43859649122805,
-        "semantic_answerable": 17.228070175438596,
-        "synthesis_candidate": 14.56140350877193,
-        "selected": 17.228070175438596,
-        "claim_mapped": 15.017543859649123,
-        "synthesis": 2.9298245614035086,
-        "audit_only": 12.087719298245615,
-        "complete_related": 2.9298245614035086,
-        "core": 1.3157894736842106
+        "candidate": 345.0,
+        "semantic_answerable": 11.24561403508772,
+        "synthesis_candidate": 11.24561403508772,
+        "selected": 11.24561403508772,
+        "claim_mapped": 11.24561403508772,
+        "synthesis": 1.894736842105263,
+        "audit_only": 6.754385964912281,
+        "complete_related": 1.894736842105263,
+        "core": 1.1929824561403508
       },
       "primary_selected_rate": 1.0,
       "answer_mode_accuracy": 1.0,
@@ -52,7 +52,7 @@
       "hard_negative_selected_violations": 0,
       "selection_truncated_cases": 0,
       "retrieval_query_budget_truncated_cases": 30,
-      "retrieval_query_omitted_count": 170,
+      "retrieval_query_omitted_count": 184,
       "evaluation_fixture_isolation": true
     },
     "answer_quality": {
@@ -129,18 +129,18 @@
       "primary_top_k": 0.9444444444444444,
       "mean_reciprocal_rank": 0.6915871508464101,
       "mean_ndcg_at_k": 0.8189941183349295,
-      "mean_known_precision_at_k": 0.429908103592314,
-      "average_review_candidate_count": 14.385964912280702,
+      "mean_known_precision_at_k": 0.42771512113617366,
+      "average_review_candidate_count": 14.403508771929825,
       "hard_negative_count": 194,
       "hard_negative_top_k_violations": 0,
       "hard_negative_review_violations": 0,
       "unjudged_new_source_exposure": {
         "candidate_videos": 595,
-        "top_k_count": 81,
-        "top_k_rate": 0.11842105263157894,
+        "top_k_count": 82,
+        "top_k_rate": 0.11988304093567251,
         "max_top_k_per_case": 3,
-        "review_count": 116,
-        "review_rate": 0.14146341463414633,
+        "review_count": 117,
+        "review_rate": 0.1425091352009744,
         "max_review_per_case": 3,
         "limits": {
           "max_top_k_rate": 0.12,
@@ -235,12 +235,12 @@
       "current_runtime_match": true,
       "current_runtime_generation_claimed": true,
       "release_eligible": true,
-      "runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
+      "runtime_fingerprint": "91c70d389da51d8998ca4c7893d0e0fa6141a6629b0d1809197298f0f5a5d603",
       "runtime_fingerprint_scope": "answer_semantics",
-      "generation_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
-      "current_answer_runtime_fingerprint": "651926ea8153a61a32910c9054b446a9d9d4c2a3799b3a80d749310698eb4d19",
-      "generation_artifact_runtime_fingerprint": "d1e8f5598ee5d3889fb76ec54455781f2c0592f130df31e8763866402658b5ea",
-      "current_artifact_runtime_fingerprint": "d1e8f5598ee5d3889fb76ec54455781f2c0592f130df31e8763866402658b5ea",
+      "generation_answer_runtime_fingerprint": "91c70d389da51d8998ca4c7893d0e0fa6141a6629b0d1809197298f0f5a5d603",
+      "current_answer_runtime_fingerprint": "91c70d389da51d8998ca4c7893d0e0fa6141a6629b0d1809197298f0f5a5d603",
+      "generation_artifact_runtime_fingerprint": "02246dfea11f04850bcaf3c80a765c0a35b47fcdbd3973d7c43025bbd966963c",
+      "current_artifact_runtime_fingerprint": "02246dfea11f04850bcaf3c80a765c0a35b47fcdbd3973d7c43025bbd966963c",
       "current_answer_runtime_match": true,
       "current_artifact_runtime_match": true,
       "generator_implementation_match": true,
@@ -256,12 +256,12 @@
       "generator": {
         "type": "deterministic_answer_renderer",
         "implementation": "skills/liuhui-badminton-coach/scripts/render_answer.py",
-        "implementation_sha256": "05b29d8c8e591dcad93b754cf1c3224fa6f9369cad1e997210fa4b6db5e0ed0d"
+        "implementation_sha256": "7ac7590c4804652b00a5653ae17454208ae9a973a5c6ffe28247c15ca98003d9"
       },
       "validation": {
         "method": "current_runtime_full_context_audit",
         "implementation": "skills/liuhui-badminton-coach/scripts/audit_answer.py",
-        "implementation_sha256": "2889aaff59fc2a40fb08c596d1f90e9ce667ac3f735328115da6e24a55970b42"
+        "implementation_sha256": "98291d534573dec7c73b56d1fe5519978db7f57fe79a79a6007725a2f4c86ffd"
       }
     }
   },
@@ -358,8 +358,8 @@
     },
     {
       "metric": "answer_context.synthesis_video_recall",
-      "current": 0.4624277456647399,
-      "baseline": 0.4624277456647399,
+      "current": 0.49710982658959535,
+      "baseline": 0.49710982658959535,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -367,8 +367,8 @@
     },
     {
       "metric": "answer_context.core_video_recall",
-      "current": 0.2254335260115607,
-      "baseline": 0.2254335260115607,
+      "current": 0.34104046242774566,
+      "baseline": 0.34104046242774566,
       "direction": "at_least",
       "tolerance": 0,
       "contract_source": "stable_baseline",
@@ -709,7 +709,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.top_k_rate",
-      "current": 0.11842105263157894,
+      "current": 0.11988304093567251,
       "baseline": 0.12,
       "direction": "at_most",
       "tolerance": 0,
@@ -727,7 +727,7 @@
     },
     {
       "metric": "retrieval.unjudged_new_source_exposure.review_rate",
-      "current": 0.14146341463414633,
+      "current": 0.1425091352009744,
       "baseline": 0.15,
       "direction": "at_most",
       "tolerance": 0,

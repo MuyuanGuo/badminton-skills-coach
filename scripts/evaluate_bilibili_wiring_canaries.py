@@ -87,7 +87,17 @@ def main():
         if item["evidence_mode"] == "bounded_note_windows"
     )
     summary["bounded_note_packet_projected"] = sum(
+        item["packet_included"]
+        for item in result["results"]
+        if item["evidence_mode"] == "bounded_note_windows"
+    )
+    summary["bounded_note_synthesis_window_projected"] = sum(
         item["packet_window_count"] > 0
+        for item in result["results"]
+        if item["evidence_mode"] == "bounded_note_windows"
+    )
+    summary["bounded_note_audit_only_retained"] = sum(
+        item["audit_only_retained"]
         for item in result["results"]
         if item["evidence_mode"] == "bounded_note_windows"
     )

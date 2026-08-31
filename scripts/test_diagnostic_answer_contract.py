@@ -63,23 +63,32 @@ class DiagnosticAnswerContractTests(unittest.TestCase):
         self.assertEqual(hypotheses["击球点"]["status"], "conditional")
         self.assertIn(hypotheses["到位"]["status"], {"conditional", "unverified"})
 
-    def test_mechanism_claim_requires_requested_action_scope(self):
+    def test_component_evidence_does_not_prove_the_user_hypothesis(self):
         runtime = self.module.load_runtime()
         context = runtime.prepare_answer_context(
             "我正手高远总出界但反手正常，是不是拍面问题？",
             local_personalization=False,
         )
         hypothesis = self.module.hypothesis_by_text(context)["拍面"]
-        self.assertEqual(hypothesis["status"], "conditional")
+        self.assertEqual(hypothesis["status"], "unverified")
         hypothesis_claim = next(
             claim
             for claim in context["claim_evidence_map"]
             if claim["kind"] == "user_hypothesis"
             and claim["text"] == "拍面"
         )
+        self.assertEqual(hypothesis_claim["evidence"], [])
+        question_claim = next(
+            claim
+            for claim in context["claim_evidence_map"]
+            if claim["kind"] == "question_unit"
+        )
+        question_evidence = {
+            item["evidence_id"]: item for item in question_claim["evidence"]
+        }
         self.assertEqual(
-            [item["evidence_id"] for item in hypothesis_claim["evidence"]],
-            ["7453420876076240188"],
+            question_evidence["7453420876076240188"]["directness"],
+            "component",
         )
         claim_ids = {
             item["evidence_id"]

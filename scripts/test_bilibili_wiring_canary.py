@@ -73,14 +73,40 @@ class FakeSearch:
 
 
 class FakeContext:
-    def __init__(self, expected_id, selected_ids=None):
+    def __init__(self, expected_id, selected_ids=None, projection="synthesis"):
         self.expected_id = expected_id
-        self.selected_ids = selected_ids or [expected_id]
+        self.selected_ids = (
+            [expected_id] if selected_ids is None else selected_ids
+        )
+        self.projection = projection
 
     def prepare_answer_context(self, query, local_personalization):
+        synthesis_labels = ["V1"] if self.projection == "synthesis" else []
+        visible_labels = ["V1"] if self.projection == "synthesis" else []
+        audit_only_labels = ["V1"] if self.projection == "audit_only" else []
+        directive_mode = (
+            "state_evidence_gap"
+            if self.projection == "inactive"
+            else "compose_from_claim_scoped_source"
+        )
         return {
+            "selected_videos": [
+                {"label": "V1", "evidence_id": self.expected_id}
+            ],
+            "answer_plan": {
+                "claim_directives": [
+                    {
+                        "claim_id": "Q1",
+                        "mode": directive_mode,
+                    }
+                ]
+            },
+            "answer_synthesis_video_labels": synthesis_labels,
+            "answer_complete_related_video_labels": visible_labels,
+            "answer_audit_only_related_video_labels": audit_only_labels,
             "claim_evidence_map": [
                 {
+                    "claim_id": "Q1",
                     "evidence": [
                         {
                             "evidence_id": self.expected_id,
@@ -103,6 +129,7 @@ class FakeContext:
             }
             selected.append(
                 {
+                    "label": f"V{index}",
                     "evidence_id": evidence_id,
                     "window_ids": [window_id],
                 }
@@ -393,6 +420,77 @@ class BilibiliWiringCanaryTests(unittest.TestCase):
         self.assertTrue(result["passed"], result["failures"])
         self.assertTrue(result["results"][0]["claim_mapped"])
         self.assertEqual(result["results"][0]["packet_window_count"], 1)
+
+    def test_audit_only_bounded_note_mapping_does_not_require_packet_windows(self):
+        supplemental = copy.deepcopy(self.video)
+        supplemental.update(
+            {
+                "answer_eligibility": "supplemental",
+                "runtime_evidence_mode": "bounded_note_windows",
+                "metadata_title_trust": "limited",
+                "transcript_segments": [],
+                "teaching_note": {
+                    "topic": "球拍重量选择",
+                    "key_evidence": [
+                        {
+                            "timestamp": "00:23-00:28",
+                            "text": "初学者先用四优球拍建立稳定动作",
+                        }
+                    ],
+                    "error_evidence": [],
+                    "action_cues": [],
+                },
+            }
+        )
+        knowledge = {"videos": [supplemental]}
+        index = {
+            "videos": [{"video_id": self.evidence_id}],
+            "chunk_index": {"chunks": []},
+        }
+        registry = canary.generate_registry(knowledge, index, self.rules)
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                knowledge,
+                index,
+                [
+                    {
+                        "video_id": self.evidence_id,
+                        "answer_eligibility": "supplemental",
+                    }
+                ],
+            ),
+            FakeContext(
+                self.evidence_id,
+                selected_ids=[],
+                projection="audit_only",
+            ),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertTrue(result["results"][0]["claim_mapped"])
+        self.assertTrue(result["results"][0]["audit_only_retained"])
+        self.assertFalse(result["results"][0]["packet_included"])
+        self.assertEqual(result["results"][0]["packet_window_count"], 0)
+
+    def test_inactive_claim_mapping_is_retained_without_answer_disposition(self):
+        registry = self.generated_registry()
+        result = canary.evaluate_registry(
+            registry,
+            FakeSearch(
+                self.knowledge,
+                self.index,
+                [self.target_result()],
+            ),
+            FakeContext(
+                self.evidence_id,
+                selected_ids=[],
+                projection="inactive",
+            ),
+        )
+        self.assertTrue(result["passed"], result["failures"])
+        self.assertTrue(result["results"][0]["claim_mapped"])
+        self.assertFalse(result["results"][0]["active_claim_mapped"])
+        self.assertEqual(result["results"][0]["packet_projection"], "not_selected")
 
     def test_packaging_only_knowledge_fields_do_not_change_source_hash(self):
         packaged = copy.deepcopy(self.knowledge)

@@ -1,11 +1,24 @@
 {
-  "version": 51,
+  "version": 64,
   "canonical_terminology": [
     {
       "name": "ground_cannon_name",
       "canonical_term": "遁地炮",
       "accepted_input_errors": ["顿地炮", "蹲地炮", "dun地炮"],
       "required_statement": "规范名称是“遁地炮”；“顿地炮”“蹲地炮”和“dun地炮”只作为输入纠错词，回答中统一使用“遁地炮”。"
+    }
+  ],
+  "hard_exclusion_evidence_signatures": [
+    {
+      "excluded_terms": ["接杀", "挡杀"],
+      "any_terms": ["接杀", "挡杀", "揭杀", "接对方杀球", "接对手杀球", "接对面的杀球"],
+      "all_term_groups": [
+        ["对方", "杀球"],
+        ["对手", "杀球"],
+        ["对面", "杀球"],
+        ["杀球", "防守"],
+        ["杀球", "挡"]
+      ]
     }
   ],
   "technique_definitions": {
@@ -109,6 +122,22 @@
   "cross_variant_transfer_terms": ["互相代替", "互相替代", "互借", "照搬", "直接套用", "能代替", "可代替", "来证明"],
   "cross_evidence_transfer_axes": ["technique_variant", "stroke_side", "pressure_state", "tactical_phase"],
   "query_actor_clause_separators": ["，", ",", "。", "；", ";", "！", "!", "？", "?"],
+  "incoming_source_markers": ["对手", "对方", "对面", "陪练", "发球机"],
+  "incoming_destination_prefixes": ["推到", "推向", "压到", "压向", "杀到", "杀向", "吊到", "打到", "发到", "送到", "落到", "贴着"],
+  "incoming_destination_window_chars": 16,
+  "incoming_player_symptom_markers": ["总在", "总是", "常在", "有时", "球只", "我回", "我挡", "我接"],
+  "generic_incoming_response_implications": [
+    {
+      "incoming_terms": ["杀"],
+      "response_terms": ["我挡", "挡直线", "挡斜线", "挡网", "挡杀", "接杀"],
+      "target_action_constraints": {"shot_family": ["smash_block"]}
+    },
+    {
+      "incoming_terms": ["推"],
+      "response_terms": ["我回抽", "回抽", "抽回", "平抽"],
+      "target_action_constraints": {"shot_family": ["drive"]}
+    }
+  ],
   "opponent_response_implications": [
     {
       "opponent_axis": "serve_role",
@@ -201,6 +230,21 @@
     }
   ],
   "multi_actor_sequence_implications": [
+    {
+      "name": "rear_smash_cross_net_front_partner_responsibility",
+      "events": [
+        {"actor": "player", "role": "prior_action", "terms": ["我在后场直线重杀", "后场直线重杀", "直线重杀"]},
+        {"actor": "partner", "role": "coverage_condition", "terms": ["女搭档守前场", "搭档守前场", "封住直线", "被带向中路"]},
+        {"actor": "opponent", "role": "response", "terms": ["挡到斜线网前", "挡斜线网前", "斜线网前"]},
+        {"actor": "player", "role": "target_action", "terms": ["我该自己跟进", "该自己跟进", "自己跟进还是让搭档", "让搭档跨过去"]}
+      ],
+      "canonical_action_query": "双打轮转补位责任",
+      "derived_constraints": {"discipline": ["doubles"]},
+      "requested_action_scopes": ["team_coverage_rotation"],
+      "search_terms": ["双打 轮转 补位 斜线网前", "后场直线杀球 前场搭档 轮转", "双打 前后站位 斜线补位"],
+      "retain_prior_player_constraints": false,
+      "reason": "后场球员直线杀球、前场搭档的覆盖位置和对手挡斜线构成同一责任分配问题；必须回答谁补位及条件变化，不能用重杀动作本身替代轮转证据。"
+    },
     {
       "name": "front_player_partner_both_advance_rearcourt_gap",
       "events": [
@@ -389,7 +433,7 @@
       "query_terms": ["杀上网", "杀完上网", "杀完球上网", "杀球上网"],
       "query_context_terms": [],
       "search_terms": ["杀上网", "杀球之后 上网", "杀上网 交叉步"],
-      "source_terms": ["杀上网"],
+      "source_terms": ["杀上网", "杀球后只考虑衔接上网", "杀完球之后人直接向前", "杀球之后人直接向前"],
       "source_suppressions": ["不让你做杀上网", "不要做杀上网", "不是杀上网", "对手针对杀上网回远网"],
       "source_override_terms": [],
       "answer_boundary_statement": "本题只接受‘杀球—上网’完整序列的直接或分段证据；反手被动高远、动态低架、泛杀球和泛上网都不能单独证明本题。"
@@ -416,7 +460,7 @@
     },
     {
       "name": "smash_block_response",
-      "query_terms": ["反手身体位 接杀挡网", "接杀挡网"],
+      "query_terms": ["反手身体位 接杀挡网", "接杀挡网", "挡直线网前", "挡斜线网前", "挡到直线网前", "挡到斜线网前"],
       "query_context_terms": [],
       "search_terms": ["反手身体位 接杀挡网", "接杀挡网 冒高", "挡网 拍面 击球点 弧线"],
       "source_terms": ["接杀", "挡杀", "防守挡球", "下手挡网", "拿得点高", "拿点较高", "拿得点低", "拿点较低", "拍面对准", "抛物线的最高点"],
@@ -429,9 +473,9 @@
       "query_terms": ["站位", "站哪里", "站哪边", "站哪", "站什么位置", "守哪里", "守哪边"],
       "query_context_terms": [],
       "search_terms": ["站位"],
-      "source_terms": ["站位", "站哪里", "站在哪"],
-      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "他站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位", "对手前后站位", "对方前后站位", "他前后站位", "对手平行站位", "对方平行站位", "他平行站位"],
-      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"],
+      "source_terms": ["站位", "站哪里", "站在哪", "左脚在前右脚在后"],
+      "source_suppressions": ["拉扯对手", "拉扯对方", "观察对手", "对手打完", "对手网前", "对方网前", "他先站位", "他的站位", "它的站位", "看它的站位", "他站位", "对手的站位", "对方的站位", "看对手站位", "看对方站位", "对手防守的站位", "对方防守的站位", "对手站位", "对方站位", "对手前后站位", "对方前后站位", "他前后站位", "对手平行站位", "对方平行站位", "他平行站位"],
+      "source_override_terms": ["脚下站位", "自己的站位", "本方站位", "后置站位", "防守站位", "进攻站位", "接发站位", "左脚在前站位", "左脚在前右脚在后", "整个人的站位", "你站这么高", "发完这一球以后可以选择", "我们这样的站位"],
       "answer_boundary_statement": "本题只接受目标球员自身站位的直接证据；对手或搭档站位只能作为条件，不能替代目标球员的站位依据。"
     },
     {
@@ -478,8 +522,8 @@
         "smash": ["杀球", "扣杀", "普通杀球", "普通的杀球", "基础杀球", "反手杀球", "普通反手杀球", "反手转圈杀", "反手转圈杀球", "反手转着圈杀", "反手转着圈杀球", "转圈杀", "转着圈杀", "重杀", "点杀", "跳杀", "跳sha", "劈杀", "劈杀球", "快杀", "快速杀球", "遁地炮", "顿地炮", "蹲地炮", "dun地炮", "定杀", "轻杀", "轻杀球", "霸王杀", "A字霸王杀", "鲨球"],
         "drop": ["吊球", "吊直线", "吊斜线", "吊对角", "吊网前", "吊网", "劈吊", "滑板", "滑板吊", "远网吊"],
         "drive": ["平抽挡", "抽挡", "平抽", "抽球", "快挡"],
-        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网", "封网", "抢网", "后杀前封", "前封后杀"],
-        "lift": ["挑球", "挑后场", "挑底线", "弹挑"],
+        "net_shot": ["网前球", "搓球", "展搓", "滚搓", "搓", "勾球", "勾对角", "勾斜线", "勾直线", "扑球", "推球", "推后场", "推底线", "放网", "挡网", "滚网", "封网", "抢网", "后杀前封", "前封后杀"],
+        "lift": ["挑球", "挑后场", "挑底线", "挑直线", "挑斜线", "挑对角", "弹挑"],
         "transition": ["过渡球", "过度球", "过渡动作", "正手过渡", "反手过渡", "正反手过渡", "过渡击球点", "过渡基础"],
         "smash_block": ["挡杀", "接杀"],
         "short_serve": ["发小球", "发短球", "短发球", "正手小球", "反手小球"],
@@ -499,7 +543,7 @@
         "smash": ["杀"],
         "drop": ["吊"],
         "lift": ["挑"],
-        "net_shot": ["放短", "挡短"]
+        "net_shot": ["放短", "挡短", "推"]
       },
       "query_value_suppressions": {
         "clear": ["发高远", "高远发球"],
@@ -571,10 +615,10 @@
         "smash_backhand_basic": ["普通反手杀球", "反手杀球", "站着反手杀"],
         "smash_backhand_spin": ["反手转圈杀球", "反手转着圈杀球", "反手转圈杀", "反手转着圈杀", "转圈杀", "转着圈杀"],
         "flat_clear": ["平高球", "平高"],
-        "fake_lift_real_net": ["假挑真放", "假挑真放球"],
+        "fake_lift_real_net": ["假挑真放", "假挑真放球", "假挑针放"],
         "rear_dynamic_low_frame": ["动态低架", "动态低架拍"],
         "far_net_umbrella": ["远网", "远网球"],
-        "far_net_flat_slice": ["平搓远网", "平搓远网球"],
+        "far_net_flat_slice": ["平搓远网", "平搓远网球", "平搓圆网", "平搓圆网球"],
         "far_net_middle_split": ["中路远网", "中路远网球", "远网分球"],
         "far_net_defense_to_push": ["防远网转推", "远网转推"],
         "far_net_drop": ["远网吊球", "远网吊"],
@@ -586,16 +630,17 @@
         "drop_slice": ["劈吊", "劈掉", "批调", "披吊", "披掉"],
         "drop_reverse_slice": ["滑板", "滑板吊", "反手滑板"],
         "net_spin": ["搓球", "展搓", "滚搓", "滚网", "搓"],
-        "net_hook": ["勾球", "勾对角", "勾斜线"],
+        "net_hook": ["勾球", "勾对角", "勾斜线", "勾直线"],
         "net_pounce": ["扑球"],
-        "net_push": ["推球", "推后场", "推底线"],
+        "net_push": ["推球", "可以推", "推后场", "推底线"],
         "net_drop": ["放网", "挡网"]
       },
       "mixed_value_sets": {
         "网前技术": ["net_drop", "net_hook", "net_pounce", "net_push", "net_spin"]
       },
       "opponent_query_value_additions": {
-        "net_drop": ["放短", "挡短"]
+        "net_drop": ["放短", "挡短"],
+        "net_push": ["推"]
       },
       "category_evidence_policy": "ignore",
       "source_value_suppressions": {
@@ -628,6 +673,9 @@
       },
       "mixed_terms": ["发接发", "发球和接发", "发球与接发"],
       "category_evidence_policy": "ignore",
+      "query_value_suppressions": {
+        "serve": ["接的是短发球", "接短发球", "接对方发球", "接对手发球", "接到短发球", "接到对方发球", "接到对手发球"]
+      },
       "source_value_suppressions": {
         "serve": ["被偷后场", "对方偷后场", "对手偷后场", "人家偷后场", "对方发球", "对手发球", "人家发球", "别人发球", "他发球", "她发球", "陪练发球", "发球机", "对着墙发球", "你给我发球", "我给你发球", "给我发球", "给你发球", "对方发高远", "对手发高远", "人家发高远", "人家正手发高远"]
       }
@@ -706,7 +754,7 @@
   ],
   "required_focus_equivalent_groups": [
     ["姿势", "动作", "框架", "架拍", "挥拍"],
-    ["击球点", "击球位置", "点位"],
+    ["击球点", "击球位置", "点位", "拿点", "拿得点"],
     ["落点", "瞄准", "线路"],
     ["站位", "保护位置"],
     ["步法", "脚步", "交叉步", "并步", "垫步", "启动", "回动", "移动"],
@@ -855,6 +903,12 @@
     "受伤": []
   },
   "video_constraint_overrides": {
+    "7112628690395106560": {
+      "shot_family": ["short_serve"],
+      "serve_role": ["serve"],
+      "serve_trajectory": ["short_serve"],
+      "basis": "00:00-01:40 全段主体是正手发网前短球的站位、握拍、拍面和击球点；只能作为发球专项证据，不能证明后场正手击球或通用握拍。"
+    },
     "7558912953539071292": {
       "stroke_side": ["forehand"],
       "basis": "用户测试指出画面为正手被动高远；文本只支持通用被动原则，不得作为反手专项示范。"
@@ -1408,8 +1462,24 @@
       "买哪",
       "购买",
       "推荐我买",
+      "推荐一支",
+      "具体型号",
+      "选型号",
+      "保证适合我",
+      "保证适合",
+      "直接选一款",
+      "直接选一支",
+      "最适合我的",
+      "换更轻的拍子",
       "哪一支球拍",
       "哪款球拍"
+    ],
+    "source_evidence_policy": [
+      "B站视频和刘辉抖音",
+      "B站和抖音",
+      "平台权重",
+      "同等证据",
+      "默认采用抖音"
     ],
     "visual_confirmation": [
       "只看文字",
@@ -1424,6 +1494,8 @@
       "只描述"
     ]
   },
+  "source_policy_platform_terms": ["抖音", "B站", "b站", "哔哩哔哩", "平台"],
+  "source_policy_comparison_terms": ["默认", "优先", "更可靠", "同等证据", "权重", "更长", "更短"],
   "purchase_allowed_categories": [
     "装备与参数"
   ],

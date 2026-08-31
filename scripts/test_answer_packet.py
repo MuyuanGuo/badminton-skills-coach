@@ -65,6 +65,43 @@ class AnswerPacketTests(unittest.TestCase):
         )
         self.auditor.validate_packet_binding(self.packet, self.context)
 
+    def test_video_guidance_lists_every_claim_authorized_window(self):
+        guidance = self.packet_runtime.video_display_guidance(
+            {"label": "V1", "title": "测试来源", "evidence_roles": ["action"]},
+            [
+                {
+                    "claim_id": "Q1",
+                    "text": "动作一",
+                    "evidence": [
+                        {
+                            "label": "V1",
+                            "directness": "direct",
+                            "claim_windows": [
+                                {"timestamp": "00:10-00:20", "text": "第一段"}
+                            ],
+                            "window_support": {"rank": 3},
+                        }
+                    ],
+                },
+                {
+                    "claim_id": "Q2",
+                    "text": "动作二",
+                    "evidence": [
+                        {
+                            "label": "V1",
+                            "directness": "scoped",
+                            "claim_windows": [
+                                {"timestamp": "00:40-00:50", "text": "第二段"}
+                            ],
+                            "window_support": {"rank": 2},
+                        }
+                    ],
+                },
+            ],
+        )
+        self.assertIn("00:10-00:20", guidance["watch_focus"])
+        self.assertIn("00:40-00:50", guidance["watch_focus"])
+
     def test_tampered_packet_or_context_is_rejected(self):
         packet = copy.deepcopy(self.packet)
         packet["claim_evidence_map"][0]["text"] = "tampered"
@@ -137,7 +174,7 @@ class AnswerPacketTests(unittest.TestCase):
         )
         packet = self.runtime.build_answer_packet(context, "context.json")
         self.assertNotIn("practice_plan", packet)
-        self.assertEqual(packet["schema_version"], 7)
+        self.assertEqual(packet["schema_version"], 8)
         self.assertIn(
             "evidence.training_boundary",
             {
@@ -436,13 +473,66 @@ class AnswerPacketTests(unittest.TestCase):
                     )
                 )
 
-    def test_compact_videos_omit_redundant_douyin_identity_and_nulls(self):
+    def test_compact_videos_preserve_machine_readable_source_identity(self):
         for video in self.packet_runtime.packet_video_records(self.packet):
             self.assertNotIn("video_id", video)
-            self.assertNotIn("source_type", video)
+            self.assertIn(
+                video.get("source_type"),
+                {"douyin_video", "bilibili_video"},
+            )
             self.assertNotIn("parent_source_id", video)
             self.assertNotIn("clip_start_seconds", video)
             self.assertNotIn("clip_end_seconds", video)
+
+    def test_source_type_fallback_parses_an_exact_allowed_hostname(self):
+        base = {
+            "label": "V1",
+            "role": "supporting",
+            "video_id": "legacy-source",
+            "evidence_id": "legacy-source",
+            "title": "测试来源",
+        }
+        allowed = {
+            "https://www.bilibili.com/video/BV1test": "bilibili_video",
+            "https://v.douyin.com/example": "douyin_video",
+        }
+        for url, expected in allowed.items():
+            with self.subTest(url=url):
+                compact = self.packet_runtime.compact_video(
+                    {**base, "url": url}, [], False
+                )
+                self.assertEqual(compact.get("source_type"), expected)
+
+        deceptive_urls = (
+            "https://www.bilibili.com.evil.example/video/BV1test",
+            "https://douyin.com.attacker.invalid/video/123",
+            "javascript:https://www.douyin.com/video/123",
+        )
+        for url in deceptive_urls:
+            with self.subTest(url=url):
+                compact = self.packet_runtime.compact_video(
+                    {**base, "url": url}, [], False
+                )
+                self.assertNotIn("source_type", compact)
+
+    def test_video_guidance_uses_a_claim_authorized_window(self):
+        allowed_by_label = {}
+        for claim in self.context["claim_evidence_map"]:
+            for evidence in claim.get("evidence", []):
+                allowed_by_label.setdefault(evidence["label"], set()).update(
+                    window["timestamp"]
+                    for window in evidence.get("claim_windows", [])
+                )
+        for video in self.packet_runtime.packet_video_records(self.packet):
+            timestamps = allowed_by_label.get(video["label"], set())
+            if timestamps:
+                self.assertTrue(
+                    any(
+                        timestamp in video["watch_focus"]
+                        for timestamp in timestamps
+                    ),
+                    video,
+                )
 
     def test_cli_writes_full_context_and_prints_packet(self):
         with tempfile.TemporaryDirectory() as directory:
