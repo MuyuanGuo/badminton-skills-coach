@@ -93,8 +93,8 @@ body:
     id: version
     attributes:
       label: 版本信息
-      description: 例如 v2.1.4-dev.1 或提交哈希；不知道可填写 unknown。
-      placeholder: 2.1.4-dev.1
+      description: 例如 v2.1.5-dev.1 或提交哈希；不知道可填写 unknown。
+      placeholder: 2.1.5-dev.1
     validations:
       required: true
 
