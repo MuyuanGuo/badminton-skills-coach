@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from typing import Any
 
 from v3 import SCHEMA_VERSION
-from v3.canonical import sha256_json
+from v3.canonical import atomic_write_json, sha256_json
 from v3.ledger import ACTIVE_DEPENDENCY_STATES, ReviewLedger
 
 
@@ -272,6 +273,24 @@ def export_publication(
             },
         }
     )
+
+
+def write_publication(
+    ledger: ReviewLedger,
+    path: Path,
+    topics: set[str] | None = None,
+) -> dict[str, Any]:
+    """Export, validate, and atomically write the public projection."""
+
+    publication = export_publication(ledger, topics)
+    counts = validate_publication(publication)
+    atomic_write_json(path, publication, indent=2)
+    return {
+        "publication": str(path),
+        "publication_id": publication["publication_id"],
+        "publication_fingerprint": publication["publication_fingerprint"],
+        **counts,
+    }
 
 
 def validate_publication(publication: dict[str, Any]) -> dict[str, int]:

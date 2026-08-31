@@ -1,6 +1,6 @@
 # v3 证据重构实施手册
 
-- 状态：M1 已实现；M2 工具链已实现，真实纵切等待产品所有者审核
+- 状态：M1 已实现；M2 首条真实纵切已进入 shadow 评测
 - 日期：2026-08-31
 - 权威规格：[`spec-v3.zh-CN.md`](spec-v3.zh-CN.md)
 - 决策记录：[`adr/0001-v3-evidence-boundary.md`](adr/0001-v3-evidence-boundary.md)
@@ -19,8 +19,8 @@
 ```
 
 当前 v2 Skill、v2 runtime、发行清单和回答路径均未改变。仓库中的
-`data/v3/publication.json` 是确定性的空 publication，
-`data/v3/build-manifest.json` 明确记录 `switch_eligible: false`。
+`data/v3/publication.json` 已包含首条经完整人工门禁批准的最小投影；
+`data/v3/build-manifest.json` 仍明确记录 `switch_eligible: false`。
 
 ## 2. M1 已实现内容
 
@@ -32,7 +32,8 @@
 - 内容/时间/媒体变化后的递归 stale 传播；
 - publication 最小投影、私有字段扫描、引用完整性和内容指纹；
 - 只读 shadow runtime、逻辑 runtime fingerprint 和空证据缺口回答；
-- 959 条可回答来源的净化私有输入快照，所有 v3 正式状态均为 `missing`。
+- 959 条可回答来源的净化输入快照不伪造正式状态；首条已批准主张只通过
+  publication 投影进入 shadow runtime。
 
 输入清单当前事实：
 
@@ -102,18 +103,22 @@ CSRF 令牌，不加载远程脚本、字体、分析或遥测。视频按需从
 
 ## 5. 确定性构建与审计
 
-构建当前空 shadow runtime：
+导出当前已批准的最小 publication，并构建 shadow runtime：
 
 ```bash
+.venv/bin/python scripts/v3_tool.py export-publication
 .venv/bin/python scripts/v3_tool.py build-shadow
 .venv/bin/python scripts/v3_tool.py audit-shadow \
   --runtime .local/v3/build/shadow-runtime.sqlite3
 .venv/bin/python scripts/v3_tool.py audit-public-tree
 .venv/bin/python scripts/build_v3_source_inventory.py --check
+.venv/bin/python scripts/v3_tool.py query-shadow \
+  '正手后场被动球时，为什么球拍追着球走，来不及架拍和发力？'
 ```
 
-真实主张经用户审核前，不得把私有账本直接写进 `data/v3/publication.json`。后续导出命令
-必须继续经过 publication 净化器和所有构建门禁，不能复制账本 payload。
+真实主张经用户审核前，不得把私有账本直接写进 `data/v3/publication.json`。
+`export-publication` 只投影当前 `published` 主张，并继续经过 publication 净化器、
+隐私扫描和原子写入；不得复制账本 payload。
 
 ## 6. 验证
 

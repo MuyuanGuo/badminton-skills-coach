@@ -22,6 +22,7 @@ from v3.publication import (
     empty_publication,
     export_publication,
     validate_publication,
+    write_publication,
 )
 from v3.runtime import build_runtime, runtime_metadata, shadow_answer_packet
 
@@ -29,7 +30,7 @@ from v3.runtime import build_runtime, runtime_metadata, shadow_answer_packet
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class EmptyPublicationTests(unittest.TestCase):
+class PublicationContractTests(unittest.TestCase):
     def test_empty_publication_builds_an_empty_readonly_shadow_runtime(self):
         publication = empty_publication()
         self.assertEqual(
@@ -50,9 +51,10 @@ class EmptyPublicationTests(unittest.TestCase):
             finally:
                 readonly.close()
 
-    def test_checked_in_empty_artifacts_match_the_deterministic_builder(self):
+    def test_checked_in_artifacts_match_the_deterministic_builder(self):
         checked_in = read_json(ROOT / "data/v3/publication.json")
-        self.assertEqual(checked_in, empty_publication())
+        report = validate_publication(checked_in)
+        self.assertGreaterEqual(report["claims"], 1)
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             manifest = build_shadow_artifacts(
@@ -68,6 +70,23 @@ class EmptyPublicationTests(unittest.TestCase):
             )
             self.assertEqual(audit["runtime"], "valid")
         self.assertEqual(audit_public_v3_tree(ROOT)["private_leaks"], 0)
+
+    def test_first_approved_claim_handles_a_paraphrased_user_query(self):
+        publication = read_json(ROOT / "data/v3/publication.json")
+        with tempfile.TemporaryDirectory() as directory:
+            store = Path(directory) / "shadow.sqlite3"
+            build_runtime(publication, store)
+            packet = shadow_answer_packet(
+                store,
+                "正手后场被动球时，为什么球拍追着球走，来不及架拍和发力？",
+            )
+        self.assertEqual(
+            packet["claims"][0]["claim_id"],
+            "claim_86db9db46f65ac031864654d",
+        )
+        self.assertEqual(packet["claims"][0]["evidence_labels"], ["V1"])
+        self.assertEqual(packet["evidence"][0]["label"], "V1")
+        self.assertEqual(packet["evidence_gap"], "")
 
 
 class SanitizedPublicationTests(unittest.TestCase):
@@ -103,6 +122,32 @@ class SanitizedPublicationTests(unittest.TestCase):
             self.assertEqual(packet["claims"][0]["claim_id"], "claim_fixture_1")
             self.assertEqual(packet["claims"][0]["evidence_labels"], ["V1"])
             self.assertEqual(packet["evidence"][0]["label"], "V1")
+
+            paraphrase = shadow_answer_packet(
+                first_store,
+                "我遇到合成症状但不知道怎么办",
+            )
+            self.assertEqual(paraphrase["claims"][0]["claim_id"], "claim_fixture_1")
+
+            unrelated = shadow_answer_packet(first_store, "双打发球站位怎么选")
+            self.assertEqual(unrelated["claims"], [])
+            self.assertTrue(unrelated["evidence_gap"])
+
+    def test_approved_projection_is_validated_and_written_atomically(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "publication.json"
+            with ReviewLedger(root / "ledger.sqlite3") as ledger:
+                expected = self.build_fixture_publication(ledger)
+                report = write_publication(ledger, output)
+            self.assertEqual(read_json(output), expected)
+            self.assertEqual(report["claims"], 1)
+            self.assertEqual(report["events"], 1)
+            self.assertEqual(report["sources"], 1)
+            self.assertEqual(
+                report["publication_fingerprint"],
+                expected["publication_fingerprint"],
+            )
 
     def test_tampered_or_private_publication_fails_closed(self):
         publication = empty_publication()

@@ -6,19 +6,88 @@
     "reviewer_identities_included": false,
     "sealed_evaluations_included": false
   },
-  "publication_fingerprint": "f1b584ecd74ca784667d3ba2b4dd319d07d06f7d44d7e4d46540e3db9346fbfb",
-  "publication_id": "publication_f1b584ecd74ca784667d3ba2",
+  "publication_fingerprint": "62b726959bbd7767f2fc426dcb68fc08db0f0f93c2ec58d21edd0d8e6931a939",
+  "publication_id": "publication_62b726959bbd7767f2fc426d",
   "review_provenance": {
-    "approved_entity_event_ids": [],
-    "chain_fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "approved_entity_event_ids": [
+      "review_18fe797cb30b6e13738d88a48143b39813d5e841ce9495117bc27dfb9fc6d514",
+      "review_322d0b30df8a3deb1cd4a4400ae934522e72e73ca2f59bcad3e9fb3d9cc99ee4",
+      "review_337410b2745a560d62d63e155321a88fc6f541366c755d3a9849b4efa02dbc89",
+      "review_6119e7dd6046277d31df01107c351388a649f40108cb4cb8eda9423dfb3cb837",
+      "review_65eb194251823f0f18da29b54f23ee15e6977b3520e16061eb048044d7ad8614",
+      "review_7fecb3c5c5df6b5e86f992a80f4a3925aa3bb3c601058e5dc3705e3df110d0ae",
+      "review_890f8ae85ffc7569da60b2c184adabf3b9b8a2b8aa5c1abbb5a5d4aa666575c9",
+      "review_9d75708de4f716a3baadf9ad8c04b16393450a06418c9689be9d661fc9c973ad",
+      "review_a79ebaa962f54d44c710b1c7e80eeeee920b2474b49e1aa0aa40f1c9c9e0a89a",
+      "review_cac2f8a8f09a80e75677a2163cc4ea23b24cbc70b3ca01b38d32ba8375e5b9e3"
+    ],
+    "chain_fingerprint": "eecc24ace2bf6901336783b5b9e59e8cebc22b3daa26ca2105a7af839382c3e3",
     "ledger_schema_version": "3.0.0-m1"
   },
   "schema_version": "3.0.0-m1",
   "scope": {
     "mode": "shadow",
-    "topics": []
+    "topics": [
+      "forehand_rearcourt_passive_preparation"
+    ]
   },
-  "semantic_claims": [],
-  "sources": [],
-  "teaching_events": []
+  "semantic_claims": [
+    {
+      "aliases": [
+        "后场来球追拍",
+        "正手后场框架选择",
+        "正手后场被动引拍",
+        "正手后场被动架拍"
+      ],
+      "applicability": [
+        "视频所示的正手后场被动来球",
+        "需要在有限来球时间内完成击球前架拍与引拍",
+        "方法选择须考虑练习者现有的发力基础"
+      ],
+      "claim_id": "claim_86db9db46f65ac031864654d",
+      "confidence": "medium",
+      "correction_direction": "若采用方法一，要更快把球拍做到位以保留挥拍时间，同时注意提前摆好框架不利于发力的取舍。发力基础较弱者采用方法二：不从前方直接抬拍追球，而让球拍先从下方向后完成更饱满的架拍与引拍，再完成击球。",
+      "exclusions": [
+        "不外推为反手后场动作",
+        "不外推到主动到位来球或所有后场来球",
+        "不把任一方法写成所有水平的唯一标准动作",
+        "不从本事件推断具体拍面角度、肘部高度或身体转动细节",
+        "不承诺球一定打下去、打上力或提供训练进度"
+      ],
+      "mechanism": "来球继续飞行时，球拍若也从前方抬起追球，组织框架会占用本可用于挥拍的时间；等球拍追过来时，击球者可能已经失去适合发力的位置。",
+      "support_event_ids": [
+        "event_eec84dfc5867c5cfa131276d"
+      ],
+      "symptoms": [
+        "正手后场被动来球时，球拍从前方抬起追球，击球前来不及完成架拍和引拍",
+        "球拍追到位时已经失去合适的发力位置，难以把球打下去或打上力"
+      ],
+      "topic": "forehand_rearcourt_passive_preparation",
+      "training_method": ""
+    }
+  ],
+  "sources": [
+    {
+      "alternate_urls": [],
+      "canonical_url": "https://www.douyin.com/video/7589749293205363633",
+      "platform": "douyin",
+      "source_id": "douyin:MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA:7589749293205363633",
+      "title": "后场框架应用 如果基础好，可以推荐出快速框架，之前发过很多爆发力出框架的作品！但是顶肘动作小带来效率的同时，也会因为顶肘动作小而削弱摆臂的幅度而失去力量！如果没有的专业力量的的朋友推荐第二种，但是要注意是拍低肘不低！不然会导致错误顶肘成为错误动作！ 总结，快速框架优点是容易做速度快效率高！缺点不好发力 动态低架优点是，容错率高，省力！缺点是不好学习 普通的架拍，优点是都能兼顾，缺点是该来不及的还是来不及"
+    }
+  ],
+  "teaching_events": [
+    {
+      "end_ms": 61280,
+      "evidence_boundary": "这段口播只支持：当示范中的球继续飞行，而球拍也从前面抬起追球时，会消耗组织框架的时间，等球拍追过来时可能已经失去发力位置；随后按发力基础给出两种框架组织路线。它不证明这些路线适用于所有来球、正反手或水平，也不支持未写入转写的拍面、肘部、身体朝向等视觉细节。",
+      "evidence_text": "这个球别说打下去了 想打上力都很难 为什么 因为这个球从前面过来 我的球拍也从前面拿起来 球一边在飞 我的球拍一边在追 等到真的超过这个球的时候 我们已经失去发力的位置 方法一 爆发力出框架 如果我们把所有的时间都浪费在这个抬拍上了 那留给我们挥拍的时间就没有了 所以我们瞬间把球拍做到位 这样留给我们挥拍的时间就足够了 但是提前摆好框架 并不利于我们发力 那发力基础比较弱的朋友 还是要把动作给做饱满 那我们可以选择方法二 我们不把拍子从前面这样抬 因为追不上这个球的 我们先从下面 把球拍让到后面来 再从这里打 你学会了吗",
+      "formal_projection_sha256": "c5a2c3ef01ffc60344e9f5a621680ade3a91d995dd8b8668302d33a26a104d7a",
+      "modality": "multimodal",
+      "source_id": "douyin:MS4wLjABAAAArown2iD4dOZU015mQhaFt43bhkyhMu6c-SOUrTlmSqA:7589749293205363633",
+      "start_ms": 5270,
+      "teaching_event_id": "event_eec84dfc5867c5cfa131276d",
+      "viewing_value": "能直接听清“追球导致失去发力位置”的因果说明，以及快速到位与保留发力空间这两条条件化路线。",
+      "visual_observation": "演示了两种正手后场被动情况下如何完成击球前的架拍及引拍",
+      "watch_focus": "重点听 10.27–21.27 秒的问题成因、23.71–37.71 秒的方法一及其取舍、37.71–49.71 秒的基础较弱者替代路线。"
+    }
+  ]
 }

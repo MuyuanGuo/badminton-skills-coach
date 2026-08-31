@@ -151,6 +151,7 @@ def runtime_metadata(path: Path) -> dict[str, str]:
     finally:
         connection.close()
 
+
 def _claim_score(query: str, row: sqlite3.Row, aliases: list[str]) -> int:
     folded = query.casefold().strip()
     if not folded:
@@ -163,22 +164,46 @@ def _claim_score(query: str, row: sqlite3.Row, aliases: list[str]) -> int:
             score += 6
     symptoms = json.loads(row["symptoms_json"])
     score += sum(4 for symptom in symptoms if symptom.casefold() in folded)
-    terms = [term for term in re_split_query(folded) if len(term) >= 2]
-    score += sum(1 for term in terms if term in row["search_text"])
+    terms = {term for term in re_split_query(folded) if len(term) >= 2}
+    search_text = row["search_text"].casefold()
+    matched_terms = {term for term in terms if term in search_text}
+    if any(len(term) >= 4 for term in matched_terms) or len(matched_terms) >= 2:
+        score += len(matched_terms)
     return score
 
 
 def re_split_query(query: str) -> list[str]:
-    current = []
-    terms = []
-    for character in query:
-        if character.isalnum() or "\u4e00" <= character <= "\u9fff":
-            current.append(character)
-        elif current:
-            terms.append("".join(current))
+    current: list[str] = []
+    current_kind = ""
+    runs: list[tuple[str, str]] = []
+
+    def flush() -> None:
+        nonlocal current, current_kind
+        if current:
+            runs.append((current_kind, "".join(current)))
             current = []
-    if current:
-        terms.append("".join(current))
+            current_kind = ""
+
+    for character in query:
+        if "\u4e00" <= character <= "\u9fff":
+            kind = "cjk"
+        elif character.isalnum():
+            kind = "alnum"
+        else:
+            flush()
+            continue
+        if current_kind and current_kind != kind:
+            flush()
+        if not current_kind:
+            current_kind = kind
+        current.append(character)
+    flush()
+
+    terms: list[str] = []
+    for kind, run in runs:
+        terms.append(run)
+        if kind == "cjk" and len(run) > 3:
+            terms.extend(run[index : index + 2] for index in range(len(run) - 1))
     return terms
 
 
