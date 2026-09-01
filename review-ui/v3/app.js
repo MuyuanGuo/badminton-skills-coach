@@ -65,14 +65,38 @@ function transcriptHead() {
   return head("transcript", app.session.transcript_entity_id);
 }
 
+function dependencyKeys(item, entityType) {
+  return (item?.payload?.dependencies || [])
+    .filter((dependency) => dependency.entity_type === entityType)
+    .map((dependency) => dependency.entity_id);
+}
+
+function eventHeads() {
+  return app.session.heads.filter((item) => (
+    item.entity_type === "teaching_event"
+    && dependencyKeys(item, "transcript").includes(app.session.transcript_entity_id)
+  ));
+}
+
 function eventHead() {
   const selected = $("#event-id").value;
-  return head("teaching_event", selected) || head("teaching_event");
+  const matches = eventHeads();
+  return matches.find((item) => item.entity_id === selected) || matches.at(-1) || null;
+}
+
+function claimHeads() {
+  const eventIds = new Set(eventHeads().map((item) => item.entity_id));
+  return app.session.heads.filter((item) => {
+    if (item.entity_type !== "semantic_claim") return false;
+    const dependencies = dependencyKeys(item, "teaching_event");
+    return dependencies.length > 0 && dependencies.every((entityId) => eventIds.has(entityId));
+  });
 }
 
 function claimHead() {
   const selected = $("#claim-id").value;
-  return head("semantic_claim", selected) || head("semantic_claim");
+  const matches = claimHeads();
+  return matches.find((item) => item.entity_id === selected) || matches.at(-1) || null;
 }
 
 function expectedFields(current) {
@@ -377,6 +401,14 @@ function renderEventForm() {
   const transcript = transcriptHead();
   const unlocked = transcript?.state === "source_verified";
   const current = eventHead();
+  $("#event-id").value = "";
+  $("#event-start").value = "";
+  $("#event-end").value = "";
+  $("#event-modality").value = "language";
+  $("#event-boundary").value = "";
+  $("#event-visual").value = "";
+  $("#event-value").value = "";
+  $("#event-focus").value = "";
   $("#event-state").textContent = current?.state || (unlocked ? "ready" : "locked");
   $("#event-form").querySelectorAll("input, textarea, select, button").forEach((item) => { item.disabled = !unlocked; });
   const container = $("#event-segments");
@@ -441,9 +473,20 @@ function collectEventContent() {
 }
 
 function renderClaimForm() {
-  const events = app.session.heads.filter((item) => item.entity_type === "teaching_event" && item.state === "source_verified");
+  const events = eventHeads().filter((item) => item.state === "source_verified");
   const unlocked = events.length > 0;
   const current = claimHead();
+  $("#claim-id").value = "";
+  $("#claim-topic").value = "";
+  $("#claim-key").value = "";
+  $("#claim-symptoms").value = "";
+  $("#claim-applicability").value = "";
+  $("#claim-mechanism").value = "";
+  $("#claim-correction").value = "";
+  $("#claim-exclusions").value = "";
+  $("#claim-confidence").value = "low";
+  $("#claim-training").value = "";
+  $("#claim-aliases").value = "";
   $("#claim-state").textContent = current?.state || (unlocked ? "ready" : "locked");
   const supports = $("#claim-supports");
   supports.replaceChildren();

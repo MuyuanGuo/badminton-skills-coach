@@ -109,6 +109,130 @@ class ReviewApplicationTests(unittest.TestCase):
                     }
                 )
 
+    def test_shared_ledger_does_not_leak_another_candidates_event_into_session(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first_application = make_application(root)
+            first_head = first_application.summary()["heads"][0]
+            first_application.begin_transcript_review(
+                {
+                    "reviewer_id": "fixture-owner",
+                    "human_confirmation": True,
+                    "expected_revision": first_head["revision"],
+                    "expected_base_fingerprint": first_head["content_fingerprint"],
+                }
+            )
+            candidate = first_application.candidate
+            segment = candidate["candidate"]["segments"][0]
+            in_review = first_application.summary()["heads"][0]
+            first_application.verify_transcript(
+                {
+                    "reviewer_id": "fixture-owner",
+                    "human_confirmation": True,
+                    "expected_revision": in_review["revision"],
+                    "expected_base_fingerprint": in_review["content_fingerprint"],
+                    "decisions": [
+                        {
+                            "segment_id": segment["segment_id"],
+                            "decision": "keep_raw",
+                            "start_ms": segment["start_ms"],
+                            "end_ms": segment["end_ms"],
+                        }
+                    ],
+                    "insertions": [],
+                    "attestation": {
+                        "review_basis": "local_media",
+                        "full_media_reviewed": True,
+                        "playback_coverage": [{"start_ms": 0, "end_ms": 3000}],
+                        "segments_complete": True,
+                        "missing_speech_resolved": True,
+                        "false_positive_speech_resolved": True,
+                        "timing_resolved": True,
+                        "no_usable_speech_confirmed": False,
+                    },
+                }
+            )
+            formal = first_application.summary()["heads"][0]["payload"]["content"]
+            first_event = first_application.transition_entity(
+                {
+                    "entity_type": "teaching_event",
+                    "entity_id": "",
+                    "action": "create_draft",
+                    "content": {
+                        "start_ms": 100,
+                        "end_ms": 2200,
+                        "modality": "language",
+                        "segment_ids": [formal["segments"][0]["segment_id"]],
+                        "evidence_boundary": "只支持第一条测试转写。",
+                        "visual_observation": "",
+                        "viewing_value": "用于测试候选隔离。",
+                        "watch_focus": "只看第一条测试片段。",
+                    },
+                    "expected_revision": 0,
+                    "expected_base_fingerprint": "",
+                }
+            )
+
+            second_media = root / "media/second.mp4"
+            second_media.write_bytes(b"second-synthetic-media")
+            second_candidate = build_candidate(
+                source_id="douyin:fixture-owner:456",
+                platform="douyin",
+                canonical_url="https://www.douyin.com/video/456",
+                alternate_urls=[],
+                title="Second review workbench fixture",
+                media_sha256=sha256_text("second-synthetic-media"),
+                duration_ms=4000,
+                raw_segments=[
+                    {"start_ms": 200, "end_ms": 2600, "text": "第二条测试转写"}
+                ],
+                asr_recipe={"engine": "fixture"},
+                rule_version="fixture-v1",
+            )
+            second_candidate_path = root / "second-candidate.json"
+            atomic_write_json(second_candidate_path, second_candidate)
+            with ReviewLedger(first_application.ledger_path) as ledger:
+                registered = ledger.append_event(
+                    entity_type="transcript",
+                    entity_id=second_candidate["candidate_id"],
+                    action="register_raw",
+                    reviewer_id="system:fixture",
+                    human_confirmation=False,
+                    payload=raw_registration_payload(second_candidate),
+                    expected_revision=0,
+                    expected_base_fingerprint="",
+                    occurred_at="2026-08-31T12:01:00Z",
+                )
+                ledger.append_event(
+                    entity_type="transcript",
+                    entity_id=second_candidate["candidate_id"],
+                    action="create_candidate",
+                    reviewer_id="system:fixture",
+                    human_confirmation=False,
+                    payload=candidate_event_payload(second_candidate),
+                    expected_revision=1,
+                    expected_base_fingerprint=registered["content_fingerprint"],
+                    occurred_at="2026-08-31T12:01:01Z",
+                )
+            second_application = ReviewApplication(
+                candidate_path=second_candidate_path,
+                ledger_path=first_application.ledger_path,
+                media_path=second_media,
+                media_root=second_media.parent,
+            )
+            second_summary = second_application.summary()
+            self.assertEqual(
+                [
+                    (head["entity_type"], head["entity_id"])
+                    for head in second_summary["heads"]
+                ],
+                [("transcript", second_candidate["candidate_id"])],
+            )
+            self.assertNotIn(
+                first_event["head"]["entity_id"],
+                {event["entity_id"] for event in second_summary["events"]},
+            )
+
 
 class VerticalSliceSeedTests(unittest.TestCase):
     def test_seed_is_idempotent_and_never_creates_formal_approval(self):
@@ -423,6 +547,15 @@ class ReviewUIContractTests(unittest.TestCase):
         self.assertIn("X-CSRF-Token", self.javascript)
         self.assertIn("history.replaceState", self.javascript)
         self.assertIn("sessionStorage", self.javascript)
+
+    def test_ui_scopes_events_and_claims_to_the_active_transcript(self):
+        self.assertIn("function eventHeads()", self.javascript)
+        self.assertIn('dependencyKeys(item, "transcript")', self.javascript)
+        self.assertIn("function claimHeads()", self.javascript)
+        self.assertNotIn(
+            'return head("teaching_event", selected) || head("teaching_event")',
+            self.javascript,
+        )
 
 
 if __name__ == "__main__":

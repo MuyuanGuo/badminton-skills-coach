@@ -63,10 +63,61 @@ class ReviewApplication:
         self.session_token = secrets.token_urlsafe(32)
         self.csrf_token = secrets.token_urlsafe(32)
 
+    @staticmethod
+    def _dependency_keys(head: dict[str, Any]) -> set[tuple[str, str]]:
+        payload = head.get("payload")
+        if not isinstance(payload, dict):
+            return set()
+        dependencies = payload.get("dependencies")
+        if not isinstance(dependencies, list):
+            return set()
+        keys: set[tuple[str, str]] = set()
+        for dependency in dependencies:
+            if not isinstance(dependency, dict):
+                continue
+            entity_type = dependency.get("entity_type")
+            entity_id = dependency.get("entity_id")
+            if isinstance(entity_type, str) and isinstance(entity_id, str):
+                keys.add((entity_type, entity_id))
+        return keys
+
+    def _scoped_heads(self, heads: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Return only descendants fully bound to this candidate transcript."""
+        scoped_keys = {("transcript", self.transcript_id)}
+        changed = True
+        while changed:
+            changed = False
+            for head in heads:
+                key = (head["entity_type"], head["entity_id"])
+                if key in scoped_keys:
+                    continue
+                dependencies = self._dependency_keys(head)
+                if dependencies and dependencies.issubset(scoped_keys):
+                    scoped_keys.add(key)
+                    changed = True
+        return [
+            head
+            for head in heads
+            if (head["entity_type"], head["entity_id"]) in scoped_keys
+        ]
+
+    def _scope_keys(self, ledger: ReviewLedger) -> set[tuple[str, str]]:
+        return {
+            (head["entity_type"], head["entity_id"])
+            for head in self._scoped_heads(ledger.heads())
+        }
+
     def summary(self) -> dict[str, Any]:
         with ReviewLedger(self.ledger_path) as ledger:
-            heads = ledger.heads()
-            events = ledger.events()
+            heads = self._scoped_heads(ledger.heads())
+            scoped_keys = {
+                (head["entity_type"], head["entity_id"]) for head in heads
+            }
+            events = [
+                event
+                for event in ledger.events()
+                if (event["entity_type"], event["entity_id"]) in scoped_keys
+            ]
             draft = ledger.load_draft("transcript", self.transcript_id)
             ledger_report = ledger.verify_integrity()
         return {
@@ -264,6 +315,16 @@ class ReviewApplication:
                     payload = self._claim_payload(ledger, content_input)
             entity_id = supplied_id or generated_id
             current = ledger.head(entity_type, entity_id)
+            if current is not None and (entity_type, entity_id) not in self._scope_keys(
+                ledger
+            ):
+                raise ValueError(
+                    f"{entity_type} belongs to another candidate review scope"
+                )
+            if supplied_id and current is None and supplied_id != generated_id:
+                raise ValueError(
+                    f"new {entity_type} must use its content-derived identity"
+                )
             machine_action = action == "create_draft"
             event = ledger.append_event(
                 entity_type=entity_type,
