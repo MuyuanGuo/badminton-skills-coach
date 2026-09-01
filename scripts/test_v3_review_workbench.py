@@ -246,6 +246,69 @@ class VerticalSliceSeedTests(unittest.TestCase):
                     suggestions_path=suggestions,
                 )
 
+    def test_bilibili_candidate_preserves_identity_and_alternate_url(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            knowledge = root / "knowledge.json"
+            source = root / "source.json"
+            transcript = root / "transcript.json"
+            media = root / "media.m4a"
+            knowledge.write_text(
+                json.dumps(
+                    {
+                        "videos": [
+                            {
+                                "video_id": "bilibili:BVfixture",
+                                "source_video_id": "BVfixture",
+                                "source_type": "bilibili_video",
+                                "uploader_profile_id": "fixture-uploader",
+                                "canonical_url": "https://www.bilibili.com/video/BVfixture",
+                                "title": "Fixture source",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            source.write_text(
+                json.dumps({"profile_id": "fixture-owner"}), encoding="utf-8"
+            )
+            transcript.write_text(
+                json.dumps(
+                    {
+                        "video_id": "BVfixture",
+                        "duration": 2.0,
+                        "model": "fixture",
+                        "language": "zh",
+                        "segments": [{"start": 0.1, "end": 1.5, "text": "候选"}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            media.write_bytes(b"fixture-media")
+            result = seed_vertical_slice(
+                video_id="bilibili:BVfixture",
+                knowledge_path=knowledge,
+                source_config_path=source,
+                transcript_path=transcript,
+                media_path=media,
+                private_root=root / ".local/v3",
+                alternate_urls=["https://example.test/mirror/BVfixture"],
+            )
+            candidate = json.loads(
+                Path(result["candidate_path"]).read_text(encoding="utf-8")
+            )
+            self.assertEqual(candidate["source"]["platform"], "bilibili")
+            self.assertEqual(
+                candidate["source"]["source_id"],
+                "bilibili:fixture-uploader:BVfixture",
+            )
+            self.assertEqual(
+                candidate["source"]["alternate_urls"],
+                ["https://example.test/mirror/BVfixture"],
+            )
+            self.assertTrue(Path(result["candidate_session_path"]).is_file())
+
 
 class ReviewHTTPTests(unittest.TestCase):
     def setUp(self):

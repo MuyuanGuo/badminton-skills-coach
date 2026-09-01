@@ -8,6 +8,7 @@ from typing import Any
 
 from v3 import SCHEMA_VERSION
 from v3.canonical import atomic_write_json, sha256_file, sha256_text
+from v3.inventory import source_identity
 from v3.ledger import ReviewLedger
 from v3.transcript import (
     build_candidate,
@@ -93,12 +94,18 @@ def seed_vertical_slice(
     media_path: Path,
     private_root: Path,
     suggestions_path: Path | None = None,
+    alternate_urls: list[str] | None = None,
 ) -> dict[str, Any]:
     knowledge = json.loads(knowledge_path.read_text(encoding="utf-8"))
     source_config = json.loads(source_config_path.read_text(encoding="utf-8"))
     transcript = json.loads(transcript_path.read_text(encoding="utf-8"))
     video = _find_video(knowledge, video_id)
-    if transcript.get("video_id") != video_id:
+    expected_transcript_video_id = (
+        str(video.get("source_video_id") or "")
+        if video.get("source_type") == "bilibili_video"
+        else video_id
+    )
+    if str(transcript.get("video_id") or "") != expected_transcript_video_id:
         raise ValueError("transcript belongs to another video")
     if not media_path.is_file():
         raise ValueError(f"vertical-slice media is missing: {media_path}")
@@ -119,11 +126,14 @@ def seed_vertical_slice(
     profile_id = str(source_config.get("profile_id") or "").strip()
     if not profile_id:
         raise ValueError("source profile identity is missing")
+    identity_video = dict(video)
+    identity_video.setdefault("source_type", "douyin_video")
+    source_id, platform, native_video_id = source_identity(identity_video, profile_id)
     candidate = build_candidate(
-        source_id=f"douyin:{profile_id}:{video_id}",
-        platform="douyin",
+        source_id=source_id,
+        platform=platform,
         canonical_url=str(video.get("canonical_url") or video.get("url") or ""),
-        alternate_urls=[],
+        alternate_urls=alternate_urls or [],
         title=str(video.get("title") or ""),
         media_sha256=sha256_file(media_path),
         duration_ms=duration_ms,
@@ -138,9 +148,13 @@ def seed_vertical_slice(
         rule_version="v3-vertical-slice-suggestions-v1",
         suggestions=suggestions,
     )
-    candidate_path = private_root / "candidates" / f"{video_id}.json"
+    safe_video_id = native_video_id.replace(":", "_")
+    candidate_path = private_root / "candidates" / f"{safe_video_id}.json"
     ledger_path = private_root / "review" / "review-ledger.sqlite3"
     session_path = private_root / "review" / "vertical-slice-session.json"
+    candidate_session_path = (
+        private_root / "review" / "sessions" / f"{safe_video_id}.json"
+    )
     atomic_write_json(candidate_path, candidate)
     with ReviewLedger(ledger_path) as ledger:
         transcript_id = candidate["candidate_id"]
@@ -196,12 +210,14 @@ def seed_vertical_slice(
         "transcript_entity_id": candidate["candidate_id"],
         "evidence_status": "candidate_only",
     }
+    atomic_write_json(candidate_session_path, session)
     atomic_write_json(session_path, session)
     return {
         "candidate_id": candidate["candidate_id"],
         "candidate_path": str(candidate_path),
         "ledger_path": str(ledger_path),
         "session_path": str(session_path),
+        "candidate_session_path": str(candidate_session_path),
         "media_sha256": candidate["media"]["sha256"],
         "state": final_head["state"],
         "evidence_status": "candidate_only",

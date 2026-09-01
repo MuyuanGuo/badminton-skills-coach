@@ -10,6 +10,7 @@ from v3.audit import audit_public_v3_tree, audit_shadow_artifacts
 from v3.build import build_shadow_artifacts
 from v3.ledger import ReviewLedger
 from v3.publication import write_publication
+from v3.routing import write_pilot_review_queue
 from v3.runtime import shadow_answer_packet
 
 
@@ -71,6 +72,13 @@ def main() -> None:
     )
     query.add_argument("--limit", type=int, default=5)
 
+    pilot_queue = subparsers.add_parser("build-pilot-queue")
+    pilot_queue.add_argument(
+        "--output",
+        type=Path,
+        default=ROOT / ".local/v3/review/pilot-review-queue.json",
+    )
+
     subparsers.add_parser("audit-public-tree")
     args = parser.parse_args()
     result: dict[str, Any]
@@ -96,6 +104,13 @@ def main() -> None:
         )
     elif args.command == "query-shadow":
         result = shadow_answer_packet(args.runtime, args.query, args.limit)
+    elif args.command == "build-pilot-queue":
+        queue = write_pilot_review_queue(root=ROOT, output_path=args.output)
+        result = {
+            "output": str(args.output),
+            "routing_fingerprint": queue["routing_fingerprint"],
+            "summary": queue["summary"],
+        }
     else:
         result = audit_public_v3_tree(ROOT)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))

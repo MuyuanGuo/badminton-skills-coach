@@ -1,6 +1,6 @@
 # v3 证据重构实施手册
 
-- 状态：M1 已实现；M2 首条真实纵切已进入 shadow 评测
+- 状态：M1、M2 已实现；M3 全局来源路由与六类首轮审核队列已实现
 - 日期：2026-08-31
 - 权威规格：[`spec-v3.zh-CN.md`](spec-v3.zh-CN.md)
 - 决策记录：[`adr/0001-v3-evidence-boundary.md`](adr/0001-v3-evidence-boundary.md)
@@ -45,15 +45,15 @@
 | 仅有嵌入式旧候选转写 | 148 |
 | 候选转写缺失 | 64 |
 | 可定位但尚未哈希的本地候选媒体 | 415 |
-| v3 正式转写 | 0 |
+| 已进入 v3 publication 的来源 | 1 |
 
 这些数字描述 2026-08-31 本机私有输入快照的可用性，不代表审核通过率或回答质量。
 公开 CI 校验其内容指纹、统计一致性和 959 条公共来源身份覆盖；只有持有私有输入的维护机
 才能用 `--check-local-inputs` 逐文件重建并比较可用性状态。
 
-## 3. M2 真实纵切候选
+## 3. M2 真实纵切
 
-默认纵切使用公开视频 `7589749293205363633`。选择它是因为本地同时存在原视频和
+首条纵切使用公开视频 `7589749293205363633`。选择它是因为本地同时存在原视频和
 28 段旧 ASR，且内容包含明显的术语/同音词风险，适合验证完整校正工作流。旧教学笔记、
 旧 evidence atom 和候选纠错都不会继承任何 v3 批准状态。
 
@@ -140,5 +140,51 @@ CSRF 令牌，不加载远程脚本、字体、分析或遥测。视频按需从
 node --check review-ui/v3/app.js
 ```
 
-真实纵切只有在产品所有者完成原视频核对后才能越过 M2 的领域质量门；自动测试使用的
-`fixture-reviewer` 和合成主张只存在于临时目录，不进入仓库 publication。
+自动测试使用的 `fixture-reviewer` 和合成主张只存在于临时目录，不进入仓库
+publication。真实纵切的转写、教学事件、来源支持、领域判断和 publication 已分别由
+产品所有者完成显式确认；这些确认只绑定该来源的当前媒体、正式投影与修订指纹。
+
+## 7. M3 全局来源路由与六类队列
+
+先生成 Git 忽略的私有审核队列：
+
+```bash
+.venv/bin/python scripts/v3_tool.py build-pilot-queue
+```
+
+输出位于 `.local/v3/review/pilot-review-queue.json`。构建器会先处理全部 959 条可回答
+来源，再形成任何单主题队列：
+
+- 显式镜像先合并为一个 source group，canonical 与 alternate URLs 均保留；
+- 每条来源都落到 `already_published`、`queued`、`candidate_not_selected` 或
+  `out_of_pilot`；
+- 六类各选 20 条本地媒体与候选转写均可用的首轮来源；
+- 历史 development 问题覆盖、可审核性、来源资格和候选教学信号参与排序；
+- 平台没有权重或配额，当前平台分布只是上述规则的结果；
+- 标题、分类、标签和机器路由仍是 `candidate_routing_only`，主题分配必须由人确认，
+  更不能直接进入回答证据。
+
+跨主题来源由全局稀缺度分配器一次性分派，配置中的主题先后顺序不会改变分配结果。
+标题和旧分类冲突时，标题与分类一致的来源优先；冲突来源仍保留在候选池，等待来源队列
+人工确认。
+
+从队列装载某条候选时，使用主题与队列序号：
+
+```bash
+.venv/bin/python scripts/seed_v3_vertical_slice.py \
+  --topic backhand_rearcourt --rank 2
+```
+
+脚本会从知识索引解析抖音或 B 站身份、候选转写和本地媒体，生成独立候选会话，并更新
+默认活动会话。它仍只追加 `raw_available → candidate`，不会创建转写确认、教学事件、
+领域批准或 publication。每个候选的可恢复会话保存在
+`.local/v3/review/sessions/`。
+
+M3 新增回归：
+
+```bash
+.venv/bin/python scripts/test_v3_source_routing.py
+```
+
+该回归覆盖 959/959 来源、镜像只计一次、跨主题唯一分配、主题声明顺序无关、平台中立、
+候选元数据不获证据权限、发高远球与后场高远的消歧，以及同输入同 fingerprint。

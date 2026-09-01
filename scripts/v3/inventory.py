@@ -14,7 +14,9 @@ from v3.canonical import atomic_write_json, sha256_json
 ANSWER_ELIGIBILITY = {"primary", "supplemental"}
 
 
-def _source_identity(video: dict[str, Any], douyin_profile_id: str) -> tuple[str, str, str]:
+def source_identity(video: dict[str, Any], douyin_profile_id: str) -> tuple[str, str, str]:
+    """Return the stable v3 identity for a supported source record."""
+
     source_type = video.get("source_type")
     if source_type == "douyin_video":
         native_id = str(video.get("video_id") or "").strip()
@@ -29,6 +31,10 @@ def _source_identity(video: dict[str, Any], douyin_profile_id: str) -> tuple[str
     if not native_id or not publisher_id:
         raise ValueError("source identity requires native video and publisher ids")
     return f"{platform}:{publisher_id}:{native_id}", platform, native_id
+
+
+# Kept for callers from the M1 implementation that imported the private helper.
+_source_identity = source_identity
 
 
 def _candidate_status(
@@ -62,7 +68,7 @@ def eligible_source_identities(
     knowledge: dict[str, Any], douyin_profile_id: str
 ) -> set[str]:
     return {
-        _source_identity(video, douyin_profile_id)[0]
+        source_identity(video, douyin_profile_id)[0]
         for video in knowledge.get("videos", [])
         if video.get("answer_eligibility") in ANSWER_ELIGIBILITY
     }
@@ -82,7 +88,7 @@ def build_source_inventory(
     for video in knowledge.get("videos", []):
         if video.get("answer_eligibility") not in ANSWER_ELIGIBILITY:
             continue
-        source_id, platform, native_id = _source_identity(video, douyin_profile_id)
+        source_id, platform, native_id = source_identity(video, douyin_profile_id)
         transcript_status, transcript_fingerprint, media_status = _candidate_status(
             root, video
         )
