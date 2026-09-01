@@ -139,6 +139,20 @@
               <option value="multimodal">多模态</option>
             </select>
           </label>
+          <div id="event-visual-review" class="visual-review-fields" hidden>
+            <div class="form-row two-up">
+              <label>画面审核依据
+                <select id="event-visual-basis">
+                  <option value="local_media">本地原视频</option>
+                  <option value="source_page">来源页面</option>
+                </select>
+              </label>
+              <label>视觉核对时间点
+                <textarea id="event-visual-timestamps" rows="3" placeholder="每行一个，例如 02:50 或 170000"></textarea>
+              </label>
+            </div>
+            <p id="event-visual-basis-note" class="field-note"></p>
+          </div>
           <fieldset class="segment-picker">
             <legend>正式转写窗口</legend>
             <div id="event-segments" class="event-segments">正式转写通过后开放。</div>

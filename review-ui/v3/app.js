@@ -55,6 +55,30 @@ function lines(value) {
   return String(value || "").split("\n").map((item) => item.trim()).filter(Boolean);
 }
 
+function parseReviewTimestamp(value) {
+  const normalized = String(value || "").trim();
+  if (/^\d+$/.test(normalized)) {
+    const milliseconds = Number(normalized);
+    if (Number.isSafeInteger(milliseconds)) return milliseconds;
+    throw new Error(`视觉时间点超出安全范围：${normalized}`);
+  }
+  const match = normalized.match(/^(\d+):([0-5]\d)(?:\.(\d{1,3}))?$/);
+  if (!match) throw new Error(`无法识别视觉时间点：${normalized}`);
+  const milliseconds = String(match[3] || "").padEnd(3, "0");
+  const timestamp = (Number(match[1]) * 60 + Number(match[2])) * 1000 + Number(milliseconds || 0);
+  if (Number.isSafeInteger(timestamp)) return timestamp;
+  throw new Error(`视觉时间点超出安全范围：${normalized}`);
+}
+
+function collectVisualTimestamps() {
+  const timestamps = String($("#event-visual-timestamps").value || "")
+    .split(/[\s,，]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map(parseReviewTimestamp);
+  return [...new Set(timestamps)].sort((left, right) => left - right);
+}
+
 function head(entityType, entityId = null) {
   const matches = app.session.heads.filter((item) => item.entity_type === entityType);
   if (entityId) return matches.find((item) => item.entity_id === entityId) || null;
@@ -409,6 +433,9 @@ function renderEventForm() {
   $("#event-visual").value = "";
   $("#event-value").value = "";
   $("#event-focus").value = "";
+  $("#event-visual-timestamps").value = "";
+  const mediaReview = app.session.media_review || {};
+  $("#event-visual-basis").value = mediaReview.visual_basis_default || "source_page";
   $("#event-state").textContent = current?.state || (unlocked ? "ready" : "locked");
   $("#event-form").querySelectorAll("input, textarea, select, button").forEach((item) => { item.disabled = !unlocked; });
   const container = $("#event-segments");
@@ -439,6 +466,9 @@ function renderEventForm() {
     $("#event-modality").value = value.modality;
     $("#event-boundary").value = value.evidence_boundary;
     $("#event-visual").value = value.evidence_window.visual_observation || "";
+    const visualReview = value.evidence_window.visual_review || {};
+    $("#event-visual-basis").value = visualReview.review_basis || (mediaReview.visual_basis_default || "source_page");
+    $("#event-visual-timestamps").value = (visualReview.timestamps_ms || []).join("\n");
     $("#event-value").value = value.viewing_value || "";
     $("#event-focus").value = value.watch_focus || "";
     const selected = new Set(value.evidence_window.segment_ids || []);
@@ -446,6 +476,27 @@ function renderEventForm() {
   }
   $("#save-event-draft").disabled = !unlocked || Boolean(current);
   $("#verify-event").disabled = !current || current.state !== "draft";
+  updateVisualReviewControls();
+}
+
+function updateVisualReviewControls() {
+  const mediaKind = app.session.media_review?.kind || "unknown";
+  const localMediaOption = $('#event-visual-basis option[value="local_media"]');
+  localMediaOption.disabled = mediaKind !== "video";
+  if (localMediaOption.disabled && $("#event-visual-basis").value === "local_media") {
+    $("#event-visual-basis").value = "source_page";
+  }
+  const enabled = ["visual", "multimodal"].includes($("#event-modality").value);
+  $("#event-visual-review").hidden = !enabled;
+  if (!enabled) return;
+  const basis = $("#event-visual-basis").value;
+  if (basis === "source_page") {
+    $("#event-visual-basis-note").textContent = "画面核对将绑定当前来源页面和这些时间点；保存前请确认页面确为同一来源视频。";
+  } else if (mediaKind === "video") {
+    $("#event-visual-basis-note").textContent = "画面核对将绑定当前本地视频的 SHA-256 和这些时间点。";
+  } else {
+    $("#event-visual-basis-note").textContent = "当前本地媒体不含可核对画面，不能作为视觉依据。";
+  }
 }
 
 function updateEventRangeFromSegments() {
@@ -460,7 +511,7 @@ function updateEventRangeFromSegments() {
 }
 
 function collectEventContent() {
-  return {
+  const content = {
     start_ms: Number($("#event-start").value),
     end_ms: Number($("#event-end").value),
     modality: $("#event-modality").value,
@@ -470,6 +521,11 @@ function collectEventContent() {
     viewing_value: $("#event-value").value.trim(),
     watch_focus: $("#event-focus").value.trim(),
   };
+  if (["visual", "multimodal"].includes(content.modality)) {
+    content.visual_review_basis = $("#event-visual-basis").value;
+    content.visual_timestamps_ms = collectVisualTimestamps();
+  }
+  return content;
 }
 
 function renderClaimForm() {
@@ -782,6 +838,8 @@ function bindEvents() {
   $("#begin-review").addEventListener("click", () => beginReview().catch((error) => toast(error.message, true)));
   $("#preview-transcript").addEventListener("click", () => previewTranscript().catch((error) => toast(error.message, true)));
   $("#verify-transcript").addEventListener("click", () => verifyTranscript().catch((error) => toast(error.message, true)));
+  $("#event-modality").addEventListener("change", updateVisualReviewControls);
+  $("#event-visual-basis").addEventListener("change", updateVisualReviewControls);
   $$(".check-stack input").forEach((item) => item.addEventListener("change", scheduleDraft));
   $("#save-event-draft").addEventListener("click", () => transitionEvent("create_draft").catch((error) => toast(error.message, true)));
   $("#verify-event").addEventListener("click", () => transitionEvent("source_verify").catch((error) => toast(error.message, true)));

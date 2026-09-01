@@ -328,6 +328,38 @@ class ReviewLedger:
             _require_nonempty(
                 evidence_window.get("visual_observation"), "visual observation"
             )
+            visual_review = evidence_window.get("visual_review")
+            if not isinstance(visual_review, dict):
+                raise ValueError("visual evidence requires visual review metadata")
+            review_basis = visual_review.get("review_basis")
+            if review_basis not in {"local_media", "source_page"}:
+                raise ValueError("visual review basis is invalid")
+            timestamps = visual_review.get("timestamps_ms")
+            if (
+                not isinstance(timestamps, list)
+                or not timestamps
+                or any(type(value) is not int for value in timestamps)
+            ):
+                raise ValueError("visual review requires integer timestamps")
+            if timestamps != sorted(set(timestamps)):
+                raise ValueError("visual review timestamps must be sorted and unique")
+            if any(value < start or value > end for value in timestamps):
+                raise ValueError("visual review timestamp is outside the event range")
+            if review_basis == "source_page":
+                source = content.get("source")
+                source_url = source.get("canonical_url") if isinstance(source, dict) else ""
+                if visual_review.get("source_url") != source_url:
+                    raise ValueError("visual review source page differs from the event source")
+                if visual_review.get("media_sha256") not in {"", None}:
+                    raise ValueError("source-page visual review cannot claim a local media hash")
+            else:
+                media_sha256 = visual_review.get("media_sha256")
+                if not isinstance(media_sha256, str) or not re.fullmatch(
+                    r"[0-9a-f]{64}", media_sha256
+                ):
+                    raise ValueError("local visual review requires a media SHA-256")
+                if visual_review.get("source_url") not in {"", None}:
+                    raise ValueError("local visual review cannot claim a source-page URL")
 
     def _validate_semantic_claim(self, payload: dict[str, Any]) -> None:
         content = payload["content"]

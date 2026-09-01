@@ -29,6 +29,17 @@ _RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
 
 
 class ReviewApplication:
+    _AUDIO_ONLY_SUFFIXES = {
+        ".aac",
+        ".flac",
+        ".m4a",
+        ".mp3",
+        ".ogg",
+        ".opus",
+        ".wav",
+    }
+    _VIDEO_SUFFIXES = {".m4v", ".mkv", ".mov", ".mp4", ".webm"}
+
     def __init__(
         self,
         *,
@@ -49,6 +60,7 @@ class ReviewApplication:
         validate_candidate(self.candidate)
         if sha256_file(self.media_path) != self.candidate["media"]["sha256"]:
             raise ValueError("review media fingerprint differs from the candidate")
+        self.media_kind = self._classify_media_path(self.media_path)
         self.transcript_id = self.candidate["candidate_id"]
         with ReviewLedger(self.ledger_path) as ledger:
             head = ledger.head("transcript", self.transcript_id)
@@ -62,6 +74,15 @@ class ReviewApplication:
                 raise ValueError("candidate must be registered in the review ledger")
         self.session_token = secrets.token_urlsafe(32)
         self.csrf_token = secrets.token_urlsafe(32)
+
+    @classmethod
+    def _classify_media_path(cls, path: Path) -> str:
+        suffix = path.suffix.casefold()
+        if suffix in cls._AUDIO_ONLY_SUFFIXES:
+            return "audio_only"
+        if suffix in cls._VIDEO_SUFFIXES:
+            return "video"
+        return "unknown"
 
     @staticmethod
     def _dependency_keys(head: dict[str, Any]) -> set[tuple[str, str]]:
@@ -124,6 +145,12 @@ class ReviewApplication:
             "candidate": self.candidate,
             "transcript_entity_id": self.transcript_id,
             "media_available": True,
+            "media_review": {
+                "kind": self.media_kind,
+                "visual_basis_default": (
+                    "local_media" if self.media_kind == "video" else "source_page"
+                ),
+            },
             "csrf_token": self.csrf_token,
             "heads": heads,
             "events": events,
@@ -222,6 +249,35 @@ class ReviewApplication:
         window["visual_observation"] = str(
             content_input.get("visual_observation") or ""
         ).strip()
+        if modality in {"visual", "multimodal"}:
+            visual_basis = str(
+                content_input.get("visual_review_basis") or ""
+            ).strip()
+            if visual_basis not in {"local_media", "source_page"}:
+                raise ValueError(
+                    "visual evidence requires local_media or source_page review basis"
+                )
+            if visual_basis == "local_media" and self.media_kind != "video":
+                raise ValueError(
+                    "the bound local media is not a visual-review-capable video"
+                )
+            visual_timestamps = content_input.get("visual_timestamps_ms")
+            if not isinstance(visual_timestamps, list):
+                raise ValueError("visual review timestamps must be a list")
+            window["visual_review"] = {
+                "review_basis": visual_basis,
+                "timestamps_ms": visual_timestamps,
+                "source_url": (
+                    self.candidate["source"]["canonical_url"]
+                    if visual_basis == "source_page"
+                    else ""
+                ),
+                "media_sha256": (
+                    self.candidate["media"]["sha256"]
+                    if visual_basis == "local_media"
+                    else ""
+                ),
+            }
         content = {
             "source_id": self.candidate["source"]["source_id"],
             "source": self.candidate["source"],

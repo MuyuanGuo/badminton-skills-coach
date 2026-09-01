@@ -230,6 +230,9 @@ button { color: inherit; }
 .review-form input, .review-form textarea, .review-form select { width: 100%; margin-top: 5px; padding: 10px; color: var(--ink); background: #fbfdfc; }
 .review-form fieldset { margin: 0; padding: 13px; border: 1px solid var(--line); }
 .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.visual-review-fields { padding: 12px; border: 1px solid var(--line); background: #f2f7f5; }
+.visual-review-fields[hidden] { display: none; }
+.field-note { margin: 8px 0 0; color: var(--ink-soft); font-size: 11px; }
 .event-segments, .support-list { display: grid; gap: 7px; max-height: 280px; overflow: auto; }
 .event-segments label, .support-list label { display: grid; grid-template-columns: auto 85px 1fr; gap: 8px; align-items: start; padding: 6px; background: var(--paper); }
 .approval-lane { padding-top: 15px; border-top: 1px solid var(--line); }

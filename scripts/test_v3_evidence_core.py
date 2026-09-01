@@ -336,6 +336,76 @@ class TranscriptTests(unittest.TestCase):
 
 
 class LedgerTests(unittest.TestCase):
+    def test_multimodal_event_records_visual_review_basis_and_timestamps(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with ReviewLedger(Path(directory) / "ledger.sqlite3") as ledger:
+                candidate, compiled, transcript_head = verified_transcript(ledger)
+                formal = compiled["formal_projection"]
+                selected_ids = [formal["segments"][0]["segment_id"]]
+                window = evidence_window(formal, selected_ids)
+                window["visual_observation"] = "合成画面观察"
+                content = {
+                    "source_id": candidate["source"]["source_id"],
+                    "source": candidate["source"],
+                    "start_ms": formal["segments"][0]["start_ms"],
+                    "end_ms": formal["segments"][0]["end_ms"],
+                    "modality": "multimodal",
+                    "evidence_boundary": "仅验证视觉审核元数据",
+                    "formal_projection_sha256": formal["formal_projection_sha256"],
+                    "evidence_window": window,
+                    "viewing_value": "验证来源页面视觉核对",
+                    "watch_focus": "观察合成时间点",
+                }
+                payload = {
+                    "content": content,
+                    "dependencies": [dependency_for(transcript_head)],
+                }
+                append_current(
+                    ledger,
+                    "teaching_event",
+                    "event_visual_fixture",
+                    "create_draft",
+                    payload,
+                    "system:fixture-candidate",
+                    False,
+                )
+                with self.assertRaisesRegex(ValueError, "visual review metadata"):
+                    append_current(
+                        ledger,
+                        "teaching_event",
+                        "event_visual_fixture",
+                        "source_verify",
+                        payload,
+                    )
+                content["evidence_window"]["visual_review"] = {
+                    "review_basis": "source_page",
+                    "timestamps_ms": [formal["segments"][0]["start_ms"]],
+                    "source_url": "https://www.douyin.com/video/wrong-source",
+                    "media_sha256": "",
+                }
+                with self.assertRaisesRegex(ValueError, "differs from the event source"):
+                    append_current(
+                        ledger,
+                        "teaching_event",
+                        "event_visual_fixture",
+                        "source_verify",
+                        payload,
+                    )
+                content["evidence_window"]["visual_review"]["source_url"] = candidate[
+                    "source"
+                ]["canonical_url"]
+                append_current(
+                    ledger,
+                    "teaching_event",
+                    "event_visual_fixture",
+                    "source_verify",
+                    payload,
+                )
+                self.assertEqual(
+                    ledger.head("teaching_event", "event_visual_fixture")["state"],
+                    "source_verified",
+                )
+
     def test_vertical_chain_is_rebuildable_and_source_change_propagates_stale(self):
         with tempfile.TemporaryDirectory() as directory:
             with ReviewLedger(Path(directory) / "ledger.sqlite3") as ledger:

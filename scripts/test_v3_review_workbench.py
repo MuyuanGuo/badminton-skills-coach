@@ -23,8 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 UI_ROOT = ROOT / "review-ui/v3"
 
 
-def make_application(root):
-    media = root / "media/source.mp4"
+def make_application(root, media_suffix=".mp4"):
+    media = root / f"media/source{media_suffix}"
     media.parent.mkdir(parents=True)
     media.write_bytes(b"synthetic-media-bytes")
     candidate = build_candidate(
@@ -79,6 +79,7 @@ class ReviewApplicationTests(unittest.TestCase):
             application = make_application(Path(directory))
             summary = application.summary()
             self.assertEqual(summary["candidate"]["evidence_status"], "candidate_only")
+            self.assertEqual(summary["media_review"]["kind"], "video")
             self.assertEqual(summary["heads"][0]["state"], "candidate")
             self.assertEqual(
                 [event["to_state"] for event in summary["events"]],
@@ -94,6 +95,13 @@ class ReviewApplicationTests(unittest.TestCase):
             )
             self.assertEqual(saved["base_revision"], 2)
             self.assertIsNotNone(application.summary()["transcript_draft"])
+
+    def test_audio_only_media_defaults_visual_review_to_source_page(self):
+        with tempfile.TemporaryDirectory() as directory:
+            application = make_application(Path(directory), media_suffix=".m4a")
+            media_review = application.summary()["media_review"]
+            self.assertEqual(media_review["kind"], "audio_only")
+            self.assertEqual(media_review["visual_basis_default"], "source_page")
 
     def test_automated_identity_cannot_begin_human_review(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -556,6 +564,17 @@ class ReviewUIContractTests(unittest.TestCase):
             'return head("teaching_event", selected) || head("teaching_event")',
             self.javascript,
         )
+
+    def test_ui_records_visual_review_basis_and_timestamps(self):
+        for identifier in (
+            "event-visual-basis",
+            "event-visual-timestamps",
+            "event-visual-basis-note",
+        ):
+            self.assertIn(identifier, self.html)
+        self.assertIn("visual_review_basis", self.javascript)
+        self.assertIn("visual_timestamps_ms", self.javascript)
+        self.assertIn("collectVisualTimestamps", self.javascript)
 
 
 if __name__ == "__main__":
