@@ -125,7 +125,7 @@
           </div>
           <span id="event-state" class="state-chip">locked</span>
         </div>
-        <p class="view-intro">先选择正式转写片段，再说明这段证据明确支持什么、没有支持什么。视觉判断必须单独写出画面观察。</p>
+        <p class="view-intro">正式转写默认整条引用；只有要把同一视频拆成多个教学事件时，才缩小引用范围。视觉判断必须单独写出画面观察。</p>
         <form id="event-form" class="review-form">
           <input id="event-id" type="hidden">
           <div class="form-row two-up">
@@ -154,7 +154,8 @@
             <p id="event-visual-basis-note" class="field-note"></p>
           </div>
           <fieldset class="segment-picker">
-            <legend>正式转写窗口</legend>
+            <legend>本事件引用的正式转写（默认全选）</legend>
+            <p id="event-segment-note" class="field-note">通常无需操作。仅在一条视频包含多个独立教学事件时，取消与当前事件无关的片段。</p>
             <div id="event-segments" class="event-segments">正式转写通过后开放。</div>
           </fieldset>
           <label>证据边界<textarea id="event-boundary" rows="3" placeholder="这段只支持……；不能据此证明……"></textarea></label>

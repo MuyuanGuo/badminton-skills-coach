@@ -576,6 +576,12 @@ class ReviewUIContractTests(unittest.TestCase):
         self.assertIn("visual_timestamps_ms", self.javascript)
         self.assertIn("collectVisualTimestamps", self.javascript)
 
+    def test_new_teaching_event_defaults_to_the_complete_formal_transcript(self):
+        self.assertIn("本事件引用的正式转写（默认全选）", self.html)
+        self.assertIn("event-segment-note", self.html)
+        self.assertIn("function selectAllEventSegments()", self.javascript)
+        self.assertIn("else {\n    selectAllEventSegments();", self.javascript)
+
 
 if __name__ == "__main__":
     unittest.main()

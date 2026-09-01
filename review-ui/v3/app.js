@@ -473,6 +473,8 @@ function renderEventForm() {
     $("#event-focus").value = value.watch_focus || "";
     const selected = new Set(value.evidence_window.segment_ids || []);
     $$("input[type=checkbox]", container).forEach((item) => { item.checked = selected.has(item.value); });
+  } else {
+    selectAllEventSegments();
   }
   $("#save-event-draft").disabled = !unlocked || Boolean(current);
   $("#verify-event").disabled = !current || current.state !== "draft";
@@ -497,6 +499,11 @@ function updateVisualReviewControls() {
   } else {
     $("#event-visual-basis-note").textContent = "当前本地媒体不含可核对画面，不能作为视觉依据。";
   }
+}
+
+function selectAllEventSegments() {
+  $$("#event-segments input[type=checkbox]").forEach((item) => { item.checked = true; });
+  updateEventRangeFromSegments();
 }
 
 function updateEventRangeFromSegments() {
