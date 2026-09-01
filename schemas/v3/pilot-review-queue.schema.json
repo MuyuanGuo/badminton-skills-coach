@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/v3/pilot-review-queue.schema.json",
+  "title": "Badminton Skills Coach v3 private pilot review queue",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "kind",
+    "authority",
+    "routing_config_version",
+    "routing_policy",
+    "input_fingerprints",
+    "summary",
+    "topics",
+    "routes",
+    "routing_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {"const": "3.0.0-m1"},
+    "kind": {"const": "v3-private-pilot-review-queue"},
+    "authority": {"const": "candidate_routing_only"},
+    "routing_fingerprint": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "routing_policy": {
+      "type": "object",
+      "properties": {
+        "platform_weighting": {"const": "none"},
+        "candidate_metadata_is_answer_evidence": {"const": false},
+        "machine_topic_assignment_is_formal": {"const": false}
+      }
+    },
+    "topics": {"type": "array"},
+    "routes": {"type": "array"}
+  },
+  "additionalProperties": false
+}

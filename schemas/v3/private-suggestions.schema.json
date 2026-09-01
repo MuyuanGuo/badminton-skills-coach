@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/schemas/v3/private-suggestions.schema.json",
+  "title": "Private Candidate Suggestions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "video_id", "suggestions"],
+  "properties": {
+    "schema_version": {"const": "3.0.0-m1"},
+    "kind": {"const": "private-candidate-suggestions"},
+    "video_id": {"type": "string", "minLength": 1},
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment_index", "raw_text_sha256", "suggested_text", "reason", "risk_flags"],
+        "properties": {
+          "segment_index": {"type": "integer", "minimum": 0},
+          "raw_text_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "suggested_text": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1},
+          "risk_flags": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

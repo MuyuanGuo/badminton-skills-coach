@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MuyuanGuo/badminton-skills-coach/schemas/v3/review-event.schema.json",
+  "title": "Badminton Skills Coach v3 append-only review event",
+  "type": "object",
+  "required": [
+    "event_id",
+    "entity_type",
+    "entity_id",
+    "action",
+    "from_state",
+    "to_state",
+    "reviewer_id",
+    "occurred_at",
+    "revision",
+    "base_fingerprint",
+    "payload_fingerprint",
+    "content_fingerprint",
+    "human_confirmation",
+    "payload"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "pattern": "^review_[0-9a-f]{64}$"},
+    "entity_type": {
+      "enum": ["transcript", "video_summary", "teaching_event", "semantic_claim"]
+    },
+    "entity_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "human_confirmation": {"type": "boolean"},
+    "payload": {"type": "object", "required": ["content", "dependencies"]}
+  }
+}

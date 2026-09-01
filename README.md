@@ -179,6 +179,9 @@ Every promoted hard gate has a regression test proving that deliberately breakin
 | `skills/.../scripts/render_answer.py` | 确定性答案 renderer / Deterministic answer renderer |
 | `skills/.../scripts/audit_answer.py` | 完整上下文回答审计 / Full-context answer auditor |
 | `data/evaluation/` | 黄金用例、运行时快照、基线与报告 / Gold cases, runtime snapshots, baselines, and reports |
+| `scripts/v3/` | 与稳定 v2 隔离的私有证据账本、净化构建与 shadow runtime / Isolated private evidence ledger, sanitized build, and shadow runtime |
+| `review-ui/v3/` | 本地原视频与转写审核台（不进入发行包） / Local original-media and transcript review workbench (not shipped) |
+| `data/v3/` | v3 净化来源清单、已批准 publication 与 shadow manifest / Sanitized source inventory, approved publication, and shadow manifest |
 | `scripts/run_ci_tests.py` | fast、compatibility、context 与 artifact 测试分组 / Fast, compatibility, context, and artifact test groups |
 | `.github/workflows/validate.yml` | 变更范围分类与并行 CI 质量矩阵 / Change classification and parallel CI quality matrix |
 | `ARCHITECTURE.md` | 运行时、维护平面与模块边界 / Runtime, maintenance plane, and module boundaries |

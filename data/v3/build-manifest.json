@@ -1,0 +1,21 @@
+{
+  "builder": "scripts/v3/build.py",
+  "manifest_fingerprint": "ba4ab213aaa1652c0d1464862811c4c7c9e77bbb005b26afdcccccd06541f263",
+  "mode": "shadow",
+  "publication_fingerprint": "62b726959bbd7767f2fc426dcb68fc08db0f0f93c2ec58d21edd0d8e6931a939",
+  "publication_id": "publication_62b726959bbd7767f2fc426d",
+  "publication_path": "data/v3/publication.json",
+  "row_counts": {
+    "claims": 1,
+    "events": 1,
+    "sources": 1
+  },
+  "runtime_fingerprint": "ea5b4c2e243b367e8a9e40f9f1fbf7842d618fce6b2f13b2b4dab7503d39ac13",
+  "runtime_schema": "schemas/v3/runtime.sql",
+  "schema_version": "3.0.0-m1",
+  "source_inventory_fingerprint": "a5e71ab606fe68348913fe94d9989bf23e0d58ac9962e584c5ce6a50c972193a",
+  "source_inventory_path": "data/v3/source-inventory.json",
+  "source_inventory_sources": 959,
+  "stable_v2_behavior": "unchanged",
+  "switch_eligible": false
+}

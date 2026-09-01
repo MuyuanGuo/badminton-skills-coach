@@ -1,6 +1,7 @@
 # Local runtimes and caches
 .venv/
 .runtime/
+.local/v3/
 node_modules
 __pycache__/
 *.py[cod]

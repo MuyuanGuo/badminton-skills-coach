@@ -1,0 +1,79 @@
+{
+  "version": "v3-pilot-routing-m3",
+  "authority": "candidate_routing_only",
+  "review_budget_per_topic": 20,
+  "priority_signal_files": [
+    "data/evaluation/answer_quality_cases.json",
+    "data/evaluation/retrieval_cases.json"
+  ],
+  "topic_rules": [
+    {
+      "id": "forehand_rearcourt",
+      "name_zh": "正手后场",
+      "exact_categories": [],
+      "exact_tags": [],
+      "required_term_groups": [
+        ["正手", "头顶"],
+        ["后场", "高远", "杀球", "吊球", "劈吊", "劈杀", "架拍", "挥拍", "甩动"]
+      ],
+      "excluded_title_terms": ["发高远球", "发高球"],
+      "generic_categories": ["后场技术"]
+    },
+    {
+      "id": "backhand_rearcourt",
+      "name_zh": "反手后场",
+      "exact_categories": [],
+      "exact_tags": [],
+      "required_term_groups": [
+        ["反手"],
+        ["后场", "高远", "杀球", "吊球", "架拍", "挥拍", "甩动"]
+      ],
+      "excluded_title_terms": ["发高远球", "发高球"],
+      "generic_categories": ["后场技术"]
+    },
+    {
+      "id": "frontcourt",
+      "name_zh": "网前",
+      "exact_categories": ["网前技术"],
+      "exact_tags": ["网前技术"],
+      "required_term_groups": [
+        ["网前", "放网", "搓球", "勾球", "扑球"]
+      ],
+      "excluded_title_terms": [],
+      "generic_categories": []
+    },
+    {
+      "id": "serve_receive",
+      "name_zh": "发接发",
+      "exact_categories": ["发球与接发"],
+      "exact_tags": ["发球与接发"],
+      "required_term_groups": [
+        ["发球", "接发", "发高远球", "发高球", "发小球", "发短球"]
+      ],
+      "excluded_title_terms": [],
+      "generic_categories": []
+    },
+    {
+      "id": "footwork",
+      "name_zh": "步法",
+      "exact_categories": ["步法与移动"],
+      "exact_tags": ["步法与移动"],
+      "required_term_groups": [
+        ["步法", "启动", "回动", "并步", "交叉步", "蹬转", "蹬跨"]
+      ],
+      "excluded_title_terms": [],
+      "generic_categories": []
+    },
+    {
+      "id": "doubles",
+      "name_zh": "双打",
+      "exact_categories": ["双打战术"],
+      "exact_tags": ["双打战术"],
+      "required_term_groups": [
+        ["双打"]
+      ],
+      "excluded_title_terms": [],
+      "generic_categories": []
+    }
+  ]
+}
